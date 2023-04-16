@@ -9,15 +9,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
   <style>
     @media print {
-
-      /* pre,
-      div,
-      dt,
-      dd,
-      blockquote {
-        page-break-inside: avoid;
-      } */
-
       @page {
         margin: 0;
       }
@@ -47,7 +38,7 @@
     <img class='h-12' src="https://cdn.coronasafe.network/black-logo.svg"/>
   </div>
   <div class="px-4 py-5 ">
-    <div class="flex flex-wrap gap-x-2">
+    <div class="flex flex-wrap gap-2">
       <p>
         <span class="text-sm text-gray-500">Full name:</span> {{patient.name}}
       </p>
@@ -80,6 +71,7 @@
     </h3>
   </div>
   <div class="px-4 py-5">
+    <div class="flex flex-col gap-2">
     <p>
       <span class="text-sm leading-5 font-medium text-gray-500">Status during consultation:</span>
       {{consultation.get_consultation_status_display|field_name_to_label}}
@@ -145,6 +137,7 @@
       <span class="text-sm leading-5 font-medium text-gray-500">Examination details and Clinical conditions:</span>
       {{consultation.examination_details}}
     </p>
+  </div>
 
     {% if hcx %}
     <h4 class="mt-4 font-medium text-gray-500">
@@ -173,16 +166,16 @@
         <tbody>
           {% for policy in hcx %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
               {{policy.insurer_name}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
               {{policy.insurer_id}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
               {{policy.subscriber_id}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
               {{policy.policy_id}}
             </td>
           </tr>
@@ -212,10 +205,10 @@
         <tbody>
           {% for disease in provisional_diagnosis %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-no-wrap">
               {{disease.id}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{disease.label}}
             </td>
           </tr>
@@ -245,10 +238,10 @@
         <tbody>
           {% for disease in diagnosis %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-no-wrap">
               {{disease.id}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{disease.label}}
             </td>
           </tr>
@@ -279,10 +272,10 @@
         <tbody>
           {% for disease in medical_history %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-no-wrap">
               {{disease.get_disease_display}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{disease.details}}
             </td>
           </tr>
@@ -323,17 +316,17 @@
         <tbody>
           {% for investigation in consultation.investigation %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-normal">
               {{investigation.type|join:", "}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {% if investigation.repetitive %}
               every {{investigation.frequency}}
               {% else %}
               {{investigation.time|parse_datetime}}
               {% endif %}
             </td>
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{investigation.notes}}
             </td>
           </tr>
@@ -375,22 +368,22 @@
         <tbody>
           {% for prescription in consultation.discharge_advice %}
           <tr class="bg-white">
-            <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-normal">
               {{ prescription.medicine }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage_new }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.route }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.days }}
             </td>
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{ prescription.notes }}
             </td>
           </tr>
@@ -432,22 +425,22 @@
         <tbody>
           {% for prescription in consultation.prn_prescription %}
           <tr class="bg-white">
-            <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1">
               {{ prescription.medicine }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.max_dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.min_time }} Hrs.
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.route }}
             </td>
-            <td class="px-1 py-1 text-sm leading-5 text-gray-500">
+            <td class="p-1">
               {{ prescription.indicator }}
             </td>
           </tr>
@@ -480,17 +473,17 @@
         <tbody>
           {% for procedure in consultation.procedure %}
           <tr class="bg-white">
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 whitespace-normal">
               {{procedure.procedure}}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {% if procedure.repetitive %}
               every {{procedure.frequency}}
               {% else %}
               {{procedure.time|parse_datetime}}
               {% endif %}
             </td>
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{procedure.notes}}
             </td>
           </tr>
@@ -535,21 +528,22 @@
     <div class="px-4 py-5 sm:px-6">
       <table class="min-w-full">
         <thead>
-          <tr>
+          <tr
+          class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
             <th
-              class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Requested on
             </th>
             <th
-              class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Sample type
             </th>
             <th
-              class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Label
             </th>
             <th
-              class="px-6 py-3 border border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Result
             </th>
           </tr>
@@ -557,16 +551,16 @@
         <tbody>
           {% for sample in samples %}
           <tr class="bg-white">
-            <td class="px-6 py-4 border border-gray-200  text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1">
               {{sample.created_date}}
             </td>
-            <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+            <td class="p-1">
               {{sample.get_sample_type_display}}
             </td>
-            <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+            <td class="p-1">
               {{sample.icmr_label}}
             </td>
-            <td class="px-6 py-4 border border-gray-200  text-sm leading-5 text-gray-500">
+            <td class="p-1">
               {{sample.get_result_display}}
             </td>
           </tr>
@@ -634,25 +628,26 @@
     <div class="mt-4">
       <table class="min-w-full">
         <thead>
-          <tr>
+          <tr
+          class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"></tr>
             <th
-              class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Group
             </th>
             <th
-              class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Name
             </th>
             <th
-              class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Result
             </th>
             <th
-              class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Range
             </th>
             <th
-              class="px-1 py-1 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              class="p-2">
               Date
             </th>
           </tr>
@@ -660,20 +655,20 @@
         <tbody>
           {% for investigation in investigations %}
           <tr class="bg-white">
-            <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 border-t whitespace-no-wrap">
               {{investigation.investigation.groups.first}}
             </td>
-            <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 border-t whitespace-no-wrap">
               {{investigation.investigation.name}}
             </td>
-            <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 border-t">
               {% if investigation.value%}
               {{investigation.value}}
               {% else %}
               {{investigation.notes}}
               {% endif %}
             </td>
-            <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 border-t">
               {% if investigation.investigation.min_value and investigation.investigation.max_value%}
               {{investigation.investigation.min_value}} - {{investigation.investigation.max_value}}
               {% else %}
@@ -683,8 +678,8 @@
               {{investigation.investigation.unit}}
               {% endif %}
             </td>
-            <td class="px-1 py-1 border-t whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-              {{investigation.created_date.date}}
+            <td class="p-1 border-t whitespace-no-wrap">
+              {{investigation.created_date}}
             </td>
           </tr>
           {% endfor %}
@@ -744,22 +739,22 @@
         <tbody>
           {% for prescription in consultation.discharge_prescription %}
           <tr class="bg-white">
-            <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1">
               {{ prescription.medicine }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage_new }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.route }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.days }}
             </td>
-            <td class="px-1 py-1 whitespace-normal text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-normal">
               {{ prescription.notes }}
             </td>
           </tr>
@@ -800,22 +795,22 @@
         <tbody>
           {% for prescription in consultation.discharge_prn_prescription %}
           <tr class="bg-white">
-            <td class="px-1 py-1 text-sm leading-5 font-medium text-gray-900">
+            <td class="p-1 ">
               {{ prescription.medicine }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.max_dosage }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.min_time }} Hrs.
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1 whitespace-no-wrap">
               {{ prescription.route }}
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-sm leading-5 text-gray-500">
+            <td class="p-1">
               {{ prescription.indicator }}
             </td>
           </tr>
