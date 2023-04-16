@@ -95,7 +95,7 @@ def generate_and_upload_discharge_summary(consultation_id):
 
 @celery.task()
 def email_discharge_summary(consultation_id, email):
-    file = (
+    summary = (
         FileUpload.objects.filter(
             file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
             associating_id=consultation_id,
@@ -104,20 +104,20 @@ def email_discharge_summary(consultation_id, email):
         .first()
     )
 
-    if file and file.created_date <= timezone.now() - timedelta(minutes=2):
+    if summary and summary.created_date <= timezone.now() - timedelta(minutes=2):
         # If the file is not uploaded in 10 minutes, delete the file and generate a new one
-        file.delete()
-        file = None
+        summary.delete()
+        summary = None
 
-    if file is None:
-        file = generate_and_upload_discharge_summary(consultation_id)
+    if summary is None:
+        summary = generate_and_upload_discharge_summary(consultation_id)
         time.sleep(2)
 
-    if not file.upload_completed:
+    if not summary.upload_completed:
         # wait for file to be uploaded
         time.sleep(30)
-        if file.upload_completed:
-            file.refresh_from_db()
+        if summary.upload_completed:
+            summary.refresh_from_db()
         else:
             return False
 
@@ -128,7 +128,7 @@ def email_discharge_summary(consultation_id, email):
         (email,),
     )
     msg.content_subtype = "html"
-    msg.attach(file.name, file.get_content(), "application/pdf")
+    msg.attach(summary.name, summary.get_content(), "application/pdf")
     msg.send()
 
     return True

@@ -106,7 +106,7 @@ class PatientConsultationViewSet(
     @action(detail=True, methods=["GET"])
     def preview_discharge_summary(self, request, *args, **kwargs):
         consultation = self.get_object()
-        file = (
+        summary = (
             FileUpload.objects.filter(
                 file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
                 associating_id=consultation.external_id,
@@ -114,15 +114,15 @@ class PatientConsultationViewSet(
             .order_by("-created_date")
             .first()
         )
-        if file is not None and file.upload_completed:
-            return Response(FileUploadRetrieveSerializer(file).data)
+        if summary is not None and summary.upload_completed:
+            return Response(FileUploadRetrieveSerializer(summary).data)
 
-        if file.created_date <= timezone.now() - timedelta(minutes=10):
+        if summary.created_date <= timezone.now() - timedelta(minutes=10):
             # If the file is not uploaded in 10 minutes, delete the file and generate a new one
-            file.delete()
-            file = None
+            summary.delete()
+            summary = None
 
-        if file is None:
+        if summary is None:
             generate_and_upload_discharge_summary.delay(consultation.external_id)
             time.sleep(2)  # Wait for 2 seconds for the file to be generated
 
