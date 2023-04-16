@@ -7,7 +7,6 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import Case, When
 from django.db.models.query_utils import Q
-from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -43,7 +42,6 @@ from care.facility.models import (
     DailyRound,
     Facility,
     FacilityPatientStatsHistory,
-    PatientConsultation,
     PatientNotes,
     PatientRegistration,
     PatientSearch,

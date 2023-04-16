@@ -1,7 +1,7 @@
 from datetime import timedelta
 
-from django.utils.timezone import localtime, now
 from django.db import transaction
+from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -98,8 +98,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     icd11_provisional_diagnoses_object = serializers.SerializerMethodField(
         read_only=True
     )
-
-
 
     def get_icd11_diagnoses_object(self, consultation):
         return get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)

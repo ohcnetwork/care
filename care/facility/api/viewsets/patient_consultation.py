@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.core.validators import validate_email
 from django.db.models.query_utils import Q
-from django.shortcuts import render
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -14,7 +14,6 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from django.utils import timezone
 
 from care.facility.api.serializers.file_upload import FileUploadRetrieveSerializer
 from care.facility.api.serializers.patient_consultation import (
