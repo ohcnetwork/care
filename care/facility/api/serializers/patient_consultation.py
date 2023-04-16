@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.utils.timezone import localtime, now
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -400,7 +401,6 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
-        print(attrs)
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
@@ -414,15 +414,17 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         return attrs
 
     def save(self, **kwargs):
-        super().save(**kwargs)
-        patient: PatientRegistration = self.instance.patient
-        patient.is_active = False
-        patient.allow_transfer = True
-        patient.review_time = None
-        patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
-        ConsultationBed.objects.filter(
-            consultation=self.instance, end_date__isnull=True
-        ).update(end_date=now())
+        with transaction.atomic():
+            instance = super().save(**kwargs)
+            patient: PatientRegistration = instance.patient
+            patient.is_active = False
+            patient.allow_transfer = True
+            patient.review_time = None
+            patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
+            ConsultationBed.objects.filter(
+                consultation=self.instance, end_date__isnull=True
+            ).update(end_date=now())
+            return instance
 
     def create(self, validated_data):
         raise NotImplementedError
