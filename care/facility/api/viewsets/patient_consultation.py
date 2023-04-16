@@ -27,7 +27,7 @@ from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.tasks.patient.discharge_report import (
     email_discharge_summary,
-    generate_and_upload_discharge_summary,
+    generate_and_upload_discharge_summary_task,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -94,7 +94,7 @@ class PatientConsultationViewSet(
         serializer = self.get_serializer(consultation, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        generate_and_upload_discharge_summary.delay(consultation.external_id)
+        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
         return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
@@ -114,19 +114,18 @@ class PatientConsultationViewSet(
             .order_by("-created_date")
             .first()
         )
-        if summary is not None and summary.upload_completed:
-            return Response(FileUploadRetrieveSerializer(summary).data)
+        if summary is not None:
+            if summary.upload_completed:
+                return Response(FileUploadRetrieveSerializer(summary).data)
 
-        if summary.created_date <= timezone.now() - timedelta(minutes=10):
-            # If the file is not uploaded in 10 minutes, delete the file and generate a new one
-            summary.delete()
-            summary = None
+            if summary.created_date <= timezone.now() - timedelta(minutes=2):
+                # If the file is not uploaded in 2 minutes, delete the file and generate a new one
+                summary.delete()
 
-        if summary is None:
-            generate_and_upload_discharge_summary.delay(consultation.external_id)
-            time.sleep(2)  # Wait for 2 seconds for the file to be generated
+        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
+        time.sleep(2)  # Wait for 2 seconds for the file to be generated
 
-        raise Response(
+        return Response(
             {
                 "message": "Discharge summary is not ready yet. Please try again after a few moments."
             },

@@ -68,18 +68,23 @@ def generate_discharge_summary_pdf(data, file):
     )
 
 
-@celery.task()
 def generate_and_upload_discharge_summary(consultation_id):
     currnet_date = timezone.now()
 
     consultation = PatientConsultation.objects.get(external_id=consultation_id)
 
-    file_db_entry: FileUpload = FileUpload.objects.create(
-        name=f"discharge_summary-{consultation.patient.name}-{currnet_date}.pdf",
-        internal_name=f"{uuid4()}.pdf",
+    file_db_entry = FileUpload.objects.filter(
         file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
         associating_id=consultation.external_id,
-    )
+    ).first()
+
+    if file_db_entry is None:
+        file_db_entry: FileUpload = FileUpload.objects.create(
+            name=f"discharge_summary-{consultation.patient.name}-{currnet_date}.pdf",
+            internal_name=f"{uuid4()}.pdf",
+            file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
+            associating_id=consultation.external_id,
+        )
 
     data = get_discharge_summary_data(consultation)
     data["date"] = currnet_date
@@ -94,6 +99,12 @@ def generate_and_upload_discharge_summary(consultation_id):
 
 
 @celery.task()
+def generate_and_upload_discharge_summary_task(consultation_id):
+    file_db_entry = generate_and_upload_discharge_summary(consultation_id)
+    return file_db_entry.id
+
+
+@celery.task()
 def email_discharge_summary(consultation_id, email):
     summary = (
         FileUpload.objects.filter(
@@ -104,21 +115,24 @@ def email_discharge_summary(consultation_id, email):
         .first()
     )
 
-    if summary and summary.created_date <= timezone.now() - timedelta(minutes=2):
-        # If the file is not uploaded in 10 minutes, delete the file and generate a new one
+    if (
+        summary is not None
+        and not summary.upload_completed
+        and summary.created_date <= timezone.now() - timedelta(minutes=2)
+    ):
+        # If the file is not uploaded in 2 minutes, delete the file and generate a new one
         summary.delete()
         summary = None
 
     if summary is None:
         summary = generate_and_upload_discharge_summary(consultation_id)
-        time.sleep(2)
 
-    if not summary.upload_completed:
-        # wait for file to be uploaded
+    i = 0
+    while not summary.upload_completed:
         time.sleep(30)
-        if summary.upload_completed:
-            summary.refresh_from_db()
-        else:
+        summary.refresh_from_db()
+        i += 1
+        if i > 3:
             return False
 
     msg = EmailMessage(
