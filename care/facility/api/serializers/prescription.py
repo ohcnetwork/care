@@ -41,6 +41,21 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "modified_date",
             "discontinued_date",
         )
+
+    def validate(self, attrs):
+        if attrs.get("is_prn") and attrs.get("is_prn") is True:
+            if not attrs.get("indicator"):
+                raise serializers.ValidationError(
+                    {"indicator": "Indicator should be set for PRN prescriptions."}
+                )
+            
+        else:
+            if not attrs.get("frequency"):
+                raise serializers.ValidationError(
+                    {"frequency": "Frequency should be set for prescriptions."}
+                )
+        return super().validate(attrs)
+
 class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     administered_by = UserBaseMinimumSerializer(read_only=True)

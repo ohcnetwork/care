@@ -32,14 +32,14 @@ class Prescription(BaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
     )
     medicine = models.CharField(max_length=100, blank=False, null=False)
-    route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes])
+    route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
     dosage = models.CharField(max_length=100)
 
     is_prn = models.BooleanField(default=False)
 
     # non prn fields
-    frequency = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in FrequencyEnum], blank=False, null=False)
-    days = models.IntegerField()
+    frequency = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in FrequencyEnum], blank=True, null=True)
+    days = models.IntegerField(blank=True, null=True)
     
     # prn fields
     indicator = models.TextField(blank=True, null=True)
