@@ -125,11 +125,8 @@ class PatientConsultationViewSet(
         generate_and_upload_discharge_summary_task.delay(consultation.external_id)
         time.sleep(2)  # Wait for 2 seconds for the file to be generated
 
-        return Response(
-            {
-                "message": "Discharge summary is not ready yet. Please try again after a few moments."
-            },
-            status=status.HTTP_404_NOT_FOUND,
+        raise NotFound(
+            "Discharge summary is not ready yet. Please try again after a few moments."
         )
 
     @swagger_auto_schema(
