@@ -8,6 +8,7 @@ from care.utils.models.base import BaseModel
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
 )
+from django.utils import timezone
 
 class FrequencyEnum(enum.Enum):
     STAT = "Immediately"
@@ -56,19 +57,30 @@ class Prescription(BaseModel, PatientRelatedPermissionMixin):
     discontinued_reason = models.TextField(default="", blank=True)
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
+    def save(self, *args, **kwargs) -> None:
+       # check if prescription got discontinued just now
+        if self.discontinued and not self.discontinued_date:
+            self.discontinued_date = timezone.now()
+        if not self.discontinued and self.discontinued_date:
+            self.discontinued_date = None
+        return super().save(*args, **kwargs)
+       
+
     def __str__(self):
         return self.medicine + " - " + self.patient.name
 
-class MedicineAdministration(BaseModel):
+class MedicineAdministration(BaseModel, PatientRelatedPermissionMixin):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.PROTECT,
+        related_name="administrations",
     )
     notes = models.TextField(default="", blank=True)
     administered_by = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
     )
+    administered_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.prescription.medicine + " - " + self.patient.name
