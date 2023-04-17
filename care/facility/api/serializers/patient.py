@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
@@ -33,6 +34,8 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -48,9 +51,6 @@ from care.utils.serializer.phonenumber_ispossible_field import (
     PhoneNumberIsPossibleField,
 )
 from config.serializers import ChoiceField
-from care.hcx.models.policy import Policy
-from care.hcx.models.claim import Claim
-from django.db.models import Q
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):

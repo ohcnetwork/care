@@ -6,13 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0175_auto_20200904_1000'),
+        ("facility", "0175_auto_20200904_1000"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='admitted_to',
-            field=models.IntegerField(blank=True, choices=[(None, 'Not admitted'), (1, 'Isolation Room'), (2, 'ICU'), (3, 'ICU with Non Invasive Ventilator'), (4, 'ICU with Oxygen Support'), (5, 'ICU with Invasive Ventilator'), (20, 'Home Isolation'), (30, 'Gynaecology Ward'), (40, 'Paediatric Ward')], default=None, null=True),
+            model_name="patientconsultation",
+            name="admitted_to",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (None, "Not admitted"),
+                    (1, "Isolation Room"),
+                    (2, "ICU"),
+                    (3, "ICU with Non Invasive Ventilator"),
+                    (4, "ICU with Oxygen Support"),
+                    (5, "ICU with Invasive Ventilator"),
+                    (20, "Home Isolation"),
+                    (30, "Gynaecology Ward"),
+                    (40, "Paediatric Ward"),
+                ],
+                default=None,
+                null=True,
+            ),
         ),
     ]

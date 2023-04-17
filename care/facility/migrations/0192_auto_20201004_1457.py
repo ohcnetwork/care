@@ -6,13 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0191_dailyround_spo2'),
+        ("facility", "0191_dailyround_spo2"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='shiftingrequest',
-            name='status',
-            field=models.IntegerField(choices=[(10, 'PENDING'), (15, 'ON HOLD'), (20, 'APPROVED'), (30, 'REJECTED'), (40, 'DESTINATION APPROVED'), (50, 'DESTINATION REJECTED'), (55, 'TRANSPORTATION TO BE ARRANGED'), (60, 'PATIENTS TO BE PICKED UP'), (70, 'TRANSFER IN PROGRESS'), (80, 'COMPLETED')], default=10),
+            model_name="shiftingrequest",
+            name="status",
+            field=models.IntegerField(
+                choices=[
+                    (10, "PENDING"),
+                    (15, "ON HOLD"),
+                    (20, "APPROVED"),
+                    (30, "REJECTED"),
+                    (40, "DESTINATION APPROVED"),
+                    (50, "DESTINATION REJECTED"),
+                    (55, "TRANSPORTATION TO BE ARRANGED"),
+                    (60, "PATIENTS TO BE PICKED UP"),
+                    (70, "TRANSFER IN PROGRESS"),
+                    (80, "COMPLETED"),
+                ],
+                default=10,
+            ),
         ),
     ]

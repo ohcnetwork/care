@@ -1,4 +1,5 @@
 from datetime import date
+
 from django.core.management.base import BaseCommand
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError

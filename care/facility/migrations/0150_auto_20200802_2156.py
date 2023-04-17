@@ -6,38 +6,38 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0149_auto_20200802_2156'),
+        ("facility", "0149_auto_20200802_2156"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='historicalpatientregistration',
-            old_name='address_new',
-            new_name='address',
+            model_name="historicalpatientregistration",
+            old_name="address_new",
+            new_name="address",
         ),
         migrations.RenameField(
-            model_name='historicalpatientregistration',
-            old_name='name_new',
-            new_name='name',
+            model_name="historicalpatientregistration",
+            old_name="name_new",
+            new_name="name",
         ),
         migrations.RenameField(
-            model_name='historicalpatientregistration',
-            old_name='phone_number_new',
-            new_name='phone_number',
+            model_name="historicalpatientregistration",
+            old_name="phone_number_new",
+            new_name="phone_number",
         ),
         migrations.RenameField(
-            model_name='patientregistration',
-            old_name='address_new',
-            new_name='address',
+            model_name="patientregistration",
+            old_name="address_new",
+            new_name="address",
         ),
         migrations.RenameField(
-            model_name='patientregistration',
-            old_name='name_new',
-            new_name='name',
+            model_name="patientregistration",
+            old_name="name_new",
+            new_name="name",
         ),
         migrations.RenameField(
-            model_name='patientregistration',
-            old_name='phone_number_new',
-            new_name='phone_number',
+            model_name="patientregistration",
+            old_name="phone_number_new",
+            new_name="phone_number",
         ),
     ]

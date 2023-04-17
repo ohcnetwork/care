@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="asset",
             name="asset_class",
-            field=models.IntegerField(blank=True, choices=[("ONVIF", "onvif")], default=None, null=True),
+            field=models.IntegerField(
+                blank=True, choices=[("ONVIF", "onvif")], default=None, null=True
+            ),
         ),
     ]

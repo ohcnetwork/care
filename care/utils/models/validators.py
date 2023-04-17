@@ -33,7 +33,9 @@ class JSONFieldSchemaValidator:
         return self.deconstruct() == other.deconstruct()
 
     def _extract_errors(
-        self, errors: Iterable[jsonschema.ValidationError], container: List[ValidationError],
+        self,
+        errors: Iterable[jsonschema.ValidationError],
+        container: List[ValidationError],
     ):
         for error in errors:
             if error.context:

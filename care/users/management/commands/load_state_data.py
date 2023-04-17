@@ -36,9 +36,13 @@ class Command(BaseCommand):
 
             districts = [d.strip() for d in item["districts"].split(",")]
 
-            state, is_created = State.objects.get_or_create(name__iexact=state_name, defaults={"name": state_name})
+            state, is_created = State.objects.get_or_create(
+                name__iexact=state_name, defaults={"name": state_name}
+            )
             print(f"{'Created' if is_created else 'Retrieved'} {state_name}")
 
             for d in districts:
-                _, is_created = District.objects.get_or_create(state=state, name__iexact=d, defaults={"name": d})
+                _, is_created = District.objects.get_or_create(
+                    state=state, name__iexact=d, defaults={"name": d}
+                )
                 print(f"{'Created' if is_created else 'Retrieved'} {state_name}")

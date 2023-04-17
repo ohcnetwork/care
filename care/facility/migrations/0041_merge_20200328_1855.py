@@ -6,11 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0035_historicalfacilitycapacity'),
-        ('facility', '0034_facilitypatientstatshistory'),
-        ('facility', '0039_auto_20200328_1706'),
-        ('facility', '0040_auto_20200328_1713'),
+        ("facility", "0035_historicalfacilitycapacity"),
+        ("facility", "0034_facilitypatientstatshistory"),
+        ("facility", "0039_auto_20200328_1706"),
+        ("facility", "0040_auto_20200328_1713"),
     ]
 
-    operations = [
-    ]
+    operations = []

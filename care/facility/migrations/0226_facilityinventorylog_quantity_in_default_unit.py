@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0225_facilityinventorylog_current_stock'),
+        ("facility", "0225_facilityinventorylog_current_stock"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='facilityinventorylog',
-            name='quantity_in_default_unit',
+            model_name="facilityinventorylog",
+            name="quantity_in_default_unit",
             field=models.FloatField(default=0),
         ),
     ]

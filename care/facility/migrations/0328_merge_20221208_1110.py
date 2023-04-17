@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0327_auto_20221122_1750'),
-        ('facility', '0327_fileupload_archived_by'),
+        ("facility", "0327_auto_20221122_1750"),
+        ("facility", "0327_fileupload_archived_by"),
     ]
 
-    operations = [
-    ]
+    operations = []

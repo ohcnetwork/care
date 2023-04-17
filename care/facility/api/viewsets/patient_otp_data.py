@@ -10,8 +10,6 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import PatientConsultation, PatientRegistration, PatientSearch
 from care.users.models import User
-
-
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
 

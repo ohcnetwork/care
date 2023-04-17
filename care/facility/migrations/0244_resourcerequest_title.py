@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0243_auto_20210524_2245'),
+        ("facility", "0243_auto_20210524_2245"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='resourcerequest',
-            name='title',
-            field=models.CharField(default='', max_length=255),
+            model_name="resourcerequest",
+            name="title",
+            field=models.CharField(default="", max_length=255),
             preserve_default=False,
         ),
     ]

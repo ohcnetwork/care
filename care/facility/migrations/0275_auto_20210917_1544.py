@@ -7,13 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0274_auto_20210910_1647'),
+        ("facility", "0274_auto_20210910_1647"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dailyround',
-            name='resp',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(10), django.core.validators.MaxValueValidator(70)]),
+            model_name="dailyround",
+            name="resp",
+            field=models.IntegerField(
+                default=None,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(10),
+                    django.core.validators.MaxValueValidator(70),
+                ],
+            ),
         ),
     ]

@@ -32,7 +32,7 @@ class TestFacilityUserApi(TestBase):
             "pf_endpoint": obj.pf_endpoint,
             "pf_p256dh": obj.pf_p256dh,
             "pf_auth": obj.pf_auth,
-            "ward": getattr(obj.ward, "id", None)
+            "ward": getattr(obj.ward, "id", None),
         }
 
     def get_new_user_data(self):

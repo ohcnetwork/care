@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0250_auto_20210603_0359'),
+        ("facility", "0250_auto_20210603_0359"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='last_vaccinated_date',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Date Last Vaccinated'),
+            model_name="historicalpatientregistration",
+            name="last_vaccinated_date",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Date Last Vaccinated"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='last_vaccinated_date',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Date Last Vaccinated'),
+            model_name="patientregistration",
+            name="last_vaccinated_date",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Date Last Vaccinated"
+            ),
         ),
     ]

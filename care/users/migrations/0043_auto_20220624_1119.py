@@ -6,12 +6,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0042_user_created_by'),
+        ("users", "0042_user_created_by"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='localbody',
-            options={'verbose_name': 'Local Body', 'verbose_name_plural': 'Local Bodies'},
+            name="localbody",
+            options={
+                "verbose_name": "Local Body",
+                "verbose_name_plural": "Local Bodies",
+            },
         ),
     ]

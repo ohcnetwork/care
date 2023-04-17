@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0166_auto_20200815_1930'),
+        ("facility", "0166_auto_20200815_1930"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='ward',
-            field=models.CharField(default='', max_length=255, verbose_name='Ward of Patient'),
+            model_name="historicalpatientregistration",
+            name="ward",
+            field=models.CharField(
+                default="", max_length=255, verbose_name="Ward of Patient"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='ward',
-            field=models.CharField(default='', max_length=255, verbose_name='Ward of Patient'),
+            model_name="patientregistration",
+            name="ward",
+            field=models.CharField(
+                default="", max_length=255, verbose_name="Ward of Patient"
+            ),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0182_auto_20200921_1756'),
+        ("facility", "0182_auto_20200921_1756"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='shiftingrequest',
-            name='is_kasp',
+            model_name="shiftingrequest",
+            name="is_kasp",
             field=models.BooleanField(default=False),
         ),
     ]

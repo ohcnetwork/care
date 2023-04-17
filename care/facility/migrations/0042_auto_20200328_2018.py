@@ -6,46 +6,69 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0016_auto_20200327_1954'),
-        ('facility', '0041_merge_20200328_1855'),
+        ("users", "0016_auto_20200327_1954"),
+        ("facility", "0041_merge_20200328_1855"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='facility',
-            name='local_body',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.LocalBody'),
+            model_name="facility",
+            name="local_body",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.LocalBody",
+            ),
         ),
         migrations.AlterField(
-            model_name='facility',
-            name='district',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.District'),
+            model_name="facility",
+            name="district",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.District",
+            ),
         ),
         migrations.AddField(
-            model_name='facility',
-            name='state',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.State'),
-        ),
-
-        migrations.AddField(
-            model_name='patientregistration',
-            name='district',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.District'),
+            model_name="facility",
+            name="state",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.State",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='local_body',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.LocalBody'),
+            model_name="patientregistration",
+            name="district",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.District",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='state',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='users.State'),
-        )
+            model_name="patientregistration",
+            name="local_body",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.LocalBody",
+            ),
+        ),
+        migrations.AddField(
+            model_name="patientregistration",
+            name="state",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.State",
+            ),
+        ),
     ]

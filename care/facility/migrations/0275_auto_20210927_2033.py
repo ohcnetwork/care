@@ -6,18 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0274_auto_20210910_1647'),
+        ("facility", "0274_auto_20210910_1647"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='test_type',
-            field=models.IntegerField(choices=[(10, 'UNK'), (20, 'ANTIGEN'), (30, 'RTPCR'), (40, 'CBNAAT'), (50, 'TRUENAT'), (60, 'RTLAMP'), (70, 'POCPCR')], default=10),
+            model_name="historicalpatientregistration",
+            name="test_type",
+            field=models.IntegerField(
+                choices=[
+                    (10, "UNK"),
+                    (20, "ANTIGEN"),
+                    (30, "RTPCR"),
+                    (40, "CBNAAT"),
+                    (50, "TRUENAT"),
+                    (60, "RTLAMP"),
+                    (70, "POCPCR"),
+                ],
+                default=10,
+            ),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='test_type',
-            field=models.IntegerField(choices=[(10, 'UNK'), (20, 'ANTIGEN'), (30, 'RTPCR'), (40, 'CBNAAT'), (50, 'TRUENAT'), (60, 'RTLAMP'), (70, 'POCPCR')], default=10),
+            model_name="patientregistration",
+            name="test_type",
+            field=models.IntegerField(
+                choices=[
+                    (10, "UNK"),
+                    (20, "ANTIGEN"),
+                    (30, "RTPCR"),
+                    (40, "CBNAAT"),
+                    (50, "TRUENAT"),
+                    (60, "RTLAMP"),
+                    (70, "POCPCR"),
+                ],
+                default=10,
+            ),
         ),
     ]

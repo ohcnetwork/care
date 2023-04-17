@@ -1,5 +1,5 @@
-from django_filters.filters import CharFilter
 from django import forms
+from django_filters.filters import CharFilter
 
 
 def inverse_choices(choices):
@@ -19,4 +19,3 @@ class CareChoiceFilter(CharFilter):
         if len(value) > 0:
             value = self.choice_dict.get(value)
         return super().filter(qs, value)
-

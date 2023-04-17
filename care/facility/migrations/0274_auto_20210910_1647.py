@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0273_auto_20210825_1829'),
+        ("facility", "0273_auto_20210825_1829"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='is_antenatal',
-            field=models.BooleanField(default=None, verbose_name='Does the patient require Prenatal Care ?'),
+            model_name="historicalpatientregistration",
+            name="is_antenatal",
+            field=models.BooleanField(
+                default=None, verbose_name="Does the patient require Prenatal Care ?"
+            ),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='is_antenatal',
-            field=models.BooleanField(default=None, verbose_name='Does the patient require Prenatal Care ?'),
+            model_name="patientregistration",
+            name="is_antenatal",
+            field=models.BooleanField(
+                default=None, verbose_name="Does the patient require Prenatal Care ?"
+            ),
         ),
     ]

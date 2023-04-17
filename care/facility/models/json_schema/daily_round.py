@@ -33,7 +33,10 @@ IV_FLUID = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
+            "properties": {
+                "name": {"type": "string"},
+                "quantity": {"type": "number"},
+            },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -63,7 +66,10 @@ OUTPUT = {
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
+            "properties": {
+                "name": {"type": "string"},
+                "quantity": {"type": "number"},
+            },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -81,7 +87,15 @@ PRESSURE_SORE = {
                 "length": {"type": "number"},
                 "width": {"type": "number"},
                 "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
-                "tissue_type": {"enum": ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]},
+                "tissue_type": {
+                    "enum": [
+                        "Closed",
+                        "Epithelial",
+                        "Granulation",
+                        "Slough",
+                        "Necrotic",
+                    ]
+                },
                 "description": {"type": "string"},
                 "push_score": {"type": "number"},
                 "region": {"type": "string"},

@@ -6,68 +6,68 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0012_merge_20200321_1015'),
+        ("facility", "0012_merge_20200321_1015"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='building',
-            name='deleted',
+            model_name="building",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='facility',
-            name='deleted',
+            model_name="facility",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='facilitycapacity',
-            name='deleted',
+            model_name="facilitycapacity",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='facilitylocation',
-            name='deleted',
+            model_name="facilitylocation",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='facilitystaff',
-            name='deleted',
+            model_name="facilitystaff",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='facilityvolunteer',
-            name='deleted',
+            model_name="facilityvolunteer",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='hospitaldoctors',
-            name='deleted',
+            model_name="hospitaldoctors",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='inventory',
-            name='deleted',
+            model_name="inventory",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='inventoryitem',
-            name='deleted',
+            model_name="inventoryitem",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='inventorylog',
-            name='deleted',
+            model_name="inventorylog",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='room',
-            name='deleted',
+            model_name="room",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='staffroomallocation',
-            name='deleted',
+            model_name="staffroomallocation",
+            name="deleted",
             field=models.BooleanField(default=False),
         ),
     ]

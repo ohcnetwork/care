@@ -6,23 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0129_auto_20200706_1912'),
+        ("facility", "0129_auto_20200706_1912"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='is_antenatal',
-            field=models.BooleanField(default=False, verbose_name='Does the patient require Prenatal Care ?'),
+            model_name="historicalpatientregistration",
+            name="is_antenatal",
+            field=models.BooleanField(
+                default=False, verbose_name="Does the patient require Prenatal Care ?"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='is_antenatal',
-            field=models.BooleanField(default=False, verbose_name='Does the patient require Prenatal Care ?'),
+            model_name="patientregistration",
+            name="is_antenatal",
+            field=models.BooleanField(
+                default=False, verbose_name="Does the patient require Prenatal Care ?"
+            ),
         ),
         migrations.AlterField(
-            model_name='facilityrelatedsummary',
-            name='s_type',
-            field=models.CharField(choices=[('FacilityCapacity', 'FacilityCapacity'), ('PatientSummary', 'PatientSummary')], max_length=100),
+            model_name="facilityrelatedsummary",
+            name="s_type",
+            field=models.CharField(
+                choices=[
+                    ("FacilityCapacity", "FacilityCapacity"),
+                    ("PatientSummary", "PatientSummary"),
+                ],
+                max_length=100,
+            ),
         ),
     ]

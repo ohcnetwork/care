@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0033_auto_20201011_1908'),
+        ("users", "0033_auto_20201011_1908"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='pf_auth',
+            model_name="user",
+            name="pf_auth",
             field=models.TextField(default=None, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='pf_endpoint',
+            model_name="user",
+            name="pf_endpoint",
             field=models.TextField(default=None, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='pf_p256dh',
+            model_name="user",
+            name="pf_p256dh",
             field=models.TextField(default=None, null=True),
         ),
     ]

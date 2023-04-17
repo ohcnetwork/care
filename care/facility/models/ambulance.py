@@ -18,10 +18,14 @@ class Ambulance(FacilityBaseModel):
     )
     INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
-    vehicle_number = models.CharField(max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True)
+    vehicle_number = models.CharField(
+        max_length=20, validators=[vehicle_number_regex], unique=True, db_index=True
+    )
 
     owner_name = models.CharField(max_length=255)
-    owner_phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    owner_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex]
+    )
     owner_is_smart_phone = models.BooleanField(default=True)
 
     # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
@@ -32,10 +36,18 @@ class Ambulance(FacilityBaseModel):
         District, on_delete=models.PROTECT, null=True, related_name="primary_ambulances"
     )
     secondary_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="secondary_ambulances",
+        District,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name="secondary_ambulances",
     )
     third_district = models.ForeignKey(
-        District, on_delete=models.PROTECT, blank=True, null=True, related_name="third_ambulances",
+        District,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name="third_ambulances",
     )
 
     has_oxygen = models.BooleanField()
@@ -45,11 +57,15 @@ class Ambulance(FacilityBaseModel):
 
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
 
-    ambulance_type = models.IntegerField(choices=AMBULANCE_TYPES, blank=False, default=1)
+    ambulance_type = models.IntegerField(
+        choices=AMBULANCE_TYPES, blank=False, default=1
+    )
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     has_free_service = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     @property
     def drivers(self):
@@ -68,7 +84,8 @@ class Ambulance(FacilityBaseModel):
             or request.user == self.created_by
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+                and request.user.district
+                in [self.primary_district, self.secondary_district, self.third_district]
             )
         )
 
@@ -85,7 +102,8 @@ class Ambulance(FacilityBaseModel):
             or request.user == self.created_by
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district in [self.primary_district, self.secondary_district, self.third_district]
+                and request.user.district
+                in [self.primary_district, self.secondary_district, self.third_district]
             )
         )
 

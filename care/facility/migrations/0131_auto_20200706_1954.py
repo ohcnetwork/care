@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0130_auto_20200706_1946'),
+        ("facility", "0130_auto_20200706_1946"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='consultation_notes',
+            model_name="patientconsultation",
+            name="consultation_notes",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='suggestion',
-            field=models.CharField(choices=[('HI', 'HOME ISOLATION'), ('A', 'ADMISSION'), ('R', 'REFERRAL'), ('OP', 'OP CONSULTATION')], max_length=4),
+            model_name="patientconsultation",
+            name="suggestion",
+            field=models.CharField(
+                choices=[
+                    ("HI", "HOME ISOLATION"),
+                    ("A", "ADMISSION"),
+                    ("R", "REFERRAL"),
+                    ("OP", "OP CONSULTATION"),
+                ],
+                max_length=4,
+            ),
         ),
     ]

@@ -7,7 +7,7 @@ def change_kasargode_name(apps, *args):
     """
     Changing so that it matches with Kerala LSG data base
     """
-    District = apps.get_model('users', 'District')
+    District = apps.get_model("users", "District")
     District.objects.filter(name="Kasaragod").update(name="Kasargode")
 
 
@@ -17,9 +17,11 @@ def reverse_change_kasargode_name(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0030_auto_20200327_0619'),
+        ("facility", "0030_auto_20200327_0619"),
     ]
 
     operations = [
-        migrations.RunPython(change_kasargode_name, reverse_code=reverse_change_kasargode_name)
+        migrations.RunPython(
+            change_kasargode_name, reverse_code=reverse_change_kasargode_name
+        )
     ]

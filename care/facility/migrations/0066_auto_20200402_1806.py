@@ -6,28 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0065_auto_20200402_1647'),
+        ("facility", "0065_auto_20200402_1647"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='number_of_aged_dependents',
-            field=models.IntegerField(default=0, verbose_name='Number of people aged above 60 living with the patient'),
+            model_name="historicalpatientregistration",
+            name="number_of_aged_dependents",
+            field=models.IntegerField(
+                default=0,
+                verbose_name="Number of people aged above 60 living with the patient",
+            ),
         ),
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='number_of_chronic_diseased_dependents',
-            field=models.IntegerField(default=0, verbose_name='Number of people who have chronic diseases living with the patient'),
+            model_name="historicalpatientregistration",
+            name="number_of_chronic_diseased_dependents",
+            field=models.IntegerField(
+                default=0,
+                verbose_name="Number of people who have chronic diseases living with the patient",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='number_of_aged_dependents',
-            field=models.IntegerField(default=0, verbose_name='Number of people aged above 60 living with the patient'),
+            model_name="patientregistration",
+            name="number_of_aged_dependents",
+            field=models.IntegerField(
+                default=0,
+                verbose_name="Number of people aged above 60 living with the patient",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='number_of_chronic_diseased_dependents',
-            field=models.IntegerField(default=0, verbose_name='Number of people who have chronic diseases living with the patient'),
+            model_name="patientregistration",
+            name="number_of_chronic_diseased_dependents",
+            field=models.IntegerField(
+                default=0,
+                verbose_name="Number of people who have chronic diseases living with the patient",
+            ),
         ),
     ]

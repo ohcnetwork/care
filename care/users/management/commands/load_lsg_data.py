@@ -1,7 +1,8 @@
 import glob
 import json
-from typing import Optional
 from collections import defaultdict
+from typing import Optional
+
 from django.core.management.base import BaseCommand, CommandParser
 
 from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody, State
@@ -46,7 +47,9 @@ class Command(BaseCommand):
             if state_name in district:
                 if district_name in district[state_name]:
                     return district[state_name][district_name]
-            district_obj = District.objects.filter(name=district_name, state=state_obj).first()
+            district_obj = District.objects.filter(
+                name=district_name, state=state_obj
+            ).first()
             if not district_obj:
                 if not district_name:
                     return None
@@ -74,7 +77,8 @@ class Command(BaseCommand):
                         district=dist_obj,
                         localbody_code=lb.get("localbody_code"),
                         body_type=LOCAL_BODY_CHOICE_MAP.get(
-                            (lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]
+                            (lb.get("localbody_code", " "))[0],
+                            LOCAL_BODY_CHOICES[-1][0],
                         ),
                     )
                 )

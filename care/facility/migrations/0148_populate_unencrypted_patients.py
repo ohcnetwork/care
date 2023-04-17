@@ -20,4 +20,9 @@ class Migration(migrations.Migration):
         ("facility", "0147_auto_20200802_2134"),
     ]
 
-    operations = [migrations.RunPython(populate_patient_unencrypted, reverse_code=reverse_populate_patient_unencrypted)]
+    operations = [
+        migrations.RunPython(
+            populate_patient_unencrypted,
+            reverse_code=reverse_populate_patient_unencrypted,
+        )
+    ]

@@ -189,4 +189,8 @@ class Migration(migrations.Migration):
         ("facility", "0219_remove_investigationsession_session"),
     ]
 
-    operations = [migrations.RunPython(populate_investigations, reverse_code=reverse_populate_investigations)]
+    operations = [
+        migrations.RunPython(
+            populate_investigations, reverse_code=reverse_populate_investigations
+        )
+    ]

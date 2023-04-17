@@ -1,7 +1,7 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, pretty_boolean
-from care.users.models import User, Ward, LocalBody, District
+from care.users.models import District, LocalBody, User, Ward
 
 
 class PatientExternalTest(FacilityBaseModel):
@@ -84,4 +84,3 @@ class PatientExternalTest(FacilityBaseModel):
 
     def __str__(self):
         return self.name + " on " + self.created_date.strftime("%d-%m-%Y")
-

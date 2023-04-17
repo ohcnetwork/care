@@ -75,4 +75,3 @@ class Command(BaseCommand):
             print("Processing Files From", current_state_data)
             management.call_command("load_lsg_data", current_state_data)
             management.call_command("load_ward_data", current_state_data)
-

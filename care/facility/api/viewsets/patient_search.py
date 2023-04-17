@@ -1,21 +1,21 @@
+from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
-
-from care.users.models import User
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_search import PatientScopedSearchSerializer
 from care.facility.models import PatientSearch
-
-from django_filters import rest_framework as filters
+from care.users.models import User
 
 
 class PatientSearchFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    phone_number = filters.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    phone_number = filters.CharFilter(
+        field_name="phone_number", lookup_expr="icontains"
+    )
     is_active = filters.BooleanFilter(field_name="is_active")
     facility = filters.UUIDFilter(field_name="facility__external_id")
 

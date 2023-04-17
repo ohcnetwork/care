@@ -36,7 +36,10 @@ def has_facility_permission(user, facility):
             user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
             and (facility and user.district == facility.district)
         )
-        or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+        or (
+            user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+            and (facility and user.state == facility.state)
+        )
     )
 
 
@@ -46,20 +49,34 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
     status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
 
-    orgin_facility_object = FacilityBasicInfoSerializer(source="orgin_facility", read_only=True, required=False)
-    approving_facility_object = FacilityBasicInfoSerializer(source="approving_facility", read_only=True, required=False)
-    assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
+    orgin_facility_object = FacilityBasicInfoSerializer(
+        source="orgin_facility", read_only=True, required=False
+    )
+    approving_facility_object = FacilityBasicInfoSerializer(
+        source="approving_facility", read_only=True, required=False
+    )
+    assigned_facility_object = FacilityBasicInfoSerializer(
+        source="assigned_facility", read_only=True, required=False
+    )
 
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
     sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
-    orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
-    approving_facility = serializers.UUIDField(source="approving_facility.external_id", allow_null=False, required=True)
-    assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
+    orgin_facility = serializers.UUIDField(
+        source="orgin_facility.external_id", allow_null=False, required=True
+    )
+    approving_facility = serializers.UUIDField(
+        source="approving_facility.external_id", allow_null=False, required=True
+    )
+    assigned_facility = serializers.UUIDField(
+        source="assigned_facility.external_id", allow_null=True, required=False
+    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    last_edited_by_object = UserBaseMinimumSerializer(source="last_edited_by", read_only=True)
+    last_edited_by_object = UserBaseMinimumSerializer(
+        source="last_edited_by", read_only=True
+    )
 
     def __init__(self, instance=None, **kwargs):
         if instance:
@@ -69,7 +86,9 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         LIMITED_RECIEVING_STATUS_ = []
-        LIMITED_RECIEVING_STATUS = [REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
+        LIMITED_RECIEVING_STATUS = [
+            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_
+        ]
         LIMITED_REQUEST_STATUS_ = [
             "ON HOLD",
             "APPROVED",
@@ -78,7 +97,9 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             "TRANSFER IN PROGRESS",
             "COMPLETED",
         ]
-        LIMITED_REQUEST_STATUS = [REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_]
+        LIMITED_REQUEST_STATUS = [
+            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_
+        ]
         LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
@@ -97,14 +118,18 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             validated_data.pop("orgin_facility")
 
         if "approving_facility" in validated_data:
-            approving_facility_external_id = validated_data.pop("approving_facility")["external_id"]
+            approving_facility_external_id = validated_data.pop("approving_facility")[
+                "external_id"
+            ]
             if approving_facility_external_id:
                 validated_data["approving_facility_id"] = Facility.objects.get(
                     external_id=approving_facility_external_id
                 ).id
 
         if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
+            assigned_facility_external_id = validated_data.pop("assigned_facility")[
+                "external_id"
+            ]
             if assigned_facility_external_id:
                 validated_data["assigned_facility_id"] = Facility.objects.get(
                     external_id=assigned_facility_external_id
@@ -123,15 +148,21 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             validated_data.pop("status")
 
         orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
-        validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
+        validated_data["orgin_facility_id"] = Facility.objects.get(
+            external_id=orgin_facility_external_id
+        ).id
 
-        request_approving_facility_external_id = validated_data.pop("approving_facility")["external_id"]
+        request_approving_facility_external_id = validated_data.pop(
+            "approving_facility"
+        )["external_id"]
         validated_data["approving_facility_id"] = Facility.objects.get(
             external_id=request_approving_facility_external_id
         ).id
 
         if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
+            assigned_facility_external_id = validated_data.pop("assigned_facility")[
+                "external_id"
+            ]
             if assigned_facility_external_id:
 
                 validated_data["assigned_facility_id"] = Facility.objects.get(

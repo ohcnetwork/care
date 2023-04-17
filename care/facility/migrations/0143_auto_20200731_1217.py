@@ -6,23 +6,53 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0142_shiftingrequest_patient'),
+        ("facility", "0142_shiftingrequest_patient"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='facilitycapacity',
-            name='room_type',
-            field=models.IntegerField(choices=[(0, 'Total'), (1, 'General Bed'), (2, 'Hostel'), (3, 'Single Room with Attached Bathroom'), (10, 'ICU'), (20, 'Ventilator'), (30, 'Covid Beds')]),
+            model_name="facilitycapacity",
+            name="room_type",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Total"),
+                    (1, "General Bed"),
+                    (2, "Hostel"),
+                    (3, "Single Room with Attached Bathroom"),
+                    (10, "ICU"),
+                    (20, "Ventilator"),
+                    (30, "Covid Beds"),
+                ]
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalfacilitycapacity',
-            name='room_type',
-            field=models.IntegerField(choices=[(0, 'Total'), (1, 'General Bed'), (2, 'Hostel'), (3, 'Single Room with Attached Bathroom'), (10, 'ICU'), (20, 'Ventilator'), (30, 'Covid Beds')]),
+            model_name="historicalfacilitycapacity",
+            name="room_type",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Total"),
+                    (1, "General Bed"),
+                    (2, "Hostel"),
+                    (3, "Single Room with Attached Bathroom"),
+                    (10, "ICU"),
+                    (20, "Ventilator"),
+                    (30, "Covid Beds"),
+                ]
+            ),
         ),
         migrations.AlterField(
-            model_name='room',
-            name='room_type',
-            field=models.IntegerField(choices=[(0, 'Total'), (1, 'General Bed'), (2, 'Hostel'), (3, 'Single Room with Attached Bathroom'), (10, 'ICU'), (20, 'Ventilator'), (30, 'Covid Beds')]),
+            model_name="room",
+            name="room_type",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Total"),
+                    (1, "General Bed"),
+                    (2, "Hostel"),
+                    (3, "Single Room with Attached Bathroom"),
+                    (10, "ICU"),
+                    (20, "Ventilator"),
+                    (30, "Covid Beds"),
+                ]
+            ),
         ),
     ]

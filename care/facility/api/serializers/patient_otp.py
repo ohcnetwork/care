@@ -9,14 +9,15 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models.patient import PatientMobileOTP
-
 from care.utils.sms.sendSMS import sendSMS
 
 
 def rand_pass(size):
     if not settings.USE_SMS:
         return "45612"
-    generate_pass = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(size)])
+    generate_pass = "".join(
+        [random.choice(string.ascii_uppercase + string.digits) for n in range(size)]
+    )
 
     return generate_pass
 
@@ -44,7 +45,9 @@ class PatientMobileOTPSerializer(serializers.ModelSerializer):
         # Filter to only allow n sms per phone number per 6 hour
 
         sent_otps = PatientMobileOTP.objects.filter(
-            created_date__gte=(localtime(now()) - timedelta(settings.OTP_REPEAT_WINDOW)),
+            created_date__gte=(
+                localtime(now()) - timedelta(settings.OTP_REPEAT_WINDOW)
+            ),
             is_used=False,
             phone_number=validated_data["phone_number"],
         )

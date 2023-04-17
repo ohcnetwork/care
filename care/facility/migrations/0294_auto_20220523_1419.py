@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def add_middleware_address_to_facility(apps, schema_editor):
     Asset = apps.get_model("facility", "Asset")
     Facility = apps.get_model("facility", "Facility")
@@ -21,6 +22,7 @@ def add_middleware_address_to_facility(apps, schema_editor):
     Facility.objects.bulk_update(facility_objs, fields=["middleware_address"])
     Asset.objects.bulk_update(asset_objs, fields=["meta"])
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -28,6 +30,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_middleware_address_to_facility, migrations.RunPython.noop)
+        migrations.RunPython(
+            add_middleware_address_to_facility, migrations.RunPython.noop
+        )
     ]
-

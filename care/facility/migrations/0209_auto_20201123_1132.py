@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0208_notification_caused_objects'),
+        ("facility", "0208_notification_caused_objects"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='caused_object_external_id',
+            model_name="notification",
+            name="caused_object_external_id",
             field=models.TextField(blank=True, default=None, null=True),
         ),
     ]

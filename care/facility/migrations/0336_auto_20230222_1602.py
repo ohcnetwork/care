@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0335_auto_20230207_1914'),
+        ("facility", "0335_auto_20230207_1914"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='fileupload',
-            name='file_type',
-            field=models.IntegerField(choices=[(1, 'PATIENT'), (2, 'CONSULTATION'), (3, 'SAMPLE_MANAGEMENT'), (4, 'CLAIM')], default=1),
+            model_name="fileupload",
+            name="file_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "PATIENT"),
+                    (2, "CONSULTATION"),
+                    (3, "SAMPLE_MANAGEMENT"),
+                    (4, "CLAIM"),
+                ],
+                default=1,
+            ),
         ),
     ]

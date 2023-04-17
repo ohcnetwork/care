@@ -6,17 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0318_merge_20220918_1241'),
+        ("facility", "0318_merge_20220918_1241"),
     ]
 
     # Forward Function
     def set_uploads_completed(apps, schema_editor):
-        FileUpload = apps.get_model('facility', 'FileUpload')
+        FileUpload = apps.get_model("facility", "FileUpload")
         FileUpload.objects.update(upload_completed=True)
 
     # Reverse Function
     def set_uploads_not_completed(apps, schema_editor):
-        FileUpload = apps.get_model('facility', 'FileUpload')
+        FileUpload = apps.get_model("facility", "FileUpload")
         FileUpload.objects.update(upload_completed=False)
 
     operations = [

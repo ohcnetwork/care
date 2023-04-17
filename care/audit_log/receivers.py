@@ -23,7 +23,13 @@ from care.audit_log.middleware import AuditLogMiddleware
 logger = logging.getLogger(__name__)
 
 Event = NamedTuple(
-    "Event", [("model", str), ("actor", AbstractUser), ("entity_id", Union[int, str]), ("changes", dict)],
+    "Event",
+    [
+        ("model", str),
+        ("actor", AbstractUser),
+        ("entity_id", Union[int, str]),
+        ("changes", dict),
+    ],
 )
 
 
@@ -59,7 +65,9 @@ def pre_save_signal(sender, instance, **kwargs) -> None:
     changes = {}
 
     if operation not in {Operation.INSERT, Operation.DELETE}:
-        old, new = remove_non_member_fields(pre.__dict__), remove_non_member_fields(instance.__dict__)
+        old, new = remove_non_member_fields(pre.__dict__), remove_non_member_fields(
+            instance.__dict__
+        )
 
         try:
             changes = dict(set(new.items()).difference(old.items()))
@@ -68,9 +76,17 @@ def pre_save_signal(sender, instance, **kwargs) -> None:
             new_hashable, new_non_hashable = seperate_hashable_dict(new)
 
             changes = dict(set(new_hashable.items()).difference(old_hashable.items()))
-            changes.update({k: v for k, v in new_non_hashable.items() if v != old_non_hashable.get(k)})
+            changes.update(
+                {
+                    k: v
+                    for k, v in new_non_hashable.items()
+                    if v != old_non_hashable.get(k)
+                }
+            )
 
-        excluded_fields = settings.AUDIT_LOG["models"]["exclude"]["fields"].get(model_name, [])
+        excluded_fields = settings.AUDIT_LOG["models"]["exclude"]["fields"].get(
+            model_name, []
+        )
         for field in excluded_fields:
             if field in changes:
                 changes[field] = "xxx"
@@ -81,7 +97,9 @@ def pre_save_signal(sender, instance, **kwargs) -> None:
 
     current_user = AuditLogMiddleware.get_current_user()
 
-    instance._meta.dal.event = Event(model=model_name, actor=current_user, entity_id=instance.pk, changes=changes)
+    instance._meta.dal.event = Event(
+        model=model_name, actor=current_user, entity_id=instance.pk, changes=changes
+    )
 
 
 def _post_processor(instance, event: Optional[Event], operation: Operation):
@@ -104,7 +122,9 @@ def _post_processor(instance, event: Optional[Event], operation: Operation):
         logger.warning(f"Failed to log {event}", exc_info=True)
         return
 
-    logger.info(f"AUDIT_LOG::{request_id}|{actor}|{operation.value}|{model_name}|ID:{instance.pk}|{changes}")
+    logger.info(
+        f"AUDIT_LOG::{request_id}|{actor}|{operation.value}|{model_name}|ID:{instance.pk}|{changes}"
+    )
 
 
 @receiver(post_save, weak=False)

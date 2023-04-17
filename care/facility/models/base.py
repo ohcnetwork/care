@@ -3,7 +3,6 @@ from uuid import uuid4
 from django.core.validators import RegexValidator
 
 from care.users.models import User
-
 from care.utils.models.base import BaseModel
 
 phone_number_regex = RegexValidator(

@@ -3,7 +3,9 @@ import logging
 import random
 import string
 import time
+from uuid import uuid4 as uuid
 
+import boto3
 import celery
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -11,19 +13,17 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.timezone import make_aware
 from hardcopy import bytestring_to_pdf
-import boto3
-from care.utils.csp import config as cs_provider
-from uuid import uuid4 as uuid
 
 from care.facility.models import (
     DailyRound,
+    Disease,
+    DiseaseStatusEnum,
+    InvestigationValue,
     PatientConsultation,
     PatientRegistration,
     PatientSample,
-    Disease,
-    InvestigationValue,
-    DiseaseStatusEnum,
 )
+from care.utils.csp import config as cs_provider
 
 
 def randomString(stringLength):

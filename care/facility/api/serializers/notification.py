@@ -1,9 +1,7 @@
 from django.db.models import F
 from rest_framework import serializers
 
-
 from care.facility.models.notification import Notification
-
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
 
@@ -19,10 +17,15 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        exclude = ("deleted", "modified_date", "intended_for", "medium_sent", "external_id")
+        exclude = (
+            "deleted",
+            "modified_date",
+            "intended_for",
+            "medium_sent",
+            "external_id",
+        )
         read_only_fields = (
             "message",
             "caused_objects",
             "created_date",
         )
-
