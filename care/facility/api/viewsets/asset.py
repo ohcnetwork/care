@@ -70,6 +70,12 @@ class AssetLocationViewSet(
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
 
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context
+
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset

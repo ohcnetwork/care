@@ -80,6 +80,7 @@ class DailyRound(PatientBaseModel):
         UNKNOWN = 0
         INVASIVE = 5
         NON_INVASIVE = 10
+        OXYGEN_SUPPORT = 15
 
     VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
 

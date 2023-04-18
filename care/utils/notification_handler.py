@@ -28,6 +28,13 @@ def notification_task_generator(**kwargs):
     NotificationGenerator(**kwargs).generate()
 
 
+@celery.task()
+def send_webpush(**kwargs):
+    user = User.objects.get(username=kwargs.get("username"))
+    message = kwargs.get("message")
+    NotificationGenerator.send_webpush_user(None, user, message)
+
+
 def get_model_class(model_name):
     if model_name == "User":
         return apps.get_model("users.{}".format(model_name))

@@ -52,7 +52,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="referred_to", read_only=True
     )
     referred_to = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), required=False
+        queryset=Facility.objects.all(),
+        required=False,
+    )
+    referred_to_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
     )
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(read_only=True)
@@ -67,6 +71,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
+
+    discharge_prescription = serializers.JSONField(required=False)
+    discharge_prn_prescription = serializers.JSONField(required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices,
@@ -130,7 +137,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -148,6 +154,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
+            else:
+                patient.action = None
 
             if "review_interval" in validated_data:
                 review_interval = validated_data.pop("review_interval")
@@ -196,7 +204,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return consultation
 
     def create(self, validated_data):
-
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -302,16 +309,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R and not validated.get(
-                "referred_to"
-            ):
-                raise ValidationError(
-                    {
-                        "referred_to": [
-                            f"This field is required as the suggestion is {SuggestionChoices.R}."
-                        ]
-                    }
-                )
+            if validated["suggestion"] is SuggestionChoices.R:
+                if not validated.get("referred_to") and not validated.get(
+                    "referred_to_external"
+                ):
+                    raise ValidationError(
+                        {
+                            "referred_to": [
+                                f"This field is required as the suggestion is {SuggestionChoices.R}."
+                            ]
+                        }
+                    )
+                if validated.get("referred_to_external"):
+                    validated["referred_to"] = None
+                elif validated.get("referred_to"):
+                    validated["referred_to_external"] = None
             if (
                 validated["suggestion"] is SuggestionChoices.A
                 and validated.get("admitted")
@@ -370,7 +382,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
-
         return validated
 
 
