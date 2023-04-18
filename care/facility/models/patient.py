@@ -1,8 +1,10 @@
 import datetime
 import enum
 
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.timezone import now
 from fernet_fields import EncryptedCharField, EncryptedIntegerField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
@@ -745,6 +747,8 @@ class PatientMobileOTP(BaseModel):
 
 
 class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
+    EDIT_WINDOW_DURATION = 30 * 60  # 30 minutes
+
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -757,3 +761,23 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+    editable_until = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # creating new instance
+            if not self.editable_until:
+                self.editable_until = now() + datetime.timedelta(
+                    seconds=self.EDIT_WINDOW_DURATION
+                )
+        else:  # updating existing instance
+            if not self.patient.is_active:
+                raise ValidationError(
+                    {
+                        "patient": "Updating patient data is only allowed for active patients"
+                    }
+                )
+            if not self.editable_until or now() > self.editable_until:
+                raise ValidationError({"note": "Note is not editable anymore"})
+
+        super().save(*args, **kwargs)

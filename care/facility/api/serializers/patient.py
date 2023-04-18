@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
@@ -33,6 +34,8 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -48,9 +51,6 @@ from care.utils.serializer.phonenumber_ispossible_field import (
     PhoneNumberIsPossibleField,
 )
 from config.serializers import ChoiceField
-from care.hcx.models.policy import Policy
-from care.hcx.models.claim import Claim
-from django.db.models import Q
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
@@ -457,18 +457,8 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
-    NOTE_EDIT_WINDOW = 30 * 60  # 30 minutes
-
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    edit_window = serializers.SerializerMethodField(read_only=True)
-
-    def get_edit_window(self, obj):
-        return self.NOTE_EDIT_WINDOW
-
-    def validate(self, data):
-        data["edit_window"] = self.get_edit_window(data)
-        return data
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -484,6 +474,6 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "created_by_object",
             "created_date",
             "modified_date",
-            "edit_window",
+            "editable_until",
         )
-        read_only_fields = ("id", "created_date", "modified_date")
+        read_only_fields = ("id", "created_date", "modified_date", "editable_until")
