@@ -16,7 +16,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             "notes",
             "administered_by",
             "created_date",
-            "administered_date"
+            "administered_date",
             "modified_date",
         )
         read_only_fields = (
@@ -25,6 +25,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             "created_date",
             "modified_date",
         )
+
 class PrescriptionSerializer(serializers.ModelSerializer):
 
     prescribed_by = UserBaseMinimumSerializer(read_only=True)

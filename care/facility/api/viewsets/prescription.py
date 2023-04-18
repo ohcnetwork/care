@@ -22,7 +22,7 @@ class PrescriptionViewSet(
     }
     permission_classes = (
         IsAuthenticated,
-        DRYPermissions,
+        #DRYPermissions,
     )
     queryset = Prescription.objects.all().order_by("created_date")
     lookup_field = "external_id"
@@ -41,16 +41,16 @@ class PrescriptionViewSet(
     @action(methods=["POST"], detail=True)
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        MedicineAdministration.objects.create(
-            prescription=prescription_obj,
-            administered_by=request.user,
-            notes=request.data.get("notes", None),
-        )
-        return Response({"success": True}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(prescription=prescription_obj, administered_by=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     @action(methods=["DELETE"], detail=True)
     def delete_administered(self, request, *args, **kwargs):
-        administered_obj = MedicineAdministration.objects.get(id=request.data.get("id", None))
+        if not request.query_params.get("id", None):
+            return Response({"success": False, "error": "id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
         administered_obj.delete()
         return Response({"success": True}, status=status.HTTP_200_OK)
     

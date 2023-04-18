@@ -69,7 +69,7 @@ class Prescription(BaseModel, PatientRelatedPermissionMixin):
     def __str__(self):
         return self.medicine + " - " + self.patient.name
 
-class MedicineAdministration(BaseModel, PatientRelatedPermissionMixin):
+class MedicineAdministration(BaseModel):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.PROTECT,
@@ -80,7 +80,7 @@ class MedicineAdministration(BaseModel, PatientRelatedPermissionMixin):
         "users.User",
         on_delete=models.PROTECT,
     )
-    administered_date = models.DateTimeField(null=True, blank=True)
+    administered_date = models.DateTimeField(null=False, blank=False, default=timezone.now)
 
     def __str__(self):
         return self.prescription.medicine + " - " + self.patient.name
