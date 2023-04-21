@@ -509,3 +509,5 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
