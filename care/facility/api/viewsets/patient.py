@@ -24,6 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -453,6 +454,20 @@ class PatientViewSet(
             ConsultationBed.objects.filter(
                 consultation=last_consultation, end_date__isnull=True
             ).update(end_date=current_time)
+
+            if last_consultation.patient.abha_number:
+                AbdmGateway().fetch_modes(
+                    {
+                        "healthId": last_consultation.patient.abha_number.abha_number,
+                        "name": last_consultation.patient.abha_number.name,
+                        "gender": last_consultation.patient.abha_number.gender,
+                        "dateOfBirth": str(
+                            last_consultation.patient.abha_number.date_of_birth
+                        ),
+                        "consultationId": last_consultation.external_id,
+                        "purpose": "LINK",
+                    }
+                )
 
         return Response(status=status.HTTP_200_OK)
 

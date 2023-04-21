@@ -159,13 +159,15 @@ class HipViewSet(GenericViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        response = AbdmGateway().add_contexts(
+        AbdmGateway().fetch_modes(
             {
-                "access_token": consultation.patient.abha_number.access_token,
-                "patient_id": str(consultation.patient.external_id),
-                "patient_name": consultation.patient.name,
-                "context_id": str(consultation.external_id),
-                "context_name": f"Encounter: {str(consultation.created_date.date())}",
+                "healthId": consultation.patient.abha_number.abha_number,
+                "name": consultation.patient.abha_number.name,
+                "gender": consultation.patient.abha_number.gender,
+                "dateOfBirth": str(consultation.patient.abha_number.date_of_birth),
+                "consultationId": consultation_id,
+                "purpose": "LINK",
             }
         )
-        return Response(response)
+
+        return Response(status=status.HTTP_202_ACCEPTED)

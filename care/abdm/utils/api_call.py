@@ -11,6 +11,7 @@ from django.core.cache import cache
 from django.db.models import Q
 
 from care.abdm.models import AbhaNumber
+from care.facility.models.patient_consultation import PatientConsultation
 
 GATEWAY_API_URL = "https://dev.abdm.gov.in/"
 HEALTH_SERVICE_API_URL = "https://healthidsbx.abdm.gov.in/api"
@@ -325,9 +326,31 @@ class AbdmGateway:
     def __init__(self):
         self.api = APIGateway("abdm_gateway", None)
 
+    def add_care_context(self, access_token, request_id):
+        data = self.temp_memory[request_id]
+
+        if "consultationId" in data:
+            consultation = PatientConsultation.objects.get(
+                external_id=data["consultationId"]
+            )
+
+            response = self.add_contexts(
+                {
+                    "access_token": access_token,
+                    "patient_id": str(consultation.patient.external_id),
+                    "patient_name": consultation.patient.name,
+                    "context_id": str(consultation.external_id),
+                    "context_name": f"Encounter: {str(consultation.created_date.date())}",
+                }
+            )
+
+            return response
+
+        return False
+
     def save_linking_token(self, patient, access_token, request_id):
         data = self.temp_memory[request_id]
-        health_id = patient["id"] or data["healthId"]
+        health_id = patient and patient["id"] or data["healthId"]
 
         abha_object = AbhaNumber.objects.filter(
             Q(abha_number=health_id) | Q(health_id=health_id)
@@ -352,7 +375,6 @@ class AbdmGateway:
             name,
             gender,
             dateOfBirth,
-            patientId
         }
         """
         self.temp_memory[request_id] = data
@@ -364,7 +386,7 @@ class AbdmGateway:
             ),
             "query": {
                 "id": data["healthId"],
-                "purpose": "KYC_AND_LINK",
+                "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
                 "requester": {"type": "HIP", "id": self.hip_id},
             },
         }
@@ -388,7 +410,7 @@ class AbdmGateway:
             ),
             "query": {
                 "id": data["healthId"],
-                "purpose": "KYC_AND_LINK",
+                "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
                 "authMode": "DEMOGRAPHICS",
                 "requester": {"type": "HIP", "id": self.hip_id},
             },
