@@ -94,8 +94,24 @@ class PatientFilterSet(filters.FilterSet):
         choices=COVID_CATEGORY_CHOICES,
     )
     category = filters.ChoiceFilter(
-        field_name="last_consultation__category", choices=CATEGORY_CHOICES
+        method="filter_by_category",
+        choices=CATEGORY_CHOICES,
     )
+
+    def filter_by_category(self, queryset, name, value):
+        if value:
+            queryset = queryset.filter(
+                (
+                    Q(last_consultation__last_daily_round__isnull=False)
+                    & Q(last_consultation__last_daily_round__patient_category=value)
+                )
+                | (
+                    Q(last_consultation__last_daily_round__isnull=True)
+                    & Q(last_consultation__category=value)
+                )
+            )
+        return queryset
+
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     srf_id = filters.CharFilter(field_name="srf_id")
@@ -400,10 +416,14 @@ class PatientViewSet(
                 raise serializers.ValidationError(
                     {"discharge_reason": "discharge reason is not valid"}
                 )
+            discharge_date = request.data.get("discharge_date", "")
             last_consultation.discharge_reason = reason
             last_consultation.discharge_notes = notes
             if last_consultation.discharge_date is None:
-                last_consultation.discharge_date = current_time
+                if discharge_date:
+                    last_consultation.discharge_date = discharge_date
+                else:
+                    last_consultation.discharge_date = current_time
             last_consultation.current_bed = None
             if reason == "EXP":
                 death_datetime = request.data.get("death_datetime")
@@ -423,7 +443,6 @@ class PatientViewSet(
                 discharge_prn_prescription = request.data.get(
                     "discharge_prn_prescription", []
                 )
-                discharge_date = request.data.get("discharge_date")
                 if discharge_date is None:
                     raise serializers.ValidationError(
                         {"discharge_date": "Please set the discharge date"}
