@@ -160,14 +160,17 @@ class ShiftingSerializer(serializers.ModelSerializer):
     )
 
     assigned_facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), required=False
+        queryset=Facility.objects.all(), allow_null=True, required=False
+    )
+    assigned_facility_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
     )
     assigned_facility_object = FacilityBasicInfoSerializer(
         source="assigned_facility", read_only=True
     )
 
-    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES)
-    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES)
+    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES, required=False)
+    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES, required=False)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
@@ -191,6 +194,13 @@ class ShiftingSerializer(serializers.ModelSerializer):
         validated_data.pop("patient")
 
         user = self.context["request"].user
+
+        if validated_data.get("assigned_facility_external"):
+            validated_data["assigned_facility"] = None
+            validated_data["assigned_facility_id"] = None
+            validated_data["assigned_facility_object"] = None
+        elif validated_data.get("assigned_facility"):
+            validated_data["assigned_facility_external"] = None
 
         if (
             "is_kasp" in validated_data
@@ -227,12 +237,17 @@ class ShiftingSerializer(serializers.ModelSerializer):
             ):
                 raise ValidationError({"status": ["Permission Denied"]})
 
-        assigned = bool(validated_data.get("assigned_facility"))
+        assigned = bool(
+            validated_data.get("assigned_facility")
+            or validated_data.get("assigned_facility_external")
+        )
 
         if (
             "status" in validated_data
             and validated_data["status"] in self.RECIEVING_REQUIRED_STATUS
-            and (not instance.assigned_facility)
+            and (
+                not (instance.assigned_facility or instance.assigned_facility_external)
+            )
             and (not assigned)
         ):
             raise ValidationError(
@@ -274,6 +289,23 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if settings.PEACETIME_MODE:
             # approve the request by default if in peacetime mode
             validated_data["status"] = 20
+
+        assigned = bool(
+            validated_data.get("assigned_facility")
+            or validated_data.get("assigned_facility_external")
+        )
+        if (
+            "status" in validated_data
+            and validated_data["status"] in self.RECIEVING_REQUIRED_STATUS
+            and (not assigned)
+        ):
+            raise ValidationError(
+                {
+                    "status": [
+                        "Destination Facility is required for moving to this stage."
+                    ]
+                }
+            )
 
         validated_data["is_kasp"] = False
 
