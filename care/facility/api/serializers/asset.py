@@ -28,18 +28,25 @@ from care.facility.models.asset import (
     StatusChoices,
     UserDefaultAssetLocation,
 )
-from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
+from care.users.api.serializers.user import (
+    UserAssignedSerializer,
+    UserBaseMinimumSerializer,
+)
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
-
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
+    duty_staff_objects = UserAssignedSerializer(
+        many=True,
+        read_only=True,
+        source="duty_staff",
+    )
 
     def validate_middleware_address(self, value):
         value = (value or "").strip()
@@ -65,6 +72,7 @@ class AssetLocationSerializer(ModelSerializer):
                         "name": "Asset location with this name and facility already exists."
                     }
                 )
+
         return data
 
     class Meta:

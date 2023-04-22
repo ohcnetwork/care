@@ -17,6 +17,7 @@ class UserFilter(filters.FilterSet):
         choices=[(key, key) for key in User.TYPE_VALUE_MAP],
         coerce=lambda role: User.TYPE_VALUE_MAP[role],
     )
+    home_facility = filters.CharFilter(field_name="home_facility__external_id")
 
     class Meta:
         model = User
@@ -49,5 +50,5 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
                     queryset=UserSkill.objects.filter(skill__deleted=False),
                 ),
             )
-        except Facility.DoesNotExist:
-            raise ValidationError({"Facility": "Facility not found"})
+        except Exception as e:
+            raise ValidationError({"Facility": "Facility not found"}) from e

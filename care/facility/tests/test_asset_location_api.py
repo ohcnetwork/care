@@ -1,6 +1,10 @@
+"""
+Test cases for AssetLocationViewSet
+"""
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.users.models import User
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -15,12 +19,34 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
+    def get_detail_duty_staff_representation(self, obj=None) -> dict:
+        """
+        Returns duty staff representation
+        """
+        return {
+            "id": obj.id,
+            "username": obj.username,
+            "first_name": obj.first_name,
+            "last_name": obj.last_name,
+            "email": obj.email,
+            "user_type": User.REVERSE_TYPE_MAP[obj.user_type],
+        }
+
+    def get_base_url(self, asset_id=None) -> str:
+        """
+        Returns base url for AssetLocationViewSet
+        """
+        if asset_id is not None:
+            return f"/api/v1/facility/{self.facility.external_id}/asset_location/{asset_id}/"
+        return f"/api/v1/facility/{self.facility.external_id}/asset_location/"
+
     def test_list_asset_locations(self):
-        response = self.client.get(
-            f"/api/v1/facility/{self.facility.external_id}/asset_location/"
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, self.asset_location.external_id)
+        """
+        Test list asset locations
+        """
+        res = self.client.get(self.get_base_url())
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertContains(res, self.asset_location.external_id)
 
     def test_retrieve_asset_location(self):
         response = self.client.get(
@@ -74,4 +100,28 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data["middleware_address"][0].code, "invalid_domain_name"
+        )
+
+    def test_duty_staff_location(self):
+        """
+        Test duty staff location
+        """
+
+        # adding doctors
+        doctor = self.create_user(
+            username="doctor",
+            district=self.district,
+            local_body=self.local_body,
+            home_facility=self.facility,
+            user_type=15,
+        )
+        asset = self.create_asset_location(self.facility)
+        asset.duty_staff.set([doctor])
+        asset.save()
+        res = self.client.get(self.get_base_url(asset.external_id))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        duty_staff_objects = res.json()["duty_staff_objects"]
+        self.assertEqual(len(duty_staff_objects), 1)
+        self.assertDictContainsSubset(
+            self.get_detail_duty_staff_representation(doctor), duty_staff_objects[0]
         )

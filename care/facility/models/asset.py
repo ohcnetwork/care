@@ -45,6 +45,10 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
+    duty_staff = models.ManyToManyField(
+        User,
+        blank=True,
+    )
 
     middleware_address = models.CharField(
         null=True, blank=True, default=None, max_length=200
@@ -79,7 +83,11 @@ class Asset(BaseModel):
         choices=AssetTypeChoices, default=AssetType.INTERNAL.value
     )
     asset_class = models.CharField(
-        choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
+        choices=AssetClassChoices,
+        default=None,
+        null=True,
+        blank=True,
+        max_length=20,
     )
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(
@@ -90,7 +98,9 @@ class Asset(BaseModel):
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")  # Deprecated
     meta = JSONField(
-        default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)]
+        default=dict,
+        blank=True,
+        validators=[JSONFieldSchemaValidator(ASSET_META)],
     )
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
