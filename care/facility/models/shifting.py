@@ -7,6 +7,7 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
+from care.facility.models.patient_base import CATEGORY_CHOICES
 from care.users.models import User, phone_number_regex
 
 SHIFTING_STATUS_CHOICES = (
@@ -54,7 +55,7 @@ class ShiftingRequest(FacilityBaseModel):
         related_name="shifting_approving_facility",
     )
     assigned_facility_type = models.IntegerField(
-        choices=FACILITY_TYPES, default=None, null=True
+        choices=FACILITY_TYPES, default=None, null=True, blank=True
     )
     assigned_facility = models.ForeignKey(
         "Facility",
@@ -71,7 +72,7 @@ class ShiftingRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
     preferred_vehicle_choice = models.IntegerField(
-        choices=VEHICLE_CHOICES, default=None, null=True
+        choices=VEHICLE_CHOICES, default=None, null=True, blank=True
     )
     comments = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
@@ -84,7 +85,7 @@ class ShiftingRequest(FacilityBaseModel):
     )
 
     breathlessness_level = models.IntegerField(
-        choices=BREATHLESSNESS_CHOICES, default=10, null=False, blank=False
+        choices=BREATHLESSNESS_CHOICES, default=10, null=True, blank=True
     )
 
     is_assigned_to_user = models.BooleanField(default=False)
@@ -94,6 +95,14 @@ class ShiftingRequest(FacilityBaseModel):
         null=True,
         related_name="shifting_assigned_to",
     )
+    patient_category = models.CharField(
+        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+    )
+    ambulance_driver_name = models.TextField(default="", blank=True)
+    ambulance_phone_number = models.CharField(
+        max_length=14, validators=[phone_number_regex], default="", blank=True
+    )
+    ambulance_number = models.TextField(default="", blank=True)
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
