@@ -11,6 +11,7 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
+    CATEGORY_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
@@ -24,6 +25,9 @@ from care.facility.models.notification import Notification
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from care.utils.serializer.phonenumber_ispossible_field import (
+    PhoneNumberIsPossibleField,
+)
 from config.serializers import ChoiceField
 
 
@@ -143,7 +147,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
     patient_object = PatientListSerializer(source="patient", read_only=True)
 
     status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
-    breathlessness_level = ChoiceField(choices=BREATHLESSNESS_CHOICES, required=False)
+    breathlessness_level = ChoiceField(
+        choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
+    )
 
     orgin_facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), allow_null=False, required=True
@@ -169,13 +175,27 @@ class ShiftingSerializer(serializers.ModelSerializer):
         source="assigned_facility", read_only=True
     )
 
-    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES, required=False)
-    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES, required=False)
+    assigned_facility_type = ChoiceField(
+        choices=FACILITY_TYPES, required=False, allow_null=True
+    )
+    preferred_vehicle_choice = ChoiceField(
+        choices=VEHICLE_CHOICES, required=False, allow_null=True
+    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
+    )
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    ambulance_driver_name = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    ambulance_phone_number = PhoneNumberIsPossibleField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    ambulance_number = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
     )
 
     def __init__(self, instance=None, **kwargs):
