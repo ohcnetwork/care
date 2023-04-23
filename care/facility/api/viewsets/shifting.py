@@ -22,6 +22,7 @@ from care.facility.models import (
     BREATHLESSNESS_CHOICES,
     SHIFTING_STATUS_CHOICES,
     PatientConsultation,
+    ConsultationBed,
     ShiftingRequest,
     ShiftingRequestComment,
     User,
@@ -136,8 +137,12 @@ class ShiftingViewSet(
                     shifting_obj.save(update_fields=["status"])
                     # Discharge from all other active consultations
                     PatientConsultation.objects.filter(patient=patient, discharge_date__isnull=True).update(
-                        discharge_date=localtime(now())
+                        discharge_date=localtime(now()), discharge_reason="REF"
                     )
+                    ConsultationBed.objects.filter(
+                        consultation=patient.last_consultation, end_date__isnull=True
+                    ).update(end_date=localtime(now()))
+
                     return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST)
 
