@@ -105,7 +105,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "TRANSPORTATION TO BE ARRANGED",
             "PATIENT TO BE PICKED UP",
             "TRANSFER IN PROGRESS",
-            # "COMPLETED",
+            "COMPLETED",
             "PATIENT EXPIRED",
         ]
     ]
@@ -142,7 +142,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     patient = ExternalIdSerializerField(
-        queryset=PatientRegistration.objects.all(), allow_null=False, required=True
+        queryset=PatientRegistration.objects.all(),
+        allow_null=False,
+        required=True,
     )
     patient_object = PatientListSerializer(source="patient", read_only=True)
 
@@ -383,4 +385,8 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "created_by",
+            "external_id",
+            "id",
+        )
