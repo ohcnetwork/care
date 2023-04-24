@@ -296,13 +296,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             patient = PatientRegistration.objects.filter(
                 abha_number__abha_number=data["hidn"]
             ).first()
-            if patient:
-                return Response(
-                    {
-                        "message": "A patient is already associated with the provided Abha Number"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            # if patient:
+            #     return Response(
+            #         {
+            #             "message": "A patient is already associated with the provided Abha Number"
+            #         },
+            #         status=status.HTTP_400_BAD_REQUEST,
+            #     )
 
             if (
                 "facilityId" not in data
