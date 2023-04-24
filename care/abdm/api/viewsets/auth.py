@@ -113,11 +113,13 @@ class DiscoverView(GenericAPIView):
                         abha_number__health_id=identifier["value"]
                     )
 
-        patient = patients.filter(
-            abha_number__name=data["patient"]["name"],
-            abha_number__gender=data["patient"]["gender"],
-            # TODO: check date also
-        ).last()
+        # patient = patients.filter(
+        #     abha_number__name=data["patient"]["name"],
+        #     abha_number__gender=data["patient"]["gender"],
+        #     # TODO: check date also
+        # ).last()
+
+        patient = patients.last()
 
         # if len(patients) != 1:
         #     return Response(
