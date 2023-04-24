@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta
 
 from django.core.cache import cache
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -88,7 +89,6 @@ class DiscoverView(GenericAPIView):
         data = request.data
 
         patients = PatientRegistration.objects.all()
-        print(data, patients)
         verified_identifiers = data["patient"]["verifiedIdentifiers"]
         matched_by = []
         if len(verified_identifiers) == 0:
@@ -100,7 +100,10 @@ class DiscoverView(GenericAPIView):
             for identifier in verified_identifiers:
                 if identifier["type"] == "MOBILE":
                     matched_by.append(identifier["value"])
-                    patients = patients.filter(phone_number=f"+91{identifier['value']}")
+                    patients = patients.filter(
+                        Q(phone_number=f"+91{identifier['value']}")
+                        | Q(health_id=identifier["value"])
+                    )
 
                 if identifier["type"] == "NDHM_HEALTH_NUMBER":
                     matched_by.append(identifier["value"])
@@ -114,21 +117,17 @@ class DiscoverView(GenericAPIView):
                         abha_number__health_id=identifier["value"]
                     )
 
-        # patient = patients.filter(
-        #     abha_number__name=data["patient"]["name"],
-        #     abha_number__gender=data["patient"]["gender"],
-        #     # TODO: check date also
-        # ).last()
-        print(patients)
+        patient = patients.filter(
+            abha_number__name=data["patient"]["name"],
+            abha_number__gender=data["patient"]["gender"],
+            # TODO: check date also
+        ).last()
 
-        patient = patients.last()
-        print(patient)
-
-        # if len(patients) != 1:
-        #     return Response(
-        #         "No matching records found, need more data",
-        #         status=status.HTTP_404_NOT_FOUND,
-        #     )
+        if not patient:
+            return Response(
+                "No matching records found, need more data",
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         AbdmGateway().on_discover(
             {
