@@ -88,6 +88,7 @@ class DiscoverView(GenericAPIView):
         data = request.data
 
         patients = PatientRegistration.objects.all()
+        print(data, patients)
         verified_identifiers = data["patient"]["verifiedIdentifiers"]
         matched_by = []
         if len(verified_identifiers) == 0:
@@ -118,8 +119,10 @@ class DiscoverView(GenericAPIView):
         #     abha_number__gender=data["patient"]["gender"],
         #     # TODO: check date also
         # ).last()
+        print(patients)
 
         patient = patients.last()
+        print(patient)
 
         # if len(patients) != 1:
         #     return Response(
