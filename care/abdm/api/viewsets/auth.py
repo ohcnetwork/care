@@ -113,31 +113,31 @@ class DiscoverView(GenericAPIView):
                         abha_number__health_id=identifier["value"]
                     )
 
-        patients = patients.filter(
+        patient = patients.filter(
             abha_number__name=data["patient"]["name"],
             abha_number__gender=data["patient"]["gender"],
             # TODO: check date also
         ).last()
 
-        if len(patients) != 1:
-            return Response(
-                "No matching records found, need more data",
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        # if len(patients) != 1:
+        #     return Response(
+        #         "No matching records found, need more data",
+        #         status=status.HTTP_404_NOT_FOUND,
+        #     )
 
         AbdmGateway().on_discover(
             {
                 "request_id": data["requestId"],
                 "transaction_id": data["transactionId"],
-                "patient_id": str(patients[0].external_id),
-                "patient_name": patients[0].name,
+                "patient_id": str(patient.external_id),
+                "patient_name": patient.name,
                 "care_contexts": list(
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
                             "name": f"Encounter: {str(consultation.created_date.date())}",
                         },
-                        PatientConsultation.objects.filter(patient=patients[0]),
+                        PatientConsultation.objects.filter(patient=patient),
                     )
                 ),
                 "matched_by": matched_by,
