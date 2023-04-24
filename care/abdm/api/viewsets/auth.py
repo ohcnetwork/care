@@ -102,7 +102,7 @@ class DiscoverView(GenericAPIView):
                     matched_by.append(identifier["value"])
                     patients = patients.filter(
                         Q(phone_number=f"+91{identifier['value']}")
-                        | Q(health_id=identifier["value"])
+                        | Q(phone_number=identifier["value"])
                     )
 
                 if identifier["type"] == "NDHM_HEALTH_NUMBER":
