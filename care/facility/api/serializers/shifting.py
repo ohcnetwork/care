@@ -237,6 +237,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if "status" in validated_data:
             status = validated_data["status"]
+            if status == REVERSE_SHIFTING_STATUS_CHOICES[
+                "REJECTED"
+            ] and not has_facility_permission(user, instance.origin_facility):
+                raise ValidationError({"status": ["Permission Denied"]})
+
             if settings.PEACETIME_MODE:
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
