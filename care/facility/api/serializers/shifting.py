@@ -209,6 +209,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["REJECTED"]:
+            # if the shifting request was rejected, dont allow editing
+            raise ValidationError(
+                {"status": ["Permission Denied, Shifting request was rejected."]}
+            )
+
         # Dont allow editing origin or patient
         validated_data.pop("orgin_facility")
         validated_data.pop("patient")
