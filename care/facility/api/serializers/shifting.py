@@ -73,6 +73,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "TRANSFER IN PROGRESS",
             "COMPLETED",
             "PATIENT EXPIRED",
+            "CANCELLED",
         ]
     ]
 
@@ -90,6 +91,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             # "TRANSFER IN PROGRESS",
             "COMPLETED",
             # "PATIENT EXPIRED",
+            # "CANCELLED",
         ]
     ]
 
@@ -107,6 +109,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "TRANSFER IN PROGRESS",
             # "COMPLETED",
             "PATIENT EXPIRED",
+            "CANCELLED",
         ]
     ]
 
@@ -124,6 +127,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             # "TRANSFER IN PROGRESS",
             "COMPLETED",
             # "PATIENT EXPIRED",
+            # "CANCELLED",
         ]
     ]
 
@@ -209,11 +213,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["REJECTED"]:
-            # if the shifting request was rejected, dont allow editing
-            raise ValidationError(
-                {"status": ["Permission Denied, Shifting request was rejected."]}
-            )
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
+            raise ValidationError("Permission Denied, Shifting request was cancelled.")
+        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+            raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
         validated_data.pop("orgin_facility")
