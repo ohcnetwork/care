@@ -29,7 +29,7 @@ if READ_DOT_ENV_FILE:
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool("DJANGO_DEBUG", False)
+DEBUG = env.bool("DJANGO_DEBUG", True)
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -411,15 +411,20 @@ VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
 
 #######################
 # File Upload Parameters
-
-FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
-# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
-FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
-FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
-FILE_UPLOAD_BUCKET_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_ENDPOINT",
-    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
-)
+FILE_UPLOAD_BUCKET_ENDPOINT = "https://care-s3-dev.s3.amazonaws.com"
+FILE_UPLOAD_KEY = "AKIAULRENCOFV7LFUO74"
+FILE_UPLOAD_SECRET = "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"
+FILE_UPLOAD_BUCKET = "care-s3-dev"
+CLOUD_REGION = "ap-south-1"
+FACILITY_S3_BUCKET_ENDPOINT = "https://care-s3-dev.s3.amazonaws.com"
+# FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
+# # FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
+# FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
+# FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+# FILE_UPLOAD_BUCKET_ENDPOINT = env(
+#     "FILE_UPLOAD_BUCKET_ENDPOINT",
+#     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+# )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
