@@ -26,7 +26,7 @@ from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.facility import Facility
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient import PatientConsultation, PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
 from config.ratelimit import ratelimit
@@ -407,6 +407,31 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         )
 
         return Response({}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["POST"])
+    def add_care_context(self, request, *args, **kwargs):
+        consultation_id = request.data["consultation"]
+
+        consultation = PatientConsultation.objects.get(external_id=consultation_id)
+
+        if not consultation:
+            return Response(
+                {"consultation": "No matching records found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        AbdmGateway().fetch_modes(
+            {
+                "healthId": consultation.patient.abha_number.abha_number,
+                "name": consultation.patient.abha_number.name,
+                "gender": consultation.patient.abha_number.gender,
+                "dateOfBirth": str(consultation.patient.abha_number.date_of_birth),
+                "consultationId": consultation_id,
+                "purpose": "LINK",
+            }
+        )
+
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     # auth/init
     @swagger_auto_schema(
