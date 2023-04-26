@@ -46,6 +46,7 @@ class Fhir:
         self._encounter_profile = None
         self._careplan_profile = None
         self._diagnostic_report_profile = None
+        self._immunization_profile = None
         self._medication_profiles = []
         self._medication_request_profiles = []
         self._observation_profiles = []
@@ -86,7 +87,10 @@ class Fhir:
             return self._practitioner_profile
 
         id = str(uuid())
-        name = self.consultation.verified_by
+        name = (
+            self.consultation.verified_by
+            or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"
+        )
         self._practitioner_profile = Practitioner(
             id=id,
             identifier=[Identifier(value=id)],
@@ -384,10 +388,13 @@ class Fhir:
         return self._encounter_profile
 
     def _immunization(self):
+        if self._immunization_profile:
+            return self._immunization_profile
+
         if not self.consultation.patient.is_vaccinated:
             return
 
-        return Immunization(
+        self._immunization_profile = Immunization(
             id=str(uuid()),
             status="completed",
             identifier=[
@@ -639,7 +646,18 @@ class Fhir:
                             ),
                         ],
                     ),
-                    entry=[self._reference(self._immunization())],
+                    entry=[
+                        *(
+                            [self._reference(self._immunization())]
+                            if self._immunization()
+                            else []
+                        )
+                    ],
+                    emptyReason=None
+                    if self._immunization()
+                    else CodeableConcept(
+                        coding=[Coding(code="notasked", display="Not Asked")]
+                    ),
                 ),
             ],
             subject=self._reference(self._patient()),
