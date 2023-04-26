@@ -24,6 +24,23 @@ class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
 
+    def validate(self, data):
+        facility = self.context["facility"]
+        if "name" in data:
+            name = data["name"]
+            asset_location_id = self.instance.id if self.instance else None
+            if (
+                AssetLocation.objects.filter(name=name, facility=facility)
+                .exclude(id=asset_location_id)
+                .exists()
+            ):
+                raise ValidationError(
+                    {
+                        "name": "Asset location with this name and facility already exists."
+                    }
+                )
+        return data
+
     class Meta:
         model = AssetLocation
         exclude = (
@@ -69,7 +86,10 @@ class AssetSerializer(ModelSerializer):
 
         # validate that warraty date is not in the past
         if "warranty_amc_end_of_validity" in attrs:
-            if attrs["warranty_amc_end_of_validity"] and attrs["warranty_amc_end_of_validity"] < datetime.now().date():
+            if (
+                attrs["warranty_amc_end_of_validity"]
+                and attrs["warranty_amc_end_of_validity"] < datetime.now().date()
+            ):
                 raise ValidationError(
                     "Warranty/AMC end of validity cannot be in the past"
                 )
