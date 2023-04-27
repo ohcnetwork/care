@@ -74,7 +74,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
 
     class ActionEnum(enum.Enum):
-        PENDING = 10
+        NO_ACTION = 10
+        PENDING = 20
         SPECIALIST_REQUIRED = 30
         PLAN_FOR_HOME_CARE = 40
         FOLLOW_UP_NOT_REQUIRED = 50
@@ -246,7 +247,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, blank=True, null=True, default=None
+        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
