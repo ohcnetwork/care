@@ -84,8 +84,13 @@ class Asset(BaseModel):
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)
     manufacturer = models.CharField(max_length=1024, blank=True, null=True)
     warranty_amc_end_of_validity = models.DateField(default=None, null=True, blank=True)
-    last_serviced_on = models.DateField(default=None, null=True, blank=True)
-    notes = models.TextField(default="", null=True, blank=True)
+    last_service = models.ForeignKey(
+        "facility.AssetService",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="last_service",
+    )
 
     class Meta:
         constraints = [
@@ -135,3 +140,10 @@ class AssetTransaction(BaseModel):
     performed_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=False, blank=False
     )
+
+
+class AssetService(BaseModel):
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+
+    serviced_on = models.DateField(default=None, null=True, blank=True)
+    note = models.TextField(default="", null=True, blank=True)

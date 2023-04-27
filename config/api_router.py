@@ -10,6 +10,7 @@ from care.facility.api.viewsets.ambulance import (
 from care.facility.api.viewsets.asset import (
     AssetLocationViewSet,
     AssetPublicViewSet,
+    AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
 )
@@ -69,6 +70,9 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
+from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -78,9 +82,6 @@ from care.users.api.viewsets.lsg import (
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
-from care.hcx.api.viewsets.policy import PolicyViewSet
-from care.hcx.api.viewsets.claim import ClaimViewSet
-from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -181,6 +182,7 @@ facility_nested_router.register(r"asset_location", AssetLocationViewSet)
 
 router.register("asset", AssetViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
+router.register("asset_service", AssetServiceViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, UUIDField
 from rest_framework.validators import UniqueValidator
@@ -12,6 +13,7 @@ from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
     AssetLocation,
+    AssetService,
     AssetTransaction,
     UserDefaultAssetLocation,
 )
@@ -50,12 +52,32 @@ class AssetLocationSerializer(ModelSerializer):
         read_only_fields = TIMESTAMP_FIELDS
 
 
+class AssetBareMinimumSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = ("name", "id")
+
+
+class AssetServiceSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset = AssetBareMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetService
+        exclude = ("deleted", "external_id")
+
+
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
     location = UUIDField(write_only=True, required=True)
+    last_service = AssetServiceSerializer(read_only=True)
+    last_serviced_on = serializers.DateField(write_only=True, required=False)
+    note = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Asset
@@ -101,8 +123,36 @@ class AssetSerializer(ModelSerializer):
 
         return super().validate(attrs)
 
+    def create(self, validated_data):
+        last_serviced_on = validated_data.pop("last_serviced_on", None)
+        note = validated_data.pop("note", None)
+        asset_instance = super().create(validated_data)
+        if last_serviced_on or note:
+            asset_service = AssetService(
+                asset=asset_instance, serviced_on=last_serviced_on, note=note
+            )
+            asset_service.save()
+            asset_instance.last_service = asset_service
+            asset_instance.save()
+        return asset_instance
+
     def update(self, instance, validated_data):
         user = self.context["request"].user
+        if (
+            not instance.last_service
+            or instance.last_service.serviced_on
+            != validated_data.get("last_serviced_on", instance.last_service.serviced_on)
+            or instance.last_service.note
+            != validated_data.get("note", instance.last_service.note)
+        ):
+            asset_service = AssetService(
+                asset=instance,
+                serviced_on=validated_data.get("last_serviced_on"),
+                note=validated_data.get("note"),
+            )
+            asset_service.save()
+            instance.last_service = asset_service
+
         with transaction.atomic():
             if (
                 "current_location" in validated_data
@@ -124,14 +174,6 @@ class AssetSerializer(ModelSerializer):
             updated_instance = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
-
-
-class AssetBareMinimumSerializer(ModelSerializer):
-    id = UUIDField(source="external_id", read_only=True)
-
-    class Meta:
-        model = Asset
-        fields = ("name", "id")
 
 
 class AssetTransactionSerializer(ModelSerializer):

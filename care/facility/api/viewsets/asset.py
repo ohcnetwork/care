@@ -27,12 +27,14 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.asset import (
     AssetLocationSerializer,
     AssetSerializer,
+    AssetServiceSerializer,
     AssetTransactionSerializer,
     UserDefaultAssetLocationSerializer,
 )
 from care.facility.models.asset import (
     Asset,
     AssetLocation,
+    AssetService,
     AssetTransaction,
     UserDefaultAssetLocation,
 )
@@ -321,3 +323,24 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
                 | Q(to_location__facility__id__in=allowed_facilities)
             )
         return queryset
+
+
+class AssetServiceFilter(filters.FilterSet):
+    qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
+    external_id = filters.CharFilter(field_name="asset__external_id")
+
+
+class AssetServiceViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = (
+        AssetService.objects.all()
+        .select_related(
+            "asset",
+        )
+        .order_by("-created_date")
+    )
+    serializer_class = AssetServiceSerializer
+
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetServiceFilter
