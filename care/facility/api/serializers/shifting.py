@@ -347,7 +347,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         patient = validated_data["patient"]
         if ShiftingRequest.objects.filter(
-            ~Q(status__in=[30, 50, 80]), patient=patient
+            ~Q(status__in=[30, 50, 80, 100]), patient=patient
         ).exists():
             raise ValidationError(
                 {"request": ["Shifting Request for Patient already exists"]}
