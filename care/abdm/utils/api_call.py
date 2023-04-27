@@ -321,6 +321,7 @@ class HealthIdGatewayV2:
 class AbdmGateway:
     # TODO: replace this with in-memory db (redis)
     temp_memory = {}
+    hip_name = "Coronasafe Care 01"
     hip_id = "IN3210000017"
 
     def __init__(self):
@@ -686,6 +687,25 @@ class AbdmGateway:
             "acknowledgement": {"status": "OK"},
             # "error": {"code": 1000, "message": "string"},
             "resp": {"requestId": data["request_id"]},
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def patient_sms_notify(self, data):
+        path = "/v0.5/patients/sms/notify2"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "notification": {
+                "phoneNo": f"+91-{data['phone']}",
+                "hip": {"name": self.hip_name, "id": self.hip_id},
+            },
         }
 
         response = self.api.post(path, payload, None, additional_headers)

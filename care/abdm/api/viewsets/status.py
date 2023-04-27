@@ -26,3 +26,14 @@ class NotifyView(GenericAPIView):
         AbdmGateway().patient_status_on_notify({"request_id": data["requestId"]})
 
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class SMSOnNotifyView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print("patient_sms_on_notify", data)
+
+        return Response(status=status.HTTP_202_ACCEPTED)
