@@ -67,7 +67,7 @@ class BedViewSet(
             for i, d in enumerate(data):
                 d['name'] = d['name'] + f' - {i}'
             res = Bed.objects.bulk_create(data)
-            return Response(res, status=status.HTTP_201_CREATED, headers=headers)
+            return Response(res, status=status.HTTP_201_CREATED)
         
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
