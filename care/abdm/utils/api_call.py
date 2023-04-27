@@ -673,6 +673,24 @@ class AbdmGateway:
         response = self.api.post(path, payload, None, additional_headers)
         return response
 
+    def patient_status_on_notify(self, data):
+        path = "/v0.5/patients/status/on-notify"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "acknowledgement": {"status": "OK"},
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
     # /v1.0/patients/profile/on-share
     def on_share(self, data):
         path = "/v1.0/patients/profile/on-share"

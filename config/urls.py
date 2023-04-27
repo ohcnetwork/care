@@ -21,6 +21,7 @@ from care.abdm.api.viewsets.auth import (
     RequestDataView,
 )
 from care.abdm.api.viewsets.monitoring import HeartbeatView
+from care.abdm.api.viewsets.status import NotifyView as PatientStatusNotifyView
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
@@ -129,6 +130,11 @@ urlpatterns = [
         "v0.5/health-information/hip/request",
         RequestDataView.as_view(),
         name="abdm_request_data_view",
+    ),
+    path(
+        "v0.5/patients/status/notify",
+        PatientStatusNotifyView.as_view(),
+        name="abdm_patient_status_notify_view",
     ),
     path(
         "v0.5/heartbeat",
