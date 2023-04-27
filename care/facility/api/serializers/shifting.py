@@ -244,7 +244,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             status = validated_data["status"]
             if status == REVERSE_SHIFTING_STATUS_CHOICES[
                 "CANCELLED"
-            ] and not has_facility_permission(user, instance.origin_facility):
+            ] and not has_facility_permission(user, instance.orgin_facility):
                 raise ValidationError({"status": ["Permission Denied"]})
 
             if settings.PEACETIME_MODE:
@@ -347,7 +347,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         patient = validated_data["patient"]
         if ShiftingRequest.objects.filter(
-            ~Q(status__in=[30, 50, 80]), patient=patient
+            ~Q(status__in=[30, 50, 80, 100]), patient=patient
         ).exists():
             raise ValidationError(
                 {"request": ["Shifting Request for Patient already exists"]}
