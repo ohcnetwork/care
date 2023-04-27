@@ -244,7 +244,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             status = validated_data["status"]
             if status == REVERSE_SHIFTING_STATUS_CHOICES[
                 "CANCELLED"
-            ] and not has_facility_permission(user, instance.origin_facility):
+            ] and not has_facility_permission(user, instance.orgin_facility):
                 raise ValidationError({"status": ["Permission Denied"]})
 
             if settings.PEACETIME_MODE:
