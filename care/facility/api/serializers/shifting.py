@@ -283,7 +283,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                     pass
                 elif (
                     status in self.PEACETIME_RECIEVING_STATUS
-                    and not has_facility_permission(user, instance.assigned_facility)
+                    and has_facility_permission(user, instance.assigned_facility)
                 ):
                     pass
                 else:
