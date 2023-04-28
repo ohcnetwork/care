@@ -154,8 +154,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
-            else:
-                patient.action = None
 
             if "review_interval" in validated_data:
                 review_interval = validated_data.pop("review_interval")

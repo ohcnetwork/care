@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Q
+from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -21,7 +22,9 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -58,6 +61,31 @@ def has_facility_permission(user, facility):
     )
 
 
+def discharge_patient(patient: PatientRegistration):
+    current_time = localtime(now())
+
+    patient.is_active = False
+    patient.allow_transfer = True
+    patient.review_time = None
+    patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
+
+    last_consultation = (
+        PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+    )
+    if last_consultation:
+        reason = "REF"
+        notes = "Patient Shifted to another facility"
+        last_consultation.discharge_reason = reason
+        last_consultation.discharge_notes = notes
+        last_consultation.discharge_date = current_time
+        last_consultation.current_bed = None
+        last_consultation.save()
+
+    ConsultationBed.objects.filter(
+        consultation=last_consultation, end_date__isnull=True
+    ).update(end_date=current_time)
+
+
 class ShiftingSerializer(serializers.ModelSerializer):
     LIMITED_SHIFTING_STATUS = [
         REVERSE_SHIFTING_STATUS_CHOICES[x]
@@ -73,6 +101,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "TRANSFER IN PROGRESS",
             "COMPLETED",
             "PATIENT EXPIRED",
+            "CANCELLED",
         ]
     ]
 
@@ -90,6 +119,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             # "TRANSFER IN PROGRESS",
             "COMPLETED",
             # "PATIENT EXPIRED",
+            # "CANCELLED",
         ]
     ]
 
@@ -105,8 +135,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "TRANSPORTATION TO BE ARRANGED",
             "PATIENT TO BE PICKED UP",
             "TRANSFER IN PROGRESS",
-            # "COMPLETED",
+            "COMPLETED",
             "PATIENT EXPIRED",
+            "CANCELLED",
         ]
     ]
 
@@ -124,6 +155,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             # "TRANSFER IN PROGRESS",
             "COMPLETED",
             # "PATIENT EXPIRED",
+            # "CANCELLED",
         ]
     ]
 
@@ -142,7 +174,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     patient = ExternalIdSerializerField(
-        queryset=PatientRegistration.objects.all(), allow_null=False, required=True
+        queryset=PatientRegistration.objects.all(),
+        allow_null=False,
+        required=True,
     )
     patient_object = PatientListSerializer(source="patient", read_only=True)
 
@@ -209,6 +243,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
+            raise ValidationError("Permission Denied, Shifting request was cancelled.")
+        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+            raise ValidationError("Permission Denied, Shifting request was completed.")
+
         # Dont allow editing origin or patient
         validated_data.pop("orgin_facility")
         validated_data.pop("patient")
@@ -231,6 +270,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if "status" in validated_data:
             status = validated_data["status"]
+            if status == REVERSE_SHIFTING_STATUS_CHOICES[
+                "CANCELLED"
+            ] and not has_facility_permission(user, instance.orgin_facility):
+                raise ValidationError({"status": ["Permission Denied"]})
+
             if settings.PEACETIME_MODE:
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
@@ -279,6 +323,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
             )
 
         validated_data["last_edited_by"] = self.context["request"].user
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(instance.patient)
 
         old_status = instance.status
         new_instance = super().update(instance, validated_data)
@@ -331,7 +381,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         patient = validated_data["patient"]
         if ShiftingRequest.objects.filter(
-            ~Q(status__in=[30, 50, 80]), patient=patient
+            ~Q(status__in=[30, 50, 80, 100]), patient=patient
         ).exists():
             raise ValidationError(
                 {"request": ["Shifting Request for Patient already exists"]}
@@ -347,6 +397,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         validated_data["created_by"] = self.context["request"].user
         validated_data["last_edited_by"] = self.context["request"].user
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(patient)
 
         return super().create(validated_data)
 
@@ -383,4 +439,8 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "created_by",
+            "external_id",
+            "id",
+        )
