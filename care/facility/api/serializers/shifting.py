@@ -329,7 +329,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
             discharge_patient(instance.patient)
 
         old_status = instance.status
-        print(validated_data, self.initial_data)
         new_instance = super().update(instance, validated_data)
 
         patient = new_instance.patient
