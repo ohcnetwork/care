@@ -284,7 +284,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         choices=TestTypeChoices, default=TestTypeEnum.UNK.value
     )
 
-    allow_transfer = models.BooleanField(default=True)
+    allow_transfer = models.BooleanField(default=False)
 
     last_consultation = models.ForeignKey(
         PatientConsultation, on_delete=models.SET_NULL, null=True, default=None
