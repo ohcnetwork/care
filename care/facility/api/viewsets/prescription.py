@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer
-from care.facility.models import Prescription
+from care.facility.models import Prescription, MedicineAdministration
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -49,6 +49,14 @@ class PrescriptionViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(methods=["GET"], detail=True)
+    def get_administrations(self, request, *args, **kwargs):
+        prescription_obj = self.get_object()
+        serializer = MedicineAdministrationSerializer(
+            MedicineAdministration.objects.filter(prescription_id=prescription_obj.id),
+            many=True)
+        return Response(serializer.data)
 
     # @action(methods=["DELETE"], detail=True)
     # def delete_administered(self, request, *args, **kwargs):
