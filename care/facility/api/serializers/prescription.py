@@ -1,12 +1,12 @@
 from rest_framework import serializers
+
 from care.facility.models import Prescription, MedicineAdministration
 from care.users.api.serializers.user import (
-    UserAssignedSerializer,
     UserBaseMinimumSerializer,
 )
 
-class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
+class MedicineAdministrationSerializer(serializers.ModelSerializer):
     administered_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
@@ -26,11 +26,10 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             "modified_date",
         )
 
-class PrescriptionSerializer(serializers.ModelSerializer):
 
+class PrescriptionSerializer(serializers.ModelSerializer):
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
     consultation = serializers.CharField(source="consultation.external_id", read_only=True)
-    administrations = MedicineAdministrationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Prescription
@@ -54,7 +53,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "discontinued_date",
             "created_date",
             "modified_date",
-            "administrations",
         )
         read_only_fields = (
             "external_id",
@@ -63,16 +61,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "created_date",
             "modified_date",
             "discontinued_date",
-            "administrations",
         )
 
     def validate(self, attrs):
-        if attrs.get("is_prn") and attrs.get("is_prn") is True:
+        if attrs.get("is_prn"):
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
                 )
-            
+
         else:
             if not attrs.get("frequency"):
                 raise serializers.ValidationError(
