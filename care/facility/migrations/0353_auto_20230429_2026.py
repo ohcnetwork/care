@@ -85,4 +85,16 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
+        migrations.AddField(
+            model_name='prescription',
+            name='daily_round',
+            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.PROTECT,
+                                    to='facility.DailyRound'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='prescription',
+            name='is_migrated',
+            field=models.BooleanField(default=False),
+        ),
     ]

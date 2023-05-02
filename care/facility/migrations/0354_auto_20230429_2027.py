@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def migrate_prescriptions(apps, schema_editor):
     PatientConsultation = apps.get_model('facility', 'PatientConsultation')
     Prescription = apps.get_model('facility', 'Prescription')
@@ -13,11 +14,12 @@ def migrate_prescriptions(apps, schema_editor):
                 dosage=advice['dosage_new'],
                 medicine=advice['medicine'],
                 days=advice['days'],
-                notes= advice['notes'],
+                notes=advice['notes'],
                 route=advice['route'].upper(),
                 consultation=consultation,
                 is_prn=False,
                 prescribed_by=consultation.created_by,
+                is_migrated=True
             )
         for advice in consultation.prn_prescription:
             Prescription.objects.create(
@@ -30,23 +32,21 @@ def migrate_prescriptions(apps, schema_editor):
                 consultation=consultation,
                 is_prn=True,
                 prescribed_by=consultation.created_by,
+                is_migrated=True
             )
+    # Look at all daily round objects under this consultation
+    # Fetch all prescriptions for that patient
+    # For patients with multiple prescriptions :
+    #   Start from the first prescription item and calculate how long it continued for
+    #   Discontinued date is the first date when the prescription was removed or the discharge date if present
+    #   Perform this for all prescriptions
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0350_auto_20230417_0907'),
+        ('facility', '0353_auto_20230429_2026'),
     ]
 
     operations = [
         migrations.RunPython(migrate_prescriptions),
-        migrations.RemoveField(
-            model_name='patientconsultation',
-            name='discharge_advice',
-        ),
-        migrations.RemoveField(
-            model_name='patientconsultation',
-            name='prn_prescription',
-        )
     ]

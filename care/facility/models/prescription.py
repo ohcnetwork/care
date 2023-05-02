@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from care.facility.models.daily_round import DailyRound
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 
@@ -33,6 +34,8 @@ class Prescription(BaseModel):
         PatientConsultation,
         on_delete=models.PROTECT,
     )
+    daily_round = models.ForeignKey(DailyRound, on_delete=models.PROTECT)
+
     medicine = models.CharField(max_length=100, blank=False, null=False)
     route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
     dosage = models.CharField(max_length=100)
@@ -59,12 +62,16 @@ class Prescription(BaseModel):
     discontinued_reason = models.TextField(default="", blank=True)
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
+    is_migrated = models.BooleanField(
+        default=False)  # This field is to throw caution to data that was previously ported over
+
     def save(self, *args, **kwargs) -> None:
         # check if prescription got discontinued just now
-        if self.discontinued and not self.discontinued_date:
-            self.discontinued_date = timezone.now()
-        if not self.discontinued and self.discontinued_date:
-            self.discontinued_date = None
+        if not self.is_migrated:
+            if self.discontinued and not self.discontinued_date:
+                self.discontinued_date = timezone.now()
+            if not self.discontinued and self.discontinued_date:
+                self.discontinued_date = None
         return super().save(*args, **kwargs)
 
     def __str__(self):

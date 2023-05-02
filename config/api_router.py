@@ -50,6 +50,7 @@ from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
+from care.facility.api.viewsets.prescription import ConsultationPrescriptionViewSet, DailyRoundPrescriptionViewSet
 from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
@@ -69,6 +70,9 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
+from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -78,10 +82,6 @@ from care.users.api.viewsets.lsg import (
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
-from care.hcx.api.viewsets.policy import PolicyViewSet
-from care.hcx.api.viewsets.claim import ClaimViewSet
-from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
-from care.facility.api.viewsets.prescription import PrescriptionViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -192,8 +192,15 @@ consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+
+daily_round_nested_router = NestedSimpleRouter(
+    consultation_nested_router, r"daily_rounds", lookup="daily_rounds"
+)
+
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
-consultation_nested_router.register(r"prescriptions", PrescriptionViewSet)
+consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
+
+daily_round_nested_router.register(r"prescriptions", DailyRoundPrescriptionViewSet)
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)
@@ -210,6 +217,7 @@ urlpatterns = [
     url(r"^", include(facility_nested_router.urls)),
     url(r"^", include(patient_nested_router.urls)),
     url(r"^", include(consultation_nested_router.urls)),
+    url(r"^", include(daily_round_nested_router.urls)),
     url(r"^", include(resource_nested_router.urls)),
     url(r"^", include(shifting_nested_router.urls)),
 ]

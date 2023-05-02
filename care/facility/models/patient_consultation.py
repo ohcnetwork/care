@@ -179,6 +179,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     intubation_history = JSONField(default=list)
 
+    # Deprecated Fields
+
+    prn_prescription = JSONField(default=dict)
+    discharge_advice = JSONField(default=dict)
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
@@ -228,8 +233,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
             models.CheckConstraint(
                 name="if_referral_suggested",
                 check=~models.Q(suggestion=SuggestionChoices.R)
-                | models.Q(referred_to__isnull=False)
-                | models.Q(referred_to_external__isnull=False),
+                      | models.Q(referred_to__isnull=False)
+                      | models.Q(referred_to_external__isnull=False),
             ),
             models.CheckConstraint(
                 name="if_admitted",

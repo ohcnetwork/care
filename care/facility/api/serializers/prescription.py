@@ -7,6 +7,8 @@ from care.users.api.serializers.user import (
 
 
 class MedicineAdministrationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
     administered_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
@@ -28,39 +30,24 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
-    consultation = serializers.CharField(source="consultation.external_id", read_only=True)
 
     class Meta:
         model = Prescription
-        fields = (
-            "external_id",
+        exclude = (
             "consultation",
-            "medicine",
-            "route",
-            "dosage",
-            "frequency",
-            "indicator",
-            "max_dosage",
-            "is_prn",
-            "min_hours_between_doses",
-            "days",
-            "notes",
-            "meta",
-            "prescribed_by",
-            "discontinued",
-            "discontinued_reason",
-            "discontinued_date",
-            "created_date",
-            "modified_date",
+            "daily_round",
+            "deleted",
         )
         read_only_fields = (
             "external_id",
-            "consultation"
             "prescribed_by",
             "created_date",
             "modified_date",
             "discontinued_date",
+            "is_migrated"
         )
 
     def validate(self, attrs):
