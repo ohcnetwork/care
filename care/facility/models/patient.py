@@ -245,7 +245,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
+        choices=ActionChoices,
+        blank=True,
+        null=True,
+        default=ActionEnum.NO_ACTION.value,
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
@@ -673,6 +676,9 @@ class PatientMobileOTP(BaseModel):
 class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
+    )
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=True, blank=True
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False

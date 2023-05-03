@@ -12,6 +12,7 @@ from care.facility.api.serializers.facility import (
     FacilitySerializer,
 )
 from care.facility.api.serializers.patient_consultation import (
+    PatientConsultationIDSerializer,
     PatientConsultationSerializer,
 )
 from care.facility.models import (
@@ -73,7 +74,8 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
@@ -181,7 +183,8 @@ class PatientDetailSerializer(PatientListSerializer):
         default=PatientRegistration.SourceEnum.CARE.value,
     )
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -198,7 +201,9 @@ class PatientDetailSerializer(PatientListSerializer):
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
+        choices=PatientRegistration.vaccineChoices,
+        required=False,
+        allow_null=True,
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
@@ -218,7 +223,11 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -454,6 +463,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
+    consultation = PatientConsultationIDSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
     def validate_empty_values(self, data):
@@ -463,5 +473,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientNotes
-        fields = ("note", "facility", "created_by_object", "created_date")
+        fields = (
+            "note",
+            "facility",
+            "consultation",
+            "created_by_object",
+            "created_date",
+        )
         read_only_fields = ("created_date",)
