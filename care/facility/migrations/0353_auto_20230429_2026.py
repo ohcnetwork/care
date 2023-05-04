@@ -87,14 +87,13 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='prescription',
-            name='daily_round',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.PROTECT,
-                                    to='facility.DailyRound'),
-            preserve_default=False,
+            name='is_migrated',
+            field=models.BooleanField(default=False),
         ),
         migrations.AddField(
             model_name='prescription',
-            name='is_migrated',
-            field=models.BooleanField(default=False),
+            name='prescription_type',
+            field=models.CharField(choices=[('DISCHARGE', 'DISCHARGE'), ('REGULAR', 'REGULAR')], default='REGULAR',
+                                   max_length=100),
         ),
     ]

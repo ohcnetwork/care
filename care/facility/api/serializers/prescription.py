@@ -38,7 +38,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         model = Prescription
         exclude = (
             "consultation",
-            "daily_round",
             "deleted",
         )
         read_only_fields = (
@@ -63,3 +62,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                     {"frequency": "Frequency should be set for prescriptions."}
                 )
         return super().validate(attrs)
+
+
+class PrescriptionUpdateSerializer(PrescriptionSerializer):
+    id = serializers.UUIDField(source="external_id", required=True)
+
+
+class PrescriptionUpsertSerializer(serializers.Serializer):
+    prescriptions = PrescriptionUpdateSerializer(many=True)

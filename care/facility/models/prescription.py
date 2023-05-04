@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
-from care.facility.models.daily_round import DailyRound
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 
@@ -29,12 +28,23 @@ class Routes(enum.Enum):
     SC = "S/C"
 
 
+class PrescriptionType(enum.Enum):
+    DISCHARGE = "DISCHARGE"
+    REGULAR = "REGULAR"
+
+
+def generate_choices(enum_class):
+    return [(tag.name, tag.value) for tag in enum_class]
+
+
 class Prescription(BaseModel):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,
     )
-    daily_round = models.ForeignKey(DailyRound, on_delete=models.PROTECT)
+
+    prescription_type = models.CharField(max_length=100, default=PrescriptionType.REGULAR.value,
+                                         choices=generate_choices(PrescriptionType))
 
     medicine = models.CharField(max_length=100, blank=False, null=False)
     route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
