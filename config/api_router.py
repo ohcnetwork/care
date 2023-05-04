@@ -50,7 +50,7 @@ from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
-from care.facility.api.viewsets.prescription import ConsultationPrescriptionViewSet
+from care.facility.api.viewsets.prescription import ConsultationPrescriptionViewSet, MedicineAdministrationViewSet
 from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
@@ -194,6 +194,7 @@ consultation_nested_router = NestedSimpleRouter(
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
+consultation_nested_router.register(r"prescription_administration", MedicineAdministrationViewSet)
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)

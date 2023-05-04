@@ -6,29 +6,6 @@ from care.users.api.serializers.user import (
 )
 
 
-class MedicineAdministrationSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="external_id", read_only=True)
-
-    administered_by = UserBaseMinimumSerializer(read_only=True)
-
-    class Meta:
-        model = MedicineAdministration
-        fields = (
-            "external_id",
-            "notes",
-            "administered_by",
-            "created_date",
-            "administered_date",
-            "modified_date",
-        )
-        read_only_fields = (
-            "external_id",
-            "administered_by",
-            "created_date",
-            "modified_date",
-        )
-
-
 class PrescriptionSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
@@ -62,11 +39,28 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                     {"frequency": "Frequency should be set for prescriptions."}
                 )
         return super().validate(attrs)
+        # TODO: Ensure that this medicine is not already prescribed to the same patient and is currently active.
 
 
-class PrescriptionUpdateSerializer(PrescriptionSerializer):
-    id = serializers.UUIDField(source="external_id", required=True)
+class MedicineAdministrationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    administered_by = UserBaseMinimumSerializer(read_only=True)
+    prescription = PrescriptionSerializer(read_only=True)
+
+    class Meta:
+        model = MedicineAdministration
+        exclude = (
+            "deleted",
+        )
+        read_only_fields = (
+            "external_id",
+            "administered_by",
+            "created_date",
+            "modified_date",
+            "prescription"
+        )
 
 
 class PrescriptionUpsertSerializer(serializers.Serializer):
-    prescriptions = PrescriptionUpdateSerializer(many=True)
+    prescriptions = PrescriptionSerializer(many=True)
