@@ -1,0 +1,74 @@
+{
+    "name": "Yuksom",
+    "lsg_code": 6528,
+    "district": "Gyalshing",
+    "state": "Sikkim",
+    "no_of_wards": 13,
+    "wards": [
+        {
+            "ward_no": 260980,
+            "ward_name": "Dubdi",
+            "ward_id": 260980
+        },
+        {
+            "ward_no": 260985,
+            "ward_name": "Khacheoperi",
+            "ward_id": 260985
+        },
+        {
+            "ward_no": 260988,
+            "ward_name": "Meli",
+            "ward_id": 260988
+        },
+        {
+            "ward_no": 260989,
+            "ward_name": "Meliaching",
+            "ward_id": 260989
+        },
+        {
+            "ward_no": 260989,
+            "ward_name": "Meliaching",
+            "ward_id": 260989
+        },
+        {
+            "ward_no": 260990,
+            "ward_name": "Meli Singlitam",
+            "ward_id": 260990
+        },
+        {
+            "ward_no": 260986,
+            "ward_name": "Thingling I",
+            "ward_id": 260986
+        },
+        {
+            "ward_no": 260987,
+            "ward_name": "Thingling Ii",
+            "ward_id": 260987
+        },
+        {
+            "ward_no": 260991,
+            "ward_name": "Tingbrum",
+            "ward_id": 260991
+        },
+        {
+            "ward_no": 260992,
+            "ward_name": "Topung",
+            "ward_id": 260992
+        },
+        {
+            "ward_no": 260984,
+            "ward_name": "Tsozo",
+            "ward_id": 260984
+        },
+        {
+            "ward_no": 261045,
+            "ward_name": "Yuksam Forest Block",
+            "ward_id": 261045
+        },
+        {
+            "ward_no": 260981,
+            "ward_name": "Yuksom",
+            "ward_id": 260981
+        }
+    ]
+}

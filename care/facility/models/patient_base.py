@@ -66,7 +66,7 @@ COVID_CATEGORY_CHOICES = [
 CATEGORY_CHOICES = [
     ("Comfort", "Comfort Care"),
     ("Stable", "Stable"),
-    ("Moderate", "Slightly Abnormal"),
+    ("Moderate", "Abnormal"),
     ("Critical", "Critical"),
 ]
 
@@ -137,3 +137,4 @@ REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 # REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
 REVERSE_CONSULTATION_STATUS_CHOICES = reverse_choices(ConsultationStatusChoices)
+REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)

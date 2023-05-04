@@ -1,0 +1,49 @@
+{
+    "name": "Mangalbarey",
+    "lsg_code": 7141,
+    "district": "Soreng",
+    "state": "Sikkim",
+    "no_of_wards": 8,
+    "wards": [
+        {
+            "ward_no": 261065,
+            "ward_name": "Chuchen",
+            "ward_id": 261065
+        },
+        {
+            "ward_no": 261068,
+            "ward_name": "Kamling",
+            "ward_id": 261068
+        },
+        {
+            "ward_no": 261063,
+            "ward_name": "Parenggaon",
+            "ward_id": 261063
+        },
+        {
+            "ward_no": 261067,
+            "ward_name": "Suldung",
+            "ward_id": 261067
+        },
+        {
+            "ward_no": 261064,
+            "ward_name": "Takothang",
+            "ward_id": 261064
+        },
+        {
+            "ward_no": 261066,
+            "ward_name": "Tinzerbong",
+            "ward_id": 261066
+        },
+        {
+            "ward_no": 261074,
+            "ward_name": "Khaniserbung",
+            "ward_id": 261074
+        },
+        {
+            "ward_no": 261073,
+            "ward_name": "Suntaley",
+            "ward_id": 261073
+        }
+    ]
+}

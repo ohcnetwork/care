@@ -44,6 +44,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
     is_asymptomatic = models.BooleanField(default=False)
+    op_no = models.CharField(max_length=100, default="", null=True, blank=True)
 
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
@@ -88,6 +89,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
         related_name="referred_patients",
     )  # Deprecated
+    referred_to_external = models.TextField(default="", null=True, blank=True)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     discharge_date = models.DateTimeField(null=True, blank=True)
@@ -99,6 +101,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
+    discharge_prescription = JSONField(default=dict, null=True, blank=True)
+    discharge_prn_prescription = JSONField(default=dict, null=True, blank=True)
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
@@ -223,7 +227,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
             models.CheckConstraint(
                 name="if_referral_suggested",
                 check=~models.Q(suggestion=SuggestionChoices.R)
-                | models.Q(referred_to__isnull=False),
+                | models.Q(referred_to__isnull=False)
+                | models.Q(referred_to_external__isnull=False),
             ),
             models.CheckConstraint(
                 name="if_admitted",

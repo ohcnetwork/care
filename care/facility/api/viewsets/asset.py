@@ -70,6 +70,12 @@ class AssetLocationViewSet(
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
 
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context
+
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset
@@ -141,7 +147,7 @@ class AssetViewSet(
     serializer_class = AssetSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
-    search_fields = ["name","serial_number","qr_code_id"]
+    search_fields = ["name", "serial_number", "qr_code_id"]
     permission_classes = [IsAuthenticated]
     filterset_class = AssetFilter
 
@@ -272,7 +278,8 @@ class AssetViewSet(
 
 
 class AssetTransactionFilter(filters.FilterSet):
-    asset = filters.UUIDFilter(field_name="asset__external_id")
+    qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
+    external_id = filters.CharFilter(field_name="asset__external_id")
 
 
 class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):

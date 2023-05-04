@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.facility.models.bed import Bed
 from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -13,6 +15,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.csp import config as cs_provider
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 User = get_user_model()
 
@@ -46,6 +49,16 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    patient_count = serializers.SerializerMethodField()
+    bed_count = serializers.SerializerMethodField()
+
+    def get_bed_count(self, facility):
+        return Bed.objects.filter(facility=facility).count()
+
+    def get_patient_count(self, facility):
+        return PatientRegistration.objects.filter(
+            facility=facility, is_active=True
+        ).count()
 
     def get_facility_type(self, facility):
         return {
@@ -68,6 +81,8 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "facility_type",
             "read_cover_image_url",
             "features",
+            "patient_count",
+            "bed_count",
         )
 
 
@@ -82,6 +97,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    bed_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Facility
@@ -116,6 +132,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "expected_type_c_cylinders",
             "expected_type_d_cylinders",
             "read_cover_image_url",
+            "patient_count",
+            "bed_count",
         ]
         read_only_fields = ("modified_date", "created_date")
 
@@ -123,8 +141,9 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         value = value.strip()
         if not value:
             return value
-        if value.endswith("/"):
-            raise serializers.ValidationError("URL should not end with /")
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
         return value
 
     def create(self, validated_data):

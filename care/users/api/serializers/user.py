@@ -12,6 +12,7 @@ from care.users.api.serializers.lsg import (
     LocalBodySerializer,
     StateSerializer,
 )
+from care.users.api.serializers.skill import SkillSerializer
 from care.users.models import GENDER_CHOICES
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -137,7 +138,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].ward
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-                    >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different Ward")
         return value
@@ -148,7 +149,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].local_body
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-                    >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
             raise serializers.ValidationError(
                 "Cannot create for a different local body"
@@ -161,7 +162,7 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].district
             and not self.context["created_by"].is_superuser
             and not self.context["created_by"].user_type
-                    >= User.TYPE_VALUE_MAP["StateAdmin"]
+            >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
             raise serializers.ValidationError("Cannot create for a different district")
         return value
@@ -357,6 +358,11 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
+    skills = serializers.SerializerMethodField()
+
+    def get_skills(self, obj):
+        qs = obj.skills.filter(userskill__deleted=False)
+        return SkillSerializer(qs, many=True).data
 
     class Meta:
         model = User
@@ -373,6 +379,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "doctor_qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
+            "skills",
         )
 
 
