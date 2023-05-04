@@ -92,13 +92,14 @@ class NotificationGenerator:
                 "caused_object_pk": caused_object.id,
                 "message": message,
                 "defer_notifications": defer_notifications,
-                "facility": facility.id,
                 "generate_for_facility": generate_for_facility,
                 "extra_users": extra_users,
                 "extra_data": self.serialize_extra_data(extra_data),
                 "notification_mediums": mediums,
                 "worker_initated": True,
             }
+            if facility:
+                data["facility"] = facility.id
             notification_task_generator.apply_async(kwargs=data, countdown=2)
             self.worker_initiated = False
             return
@@ -395,14 +396,3 @@ class NotificationGenerator:
                                 }
                             ),
                         )
-            elif (
-                medium == Notification.Medium.WHATSAPP.value
-                and settings.ENABLE_WHATSAPP
-            ):
-                for user in self.generate_whatsapp_users():
-                    number = user.alt_phone_number
-                    message = self.generate_whatsapp_message()
-                    notification_obj = self.generate_message_for_user(
-                        user, message, Notification.Medium.WHATSAPP.value
-                    )
-                    sendWhatsappMessage(number, message, notification_obj.external_id)
