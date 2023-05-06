@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0082_populate_patient_search'),
+        ("facility", "0082_populate_patient_search"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='age',
+            model_name="historicalpatientregistration",
+            name="age",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='age',
+            model_name="patientregistration",
+            name="age",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

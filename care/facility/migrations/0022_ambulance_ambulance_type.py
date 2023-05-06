@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0021_auto_20200324_0756'),
+        ("facility", "0021_auto_20200324_0756"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ambulance',
-            name='ambulance_type',
-            field=models.IntegerField(choices=[(1, 'Basic'), (2, 'Cardiac'), (3, 'Hearse')], default=1),
+            model_name="ambulance",
+            name="ambulance_type",
+            field=models.IntegerField(
+                choices=[(1, "Basic"), (2, "Cardiac"), (3, "Hearse")], default=1
+            ),
         ),
     ]

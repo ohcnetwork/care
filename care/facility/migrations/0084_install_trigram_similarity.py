@@ -5,9 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0083_auto_20200411_1136'),
+        ("facility", "0083_auto_20200411_1136"),
     ]
 
-    operations = [
-        TrigramExtension()
-    ]
+    operations = [TrigramExtension()]

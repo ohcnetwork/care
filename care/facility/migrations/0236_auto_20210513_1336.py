@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0235_merge_20210513_1316'),
+        ("facility", "0235_merge_20210513_1316"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dailyround',
-            name='last_updated_by_telemedicine',
+            model_name="dailyround",
+            name="last_updated_by_telemedicine",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='patientconsultation',
-            name='last_updated_by_telemedicine',
+            model_name="patientconsultation",
+            name="last_updated_by_telemedicine",
             field=models.BooleanField(default=False),
         ),
     ]

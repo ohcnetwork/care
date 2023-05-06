@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0185_correct_blood_donation'),
+        ("facility", "0185_correct_blood_donation"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='fit_for_blood_donation',
-            field=models.BooleanField(default=None, null=True, verbose_name='Is Patient fit for donating Blood'),
+            model_name="historicalpatientregistration",
+            name="fit_for_blood_donation",
+            field=models.BooleanField(
+                default=None,
+                null=True,
+                verbose_name="Is Patient fit for donating Blood",
+            ),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='fit_for_blood_donation',
-            field=models.BooleanField(default=None, null=True, verbose_name='Is Patient fit for donating Blood'),
+            model_name="patientregistration",
+            name="fit_for_blood_donation",
+            field=models.BooleanField(
+                default=None,
+                null=True,
+                verbose_name="Is Patient fit for donating Blood",
+            ),
         ),
     ]

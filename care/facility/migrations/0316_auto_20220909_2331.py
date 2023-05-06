@@ -2,21 +2,24 @@
 
 from django.db import migrations
 
+
 def migrate_pressure_sore(apps, schema_editor):
-    DailyRound = apps.get_model('facility', 'DailyRound')
+    DailyRound = apps.get_model("facility", "DailyRound")
     daily_rounds = []
     for daily_round in DailyRound.objects.all():
         entries = []
         for entry in daily_round.pressure_sore:
             if entry.get("range") is not None:
-                entry = {
-                    "base_score": (entry.get("range")/5) * 17,
-                    "exudate_amount":"None",
-                    "tissue_type":"Closed",
-                    "length":0,
-                    "width":0,
-                    "description":""
-                },
+                entry = (
+                    {
+                        "base_score": (entry.get("range") / 5) * 17,
+                        "exudate_amount": "None",
+                        "tissue_type": "Closed",
+                        "length": 0,
+                        "width": 0,
+                        "description": "",
+                    },
+                )
             entries.append(entry)
         daily_round.pressure_sore = entries
         daily_rounds.append(daily_round)
@@ -26,7 +29,7 @@ def migrate_pressure_sore(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0315_auto_20220909_2322'),
+        ("facility", "0315_auto_20220909_2322"),
     ]
 
     operations = [

@@ -6,20 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0202_auto_20201024_1956'),
+        ("facility", "0202_auto_20201024_1956"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientexternaltest',
-            name='patient_category',
-            field=models.CharField(default='', max_length=255),
+            model_name="patientexternaltest",
+            name="patient_category",
+            field=models.CharField(default="", max_length=255),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='patientexternaltest',
-            name='source',
-            field=models.CharField(default='', max_length=255),
+            model_name="patientexternaltest",
+            name="source",
+            field=models.CharField(default="", max_length=255),
             preserve_default=False,
         ),
     ]

@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0237_dailyround_created_by_telemedicine'),
+        ("facility", "0237_dailyround_created_by_telemedicine"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fileupload',
-            name='file_category',
-            field=models.CharField(choices=[('UNSPECIFIED', 'UNSPECIFIED'), ('XRAY', 'XRAY'), ('AUDIO', 'AUDIO'), ('IDENTITY_PROOF', 'IDENTITY_PROOF')], default='UNSPECIFIED', max_length=100),
+            model_name="fileupload",
+            name="file_category",
+            field=models.CharField(
+                choices=[
+                    ("UNSPECIFIED", "UNSPECIFIED"),
+                    ("XRAY", "XRAY"),
+                    ("AUDIO", "AUDIO"),
+                    ("IDENTITY_PROOF", "IDENTITY_PROOF"),
+                ],
+                default="UNSPECIFIED",
+                max_length=100,
+            ),
         ),
     ]

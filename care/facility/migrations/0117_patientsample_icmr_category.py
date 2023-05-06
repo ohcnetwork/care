@@ -6,13 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0116_facility_pincode'),
+        ("facility", "0116_facility_pincode"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientsample',
-            name='icmr_category',
-            field=models.IntegerField(choices=[(0, 'Cat 0'), (10, 'Cat 1'), (20, 'Cat 2'), (30, 'Cat 3'), (40, 'Cat 4'), (50, 'Cat 5a'), (60, 'Cat 5b')], default=0),
+            model_name="patientsample",
+            name="icmr_category",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Cat 0"),
+                    (10, "Cat 1"),
+                    (20, "Cat 2"),
+                    (30, "Cat 3"),
+                    (40, "Cat 4"),
+                    (50, "Cat 5a"),
+                    (60, "Cat 5b"),
+                ],
+                default=0,
+            ),
         ),
     ]

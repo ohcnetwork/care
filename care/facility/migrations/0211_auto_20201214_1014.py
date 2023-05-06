@@ -6,18 +6,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0210_remove_notification_caused_object_external_id'),
+        ("facility", "0210_remove_notification_caused_object_external_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dailyround',
-            name='admitted_to',
-            field=models.IntegerField(blank=True, choices=[(None, 'Not admitted'), (1, 'Isolation Room'), (2, 'ICU'), (3, 'ICU with Non Invasive Ventilator'), (4, 'Oxygen Bed'), (5, 'ICU with Invasive Ventilator'), (20, 'Home Isolation'), (30, 'Gynaecology Ward'), (40, 'Paediatric Ward')], default=None, null=True),
+            model_name="dailyround",
+            name="admitted_to",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (None, "Not admitted"),
+                    (1, "Isolation Room"),
+                    (2, "ICU"),
+                    (3, "ICU with Non Invasive Ventilator"),
+                    (4, "Oxygen Bed"),
+                    (5, "ICU with Invasive Ventilator"),
+                    (20, "Home Isolation"),
+                    (30, "Gynaecology Ward"),
+                    (40, "Paediatric Ward"),
+                ],
+                default=None,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='admitted_to',
-            field=models.IntegerField(blank=True, choices=[(None, 'Not admitted'), (1, 'Isolation Room'), (2, 'ICU'), (3, 'ICU with Non Invasive Ventilator'), (4, 'Oxygen Bed'), (5, 'ICU with Invasive Ventilator'), (20, 'Home Isolation'), (30, 'Gynaecology Ward'), (40, 'Paediatric Ward')], default=None, null=True),
+            model_name="patientconsultation",
+            name="admitted_to",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (None, "Not admitted"),
+                    (1, "Isolation Room"),
+                    (2, "ICU"),
+                    (3, "ICU with Non Invasive Ventilator"),
+                    (4, "Oxygen Bed"),
+                    (5, "ICU with Invasive Ventilator"),
+                    (20, "Home Isolation"),
+                    (30, "Gynaecology Ward"),
+                    (40, "Paediatric Ward"),
+                ],
+                default=None,
+                null=True,
+            ),
         ),
     ]

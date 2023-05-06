@@ -5,13 +5,13 @@ from django.db import migrations
 
 def map_users_to_districts(apps, *args):
     User = get_user_model()
-    District = apps.get_model('users', 'District')
+    District = apps.get_model("users", "District")
 
     districts = District.objects.all()
     district_map = {d.id: d for d in districts}
 
     dummy_user = User()
-    if hasattr(dummy_user, 'new_district'):
+    if hasattr(dummy_user, "new_district"):
         for user in User.objects.filter(deleted=False):
             d = district_map.get(user.district)
             if d is not None:
@@ -21,7 +21,7 @@ def map_users_to_districts(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0010_populate_district'),
+        ("users", "0010_populate_district"),
     ]
 
     operations = [

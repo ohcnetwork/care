@@ -6,38 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0063_merge_20200402_1402'),
+        ("facility", "0063_merge_20200402_1402"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='date_of_return',
+            model_name="historicalpatientregistration",
+            name="date_of_return",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='date_of_return',
+            model_name="patientregistration",
+            name="date_of_return",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='countries_travelled',
-            field=models.TextField(blank=True, default=''),
+            model_name="historicalpatientregistration",
+            name="countries_travelled",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='present_health',
-            field=models.TextField(blank=True, default=''),
+            model_name="historicalpatientregistration",
+            name="present_health",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='countries_travelled',
-            field=models.TextField(blank=True, default=''),
+            model_name="patientregistration",
+            name="countries_travelled",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='present_health',
-            field=models.TextField(blank=True, default=''),
+            model_name="patientregistration",
+            name="present_health",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

@@ -2,19 +2,19 @@ from .base import *  # noqa  # isort:skip
 from .patient_base import *  # noqa  # isort:skip
 
 from .ambulance import *  # noqa
-from .asset import *
-from .bed import *
-from .prescription import *
+from .asset import *  # noqa
+from .bed import *  # noqa
+from .prescription import *  # noqa
 from .daily_round import *  # noqa
 from .facility import *  # noqa
-from .inventory import *
-from .meta_icd11_diagnosis import *
+from .inventory import *  # noqa
+from .meta_icd11_diagnosis import *  # noqa
 from .patient import *  # noqa
 from .patient_consultation import *  # noqa
-from .patient_external_test import *
-from .patient_investigation import *
+from .patient_external_test import *  # noqa
+from .patient_investigation import *  # noqa
 from .patient_sample import *  # noqa
 from .patient_tele_consultation import *  # noqa
-from .resources import *
-from .shifting import *
-from .summary import *
+from .resources import *  # noqa
+from .shifting import *  # noqa
+from .summary import *  # noqa

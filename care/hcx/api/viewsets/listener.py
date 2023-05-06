@@ -1,14 +1,16 @@
+import json
+
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
-from care.hcx.utils.hcx import Hcx
-from care.hcx.utils.fhir import Fhir
-from care.utils.notification_handler import send_webpush
-import json
-from care.hcx.models.policy import Policy
+
 from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
+from care.hcx.utils.fhir import Fhir
+from care.hcx.utils.hcx import Hcx
+from care.utils.notification_handler import send_webpush
 
 
 class CoverageElibilityOnCheckView(GenericAPIView):

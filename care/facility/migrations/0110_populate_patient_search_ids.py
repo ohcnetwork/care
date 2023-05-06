@@ -22,4 +22,8 @@ class Migration(migrations.Migration):
         ("facility", "0109_auto_20200511_2120"),
     ]
 
-    operations = [migrations.RunPython(unique_external_ids, reverse_code=reverse_unique_external_ids)]
+    operations = [
+        migrations.RunPython(
+            unique_external_ids, reverse_code=reverse_unique_external_ids
+        )
+    ]

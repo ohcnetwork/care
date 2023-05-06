@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0263_auto_20210711_1716'),
+        ("facility", "0263_auto_20210711_1716"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dailyround',
-            name='in_prone_position',
+            model_name="dailyround",
+            name="in_prone_position",
             field=models.BooleanField(blank=True, default=None, null=True),
         ),
     ]

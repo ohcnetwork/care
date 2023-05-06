@@ -1,8 +1,9 @@
 from django.core.management import BaseCommand
+
 from care.facility.models.inventory import (
+    FacilityInventoryItem,
     FacilityInventoryItemTag,
     FacilityInventoryUnit,
-    FacilityInventoryItem,
     FacilityInventoryUnitConverter,
 )
 

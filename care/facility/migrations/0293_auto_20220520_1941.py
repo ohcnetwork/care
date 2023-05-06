@@ -22,5 +22,6 @@ class Migration(migrations.Migration):
         ("facility", "0292_auto_20220430_1748"),
     ]
 
-    operations = [migrations.RunPython(update_json_field_names, migrations.RunPython.noop)]
-
+    operations = [
+        migrations.RunPython(update_json_field_names, migrations.RunPython.noop)
+    ]

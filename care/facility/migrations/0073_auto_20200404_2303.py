@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0072_merge_20200404_2148'),
+        ("facility", "0072_merge_20200404_2148"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='is_medical_worker',
-            field=models.BooleanField(default=False, verbose_name='Is the Patient a Medical Worker'),
+            model_name="historicalpatientregistration",
+            name="is_medical_worker",
+            field=models.BooleanField(
+                default=False, verbose_name="Is the Patient a Medical Worker"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='is_medical_worker',
-            field=models.BooleanField(default=False, verbose_name='Is the Patient a Medical Worker'),
+            model_name="patientregistration",
+            name="is_medical_worker",
+            field=models.BooleanField(
+                default=False, verbose_name="Is the Patient a Medical Worker"
+            ),
         ),
     ]

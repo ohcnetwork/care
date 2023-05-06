@@ -1,7 +1,7 @@
 from care.facility.models.json_schema.common import DATETIME_REGEX
 
 LINES_CATHETERS = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {

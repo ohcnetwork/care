@@ -6,18 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0300_merge_20220707_2339'),
+        ("facility", "0300_merge_20220707_2339"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='discharge_notes',
-            field=models.TextField(blank=True, default='', null=True),
+            model_name="patientconsultation",
+            name="discharge_notes",
+            field=models.TextField(blank=True, default="", null=True),
         ),
         migrations.AddField(
-            model_name='patientconsultation',
-            name='discharge_reason',
-            field=models.CharField(blank=True, choices=[('REC', 'Recovered'), ('REF', 'Referred'), ('EXP', 'Expired')], default=None, max_length=4, null=True),
+            model_name="patientconsultation",
+            name="discharge_reason",
+            field=models.CharField(
+                blank=True,
+                choices=[("REC", "Recovered"), ("REF", "Referred"), ("EXP", "Expired")],
+                default=None,
+                max_length=4,
+                null=True,
+            ),
         ),
     ]

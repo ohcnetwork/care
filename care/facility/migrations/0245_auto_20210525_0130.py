@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0244_resourcerequest_title'),
+        ("facility", "0244_resourcerequest_title"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='resourcerequest',
-            name='sub_category',
-            field=models.IntegerField(choices=[(110, 'LIQUID OXYGEN'), (120, 'B TYPE OXYGEN CYLINDER'), (130, 'C TYPE OXYGEN CYLINDER'), (140, 'JUMBO D TYPE OXYGEN CYLINDER'), (1000, 'UNSPECIFIED')], default=1000),
+            model_name="resourcerequest",
+            name="sub_category",
+            field=models.IntegerField(
+                choices=[
+                    (110, "LIQUID OXYGEN"),
+                    (120, "B TYPE OXYGEN CYLINDER"),
+                    (130, "C TYPE OXYGEN CYLINDER"),
+                    (140, "JUMBO D TYPE OXYGEN CYLINDER"),
+                    (1000, "UNSPECIFIED"),
+                ],
+                default=1000,
+            ),
         ),
     ]

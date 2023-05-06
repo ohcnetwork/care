@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0321_merge_20220921_2255'),
+        ("facility", "0321_merge_20220921_2255"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fileupload',
-            name='is_archived',
+            model_name="fileupload",
+            name="is_archived",
             field=models.BooleanField(default=False),
         ),
     ]

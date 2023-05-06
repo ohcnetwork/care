@@ -7,18 +7,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0341_auto_20230407_0346'),
+        ("facility", "0341_auto_20230407_0346"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='discharge_prescription',
+            model_name="patientconsultation",
+            name="discharge_prescription",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=dict),
         ),
         migrations.AddField(
-            model_name='patientconsultation',
-            name='discharge_prn_prescription',
+            model_name="patientconsultation",
+            name="discharge_prn_prescription",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=dict),
         ),
     ]
