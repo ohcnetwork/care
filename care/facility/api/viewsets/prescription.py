@@ -72,7 +72,6 @@ class ConsultationPrescriptionViewSet(
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         for prescription in data["prescriptions"]:
-            id = prescription.pop("id")
             prescription_serializer = PrescriptionSerializer(data=prescription)
             prescription_serializer.is_valid(raise_exception=True)  # TODO : Remove
             prescription_serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
