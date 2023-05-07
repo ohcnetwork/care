@@ -9,8 +9,19 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer, \
     PrescriptionUpsertSerializer
-from care.facility.models import Prescription, MedicineAdministration
+from care.facility.models import Prescription, MedicineAdministration, PrescriptionType
+from care.utils.filters import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
+
+
+def inverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
+inverse_prescription_type = inverse_choices(PrescriptionType)
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
@@ -38,6 +49,11 @@ class MedicineAdministrationViewSet(mixins.ListModelMixin, mixins.RetrieveModelM
         )
 
 
+class ConsultationPrescriptionFilter(filters.FilterSet):
+    is_prn = filters.BooleanFilter()
+    prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
+
+
 class ConsultationPrescriptionViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -50,6 +66,8 @@ class ConsultationPrescriptionViewSet(
     )
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ConsultationPrescriptionFilter
 
     def get_consultation_obj(self):
         return get_object_or_404(
