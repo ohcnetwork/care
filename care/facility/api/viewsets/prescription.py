@@ -9,7 +9,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer, \
     PrescriptionUpsertSerializer
-from care.facility.models import Prescription, MedicineAdministration, PrescriptionType
+from care.facility.models import Prescription, MedicineAdministration, PrescriptionType, generate_choices
 from care.utils.filters import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
@@ -21,7 +21,7 @@ def inverse_choices(choices):
     return output
 
 
-inverse_prescription_type = inverse_choices(PrescriptionType)
+inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
