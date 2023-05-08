@@ -26,7 +26,6 @@ jobs:
           tags: |
             type=raw,value=${{ github.head_ref}}-${{ github.run_number }}
             type=raw,value=${{ github.head_ref}}
-
           flavor: |
             latest=true
 
