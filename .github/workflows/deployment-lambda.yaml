@@ -5,7 +5,7 @@ on:
 
   pull_request:
     branches:
-      - lambda-changes
+      - devops/lambda-changes
     paths-ignore:
       - "docs/**"
 
