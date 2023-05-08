@@ -17,28 +17,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=${{ github.head_ref}}-${{ github.run_number }}
-            type=raw,value=${{ github.head_ref}}
-          flavor: |
-            latest=true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+#      - name: Docker meta
+#        id: meta
+#        uses: docker/metadata-action@v4
+#        with:
+#          images: |
+#            ghcr.io/${{ github.repository }}
+#          tags: |
+#            type=raw,value=${{ github.head_ref}}-${{ github.run_number }}
+#            type=raw,value=${{ github.head_ref}}
+#          flavor: |
+#            latest=true
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v2
+#
+#      - name: Cache Docker layers
+#        uses: actions/cache@v2
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -46,18 +46,22 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build image
+#        uses: docker/build-push-action@v3
+#        with:
+#          context: .
+#          file: lambda_Dockerfile
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - name: Build image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: lambda_Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          docker build -t ghcr.io/${{ github.repository }}:${{ github.head_ref}}-${{ github.run_number }} -f lambda_Dockerfile .
+          docker push ghcr.io/${{ github.repository }}:${{ github.head_ref}}-${{ github.run_number }}
