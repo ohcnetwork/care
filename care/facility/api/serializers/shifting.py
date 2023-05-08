@@ -1,10 +1,15 @@
+from django.conf import settings
 from django.db.models import Q
+from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.api.serializers.patient import PatientDetailSerializer, PatientListSerializer
+from care.facility.api.serializers.patient import (
+    PatientDetailSerializer,
+    PatientListSerializer,
+)
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
     FACILITY_TYPES,
@@ -16,9 +21,15 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from care.utils.serializer.phonenumber_ispossible_field import (
+    PhoneNumberIsPossibleField,
+)
 from config.serializers import ChoiceField
 
 
@@ -42,179 +53,362 @@ def has_facility_permission(user, facility):
             user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
             and (facility and user.district == facility.district)
         )
-        or (user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"] and (facility and user.state == facility.state))
+        or (
+            user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+            and (facility and user.state == facility.state)
+        )
     )
+
+
+def discharge_patient(patient: PatientRegistration):
+    current_time = localtime(now())
+
+    patient.is_active = False
+    patient.allow_transfer = True
+    patient.review_time = None
+    patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
+
+    last_consultation = (
+        PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+    )
+    if last_consultation:
+        reason = "REF"
+        notes = "Patient Shifted to another facility"
+        last_consultation.discharge_reason = reason
+        last_consultation.discharge_notes = notes
+        last_consultation.discharge_date = current_time
+        last_consultation.current_bed = None
+        last_consultation.save()
+
+    ConsultationBed.objects.filter(
+        consultation=last_consultation, end_date__isnull=True
+    ).update(end_date=current_time)
 
 
 class ShiftingSerializer(serializers.ModelSerializer):
+    LIMITED_SHIFTING_STATUS = [
+        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        for x in [
+            "PENDING",
+            "ON HOLD",
+            "APPROVED",
+            "REJECTED",
+            # "DESTINATION APPROVED",
+            # "DESTINATION REJECTED",
+            "TRANSPORTATION TO BE ARRANGED",
+            "PATIENT TO BE PICKED UP",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+            "PATIENT EXPIRED",
+            "CANCELLED",
+        ]
+    ]
+
+    LIMITED_RECIEVING_STATUS = [
+        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        for x in [
+            # "PENDING",
+            # "ON HOLD",
+            # "APPROVED",
+            # "REJECTED",
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            # "TRANSPORTATION TO BE ARRANGED",
+            # "PATIENT TO BE PICKED UP",
+            # "TRANSFER IN PROGRESS",
+            "COMPLETED",
+            # "PATIENT EXPIRED",
+            # "CANCELLED",
+        ]
+    ]
+
+    PEACETIME_SHIFTING_STATUS = [
+        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        for x in [
+            # "PENDING",
+            "ON HOLD",
+            "APPROVED",
+            "REJECTED",
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            "TRANSPORTATION TO BE ARRANGED",
+            "PATIENT TO BE PICKED UP",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+            "PATIENT EXPIRED",
+            "CANCELLED",
+        ]
+    ]
+
+    PEACETIME_RECIEVING_STATUS = [
+        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        for x in [
+            # "PENDING",
+            # "ON HOLD",
+            # "APPROVED",
+            # "REJECTED",
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            # "TRANSPORTATION TO BE ARRANGED",
+            # "PATIENT TO BE PICKED UP",
+            # "TRANSFER IN PROGRESS",
+            "COMPLETED",
+            # "PATIENT EXPIRED",
+            # "CANCELLED",
+        ]
+    ]
+
+    RECIEVING_REQUIRED_STATUS = [
+        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        for x in [
+            "DESTINATION APPROVED",
+            "DESTINATION REJECTED",
+            "TRANSPORTATION TO BE ARRANGED",
+            "PATIENT TO BE PICKED UP",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+        ]
+    ]
 
     id = serializers.UUIDField(source="external_id", read_only=True)
 
+    patient = ExternalIdSerializerField(
+        queryset=PatientRegistration.objects.all(),
+        allow_null=False,
+        required=True,
+    )
+    patient_object = PatientListSerializer(source="patient", read_only=True)
+
     status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
-    breathlessness_level = ChoiceField(choices=BREATHLESSNESS_CHOICES, required=False)
+    breathlessness_level = ChoiceField(
+        choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
+    )
 
-    patient_object = PatientListSerializer(source="patient", read_only=True, required=False)
+    orgin_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), allow_null=False, required=True
+    )
+    orgin_facility_object = FacilityBasicInfoSerializer(
+        source="orgin_facility", read_only=True
+    )
 
-    orgin_facility_object = FacilityBasicInfoSerializer(source="orgin_facility", read_only=True, required=False)
+    shifting_approving_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     shifting_approving_facility_object = FacilityBasicInfoSerializer(
-        source="shifting_approving_facility", read_only=True, required=False
+        source="shifting_approving_facility", read_only=True
     )
-    assigned_facility_object = FacilityBasicInfoSerializer(source="assigned_facility", read_only=True, required=False)
 
-    assigned_facility_type = ChoiceField(choices=FACILITY_TYPES)
-    preferred_vehicle_choice = ChoiceField(choices=VEHICLE_CHOICES)
-
-    orgin_facility = serializers.UUIDField(source="orgin_facility.external_id", allow_null=False, required=True)
-    shifting_approving_facility = serializers.UUIDField(
-        source="shifting_approving_facility.external_id", allow_null=False, required=True
+    assigned_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), allow_null=True, required=False
     )
-    assigned_facility = serializers.UUIDField(source="assigned_facility.external_id", allow_null=True, required=False)
+    assigned_facility_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    assigned_facility_object = FacilityBasicInfoSerializer(
+        source="assigned_facility", read_only=True
+    )
 
-    patient = serializers.UUIDField(source="patient.external_id", allow_null=False, required=True)
+    assigned_facility_type = ChoiceField(
+        choices=FACILITY_TYPES, required=False, allow_null=True
+    )
+    preferred_vehicle_choice = ChoiceField(
+        choices=VEHICLE_CHOICES, required=False, allow_null=True
+    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    last_edited_by_object = UserBaseMinimumSerializer(source="last_edited_by", read_only=True)
+    last_edited_by_object = UserBaseMinimumSerializer(
+        source="last_edited_by", read_only=True
+    )
+    ambulance_driver_name = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    ambulance_phone_number = PhoneNumberIsPossibleField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    ambulance_number = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
 
     def __init__(self, instance=None, **kwargs):
         if instance:
             kwargs["partial"] = True
         super().__init__(instance=instance, **kwargs)
 
+    def validate_shifting_approving_facility(self, value):
+        if not settings.PEACETIME_MODE and not value:
+            raise ValidationError("Shifting Approving Facility is required")
+        return value
+
     def update(self, instance, validated_data):
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
+            raise ValidationError("Permission Denied, Shifting request was cancelled.")
+        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+            raise ValidationError("Permission Denied, Shifting request was completed.")
 
-        LIMITED_RECIEVING_STATUS_ = [
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            "COMPLETED",
-        ]
-        LIMITED_RECIEVING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_]
-        LIMITED_SHIFTING_STATUS_ = [
-            "APPROVED",
-            "REJECTED",
-            "PATIENT TO BE PICKED UP",
-            "TRANSPORTATION TO BE ARRANGED",
-            "TRANSFER IN PROGRESS",
-            "COMPLETED",
-            "PENDING",
-            "ON HOLD",
-        ]
-        LIMITED_SHIFTING_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in LIMITED_SHIFTING_STATUS_]
-        LIMITED_ORGIN_STATUS = []
-
-        RECIEVING_REQUIRED_STATUS_ = [
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            "TRANSPORTATION TO BE ARRANGED",
-            "PATIENT TO BE PICKED UP",
-            "TRANSFER IN PROGRESS",
-            "COMPLETED",
-        ]
-        RECIEVING_REQUIRED_STATUS = [REVERSE_SHIFTING_STATUS_CHOICES[x] for x in RECIEVING_REQUIRED_STATUS_]
+        # Dont allow editing origin or patient
+        validated_data.pop("orgin_facility")
+        validated_data.pop("patient")
 
         user = self.context["request"].user
 
-        if "is_kasp" in validated_data:
-            if validated_data["is_kasp"] != instance.is_kasp:  # Check only when changed
-                if not has_facility_permission(user, instance.shifting_approving_facility):
-                    raise ValidationError({"kasp": ["Permission Denied"]})
+        if validated_data.get("assigned_facility_external"):
+            validated_data["assigned_facility"] = None
+            validated_data["assigned_facility_id"] = None
+            validated_data["assigned_facility_object"] = None
+        elif validated_data.get("assigned_facility"):
+            validated_data["assigned_facility_external"] = None
+
+        if (
+            "is_kasp" in validated_data
+            and validated_data["is_kasp"] != instance.is_kasp  # check only when changed
+            and not has_facility_permission(user, instance.shifting_approving_facility)
+        ):
+            raise ValidationError({"kasp": ["Permission Denied"]})
 
         if "status" in validated_data:
-            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
-                if instance.assigned_facility:
-                    if not has_facility_permission(user, instance.assigned_facility):
-                        raise ValidationError({"status": ["Permission Denied"]})
-            elif validated_data["status"] in LIMITED_SHIFTING_STATUS:
-                if not has_facility_permission(user, instance.shifting_approving_facility):
+            status = validated_data["status"]
+            if status == REVERSE_SHIFTING_STATUS_CHOICES[
+                "CANCELLED"
+            ] and not has_facility_permission(user, instance.orgin_facility):
+                raise ValidationError({"status": ["Permission Denied"]})
+
+            if settings.PEACETIME_MODE:
+                if (
+                    status in self.PEACETIME_SHIFTING_STATUS
+                    and has_facility_permission(user, instance.orgin_facility)
+                ):
+                    pass
+                elif (
+                    status in self.PEACETIME_RECIEVING_STATUS
+                    and has_facility_permission(user, instance.assigned_facility)
+                ):
+                    pass
+                else:
                     raise ValidationError({"status": ["Permission Denied"]})
 
-        # Dont allow editing origin or patient
-        if "orgin_facility" in validated_data:
-            validated_data.pop("orgin_facility")
-        if "patient" in validated_data:
-            validated_data.pop("patient")
+            elif (
+                status in self.LIMITED_RECIEVING_STATUS
+                and instance.assigned_facility
+                and not has_facility_permission(user, instance.assigned_facility)
+            ):
+                raise ValidationError({"status": ["Permission Denied"]})
 
-        if "shifting_approving_facility" in validated_data:
-            shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
-            if shifting_approving_facility_external_id:
-                validated_data["shifting_approving_facility_id"] = Facility.objects.get(
-                    external_id=shifting_approving_facility_external_id
-                ).id
+            elif status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
+                user, instance.shifting_approving_facility
+            ):
+                raise ValidationError({"status": ["Permission Denied"]})
 
-        assigned = False
-        if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
-            if assigned_facility_external_id:
-                validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
-                ).id
-                assigned = True
+        assigned = bool(
+            validated_data.get("assigned_facility")
+            or validated_data.get("assigned_facility_external")
+        )
 
-        if "status" in validated_data:
-            if validated_data["status"] in RECIEVING_REQUIRED_STATUS:
-                if (not instance.assigned_facility) and (not assigned):
-                    raise ValidationError({"status": ["Destination Facility is required for moving to this stage."]})
+        if (
+            "status" in validated_data
+            and validated_data["status"] in self.RECIEVING_REQUIRED_STATUS
+            and (
+                not (instance.assigned_facility or instance.assigned_facility_external)
+            )
+            and (not assigned)
+        ):
+            raise ValidationError(
+                {
+                    "status": [
+                        "Destination Facility is required for moving to this stage."
+                    ]
+                }
+            )
 
-        instance.last_edited_by = self.context["request"].user
+        validated_data["last_edited_by"] = self.context["request"].user
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(instance.patient)
 
         old_status = instance.status
-
         new_instance = super().update(instance, validated_data)
 
-        if "status" in validated_data:
-            if validated_data["status"] != old_status:
-                if validated_data["status"] == 40:
-                    NotificationGenerator(
-                        event=Notification.Event.SHIFTING_UPDATED,
-                        caused_by=self.context["request"].user,
-                        caused_object=ShiftingRequest.objects.get(id=new_instance.id),
-                        facility=new_instance.shifting_approving_facility,
-                        notification_mediums=[Notification.Medium.SYSTEM, Notification.Medium.SMS],
-                    ).generate()
+        patient = new_instance.patient
+        patient.last_consultation.category = self.initial_data["patient_category"]
+        patient.last_consultation.save()
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] != old_status
+            and validated_data["status"] == 40
+        ):
+            NotificationGenerator(
+                event=Notification.Event.SHIFTING_UPDATED,
+                caused_by=self.context["request"].user,
+                caused_object=new_instance,
+                facility=new_instance.shifting_approving_facility,
+                notification_mediums=[
+                    Notification.Medium.SYSTEM,
+                    Notification.Medium.SMS,
+                ],
+            ).generate()
 
         return new_instance
 
     def create(self, validated_data):
-
         # Do Validity checks for each of these data
         if "status" in validated_data:
             validated_data.pop("status")
 
+        if settings.PEACETIME_MODE:
+            # approve the request by default if in peacetime mode
+            validated_data["status"] = 20
+
+        assigned = bool(
+            validated_data.get("assigned_facility")
+            or validated_data.get("assigned_facility_external")
+        )
+        if (
+            "status" in validated_data
+            and validated_data["status"] in self.RECIEVING_REQUIRED_STATUS
+            and (not assigned)
+        ):
+            raise ValidationError(
+                {
+                    "status": [
+                        "Destination Facility is required for moving to this stage."
+                    ]
+                }
+            )
+
         validated_data["is_kasp"] = False
 
-        orgin_facility_external_id = validated_data.pop("orgin_facility")["external_id"]
-        # validated_data["orgin_facility_id"] = Facility.objects.get(external_id=orgin_facility_external_id).id
+        patient = validated_data["patient"]
+        if ShiftingRequest.objects.filter(
+            ~Q(status__in=[30, 50, 80, 100]), patient=patient
+        ).exists():
+            raise ValidationError(
+                {"request": ["Shifting Request for Patient already exists"]}
+            )
 
-        shifting_approving_facility_external_id = validated_data.pop("shifting_approving_facility")["external_id"]
-        validated_data["shifting_approving_facility_id"] = Facility.objects.get(
-            external_id=shifting_approving_facility_external_id
-        ).id
-
-        if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")["external_id"]
-            if assigned_facility_external_id:
-
-                validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
-                ).id
-
-        patient_external_id = validated_data.pop("patient")["external_id"]
-        patient = PatientRegistration.objects.get(external_id=patient_external_id)
-
-        if patient.is_active == False:
+        if not patient.is_active:
             raise ValidationError({"patient": ["Cannot shift discharged patient"]})
-        if patient.allow_transfer == False:
+        if not patient.allow_transfer:
             patient.allow_transfer = True
             patient.save()
 
-        validated_data["orgin_facility_id"] = patient.facility.id
-        validated_data["patient_id"] = patient.id
+        if patient.last_consultation:
+            patient.last_consultation.category = self.initial_data["patient_category"]
+            patient.last_consultation.save()
 
-        if ShiftingRequest.objects.filter(~Q(status__in=[30, 50, 80]), patient=patient).exists():
-            raise ValidationError({"request": ["Shifting Request for Patient already exists"]})
+        validated_data["orgin_facility"] = patient.facility
 
         validated_data["created_by"] = self.context["request"].user
         validated_data["last_edited_by"] = self.context["request"].user
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(patient)
 
         return super().create(validated_data)
 
@@ -225,7 +419,6 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
 
 class ShiftingDetailSerializer(ShiftingSerializer):
-
     patient = PatientDetailSerializer(read_only=True, required=False)
 
     class Meta:
@@ -235,7 +428,6 @@ class ShiftingDetailSerializer(ShiftingSerializer):
 
 
 class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
-
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
@@ -253,4 +445,8 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by", "external_id", "id")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "created_by",
+            "external_id",
+            "id",
+        )

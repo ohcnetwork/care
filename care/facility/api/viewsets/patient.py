@@ -413,7 +413,7 @@ class PatientViewSet(
         patient = PatientRegistration.objects.get(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
-        response_serializer = self.get_serializer_class()(patient)
+        response_serializer = self.get_serializer(patient)
         # Update all Active Shifting Request to Rejected
 
         for shifting_request in ShiftingRequest.objects.filter(

@@ -1,11 +1,11 @@
-name: Branch based deploy
+name: Lambda Deployment
 
 on:
   workflow_dispatch:
-  
-  push:
+
+  pull_request:
     branches:
-      - abdm-m2
+      - devops/lambda-changes
     paths-ignore:
       - "docs/**"
 
@@ -24,10 +24,9 @@ jobs:
           images: |
             ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=${{ github.ref_name}}-${{ github.run_number }}
-            type=raw,value=${{ github.ref_name}}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.head_ref}}-${{ github.run_number }}
+            type=raw,value=${{ github.head_ref}}
+
           flavor: |
             latest=true
 
@@ -53,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile
+          file: lambda_Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache

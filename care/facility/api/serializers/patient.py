@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
@@ -212,6 +213,8 @@ class PatientDetailSerializer(PatientListSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
+
+    allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
 
     class Meta:
         model = PatientRegistration
