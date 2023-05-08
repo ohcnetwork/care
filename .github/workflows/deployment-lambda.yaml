@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - lambda-changes
+      - mangum-changes
     paths-ignore:
       - "docs/**"
 
