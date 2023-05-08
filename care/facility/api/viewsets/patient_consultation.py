@@ -1,9 +1,5 @@
-import time
-from datetime import timedelta
-
 from django.core.validators import validate_email
 from django.db.models.query_utils import Q
-from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -98,6 +94,19 @@ class PatientConsultationViewSet(
         return Response(status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        operation_description="Generate a discharge summary",
+        responses={
+            200: "Success",
+        },
+    )
+    @action(detail=True, methods=["POST"])
+    def generate_discharge_summary(self, request, *args, **kwargs):
+        consultation = self.get_object()
+        #  TODO : set a max discharge summary count for a consultation for a day/hour.
+        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
+        return Response({})
+
+    @swagger_auto_schema(
         operation_description="Get the discharge summary",
         responses={
             200: "Success",
@@ -114,19 +123,10 @@ class PatientConsultationViewSet(
             .order_by("-created_date")
             .first()
         )
-        if summary is not None:
-            if summary.upload_completed:
-                return Response(FileUploadRetrieveSerializer(summary).data)
-
-            if summary.created_date <= timezone.now() - timedelta(minutes=2):
-                # If the file is not uploaded in 2 minutes, delete the file and generate a new one
-                summary.delete()
-
-        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
-        time.sleep(2)  # Wait for 2 seconds for the file to be generated
-
+        if summary and summary.upload_completed:
+            return Response(FileUploadRetrieveSerializer(summary).data)
         raise NotFound(
-            "Discharge summary is not ready yet. Please try again after a few moments."
+            "Discharge summary is not ready yet. Please wait if a request has been placed."
         )
 
     @swagger_auto_schema(

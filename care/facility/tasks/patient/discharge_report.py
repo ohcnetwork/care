@@ -1,6 +1,4 @@
 import tempfile
-import time
-from datetime import timedelta
 from uuid import uuid4
 
 import boto3
@@ -69,25 +67,19 @@ def generate_discharge_summary_pdf(data, file):
 
 
 def generate_and_upload_discharge_summary(consultation_id):
-    currnet_date = timezone.now()
+    current_date = timezone.now()
 
     consultation = PatientConsultation.objects.get(external_id=consultation_id)
 
-    file_db_entry = FileUpload.objects.filter(
+    file_db_entry = FileUpload.objects.create(
+        name=f"discharge_summary-{consultation.patient.name}-{current_date}.pdf",
+        internal_name=f"{uuid4()}.pdf",
         file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
         associating_id=consultation.external_id,
-    ).first()
-
-    if file_db_entry is None:
-        file_db_entry: FileUpload = FileUpload.objects.create(
-            name=f"discharge_summary-{consultation.patient.name}-{currnet_date}.pdf",
-            internal_name=f"{uuid4()}.pdf",
-            file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
-            associating_id=consultation.external_id,
-        )
+    )
 
     data = get_discharge_summary_data(consultation)
-    data["date"] = currnet_date
+    data["date"] = current_date
 
     with tempfile.NamedTemporaryFile(suffix=".pdf") as file:
         generate_discharge_summary_pdf(data, file)
@@ -106,6 +98,8 @@ def generate_and_upload_discharge_summary_task(consultation_id):
 
 @celery.task()
 def email_discharge_summary(consultation_id, email):
+    generate_and_upload_discharge_summary_task(consultation_id)
+
     summary = (
         FileUpload.objects.filter(
             file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
@@ -114,26 +108,6 @@ def email_discharge_summary(consultation_id, email):
         .order_by("-created_date")
         .first()
     )
-
-    if (
-        summary is not None
-        and not summary.upload_completed
-        and summary.created_date <= timezone.now() - timedelta(minutes=2)
-    ):
-        # If the file is not uploaded in 2 minutes, delete the file and generate a new one
-        summary.delete()
-        summary = None
-
-    if summary is None:
-        summary = generate_and_upload_discharge_summary(consultation_id)
-
-    i = 0
-    while not summary.upload_completed:
-        time.sleep(30)
-        summary.refresh_from_db()
-        i += 1
-        if i > 3:
-            return False
 
     msg = EmailMessage(
         "Patient Discharge Summary",
