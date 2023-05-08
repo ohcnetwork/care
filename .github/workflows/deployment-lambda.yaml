@@ -5,8 +5,7 @@ on:
 
   pull_request:
     branches:
-      - lambda-changes
-      - mangum-changes
+      - devops/lambda-changes
     paths-ignore:
       - "docs/**"
 
