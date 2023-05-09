@@ -7,8 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer, \
-    PrescriptionUpsertSerializer
+from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer
 from care.facility.models import Prescription, MedicineAdministration, PrescriptionType, generate_choices
 from care.utils.filters import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -83,26 +82,15 @@ class ConsultationPrescriptionViewSet(
         consultation_obj = self.get_consultation_obj()
         serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
 
-    @action(methods=["POST"], detail=False)
-    def upsert(self, request, *args, **kwargs):
-        consultation_obj = self.get_consultation_obj()
-        serializer = PrescriptionUpsertSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data
-        for prescription in data["prescriptions"]:
-            prescription_serializer = PrescriptionSerializer(data=prescription)
-            prescription_serializer.is_valid(raise_exception=True)  # TODO : Remove
-            prescription_serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
-        return Response({}, status=status.HTTP_201_CREATED)
-
     @action(methods=["POST"], detail=True)
     def discontinue(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
+        prescription_obj.discontinued_reason = request.data.get("discontinued_reason", None)
         prescription_obj.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
-    @action(methods=["POST"], detail=True)
+    @action(methods=["POST"], detail=True, serializer_class=MedicineAdministrationSerializer)
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         serializer = MedicineAdministrationSerializer(data=request.data)

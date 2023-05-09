@@ -61,6 +61,3 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             "prescription"
         )
 
-
-class PrescriptionUpsertSerializer(serializers.Serializer):
-    prescriptions = PrescriptionSerializer(many=True)
