@@ -22,5 +22,5 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:${{ github.event.pull_request.number }}-${{ github.run_number }} -f lambda_Dockerfile .
-          docker push ghcr.io/${{ github.repository }}:${{ github.event.pull_request.number }}-${{ github.run_number }}
+          docker build -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} -f lambda_Dockerfile .
+          docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
