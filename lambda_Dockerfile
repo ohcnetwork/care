@@ -56,7 +56,7 @@ RUN yum update -y && yum install -y \
   # Misc
   wget gnupg chromium
 
-RUN /usr/bin/amazon-linux-extras enable postgresql10  \
+RUN PYTHON=python2 amazon-linux-extras enable postgresql10  \
   && yum install -y postgresql-devel-10 \
   # cleaning up unused files
   && yum autoremove -y \
