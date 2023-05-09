@@ -45,10 +45,16 @@ WORKDIR ${APP_HOME}
 #RUN addgroup -S django \
 #    && adduser -S -G django django
 
+
+RUN amazon-linux-extras enable postgresql10 && \
+    yum install -y postgresql-devel-10 && \
+    rm -rf /var/cache/yum/*
+
+
 # Install required system dependencies
 RUN yum update -y && yum install -y \
   # psycopg2 dependencies
-  postgresql-devel \
+  # postgresql-devel \
   # Translations dependencies
   gettext \
   # Misc
