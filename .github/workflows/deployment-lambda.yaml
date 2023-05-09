@@ -7,24 +7,6 @@ on:
     paths-ignore:
       - "docs/**"
 jobs:
-  build-image:
-    name: Build & Push Staging to container registries
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} -f lambda_Dockerfile .
-          docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
-
   create-db:
     name: Create new database
     runs-on: ubuntu-latest
@@ -55,3 +37,34 @@ jobs:
             echo "CREATE DATABASE preview_${{ github.events.pull_request.number }};" | \
               PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w
           fi
+
+  build-image:
+    name: Build & Push Staging to container registries
+    runs-on: ubuntu-latest
+    needs: create-db
+    environment:
+      name: care-preview
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
+        run: |
+          docker build
+            --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            --build-arg POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
+            --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            --build-arg POSTGRES_DB=preview_${{ github.events.pull_request.number }} \
+            --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/preview_${{ github.events.pull_request.number }} \
+            -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} -f lambda_Dockerfile .
+
+          docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
+
+
