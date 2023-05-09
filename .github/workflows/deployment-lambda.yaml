@@ -62,7 +62,7 @@ jobs:
       - name: Build image
 
         run: |
-          docker build
+          docker build \
             --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
             --build-arg POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
             --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
