@@ -6,6 +6,10 @@ on:
       - devops/lambda-changes
     paths-ignore:
       - "docs/**"
+
+env:
+  POSTGRES_DB: preview_${{ github.event.pull_request.number }}
+
 jobs:
   create-db:
     name: Create new database
@@ -24,9 +28,10 @@ jobs:
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         run: |
           # Check if the database already exists
-          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='preview_${{ github.events.pull_request.number }}'" | \
+          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='${POSTGRES_DB}'" | \
               PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w -tA | \
               xargs)
           if [ "${DATABASE_EXISTS}" = "1" ]; then
@@ -34,7 +39,7 @@ jobs:
           else
             echo "Database doesn't exist, creating"
             # Create the database
-            echo "CREATE DATABASE preview_${{ github.events.pull_request.number }};" | \
+            echo "CREATE DATABASE ${POSTGRES_DB};" | \
               PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w
           fi
 
@@ -55,15 +60,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
+
         run: |
           docker build
             --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
             --build-arg POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
             --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            --build-arg POSTGRES_DB=preview_${{ github.events.pull_request.number }} \
-            --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/preview_${{ github.events.pull_request.number }} \
-            -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} -f lambda_Dockerfile .
+            --build-arg POSTGRES_DB=${{ env.POSTGRES_DB }} \
+            --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }} \
+            -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            -f lambda_Dockerfile \
+            .
 
           docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
 
