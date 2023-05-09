@@ -11,6 +11,14 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
 
+    last_administered_on = serializers.SerializerMethodField()
+
+    def get_last_administered_on(self, obj):
+        last_administration = MedicineAdministration.objects.filter(prescription=obj).order_by("-created_date").first()
+        if last_administration:
+            return last_administration.created_date
+        return None
+
     class Meta:
         model = Prescription
         exclude = (
