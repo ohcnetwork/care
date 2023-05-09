@@ -45,14 +45,10 @@ WORKDIR ${APP_HOME}
 #RUN addgroup -S django \
 #    && adduser -S -G django django
 
-
-RUN amazon-linux-extras enable postgresql10 && \
-    yum install -y postgresql-devel-10 && \
-    rm -rf /var/cache/yum/*
-
-
 # Install required system dependencies
 RUN yum update -y && yum install -y \
+  # Amazon Linux 2 extras \
+  amazon-linux-extras \
   # psycopg2 dependencies
   # postgresql-devel \
   # Translations dependencies
@@ -60,8 +56,13 @@ RUN yum update -y && yum install -y \
   # Misc
   wget gnupg chromium \
   # cleaning up unused files
+  && amazon-linux-extras enable postgresql10  \
+  && yum install -y postgresql-devel-10 \
   && yum autoremove -y \
   && rm -rf /var/cache/yum/*
+
+
+
 
 
 # All absolute dir copies ignore workdir instruction. All relative dir copies are wrt to the workdir instruction
