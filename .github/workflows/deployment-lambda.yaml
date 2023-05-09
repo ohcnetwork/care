@@ -38,20 +38,20 @@ jobs:
 
       - name: Create new database
         env:
-          RDS_HOST: ${{ secrets.RDS_HOST }}
-          RDS_PORT: ${{ secrets.RDS_PORT }}
-          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           # Check if the database already exists
-          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='${RDS_DB_NAME}'" | \
-              PGPASSWORD="${RDS_PASSWORD}" psql -h "${RDS_HOST}" -p "${RDS_PORT}" -U "${RDS_USERNAME}" -w -tA | \
+          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='preview_${{ github.events.pull_request.number }}'" | \
+              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w -tA | \
               xargs)
           if [ "${DATABASE_EXISTS}" = "1" ]; then
             echo "Database already exists, skipping creation"
           else
             echo "Database doesn't exist, creating"
             # Create the database
-            echo "CREATE DATABASE preview-${{ github.events.pull_request.number }};" | \
-              PGPASSWORD="${RDS_PASSWORD}" psql -h "${RDS_HOST}" -p "${RDS_PORT}" -U "${RDS_USERNAME}" -w
+            echo "CREATE DATABASE preview_${{ github.events.pull_request.number }};" | \
+              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w
           fi
