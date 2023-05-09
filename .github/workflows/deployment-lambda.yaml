@@ -24,3 +24,34 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} -f lambda_Dockerfile .
           docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
+
+  create-db:
+    name: Create new database
+    runs-on: ubuntu-latest
+    environment:
+      name: care-preview
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Create new database
+        env:
+          RDS_HOST: ${{ secrets.RDS_HOST }}
+          RDS_PORT: ${{ secrets.RDS_PORT }}
+          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
+          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+        run: |
+          # Check if the database already exists
+          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='${RDS_DB_NAME}'" | \
+              PGPASSWORD="${RDS_PASSWORD}" psql -h "${RDS_HOST}" -p "${RDS_PORT}" -U "${RDS_USERNAME}" -w -tA | \
+              xargs)
+          if [ "${DATABASE_EXISTS}" = "1" ]; then
+            echo "Database already exists, skipping creation"
+          else
+            echo "Database doesn't exist, creating"
+            # Create the database
+            echo "CREATE DATABASE preview-${{ github.events.pull_request.number }};" | \
+              PGPASSWORD="${RDS_PASSWORD}" psql -h "${RDS_HOST}" -p "${RDS_PORT}" -U "${RDS_USERNAME}" -w
+          fi
