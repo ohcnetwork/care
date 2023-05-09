@@ -69,6 +69,41 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
 
 # copy application code to WORKDIR
 #COPY --chown=django:django . ${APP_HOME}
+COPY . ${APP_HOME}
+
+# Set build arguments for the database
+ARG POSTGRES_HOST
+ARG POSTGRES_PORT
+ARG POSTGRES_DB
+ARG POSTGRES_USER
+ARG POSTGRES_PASSWORD
+ARG POSTGIS_URL
+
+# Set environment variables for the database
+ENV POSTGRES_HOST=$POSTGRES_HOST
+ENV POSTGRES_PORT=$POSTGRES_PORT
+ENV POSTGRES_DB=$POSTGRES_DB
+ENV POSTGRES_USER=$POSTGRES_USER
+ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+ENV POSTGIS_URL=$POSTGIS_URL
+
+# run django migrations
+RUN python manage.py migrate
+
+# unset build arguments and environment variables
+ARG POSTGRES_HOST=''
+ARG POSTGRES_PORT=''
+ARG POSTGRES_DB=''
+ARG POSTGRES_USER=''
+ARG POSTGRES_PASSWORD=''
+ARG POSTGIS_URL=''
+ENV POSTGRES_HOST=''
+ENV POSTGRES_PORT=''
+ENV POSTGRES_DB=''
+ENV POSTGRES_USER=''
+ENV POSTGRES_PASSWORD=''
+ENV POSTGIS_URL=''
+
 #
 ## make django owner of the WORKDIR directory as well.
 #RUN chown django:django ${APP_HOME}
