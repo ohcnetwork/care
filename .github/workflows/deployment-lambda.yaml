@@ -69,6 +69,7 @@ jobs:
             --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             --build-arg POSTGRES_DB=${{ env.POSTGRES_DB }} \
             --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }} \
+            --build-arg DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
             -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             -f lambda_Dockerfile \
             .
