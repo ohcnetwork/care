@@ -8,6 +8,7 @@ on:
 env:
   POSTGRES_DB: preview_${{ github.event.pull_request.number }}
 jobs:
+
   create-db:
     name: Create new database
     runs-on: ubuntu-latest
