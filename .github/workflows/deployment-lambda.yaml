@@ -83,10 +83,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install AWS CLI and Docker CLI
+      - name: Install AWS CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y awscli docker.io
+          sudo apt-get install -y awscli
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
