@@ -1,15 +1,12 @@
 name: Lambda Deployment
-
 on:
   pull_request:
     branches:
       - devops/lambda-changes
     paths-ignore:
       - "docs/**"
-
 env:
   POSTGRES_DB: preview_${{ github.event.pull_request.number }}
-
 jobs:
   create-db:
     name: Create new database
@@ -77,4 +74,35 @@ jobs:
 
           docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
 
+  create-function:
+    runs-on: ubuntu-latest
+    environment:
+      name: care-preview
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Install AWS CLI and Docker CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli docker.io
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Create Lambda function from Docker image
+        run: |
+          aws lambda create-function \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --package-type Image \
+            --image-uri ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            --memory-size 256 \
+            --timeout 30
+          FUNCTION_ARN=$(aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} --query 'Configuration.FunctionArn' --output text)
+          FUNCTION_REGION=$(aws configure get region)
+          FUNCTION_URL="https://${FUNCTION_REGION}.console.aws.amazon.com/lambda/home/functions/preview_${{ github.event.pull_request.number }}?region=${FUNCTION_REGION}"
+          echo "Lambda function URL: ${FUNCTION_URL}"
