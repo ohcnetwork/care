@@ -103,7 +103,8 @@ jobs:
             --package-type Image \
             --image-uri ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             --memory-size 256 \
-            --timeout 30
+            --timeout 30 \
+            --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole
           FUNCTION_ARN=$(aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} --query 'Configuration.FunctionArn' --output text)
           FUNCTION_REGION=$(aws configure get region)
           FUNCTION_URL="https://${FUNCTION_REGION}.console.aws.amazon.com/lambda/home/functions/preview_${{ github.event.pull_request.number }}?region=${FUNCTION_REGION}"
