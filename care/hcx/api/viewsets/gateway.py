@@ -1,27 +1,30 @@
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.decorators import action
-from rest_framework.response import Response
+import json
+from datetime import datetime
+from re import IGNORECASE, search
+from uuid import uuid4 as uuid
+
+from django.db.models import Q
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from care.hcx.models.policy import Policy
-from care.hcx.models.claim import Claim
-from care.facility.models.patient_consultation import PatientConsultation
-from care.hcx.api.serializers.gateway import (
-    CheckEligibilitySerializer,
-    MakeClaimSerializer,
-)
-from care.hcx.api.serializers.policy import PolicySerializer
-from care.hcx.api.serializers.claim import ClaimSerializer
-from care.hcx.utils.fhir import Fhir
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import ICDDiseases
 from care.facility.tasks.patient.discharge_report import (
     generate_discharge_report_signed_url,
 )
-from uuid import uuid4 as uuid
-from care.hcx.utils.hcx import Hcx, HcxOperations
-import json
-from datetime import datetime
-from drf_yasg.utils import swagger_auto_schema
-from care.users.models import User
+from care.hcx.api.serializers.claim import ClaimSerializer
+from care.hcx.api.serializers.communication import CommunicationSerializer
+from care.hcx.api.serializers.gateway import (
+    CheckEligibilitySerializer,
+    MakeClaimSerializer,
+    SendCommunicationSerializer,
+)
+from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.models.base import (
     REVERSE_CLAIM_TYPE_CHOICES,
     REVERSE_PRIORITY_CHOICES,
@@ -29,10 +32,11 @@ from care.hcx.models.base import (
     REVERSE_STATUS_CHOICES,
     REVERSE_USE_CHOICES,
 )
-from care.facility.static_data.icd11 import ICDDiseases
-from django.db.models import Q
-from re import IGNORECASE, search
-from rest_framework.permissions import IsAuthenticated
+from care.hcx.models.claim import Claim
+from care.hcx.models.communication import Communication
+from care.hcx.models.policy import Policy
+from care.hcx.utils.fhir import Fhir
+from care.hcx.utils.hcx import Hcx, HcxOperations
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -251,6 +255,62 @@ class HcxGatewayViewSet(GenericViewSet):
             if REVERSE_USE_CHOICES[claim["use"]] == "claim"
             else HcxOperations.PRE_AUTH_SUBMIT,
             recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+        )
+
+        return Response(dict(response.get("response")), status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(tags=["hcx"], request_body=SendCommunicationSerializer())
+    @action(detail=False, methods=["post"])
+    def send_communication(self, request):
+        data = request.data
+
+        serializer = SendCommunicationSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        communication = CommunicationSerializer(
+            Communication.objects.get(external_id=data["communication"])
+        ).data
+
+        payload = [
+            *communication["content"],
+            *list(
+                map(
+                    lambda file: (
+                        {
+                            "type": "url",
+                            "name": file.name,
+                            "data": file.read_signed_url(),
+                        }
+                    ),
+                    FileUpload.objects.filter(associating_id=communication["id"]),
+                )
+            ),
+        ]
+
+        communication_fhir_bundle = Fhir().create_communication_bundle(
+            communication["id"],
+            communication["id"],
+            communication["id"],
+            communication["id"],
+            payload,
+            [{"type": "Claim", "id": communication["claim_object"]["id"]}],
+        )
+
+        if not Fhir().validate_fhir_remote(communication_fhir_bundle.json())["valid"]:
+            return Response(
+                Fhir().validate_fhir_remote(communication_fhir_bundle.json())["issues"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        response = Hcx().generateOutgoingHcxCall(
+            fhirPayload=json.loads(communication_fhir_bundle.json()),
+            operation=HcxOperations.COMMUNICATION_ON_REQUEST,
+            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            correlationId=Communication.objects.filter(
+                claim__external_id=communication["claim_object"]["id"], created_by=None
+            )
+            .last()
+            .identifier,
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)

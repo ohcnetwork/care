@@ -69,6 +69,10 @@ from care.facility.summarisation.facility_capacity import FacilityCapacitySummar
 from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
+from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.communication import CommunicationViewSet
+from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
+from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -78,9 +82,6 @@ from care.users.api.viewsets.lsg import (
 from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
-from care.hcx.api.viewsets.policy import PolicyViewSet
-from care.hcx.api.viewsets.claim import ClaimViewSet
-from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -196,6 +197,7 @@ consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 # HCX
 router.register("hcx/policy", PolicyViewSet)
 router.register("hcx/claim", ClaimViewSet)
+router.register("hcx/communication", CommunicationViewSet)
 router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
