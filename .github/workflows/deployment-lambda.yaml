@@ -99,7 +99,7 @@ jobs:
             --build-arg DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
             --build-arg DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }} \
             -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
-            -t public.ecr.aws/i5y4e6i7/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             -f lambda_Dockerfile \
             .
 
@@ -127,7 +127,7 @@ jobs:
           aws lambda create-function \
             --function-name preview_${{ github.event.pull_request.number }} \
             --package-type Image \
-            --code ImageUri=public.ecr.aws/i5y4e6i7/ohc.network/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             --memory-size 256 \
             --timeout 30 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole
