@@ -53,12 +53,12 @@ def migrate_prescriptions(apps, schema_editor):
                 key = str(advice['medicine'] or "") + str(advice['dosage'] or "") + str(
                     advice.get('indicator') or "") + str(advice.get('max_dosage') or "") + str(advice.get('min_time') or "")
                 if key not in current_medicines:
-                    current_medicines[key]["advice"] = advice
+                    current_medicines[key] = { "advice":  advice, "update_count": 0 }
                 current_medicines[key]["update_count"] += 1
             updates += 1
             for key in list(current_medicines.keys()):
                 if current_medicines[key] != updates:
-                    advice = current_medicines.pop(key)
+                    advice = current_medicines.pop(key)["advice"]
                     medicines_given.append(Prescription(
                         medicine=advice['medicine'],
                         dosage=advice['dosage'],
