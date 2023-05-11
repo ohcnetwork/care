@@ -43,15 +43,15 @@ def migrate_prescriptions(apps, schema_editor):
         daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("id")
         prescriptions = []
         for daily_round in daily_round_objects:
-            if daily_round.medicines_given:
-                prescriptions.append([daily_round.medicines_given, daily_round.created_at])
+            if daily_round.medication_given:
+                prescriptions.append([daily_round.medication_given, daily_round.created_date])
         medicines_given = []
         current_medicines = {}
         updates = 0
         for prescription in prescriptions:
             for advice in prescription[0]:
                 key = str(advice['medicine'] or "") + str(advice['dosage'] or "") + str(
-                    advice['indicator'] or "") + str(advice['max_dosage'] or "") + str(advice['min_time'] or "")
+                    advice.get('indicator') or "") + str(advice.get('max_dosage') or "") + str(advice.get('min_time') or "")
                 if key not in current_medicines:
                     current_medicines[key]["advice"] = advice
                 current_medicines[key]["update_count"] += 1
@@ -62,9 +62,9 @@ def migrate_prescriptions(apps, schema_editor):
                     medicines_given.append(Prescription(
                         medicine=advice['medicine'],
                         dosage=advice['dosage'],
-                        indicator=advice['indicator'],
-                        max_dosage=advice['max_dosage'],
-                        min_hours_between_doses=advice['min_time'],
+                        indicator=advice.get('indicator'),
+                        max_dosage=advice.get('max_dosage'),
+                        min_hours_between_doses=advice.get('min_time'),
                         route=advice['route'].upper(),
                         consultation=consultation,
                         is_prn=True,
@@ -79,9 +79,9 @@ def migrate_prescriptions(apps, schema_editor):
                 medicines_given.append(Prescription(
                     medicine=advice['medicine'],
                     dosage=advice['dosage'],
-                    indicator=advice['indicator'],
-                    max_dosage=advice['max_dosage'],
-                    min_hours_between_doses=advice['min_time'],
+                    indicator=advice.get('indicator'),
+                    max_dosage=advice.get('max_dosage'),
+                    min_hours_between_doses=advice.get('min_time'),
                     route=advice['route'].upper(),
                     consultation=consultation,
                     is_prn=True,
