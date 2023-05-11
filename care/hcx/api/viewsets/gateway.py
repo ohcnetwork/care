@@ -36,7 +36,8 @@ from care.hcx.models.claim import Claim
 from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
 from care.hcx.utils.fhir import Fhir
-from care.hcx.utils.hcx import Hcx, HcxOperations
+from care.hcx.utils.hcx import Hcx
+from care.hcx.utils.hcx.operations import HcxOperations
 
 
 class HcxGatewayViewSet(GenericViewSet):
