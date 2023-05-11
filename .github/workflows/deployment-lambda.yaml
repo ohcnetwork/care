@@ -79,11 +79,12 @@ jobs:
             --build-arg DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
             --build-arg DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }} \
             -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            -t public.ecr.aws/i5y4e6i7/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             -f lambda_Dockerfile \
             .
 
           docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
-          docker push public.ecr.aws/i5y4e6i7/ohc.network/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
+          docker push public.ecr.aws/i5y4e6i7/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
 
   create-function:
     runs-on: ubuntu-latest
