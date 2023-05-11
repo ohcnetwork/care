@@ -8,72 +8,72 @@ on:
 env:
   POSTGRES_DB: preview_${{ github.event.pull_request.number }}
 jobs:
-
-  create-db:
-    name: Create new database
-    runs-on: ubuntu-latest
-    environment:
-      name: care-preview
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install PostgreSQL client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
-      - name: Create new database
-        env:
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-        run: |
-          # Check if the database already exists
-          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='${POSTGRES_DB}'" | \
-              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w -tA | \
-              xargs)
-          if [ "${DATABASE_EXISTS}" = "1" ]; then
-            echo "Database already exists, skipping creation"
-          else
-            echo "Database doesn't exist, creating"
-            # Create the database
-            echo "CREATE DATABASE ${POSTGRES_DB};" | \
-              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w
-          fi
-
-  build-image:
-    name: Build & Push Staging to container registries
-    runs-on: ubuntu-latest
-    needs: create-db
-    environment:
-      name: care-preview
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build image
-
-        run: |
-          docker build \
-            --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
-            --build-arg POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
-            --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-            --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            --build-arg POSTGRES_DB=${{ env.POSTGRES_DB }} \
-            --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }} \
-            --build-arg DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
-            --build-arg DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }} \
-            -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
-            -f lambda_Dockerfile \
-            .
-
-          docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
+#
+#  create-db:
+#    name: Create new database
+#    runs-on: ubuntu-latest
+#    environment:
+#      name: care-preview
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Install PostgreSQL client
+#        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+#
+#      - name: Create new database
+#        env:
+#          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+#          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+#          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+#          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+#          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+#        run: |
+#          # Check if the database already exists
+#          DATABASE_EXISTS=$(echo "SELECT 1 FROM pg_database WHERE datname='${POSTGRES_DB}'" | \
+#              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w -tA | \
+#              xargs)
+#          if [ "${DATABASE_EXISTS}" = "1" ]; then
+#            echo "Database already exists, skipping creation"
+#          else
+#            echo "Database doesn't exist, creating"
+#            # Create the database
+#            echo "CREATE DATABASE ${POSTGRES_DB};" | \
+#              PGPASSWORD="${POSTGRES_PASSWORD}" psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -w
+#          fi
+#
+#  build-image:
+#    name: Build & Push Staging to container registries
+#    runs-on: ubuntu-latest
+#    needs: create-db
+#    environment:
+#      name: care-preview
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build image
+#
+#        run: |
+#          docker build \
+#            --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+#            --build-arg POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
+#            --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+#            --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+#            --build-arg POSTGRES_DB=${{ env.POSTGRES_DB }} \
+#            --build-arg POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }} \
+#            --build-arg DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
+#            --build-arg DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }} \
+#            -t ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+#            -f lambda_Dockerfile \
+#            .
+#
+#          docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
 
 
   create-function:
@@ -85,10 +85,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+#      - name: Install AWS CLI
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y awscli
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
