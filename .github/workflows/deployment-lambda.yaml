@@ -104,7 +104,7 @@ jobs:
             .
 
           docker push ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
-          docker push public.ecr.aws/i5y4e6i7/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ github.repository }}:lambda-${{ github.event.pull_request.number }}
 
   create-function:
     runs-on: ubuntu-latest
