@@ -102,7 +102,7 @@ jobs:
           aws lambda create-function \
             --function-name preview_${{ github.event.pull_request.number }} \
             --package-type Image \
-            --image-uri ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
+            --code ImageUri=ghcr.io/${{ github.repository }}:lambda-${{ github.event.pull_request.number }} \
             --memory-size 256 \
             --timeout 30 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole
