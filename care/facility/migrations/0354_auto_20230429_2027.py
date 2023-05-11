@@ -23,10 +23,37 @@ def migrate_prescriptions(apps, schema_editor):
                 is_prn=False,  # TODO : Why is this true
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
-                prescription_type=PrescriptionType.DISCHARGE.value
-
+                prescription_type=PrescriptionType.REGULAR.value
             )
         for advice in consultation.prn_prescription:
+            Prescription.objects.create(
+                medicine=advice['medicine'],
+                dosage=advice['dosage'],
+                indicator=advice['indicator'],
+                max_dosage=advice['max_dosage'],
+                min_hours_between_doses=advice['min_time'],
+                route=advice['route'].upper(),
+                consultation=consultation,
+                is_prn=True,
+                prescribed_by=consultation.created_by,
+                is_migrated=True,
+                prescription_type=PrescriptionType.REGULAR.value
+            )
+        for advice in consultation.discharge_prescription:
+            Prescription.objects.create(
+                frequency=advice['dosage'].upper(),
+                dosage=advice['dosage_new'],
+                medicine=advice['medicine'],
+                days=advice['days'],
+                notes=advice['notes'],
+                route=advice['route'].upper(),
+                consultation=consultation,
+                is_prn=False,  # TODO : Why is this true
+                prescribed_by=consultation.created_by,
+                is_migrated=True,
+                prescription_type=PrescriptionType.DISCHARGE.value
+            )
+        for advice in consultation.discharge_prn_prescription:
             Prescription.objects.create(
                 medicine=advice['medicine'],
                 dosage=advice['dosage'],
