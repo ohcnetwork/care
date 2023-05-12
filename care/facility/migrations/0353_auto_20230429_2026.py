@@ -31,8 +31,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('external_id', models.UUIDField(db_index=True, default=uuid.uuid4, unique=True)),
-                ('created_date', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
-                ('modified_date', models.DateTimeField(auto_now=True, db_index=True, null=True)),
+                ('created_date', models.DateTimeField(db_index=True, null=True)),
+                ('modified_date', models.DateTimeField(db_index=True, null=True)),
                 ('deleted', models.BooleanField(db_index=True, default=False)),
                 ('medicine', models.CharField(max_length=100)),
                 ('route',

@@ -23,7 +23,9 @@ def migrate_prescriptions(apps, schema_editor):
                 is_prn=False,  # TODO : Why is this true
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
-                prescription_type=PrescriptionType.REGULAR.value
+                prescription_type=PrescriptionType.REGULAR.value,
+                created_date=consultation.modified_date,
+                modified_date=consultation.modified_date,
             )
         for advice in consultation.prn_prescription:
             Prescription.objects.create(
@@ -37,7 +39,9 @@ def migrate_prescriptions(apps, schema_editor):
                 is_prn=True,
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
-                prescription_type=PrescriptionType.REGULAR.value
+                prescription_type=PrescriptionType.REGULAR.value,
+                created_date=consultation.modified_date,
+                modified_date=consultation.modified_date,
             )
         for advice in consultation.discharge_prescription:
             Prescription.objects.create(
@@ -51,7 +55,9 @@ def migrate_prescriptions(apps, schema_editor):
                 is_prn=False,  # TODO : Why is this true
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
-                prescription_type=PrescriptionType.DISCHARGE.value
+                prescription_type=PrescriptionType.DISCHARGE.value,
+                created_date=consultation.modified_date,
+                modified_date=consultation.modified_date,
             )
         for advice in consultation.discharge_prn_prescription:
             Prescription.objects.create(
@@ -65,7 +71,9 @@ def migrate_prescriptions(apps, schema_editor):
                 is_prn=True,
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
-                prescription_type=PrescriptionType.DISCHARGE.value
+                prescription_type=PrescriptionType.DISCHARGE.value,
+                created_date=consultation.modified_date,
+                modified_date=consultation.modified_date,
             )
         daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("id")
         prescriptions = []
