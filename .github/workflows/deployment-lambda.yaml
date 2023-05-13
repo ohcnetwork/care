@@ -124,6 +124,7 @@ jobs:
 
       - name: Create Lambda function from Docker image
         run: |
+          if ! aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
           aws lambda create-function \
             --function-name preview_${{ github.event.pull_request.number }} \
             --package-type Image \
@@ -169,7 +170,7 @@ jobs:
                 FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
                 FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
                 FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com }
-
+          fi
 
           FUNCTION_ARN=$(aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} --query 'Configuration.FunctionArn' --output text)
           FUNCTION_REGION=$(aws configure get region)
