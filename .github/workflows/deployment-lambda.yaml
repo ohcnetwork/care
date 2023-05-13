@@ -172,6 +172,7 @@ jobs:
                 FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com }
           fi
 
+
           FUNCTION_ARN=$(aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} --query 'Configuration.FunctionArn' --output text)
           FUNCTION_REGION=$(aws configure get region)
           FUNCTION_URL="https://${FUNCTION_REGION}.console.aws.amazon.com/lambda/home/functions/preview_${{ github.event.pull_request.number }}?region=${FUNCTION_REGION}"
