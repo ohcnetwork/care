@@ -124,7 +124,7 @@ jobs:
 
       - name: Create Lambda function from Docker image
         run: |
-          aws lambda get-function --function-name $1 > /dev/null 2>&1
+          aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} > /dev/null 2>&1
           if [ 0 -eq $? ]; then
             echo "Lambda '$1' exists"
           else
