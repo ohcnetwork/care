@@ -124,6 +124,7 @@ jobs:
 
       - name: Create Lambda function from Docker image
         run: |
+          pip3 install --upgrade --user awscli
           aws lambda create-function \
             --function-name preview_${{ github.event.pull_request.number }} \
             --package-type Image \
