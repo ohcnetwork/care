@@ -83,6 +83,7 @@ class AssetBedFilter(filters.FilterSet):
     asset = filters.UUIDFilter(field_name="asset__external_id")
     bed = filters.UUIDFilter(field_name="bed__external_id")
     facility = filters.UUIDFilter(field_name="bed__facility__external_id")
+    location = filters.UUIDFilter(field_name="bed__location__external_id")
 
 
 class AssetBedViewSet(
