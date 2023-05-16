@@ -169,4 +169,5 @@ jobs:
                 FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
                 FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
                 FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
-                FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com }
+                FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com \
+          }
