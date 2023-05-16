@@ -140,8 +140,8 @@ jobs:
                 DJANGO_SETTINGS_MODULE=config.settings.production, \
                 DJANGO_SECURE_SSL_REDIRECT=False, \
                 USE_S3=True, \
-                CSRF_TRUSTED_ORIGINS=\"[\"*\"]\", \
-                DJANGO_ALLOWED_HOSTS=\"[\"*\"]\", \
+                CSRF_TRUSTED_ORIGINS='[\"*\"]', \
+                DJANGO_ALLOWED_HOSTS='[\"*\"]', \
                 RATE_LIMIT=5/10m, \
                 MAINTANANCE_MODE=0, \
                 DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}, \
