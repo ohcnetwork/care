@@ -164,6 +164,7 @@ jobs:
                 GOOGLE_RECAPTCHA_SECRET_KEY=${{ secrets.GOOGLE_RECAPTCHA_SECRET_KEY }}, \
                 VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}, \
                 VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}, \
+                AWS_STORAGE_BUCKET_NAME=care-preview, \
                 FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
                 FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
                 FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
