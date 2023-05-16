@@ -14,6 +14,8 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     Facility,
     PatientRegistration,
+    Prescription,
+    PrescriptionType,
 )
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
@@ -74,8 +76,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
     discharge_notes = serializers.CharField(read_only=True)
 
-    discharge_prescription = serializers.JSONField(required=False)
-    discharge_prn_prescription = serializers.JSONField(required=False)
+    discharge_prescription = serializers.SerializerMethodField()
+    discharge_prn_prescription = serializers.SerializerMethodField()
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices,
@@ -98,6 +100,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     icd11_provisional_diagnoses_object = serializers.SerializerMethodField(
         read_only=True
     )
+
+    def get_discharge_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=False,
+        ).values()
+
+    def get_discharge_prn_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=True,
+        ).values()
 
     def get_icd11_diagnoses_object(self, consultation):
         return get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
@@ -380,11 +396,25 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     discharge_notes = serializers.CharField(required=True)
 
     discharge_date = serializers.DateTimeField(required=False)
-    discharge_prescription = serializers.JSONField(required=False)
-    discharge_prn_prescription = serializers.JSONField(required=False)
+    discharge_prescription = serializers.SerializerMethodField()
+    discharge_prn_prescription = serializers.SerializerMethodField()
 
     death_datetime = serializers.DateTimeField(required=False, allow_null=True)
     death_confirmed_doctor = serializers.CharField(required=False, allow_null=True)
+
+    def get_discharge_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=False,
+        ).values()
+
+    def get_discharge_prn_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=True,
+        ).values()
 
     class Meta:
         model = PatientConsultation

@@ -336,7 +336,7 @@
     </div>
     {% endif %}
 
-    {% if consultation.discharge_advice %}
+    {% if prescriptions %}
     <h4 class="mt-2 font-medium text-gray-500">
       Prescription Medication:
     </h4>
@@ -366,19 +366,19 @@
           </tr>
         </thead>
         <tbody>
-          {% for prescription in consultation.discharge_advice %}
+          {% for prescription in prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-normal text-sm">
               {{ prescription.medicine }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage_new }}
+              {{ prescription.dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.frequency }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.days }}
@@ -393,7 +393,7 @@
     </div>
     {% endif %}
 
-    {% if consultation.prn_prescription %}
+    {% if prn_prescriptions %}
     <h4 class="mt-2 font-medium text-gray-500">
       PRN Prescription:
     </h4>
@@ -423,7 +423,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for prescription in consultation.prn_prescription %}
+          {% for prescription in prn_prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 text-sm">
               {{ prescription.medicine }}
@@ -435,7 +435,7 @@
               {{ prescription.max_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.min_time }} Hrs.
+              {{ prescription.min_hours_between_doses }} Hrs.
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}

@@ -16,6 +16,8 @@ from care.facility.models import (
     InvestigationValue,
     PatientConsultation,
     PatientSample,
+    Prescription,
+    PrescriptionType,
 )
 from care.facility.models.file_upload import FileUpload
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
@@ -38,6 +40,16 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         & (Q(value__isnull=False) | Q(notes__isnull=False))
     )
     medical_history = Disease.objects.filter(patient=consultation.patient)
+    prescriptions = Prescription.objects.filter(
+        consultation=consultation,
+        prescription_type=PrescriptionType.DISCHARGE.value,
+        is_prn=False,
+    )
+    prn_prescriptions = Prescription.objects.filter(
+        consultation=consultation,
+        prescription_type=PrescriptionType.DISCHARGE.value,
+        is_prn=True,
+    )
 
     return {
         "patient": consultation.patient,
@@ -46,6 +58,8 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "diagnosis": diagnosis,
         "provisional_diagnosis": provisional_diagnosis,
         "consultation": consultation,
+        "prescriptions": prescriptions,
+        "prn_prescriptions": prn_prescriptions,
         "dailyrounds": daily_rounds,
         "medical_history": medical_history,
         "investigations": investigations,
