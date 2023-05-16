@@ -115,6 +115,8 @@ ENV DJANGO_ADMIN_URL=$DJANGO_ADMIN_URL
 ENV SNS_ACCESS_KEY=$SNS_ACCESS_KEY
 ENV SNS_SECRET_KEY=$SNS_SECRET_KEY
 
+# run collectstatic
+RUN python manage.py collectstatic --noinput
 # run django migrations
 RUN python manage.py migrate
 
