@@ -128,15 +128,7 @@
           {{consultation.symptoms_onset_date.date}}
         </p>
       </div>
-      <p>
-        <span class="text-sm leading-5 font-medium text-gray-500">History of present illness:</span>
-        {{consultation.history_of_present_illness}}
-      </p>
       {% endif %}
-      <p>
-        <span class="text-sm leading-5 font-medium text-gray-500">Examination details and Clinical conditions:</span>
-        {{consultation.examination_details}}
-      </p>
     </div>
 
     {% if hcx %}
@@ -254,9 +246,9 @@
 
     {% if medical_history %}
     <h4 class="mt-4 font-medium text-gray-500">
-      Comorbidities:
+      Medication History:
     </h4>
-    <div class="">
+    <div class="mb-2">
       <table class="min-w-full">
         <thead>
           <tr
@@ -284,6 +276,34 @@
       </table>
     </div>
     {% endif %}
+
+    <div class="flex flex-col gap-2">
+      <h4 class="mt-4 font-medium text-gray-500">
+        Health status at admission:
+      </h4>
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Present health condition:</span>
+        {{patient.present_health}}
+      </p>
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Ongoing Medication:</span>
+        {{patient.ongoing_medication}}
+      </p>
+      {% if consultation.consultation_status != 1 %}
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">History of present illness:</span>
+        {{consultation.history_of_present_illness}}
+      </p>
+      {% endif %}
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Examination details and Clinical conditions:</span>
+        {{consultation.examination_details}}
+      </p>
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Allergies:</span>
+        {{patient.allergies}}
+      </p>
+    </div>
   </div>
 
   {% if consultation.suggestion != 'DD' %}
@@ -293,6 +313,28 @@
     </h3>
   </div>
   <div class="px-4 py-5">
+    {% if patient.disease_status == 2 %}
+    <div class="flex gap-6">
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">COVID Disease Status:</span>
+        Positive
+      </p>
+      {% if patient.date_of_result %}
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Test Result Date:</span>
+        {{patient.date_of_result.date}}
+      </p>
+      {% endif %}
+      <p>
+        <span class="text-sm leading-5 font-medium text-gray-500">Vaccinated against COVID:</span>
+        {% if patient.is_vaccinated %}
+        Yes
+        {% else %}
+        No
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
     {% if consultation.investigation %}
     <h4 class="mt-2 font-medium text-gray-500">
       Investigations Suggestions:
@@ -626,9 +668,7 @@
     <div class="mt-4">
       <table class="min-w-full">
         <thead>
-          <tr
-            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-          </tr>
+          <tr class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
           <th class="p-2">
             Group
           </th>
