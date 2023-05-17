@@ -333,48 +333,6 @@
       </p>
     </div>
     {% endif %}
-    {% if consultation.investigation %}
-    <h4 class="mt-6 font-medium text-gray-500">
-      Investigations Suggestions:
-    </h4>
-    <div class="">
-      <table class="min-w-full">
-        <thead>
-          <tr
-            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-            <th class="p-2">
-              Type
-            </th>
-            <th class="p-2">
-              Time
-            </th>
-            <th class="p-2">
-              Notes
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for investigation in consultation.investigation %}
-          <tr class="bg-white border-b">
-            <td class="p-1 whitespace-normal text-sm">
-              {{investigation.type|join:", "}}
-            </td>
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {% if investigation.repetitive %}
-              every {{investigation.frequency}}
-              {% else %}
-              {{investigation.time|parse_datetime}}
-              {% endif %}
-            </td>
-            <td class="p-1 whitespace-normal text-sm">
-              {{investigation.notes}}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
 
     {% if prescriptions %}
     <h4 class="mt-6 font-medium text-gray-500">
@@ -490,6 +448,49 @@
     </div>
     {% endif %}
 
+    {% if consultation.investigation %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Investigations Suggestions:
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              Type
+            </th>
+            <th class="p-2">
+              Time
+            </th>
+            <th class="p-2">
+              Notes
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for investigation in consultation.investigation %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-normal text-sm">
+              {{investigation.type|join:", "}}
+            </td>
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {% if investigation.repetitive %}
+              every {{investigation.frequency}}
+              {% else %}
+              {{investigation.time|parse_datetime}}
+              {% endif %}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{investigation.notes}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
     {% if consultation.procedure %}
     <h4 class="mt-6 font-medium text-gray-500">
       Procedures:
@@ -543,7 +544,7 @@
     {% endif %}
 
     {% if consultation.consultation_notes %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       General Instructions (Advice):
     </h4>
     <p>
@@ -736,9 +737,6 @@
         <span class="text-sm text-gray-500">Discharge Reason:</span> {{consultation.get_discharge_reason_display}}
       </p>
     </div>
-    <p>
-      <span class="text-sm text-gray-500">Discharge Notes:</span> {{consultation.discharge_notes}}
-    </p>
     {% if consultation.discharge_reason == 'REC' %}
     {% if discharge_prescriptions %}
     <h4 class="mt-6 font-medium text-gray-500">
@@ -857,6 +855,10 @@
     {% elif consultation.discharge_reason == 'EXP' %}
     {% elif consultation.discharge_reason == 'LAMA' %}
     {% endif %}
+
+    <p class="mt-6">
+      <span class="text-sm text-gray-500">Discharge Notes:</span> {{consultation.discharge_notes}}
+    </p>
   </div>
 
   <div class="m-4 mb-12">
