@@ -129,7 +129,7 @@ jobs:
             aws lambda update-function-code \
               --function-name preview_${{ github.event.pull_request.number }} \
               --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
-              --publish True
+              --publish
           else
             aws lambda create-function \
               --function-name preview_${{ github.event.pull_request.number }} \
