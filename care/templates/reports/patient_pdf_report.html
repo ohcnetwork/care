@@ -37,8 +37,8 @@
     </div>
     <img class='h-12' src="https://cdn.coronasafe.network/black-logo.svg" />
   </div>
-  <div class="px-4 py-5 ">
-    <div class="flex flex-wrap gap-2">
+  <div class="px-4 py-5">
+    <div class="flex flex-wrap gap-x-5 gap-y-2">
       <p>
         <span class="text-sm text-gray-500">Full name:</span> {{patient.name}}
       </p>
@@ -54,8 +54,6 @@
       <p>
         <span class="text-sm text-gray-500">Blood Group:</span> {{patient.blood_group}}
       </p>
-    </div>
-    <div class="flex flex-wrap gap-x-2">
       <p class="w-max flex-shrink-0">
         <span class="text-sm text-gray-500">Phone Number:</span> {{patient.phone_number}}
       </p>
@@ -132,7 +130,7 @@
     </div>
 
     {% if hcx %}
-    <h4 class="mt-4 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Health insurance details:
     </h4>
 
@@ -178,7 +176,7 @@
     {% endif %}
 
     {% if provisional_diagnosis %}
-    <h4 class="mt-4 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Provisional Diagnosis (as per ICD-11 recommended by WHO):
     </h4>
     <div class="">
@@ -211,7 +209,7 @@
     {% endif %}
 
     {% if diagnosis %}
-    <h4 class="mt-4 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Diagnosis (as per ICD-11 recommended by WHO):
     </h4>
     <div class="">
@@ -245,7 +243,7 @@
 
 
     {% if medical_history %}
-    <h4 class="mt-4 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Medication History:
     </h4>
     <div class="mb-2">
@@ -278,7 +276,7 @@
     {% endif %}
 
     <div class="flex flex-col gap-2">
-      <h4 class="mt-4 font-medium text-gray-500">
+      <h4 class="mt-6 font-bold text-gray-500">
         Health status at admission:
       </h4>
       <p>
@@ -307,7 +305,7 @@
   </div>
 
   {% if consultation.suggestion != 'DD' %}
-  <div class="mt-4 px-4 py-5 border-b border-t border-gray-200">
+  <div class="mt-6 px-4 py-5 border-b border-t border-gray-200">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Treatment Summary
     </h3>
@@ -336,7 +334,7 @@
     </div>
     {% endif %}
     {% if consultation.investigation %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Investigations Suggestions:
     </h4>
     <div class="">
@@ -379,7 +377,7 @@
     {% endif %}
 
     {% if prescriptions %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Prescription Medication:
     </h4>
     <div class="">
@@ -436,7 +434,7 @@
     {% endif %}
 
     {% if prn_prescriptions %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       PRN Prescription:
     </h4>
     <div class="">
@@ -493,7 +491,7 @@
     {% endif %}
 
     {% if consultation.procedure %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Procedures:
     </h4>
     <div class="">
@@ -536,7 +534,7 @@
     {% endif %}
 
     {% if consultation.prescribed_medication %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       prescribed_medication:
     </h4>
     <p>
@@ -660,12 +658,12 @@
     {% endif %}
 
     {% if investigations %}
-    <div class="px-4 py-5 border-b border-t border-gray-200 sm:px-6">
+    <div class="mt-6 px-4 py-5 border-b border-t border-gray-200 sm:px-6">
       <h3 class="text-lg leading-6 font-medium text-gray-900">
         Investigation History
       </h3>
     </div>
-    <div class="mt-4">
+    <div class="mt-6">
       <table class="min-w-full">
         <thead>
           <tr class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
@@ -724,7 +722,7 @@
   </div>
   {% endif %}
 
-  <div class="mt-4 px-4 py-5 border-b border-t border-gray-200">
+  <div class="mt-6 px-4 py-5 border-b border-t border-gray-200">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
       Discharge Summary
     </h3>
@@ -743,7 +741,7 @@
     </p>
     {% if consultation.discharge_reason == 'REC' %}
     {% if discharge_prescriptions %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Discharge Prescription Medication:
     </h4>
     <div class="">
@@ -800,7 +798,7 @@
     {% endif %}
 
     {% if discharge_prn_prescriptions %}
-    <h4 class="mt-2 font-medium text-gray-500">
+    <h4 class="mt-6 font-medium text-gray-500">
       Discharge PRN Prescription:
     </h4>
     <div class="">
