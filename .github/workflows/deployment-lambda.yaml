@@ -126,7 +126,7 @@ jobs:
         run: |
           pip3 install --upgrade --user awscli
           if aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
-            aws lambda update-function \
+            aws lambda update-function-code \
               --function-name preview_${{ github.event.pull_request.number }} \
               --package-type Image \
               --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
