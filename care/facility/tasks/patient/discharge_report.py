@@ -42,10 +42,20 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     medical_history = Disease.objects.filter(patient=consultation.patient)
     prescriptions = Prescription.objects.filter(
         consultation=consultation,
-        prescription_type=PrescriptionType.DISCHARGE.value,
+        prescription_type=PrescriptionType.REGULAR.value,
         is_prn=False,
     )
     prn_prescriptions = Prescription.objects.filter(
+        consultation=consultation,
+        prescription_type=PrescriptionType.REGULAR.value,
+        is_prn=True,
+    )
+    discharge_prescriptions = Prescription.objects.filter(
+        consultation=consultation,
+        prescription_type=PrescriptionType.DISCHARGE.value,
+        is_prn=False,
+    )
+    discharge_prn_prescriptions = Prescription.objects.filter(
         consultation=consultation,
         prescription_type=PrescriptionType.DISCHARGE.value,
         is_prn=True,
@@ -60,6 +70,8 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "consultation": consultation,
         "prescriptions": prescriptions,
         "prn_prescriptions": prn_prescriptions,
+        "discharge_prescriptions": discharge_prescriptions,
+        "discharge_prn_prescriptions": discharge_prn_prescriptions,
         "dailyrounds": daily_rounds,
         "medical_history": medical_history,
         "investigations": investigations,

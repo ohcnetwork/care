@@ -702,7 +702,7 @@
       <span class="text-sm text-gray-500">Discharge Notes:</span> {{consultation.discharge_notes}}
     </p>
     {% if consultation.discharge_reason == 'REC' %}
-    {% if consultation.discharge_prescription %}
+    {% if discharge_prescriptions %}
     <h4 class="mt-2 font-medium text-gray-500">
       Discharge Prescription Medication:
     </h4>
@@ -732,24 +732,24 @@
           </tr>
         </thead>
         <tbody>
-          {% for prescription in consultation.discharge_prescription %}
+          {% for prescription in discharge_prescriptions %}
           <tr class="bg-white border-b">
-            <td class="p-1 font-sm">
+            <td class="p-1 whitespace-normal text-sm">
               {{ prescription.medicine }}
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
-              {{ prescription.dosage_new }}
-            </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
-              {{ prescription.route }}
-            </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
+            <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{ prescription.route }}
+            </td>
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{ prescription.frequency }}
+            </td>
+            <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.days }}
             </td>
-            <td class="p-1 whitespace-normal font-sm">
+            <td class="p-1 whitespace-normal text-sm">
               {{ prescription.notes }}
             </td>
           </tr>
@@ -758,7 +758,8 @@
       </table>
     </div>
     {% endif %}
-    {% if consultation.discharge_prn_prescription %}
+
+    {% if discharge_prn_prescriptions %}
     <h4 class="mt-2 font-medium text-gray-500">
       Discharge PRN Prescription:
     </h4>
@@ -788,24 +789,24 @@
           </tr>
         </thead>
         <tbody>
-          {% for prescription in consultation.discharge_prn_prescription %}
+          {% for prescription in discharge_prn_prescriptions %}
           <tr class="bg-white border-b">
-            <td class="p-1 font-sm">
+            <td class="p-1 text-sm">
               {{ prescription.medicine }}
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
+            <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
+            <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
-              {{ prescription.min_time }} Hrs.
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{ prescription.min_hours_between_doses }} Hrs.
             </td>
-            <td class="p-1 whitespace-no-wrap font-sm">
+            <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
             </td>
-            <td class="p-1 font-sm">
+            <td class="p-1 text-sm">
               {{ prescription.indicator }}
             </td>
           </tr>
