@@ -2,7 +2,6 @@
 
 
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
-DOCKER_COMPOSE_VERSION := $(shell docker-compose --version 2>/dev/null)
 
 docker_config_file := 'docker-compose.local.yaml'
 
@@ -10,27 +9,24 @@ all:
 ifndef DOCKER_VERSION
     $(error "command docker is not available, please install Docker")
 endif
-ifndef DOCKER_COMPOSE_VERSION
-    $(error "command docker-compose is not available, please install Docker")
-endif
 
 re-build:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) build --no-cache
+	docker compose -f docker-compose.yaml -f $(docker_config_file) build --no-cache
 
 build:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) build
+	docker compose -f docker-compose.yaml -f $(docker_config_file) build
 
 up:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) up -d
+	docker compose -f docker-compose.yaml -f $(docker_config_file) up -d
 
 down:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) down
+	docker compose -f docker-compose.yaml -f $(docker_config_file) down
 
 list:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) ps
+	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
 
 logs:
-	docker-compose -f docker-compose.yaml -f $(docker_config_file) logs
+	docker compose -f docker-compose.yaml -f $(docker_config_file) logs
 
 makemigrations: up
 	docker exec care bash -c "python manage.py makemigrations"
