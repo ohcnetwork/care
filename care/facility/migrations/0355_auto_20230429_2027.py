@@ -4,13 +4,25 @@ from django.db import migrations
 
 from care.facility.models.prescription import PrescriptionType
 
-FREQUENCY_OPTIONS = ["STAT", "OD", "HS", "BD", "TID", "QID", "Q4H", "QOD", "QWK"]
+FREQUENCY_OPTIONS = [
+    "STAT",
+    "OD",
+    "HS",
+    "BD",
+    "TID",
+    "QID",
+    "Q4H",
+    "QOD",
+    "QWK",
+]
+
 
 def clean_integer(value):
     try:
         return round(float(value)) or None
     except:
         return None
+
 
 def clean_prescription(data):
     cleaned_data = {}
@@ -20,7 +32,9 @@ def clean_prescription(data):
     cleaned_data["days"] = clean_integer(data.get("days", 0))
     cleaned_data["indicator"] = data.get("indicator")
     cleaned_data["max_dosage"] = data.get("max_dosage")
-    cleaned_data["min_hours_between_doses"] = clean_integer(data.get("min_time", 0))
+    cleaned_data["min_hours_between_doses"] = clean_integer(
+        data.get("min_time", 0)
+    )
     cleaned_data["notes"] = data.get("notes", "")
 
     if data.get("dosage", "").upper() in FREQUENCY_OPTIONS:
@@ -37,9 +51,9 @@ def clean_prescription(data):
 
 
 def migrate_prescriptions(apps, schema_editor):
-    PatientConsultation = apps.get_model('facility', 'PatientConsultation')
-    Prescription = apps.get_model('facility', 'Prescription')
-    DailyRound = apps.get_model('facility', 'DailyRound')
+    PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    Prescription = apps.get_model("facility", "Prescription")
+    DailyRound = apps.get_model("facility", "DailyRound")
 
     for consultation in PatientConsultation.objects.all():
         for advice in consultation.discharge_advice:
@@ -94,20 +108,32 @@ def migrate_prescriptions(apps, schema_editor):
                 created_date=consultation.modified_date,
                 modified_date=consultation.modified_date,
             )
-        daily_round_objects = DailyRound.objects.filter(consultation=consultation).order_by("id")
+        daily_round_objects = DailyRound.objects.filter(
+            consultation=consultation
+        ).order_by("id")
         prescriptions = []
         for daily_round in daily_round_objects:
             if daily_round.medication_given:
-                prescriptions.append([daily_round.medication_given, daily_round.created_date])
+                prescriptions.append(
+                    [daily_round.medication_given, daily_round.created_date]
+                )
         medicines_given = []
         current_medicines = {}
         updates = 0
         for prescription in prescriptions:
             for advice in prescription[0]:
-                key = str(advice.get('medicine', "")) + str(advice.get('dosage', "")) + str(
-                    advice.get('indicator') or "") + str(advice.get('max_dosage') or "") + str(advice.get('min_time') or "")
+                key = (
+                    str(advice.get("medicine", ""))
+                    + str(advice.get("dosage", ""))
+                    + str(advice.get("indicator") or "")
+                    + str(advice.get("max_dosage") or "")
+                    + str(advice.get("min_time") or "")
+                )
                 if key not in current_medicines:
-                    current_medicines[key] = { "advice":  advice, "update_count": 0 }
+                    current_medicines[key] = {
+                        "advice": advice,
+                        "update_count": 0,
+                    }
                 current_medicines[key]["update_count"] += 1
             updates += 1
             for key in list(current_medicines.keys()):
@@ -115,7 +141,25 @@ def migrate_prescriptions(apps, schema_editor):
                     advice = current_medicines.pop(key)["advice"]
                     if advice.get("medicine") is None:
                         continue
-                    medicines_given.append(Prescription(
+                    medicines_given.append(
+                        Prescription(
+                            **clean_prescription(advice),
+                            consultation=consultation,
+                            is_prn=False,
+                            prescribed_by=consultation.created_by,
+                            is_migrated=True,
+                            prescription_type=PrescriptionType.REGULAR.value,
+                            discontinued=True,
+                            created_date=prescription[1],
+                            modified_date=prescription[1],
+                        )
+                    )
+            for key in list(current_medicines.keys()):
+                advice = current_medicines.pop(key)
+                if advice.get("medicine") is None:
+                    continue
+                medicines_given.append(
+                    Prescription(
                         **clean_prescription(advice),
                         consultation=consultation,
                         is_prn=False,
@@ -124,23 +168,9 @@ def migrate_prescriptions(apps, schema_editor):
                         prescription_type=PrescriptionType.REGULAR.value,
                         discontinued=True,
                         created_date=prescription[1],
-                        modified_date=prescription[1]
-                    ))
-            for key in list(current_medicines.keys()):
-                advice = current_medicines.pop(key)
-                if advice.get("medicine") is None:
-                    continue
-                medicines_given.append(Prescription(
-                    **clean_prescription(advice),
-                    consultation=consultation,
-                    is_prn=False,
-                    prescribed_by=consultation.created_by,
-                    is_migrated=True,
-                    prescription_type=PrescriptionType.REGULAR.value,
-                    discontinued=True,
-                    created_date=prescription[1],
-                    modified_date=prescription[1]
-                ))
+                        modified_date=prescription[1],
+                    )
+                )
     # Look at all daily round objects under this consultation
     # Fetch all prescriptions for that patient
     # For patients with multiple prescriptions :
@@ -151,7 +181,7 @@ def migrate_prescriptions(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0354_auto_20230519_1501'),
+        ("facility", "0354_auto_20230519_1501"),
     ]
 
     operations = [

@@ -1,14 +1,21 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework import mixins
-from rest_framework import status
+from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer
-from care.facility.models import Prescription, MedicineAdministration, PrescriptionType, generate_choices
+from care.facility.api.serializers.prescription import (
+    MedicineAdministrationSerializer,
+    PrescriptionSerializer,
+)
+from care.facility.models import (
+    MedicineAdministration,
+    Prescription,
+    PrescriptionType,
+    generate_choices,
+)
 from care.utils.filters import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
@@ -27,11 +34,11 @@ class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
 
 
-class MedicineAdministrationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
+class MedicineAdministrationViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
+):
     serializer_class = MedicineAdministrationSerializer
-    permission_classes = (
-        IsAuthenticated,
-    )
+    permission_classes = (IsAuthenticated,)
     queryset = MedicineAdministration.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -39,13 +46,14 @@ class MedicineAdministrationViewSet(mixins.ListModelMixin, mixins.RetrieveModelM
 
     def get_consultation_obj(self):
         return get_object_or_404(
-            get_consultation_queryset(self.request.user).filter(external_id=self.kwargs["consultation_external_id"]))
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
 
     def get_queryset(self):
         consultation_obj = self.get_consultation_obj()
-        return self.queryset.filter(
-            prescription__consultation_id=consultation_obj.id
-        )
+        return self.queryset.filter(prescription__consultation_id=consultation_obj.id)
 
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
@@ -60,9 +68,7 @@ class ConsultationPrescriptionViewSet(
     GenericViewSet,
 ):
     serializer_class = PrescriptionSerializer
-    permission_classes = (
-        IsAuthenticated,
-    )
+    permission_classes = (IsAuthenticated,)
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -70,13 +76,14 @@ class ConsultationPrescriptionViewSet(
 
     def get_consultation_obj(self):
         return get_object_or_404(
-            get_consultation_queryset(self.request.user).filter(external_id=self.kwargs["consultation_external_id"]))
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
 
     def get_queryset(self):
         consultation_obj = self.get_consultation_obj()
-        return self.queryset.filter(
-            consultation_id=consultation_obj.id
-        )
+        return self.queryset.filter(consultation_id=consultation_obj.id)
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
@@ -86,11 +93,15 @@ class ConsultationPrescriptionViewSet(
     def discontinue(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
-        prescription_obj.discontinued_reason = request.data.get("discontinued_reason", None)
+        prescription_obj.discontinued_reason = request.data.get(
+            "discontinued_reason", None
+        )
         prescription_obj.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
-    @action(methods=["POST"], detail=True, serializer_class=MedicineAdministrationSerializer)
+    @action(
+        methods=["POST"], detail=True, serializer_class=MedicineAdministrationSerializer
+    )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         serializer = MedicineAdministrationSerializer(data=request.data)

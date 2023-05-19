@@ -6,7 +6,6 @@ from config.serializers import ChoiceField
 
 
 class PatientScopedSearchSerializer(serializers.ModelSerializer):
-
     gender = ChoiceField(choices=GENDER_CHOICES)
     facility = FacilityBasicInfoSerializer()
     id = serializers.CharField(source="patient_external_id")

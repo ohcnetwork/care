@@ -20,7 +20,6 @@ class Command(BaseCommand):
         parser.add_argument("folder", help="path to the folder of JSONs")
 
     def handle(self, *args, **options) -> Optional[str]:
-
         folder = options["folder"]
         counter = 0
         local_bodies = []
