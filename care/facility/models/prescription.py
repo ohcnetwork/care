@@ -48,7 +48,7 @@ class Prescription(BaseModel):
 
     medicine = models.CharField(max_length=100, blank=False, null=False)
     route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
-    dosage = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=100, blank=True, null=True)
 
     is_prn = models.BooleanField(default=False)
 
