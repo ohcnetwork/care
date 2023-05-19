@@ -4,6 +4,31 @@ from django.db import migrations
 
 from care.facility.models.prescription import PrescriptionType
 
+FREQUENCY_OPTIONS = ["STAT", "OD", "HS", "BD", "TID", "QID", "Q4H", "QOD", "QWK"]
+
+def clean_prescription(data):
+    cleaned_data = {}
+
+    cleaned_data["medicine"] = data.get("medicine", "Not Specified")
+    cleaned_data["route"] = data.get("route", "").upper() or None
+    cleaned_data["days"] = int(data.get("days")) if data.get("days") is not None else None
+    cleaned_data["indicator"] = data.get("indicator")
+    cleaned_data["max_dosage"] = data.get("max_dosage")
+    cleaned_data["min_hours_between_doses"] = int(data.get("min_time", 0)) or None
+    cleaned_data["notes"] = data.get("notes")
+
+    if data.get("dosage", "").upper() in FREQUENCY_OPTIONS:
+        cleaned_data["frequency"] = data.get("dosage")
+        cleaned_data["dosage"] = data.get("dosage_new")
+    elif data.get("dosage_new", "").upper() in FREQUENCY_OPTIONS:
+        cleaned_data["frequency"] = data.get("dosage_new")
+        cleaned_data["dosage"] = data.get("dosage")
+    else:
+        cleaned_data["frequency"] = None
+        cleaned_data["dosage"] = data.get("dosage_new") or data.get("dosage")
+
+    return cleaned_data
+
 
 def migrate_prescriptions(apps, schema_editor):
     PatientConsultation = apps.get_model('facility', 'PatientConsultation')
@@ -13,14 +38,9 @@ def migrate_prescriptions(apps, schema_editor):
     for consultation in PatientConsultation.objects.all():
         for advice in consultation.discharge_advice:
             Prescription.objects.create(
-                frequency=advice['dosage'].upper(),
-                dosage=advice['dosage_new'],
-                medicine=advice['medicine'],
-                days=advice['days'],
-                notes=advice['notes'],
-                route=advice['route'].upper(),
+                **clean_prescription(advice),
                 consultation=consultation,
-                is_prn=False,  # TODO : Why is this true
+                is_prn=False,
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
                 prescription_type=PrescriptionType.REGULAR.value,
@@ -29,12 +49,7 @@ def migrate_prescriptions(apps, schema_editor):
             )
         for advice in consultation.prn_prescription:
             Prescription.objects.create(
-                medicine=advice['medicine'],
-                dosage=advice['dosage'],
-                indicator=advice['indicator'],
-                max_dosage=advice['max_dosage'],
-                min_hours_between_doses=advice['min_time'],
-                route=advice['route'].upper(),
+                **clean_prescription(advice),
                 consultation=consultation,
                 is_prn=True,
                 prescribed_by=consultation.created_by,
@@ -45,14 +60,9 @@ def migrate_prescriptions(apps, schema_editor):
             )
         for advice in consultation.discharge_prescription:
             Prescription.objects.create(
-                frequency=advice['dosage'].upper(),
-                dosage=advice['dosage_new'],
-                medicine=advice['medicine'],
-                days=advice['days'],
-                notes=advice['notes'],
-                route=advice['route'].upper(),
+                **clean_prescription(advice),
                 consultation=consultation,
-                is_prn=False,  # TODO : Why is this true
+                is_prn=False,
                 prescribed_by=consultation.created_by,
                 is_migrated=True,
                 prescription_type=PrescriptionType.DISCHARGE.value,
@@ -61,12 +71,7 @@ def migrate_prescriptions(apps, schema_editor):
             )
         for advice in consultation.discharge_prn_prescription:
             Prescription.objects.create(
-                medicine=advice['medicine'],
-                dosage=advice['dosage'],
-                indicator=advice['indicator'],
-                max_dosage=advice['max_dosage'],
-                min_hours_between_doses=advice['min_time'],
-                route=advice['route'].upper(),
+                **clean_prescription(advice),
                 consultation=consultation,
                 is_prn=True,
                 prescribed_by=consultation.created_by,
@@ -95,36 +100,28 @@ def migrate_prescriptions(apps, schema_editor):
                 if current_medicines[key] != updates:
                     advice = current_medicines.pop(key)["advice"]
                     medicines_given.append(Prescription(
-                        medicine=advice['medicine'],
-                        dosage=advice['dosage'],
-                        indicator=advice.get('indicator'),
-                        max_dosage=advice.get('max_dosage'),
-                        min_hours_between_doses=advice.get('min_time'),
-                        route=advice['route'].upper(),
+                        **clean_prescription(advice),
                         consultation=consultation,
                         is_prn=False,
                         prescribed_by=consultation.created_by,
                         is_migrated=True,
                         prescription_type=PrescriptionType.REGULAR.value,
                         discontinued=True,
-                        created_date=prescription[1]
+                        created_date=prescription[1],
+                        modified_date=prescription[1]
                     ))
             for key in list(current_medicines.keys()):
                 advice = current_medicines.pop(key)
                 medicines_given.append(Prescription(
-                    medicine=advice['medicine'],
-                    dosage=advice['dosage'],
-                    indicator=advice.get('indicator'),
-                    max_dosage=advice.get('max_dosage'),
-                    min_hours_between_doses=advice.get('min_time'),
-                    route=advice['route'].upper(),
+                    **clean_prescription(advice),
                     consultation=consultation,
                     is_prn=False,
                     prescribed_by=consultation.created_by,
                     is_migrated=True,
                     prescription_type=PrescriptionType.REGULAR.value,
                     discontinued=True,
-                    created_date=prescription[1]
+                    created_date=prescription[1],
+                    modified_date=prescription[1]
                 ))
     # Look at all daily round objects under this consultation
     # Fetch all prescriptions for that patient
