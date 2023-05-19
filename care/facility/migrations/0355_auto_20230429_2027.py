@@ -9,7 +9,7 @@ FREQUENCY_OPTIONS = ["STAT", "OD", "HS", "BD", "TID", "QID", "Q4H", "QOD", "QWK"
 def clean_prescription(data):
     cleaned_data = {}
 
-    cleaned_data["medicine"] = data.get("medicine", "Not Specified")
+    cleaned_data["medicine"] = data["medicine"]
     cleaned_data["route"] = data.get("route", "").upper() or None
     cleaned_data["days"] = int(data.get("days")) if data.get("days") is not None else None
     cleaned_data["indicator"] = data.get("indicator")
@@ -37,6 +37,8 @@ def migrate_prescriptions(apps, schema_editor):
 
     for consultation in PatientConsultation.objects.all():
         for advice in consultation.discharge_advice:
+            if advice.get("medicine") is None:
+                continue
             Prescription.objects.create(
                 **clean_prescription(advice),
                 consultation=consultation,
@@ -48,6 +50,8 @@ def migrate_prescriptions(apps, schema_editor):
                 modified_date=consultation.modified_date,
             )
         for advice in consultation.prn_prescription:
+            if advice.get("medicine") is None:
+                continue
             Prescription.objects.create(
                 **clean_prescription(advice),
                 consultation=consultation,
@@ -59,6 +63,8 @@ def migrate_prescriptions(apps, schema_editor):
                 modified_date=consultation.modified_date,
             )
         for advice in consultation.discharge_prescription:
+            if advice.get("medicine") is None:
+                continue
             Prescription.objects.create(
                 **clean_prescription(advice),
                 consultation=consultation,
@@ -70,6 +76,8 @@ def migrate_prescriptions(apps, schema_editor):
                 modified_date=consultation.modified_date,
             )
         for advice in consultation.discharge_prn_prescription:
+            if advice.get("medicine") is None:
+                continue
             Prescription.objects.create(
                 **clean_prescription(advice),
                 consultation=consultation,
@@ -90,7 +98,7 @@ def migrate_prescriptions(apps, schema_editor):
         updates = 0
         for prescription in prescriptions:
             for advice in prescription[0]:
-                key = str(advice['medicine'] or "") + str(advice['dosage'] or "") + str(
+                key = str(advice.get('medicine', "")) + str(advice.get('dosage', "")) + str(
                     advice.get('indicator') or "") + str(advice.get('max_dosage') or "") + str(advice.get('min_time') or "")
                 if key not in current_medicines:
                     current_medicines[key] = { "advice":  advice, "update_count": 0 }
@@ -99,6 +107,8 @@ def migrate_prescriptions(apps, schema_editor):
             for key in list(current_medicines.keys()):
                 if current_medicines[key] != updates:
                     advice = current_medicines.pop(key)["advice"]
+                    if advice.get("medicine") is None:
+                        continue
                     medicines_given.append(Prescription(
                         **clean_prescription(advice),
                         consultation=consultation,
@@ -112,6 +122,8 @@ def migrate_prescriptions(apps, schema_editor):
                     ))
             for key in list(current_medicines.keys()):
                 advice = current_medicines.pop(key)
+                if advice.get("medicine") is None:
+                    continue
                 medicines_given.append(Prescription(
                     **clean_prescription(advice),
                     consultation=consultation,
