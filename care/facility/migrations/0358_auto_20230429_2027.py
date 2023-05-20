@@ -6,15 +6,21 @@ from care.facility.models.prescription import PrescriptionType
 
 FREQUENCY_OPTIONS = ["STAT", "OD", "HS", "BD", "TID", "QID", "Q4H", "QOD", "QWK"]
 
+def clean_integer(value):
+    try:
+        return round(float(value)) or None
+    except:
+        return None
+
 def clean_prescription(data):
     cleaned_data = {}
 
     cleaned_data["medicine"] = data["medicine"]
     cleaned_data["route"] = data.get("route", "").upper() or None
-    cleaned_data["days"] = round(float(data.get("days", 0))) or None
+    cleaned_data["days"] = clean_integer(data.get("days", 0))
     cleaned_data["indicator"] = data.get("indicator")
     cleaned_data["max_dosage"] = data.get("max_dosage")
-    cleaned_data["min_hours_between_doses"] = round(float(data.get("min_time", 0))) or None
+    cleaned_data["min_hours_between_doses"] = clean_integer(data.get("min_time", 0))
     cleaned_data["notes"] = data.get("notes", "")
 
     if data.get("dosage", "").upper() in FREQUENCY_OPTIONS:
