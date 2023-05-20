@@ -46,7 +46,7 @@ class Prescription(BaseModel):
     prescription_type = models.CharField(max_length=100, default=PrescriptionType.REGULAR.value,
                                          choices=generate_choices(PrescriptionType))
 
-    medicine = models.CharField(max_length=100, blank=False, null=False)
+    medicine = models.CharField(max_length=255, blank=False, null=False)
     route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
     dosage = models.CharField(max_length=100, blank=True, null=True)
 
