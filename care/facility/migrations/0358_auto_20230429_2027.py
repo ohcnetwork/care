@@ -11,7 +11,7 @@ def clean_prescription(data):
 
     cleaned_data["medicine"] = data["medicine"]
     cleaned_data["route"] = data.get("route", "").upper() or None
-    cleaned_data["days"] = int(data.get("days")) if data.get("days") is not None else None
+    cleaned_data["days"] = round(float(data.get("days", 0))) or None
     cleaned_data["indicator"] = data.get("indicator")
     cleaned_data["max_dosage"] = data.get("max_dosage")
     cleaned_data["min_hours_between_doses"] = round(float(data.get("min_time", 0))) or None
