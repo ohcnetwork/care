@@ -151,7 +151,7 @@ def migrate_prescriptions(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0357_auto_20230520_1120'),
+        ('facility', '0354_auto_20230519_1501'),
     ]
 
     operations = [
