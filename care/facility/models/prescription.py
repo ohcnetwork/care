@@ -67,6 +67,7 @@ class Prescription(BaseModel):
     prescribed_by = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
+        null=True,
     )
     discontinued = models.BooleanField(default=False)
     discontinued_reason = models.TextField(default="", blank=True)

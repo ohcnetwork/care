@@ -15,7 +15,7 @@ def clean_prescription(data):
     cleaned_data["indicator"] = data.get("indicator")
     cleaned_data["max_dosage"] = data.get("max_dosage")
     cleaned_data["min_hours_between_doses"] = int(data.get("min_time", 0)) or None
-    cleaned_data["notes"] = data.get("notes")
+    cleaned_data["notes"] = data.get("notes", "")
 
     if data.get("dosage", "").upper() in FREQUENCY_OPTIONS:
         cleaned_data["frequency"] = data.get("dosage")
@@ -145,7 +145,7 @@ def migrate_prescriptions(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0354_auto_20230519_1501'),
+        ('facility', '0355_auto_20230520_1049'),
     ]
 
     operations = [
