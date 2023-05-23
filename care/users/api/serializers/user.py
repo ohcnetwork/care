@@ -358,11 +358,6 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
-    skills = serializers.SerializerMethodField()
-
-    def get_skills(self, obj):
-        qs = obj.skills.filter(userskill__deleted=False)
-        return SkillSerializer(qs, many=True).data
 
     class Meta:
         model = User
@@ -381,6 +376,14 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "doctor_medical_council_registration",
             "skills",
         )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        instance = User.objects.prefetch_related("skills").get(pk=instance.pk)
+        skills = instance.skills.filter(userskill__deleted=False)
+        skills_data = SkillSerializer(skills, many=True).data
+        representation["skills"] = skills_data
+        return representation
 
 
 class UserListSerializer(serializers.ModelSerializer):
