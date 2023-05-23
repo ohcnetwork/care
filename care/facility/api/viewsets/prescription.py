@@ -16,7 +16,7 @@ from care.facility.models import (
     PrescriptionType,
     generate_choices,
 )
-from care.utils.filters import CareChoiceFilter
+from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -100,7 +100,9 @@ class ConsultationPrescriptionViewSet(
         return Response({}, status=status.HTTP_201_CREATED)
 
     @action(
-        methods=["POST"], detail=True, serializer_class=MedicineAdministrationSerializer
+        methods=["POST"],
+        detail=True,
+        serializer_class=MedicineAdministrationSerializer,
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
