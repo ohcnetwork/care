@@ -31,9 +31,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
-    diagnosis = get_icd11_diagnoses_objects_by_ids(
-        consultation.icd11_diagnoses
-    )
+    diagnosis = get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
     provisional_diagnosis = get_icd11_diagnoses_objects_by_ids(
         consultation.icd11_provisional_diagnoses
     )
@@ -153,9 +151,7 @@ def email_discharge_summary(consultation_id, email):
 @celery.task()
 def generate_discharge_report_signed_url(patient_external_id):
     consultation = (
-        PatientConsultation.objects.filter(
-            patient__external_id=patient_external_id
-        )
+        PatientConsultation.objects.filter(patient__external_id=patient_external_id)
         .order_by("-created_date")
         .first()
     )

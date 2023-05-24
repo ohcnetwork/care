@@ -2,11 +2,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models import (
-    Facility,
-    PatientConsultation,
-    PatientRegistration,
-)
+from care.facility.models import Facility, PatientConsultation, PatientRegistration
 from care.facility.models.prescription_supplier import PrescriptionSupplier
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
@@ -36,16 +32,12 @@ class PrescriptionSupplierSerializer(serializers.ModelSerializer):
     consultation_object = PrescriptionSupplierConsultationSerializer(
         source="consultation", read_only=True
     )
-    facility_object = FacilityBasicInfoSerializer(
-        source="facility", read_only=True
-    )
+    facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
 
     consultation = ExternalIdSerializerField(
         required=True, queryset=PatientConsultation.objects.all()
     )
-    facility = ExternalIdSerializerField(
-        required=True, queryset=Facility.objects.all()
-    )
+    facility = ExternalIdSerializerField(required=True, queryset=Facility.objects.all())
 
     class Meta:
         model = PrescriptionSupplier
