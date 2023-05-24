@@ -258,7 +258,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
 
-        if bed:
+        if bed and not consultation.suggestion == SuggestionChoices.OP:
             consultation_bed = ConsultationBed(
                 bed=bed,
                 consultation=consultation,
