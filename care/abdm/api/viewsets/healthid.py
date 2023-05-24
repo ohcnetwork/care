@@ -287,6 +287,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def link_via_qr(self, request):
         data = request.data
 
+        if ratelimit(request, "link_via_qr", [data["hdin"]], increment=False):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         serializer = QRContentSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
@@ -393,6 +399,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def get_new_linking_token(self, request):
         data = request.data
 
+        if ratelimit(
+            request, "get_new_linking_token", [data["patient"]], increment=False
+        ):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         patient = PatientDetailSerializer(
             PatientRegistration.objects.get(external_id=data["patient"])
         ).data
@@ -411,6 +425,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     @action(detail=False, methods=["POST"])
     def add_care_context(self, request, *args, **kwargs):
         consultation_id = request.data["consultation"]
+
+        if ratelimit(request, "add_care_context", [consultation_id], increment=False):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
 
         consultation = PatientConsultation.objects.get(external_id=consultation_id)
 
