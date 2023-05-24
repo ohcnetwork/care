@@ -71,6 +71,11 @@ class BedViewSet(
     def destroy(self, request, *args, **kwargs):
         if request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             raise PermissionDenied()
+        instance = self.get_object()
+        if instance.is_occupied:
+            raise DRFValidationError(
+                detail="Bed is occupied. Please discharge the patient first"
+            )
         return super().destroy(request, *args, **kwargs)
 
     def handle_exception(self, exc):
