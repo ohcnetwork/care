@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         for consultation in PatientConsultation.objects.exclude(suggestion="A"):
             ConsultationBed.objects.filter(
                 consultation=consultation, end_date__isnull=True
-            ).update(end_date=consultation.discharge_date)
+            ).update(end_date=consultation.discharge_date, deleted=True)
 
     dependencies = [
         ("facility", "0357_auto_20230523_1304"),
