@@ -7,7 +7,6 @@ import care.utils.models.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0285_asset_asset_class"),
     ]

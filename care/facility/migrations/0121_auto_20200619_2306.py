@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0120_patientsample_icmr_label"),
     ]

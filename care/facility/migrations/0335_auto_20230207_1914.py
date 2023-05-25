@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0334_merge_20230113_1507"),
     ]

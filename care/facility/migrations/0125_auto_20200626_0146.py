@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0124_populate_daily_round_ids"),
     ]

@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0023_merge_20200324_1959"),
     ]

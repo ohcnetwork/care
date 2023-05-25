@@ -11,7 +11,6 @@ import care.facility.models.mixins.permissions.facility
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("facility", "0114_auto_20200610_1720"),

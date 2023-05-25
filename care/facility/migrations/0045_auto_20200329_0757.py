@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0044_patientregistration_real_name"),
     ]

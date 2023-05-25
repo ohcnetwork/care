@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0278_asset_not_working_reason"),
     ]

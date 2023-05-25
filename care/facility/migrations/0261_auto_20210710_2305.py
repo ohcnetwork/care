@@ -8,7 +8,6 @@ import care.utils.models.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0260_auto_20210710_1742"),
     ]

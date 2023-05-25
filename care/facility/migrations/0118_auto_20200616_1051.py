@@ -10,7 +10,6 @@ import care.facility.models.mixins.permissions.facility
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0117_patientsample_icmr_category"),
     ]

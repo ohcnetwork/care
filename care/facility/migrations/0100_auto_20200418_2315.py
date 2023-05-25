@@ -6,7 +6,6 @@ import care.utils.models.jsonfield
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0099_auto_20200418_2030"),
     ]

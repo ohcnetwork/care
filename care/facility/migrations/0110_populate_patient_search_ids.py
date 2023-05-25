@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 def unique_external_ids(apps, *args):
-
     models = ["patientsearch"]
     for i in models:
         model = apps.get_model("facility", i)

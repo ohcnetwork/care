@@ -24,7 +24,6 @@ def populate_location(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0296_auto_20220527_1925"),
     ]

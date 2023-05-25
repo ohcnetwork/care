@@ -2,7 +2,6 @@ from django.db import migrations
 
 
 def populate_patient_consultation(apps, *args):
-
     patientmodel = apps.get_model("facility", "patientregistration")
     consultationmodel = apps.get_model("facility", "patientconsultation")
     for obj in patientmodel.objects.all():

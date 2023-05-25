@@ -16,7 +16,6 @@ def populate_real_names(apps, *args):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0043_populate_facility_district"),
     ]

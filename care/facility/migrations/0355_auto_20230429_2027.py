@@ -32,9 +32,7 @@ def clean_prescription(data):
     cleaned_data["days"] = clean_integer(data.get("days", 0))
     cleaned_data["indicator"] = data.get("indicator")
     cleaned_data["max_dosage"] = data.get("max_dosage")
-    cleaned_data["min_hours_between_doses"] = clean_integer(
-        data.get("min_time", 0)
-    )
+    cleaned_data["min_hours_between_doses"] = clean_integer(data.get("min_time", 0))
     cleaned_data["notes"] = data.get("notes", "")
 
     if data.get("dosage", "").upper() in FREQUENCY_OPTIONS:

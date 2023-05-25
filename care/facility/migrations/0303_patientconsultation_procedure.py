@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0302_patientconsultation_prn_prescription"),
     ]

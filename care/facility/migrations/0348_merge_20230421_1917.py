@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0347_auto_20230421_1357"),
         ("facility", "0344_shiftingrequest_assigned_facility_external"),

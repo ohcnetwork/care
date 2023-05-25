@@ -6,7 +6,6 @@ import care.users.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0007_auto_20200321_2029"),
     ]

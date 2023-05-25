@@ -9,7 +9,6 @@ import care.facility.models.mixins.permissions.facility
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0221_auto_20210426_1153"),
     ]

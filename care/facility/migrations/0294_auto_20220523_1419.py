@@ -24,7 +24,6 @@ def add_middleware_address_to_facility(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0293_facility_middleware_address"),
     ]

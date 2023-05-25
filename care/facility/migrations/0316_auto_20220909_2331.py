@@ -27,7 +27,6 @@ def migrate_pressure_sore(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0315_auto_20220909_2322"),
     ]

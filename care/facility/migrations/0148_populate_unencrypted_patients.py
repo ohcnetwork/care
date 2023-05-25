@@ -2,7 +2,6 @@ from django.db import migrations
 
 
 def populate_patient_unencrypted(apps, *args):
-
     model = apps.get_model("facility", "patientregistration")
     for obj in model.objects.all():
         obj.name_new = obj.name

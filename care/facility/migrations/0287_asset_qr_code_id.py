@@ -14,7 +14,6 @@ def populate_empty_qr_code_id(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0286_auto_20220316_2004"),
     ]

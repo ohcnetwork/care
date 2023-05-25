@@ -7,7 +7,6 @@ import care.utils.models.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("hcx", "0003_auto_20230217_1901"),
     ]

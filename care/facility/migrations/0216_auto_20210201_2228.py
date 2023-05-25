@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0034_auto_20201122_2013"),
         ("facility", "0215_auto_20210130_2236"),

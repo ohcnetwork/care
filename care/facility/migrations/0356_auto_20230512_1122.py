@@ -12,15 +12,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="prescription",
             name="created_date",
-            field=models.DateTimeField(
-                auto_now_add=True, db_index=True, null=True
-            ),
+            field=models.DateTimeField(auto_now_add=True, db_index=True, null=True),
         ),
         migrations.AlterField(
             model_name="prescription",
             name="modified_date",
-            field=models.DateTimeField(
-                auto_now=True, db_index=True, null=True
-            ),
+            field=models.DateTimeField(auto_now=True, db_index=True, null=True),
         ),
     ]

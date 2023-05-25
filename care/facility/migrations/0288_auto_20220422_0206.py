@@ -6,7 +6,6 @@ import care.facility.models.asset
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0287_asset_qr_code_id"),
     ]

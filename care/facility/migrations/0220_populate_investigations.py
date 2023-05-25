@@ -136,7 +136,7 @@ Stool Microscopy					String		3"""
 
 
 investigation_groups = """Id	Name
-1	Haematology 
+1	Haematology
 2	Biochemistry test
 3	Urine Test"""
 

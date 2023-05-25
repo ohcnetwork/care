@@ -8,7 +8,7 @@
 
 ### Architecture changes
   -
- 
+
 @coronasafe/code-reviewers
 
 ## Merge Checklist

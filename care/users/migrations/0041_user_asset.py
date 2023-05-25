@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0285_asset_asset_class"),
         ("users", "0040_auto_20210616_1821"),
