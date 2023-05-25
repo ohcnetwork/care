@@ -8,12 +8,10 @@ class Migration(migrations.Migration):
         PatientConsultation = apps.get_model("facility", "PatientConsultation")
         ConsultationBed = apps.get_model("facility", "ConsultationBed")
 
-        for consultation in PatientConsultation.objects.all():
-            if consultation.suggestion == "A":
-                continue
-            ConsultationBed.objects.filter(consultation=consultation).update(
-                end_date=consultation.discharge_date
-            )
+        for consultation in PatientConsultation.objects.exclude(suggestion="A"):
+            ConsultationBed.objects.filter(
+                consultation=consultation, end_date__isnull=True
+            ).update(end_date=consultation.discharge_date)
 
     dependencies = [
         ("facility", "0357_auto_20230523_1304"),
