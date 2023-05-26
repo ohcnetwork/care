@@ -393,7 +393,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     discharge_reason = serializers.ChoiceField(
         choices=DISCHARGE_REASON_CHOICES, required=True
     )
-    discharge_notes = serializers.CharField(required=False)
+    discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
     discharge_date = serializers.DateTimeField(required=True)
     discharge_prescription = serializers.SerializerMethodField()
