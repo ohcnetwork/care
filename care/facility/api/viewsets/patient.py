@@ -147,8 +147,20 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__symptoms_onset_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
-        field_name="last_consultation__current_bed__bed__bed_type"
+        field_name="last_consultation__current_bed__bed__bed_type",
+        method="filter_by_bed_type",
     )
+
+    def filter_by_bed_type(self, queryset, name, value):
+        if value == "None":
+            queryset = queryset.filter(last_consultation__current_bed=None)
+        else:
+            queryset = queryset.filter(
+                last_consultation__current_bed__bed__bed_type=value
+            )
+
+        return queryset
+
     last_consultation_admitted_bed_type = CareChoiceFilter(
         field_name="last_consultation__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
