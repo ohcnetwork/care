@@ -7,12 +7,14 @@ from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSe
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import Facility
+from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_base import BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from rest_framework.serializers import SerializerMethodField
 
 
 class BedSerializer(ModelSerializer):
@@ -89,6 +91,25 @@ class AssetBedSerializer(ModelSerializer):
                 {"asset": "Field is Required", "bed": "Field is Required"}
             )
         return super().validate(attrs)
+
+
+class PatientAssetBedSerializer(ModelSerializer):
+    asset = AssetSerializer(read_only=True)
+    bed = BedSerializer(read_only=True)
+    patient = SerializerMethodField()
+
+    def get_patient(self, obj):
+        from care.facility.api.serializers.patient import PatientListSerializer
+
+        patient = PatientRegistration.objects.filter(
+            last_consultation__current_bed__bed=obj.bed
+        ).first()
+        if patient:
+            return PatientListSerializer(patient).data
+
+    class Meta:
+        model = AssetBed
+        exclude = ("external_id", "id") + TIMESTAMP_FIELDS
 
 
 class ConsultationBedSerializer(ModelSerializer):

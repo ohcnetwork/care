@@ -41,6 +41,7 @@ from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
@@ -217,6 +218,7 @@ class AssetViewSet(
                 actions: list[enum.Enum] = [
                     OnvifAsset.OnvifActions,
                     HL7MonitorAsset.HL7MonitorActions,
+                    VentilatorAsset.VentilatorActions,
                 ]
                 choices = []
                 for action in actions:

@@ -46,9 +46,9 @@ class Prescription(BaseModel):
     prescription_type = models.CharField(max_length=100, default=PrescriptionType.REGULAR.value,
                                          choices=generate_choices(PrescriptionType))
 
-    medicine = models.CharField(max_length=100, blank=False, null=False)
+    medicine = models.CharField(max_length=1023, blank=False, null=False)
     route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
-    dosage = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=100, blank=True, null=True)
 
     is_prn = models.BooleanField(default=False)
 
@@ -67,6 +67,7 @@ class Prescription(BaseModel):
     prescribed_by = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
+        null=True,
     )
     discontinued = models.BooleanField(default=False)
     discontinued_reason = models.TextField(default="", blank=True)

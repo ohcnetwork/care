@@ -258,7 +258,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
 
-        if bed:
+        if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
                 bed=bed,
                 consultation=consultation,
@@ -393,9 +393,9 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     discharge_reason = serializers.ChoiceField(
         choices=DISCHARGE_REASON_CHOICES, required=True
     )
-    discharge_notes = serializers.CharField(required=True)
+    discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
-    discharge_date = serializers.DateTimeField(required=False)
+    discharge_date = serializers.DateTimeField(required=True)
     discharge_prescription = serializers.SerializerMethodField()
     discharge_prn_prescription = serializers.SerializerMethodField()
 
