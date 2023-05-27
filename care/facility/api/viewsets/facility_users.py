@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as filters
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
@@ -10,8 +11,10 @@ from care.users.models import User
 
 
 class UserFilter(filters.FilterSet):
-    user_type = filters.TypedChoiceFilter(choices=[(key, key) for key in User.TYPE_VALUE_MAP.keys()],
-                                          coerce=lambda role: User.TYPE_VALUE_MAP[role])
+    user_type = filters.TypedChoiceFilter(
+        choices=[(key, key) for key in User.TYPE_VALUE_MAP.keys()],
+        coerce=lambda role: User.TYPE_VALUE_MAP[role],
+    )
 
     class Meta:
         model = User
@@ -27,7 +30,11 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
 
     def get_queryset(self):
         try:
-            facility = Facility.objects.get(external_id=self.kwargs.get("facility_external_id"))
-            return facility.users.filter(deleted=False).order_by("-last_login")
-        except:
+            facility = Facility.objects.get(
+                external_id=self.kwargs.get("facility_external_id")
+            )
+            queryset = facility.users.filter(deleted=False).order_by("-last_login")
+            queryset = self.get_serializer_class().skills_eager_loading(queryset)
+            return queryset
+        except ObjectDoesNotExist:
             raise ValidationError({"Facility": "Facility not found"})
