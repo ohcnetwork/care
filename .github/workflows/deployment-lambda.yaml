@@ -143,7 +143,7 @@ jobs:
                   POSTGRES_USER=${{ secrets.POSTGRES_USER }}, \
                   POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
                   POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}, \
-                  DJANGO_SETTINGS_MODULE=config.settings.production, \
+                  DJANGO_SETTINGS_MODULE=config.settings.lambda, \
                   DJANGO_SECURE_SSL_REDIRECT=False, \
                   USE_S3=True, \
                   CSRF_TRUSTED_ORIGINS='[\"*\"]', \
