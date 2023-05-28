@@ -217,11 +217,11 @@
         },
         {
           "name": "CSRF_TRUSTED_ORIGINS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
-          "value": "https://care.coronasafe.in"
+          "value": "https://care.ohc.network"
         },
         {
           "name": "DJANGO_ADMIN_URL",
@@ -229,7 +229,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
@@ -241,7 +241,7 @@
         },
         {
           "name": "EMAIL_FROM",
-          "value": "Coronasafe network <care@ops.coronasafe.in>"
+          "value": "Open Healthcare Network <ops@care.ohc.network>"
         },
         {
           "name": "EMAIL_HOST",
