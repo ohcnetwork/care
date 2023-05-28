@@ -155,8 +155,8 @@ class PatientFilterSet(filters.FilterSet):
         values = value.split(",")
         union_queryset = PatientRegistration.objects.none()
         for val in values:
-            val.strip()
-            if val == "8":
+            val = val.strip()
+            if val == "None":
                 union_queryset |= queryset.filter(
                     last_consultation__current_bed__isnull=True
                 )
