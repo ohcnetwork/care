@@ -1,11 +1,17 @@
 import os
+import sys
 
-from asgiref.wsgi import WsgiToAsgi
+from a2wsgi import WSGIMiddleware
 from django.core.wsgi import get_wsgi_application
 from mangum import Mangum
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "care.config.settings")
+app_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+sys.path.append(os.path.join(app_path, "care"))
 
-application = WsgiToAsgi(get_wsgi_application())
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+
+wsgi_application = get_wsgi_application()
+
+application = WSGIMiddleware(wsgi_application)
 
 handler = Mangum(application, lifespan="off")
