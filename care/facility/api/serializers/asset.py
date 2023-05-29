@@ -71,7 +71,6 @@ class AssetSerializer(ModelSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
@@ -103,6 +102,13 @@ class AssetSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
+
+        if (
+            "asset_class" in validated_data
+            and instance.asset_class != validated_data["asset_class"]
+        ):
+            raise ValidationError({"asset_class": "Cannot change asset class"})
+
         with transaction.atomic():
             if (
                 "current_location" in validated_data
