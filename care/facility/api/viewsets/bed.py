@@ -139,7 +139,11 @@ class PatientAssetBedFilter(filters.FilterSet):
 
 
 class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
-    queryset = AssetBed.objects.all().select_related("asset", "bed")
+    queryset = (
+        AssetBed.objects.select_related("asset", "bed")
+        .filter(asset__deleted=False, bed__deleted=False)
+        .order_by("-created_date")
+    )
     serializer_class = PatientAssetBedSerializer
     filter_backends = (
         filters.DjangoFilterBackend,
