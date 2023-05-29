@@ -153,18 +153,16 @@ class PatientFilterSet(filters.FilterSet):
 
     def filter_by_bed_type(self, queryset, name, value):
         values = value.split(",")
-        union_queryset = PatientRegistration.objects.none()
+        filter_q = Q()
+
         for val in values:
             val = val.strip()
             if val == "None":
-                union_queryset |= queryset.filter(
-                    last_consultation__current_bed__isnull=True
-                )
+                filter_q |= Q(last_consultation__current_bed__isnull=True)
             else:
-                union_queryset |= queryset.filter(
-                    last_consultation__current_bed__bed__bed_type=val
-                )
-        return union_queryset
+                filter_q |= Q(last_consultation__current_bed__bed__bed_type=val)
+
+        return queryset.filter(filter_q)
 
     last_consultation_admitted_bed_type = CareChoiceFilter(
         field_name="last_consultation__current_bed__bed__bed_type",
