@@ -15,4 +15,6 @@ class Migration(migrations.Migration):
         ("facility", "0358_auto_20230524_1853"),
     ]
 
-    operations = []
+    operations = [
+        migrations.RunPython(delete_asset_beds),
+    ]

@@ -93,11 +93,7 @@ class AssetBedSerializer(ModelSerializer):
             if (
                 asset.asset_class in ["HL7MONITOR", "VENTILATOR"]
                 and AssetBed.objects.filter(
-                    bed=bed,
-                    asset__asset_class=asset.asset_class,
-                    bed__deleted=False,
-                    asset__deleted=False,
-                    deleted=False,
+                    bed=bed, asset__asset_class=asset.asset_class
                 ).exists()
             ):
                 raise ValidationError(
