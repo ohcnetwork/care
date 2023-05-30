@@ -1,5 +1,4 @@
 from django.core.validators import validate_email
-from django.db.models import Prefetch
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from drf_yasg import openapi
@@ -26,7 +25,7 @@ from care.facility.tasks.patient.discharge_report import (
     email_discharge_summary,
     generate_and_upload_discharge_summary_task,
 )
-from care.users.models import Skill, User
+from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
@@ -69,14 +68,6 @@ class PatientConsultationViewSet(
         return super().get_permissions()
 
     def get_queryset(self):
-        if self.serializer_class == PatientConsultationSerializer:
-            self.queryset = self.queryset.prefetch_related(
-                "assigned_to",
-                Prefetch(
-                    "assigned_to__skills",
-                    queryset=Skill.objects.filter(userskill__deleted=False),
-                ),
-            )
         if self.request.user.is_superuser:
             return self.queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:

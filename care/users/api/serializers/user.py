@@ -3,7 +3,6 @@ from datetime import date
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
-from django.db.models import Prefetch
 from rest_framework import exceptions, serializers
 
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
@@ -14,7 +13,7 @@ from care.users.api.serializers.lsg import (
     StateSerializer,
 )
 from care.users.api.serializers.skill import SkillSerializer
-from care.users.models import GENDER_CHOICES, Skill
+from care.users.models import GENDER_CHOICES
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from care.utils.serializer.phonenumber_ispossible_field import (
@@ -359,20 +358,11 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
-    # skills = serializers.SerializerMethodField()
-    skills = SkillSerializer(many=True, read_only=True)
+    skills = serializers.SerializerMethodField()
 
-    # def get_skills(self, obj):
-    #     qs = obj.skills.filter(userskill__deleted=False)
-    #     return SkillSerializer(qs, many=True).data
-
-    @staticmethod
-    def skills_eager_loading(queryset):
-        """Perform necessary eager loading of data."""
-        queryset = queryset.prefetch_related(
-            Prefetch("skills", queryset=Skill.objects.filter(userskill__deleted=False))
-        )
-        return queryset
+    def get_skills(self, obj):
+        qs = obj.skills.filter(userskill__deleted=False)
+        return SkillSerializer(qs, many=True).data
 
     class Meta:
         model = User
