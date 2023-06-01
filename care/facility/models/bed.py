@@ -52,8 +52,8 @@ class Bed(BaseModel):
         return super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs) -> None:
-        super().delete(*args, **kwargs)
         AssetBed.objects.filter(bed=self).update(deleted=True)
+        super().delete(*args, **kwargs)
 
 
 class AssetBed(BaseModel):
