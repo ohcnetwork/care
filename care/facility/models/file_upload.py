@@ -124,3 +124,11 @@ class FileUpload(FacilityBaseModel):
             Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
             **kwargs,
         )
+
+    def delete_object(self, **kwargs):
+        s3 = boto3.client("s3", **cs_provider.get_client_config())
+        s3.delete_object(
+            Bucket=settings.FILE_UPLOAD_BUCKET,
+            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            **kwargs,
+        )
