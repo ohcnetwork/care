@@ -39,6 +39,12 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    def delete(self, *args, **kwargs):
+        UserDefaultAssetLocation.objects.filter(location=self).delete()
+        FacilityDefaultAssetLocation.objects.filter(location=self).delete()
+
+        super().delete(*args, **kwargs)
+
 
 class Asset(BaseModel):
     class AssetType(enum.Enum):

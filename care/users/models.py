@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from partial_index import PQ, PartialIndex
 
+from care.facility.models import FacilityUser, PatientSample, UserDefaultAssetLocation
 from care.utils.models.base import BaseModel
 
 
@@ -344,6 +345,12 @@ class User(AbstractUser):
     def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
+
+        UserDefaultAssetLocation.objects.filter(user=self).delete()
+        FacilityUser.objects.filter(user=self).delete()
+        FacilityUser.objects.filter(created_by=self).delete()
+        PatientSample.objects.filter(created_by=self).update(created_by=None)
+        PatientSample.objects.filter(last_edited_by=self).update(last_edited_by=None)
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

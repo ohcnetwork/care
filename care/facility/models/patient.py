@@ -15,6 +15,7 @@ from care.facility.models import (
     FacilityBaseModel,
     LocalBody,
     PatientBaseModel,
+    PatientSample,
     State,
     Ward,
 )
@@ -509,6 +510,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
                 allow_transfer=self.allow_transfer,
                 is_active=self.is_active,
             )
+
+    def delete(self, *args, **kwargs):
+        PatientSample.objects.filter(patient=self).delete()
+
+        super().delete(*args, **kwargs)
 
     CSV_MAPPING = {
         # Patient Details

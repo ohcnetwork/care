@@ -51,6 +51,11 @@ class Bed(BaseModel):
         self.validate()
         return super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        ConsultationBed.objects.filter(bed=self).delete()
+
+        super().delete(*args, **kwargs)
+
 
 class AssetBed(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
