@@ -125,10 +125,12 @@ class FileUpload(FacilityBaseModel):
             **kwargs,
         )
 
-    def delete_object(self, **kwargs):
+    @staticmethod
+    def bulk_delete_objects(s3_keys):
         s3 = boto3.client("s3", **cs_provider.get_client_config())
-        s3.delete_object(
-            Bucket=settings.FILE_UPLOAD_BUCKET,
-            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
-            **kwargs,
+        bucket = settings.FILE_UPLOAD_BUCKET
+
+        return s3.delete_objects(
+            Bucket=bucket,
+            Delete={"Objects": [{"Key": key} for key in s3_keys], "Quiet": True},
         )

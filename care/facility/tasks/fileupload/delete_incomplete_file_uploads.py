@@ -15,6 +15,11 @@ def delete_incomplete_file_uploads():
     incomplete_uploads = FileUpload.objects.filter(
         created__date__lte=yesterday, upload_completed=False
     )
-    for upload in incomplete_uploads:
-        upload.delete_object()
-        upload.delete()
+
+    s3_keys = [
+        f"{upload.FileType(upload.file_type).name/upload.internal_name}"
+        for upload in incomplete_uploads
+    ]
+
+    FileUpload.bulk_delete_objects(s3_keys)
+    incomplete_uploads.delete()
