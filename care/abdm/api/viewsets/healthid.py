@@ -453,6 +453,28 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
+    @action(detail=False, methods=["POST"])
+    def patient_sms_notify(self, request, *args, **kwargs):
+        patient_id = request.data["patient"]
+
+        if ratelimit(request, "patient_sms_notify", [patient_id], increment=False):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        patient = PatientRegistration.objects.get(external_id=patient_id)
+
+        if not patient:
+            return Response(
+                {"consultation": "No matching records found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        AbdmGateway().patient_sms_notify({"phone": patient.phone_number})
+
+        return Response(status=status.HTTP_202_ACCEPTED)
+
     # auth/init
     @swagger_auto_schema(
         # /v1/auth/init
