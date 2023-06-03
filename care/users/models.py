@@ -346,9 +346,9 @@ class User(AbstractUser):
         self.deleted = True
         self.save()
 
-        UserDefaultAssetLocation.objects.filter(user=self).delete()
-        FacilityUser.objects.filter(user=self).delete()
-        FacilityUser.objects.filter(created_by=self).delete()
+        UserDefaultAssetLocation.objects.filter(user=self).update(deleted=True)
+        FacilityUser.objects.filter(user=self).update(deleted=True)
+        FacilityUser.objects.filter(created_by=self).update(deleted=True)
         PatientSample.objects.filter(created_by=self).update(created_by=None)
         PatientSample.objects.filter(last_edited_by=self).update(last_edited_by=None)
 

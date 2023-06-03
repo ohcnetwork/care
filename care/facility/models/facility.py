@@ -200,8 +200,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             )
 
     def delete(self, *args, **kwargs):
-        FacilityDefaultAssetLocation.objects.filter(facility=self).delete()
-        FacilityUser.objects.filter(facility=self).delete()
+        FacilityDefaultAssetLocation.objects.filter(facility=self).update(deleted=True)
+        FacilityUser.objects.filter(facility=self).update(deleted=True)
         PatientSample.objects.filter(testing_facility=self).update(
             testing_facility=None
         )

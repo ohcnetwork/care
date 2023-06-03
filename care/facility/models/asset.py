@@ -40,8 +40,8 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     )
 
     def delete(self, *args, **kwargs):
-        UserDefaultAssetLocation.objects.filter(location=self).delete()
-        FacilityDefaultAssetLocation.objects.filter(location=self).delete()
+        UserDefaultAssetLocation.objects.filter(location=self).update(deleted=True)
+        FacilityDefaultAssetLocation.objects.filter(location=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 

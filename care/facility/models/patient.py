@@ -512,7 +512,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             )
 
     def delete(self, *args, **kwargs):
-        PatientSample.objects.filter(patient=self).delete()
+        PatientSample.objects.filter(patient=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 

@@ -16,7 +16,7 @@ class PatientInvestigationGroup(BaseModel):
         return self.name
 
     def delete(self, *args, **kwargs):
-        InvestigationValue.objects.filter(group=self).delete()
+        InvestigationValue.objects.filter(group=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 
@@ -37,7 +37,7 @@ class PatientInvestigation(BaseModel):
         return self.name + " in " + self.unit + " as " + self.investigation_type
 
     def delete(self, *args, **kwargs):
-        InvestigationValue.objects.filter(investigation=self).delete()
+        InvestigationValue.objects.filter(investigation=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 
@@ -60,7 +60,7 @@ class InvestigationSession(BaseModel):
         ]
 
     def delete(self, *args, **kwargs):
-        InvestigationValue.objects.filter(session=self).delete()
+        InvestigationValue.objects.filter(session=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 

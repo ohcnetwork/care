@@ -52,7 +52,7 @@ class Bed(BaseModel):
         return super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        ConsultationBed.objects.filter(bed=self).delete()
+        ConsultationBed.objects.filter(bed=self).update(deleted=True)
 
         super().delete(*args, **kwargs)
 
