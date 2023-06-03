@@ -9,6 +9,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
+from care.facility.api.viewsets.asset import export_assets_as_csv
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
@@ -97,6 +98,7 @@ urlpatterns = [
         name="openid-configuration",
     ),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
+    path("export-assets/", export_assets_as_csv, name="export_assets"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

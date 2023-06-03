@@ -1,8 +1,9 @@
+import csv
 import enum
 
 from django.core.cache import cache
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
@@ -323,3 +324,33 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
                 | Q(to_location__facility__id__in=allowed_facilities)
             )
         return queryset
+
+
+def export_assets_as_csv(request):
+    # Perform the necessary query to fetch the asset data
+    assets = Asset.objects.all()
+
+    # excluded the unnecessary columns and rows from the csv
+    excluded_indices = [3, 4, 5, 13]
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="assets.csv"'
+
+    writer = csv.writer(response)
+
+    # Writing headers
+    headers = [
+        field.name for field in Asset._meta.fields if field.name not in excluded_indices
+    ]
+    writer.writerow(headers)
+
+    # Writing rows
+    for asset in assets:
+        row = [
+            getattr(asset, field.name)
+            for field in Asset._meta.fields
+            if field.name not in excluded_indices
+        ]
+        writer.writerow(row)
+
+    return response
