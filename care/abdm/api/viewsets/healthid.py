@@ -471,9 +471,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        AbdmGateway().patient_sms_notify({"phone": patient.phone_number})
+        response = AbdmGateway().patient_sms_notify({"phone": patient.phone_number})
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(response, status=status.HTTP_202_ACCEPTED)
 
     # auth/init
     @swagger_auto_schema(
