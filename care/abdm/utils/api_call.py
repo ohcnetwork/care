@@ -396,6 +396,9 @@ class AbdmGateway:
 
     # "/v0.5/users/auth/init"
     def init(self, prev_request_id):
+        if prev_request_id not in self.temp_memory:
+            return
+
         path = "/v0.5/users/auth/init"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
@@ -421,6 +424,9 @@ class AbdmGateway:
 
     # "/v0.5/users/auth/confirm"
     def confirm(self, transaction_id, prev_request_id):
+        if prev_request_id not in self.temp_memory:
+            return
+
         path = "/v0.5/users/auth/confirm"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
