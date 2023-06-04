@@ -328,6 +328,9 @@ class AbdmGateway:
         self.api = APIGateway("abdm_gateway", None)
 
     def add_care_context(self, access_token, request_id):
+        if request_id not in self.temp_memory:
+            return
+
         data = self.temp_memory[request_id]
 
         if "consultationId" in data:
@@ -350,6 +353,9 @@ class AbdmGateway:
         return False
 
     def save_linking_token(self, patient, access_token, request_id):
+        if request_id not in self.temp_memory:
+            return
+
         data = self.temp_memory[request_id]
         health_id = patient and patient["id"] or data["healthId"]
 
