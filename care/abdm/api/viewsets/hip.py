@@ -25,6 +25,7 @@ class HipViewSet(GenericViewSet):
     @action(detail=False, methods=["POST"])
     def share(self, request, *args, **kwargs):
         data = request.data
+        print(data)
 
         patient_data = data["profile"]["patient"]
         counter_id = (

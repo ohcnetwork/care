@@ -463,7 +463,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
-        patient = PatientRegistration.objects.get(external_id=patient_id)
+        patient = PatientRegistration.objects.filter(external_id=patient_id).first()
 
         if not patient:
             return Response(
