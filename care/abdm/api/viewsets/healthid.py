@@ -399,9 +399,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def get_new_linking_token(self, request):
         data = request.data
 
-        if ratelimit(
-            request, "get_new_linking_token", [data["patient"]], increment=False
-        ):
+        if ratelimit(request, "get_new_linking_token", [data["patient"]]):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -426,7 +424,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def add_care_context(self, request, *args, **kwargs):
         consultation_id = request.data["consultation"]
 
-        if ratelimit(request, "add_care_context", [consultation_id], increment=False):
+        if ratelimit(request, "add_care_context", [consultation_id]):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -457,7 +455,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def patient_sms_notify(self, request, *args, **kwargs):
         patient_id = request.data["patient"]
 
-        if ratelimit(request, "patient_sms_notify", [patient_id], increment=False):
+        if ratelimit(request, "patient_sms_notify", [patient_id]):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
