@@ -74,8 +74,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescribed_medication = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
-    discharge_advice = JSONField(default=dict)
-    prn_prescription = JSONField(default=dict)
     investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
@@ -104,8 +102,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
-    discharge_prescription = JSONField(default=dict, null=True, blank=True)
-    discharge_prn_prescription = JSONField(default=dict, null=True, blank=True)
+    discharge_prescription = JSONField(
+        default=dict, null=True, blank=True
+    )  # Deprecated
+    discharge_prn_prescription = JSONField(
+        default=dict, null=True, blank=True
+    )  # Deprecated
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
@@ -181,6 +183,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     intubation_history = JSONField(default=list)
 
+    # Deprecated Fields
+
+    prn_prescription = JSONField(default=dict)
+    discharge_advice = JSONField(default=dict)
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "admission_date": "Date of Admission",
@@ -238,3 +245,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+    def has_object_discharge_patient_permission(self, request):
+        return self.has_object_update_permission(request)
+
+    def has_object_email_discharge_summary_permission(self, request):
+        return self.has_object_read_permission(request)
+
+    def has_object_generate_discharge_summary_permission(self, request):
+        return self.has_object_read_permission(request)

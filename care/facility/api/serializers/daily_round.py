@@ -273,7 +273,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated_data["created_by_telemedicine"] = True
                 validated_data["last_updated_by_telemedicine"] = True
 
-            daily_round_obj = super().create(validated_data)
+            daily_round_obj: DailyRound = super().create(validated_data)
             daily_round_obj.created_by = self.context["request"].user
             daily_round_obj.last_edited_by = self.context["request"].user
             daily_round_obj.consultation.last_updated_by_telemedicine = validated_data[
@@ -289,7 +289,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 ]
             )
 
-            self.update_last_daily_round(daily_round_obj)
+            if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
+                self.update_last_daily_round(daily_round_obj)
             return daily_round_obj
 
     def validate(self, obj):

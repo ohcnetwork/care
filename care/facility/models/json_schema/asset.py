@@ -10,6 +10,18 @@ HL7_META = {
     "additionalProperties": False,
 }
 
+VENTILATOR_META = {
+    "type": "object",
+    "required": ["local_ip_address"],
+    "properties": {
+        "local_ip_address": {"type": "string"},
+        "middleware_hostname": {"type": "string"},
+        "asset_type": {"type": "string"},
+        "insecure_connection": {"type": "boolean"},
+    },
+    "additionalProperties": False,
+}
+
 ONVIF_META = {
     "type": "object",
     "required": ["local_ip_address", "camera_access_key"],
@@ -33,5 +45,10 @@ ASSET_META = {
         {"$ref": "#/definitions/hl7monitor"},
         {"$ref": "#/definitions/empty"},
     ],
-    "definitions": {"onvif": ONVIF_META, "hl7monitor": HL7_META, "empty": EMPTY_META},
+    "definitions": {
+        "onvif": ONVIF_META,
+        "hl7monitor": HL7_META,
+        "ventilator": VENTILATOR_META,
+        "empty": EMPTY_META,
+    },
 }
