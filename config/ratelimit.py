@@ -25,9 +25,15 @@ def validatecaptcha(request):
 def ratelimit(
     request, group="", keys=[None], rate=settings.DJANGO_RATE_LIMIT, increment=True
 ):
+    print("---------------------------------------------------------")
+    print(settings.DISABLE_RATELIMIT)
+    print("---------------------------------------------------------")
     if settings.DISABLE_RATELIMIT:
         return False
 
+    print("---------------------------------------------------------")
+    print(group, keys, rate)
+    print("---------------------------------------------------------")
     checkcaptcha = False
     for key in keys:
         if key == "ip":
