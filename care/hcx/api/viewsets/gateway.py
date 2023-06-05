@@ -96,7 +96,7 @@ class HcxGatewayViewSet(GenericViewSet):
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
             operation=HcxOperations.COVERAGE_ELIGIBILITY_CHECK,
-            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            recipientCode=policy["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
@@ -255,7 +255,7 @@ class HcxGatewayViewSet(GenericViewSet):
             operation=HcxOperations.CLAIM_SUBMIT
             if REVERSE_USE_CHOICES[claim["use"]] == "claim"
             else HcxOperations.PRE_AUTH_SUBMIT,
-            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            recipientCode=claim["policy_object"]["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
@@ -306,7 +306,7 @@ class HcxGatewayViewSet(GenericViewSet):
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(communication_fhir_bundle.json()),
             operation=HcxOperations.COMMUNICATION_ON_REQUEST,
-            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            recipientCode=communication["claim_object"]["policy_object"]["insurer_id"],
             correlationId=Communication.objects.filter(
                 claim__external_id=communication["claim_object"]["id"], created_by=None
             )
