@@ -71,7 +71,6 @@ class AssetSerializer(ModelSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(

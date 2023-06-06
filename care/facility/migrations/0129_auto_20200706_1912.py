@@ -4,33 +4,34 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0128_facilityrelatedsummary'),
+        ("facility", "0128_facilityrelatedsummary"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='historicalpatientregistration',
-            name='aadhar_no',
+            model_name="historicalpatientregistration",
+            name="aadhar_no",
         ),
         migrations.RemoveField(
-            model_name='patientregistration',
-            name='aadhar_no',
+            model_name="patientregistration",
+            name="aadhar_no",
         ),
         migrations.AlterField(
-            model_name='facilityrelatedsummary',
-            name='s_type',
-            field=models.CharField(choices=[('FacilityCapacity', 'FacilityCapacity')], max_length=100),
+            model_name="facilityrelatedsummary",
+            name="s_type",
+            field=models.CharField(
+                choices=[("FacilityCapacity", "FacilityCapacity")], max_length=100
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalpatientregistration',
-            name='allow_transfer',
+            model_name="historicalpatientregistration",
+            name="allow_transfer",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='patientregistration',
-            name='allow_transfer',
+            model_name="patientregistration",
+            name="allow_transfer",
             field=models.BooleanField(default=False),
         ),
     ]

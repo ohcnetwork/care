@@ -1,6 +1,6 @@
 from rest_framework import status
 
-from care.users.models import User, GENDER_CHOICES
+from care.users.models import GENDER_CHOICES, User
 from care.utils.tests.test_base import TestBase
 
 
@@ -24,16 +24,16 @@ class TestSuperUser(TestBase):
             "alt_phone_number": obj.alt_phone_number,
             "age": obj.age,
             "gender": GENDER_CHOICES[obj.gender - 1][1],
-            'home_facility': None,
-            'home_facility_object': None,
+            "home_facility": None,
+            "home_facility_object": None,
             "is_superuser": obj.is_superuser,
             "verified": obj.verified,
             "pf_endpoint": obj.pf_endpoint,
             "pf_p256dh": obj.pf_p256dh,
             "pf_auth": obj.pf_auth,
-            'doctor_experience_commenced_on': obj.doctor_experience_commenced_on,
-            'doctor_medical_council_registration': obj.doctor_medical_council_registration,
-            'doctor_qualification': obj.doctor_qualification,
+            "doctor_experience_commenced_on": obj.doctor_experience_commenced_on,
+            "doctor_medical_council_registration": obj.doctor_medical_council_registration,
+            "doctor_qualification": obj.doctor_qualification,
             **self.get_local_body_district_state_representation(obj),
         }
 
@@ -51,19 +51,22 @@ class TestSuperUser(TestBase):
         data = self.user_data.copy()
         data.pop("password")
         self.assertDictEqual(
-            res_data_json, self.get_detail_representation(self.user),
+            res_data_json,
+            self.get_detail_representation(self.user),
         )
 
     def test_superuser_can_modify(self):
         """Test superusers can modify the attributes for other users"""
         username = self.user.username
-        password = "new_password"
 
         data = self.user_data.copy()
         data["district"] = data["district"].id
         data["state"] = data["state"].id
 
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31}, )
+        response = self.client.patch(
+            f"/api/v1/users/{username}/",
+            {"age": 31},
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
@@ -78,7 +81,11 @@ class TestSuperUser(TestBase):
         self.assertEqual(response.status_code, 204)
         # test backend response
         with self.assertRaises(expected_exception=User.DoesNotExist):
-            User.objects.get(username=self.user_data["username"], is_active=True, deleted=False)
+            User.objects.get(
+                username=self.user_data["username"],
+                is_active=True,
+                deleted=False,
+            )
 
 
 class TestUser(TestBase):
@@ -139,7 +146,13 @@ class TestUser(TestBase):
         """Test user can modify the attributes for themselves"""
         password = "new_password"
         username = self.user.username
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, }, )
+        response = self.client.patch(
+            f"/api/v1/users/{username}/",
+            {
+                "age": 31,
+                "password": password,
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
         self.assertEqual(response.json()["age"], 31)
@@ -156,7 +169,13 @@ class TestUser(TestBase):
         """Test a user can't modify others"""
         username = self.data_2["username"]
         password = self.data_2["password"]
-        response = self.client.patch(f"/api/v1/users/{username}/", {"age": 31, "password": password, }, )
+        response = self.client.patch(
+            f"/api/v1/users/{username}/",
+            {
+                "age": 31,
+                "password": password,
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_cannot_delete_others(self):
@@ -167,5 +186,6 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # test backend response(user_2 still exists)
         self.assertEqual(
-            self.data_2[field], User.objects.get(username=self.data_2[field]).username,
+            self.data_2[field],
+            User.objects.get(username=self.data_2[field]).username,
         )

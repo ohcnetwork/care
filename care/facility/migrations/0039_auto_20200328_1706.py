@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0038_merge_20200328_1433'),
+        ("facility", "0038_merge_20200328_1433"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='facility',
-            name='facility_type',
-            field=models.IntegerField(choices=[(1, 'Educational Inst'), (2, 'Hospital'), (3, 'Other'), (4, 'Hostel'), (5, 'Hotel'), (6, 'Lodge')]),
+            model_name="facility",
+            name="facility_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "Educational Inst"),
+                    (2, "Hospital"),
+                    (3, "Other"),
+                    (4, "Hostel"),
+                    (5, "Hotel"),
+                    (6, "Lodge"),
+                ]
+            ),
         ),
     ]

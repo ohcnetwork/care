@@ -4,20 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0261_auto_20210710_2305'),
+        ("facility", "0261_auto_20210710_2305"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='dailyround',
-            old_name='total_output',
-            new_name='total_output_calculated',
+            model_name="dailyround",
+            old_name="total_output",
+            new_name="total_output_calculated",
         ),
         migrations.AddField(
-            model_name='dailyround',
-            name='limb_response_lower_extremity_right',
-            field=models.IntegerField(choices=[(0, 'UNKNOWN'), (5, 'STRONG'), (10, 'MODERATE'), (15, 'WEAK'), (20, 'FLEXION'), (25, 'EXTENSION'), (30, 'NONE')], default=0),
+            model_name="dailyround",
+            name="limb_response_lower_extremity_right",
+            field=models.IntegerField(
+                choices=[
+                    (0, "UNKNOWN"),
+                    (5, "STRONG"),
+                    (10, "MODERATE"),
+                    (15, "WEAK"),
+                    (20, "FLEXION"),
+                    (25, "EXTENSION"),
+                    (30, "NONE"),
+                ],
+                default=0,
+            ),
         ),
     ]

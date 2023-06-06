@@ -5,15 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0281_auto_20211214_1454'),
+        ("facility", "0281_auto_20211214_1454"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dailyround',
-            name='pain',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(10)]),
+            model_name="dailyround",
+            name="pain",
+            field=models.IntegerField(
+                default=None,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(10),
+                ],
+            ),
         ),
     ]

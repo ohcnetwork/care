@@ -43,18 +43,30 @@ class Prescription(BaseModel):
         on_delete=models.PROTECT,
     )
 
-    prescription_type = models.CharField(max_length=100, default=PrescriptionType.REGULAR.value,
-                                         choices=generate_choices(PrescriptionType))
+    prescription_type = models.CharField(
+        max_length=100,
+        default=PrescriptionType.REGULAR.value,
+        choices=generate_choices(PrescriptionType),
+    )
 
     medicine = models.CharField(max_length=1023, blank=False, null=False)
-    route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
+    route = models.CharField(
+        max_length=100,
+        choices=[(tag.name, tag.value) for tag in Routes],
+        blank=True,
+        null=True,
+    )
     dosage = models.CharField(max_length=100, blank=True, null=True)
 
     is_prn = models.BooleanField(default=False)
 
     # non prn fields
-    frequency = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in FrequencyEnum], blank=True,
-                                 null=True)
+    frequency = models.CharField(
+        max_length=100,
+        choices=[(tag.name, tag.value) for tag in FrequencyEnum],
+        blank=True,
+        null=True,
+    )
     days = models.IntegerField(blank=True, null=True)
 
     # prn fields
@@ -74,7 +86,8 @@ class Prescription(BaseModel):
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
     is_migrated = models.BooleanField(
-        default=False)  # This field is to throw caution to data that was previously ported over
+        default=False
+    )  # This field is to throw caution to data that was previously ported over
 
     def save(self, *args, **kwargs) -> None:
         # check if prescription got discontinued just now
@@ -100,15 +113,19 @@ class MedicineAdministration(BaseModel):
         "users.User",
         on_delete=models.PROTECT,
     )
-    administered_date = models.DateTimeField(null=False, blank=False, default=timezone.now)
+    administered_date = models.DateTimeField(
+        null=False, blank=False, default=timezone.now
+    )
 
     def __str__(self):
-        return self.prescription.medicine + " - " + self.prescription.consultation.patient.name
+        return (
+            self.prescription.medicine
+            + " - "
+            + self.prescription.consultation.patient.name
+        )
 
     def validate(self) -> None:
-        if (
-            self.prescription.discontinued
-        ):
+        if self.prescription.discontinued:
             raise ValidationError(
                 {"prescription": "Prescription has been discontinued."}
             )

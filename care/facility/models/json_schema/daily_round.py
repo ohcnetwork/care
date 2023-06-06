@@ -1,5 +1,5 @@
 BLOOD_PRESSURE = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
         "systolic": {"type": "number"},
@@ -10,7 +10,7 @@ BLOOD_PRESSURE = {
 }
 
 INFUSIONS = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
@@ -28,12 +28,15 @@ INFUSIONS = {
 }
 
 IV_FLUID = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
+            "properties": {
+                "name": {"type": "string"},
+                "quantity": {"type": "number"},
+            },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -41,7 +44,7 @@ IV_FLUID = {
 }
 
 FEED = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
@@ -58,12 +61,15 @@ FEED = {
 }
 
 OUTPUT = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
             "type": "object",
-            "properties": {"name": {"type": "string"}, "quantity": {"type": "number"}, },
+            "properties": {
+                "name": {"type": "string"},
+                "quantity": {"type": "number"},
+            },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
@@ -71,7 +77,7 @@ OUTPUT = {
 }
 
 PRESSURE_SORE = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
@@ -81,12 +87,19 @@ PRESSURE_SORE = {
                 "length": {"type": "number"},
                 "width": {"type": "number"},
                 "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
-                "tissue_type": {"enum": ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]},
+                "tissue_type": {
+                    "enum": [
+                        "Closed",
+                        "Epithelial",
+                        "Granulation",
+                        "Slough",
+                        "Necrotic",
+                    ]
+                },
                 "description": {"type": "string"},
                 "push_score": {"type": "number"},
                 "region": {"type": "string"},
                 "scale": {"type": "number", "minimum": 1, "maximum": 5},
-                "description": {"type": "string"},
             },
             "additionalProperties": False,
             "required": [],
@@ -95,7 +108,7 @@ PRESSURE_SORE = {
 }
 
 PAIN_SCALE_ENHANCED = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
@@ -112,7 +125,7 @@ PAIN_SCALE_ENHANCED = {
 }
 
 NURSING_PROCEDURE = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {
@@ -128,7 +141,7 @@ NURSING_PROCEDURE = {
 }
 
 META = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {"dialysis": {"type": "boolean"}},
     "additionalProperties": False,
