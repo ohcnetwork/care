@@ -31,8 +31,6 @@ django-cors-headers==3.2.1
 django-watchman==1.1.0 # For Status Endpoints
 dateparser==0.7.4 # date parsing utils
 django-maintenance-mode==0.14.0 # Maintenance mode
-django-phonenumber-field==4.0.0
-phonenumberslite==8.12.1
 django-queryset-csv==1.1.0
 django-rest-passwordreset==1.1.0
 healthy-django>=0.1.0
