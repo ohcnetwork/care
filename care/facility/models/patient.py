@@ -3,7 +3,6 @@ import enum
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from fernet_fields import EncryptedCharField, EncryptedIntegerField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
@@ -264,7 +263,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         help_text="Not active when discharged, or removed from the watchlist",
     )
 
-    patient_search_id = EncryptedIntegerField(
+    patient_search_id = models.IntegerField(
         help_text="FKey to PatientSearch", null=True
     )
     date_of_receipt_of_information = models.DateTimeField(
@@ -568,7 +567,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
 
 class PatientSearch(PatientBaseModel):
-    patient_id = EncryptedIntegerField()
+    patient_id = models.IntegerField(null=True)
+    patient_external_id = models.CharField(max_length=100, default="")
 
     name = models.CharField(max_length=120)
     gender = models.IntegerField(choices=GENDER_CHOICES)
@@ -578,7 +578,6 @@ class PatientSearch(PatientBaseModel):
     state_id = models.IntegerField()
 
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
-    patient_external_id = EncryptedCharField(max_length=100, default="")
 
     allow_transfer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
