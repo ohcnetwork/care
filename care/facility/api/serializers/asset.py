@@ -98,10 +98,20 @@ class AssetSerializer(ModelSerializer):
             if attrs["last_serviced_on"] > datetime.now().date():
                 raise ValidationError("Last serviced on cannot be in the future")
 
+        # only allow setting asset class on creation (or updation if asset class is not set)
+        if (
+            attrs.get("asset_class")
+            and self.instance
+            and self.instance.asset_class
+            and self.instance.asset_class != attrs["asset_class"]
+        ):
+            raise ValidationError({"asset_class": "Cannot change asset class"})
+
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
+
         with transaction.atomic():
             if (
                 "current_location" in validated_data
