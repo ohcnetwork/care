@@ -27,9 +27,6 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import (
-    PhoneNumberIsPossibleField,
-)
 from config.serializers import ChoiceField
 
 
@@ -223,9 +220,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
-    ambulance_phone_number = PhoneNumberIsPossibleField(
-        required=False, allow_null=True, allow_blank=True
-    )
+
     ambulance_number = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
