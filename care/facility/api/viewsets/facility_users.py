@@ -10,8 +10,10 @@ from care.users.models import User
 
 
 class UserFilter(filters.FilterSet):
-    user_type = filters.TypedChoiceFilter(choices=[(key, key) for key in User.TYPE_VALUE_MAP.keys()],
-                                          coerce=lambda role: User.TYPE_VALUE_MAP[role])
+    user_type = filters.TypedChoiceFilter(
+        choices=[(key, key) for key in User.TYPE_VALUE_MAP.keys()],
+        coerce=lambda role: User.TYPE_VALUE_MAP[role],
+    )
 
     class Meta:
         model = User
@@ -27,7 +29,9 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
 
     def get_queryset(self):
         try:
-            facility = Facility.objects.get(external_id=self.kwargs.get("facility_external_id"))
+            facility = Facility.objects.get(
+                external_id=self.kwargs.get("facility_external_id")
+            )
             return facility.users.filter(deleted=False).order_by("-last_login")
-        except:
+        except Facility.DoesNotExist:
             raise ValidationError({"Facility": "Facility not found"})

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from care.facility.models import PatientConsultation, DailyRound
+from care.facility.models import DailyRound, PatientConsultation
 
 
 class Command(BaseCommand):
@@ -12,7 +12,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         consultations = list(
-            PatientConsultation.objects.filter(last_daily_round__isnull=True).values_list("external_id")
+            PatientConsultation.objects.filter(
+                last_daily_round__isnull=True
+            ).values_list("external_id")
         )
         total_count = len(consultations)
         print(f"{total_count} Consultations need to be updated")
@@ -22,7 +24,9 @@ class Command(BaseCommand):
                 print(f"{i} operations performed")
             i = i + 1
             PatientConsultation.objects.filter(external_id=consultation_eid[0]).update(
-                last_daily_round=DailyRound.objects.filter(consultation__external_id=consultation_eid[0])
+                last_daily_round=DailyRound.objects.filter(
+                    consultation__external_id=consultation_eid[0]
+                )
                 .order_by("-created_date")
                 .first()
             )

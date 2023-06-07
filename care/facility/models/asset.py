@@ -102,6 +102,12 @@ class Asset(BaseModel):
             ),
         ]
 
+    def delete(self, *args, **kwargs):
+        from care.facility.models.bed import AssetBed
+
+        AssetBed.objects.filter(asset=self).update(deleted=True)
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return self.name
 

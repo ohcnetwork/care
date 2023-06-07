@@ -18,4 +18,9 @@ class Migration(migrations.Migration):
         ("facility", "0100_auto_20200418_2315"),
     ]
 
-    operations = [migrations.RunPython(populate_countries_travelled, reverse_code=reverse_populate_countries_travelled)]
+    operations = [
+        migrations.RunPython(
+            populate_countries_travelled,
+            reverse_code=reverse_populate_countries_travelled,
+        )
+    ]

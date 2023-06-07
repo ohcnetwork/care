@@ -6,7 +6,7 @@
 
 # To generate the documentation, run:
 # make html
-# 
+#
 # This will build the documentation and put it in the _build/html
 
 SPHINXOPTS    ?=

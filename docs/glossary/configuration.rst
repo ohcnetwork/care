@@ -67,7 +67,7 @@ Assets
 - Assets are different from Inventory. Inventories are based on the stocks and quantities.
 - Assets are **linked with a specific location** of a Facility.
 - Assets can be moved from one location to another location within a Facility.
- 
+
 .. image:: images/Assets.png
 
 

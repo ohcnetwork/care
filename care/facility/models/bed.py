@@ -51,9 +51,9 @@ class Bed(BaseModel):
         self.validate()
         return super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs) -> None:
+        AssetBed.objects.filter(bed=self).update(deleted=True)
         ConsultationBed.objects.filter(bed=self).update(deleted=True)
-
         super().delete(*args, **kwargs)
 
 
