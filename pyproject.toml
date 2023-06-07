@@ -28,7 +28,6 @@ known_third_party = [
   "boto3",
   "celery",
   "crispy_forms",
-  "dateparser",
   "dateutil",
   "django",
   "django_filters",

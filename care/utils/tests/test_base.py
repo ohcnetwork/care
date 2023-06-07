@@ -3,7 +3,6 @@ import datetime
 from collections import OrderedDict
 from uuid import uuid4
 
-import dateparser
 from django.utils.timezone import make_aware
 from pytz import unicode
 from rest_framework import status
@@ -347,7 +346,9 @@ class TestBase(APITestCase):
                         unicode,
                     ),
                 ):
-                    return_value = dateparser.parse(value)
+                    return_value = datetime.datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    )
                 return (
                     return_value.astimezone(tz=datetime.timezone.utc)
                     if isinstance(return_value, datetime.datetime)
