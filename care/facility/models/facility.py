@@ -6,13 +6,7 @@ from multiselectfield import MultiSelectField
 from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import (
-    FacilityBaseModel,
-    FacilityDefaultAssetLocation,
-    PatientSample,
-    phone_number_regex,
-    reverse_choices,
-)
+from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
@@ -200,6 +194,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             )
 
     def delete(self, *args, **kwargs):
+        from care.facility.models import FacilityDefaultAssetLocation, PatientSample
+
         FacilityDefaultAssetLocation.objects.filter(facility=self).update(deleted=True)
         FacilityUser.objects.filter(facility=self).update(deleted=True)
         PatientSample.objects.filter(testing_facility=self).update(

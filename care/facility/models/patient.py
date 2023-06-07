@@ -15,7 +15,6 @@ from care.facility.models import (
     FacilityBaseModel,
     LocalBody,
     PatientBaseModel,
-    PatientSample,
     State,
     Ward,
 )
@@ -512,6 +511,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             )
 
     def delete(self, *args, **kwargs):
+        from care.facility.models import PatientSample
+
         PatientSample.objects.filter(patient=self).update(deleted=True)
 
         super().delete(*args, **kwargs)

@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from partial_index import PQ, PartialIndex
 
-from care.facility.models import FacilityUser, PatientSample, UserDefaultAssetLocation
 from care.utils.models.base import BaseModel
 
 
@@ -343,6 +342,12 @@ class User(AbstractUser):
         return User.objects.get_entire_queryset().filter(username=username).exists()
 
     def delete(self, *args, **kwargs):
+        from care.facility.models.facility import (
+            FacilityUser,
+            PatientSample,
+            UserDefaultAssetLocation,
+        )
+
         self.deleted = True
         self.save()
 

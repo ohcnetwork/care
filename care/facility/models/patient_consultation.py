@@ -6,10 +6,7 @@ from multiselectfield import MultiSelectField
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
-    ConsultationBed,
-    InvestigationValue,
     PatientBaseModel,
-    PatientSample,
 )
 from care.facility.models.mixins.permissions.patient import (
     PatientRelatedPermissionMixin,
@@ -236,6 +233,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         super(PatientConsultation, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        from care.facility.models import (
+            ConsultationBed,
+            InvestigationValue,
+            PatientSample,
+        )
+
         ConsultationBed.objects.filter(consultation=self).update(deleted=True)
         InvestigationValue.objects.filter(consultation=self).update(deleted=True)
         PatientSample.objects.filter(consultation=self).update(deleted=True)
