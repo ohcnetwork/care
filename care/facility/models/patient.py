@@ -4,7 +4,6 @@ import enum
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from fernet_fields import EncryptedCharField, EncryptedIntegerField
-from partial_index import PQ, PartialIndex
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -697,11 +696,11 @@ class Disease(models.Model):
     objects = BaseManager()
 
     class Meta:
-        indexes = [
-            PartialIndex(
+        constraints = [
+            models.UniqueConstraint(
                 fields=["patient", "disease"],
-                unique=True,
-                where=PQ(deleted=False),
+                condition=models.Q(deleted=False),
+                name="unique_patient_disease",
             )
         ]
 

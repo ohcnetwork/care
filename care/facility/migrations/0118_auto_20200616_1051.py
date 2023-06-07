@@ -3,7 +3,6 @@
 import uuid
 
 import django.db.models.deletion
-import partial_index
 from django.db import migrations, models
 
 import care.facility.models.mixins.permissions.facility
@@ -54,15 +53,6 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
-            ),
-        ),
-        migrations.AddIndex(
-            model_name="facilityinventoryminquantity",
-            index=partial_index.PartialIndex(
-                fields=["facility", "item"],
-                name="facility_fa_facilit_a9eb9a_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
             ),
         ),
     ]

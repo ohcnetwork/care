@@ -3,7 +3,6 @@
 import uuid
 
 import django.db.models.deletion
-import partial_index
 from django.conf import settings
 from django.db import migrations, models
 
@@ -220,14 +219,5 @@ class Migration(migrations.Migration):
             model_name="facilityinventoryitem",
             name="tags",
             field=models.ManyToManyField(to="facility.FacilityInventoryItemTag"),
-        ),
-        migrations.AddIndex(
-            model_name="facilityinventorysummary",
-            index=partial_index.PartialIndex(
-                fields=["facility", "item"],
-                name="facility_fa_facilit_ff33b8_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
-            ),
         ),
     ]
