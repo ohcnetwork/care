@@ -22,4 +22,4 @@ def delete_incomplete_file_uploads():
     ]
 
     FileUpload.bulk_delete_objects(s3_keys)
-    incomplete_uploads.delete()
+    incomplete_uploads.update(deleted=True)
