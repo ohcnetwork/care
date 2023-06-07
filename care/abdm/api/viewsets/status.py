@@ -6,11 +6,12 @@ from rest_framework.response import Response
 from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.models.patient import PatientRegistration
+from config.authentication import ABDMAuthentication
 
 
 class NotifyView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -30,7 +31,7 @@ class NotifyView(GenericAPIView):
 
 class SMSOnNotifyView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data

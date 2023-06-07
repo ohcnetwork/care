@@ -12,11 +12,12 @@ from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
+from config.authentication import ABDMAuthentication
 
 
 class HipViewSet(GenericViewSet):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def get_linking_token(self, data):
         AbdmGateway().fetch_modes(data)

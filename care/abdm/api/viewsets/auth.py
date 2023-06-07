@@ -13,11 +13,12 @@ from care.abdm.utils.cipher import Cipher
 from care.abdm.utils.fhir import Fhir
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
+from config.authentication import ABDMAuthentication
 
 
 class OnFetchView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -28,7 +29,7 @@ class OnFetchView(GenericAPIView):
 
 class OnInitView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -39,7 +40,7 @@ class OnInitView(GenericAPIView):
 
 class OnConfirmView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -73,7 +74,7 @@ class OnConfirmView(GenericAPIView):
 
 class OnAddContextsView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -83,7 +84,7 @@ class OnAddContextsView(GenericAPIView):
 
 class DiscoverView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -152,7 +153,7 @@ class DiscoverView(GenericAPIView):
 
 class LinkInitView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -172,7 +173,7 @@ class LinkInitView(GenericAPIView):
 
 class LinkConfirmView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -206,7 +207,7 @@ class LinkConfirmView(GenericAPIView):
 
 class NotifyView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -226,7 +227,7 @@ class NotifyView(GenericAPIView):
 
 class RequestDataView(GenericAPIView):
     permission_classes = (AllowAny,)
-    authentication_classes = []
+    authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data

@@ -519,5 +519,7 @@ JWKS = JsonWebKey.import_key_set(
 
 ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
 ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
+ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
+ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
 X_CM_ID = env("X_CM_ID", default="sbx")
 FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
