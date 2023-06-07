@@ -1,5 +1,3 @@
-from django.conf import settings
-from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -8,10 +6,7 @@ from care.facility.api.serializers.patient import (
     PatientDetailSerializer,
     PatientListSerializer,
 )
-from care.facility.models import PatientConsultation, PatientRegistration, PatientSearch
-from care.users.models import User
-
-
+from care.facility.models import PatientRegistration
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
 

@@ -6,7 +6,6 @@ from config.authentication import MiddlewareAuthentication
 
 
 class MiddlewareAuthenticationVerifyView(APIView):
-
     authentication_classes = [MiddlewareAuthentication]
 
     def get(self, request):

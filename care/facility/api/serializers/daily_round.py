@@ -105,7 +105,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.consultation.discharge_date:
@@ -162,7 +161,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
-
         # Authorisation Checks
 
         # Skip check for asset user

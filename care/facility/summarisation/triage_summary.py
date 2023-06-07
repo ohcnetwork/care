@@ -9,13 +9,22 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.models import Facility, FacilityPatientStatsHistory, FacilityRelatedSummary
-from care.facility.summarisation.facility_capacity import FacilitySummaryFilter, FacilitySummarySerializer
+from care.facility.models import (
+    Facility,
+    FacilityPatientStatsHistory,
+    FacilityRelatedSummary,
+)
+from care.facility.summarisation.facility_capacity import (
+    FacilitySummaryFilter,
+    FacilitySummarySerializer,
+)
 
 
 class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by("-created_date")
+    queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by(
+        "-created_date"
+    )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
 
@@ -42,7 +51,9 @@ def TriageSummary():
     facilities = Facility.objects.all()
     current_date = localtime(now()).replace(hour=0, minute=0, second=0, microsecond=0)
     for facility in facilities:
-        facility_patient_data = FacilityPatientStatsHistory.objects.filter(facility=facility).aggregate(
+        facility_patient_data = FacilityPatientStatsHistory.objects.filter(
+            facility=facility
+        ).aggregate(
             total_patients_visited=Sum("num_patients_visited"),
             total_patients_home_quarantine=Sum("num_patients_home_quarantine"),
             total_patients_isolation=Sum("num_patients_isolation"),
@@ -51,17 +62,31 @@ def TriageSummary():
             total_count=Count("id"),
         )
         total_count = facility_patient_data.get("total_count", 0)
-        total_patients_home_quarantine = facility_patient_data.get("total_patients_home_quarantine", 0)
-        total_patients_referred = facility_patient_data.get("total_patients_referred", 0)
-        total_patients_isolation = facility_patient_data.get("total_patients_visited", 0)
-        total_patients_visited = facility_patient_data.get("total_patients_isolation", 0)
-        total_patients_confirmed_positive = facility_patient_data.get("num_patient_confirmed_positive", 0)
+        total_patients_home_quarantine = facility_patient_data.get(
+            "total_patients_home_quarantine", 0
+        )
+        total_patients_referred = facility_patient_data.get(
+            "total_patients_referred", 0
+        )
+        total_patients_isolation = facility_patient_data.get(
+            "total_patients_visited", 0
+        )
+        total_patients_visited = facility_patient_data.get(
+            "total_patients_isolation", 0
+        )
+        total_patients_confirmed_positive = facility_patient_data.get(
+            "num_patient_confirmed_positive", 0
+        )
         if total_count:
-            avg_patients_home_quarantine = int(total_patients_home_quarantine / total_count)
+            avg_patients_home_quarantine = int(
+                total_patients_home_quarantine / total_count
+            )
             avg_patients_referred = int(total_patients_referred / total_count)
             avg_patients_isolation = int(total_patients_isolation / total_count)
             avg_patients_visited = int(total_patients_visited / total_count)
-            avg_patients_confirmed_positive = int(total_patients_confirmed_positive / total_count)
+            avg_patients_confirmed_positive = int(
+                total_patients_confirmed_positive / total_count
+            )
         else:
             avg_patients_home_quarantine = 0
             avg_patients_referred = 0
@@ -92,7 +117,9 @@ def TriageSummary():
             facility_triage_summary.data = facility_triage_summarised_data
         else:
             facility_triage_summary = FacilityRelatedSummary(
-                s_type="TriageSummary", facility=facility, data=facility_triage_summarised_data
+                s_type="TriageSummary",
+                facility=facility,
+                data=facility_triage_summarised_data,
             )
         facility_triage_summary.save()
 

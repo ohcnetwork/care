@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0014_restart_sequence_districts'),
-        ('users', '0013_auto_20200326_2021'),
+        ("users", "0014_restart_sequence_districts"),
+        ("users", "0013_auto_20200326_2021"),
     ]
 
-    operations = [
-    ]
+    operations = []

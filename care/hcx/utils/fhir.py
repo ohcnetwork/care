@@ -1,29 +1,31 @@
+from datetime import datetime, timezone
+from functools import reduce
+from typing import List, Literal, TypedDict
+
+import requests
 from fhir.resources import (
-    meta,
-    organization,
-    identifier,
-    coding,
-    patient,
-    reference,
-    coverage,
-    coverageeligibilityrequest,
-    practitionerrole,
-    coverageeligibilityresponse,
+    annotation,
+    attachment,
     bundle,
-    period,
     claim,
     claimresponse,
-    domainresource,
-    attachment,
     codeableconcept,
-    procedure,
-    annotation,
+    coding,
     condition,
+    coverage,
+    coverageeligibilityrequest,
+    coverageeligibilityresponse,
+    domainresource,
+    identifier,
+    meta,
+    organization,
+    patient,
+    period,
+    practitionerrole,
+    procedure,
+    reference,
 )
-from typing import TypedDict, Literal, List
-from datetime import datetime, timezone
-import requests
-from functools import reduce
+
 from config.settings.base import CURRENT_DOMAIN
 
 

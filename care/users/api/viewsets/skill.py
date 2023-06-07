@@ -1,13 +1,15 @@
+from rest_framework import filters as drf_filters
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
 from care.users.api.serializers.skill import SkillSerializer
 from care.users.models import Skill
-from rest_framework import filters as drf_filters
 
 
 class SkillViewSet(
-    mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet,
 ):
     serializer_class = SkillSerializer
     queryset = Skill.objects.all()

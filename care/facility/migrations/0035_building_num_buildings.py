@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0034_auto_20200327_1628'),
+        ("facility", "0034_auto_20200327_1628"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='building',
-            name='num_buildings',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(0)]),
+            model_name="building",
+            name="num_buildings",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(0)]
+            ),
         ),
     ]

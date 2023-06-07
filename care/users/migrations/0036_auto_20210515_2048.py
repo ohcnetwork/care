@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0035_auto_20210511_2105'),
+        ("users", "0035_auto_20210511_2105"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='localbody',
-            name='body_type',
-            field=models.IntegerField(choices=[(1, 'Grama Panchayath'), (2, 'Block Panchayath'), (3, 'District Panchayath'), (4, 'Nagar Panchayath'), (10, 'Municipality'), (20, 'Corporation'), (50, 'Others')]),
+            model_name="localbody",
+            name="body_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "Grama Panchayath"),
+                    (2, "Block Panchayath"),
+                    (3, "District Panchayath"),
+                    (4, "Nagar Panchayath"),
+                    (10, "Municipality"),
+                    (20, "Corporation"),
+                    (50, "Others"),
+                ]
+            ),
         ),
     ]
