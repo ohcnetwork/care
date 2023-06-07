@@ -5,15 +5,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0207_auto_20201123_0056'),
+        ("facility", "0207_auto_20201123_0056"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
-            name='caused_objects',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, null=True),
+            model_name="notification",
+            name="caused_objects",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict, null=True
+            ),
         ),
     ]

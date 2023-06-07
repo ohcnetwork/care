@@ -191,7 +191,11 @@ class HcxGatewayViewSet(GenericViewSet):
         docs = list(
             map(
                 lambda file: (
-                    {"type": "MB", "name": file.name, "url": file.read_signed_url()}
+                    {
+                        "type": "MB",
+                        "name": file.name,
+                        "url": file.read_signed_url(),
+                    }
                 ),
                 FileUpload.objects.filter(
                     Q(associating_id=claim["consultation_object"]["id"])

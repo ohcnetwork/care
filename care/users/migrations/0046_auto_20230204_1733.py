@@ -42,7 +42,6 @@ specializations = [
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0045_auto_20230110_1120"),
     ]

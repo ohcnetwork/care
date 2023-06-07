@@ -1,6 +1,6 @@
-from rest_framework_simplejwt.tokens import Token
-
 from datetime import timedelta
+
+from rest_framework_simplejwt.tokens import Token
 
 
 class PatientToken(Token):

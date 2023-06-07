@@ -5,8 +5,8 @@ from care.users.models import DISTRICT_CHOICES
 
 
 def create_initial_state_and_districts(apps, *args):
-    State = apps.get_model('users', 'State')
-    District = apps.get_model('users', 'District')
+    State = apps.get_model("users", "State")
+    District = apps.get_model("users", "District")
 
     kl = State.objects.create(name="Kerala")
     for choice in DISTRICT_CHOICES:
@@ -16,10 +16,9 @@ def create_initial_state_and_districts(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0009_auto_20200325_1908'),
+        ("users", "0009_auto_20200325_1908"),
     ]
 
     operations = [
         migrations.RunPython(create_initial_state_and_districts),
-
     ]

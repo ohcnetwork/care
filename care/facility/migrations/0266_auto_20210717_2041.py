@@ -5,20 +5,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0265_auto_20210712_1133'),
+        ("facility", "0265_auto_20210712_1133"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dailyround',
-            name='dialysis_fluid_balance',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5000)]),
+            model_name="dailyround",
+            name="dialysis_fluid_balance",
+            field=models.IntegerField(
+                default=None,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(5000),
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='dailyround',
-            name='dialysis_net_balance',
-            field=models.IntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5000)]),
+            model_name="dailyround",
+            name="dialysis_net_balance",
+            field=models.IntegerField(
+                default=None,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(5000),
+                ],
+            ),
         ),
     ]

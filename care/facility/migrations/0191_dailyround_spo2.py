@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0190_auto_20201001_1134'),
+        ("facility", "0190_auto_20201001_1134"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dailyround',
-            name='spo2',
-            field=models.DecimalField(blank=True, decimal_places=2, default=None, max_digits=4, null=True),
+            model_name="dailyround",
+            name="spo2",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, default=None, max_digits=4, null=True
+            ),
         ),
     ]

@@ -2,7 +2,9 @@ from unittest import TestCase
 
 from rest_framework.exceptions import ValidationError
 
-from care.utils.serializer.phonenumber_ispossible_field import PhoneNumberIsPossibleField
+from care.utils.serializer.phonenumber_ispossible_field import (
+    PhoneNumberIsPossibleField,
+)
 
 
 class TestPhoneNumberIsPossibleField(TestCase):

@@ -8,7 +8,6 @@ from care.utils.jwks.token_generator import generate_jwt
 
 
 class BaseAssetIntegration:
-
     auth_header_type = "Care_Bearer "
 
     def __init__(self, meta):

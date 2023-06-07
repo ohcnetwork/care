@@ -4,14 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0232_auto_20210510_1218'),
+        ("facility", "0232_auto_20210510_1218"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='shiftingrequest',
-            index=models.Index(fields=['status', 'deleted'], name='facility_sh_status_2f7458_idx'),
+            model_name="shiftingrequest",
+            index=models.Index(
+                fields=["status", "deleted"], name="facility_sh_status_2f7458_idx"
+            ),
         ),
     ]

@@ -90,7 +90,9 @@ class Hcx:
         key = jwk.JWK.from_pem(public_cert.text.encode("utf-8"))
         headers = self.createHeaders(recipientCode, correlationId)
         jwePayload = jwe.JWE(
-            str(json.dumps(fhirPayload)), recipient=key, protected=json.dumps(headers)
+            str(json.dumps(fhirPayload)),
+            recipient=key,
+            protected=json.dumps(headers),
         )
         enc = jwePayload.serialize(compact=True)
         return enc

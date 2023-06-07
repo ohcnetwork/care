@@ -52,7 +52,8 @@ from care.facility.models.bed import AssetBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,

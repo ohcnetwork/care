@@ -4,44 +4,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0280_auto_20211210_0038'),
+        ("facility", "0280_auto_20211210_0038"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='cpk_mb',
+            model_name="patientconsultation",
+            name="cpk_mb",
         ),
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='cuff_pressure',
+            model_name="patientconsultation",
+            name="cuff_pressure",
         ),
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='ett_tt',
+            model_name="patientconsultation",
+            name="ett_tt",
         ),
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='intubation_end_date',
+            model_name="patientconsultation",
+            name="intubation_end_date",
         ),
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='intubation_start_date',
+            model_name="patientconsultation",
+            name="intubation_start_date",
         ),
         migrations.RemoveField(
-            model_name='patientconsultation',
-            name='lines',
+            model_name="patientconsultation",
+            name="lines",
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='operation',
+            model_name="patientconsultation",
+            name="operation",
             field=models.TextField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='special_instruction',
+            model_name="patientconsultation",
+            name="special_instruction",
             field=models.TextField(blank=True, default=None, null=True),
         ),
     ]

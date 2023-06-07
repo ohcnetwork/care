@@ -5,15 +5,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0311_auto_20220824_1757'),
+        ("facility", "0311_auto_20220824_1757"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='investigation',
+            model_name="patientconsultation",
+            name="investigation",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=dict),
         ),
     ]

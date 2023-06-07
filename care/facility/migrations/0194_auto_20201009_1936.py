@@ -4,40 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0193_auto_20201004_1458'),
+        ("facility", "0193_auto_20201004_1458"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='cluster_name',
-            field=models.CharField(blank=True, default=None, max_length=255, null=True, verbose_name='Name/ Cluster of Contact'),
+            model_name="historicalpatientregistration",
+            name="cluster_name",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                max_length=255,
+                null=True,
+                verbose_name="Name/ Cluster of Contact",
+            ),
         ),
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='date_declared_positive',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Date Patient is Declared Positive'),
+            model_name="historicalpatientregistration",
+            name="date_declared_positive",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Date Patient is Declared Positive"
+            ),
         ),
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='is_declared_positive',
-            field=models.BooleanField(default=None, null=True, verbose_name='Is Patient Declared Positive'),
+            model_name="historicalpatientregistration",
+            name="is_declared_positive",
+            field=models.BooleanField(
+                default=None, null=True, verbose_name="Is Patient Declared Positive"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='cluster_name',
-            field=models.CharField(blank=True, default=None, max_length=255, null=True, verbose_name='Name/ Cluster of Contact'),
+            model_name="patientregistration",
+            name="cluster_name",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                max_length=255,
+                null=True,
+                verbose_name="Name/ Cluster of Contact",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='date_declared_positive',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Date Patient is Declared Positive'),
+            model_name="patientregistration",
+            name="date_declared_positive",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Date Patient is Declared Positive"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='is_declared_positive',
-            field=models.BooleanField(default=None, null=True, verbose_name='Is Patient Declared Positive'),
+            model_name="patientregistration",
+            name="is_declared_positive",
+            field=models.BooleanField(
+                default=None, null=True, verbose_name="Is Patient Declared Positive"
+            ),
         ),
     ]

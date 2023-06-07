@@ -4,15 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0088_patientconsultationicmr_patienticmr_patientsampleicmr'),
+        ("facility", "0088_patientconsultationicmr_patienticmr_patientsampleicmr"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='admitted_to',
-            field=models.IntegerField(blank=True, choices=[(None, 'Not admitted'), (1, 'Isolation Room'), (2, 'ICU'), (3, 'ICU with Ventilator'), (20, 'Home Isolation')], default=None, null=True),
+            model_name="patientconsultation",
+            name="admitted_to",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (None, "Not admitted"),
+                    (1, "Isolation Room"),
+                    (2, "ICU"),
+                    (3, "ICU with Ventilator"),
+                    (20, "Home Isolation"),
+                ],
+                default=None,
+                null=True,
+            ),
         ),
     ]

@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0308_auto_20220805_2247'),
+        ("facility", "0308_auto_20220805_2247"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='asset',
-            name='last_serviced_on',
+            model_name="asset",
+            name="last_serviced_on",
             field=models.DateField(blank=True, default=None, null=True),
         ),
         migrations.AddField(
-            model_name='asset',
-            name='manufacturer',
+            model_name="asset",
+            name="manufacturer",
             field=models.CharField(blank=True, max_length=1024, null=True),
         ),
         migrations.AddField(
-            model_name='asset',
-            name='notes',
-            field=models.TextField(blank=True, default='', null=True),
+            model_name="asset",
+            name="notes",
+            field=models.TextField(blank=True, default="", null=True),
         ),
         migrations.AddField(
-            model_name='asset',
-            name='warranty_amc_end_of_validity',
+            model_name="asset",
+            name="warranty_amc_end_of_validity",
             field=models.DateField(blank=True, default=None, null=True),
         ),
     ]
