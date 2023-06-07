@@ -155,12 +155,12 @@ class PatientFilterSet(filters.FilterSet):
         values = value.split(",")
         filter_q = Q()
 
-        for val in values:
-            val = val.strip()
-            if val == "None":
-                filter_q |= Q(last_consultation__current_bed__isnull=True)
-            else:
-                filter_q |= Q(last_consultation__current_bed__bed__bed_type=val)
+        try:
+            values.remove("None")
+            filter_q |= Q(last_consultation__current_bed__isnull=True)
+        except KeyError:
+            pass
+        filter_q |= Q(ast_consultation__current_bed__bed__bed_type__in=values)
 
         return queryset.filter(filter_q)
 
