@@ -4,43 +4,39 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0087_add_users_to_facility_user'),
+        ("facility", "0087_add_users_to_facility_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PatientConsultationICMR',
-            fields=[
-            ],
+            name="PatientConsultationICMR",
+            fields=[],
             options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('facility.patientconsultation',),
+            bases=("facility.patientconsultation",),
         ),
         migrations.CreateModel(
-            name='PatientIcmr',
-            fields=[
-            ],
+            name="PatientIcmr",
+            fields=[],
             options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('facility.patientregistration',),
+            bases=("facility.patientregistration",),
         ),
         migrations.CreateModel(
-            name='PatientSampleICMR',
-            fields=[
-            ],
+            name="PatientSampleICMR",
+            fields=[],
             options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('facility.patientsample',),
+            bases=("facility.patientsample",),
         ),
     ]

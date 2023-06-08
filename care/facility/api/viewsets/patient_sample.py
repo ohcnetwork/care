@@ -17,9 +17,10 @@ from care.facility.api.serializers.patient_sample import (
     PatientSampleSerializer,
 )
 from care.facility.models import (
-    PatientConsultation, 
-    PatientRegistration, PatientSample, 
-    User
+    PatientConsultation,
+    PatientRegistration,
+    PatientSample,
+    User,
 )
 from care.facility.models.patient_icmr import PatientSampleICMR
 from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES
@@ -42,10 +43,14 @@ class PatientSampleFilterBackend(DRYPermissionFiltersBase):
 
 class PatientSampleFilterSet(filters.FilterSet):
     district = filters.NumberFilter(field_name="consultation__facility__district_id")
-    district_name = filters.CharFilter(field_name="consultation__facility__district__name", lookup_expr="icontains")
+    district_name = filters.CharFilter(
+        field_name="consultation__facility__district__name", lookup_expr="icontains"
+    )
     status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
     result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
-    patient_name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    patient_name = filters.CharFilter(
+        field_name="patient__name", lookup_expr="icontains"
+    )
     facility = filters.UUIDFilter(field_name="consultation__facility__external_id")
     sample_type = filters.ChoiceFilter(choices=SAMPLE_TYPE_CHOICES)
 
@@ -93,7 +98,9 @@ class PatientSampleViewSet(
     def get_queryset(self):
         queryset = super(PatientSampleViewSet, self).get_queryset()
         if self.kwargs.get("patient_external_id") is not None:
-            queryset = queryset.filter(patient__external_id=self.kwargs.get("patient_external_id"))
+            queryset = queryset.filter(
+                patient__external_id=self.kwargs.get("patient_external_id")
+            )
         return queryset
 
     @action(detail=True, methods=["GET"])
@@ -111,7 +118,9 @@ class PatientSampleViewSet(
         - district_name - District name - case insensitive match
         """
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(*PatientSample.CSV_MAPPING.keys())
+            queryset = self.filter_queryset(self.get_queryset()).values(
+                *PatientSample.CSV_MAPPING.keys()
+            )
             return render_to_csv_response(
                 queryset,
                 field_header_map=PatientSample.CSV_MAPPING,
@@ -122,10 +131,14 @@ class PatientSampleViewSet(
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         if self.kwargs.get("patient_pk") is not None:
-            validated_data["patient"] = PatientRegistration.objects.get(id=self.kwargs.get("patient_pk"))
+            validated_data["patient"] = PatientRegistration.objects.get(
+                id=self.kwargs.get("patient_pk")
+            )
 
         if not validated_data.get("patient") and not validated_data.get("consultation"):
-            raise ValidationError({"non_field_errors": ["Either of patient or consultation is required"]})
+            raise ValidationError(
+                {"non_field_errors": ["Either of patient or consultation is required"]}
+            )
 
         if "consultation" not in validated_data:
             validated_data["consultation"] = PatientConsultation.objects.filter(
@@ -137,13 +150,19 @@ class PatientSampleViewSet(
         with transaction.atomic():
             notes = validated_data.pop("notes", "created")
             instance = serializer.create(validated_data)
-            instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)
+            instance.patientsampleflow_set.create(
+                status=instance.status, notes=notes, created_by=self.request.user
+            )
             return instance
 
     def perform_update(self, serializer):
         validated_data = serializer.validated_data
-        notes = validated_data.pop("notes", f"updated by {self.request.user.get_username()}")
+        notes = validated_data.pop(
+            "notes", f"updated by {self.request.user.get_username()}"
+        )
         with transaction.atomic():
             instance = serializer.update(serializer.instance, validated_data)
-            instance.patientsampleflow_set.create(status=instance.status, notes=notes, created_by=self.request.user)
+            instance.patientsampleflow_set.create(
+                status=instance.status, notes=notes, created_by=self.request.user
+            )
             return instance

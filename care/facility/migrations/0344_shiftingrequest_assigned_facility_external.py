@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0343_auto_20230407_1850'),
+        ("facility", "0343_auto_20230407_1850"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='shiftingrequest',
-            name='assigned_facility_external',
-            field=models.TextField(blank=True, default='', null=True),
+            model_name="shiftingrequest",
+            name="assigned_facility_external",
+            field=models.TextField(blank=True, default="", null=True),
         ),
     ]

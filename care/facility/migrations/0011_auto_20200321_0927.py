@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0010_auto_20200321_0758'),
+        ("facility", "0010_auto_20200321_0758"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='facilitycapacity',
-            name='room_type',
-            field=models.IntegerField(choices=[(1, 'Normal'), (10, 'ICU'), (20, 'Ventilator')]),
+            model_name="facilitycapacity",
+            name="room_type",
+            field=models.IntegerField(
+                choices=[(1, "Normal"), (10, "ICU"), (20, "Ventilator")]
+            ),
         ),
         migrations.AlterField(
-            model_name='room',
-            name='room_type',
-            field=models.IntegerField(choices=[(1, 'Normal'), (10, 'ICU'), (20, 'Ventilator')]),
+            model_name="room",
+            name="room_type",
+            field=models.IntegerField(
+                choices=[(1, "Normal"), (10, "ICU"), (20, "Ventilator")]
+            ),
         ),
     ]

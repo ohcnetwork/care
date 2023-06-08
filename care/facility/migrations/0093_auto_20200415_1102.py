@@ -4,8 +4,8 @@ from django.db import migrations, models, transaction
 
 
 def populate_date_of_information_in_patients(apps, *args, **kwargs):
-    Patient = apps.get_model('facility', 'PatientRegistration')
-    PatientHistory = apps.get_model('facility', 'HistoricalPatientRegistration')
+    Patient = apps.get_model("facility", "PatientRegistration")
+    PatientHistory = apps.get_model("facility", "HistoricalPatientRegistration")
 
     with transaction.atomic():
         for p in Patient.objects.all():
@@ -22,22 +22,30 @@ def reverse_populate_date_of_information_in_patients(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0092_recompute_facility_types'),
+        ("facility", "0092_recompute_facility_types"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='date_of_receipt_of_information',
-            field=models.DateTimeField(blank=True, null=True, verbose_name="Patient's information received date"),
+            model_name="historicalpatientregistration",
+            name="date_of_receipt_of_information",
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name="Patient's information received date",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='date_of_receipt_of_information',
-            field=models.DateTimeField(blank=True, null=True, verbose_name="Patient's information received date"),
+            model_name="patientregistration",
+            name="date_of_receipt_of_information",
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name="Patient's information received date",
+            ),
         ),
         migrations.RunPython(
             populate_date_of_information_in_patients,
-            reverse_code=reverse_populate_date_of_information_in_patients
-        )
+            reverse_code=reverse_populate_date_of_information_in_patients,
+        ),
     ]
