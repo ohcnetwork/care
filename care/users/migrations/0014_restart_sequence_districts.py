@@ -10,11 +10,9 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ('users', '0013_auto_20200327_0437'),
+        ("users", "0013_auto_20200327_0437"),
     ]
 
     operations = [
-        migrations.RunSQL(
-            "ALTER SEQUENCE users_district_id_seq RESTART WITH 15;"
-        )
+        migrations.RunSQL("ALTER SEQUENCE users_district_id_seq RESTART WITH 15;")
     ]

@@ -44,10 +44,12 @@ if "spatialite" in settings.DATABASES["default"]["ENGINE"]:
             """Need to create migrations properly."""
             name, path, args, kwargs = super().deconstruct()
             kwargs.update(
-                {"base_field": self.base_field.clone(), "size": self.size,}
+                {
+                    "base_field": self.base_field.clone(),
+                    "size": self.size,
+                }
             )
             return name, path, args, kwargs
-
 
 else:
 

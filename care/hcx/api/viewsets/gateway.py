@@ -1,27 +1,28 @@
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.decorators import action
-from rest_framework.response import Response
+import json
+from datetime import datetime
+from re import IGNORECASE, search
+from uuid import uuid4 as uuid
+
+from django.db.models import Q
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from care.hcx.models.policy import Policy
-from care.hcx.models.claim import Claim
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.tasks.patient.discharge_report import (
+    generate_discharge_report_signed_url,
+)
+from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.api.serializers.gateway import (
     CheckEligibilitySerializer,
     MakeClaimSerializer,
 )
 from care.hcx.api.serializers.policy import PolicySerializer
-from care.hcx.api.serializers.claim import ClaimSerializer
-from care.hcx.utils.fhir import Fhir
-from care.facility.models.file_upload import FileUpload
-from care.facility.tasks.patient.discharge_report import (
-    generate_discharge_report_signed_url,
-)
-from uuid import uuid4 as uuid
-from care.hcx.utils.hcx import Hcx, HcxOperations
-import json
-from datetime import datetime
-from drf_yasg.utils import swagger_auto_schema
-from care.users.models import User
 from care.hcx.models.base import (
     REVERSE_CLAIM_TYPE_CHOICES,
     REVERSE_PRIORITY_CHOICES,
@@ -29,10 +30,11 @@ from care.hcx.models.base import (
     REVERSE_STATUS_CHOICES,
     REVERSE_USE_CHOICES,
 )
-from care.facility.static_data.icd11 import ICDDiseases
-from django.db.models import Q
-from re import IGNORECASE, search
-from rest_framework.permissions import IsAuthenticated
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
+from care.hcx.utils.fhir import Fhir
+from care.hcx.utils.hcx import Hcx
+from care.hcx.utils.hcx.operations import HcxOperations
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -186,7 +188,11 @@ class HcxGatewayViewSet(GenericViewSet):
         docs = list(
             map(
                 lambda file: (
-                    {"type": "MB", "name": file.name, "url": file.read_signed_url()}
+                    {
+                        "type": "MB",
+                        "name": file.name,
+                        "url": file.read_signed_url(),
+                    }
                 ),
                 FileUpload.objects.filter(
                     Q(associating_id=claim["consultation_object"]["id"])

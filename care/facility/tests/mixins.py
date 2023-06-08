@@ -29,7 +29,6 @@ class TestClassMixin(TestCase):
         ]
 
     def new_request(self, params, method, viewset, authenticate=False, pk=None):
-
         if pk is None:
             pk = {}
 

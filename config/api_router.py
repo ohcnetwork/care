@@ -15,6 +15,7 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
+    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
 )
@@ -50,7 +51,10 @@ from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
-from care.facility.api.viewsets.prescription import ConsultationPrescriptionViewSet, MedicineAdministrationViewSet
+from care.facility.api.viewsets.prescription import (
+    ConsultationPrescriptionViewSet,
+    MedicineAdministrationViewSet,
+)
 from care.facility.api.viewsets.prescription_supplier import (
     PrescriptionSupplierConsultationViewSet,
     PrescriptionSupplierViewSet,
@@ -178,6 +182,7 @@ facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 facility_nested_router.register(r"asset_location", AssetLocationViewSet)
+facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
@@ -194,7 +199,9 @@ consultation_nested_router = NestedSimpleRouter(
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
-consultation_nested_router.register(r"prescription_administration", MedicineAdministrationViewSet)
+consultation_nested_router.register(
+    r"prescription_administration", MedicineAdministrationViewSet
+)
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)

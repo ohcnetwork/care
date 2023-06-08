@@ -1,10 +1,10 @@
-from jwcrypto import jwk, jwe
-from urllib.parse import urlencode
-import requests
-import uuid
-import json
 import datetime
-from .operations import HcxOperations
+import json
+import uuid
+from urllib.parse import urlencode
+
+import requests
+from jwcrypto import jwe, jwk
 
 
 class Hcx:
@@ -87,7 +87,9 @@ class Hcx:
         key = jwk.JWK.from_pem(public_cert.text.encode("utf-8"))
         headers = self.createHeaders(recipientCode)
         jwePayload = jwe.JWE(
-            str(json.dumps(fhirPayload)), recipient=key, protected=json.dumps(headers)
+            str(json.dumps(fhirPayload)),
+            recipient=key,
+            protected=json.dumps(headers),
         )
         enc = jwePayload.serialize(compact=True)
         return enc

@@ -4,20 +4,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0339_merge_20230406_1408'),
+        ("facility", "0339_merge_20230406_1408"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dailyround',
-            name='patient_category',
-            field=models.CharField(choices=[('Comfort', 'Comfort Care'), ('Stable', 'Stable'), ('Moderate', 'Abnormal'), ('Critical', 'Critical')], max_length=8, null=True),
+            model_name="dailyround",
+            name="patient_category",
+            field=models.CharField(
+                choices=[
+                    ("Comfort", "Comfort Care"),
+                    ("Stable", "Stable"),
+                    ("Moderate", "Abnormal"),
+                    ("Critical", "Critical"),
+                ],
+                max_length=8,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='category',
-            field=models.CharField(choices=[('Comfort', 'Comfort Care'), ('Stable', 'Stable'), ('Moderate', 'Abnormal'), ('Critical', 'Critical')], max_length=8, null=True),
+            model_name="patientconsultation",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("Comfort", "Comfort Care"),
+                    ("Stable", "Stable"),
+                    ("Moderate", "Abnormal"),
+                    ("Critical", "Critical"),
+                ],
+                max_length=8,
+                null=True,
+            ),
         ),
     ]

@@ -68,7 +68,6 @@ class DailyRoundsViewSet(
 
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
-
         # Request Body Validations
 
         if self.FIELDS_KEY not in request.data:

@@ -2,7 +2,7 @@ name: Branch based deploy
 
 on:
   workflow_dispatch:
-  
+
   push:
     branches:
       - abdm-m2

@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <a href="https://coronasafe.network">
+  <a href="https://ohc.network">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./care/static/images/logos/light-logo.svg">
       <img alt="care logo" src="./care/static/images/logos/black-logo.svg"  width="300">
@@ -45,8 +45,7 @@ You can find the docs at https://care-be-docs.coronasafe.network
 
 Staging instances for testing are automatically deployed on every commit to the `master` branch. The staging instances are available at:
 
-- https://gdcapi.coronasafe.network
-- https://careapi.coronasafe.in
+- https://careapi.ohc.network
 
 ### Self hosting
 
@@ -58,6 +57,11 @@ put the required environment variables in a `.env` file and run:
 ```bash
 make up
 ```
+
+> ⚠️ If you are unable to compose up care in windows, ensure line endings are set to `LF` (`docker-entrypoint.sh` won't work with `CRLF` line endings).
+> ```
+> git config core.autocrlf false
+> ```
 
 #### Docker
 

@@ -4,9 +4,8 @@ from functools import lru_cache
 from typing import List, NamedTuple
 
 from django.conf import settings
-from rest_framework.utils.encoders import JSONEncoder
-
 from multiselectfield.db.fields import MSFList
+from rest_framework.utils.encoders import JSONEncoder
 
 
 def remove_non_member_fields(d: dict):
@@ -14,7 +13,10 @@ def remove_non_member_fields(d: dict):
 
 
 def instance_finder(v):
-    return isinstance(v, (list, dict, set, MSFList),)
+    return isinstance(
+        v,
+        (list, dict, set, MSFList),
+    )
 
 
 def seperate_hashable_dict(d: dict):
@@ -44,7 +46,9 @@ def _make_search(item):
         return Search(type="plain", value=splits[0])
 
 
-def candidate_in_scope(candidate: str, scope: List, is_application: bool = False) -> bool:
+def candidate_in_scope(
+    candidate: str, scope: List, is_application: bool = False
+) -> bool:
     """
     Check if the candidate string is valid with the scope supplied,
     the scope should be list of search strings - that can be either
@@ -79,10 +83,16 @@ def candidate_in_scope(candidate: str, scope: List, is_application: bool = False
 
 @lru_cache()
 def exclude_model(model_name):
-    if candidate_in_scope(model_name, settings.AUDIT_LOG["globals"]["exclude"]["applications"], is_application=True):
+    if candidate_in_scope(
+        model_name,
+        settings.AUDIT_LOG["globals"]["exclude"]["applications"],
+        is_application=True,
+    ):
         return True
 
-    if candidate_in_scope(model_name, settings.AUDIT_LOG["models"]["exclude"]["models"]):
+    if candidate_in_scope(
+        model_name, settings.AUDIT_LOG["models"]["exclude"]["models"]
+    ):
         return True
 
     return False
