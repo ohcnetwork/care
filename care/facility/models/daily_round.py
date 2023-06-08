@@ -20,8 +20,8 @@ from care.facility.models.json_schema.daily_round import (
     META,
     NURSING_PROCEDURE,
     OUTPUT,
-    PRESSURE_SORE,
     PAIN_SCALE_ENHANCED,
+    PRESSURE_SORE,
 )
 from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -80,6 +80,7 @@ class DailyRound(PatientBaseModel):
         UNKNOWN = 0
         INVASIVE = 5
         NON_INVASIVE = 10
+        OXYGEN_SUPPORT = 15
 
     VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
 

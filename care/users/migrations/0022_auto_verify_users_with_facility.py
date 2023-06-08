@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def auto_verify_users_with_facility(apps, *args):
-    user_model = apps.get_model('users', 'User')
+    user_model = apps.get_model("users", "User")
 
     # all users who has at-least one facility associated with them is verified
     for user in user_model.objects.all():
@@ -21,12 +21,12 @@ def reverse_auto_verify_users_with_facility(*args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0021_make_kerala_everyones_state'),
+        ("users", "0021_make_kerala_everyones_state"),
     ]
 
     operations = [
         migrations.RunPython(
             auto_verify_users_with_facility,
-            reverse_code=reverse_auto_verify_users_with_facility
+            reverse_code=reverse_auto_verify_users_with_facility,
         )
     ]

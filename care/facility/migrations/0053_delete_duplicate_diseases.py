@@ -18,7 +18,6 @@ def delete_duplicates(apps, *args):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("facility", "0052_remove_patientconsultation_created_by"),
     ]

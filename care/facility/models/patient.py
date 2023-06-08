@@ -29,6 +29,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
+    REVERSE_CONSULTATION_STATUS_CHOICES,
     REVERSE_DISCHARGE_REASON_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -73,7 +74,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
 
     class ActionEnum(enum.Enum):
-        PENDING = 10
+        NO_ACTION = 10
+        PENDING = 20
         SPECIALIST_REQUIRED = 30
         PLAN_FOR_HOME_CARE = 40
         FOLLOW_UP_NOT_REQUIRED = 50
@@ -134,7 +136,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         max_length=255, default="", verbose_name="Nationality of Patient"
     )
     passport_no = models.CharField(
-        max_length=255, default="", verbose_name="Passport Number of Foreign Patients"
+        max_length=255,
+        default="",
+        verbose_name="Passport Number of Foreign Patients",
     )
     # aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
 
@@ -169,7 +173,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         editable=False,
     )
     countries_travelled = JSONField(
-        null=True, blank=True, verbose_name="Countries Patient has Travelled to"
+        null=True,
+        blank=True,
+        verbose_name="Countries Patient has Travelled to",
     )
     date_of_return = models.DateTimeField(
         blank=True,
@@ -185,7 +191,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="", blank=True, verbose_name="Patient's Current Health Details"
     )
     ongoing_medication = models.TextField(
-        default="", blank=True, verbose_name="Already pescribed medication if any"
+        default="",
+        blank=True,
+        verbose_name="Already pescribed medication if any",
     )
     has_SARI = models.BooleanField(
         default=False, verbose_name="Does the Patient Suffer from SARI"
@@ -239,14 +247,17 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, default=ActionEnum.PENDING.value
+        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
     )
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="patient_created_by"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="patient_created_by",
     )
     is_active = models.BooleanField(
         default=True,
@@ -257,7 +268,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         help_text="FKey to PatientSearch", null=True
     )
     date_of_receipt_of_information = models.DateTimeField(
-        null=True, blank=True, verbose_name="Patient's information received date"
+        null=True,
+        blank=True,
+        verbose_name="Patient's information received date",
     )
 
     test_id = models.CharField(default="", max_length=100, null=True, blank=True)
@@ -326,19 +339,29 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         blank=True,
     )
     date_of_result = models.DateTimeField(
-        null=True, blank=True, default=None, verbose_name="Patient's result Date"
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name="Patient's result Date",
     )
     number_of_primary_contacts = models.IntegerField(
-        null=True, default=None, blank=True, verbose_name="Number of Primary Contacts"
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name="Number of Primary Contacts",
     )
     number_of_secondary_contacts = models.IntegerField(
-        null=True, default=None, blank=True, verbose_name="Number of Secondary Contacts"
+        null=True,
+        default=None,
+        blank=True,
+        verbose_name="Number of Secondary Contacts",
     )
     # IDSP Requirements End
 
     # Vaccination Fields
     is_vaccinated = models.BooleanField(
-        default=False, verbose_name="Is the Patient Vaccinated Against COVID-19"
+        default=False,
+        verbose_name="Is the Patient Vaccinated Against COVID-19",
     )
     number_of_doses = models.PositiveIntegerField(
         default=0,
@@ -347,7 +370,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices, default=None, null=True, blank=False, max_length=15
+        choices=vaccineChoices,
+        default=None,
+        null=True,
+        blank=False,
+        max_length=15,
     )
 
     covin_id = models.CharField(
@@ -484,23 +511,41 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             )
 
     CSV_MAPPING = {
+        # Patient Details
         "external_id": "Patient ID",
         "name": "Patient Name",
         "facility__name": "Facility Name",
-        "age": "Age",
         "gender": "Gender",
+        "age": "Age",
+        # Policy Details
+        "policy__policy_id": "Policy ID/Name",
         "created_date": "Date of Registration",
+        "created_date__time": "Time of Registration",
+        # Last Consultation Details
+        "last_consultation__consultation_status": "Status during consultation",
+        "last_consultation__created_date": "Date of first consultation",
+        "last_consultation__created_date__time": "Time of first consultation",
         "last_consultation__icd11_diagnoses": "Diagnoses",
         "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
-        "last_consultation__suggestion": "Decision after Consultation",
-        "last_consultation__discharge_reason": "Discharge Reason",
-        "last_consultation__discharge_date": "Date of Discharge",
-        "last_consultation__created_date": "Date of Consultation",
+        "last_consultation__suggestion": "Decision after consultation",
+        "last_consultation__category": "Category",
+        "last_consultation__discharge_reason": "Discharge reason",
+        "last_consultation__discharge_date": "Date of discharge",
+        "last_consultation__discharge_date__time": "Time of discharge",
     }
+
+    def format_as_date(date):
+        return date.strftime("%d/%m/%Y")
+
+    def format_as_time(time):
+        return time.strftime("%H:%M")
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
-        "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
+        "created_date": format_as_date,
+        "created_date__time": format_as_time,
+        "last_consultation__created_date": format_as_date,
+        "last_consultation__created_date__time": format_as_time,
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
@@ -510,12 +555,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__icd11_provisional_diagnoses": (
             lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
         ),
+        "last_consultation__consultation_status": (
+            lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
+        ),
+        "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__discharge_reason": (
             lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
-        "created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
-        "last_consultation__discharge_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
-        "last_consultation__created_date": lambda x: x.strftime("%d/%m/%Y %H:%M"),
+        "last_consultation__discharge_date": format_as_date,
+        "last_consultation__discharge_date__time": format_as_time,
     }
 
 
@@ -611,7 +659,9 @@ class PatientContactDetails(models.Model):
     ModeOfContactChoices = [(item.value, item.name) for item in ModeOfContactEnum]
 
     patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, related_name="contacted_patients"
+        PatientRegistration,
+        on_delete=models.PROTECT,
+        related_name="contacted_patients",
     )
     patient_in_contact = models.ForeignKey(
         PatientRegistration,
@@ -636,7 +686,9 @@ class PatientContactDetails(models.Model):
 
 class Disease(models.Model):
     patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.CASCADE, related_name="medical_history"
+        PatientRegistration,
+        on_delete=models.CASCADE,
+        related_name="medical_history",
     )
     disease = models.IntegerField(choices=DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
@@ -647,7 +699,9 @@ class Disease(models.Model):
     class Meta:
         indexes = [
             PartialIndex(
-                fields=["patient", "disease"], unique=True, where=PQ(deleted=False)
+                fields=["patient", "disease"],
+                unique=True,
+                where=PQ(deleted=False),
             )
         ]
 

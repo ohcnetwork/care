@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0322_fileupload_is_archived'),
+        ("facility", "0322_fileupload_is_archived"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fileupload',
-            name='archive_reason',
+            model_name="fileupload",
+            name="archive_reason",
             field=models.TextField(blank=True),
         ),
     ]

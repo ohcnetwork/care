@@ -28,6 +28,13 @@ def notification_task_generator(**kwargs):
     NotificationGenerator(**kwargs).generate()
 
 
+@celery.task()
+def send_webpush(**kwargs):
+    user = User.objects.get(username=kwargs.get("username"))
+    message = kwargs.get("message")
+    NotificationGenerator.send_webpush_user(None, user, message)
+
+
 def get_model_class(model_name):
     if model_name == "User":
         return apps.get_model("users.{}".format(model_name))
@@ -35,7 +42,6 @@ def get_model_class(model_name):
 
 
 class NotificationGenerator:
-
     generate_for_facility = False
     generate_for_user = False
     facility = None
@@ -56,7 +62,6 @@ class NotificationGenerator:
         notification_mediums=False,
         worker_initated=False,
     ):
-
         if not worker_initated:
             if not isinstance(event_type, Notification.EventType):
                 raise NotificationCreationException("Event Type Invalid")
@@ -85,13 +90,14 @@ class NotificationGenerator:
                 "caused_object_pk": caused_object.id,
                 "message": message,
                 "defer_notifications": defer_notifications,
-                "facility": facility.id,
                 "generate_for_facility": generate_for_facility,
                 "extra_users": extra_users,
                 "extra_data": self.serialize_extra_data(extra_data),
                 "notification_mediums": mediums,
                 "worker_initated": True,
             }
+            if facility:
+                data["facility"] = facility.id
             notification_task_generator.apply_async(kwargs=data, countdown=2)
             self.worker_initiated = False
             return

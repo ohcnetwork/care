@@ -4,15 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0003_user_verified'),
+        ("users", "0003_user_verified"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='user_type',
-            field=models.IntegerField(choices=[(5, 'Doctor'), (10, 'Staff'), (15, 'Patient'), (20, 'Volunteer')]),
+            model_name="user",
+            name="user_type",
+            field=models.IntegerField(
+                choices=[
+                    (5, "Doctor"),
+                    (10, "Staff"),
+                    (15, "Patient"),
+                    (20, "Volunteer"),
+                ]
+            ),
         ),
     ]

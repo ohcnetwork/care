@@ -2,15 +2,13 @@ name: Branch based deploy
 
 on:
   workflow_dispatch:
-  
+
   push:
     branches:
-      - abdm-m1-vignesh
+      - abdm-m2
     paths-ignore:
       - "docs/**"
 
-env:
-  IMAGE_NAME: care-${{ github.ref_name}}
 jobs:
 
   build-image:
@@ -26,8 +24,8 @@ jobs:
           images: |
             ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=latest-${{ github.run_number }}
-            type=raw,value=latest
+            type=raw,value=${{ github.ref_name}}-${{ github.run_number }}
+            type=raw,value=${{ github.ref_name}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
           flavor: |

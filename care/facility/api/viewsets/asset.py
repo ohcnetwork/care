@@ -41,6 +41,7 @@ from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
@@ -69,6 +70,12 @@ class AssetLocationViewSet(
     lookup_field = "external_id"
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
+
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context
 
     def get_queryset(self):
         user = self.request.user
@@ -211,6 +218,7 @@ class AssetViewSet(
                 actions: list[enum.Enum] = [
                     OnvifAsset.OnvifActions,
                     HL7MonitorAsset.HL7MonitorActions,
+                    VentilatorAsset.VentilatorActions,
                 ]
                 choices = []
                 for action in actions:

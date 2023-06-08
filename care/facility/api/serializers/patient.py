@@ -1,6 +1,8 @@
 import datetime
 
+from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
@@ -33,6 +35,8 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -78,6 +82,37 @@ class PatientListSerializer(serializers.ModelSerializer):
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+
+    # HCX
+    has_eligible_policy = serializers.SerializerMethodField(
+        "get_has_eligible_policy", read_only=True
+    )
+
+    def get_has_eligible_policy(self, patient):
+        eligible_policies = Policy.objects.filter(
+            (Q(error_text="") | Q(error_text=None)),
+            outcome="complete",
+            patient=patient.id,
+        )
+        return bool(len(eligible_policies))
+
+    approved_claim_amount = serializers.SerializerMethodField(
+        "get_approved_claim_amount", read_only=True
+    )
+
+    def get_approved_claim_amount(self, patient):
+        if patient.last_consultation is not None:
+            claim = (
+                Claim.objects.filter(
+                    Q(error_text="") | Q(error_text=None),
+                    consultation__external_id=patient.last_consultation.external_id,
+                    outcome="complete",
+                    total_claim_amount__isnull=False,
+                )
+                .order_by("-modified_date")
+                .first()
+            )
+            return claim.total_claim_amount if claim is not None else None
 
     class Meta:
         model = PatientRegistration
@@ -132,7 +167,9 @@ class PatientDetailSerializer(PatientListSerializer):
 
     phone_number = PhoneNumberIsPossibleField()
 
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -176,6 +213,8 @@ class PatientDetailSerializer(PatientListSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
+
+    allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
 
     class Meta:
         model = PatientRegistration
@@ -386,11 +425,11 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientSearch
         exclude = (
-                      "date_of_birth",
-                      "year_of_birth",
-                      "external_id",
-                      "id",
-                  ) + TIMESTAMP_FIELDS
+            "date_of_birth",
+            "year_of_birth",
+            "external_id",
+            "id",
+        ) + TIMESTAMP_FIELDS
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
