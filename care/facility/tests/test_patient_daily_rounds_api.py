@@ -1,5 +1,6 @@
-from care.utils.tests.test_base import TestBase
 from rest_framework import status
+
+from care.utils.tests.test_base import TestBase
 
 
 class TestDailyRoundApi(TestBase):
