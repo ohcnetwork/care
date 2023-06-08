@@ -17,7 +17,7 @@ def delete_incomplete_file_uploads():
     )
 
     s3_keys = [
-        f"{upload.FileType(upload.file_type).name/upload.internal_name}"
+        f"{upload.FileType(upload.file_type).name}/{upload.internal_name}"
         for upload in incomplete_uploads
     ]
 
