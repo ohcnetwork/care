@@ -1,4 +1,5 @@
 import enum
+import math
 import time
 from uuid import uuid4
 
@@ -129,8 +130,15 @@ class FileUpload(FacilityBaseModel):
     def bulk_delete_objects(s3_keys):
         s3 = boto3.client("s3", **cs_provider.get_client_config())
         bucket = settings.FILE_UPLOAD_BUCKET
+        max_keys_per_batch = 1000
+
+        num_of_batches = math.ceil(len(s3_keys) / max_keys_per_batch)
+        for batch_index in range(num_of_batches):
+            start_index = batch_index * max_keys_per_batch
+            end_index = min(start_index + max_keys_per_batch, len(s3_keys))
+            batch_keys = s3_keys[start_index:end_index]
 
         return s3.delete_objects(
             Bucket=bucket,
-            Delete={"Objects": [{"Key": key} for key in s3_keys], "Quiet": True},
+            Delete={"Objects": [{"Key": key} for key in batch_keys], "Quiet": True},
         )

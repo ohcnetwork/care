@@ -13,7 +13,7 @@ from care.facility.models.file_upload import FileUpload
 def delete_incomplete_file_uploads():
     yesterday = timezone.now() - timedelta(days=1)
     incomplete_uploads = FileUpload.objects.filter(
-        created__date__lte=yesterday, upload_completed=False
+        created_date__lte=yesterday, upload_completed=False
     )
 
     s3_keys = [
@@ -22,4 +22,4 @@ def delete_incomplete_file_uploads():
     ]
 
     FileUpload.bulk_delete_objects(s3_keys)
-    incomplete_uploads.delete()
+    incomplete_uploads.update(deleted=True)
