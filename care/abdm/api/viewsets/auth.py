@@ -183,7 +183,7 @@ class LinkConfirmView(GenericAPIView):
         patient = get_object_or_404(
             PatientRegistration.objects.filter(
                 external_id=data["confirmation"]["linkRefNumber"]
-            ).first()
+            )
         )
         AbdmGateway().on_link_confirm(
             {
