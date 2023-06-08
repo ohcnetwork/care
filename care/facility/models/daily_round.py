@@ -505,9 +505,9 @@ class DailyRound(PatientBaseModel):
     @staticmethod
     def has_read_permission(request):
         consultation = get_object_or_404(
-                        PatientConsultation,
-                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
-                    )
+            PatientConsultation,
+            external_id=request.parser_context["kwargs"]["consultation_external_id"],
+        )
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
