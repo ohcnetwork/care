@@ -71,4 +71,3 @@ jobs:
           coverage combine || true
           coverage xml
           coverage report -m
-
