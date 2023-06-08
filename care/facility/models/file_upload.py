@@ -30,7 +30,6 @@ class FileUpload(FacilityBaseModel):
         DISCHARGE_SUMMARY = 5
         COMMUNICATION = 6
 
-
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"
         XRAY = "XRAY"

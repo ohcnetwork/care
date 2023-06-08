@@ -15,9 +15,9 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
-    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
+    PatientAssetBedViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
