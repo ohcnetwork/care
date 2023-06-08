@@ -19,4 +19,4 @@
 
 _*Only PR's with test cases included and passing lint and test pipelines will be reviewed*_
 
-@coronasafe/code-reviewers
+@coronasafe/care-backend-maintainers @coronasafe/care-backend-admins
