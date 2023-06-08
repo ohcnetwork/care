@@ -138,7 +138,7 @@ class FileUpload(FacilityBaseModel):
             end_index = min(start_index + max_keys_per_batch, len(s3_keys))
             batch_keys = s3_keys[start_index:end_index]
 
-        return s3.delete_objects(
-            Bucket=bucket,
-            Delete={"Objects": [{"Key": key} for key in batch_keys], "Quiet": True},
-        )
+            s3.delete_objects(
+                Bucket=bucket,
+                Delete={"Objects": [{"Key": key} for key in batch_keys], "Quiet": True},
+            )
