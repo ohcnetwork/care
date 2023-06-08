@@ -3,6 +3,7 @@ import enum
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.shortcuts import get_object_or_404
 from multiselectfield import MultiSelectField
 
 from care.facility.models import (
@@ -503,9 +504,10 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        consultation = PatientConsultation.objects.get(
-            external_id=request.parser_context["kwargs"]["consultation_external_id"]
-        )
+        consultation = get_object_or_404(
+                        PatientConsultation,
+                        external_id=request.parser_context["kwargs"]["consultation_external_id"]
+                    )
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
