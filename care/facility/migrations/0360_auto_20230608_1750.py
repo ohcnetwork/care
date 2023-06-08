@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
             is_migrated=True, frequency__isnull=False
         ):
             prescription.frequency = prescription.frequency.upper()
-            prescription.save()
+            prescription.save(update_fields=["frequency"])
 
     dependencies = [
         ("facility", "0359_auto_20230529_1907"),
