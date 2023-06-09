@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
@@ -214,6 +215,8 @@ class PatientDetailSerializer(PatientListSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
+
+    allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
 
     abha_number = ExternalIdSerializerField(
         queryset=AbhaNumber.objects.all(), required=False, allow_null=True

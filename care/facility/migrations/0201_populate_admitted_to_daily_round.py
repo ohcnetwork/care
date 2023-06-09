@@ -18,5 +18,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(populate_admitted_to_daily_round, reverse_code=reverse_populate_admitted_to_daily_round)
+        migrations.RunPython(
+            populate_admitted_to_daily_round,
+            reverse_code=reverse_populate_admitted_to_daily_round,
+        )
     ]

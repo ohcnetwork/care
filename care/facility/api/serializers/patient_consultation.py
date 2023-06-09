@@ -1,9 +1,11 @@
 from datetime import timedelta
 
+from django.db import transaction
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
@@ -13,6 +15,8 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     Facility,
     PatientRegistration,
+    Prescription,
+    PrescriptionType,
 )
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
@@ -22,6 +26,7 @@ from care.facility.models.patient_base import (
     SuggestionChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -72,8 +77,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
     discharge_notes = serializers.CharField(read_only=True)
 
-    discharge_prescription = serializers.JSONField(required=False)
-    discharge_prn_prescription = serializers.JSONField(required=False)
+    discharge_prescription = serializers.SerializerMethodField()
+    discharge_prn_prescription = serializers.SerializerMethodField()
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices,
@@ -97,23 +102,25 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    def get_icd11_diagnoses_objects_by_ids(self, diagnoses_ids):
-        from care.facility.static_data.icd11 import ICDDiseases
+    def get_discharge_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=False,
+        ).values()
 
-        diagnosis_objects = []
-        for diagnosis in diagnoses_ids:
-            try:
-                diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
-                diagnosis_objects.append(diagnosis_object)
-            except BaseException:
-                pass
-        return diagnosis_objects
+    def get_discharge_prn_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=True,
+        ).values()
 
     def get_icd11_diagnoses_object(self, consultation):
-        return self.get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
+        return get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
 
     def get_icd11_provisional_diagnoses_object(self, consultation):
-        return self.get_icd11_diagnoses_objects_by_ids(
+        return get_icd11_diagnoses_objects_by_ids(
             consultation.icd11_provisional_diagnoses
         )
 
@@ -137,7 +144,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -203,7 +209,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return consultation
 
     def create(self, validated_data):
-
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -254,7 +259,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
 
-        if bed:
+        if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
                 bed=bed,
                 consultation=consultation,
@@ -383,6 +388,87 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         }
                     )
         return validated
+
+
+class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
+    discharge_reason = serializers.ChoiceField(
+        choices=DISCHARGE_REASON_CHOICES, required=True
+    )
+    discharge_notes = serializers.CharField(required=False, allow_blank=True)
+
+    discharge_date = serializers.DateTimeField(required=True)
+    discharge_prescription = serializers.SerializerMethodField()
+    discharge_prn_prescription = serializers.SerializerMethodField()
+
+    death_datetime = serializers.DateTimeField(required=False, allow_null=True)
+    death_confirmed_doctor = serializers.CharField(required=False, allow_null=True)
+
+    def get_discharge_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=False,
+        ).values()
+
+    def get_discharge_prn_prescription(self, consultation):
+        return Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+            is_prn=True,
+        ).values()
+
+    class Meta:
+        model = PatientConsultation
+        fields = (
+            "discharge_reason",
+            "discharge_notes",
+            "discharge_date",
+            "discharge_prescription",
+            "discharge_prn_prescription",
+            "death_datetime",
+            "death_confirmed_doctor",
+        )
+
+    def validate(self, attrs):
+        if attrs.get("discharge_reason") == "EXP":
+            if not attrs.get("death_datetime"):
+                raise ValidationError({"death_datetime": "This field is required"})
+            if not attrs.get("death_confirmed_doctor"):
+                raise ValidationError(
+                    {"death_confirmed_doctor": "This field is required"}
+                )
+            attrs["discharge_date"] = now()
+        elif not attrs.get("discharge_date"):
+            raise ValidationError({"discharge_date": "This field is required"})
+        return attrs
+
+    def save(self, **kwargs):
+        with transaction.atomic():
+            instance = super().save(**kwargs)
+            patient: PatientRegistration = instance.patient
+            patient.is_active = False
+            patient.allow_transfer = True
+            patient.review_time = None
+            patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
+            ConsultationBed.objects.filter(
+                consultation=self.instance, end_date__isnull=True
+            ).update(end_date=now())
+            if patient.abha_number:
+                abha_number = patient.abha_number
+                AbdmGateway().fetch_modes(
+                    {
+                        "healthId": abha_number.abha_number,
+                        "name": abha_number.name,
+                        "gender": abha_number.gender,
+                        "dateOfBirth": str(abha_number.date_of_birth),
+                        "consultationId": abha_number.external_id,
+                        "purpose": "LINK",
+                    }
+                )
+            return instance
+
+    def create(self, validated_data):
+        raise NotImplementedError
 
 
 class PatientConsultationIDSerializer(serializers.ModelSerializer):

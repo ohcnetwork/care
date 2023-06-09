@@ -5,15 +5,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0055_auto_20200331_1144'),
+        ("facility", "0055_auto_20200331_1144"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ambulance',
-            name='vehicle_number',
-            field=models.CharField(db_index=True, max_length=20, unique=True, validators=[django.core.validators.RegexValidator(code='invalid_vehicle_number', message='Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234', regex='^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$')]),
+            model_name="ambulance",
+            name="vehicle_number",
+            field=models.CharField(
+                db_index=True,
+                max_length=20,
+                unique=True,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        code="invalid_vehicle_number",
+                        message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
+                        regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
+                    )
+                ],
+            ),
         ),
     ]

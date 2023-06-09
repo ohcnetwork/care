@@ -1,4 +1,5 @@
 import enum
+
 from django.conf import settings
 
 

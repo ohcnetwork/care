@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 def unique_external_ids(apps, *args):
-
     models = [
         "dailyround",
     ]
@@ -24,4 +23,8 @@ class Migration(migrations.Migration):
         ("facility", "0123_auto_20200626_0144"),
     ]
 
-    operations = [migrations.RunPython(unique_external_ids, reverse_code=reverse_unique_external_ids)]
+    operations = [
+        migrations.RunPython(
+            unique_external_ids, reverse_code=reverse_unique_external_ids
+        )
+    ]

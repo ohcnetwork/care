@@ -4,11 +4,9 @@ from json import JSONDecodeError
 
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
-from django.core.validators import validate_email
 from django.db import models
 from django.db.models import Case, When
 from django.db.models.query_utils import Q
-from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
@@ -24,7 +22,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -45,19 +42,18 @@ from care.facility.models import (
     DailyRound,
     Facility,
     FacilityPatientStatsHistory,
-    PatientConsultation,
     PatientNotes,
     PatientRegistration,
     PatientSearch,
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
-from care.facility.models.bed import AssetBed, ConsultationBed
+from care.facility.models.bed import AssetBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
-from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
@@ -399,90 +395,6 @@ class PatientViewSet(
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
     @action(detail=True, methods=["POST"])
-    def discharge_patient(self, request, *args, **kwargs):
-        discharged = bool(request.data.get("discharge", False))
-        patient = self.get_object()
-        patient.is_active = discharged
-        patient.allow_transfer = not discharged
-        patient.review_time = None
-        patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
-        last_consultation = (
-            PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
-        )
-        current_time = localtime(now())
-        if last_consultation:
-            reason = request.data.get("discharge_reason")
-            notes = request.data.get("discharge_notes", "")
-            if reason not in DISCHARGE_REASONS:
-                raise serializers.ValidationError(
-                    {"discharge_reason": "discharge reason is not valid"}
-                )
-            last_consultation.discharge_reason = reason
-            last_consultation.discharge_notes = notes
-            if last_consultation.discharge_date is None:
-                last_consultation.discharge_date = current_time
-            last_consultation.current_bed = None
-            if reason == "EXP":
-                death_datetime = request.data.get("death_datetime")
-                death_confirmed_doctor = request.data.get("death_confirmed_doctor")
-                if death_datetime is None:
-                    raise serializers.ValidationError(
-                        {"death_datetime": "Please provide death date and time"}
-                    )
-                if death_confirmed_doctor is None:
-                    raise serializers.ValidationError(
-                        {"death_confirmed_doctor": "Please provide doctor details"}
-                    )
-                last_consultation.death_datetime = death_datetime
-                last_consultation.death_confirmed_doctor = death_confirmed_doctor
-            if reason == "REC":
-                discharge_prescription = request.data.get("discharge_prescription", [])
-                discharge_prn_prescription = request.data.get(
-                    "discharge_prn_prescription", []
-                )
-                discharge_date = request.data.get("discharge_date")
-                if discharge_date is None:
-                    raise serializers.ValidationError(
-                        {"discharge_date": "Please set the discharge date"}
-                    )
-                last_consultation.discharge_prescription = discharge_prescription
-                last_consultation.discharge_prn_prescription = (
-                    discharge_prn_prescription
-                )
-                last_consultation.discharge_date = discharge_date
-            last_consultation.save()
-            ConsultationBed.objects.filter(
-                consultation=last_consultation, end_date__isnull=True
-            ).update(end_date=current_time)
-
-            if last_consultation.patient.abha_number:
-                AbdmGateway().fetch_modes(
-                    {
-                        "healthId": last_consultation.patient.abha_number.abha_number,
-                        "name": last_consultation.patient.abha_number.name,
-                        "gender": last_consultation.patient.abha_number.gender,
-                        "dateOfBirth": str(
-                            last_consultation.patient.abha_number.date_of_birth
-                        ),
-                        "consultationId": last_consultation.external_id,
-                        "purpose": "LINK",
-                    }
-                )
-
-        return Response(status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["POST"])
-    def discharge_summary(self, request, *args, **kwargs):
-        patient = self.get_object()
-        email = request.data.get("email", "")
-        try:
-            validate_email(email)
-        except Exception:
-            email = request.user.email
-        generate_discharge_report.delay(patient.id, email)
-        return Response(status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
@@ -493,8 +405,8 @@ class PatientViewSet(
                 {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
-        patient.is_active = True
         patient.allow_transfer = False
+        patient.is_active = True
         serializer = self.get_serializer_class()(patient, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -502,17 +414,14 @@ class PatientViewSet(
         patient = PatientRegistration.objects.get(
             id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
         )
-        response_serializer = self.get_serializer_class()(patient)
+        response_serializer = self.get_serializer(patient)
         # Update all Active Shifting Request to Rejected
 
         for shifting_request in ShiftingRequest.objects.filter(
             ~Q(status__in=[30, 50, 80]), patient=patient
         ):
             shifting_request.status = 30
-            shifting_request.comments = (
-                shifting_request.comments
-                + f"\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
-            )
+            shifting_request.comments = f"{shifting_request.comments}\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
             shifting_request.save(update_fields=["status", "comments"])
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
@@ -542,10 +451,10 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return queryset.filter(facility__district=user.district)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):

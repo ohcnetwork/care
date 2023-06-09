@@ -9,6 +9,19 @@ class FacilityCapacitySerializer(serializers.ModelSerializer):
     room_type_text = ChoiceField(choices=ROOM_TYPES, read_only=True, source="room_type")
     id = serializers.UUIDField(source="external_id", read_only=True)
 
+    def validate(self, data):
+        if (
+            data.get("current_capacity")
+            and data.get("total_capacity")
+            and data["current_capacity"] > data["total_capacity"]
+        ):
+            raise serializers.ValidationError(
+                {
+                    "current_capacity": "Current capacity cannot be greater than total capacity."
+                }
+            )
+        return data
+
     class Meta:
         model = FacilityCapacity
         read_only_fields = (

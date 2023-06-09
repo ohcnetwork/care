@@ -1,7 +1,4 @@
-from datetime import date
 from django.core.management.base import BaseCommand
-from phonenumber_field.serializerfields import PhoneNumberField
-from rest_framework.exceptions import ValidationError
 
 from care.facility.models import PatientRegistration
 
@@ -19,7 +16,7 @@ class Command(BaseCommand):
         for patient in qs:
             try:
                 patient.save()
-            except Exception as e:
+            except Exception:
                 failed += 1
         if failed:
             print(f"Failed for {failed} Patient")

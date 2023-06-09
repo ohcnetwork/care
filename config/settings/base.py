@@ -517,10 +517,3 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
-
-ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
-ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
-ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
-ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
-X_CM_ID = env("X_CM_ID", default="sbx")
-FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")

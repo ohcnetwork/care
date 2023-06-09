@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0291_facility_cover_image_url'),
+        ("facility", "0291_facility_cover_image_url"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bed',
-            name='description',
-            field=models.TextField(blank=True, default=''),
+            model_name="bed",
+            name="description",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

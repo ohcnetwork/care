@@ -5,18 +5,22 @@ from django.db import migrations
 
 
 def populate_patient_search(apps, *args, **kwargs):
-    PatientRegistration = apps.get_model('facility', 'PatientRegistration')
-    PatientSearch = apps.get_model('facility', 'PatientSearch')
-    State = apps.get_model('users', 'State')
+    PatientRegistration = apps.get_model("facility", "PatientRegistration")
+    PatientSearch = apps.get_model("facility", "PatientSearch")
+    State = apps.get_model("users", "State")
     if not PatientRegistration:
         # in future if the model is renamed / removed, migration should not throw exception
         return
 
-    patient_qs = PatientRegistration.objects.all().select_related('local_body__district', 'district__state')
+    patient_qs = PatientRegistration.objects.all().select_related(
+        "local_body__district", "district__state"
+    )
     for patient in patient_qs:
-        patient.year_of_birth = patient.date_of_birth.year \
-            if patient.date_of_birth is not None \
+        patient.year_of_birth = (
+            patient.date_of_birth.year
+            if patient.date_of_birth is not None
             else datetime.datetime.now().year - patient.age
+        )
 
         if patient.local_body:
             patient.district = patient.local_body.district
@@ -33,7 +37,7 @@ def populate_patient_search(apps, *args, **kwargs):
                 date_of_birth=patient.date_of_birth,
                 year_of_birth=patient.year_of_birth,
                 state_id=patient.state_id,
-                patient_id=patient.pk
+                patient_id=patient.pk,
             )
             patient.patient_search_id = ps.pk
         else:
@@ -55,9 +59,11 @@ def reverse_populate_patient_search(*args, **kwargs):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0081_auto_20200409_1201'),
+        ("facility", "0081_auto_20200409_1201"),
     ]
 
     operations = [
-        migrations.RunPython(populate_patient_search, reverse_code=reverse_populate_patient_search)
+        migrations.RunPython(
+            populate_patient_search, reverse_code=reverse_populate_patient_search
+        )
     ]

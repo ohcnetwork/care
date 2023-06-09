@@ -9,7 +9,6 @@ on:
     paths-ignore:
       - "docs/**"
 
-
 jobs:
   build-image:
     name: Build & Push Staging to container registries
@@ -26,7 +25,10 @@ jobs:
           tags: |
             type=raw,value=${{ github.ref_name}}-${{ github.run_number }}
             type=raw,value=${{ github.ref_name}}
-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

@@ -358,7 +358,11 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
-    skills = SkillSerializer(many=True, read_only=True)
+    skills = serializers.SerializerMethodField()
+
+    def get_skills(self, obj):
+        qs = obj.skills.filter(userskill__deleted=False)
+        return SkillSerializer(qs, many=True).data
 
     class Meta:
         model = User

@@ -71,4 +71,4 @@ pycryptodomex==3.16.0
 # HCX
 fhir.resources==6.5.0
 jwcrypto==1.4.2
-requests==2.25.1
+requests==2.31.0

@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0027_auto_20200326_1015'),
+        ("facility", "0027_auto_20200326_1015"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='patientregistration',
-            name='gender',
-            field=models.IntegerField(choices=[(1, 'Male'), (2, 'Female'), (3, 'Non-binary')]),
+            model_name="patientregistration",
+            name="gender",
+            field=models.IntegerField(
+                choices=[(1, "Male"), (2, "Female"), (3, "Non-binary")]
+            ),
         ),
     ]

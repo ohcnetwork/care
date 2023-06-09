@@ -4,7 +4,7 @@ from django.db import migrations, transaction
 
 
 def populate_facility_district(apps, *args):
-    Facility = apps.get_model('facility', 'Facility')
+    Facility = apps.get_model("facility", "Facility")
 
     with transaction.atomic():
         for facility in Facility.objects.all().select_related("district"):
@@ -18,7 +18,7 @@ def reverse_populate(apps, *args):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0042_auto_20200328_2018'),
+        ("facility", "0042_auto_20200328_2018"),
     ]
 
     operations = [
