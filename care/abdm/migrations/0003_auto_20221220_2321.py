@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('abdm', '0002_auto_20221220_2312'),
+        ("abdm", "0002_auto_20221220_2312"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='abhanumber',
-            name='password',
+            model_name="abhanumber",
+            name="password",
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='profile_photo',
+            model_name="abhanumber",
+            name="profile_photo",
             field=models.TextField(),
         ),
     ]

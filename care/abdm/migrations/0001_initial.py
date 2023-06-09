@@ -8,32 +8,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AbhaNumber',
+            name="AbhaNumber",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('external_id', models.UUIDField(db_index=True, default=uuid.uuid4, unique=True)),
-                ('created_date', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
-                ('modified_date', models.DateTimeField(auto_now=True, db_index=True, null=True)),
-                ('deleted', models.BooleanField(db_index=True, default=False)),
-                ('abha_number', models.CharField(max_length=50)),
-                ('email', models.CharField(max_length=50)),
-                ('first_name', models.CharField(max_length=50)),
-                ('health_id', models.CharField(max_length=50)),
-                ('last_name', models.CharField(max_length=50)),
-                ('middle_name', models.CharField(max_length=50)),
-                ('password', models.CharField(max_length=50)),
-                ('profile_photo', models.CharField(max_length=50)),
-                ('txn_id', models.CharField(max_length=50)),
-                ('access_token', models.CharField(max_length=50)),
-                ('refresh_token', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "external_id",
+                    models.UUIDField(db_index=True, default=uuid.uuid4, unique=True),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(auto_now_add=True, db_index=True, null=True),
+                ),
+                (
+                    "modified_date",
+                    models.DateTimeField(auto_now=True, db_index=True, null=True),
+                ),
+                ("deleted", models.BooleanField(db_index=True, default=False)),
+                ("abha_number", models.CharField(max_length=50)),
+                ("email", models.CharField(max_length=50)),
+                ("first_name", models.CharField(max_length=50)),
+                ("health_id", models.CharField(max_length=50)),
+                ("last_name", models.CharField(max_length=50)),
+                ("middle_name", models.CharField(max_length=50)),
+                ("password", models.CharField(max_length=50)),
+                ("profile_photo", models.CharField(max_length=50)),
+                ("txn_id", models.CharField(max_length=50)),
+                ("access_token", models.CharField(max_length=50)),
+                ("refresh_token", models.CharField(max_length=50)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

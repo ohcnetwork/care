@@ -4,60 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('abdm', '0004_auto_20221220_2325'),
+        ("abdm", "0004_auto_20221220_2325"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='abhanumber',
-            name='abha_number',
+            model_name="abhanumber",
+            name="abha_number",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='access_token',
+            model_name="abhanumber",
+            name="access_token",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='email',
+            model_name="abhanumber",
+            name="email",
             field=models.EmailField(blank=True, max_length=254, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='first_name',
+            model_name="abhanumber",
+            name="first_name",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='health_id',
+            model_name="abhanumber",
+            name="health_id",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='last_name',
+            model_name="abhanumber",
+            name="last_name",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='middle_name',
+            model_name="abhanumber",
+            name="middle_name",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='profile_photo',
+            model_name="abhanumber",
+            name="profile_photo",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='refresh_token',
+            model_name="abhanumber",
+            name="refresh_token",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='txn_id',
+            model_name="abhanumber",
+            name="txn_id",
             field=models.TextField(blank=True, null=True),
         ),
     ]

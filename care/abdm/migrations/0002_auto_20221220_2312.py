@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('abdm', '0001_initial'),
+        ("abdm", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='abhanumber',
-            name='email',
+            model_name="abhanumber",
+            name="email",
             field=models.EmailField(max_length=254),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='first_name',
+            model_name="abhanumber",
+            name="first_name",
             field=models.CharField(max_length=512),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='last_name',
+            model_name="abhanumber",
+            name="last_name",
             field=models.CharField(max_length=512),
         ),
         migrations.AlterField(
-            model_name='abhanumber',
-            name='middle_name',
+            model_name="abhanumber",
+            name="middle_name",
             field=models.CharField(max_length=512),
         ),
     ]

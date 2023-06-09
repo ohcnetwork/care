@@ -6,22 +6,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('abdm', '0002_auto_20221220_2312'),
-        ('facility', '0329_auto_20221219_1936'),
+        ("abdm", "0002_auto_20221220_2312"),
+        ("facility", "0329_auto_20221219_1936"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='abha_number',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True,
-                                    on_delete=django.db.models.deletion.DO_NOTHING, related_name='+',
-                                    to='abdm.AbhaNumber'),
+            model_name="historicalpatientregistration",
+            name="abha_number",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="abdm.AbhaNumber",
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='abha_number',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                       to='abdm.AbhaNumber'),
+            model_name="patientregistration",
+            name="abha_number",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="abdm.AbhaNumber",
+            ),
         ),
     ]
