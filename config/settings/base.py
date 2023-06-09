@@ -412,20 +412,14 @@ VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
 
 #######################
 # File Upload Parameters
-FILE_UPLOAD_BUCKET_ENDPOINT = "https://care-s3-dev.s3.amazonaws.com"
-FILE_UPLOAD_KEY = "AKIAULRENCOFV7LFUO74"
-FILE_UPLOAD_SECRET = "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"
-FILE_UPLOAD_BUCKET = "care-s3-dev"
-CLOUD_REGION = "ap-south-1"
-FACILITY_S3_BUCKET_ENDPOINT = "https://care-s3-dev.s3.amazonaws.com"
-# FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
-# # FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
-# FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
-# FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
-# FILE_UPLOAD_BUCKET_ENDPOINT = env(
-#     "FILE_UPLOAD_BUCKET_ENDPOINT",
-#     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
-# )
+FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
+FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_BUCKET_ENDPOINT = env(
+    "FILE_UPLOAD_BUCKET_ENDPOINT",
+    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+)
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
@@ -517,3 +511,12 @@ if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
+
+ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
+ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
+ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
+ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
+X_CM_ID = env("X_CM_ID", default="sbx")
+FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
