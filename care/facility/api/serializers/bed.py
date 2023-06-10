@@ -1,6 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import BooleanField, ModelSerializer, UUIDField
+from rest_framework.serializers import (
+    BooleanField,
+    ModelSerializer,
+    SerializerMethodField,
+    UUIDField,
+)
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSerializer
@@ -14,7 +19,6 @@ from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-from rest_framework.serializers import SerializerMethodField
 
 
 class BedSerializer(ModelSerializer):
@@ -85,6 +89,17 @@ class AssetBedSerializer(ModelSerializer):
             if asset.current_location.facility.id != bed.facility.id:
                 raise ValidationError(
                     {"asset": "Should be in the same facility as the bed"}
+                )
+            if (
+                asset.asset_class in ["HL7MONITOR", "VENTILATOR"]
+                and AssetBed.objects.filter(
+                    bed=bed, asset__asset_class=asset.asset_class
+                ).exists()
+            ):
+                raise ValidationError(
+                    {
+                        "asset": "Bed is already in use by another asset of the same class"
+                    }
                 )
         else:
             raise ValidationError(

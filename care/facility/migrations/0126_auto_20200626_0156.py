@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0125_auto_20200626_0146'),
+        ("facility", "0125_auto_20200626_0146"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalpatientregistration',
-            name='allergies',
-            field=models.TextField(blank=True, default='', verbose_name="Patient's Known Allergies"),
+            model_name="historicalpatientregistration",
+            name="allergies",
+            field=models.TextField(
+                blank=True, default="", verbose_name="Patient's Known Allergies"
+            ),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='allergies',
-            field=models.TextField(blank=True, default='', verbose_name="Patient's Known Allergies"),
+            model_name="patientregistration",
+            name="allergies",
+            field=models.TextField(
+                blank=True, default="", verbose_name="Patient's Known Allergies"
+            ),
         ),
     ]

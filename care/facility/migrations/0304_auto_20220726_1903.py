@@ -4,15 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0303_patientconsultation_procedure'),
+        ("facility", "0303_patientconsultation_procedure"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='patientconsultation',
-            name='discharge_reason',
-            field=models.CharField(blank=True, choices=[('REC', 'Recovered'), ('REF', 'Referred'), ('EXP', 'Expired'), ('LAMA', 'LAMA')], default=None, max_length=4, null=True),
+            model_name="patientconsultation",
+            name="discharge_reason",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("REC", "Recovered"),
+                    ("REF", "Referred"),
+                    ("EXP", "Expired"),
+                    ("LAMA", "LAMA"),
+                ],
+                default=None,
+                max_length=4,
+                null=True,
+            ),
         ),
     ]

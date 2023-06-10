@@ -5,15 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0313_auto_20220901_2213'),
+        ("facility", "0313_auto_20220901_2213"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientconsultation',
-            name='icd11_diagnoses',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=100), blank=True, default=[], null=True, size=None),
+            model_name="patientconsultation",
+            name="icd11_diagnoses",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=100),
+                blank=True,
+                default=[],
+                null=True,
+                size=None,
+            ),
         ),
     ]

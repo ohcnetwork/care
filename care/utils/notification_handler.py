@@ -42,7 +42,6 @@ def get_model_class(model_name):
 
 
 class NotificationGenerator:
-
     generate_for_facility = False
     generate_for_user = False
     facility = None
@@ -63,7 +62,6 @@ class NotificationGenerator:
         notification_mediums=False,
         worker_initated=False,
     ):
-
         if not worker_initated:
             if not isinstance(event_type, Notification.EventType):
                 raise NotificationCreationException("Event Type Invalid")

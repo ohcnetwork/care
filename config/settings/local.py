@@ -94,6 +94,7 @@ SIMPLE_JWT = {
         minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=3000000000)
     ),
     "ROTATE_REFRESH_TOKENS": True,
+    "USER_ID_FIELD": "external_id",
 }
 
 RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000

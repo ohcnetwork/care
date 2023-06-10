@@ -3,6 +3,7 @@ import enum
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.shortcuts import get_object_or_404
 from multiselectfield import MultiSelectField
 
 from care.facility.models import (
@@ -20,8 +21,8 @@ from care.facility.models.json_schema.daily_round import (
     META,
     NURSING_PROCEDURE,
     OUTPUT,
-    PRESSURE_SORE,
     PAIN_SCALE_ENHANCED,
+    PRESSURE_SORE,
 )
 from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -503,8 +504,9 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        consultation = PatientConsultation.objects.get(
-            external_id=request.parser_context["kwargs"]["consultation_external_id"]
+        consultation = get_object_or_404(
+            PatientConsultation,
+            external_id=request.parser_context["kwargs"]["consultation_external_id"],
         )
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())

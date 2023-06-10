@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('facility', '0323_fileupload_archive_reason'),
-        ('facility', '0322_patientconsultation_review_interval'),
+        ("facility", "0323_fileupload_archive_reason"),
+        ("facility", "0322_patientconsultation_review_interval"),
     ]
 
-    operations = [
-    ]
+    operations = []

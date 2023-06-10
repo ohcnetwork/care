@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
-from care.facility.models import Prescription, MedicineAdministration
-from care.users.api.serializers.user import (
-    UserBaseMinimumSerializer,
-)
+from care.facility.models import MedicineAdministration, Prescription
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
@@ -14,7 +12,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     last_administered_on = serializers.SerializerMethodField()
 
     def get_last_administered_on(self, obj):
-        last_administration = MedicineAdministration.objects.filter(prescription=obj).order_by("-created_date").first()
+        last_administration = (
+            MedicineAdministration.objects.filter(prescription=obj)
+            .order_by("-created_date")
+            .first()
+        )
         if last_administration:
             return last_administration.created_date
         return None
@@ -31,7 +33,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "created_date",
             "modified_date",
             "discontinued_date",
-            "is_migrated"
+            "is_migrated",
         )
 
     def validate(self, attrs):
@@ -58,14 +60,11 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MedicineAdministration
-        exclude = (
-            "deleted",
-        )
+        exclude = ("deleted",)
         read_only_fields = (
             "external_id",
             "administered_by",
             "created_date",
             "modified_date",
-            "prescription"
+            "prescription",
         )
-

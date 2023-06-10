@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
@@ -172,6 +174,7 @@ class UserSkill(BaseModel):
 
 
 class User(AbstractUser):
+    external_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     username_validator = UsernameValidator()
     username = models.CharField(
         _("username"),
