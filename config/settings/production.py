@@ -1,7 +1,8 @@
 from .deployment import *  # noqa
 
-# Your stuff...
-# ------------------------------------------------------------------------------
+REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = (  # noqa F405
+    "config.authentication.CustomJWTAuthentication",
+)
 
 IS_PRODUCTION = True
 USE_SMS = True

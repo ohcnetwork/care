@@ -101,7 +101,9 @@ class TokenRefreshSerializer(serializers.Serializer):
             data["refresh"] = str(refresh)
 
         # Updating users active status
-        User.objects.filter(id=refresh["user_id"]).update(last_login=localtime(now()))
+        User.objects.filter(external_id=refresh["user_id"]).update(
+            last_login=localtime(now())
+        )
 
         return data
 
