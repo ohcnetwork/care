@@ -2,7 +2,6 @@ from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.mixins import (
     CreateModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
@@ -12,6 +11,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.hcx.api.serializers.communication import CommunicationSerializer
 from care.hcx.models.communication import Communication
+from care.utils.queryset.communications import get_communications
 
 
 class CommunicationFilter(filters.FilterSet):
@@ -20,7 +20,6 @@ class CommunicationFilter(filters.FilterSet):
 
 class CommunicationViewSet(
     CreateModelMixin,
-    DestroyModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
@@ -42,3 +41,6 @@ class CommunicationViewSet(
         "created_date",
         "modified_date",
     ]
+
+    def get_queryset(self):
+        return get_communications(self.request.user)

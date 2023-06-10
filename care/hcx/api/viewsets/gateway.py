@@ -38,6 +38,7 @@ from care.hcx.models.policy import Policy
 from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx
 from care.hcx.utils.hcx.operations import HcxOperations
+from care.utils.queryset.communications import get_communications
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -273,7 +274,7 @@ class HcxGatewayViewSet(GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         communication = CommunicationSerializer(
-            Communication.objects.get(external_id=data["communication"])
+            get_communications(self.request.user).get(external_id=data["communication"])
         ).data
 
         payload = [

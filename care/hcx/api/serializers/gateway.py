@@ -5,6 +5,7 @@ from rest_framework.serializers import Serializer, UUIDField
 from care.hcx.models.claim import Claim
 from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 
 
 class CheckEligibilitySerializer(Serializer):
@@ -32,14 +33,6 @@ class MakeClaimSerializer(Serializer):
 
 
 class SendCommunicationSerializer(Serializer):
-    communication = UUIDField(required=True)
-
-    def validate(self, attrs):
-        if "communication" in attrs:
-            get_object_or_404(
-                Communication.objects.filter(external_id=attrs["communication"])
-            )
-        else:
-            raise ValidationError({"communication": "Field is Required"})
-
-        return super().validate(attrs)
+    communication = ExternalIdSerializerField(
+        queryset=Communication.objects.all(), required=True
+    )
