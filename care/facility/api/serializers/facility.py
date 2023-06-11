@@ -4,9 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
-from care.facility.models.bed import Bed
 from care.facility.models.facility import FEATURE_CHOICES
-from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -49,16 +47,6 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
-    patient_count = serializers.SerializerMethodField()
-    bed_count = serializers.SerializerMethodField()
-
-    def get_bed_count(self, facility):
-        return Bed.objects.filter(facility=facility).count()
-
-    def get_patient_count(self, facility):
-        return PatientRegistration.objects.filter(
-            facility=facility, is_active=True
-        ).count()
 
     def get_facility_type(self, facility):
         return {
@@ -84,6 +72,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "patient_count",
             "bed_count",
         )
+        read_only_fields = (
+            "patient_count",
+            "bed_count",
+        )
 
 
 class FacilitySerializer(FacilityBasicInfoSerializer):
@@ -97,7 +89,6 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
-    bed_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Facility
@@ -135,7 +126,12 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "patient_count",
             "bed_count",
         ]
-        read_only_fields = ("modified_date", "created_date")
+        read_only_fields = (
+            "modified_date",
+            "created_date",
+            "patient_count",
+            "bed_count",
+        )
 
     def validate_middleware_address(self, value):
         value = value.strip()

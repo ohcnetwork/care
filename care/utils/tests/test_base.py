@@ -218,7 +218,7 @@ class TestBase(APITestCase):
         cls.user = cls.create_user(cls.district)
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)
-        cls.patient = cls.create_patient()
+        cls.patient = cls.create_patient(facility=cls.facility)
 
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)

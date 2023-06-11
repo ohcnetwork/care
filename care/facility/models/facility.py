@@ -159,6 +159,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         through_fields=("facility", "user"),
     )
 
+    bed_count = models.IntegerField(default=0)
+    patient_count = models.IntegerField(default=0)
+
     cover_image_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )

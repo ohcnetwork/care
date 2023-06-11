@@ -7,7 +7,4 @@ class FacilityConfig(AppConfig):
     verbose_name = _("Facility Management")
 
     def ready(self):
-        try:
-            import care.facility.signals  # noqa F401
-        except ImportError:
-            pass
+        import care.facility.signals  # noqa F401
