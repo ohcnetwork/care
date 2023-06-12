@@ -15,9 +15,9 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
-    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
+    PatientAssetBedViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -53,6 +53,7 @@ from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
+    MedibaseViewSet,
     MedicineAdministrationViewSet,
 )
 from care.facility.api.viewsets.prescription_supplier import (
@@ -202,6 +203,7 @@ consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionVi
 consultation_nested_router.register(
     r"prescription_administration", MedicineAdministrationViewSet
 )
+router.register("medibase", MedibaseViewSet, basename="medibase")
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)
