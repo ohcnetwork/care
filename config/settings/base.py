@@ -84,7 +84,6 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "drf_yasg",
-    "drf_extra_fields",
     "django_filters",
     "simple_history",
     "ratelimit",
