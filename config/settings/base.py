@@ -93,7 +93,6 @@ THIRD_PARTY_APPS = [
     "djangoql",
     "maintenance_mode",
     "django.contrib.postgres",
-    "django_celery_beat",
     "django_rest_passwordreset",
     "healthy_django",
 ]
@@ -358,7 +357,6 @@ CELERY_TASK_TIME_LIMIT = 1800 * 5
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
-# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TIMEZONE = "Asia/Kolkata"
 
 CSV_REQUEST_PARAMETER = "csv"
