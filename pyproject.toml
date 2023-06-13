@@ -44,7 +44,6 @@ known_third_party = [
   "healthy_django",
   "jsonschema",
   "jwt",
-  "location_field",
   "multiselectfield",
   "partial_index",
   "phonenumber_field",
