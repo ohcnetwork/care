@@ -15,9 +15,9 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
-    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
+    PatientAssetBedViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -50,7 +50,6 @@ from care.facility.api.viewsets.patient_investigation import (
 from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
-from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
     MedicineAdministrationViewSet,
@@ -136,9 +135,6 @@ router.register("ward", WardViewSet)
 
 # Patient Sample
 router.register("test_sample", PatientSampleViewSet)
-
-# Patient Search
-router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
 router.register(

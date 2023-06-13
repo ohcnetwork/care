@@ -3,7 +3,6 @@ import enum
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from fernet_fields import EncryptedCharField, EncryptedIntegerField
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -263,9 +262,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         help_text="Not active when discharged, or removed from the watchlist",
     )
 
-    patient_search_id = EncryptedIntegerField(
-        help_text="FKey to PatientSearch", null=True
-    )
     date_of_receipt_of_information = models.DateTimeField(
         null=True,
         blank=True,
@@ -477,37 +473,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             else datetime.datetime.now()
         )
 
-        is_create = self.pk is None
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
-        if is_create or self.patient_search_id is None:
-            ps = PatientSearch.objects.create(
-                patient_external_id=self.external_id,
-                name=self.name,
-                gender=self.gender,
-                phone_number=self.phone_number,
-                date_of_birth=self.date_of_birth,
-                year_of_birth=self.year_of_birth,
-                state_id=self.state_id,
-                patient_id=self.pk,
-                facility=self.facility,
-                allow_transfer=self.allow_transfer,
-            )
-            self.patient_search_id = ps.pk
-            self.save()
-        else:
-            PatientSearch.objects.filter(pk=self.patient_search_id).update(
-                patient_external_id=self.external_id,
-                name=self.name,
-                gender=self.gender,
-                phone_number=self.phone_number,
-                date_of_birth=self.date_of_birth,
-                year_of_birth=self.year_of_birth,
-                state_id=self.state_id,
-                facility=self.facility,
-                allow_transfer=self.allow_transfer,
-                is_active=self.is_active,
-            )
 
     CSV_MAPPING = {
         # Patient Details
@@ -564,43 +531,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,
     }
-
-
-class PatientSearch(PatientBaseModel):
-    patient_id = EncryptedIntegerField()
-
-    name = models.CharField(max_length=120)
-    gender = models.IntegerField(choices=GENDER_CHOICES)
-    phone_number = models.CharField(max_length=14)
-    date_of_birth = models.DateField(null=True)
-    year_of_birth = models.IntegerField()
-    state_id = models.IntegerField()
-
-    facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
-    patient_external_id = EncryptedCharField(max_length=100, default="")
-
-    allow_transfer = models.BooleanField(default=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        indexes = [
-            models.Index(fields=["year_of_birth", "date_of_birth", "phone_number"]),
-            models.Index(fields=["year_of_birth", "phone_number"]),
-        ]
-
-    @staticmethod
-    def has_read_permission(request):
-        if (
-            request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        ):
-            return True
-        elif (
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-            and request.user.verified
-        ):
-            return True
-        return False
 
 
 class PatientMetaInfo(models.Model):

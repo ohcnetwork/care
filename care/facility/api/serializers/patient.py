@@ -24,7 +24,6 @@ from care.facility.models import (
     PatientMetaInfo,
     PatientNotes,
     PatientRegistration,
-    PatientSearch,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -117,7 +116,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "patient_search_id",
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
@@ -215,7 +213,6 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "patient_search_id",
             "year_of_birth",
             "countries_travelled_old",
             "external_id",
@@ -417,7 +414,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
 
     class Meta:
-        model = PatientSearch
+        model = PatientRegistration
         exclude = (
             "date_of_birth",
             "year_of_birth",

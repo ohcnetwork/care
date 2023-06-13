@@ -7,7 +7,6 @@ import django.contrib.postgres.fields.jsonb
 import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
-import fernet_fields.fields
 import multiselectfield.db.fields
 import simple_history.models
 from django.conf import settings
@@ -3047,9 +3046,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "patient_search_id",
-                    fernet_fields.fields.EncryptedIntegerField(
-                        help_text="FKey to PatientSearch", null=True
-                    ),
+                    models.IntegerField(help_text="FKey to PatientSearch", null=True),
                 ),
                 (
                     "date_of_receipt_of_information",
@@ -4413,7 +4410,7 @@ class Migration(migrations.Migration):
                     models.DateTimeField(auto_now=True, db_index=True, null=True),
                 ),
                 ("deleted", models.BooleanField(db_index=True, default=False)),
-                ("patient_id", fernet_fields.fields.EncryptedIntegerField()),
+                ("patient_id", models.IntegerField()),
                 ("name", models.CharField(max_length=120)),
                 (
                     "gender",
@@ -4427,7 +4424,7 @@ class Migration(migrations.Migration):
                 ("state_id", models.IntegerField()),
                 (
                     "patient_external_id",
-                    fernet_fields.fields.EncryptedCharField(default="", max_length=100),
+                    models.CharField(default="", max_length=100),
                 ),
                 ("allow_transfer", models.BooleanField(default=True)),
                 ("is_active", models.BooleanField(default=True)),

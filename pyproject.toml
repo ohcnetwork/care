@@ -37,7 +37,6 @@ known_third_party = [
   "drf_yasg",
   "dry_rest_permissions",
   "environ",
-  "fernet_fields",
   "freezegun",
   "hardcopy",
   "healthy_django",

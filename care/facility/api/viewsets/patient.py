@@ -44,7 +44,6 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     PatientNotes,
     PatientRegistration,
-    PatientSearch,
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
@@ -396,9 +395,7 @@ class PatientViewSet(
 
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
-        patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
-        )
+        patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
 
         if patient.allow_transfer is False:
             return Response(
@@ -411,9 +408,7 @@ class PatientViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
-        )
+        patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
         response_serializer = self.get_serializer(patient)
         # Update all Active Shifting Request to Rejected
 
@@ -493,7 +488,7 @@ class PatientSearchSetPagination(PageNumberPagination):
 
 class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
-    queryset = PatientSearch.objects.all()
+    queryset = PatientRegistration.objects.all()
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     pagination_class = PatientSearchSetPagination
@@ -556,9 +551,6 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
                 )
 
             return queryset
-
-    def retrieve(self, request, *args, **kwargs):
-        raise NotImplementedError()
 
     def list(self, request, *args, **kwargs):
         """
