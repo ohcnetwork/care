@@ -9,7 +9,6 @@ import django.db.models.deletion
 import django.utils.timezone
 import fernet_fields.fields
 import multiselectfield.db.fields
-import partial_index
 import simple_history.models
 from django.conf import settings
 from django.db import migrations, models
@@ -6968,15 +6967,6 @@ class Migration(migrations.Migration):
                 fields=["-created_date"], name="facility_in_created_ea2255_idx"
             ),
         ),
-        migrations.AddIndex(
-            model_name="hospitaldoctors",
-            index=partial_index.PartialIndex(
-                fields=["facility", "area"],
-                name="facility_ho_facilit_ec08f4_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
-            ),
-        ),
         migrations.AlterUniqueTogether(
             name="facilityuser",
             unique_together={("facility", "user")},
@@ -7020,24 +7010,6 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddIndex(
-            model_name="facilityinventorysummary",
-            index=partial_index.PartialIndex(
-                fields=["facility", "item"],
-                name="facility_fa_facilit_ff33b8_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
-            ),
-        ),
-        migrations.AddIndex(
-            model_name="facilityinventoryminquantity",
-            index=partial_index.PartialIndex(
-                fields=["facility", "item"],
-                name="facility_fa_facilit_a9eb9a_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
-            ),
-        ),
-        migrations.AddIndex(
             model_name="facilityinventoryburnrate",
             index=models.Index(
                 fields=["facility", "item"], name="facility_fa_facilit_e2046a_idx"
@@ -7046,15 +7018,6 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name="facilityinventoryburnrate",
             unique_together={("facility", "item")},
-        ),
-        migrations.AddIndex(
-            model_name="facilitycapacity",
-            index=partial_index.PartialIndex(
-                fields=["facility", "room_type"],
-                name="facility_fa_facilit_ec2b0e_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
-            ),
         ),
         migrations.AddIndex(
             model_name="districtscopedsummary",
@@ -7077,15 +7040,6 @@ class Migration(migrations.Migration):
             index=models.Index(
                 fields=["-created_date", "s_type"],
                 name="facility_di_created_45003b_idx",
-            ),
-        ),
-        migrations.AddIndex(
-            model_name="disease",
-            index=partial_index.PartialIndex(
-                fields=["patient", "disease"],
-                name="facility_di_patient_640ef7_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
             ),
         ),
         migrations.AddConstraint(

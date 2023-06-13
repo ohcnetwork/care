@@ -5,7 +5,6 @@ import uuid
 import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
-import partial_index
 from django.conf import settings
 from django.db import migrations, models
 
@@ -507,15 +506,6 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 to="users.Ward",
-            ),
-        ),
-        migrations.AddIndex(
-            model_name="userskill",
-            index=partial_index.PartialIndex(
-                fields=["skill", "user"],
-                name="users_users_skill_i_6ebc32_partial",
-                unique=True,
-                where=partial_index.PQ(deleted=False),
             ),
         ),
         migrations.AlterUniqueTogether(

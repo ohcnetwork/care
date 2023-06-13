@@ -44,7 +44,6 @@ known_third_party = [
   "jsonschema",
   "jwt",
   "multiselectfield",
-  "partial_index",
   "phonenumber_field",
   "phonenumbers",
   "pytz",
