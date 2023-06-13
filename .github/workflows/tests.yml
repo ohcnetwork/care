@@ -71,6 +71,3 @@ jobs:
           coverage combine || true
           coverage xml
           coverage report -m
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v2
