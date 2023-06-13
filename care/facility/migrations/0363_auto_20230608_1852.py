@@ -39,5 +39,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython.noop(populate_medibase_medicines),
+        migrations.RunPython(
+            populate_medibase_medicines, reverse_code=migrations.RunPython.noop
+        ),
     ]
