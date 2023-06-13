@@ -30,7 +30,8 @@ class Migration(migrations.Migration):
                     generic=medicine.get("generic"),
                 )
                 for medicine in medibase_objects
-            ]
+            ],
+            batch_size=1000,
         )
 
     dependencies = [
