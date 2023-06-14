@@ -158,11 +158,11 @@ class PatientFilterSet(filters.FilterSet):
         try:
             values.remove("None")
             filter_q |= Q(last_consultation__current_bed__isnull=True)
-        except KeyError:
+        except ValueError:
             pass
 
         if values:
-            filter_q |= Q(ast_consultation__current_bed__bed__bed_type__in=values)
+            filter_q |= Q(last_consultation__current_bed__bed__bed_type__in=values)
 
         return queryset.filter(filter_q)
 
