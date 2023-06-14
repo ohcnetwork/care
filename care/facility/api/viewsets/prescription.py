@@ -131,7 +131,7 @@ class ConsultationPrescriptionViewSet(
 
 
 class MedibaseViewSet(ViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def serailize_data(self, objects):
         result = []
@@ -152,6 +152,21 @@ class MedibaseViewSet(ViewSet):
             )
         return result
 
+    def sort(self, query, results):
+        exact_matches = []
+        partial_matches = []
+
+        for result in results:
+            if type(result) == tuple:
+                result = result[0]
+            words = result.searchable.lower().split()
+            if query in words:
+                exact_matches.append(result)
+            else:
+                partial_matches.append(result)
+
+        return exact_matches + partial_matches
+
     def list(self, request):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
@@ -162,4 +177,5 @@ class MedibaseViewSet(ViewSet):
             queryset = queryset.where(
                 searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )
+            queryset = self.sort(query, queryset)
         return Response(self.serailize_data(queryset[0:15]))
