@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
@@ -114,7 +115,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(choices=FEATURE_CHOICES, null=True, blank=True)
+    features = MultiSelectField(
+        choices=FEATURE_CHOICES,
+        null=True,
+        blank=True,
+        max_length=get_max_length(FEATURE_CHOICES, None),
+    )
 
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True

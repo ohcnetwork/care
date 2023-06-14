@@ -11,33 +11,13 @@ from .base import env
 
 # GENERAL
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = json.loads(env("DJANGO_ALLOWED_HOSTS", default='["*"]'))  # noqa F405
 
 # DATABASES
 # ------------------------------------------------------------------------------
-# TODO: rename POSTGIS_URL to DATABASE_URL
-DATABASES["default"] = env.db("POSTGIS_URL")  # noqa F405
+DATABASES["default"] = env.db("DATABASE_URL", default=env("POSTGIS_URL"))  # noqa F405
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
-
-# CACHES
-# ------------------------------------------------------------------------------
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_URL"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # Mimicing memcache behavior.
-            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
-            "IGNORE_EXCEPTIONS": True,
-        },
-    }
-}
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -64,9 +44,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
 )
 
-# MEDIA
-# ------------------------------------------------------------------------------
-
 # TEMPLATES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -82,25 +59,13 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
 
 # EMAIL
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
-
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_HOST_USER = env("EMAIL_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
-EMAIL_PORT = env("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = True
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
-
-# ADMIN
-# ------------------------------------------------------------------------------
-# Django Admin URL regex.
-ADMIN_URL = env("DJANGO_ADMIN_URL")
 
 # Anymail
 # ------------------------------------------------------------------------------
@@ -122,7 +87,6 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -158,22 +122,17 @@ LOGGING = {
 
 # Sentry
 # ------------------------------------------------------------------------------
-
-SENTRY_DSN = env("SENTRY_DSN", default="")
-
-if SENTRY_DSN:
-    SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
-
-    sentry_logging = LoggingIntegration(
-        level=SENTRY_LOG_LEVEL,
-        event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
-    )
+# https://docs.sentry.io/platforms/python/guides/django/configuration/
+if SENTRY_DSN := env("SENTRY_DSN", default=""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
         integrations=[
-            sentry_logging,
+            LoggingIntegration(
+                level=env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO),
+                event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
+            ),
             DjangoIntegration(),
             CeleryIntegration(),
             RedisIntegration(),
@@ -181,11 +140,7 @@ if SENTRY_DSN:
     )
     ignore_logger("django.security.DisallowedHost")
 
-# Your stuff...
-# ------------------------------------------------------------------------------
-
 # SMS API KEYS
-USE_SMS = False
 SNS_ACCESS_KEY = env("SNS_ACCESS_KEY")
 SNS_SECRET_KEY = env("SNS_SECRET_KEY")
 SNS_REGION = "ap-south-1"

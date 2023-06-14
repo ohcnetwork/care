@@ -8,7 +8,7 @@ from django.contrib.auth.password_validation import (
 )
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_rest_passwordreset.models import (
     ResetPasswordToken,
     clear_expired,

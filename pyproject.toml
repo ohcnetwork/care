@@ -34,7 +34,7 @@ known_third_party = [
   "django_rest_passwordreset",
   "djangoql",
   "djqscsv",
-  "drf_yasg",
+  "drf_spectacular",
   "dry_rest_permissions",
   "environ",
   "freezegun",

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -56,8 +56,8 @@ class NotificationViewSet(
         facility = UUIDField(required=True)
         message = CharField(required=True)
 
-    @swagger_auto_schema(
-        request_body=DummyNotificationSerializer,
+    @extend_schema(
+        request=DummyNotificationSerializer,
         responses={204: "Notification Processed"},
     )
     @action(detail=False, methods=["POST"])

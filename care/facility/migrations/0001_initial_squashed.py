@@ -15,7 +15,6 @@ from django.db import migrations, models
 import care.facility.models.mixins.permissions.asset
 import care.facility.models.mixins.permissions.facility
 import care.facility.models.mixins.permissions.patient
-import care.utils.models.jsonfield
 import care.utils.models.validators
 
 
@@ -2920,7 +2919,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "countries_travelled",
-                    care.utils.models.jsonfield.JSONField(
+                    django.contrib.postgres.fields.JSONField(
                         blank=True,
                         null=True,
                         verbose_name="Countries Patient has Travelled to",
@@ -5283,7 +5282,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "countries_travelled",
-                    care.utils.models.jsonfield.JSONField(
+                    django.contrib.postgres.fields.JSONField(
                         blank=True,
                         null=True,
                         verbose_name="Countries Patient has Travelled to",

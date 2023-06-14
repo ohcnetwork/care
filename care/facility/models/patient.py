@@ -3,6 +3,7 @@ import enum
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import JSONField
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -39,7 +40,6 @@ from care.users.models import (
     phone_number_regex,
 )
 from care.utils.models.base import BaseManager, BaseModel
-from care.utils.models.jsonfield import JSONField
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -410,7 +410,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         related_name="root_patient_assigned_to",
     )
 
-    history = HistoricalRecords(excluded_fields=["patient_search_id", "meta_info"])
+    history = HistoricalRecords(excluded_fields=["meta_info"])
 
     objects = BaseManager()
 

@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
 from rest_framework import filters as drf_filters
@@ -179,7 +179,7 @@ class AssetViewSet(
                 "Only District Admin and above can delete assets"
             )
 
-    @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
+    @extend_schema(responses={200: UserDefaultAssetLocationSerializer()})
     @action(detail=False, methods=["GET"])
     def get_default_user_location(self, request, *args, **kwargs):
         obj = get_object_or_404(
@@ -190,8 +190,8 @@ class AssetViewSet(
     class DummyAssetSerializer(Serializer):  # Dummy for Spec
         location = UUIDField(required=True)
 
-    @swagger_auto_schema(
-        request_body=DummyAssetSerializer,
+    @extend_schema(
+        request=DummyAssetSerializer,
         responses={200: UserDefaultAssetLocationSerializer()},
     )
     @action(detail=False, methods=["POST"])
@@ -238,8 +238,8 @@ class AssetViewSet(
         result = JSONField(required=False)
 
     # Asset Integration API
-    @swagger_auto_schema(
-        request_body=DummyAssetOperateSerializer,
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
         responses={200: DummyAssetOperateResponseSerializer},
     )
     @action(detail=True, methods=["POST"])
@@ -264,7 +264,7 @@ class AssetViewSet(
 
         except KeyError as e:
             return Response(
-                {"message": dict((key, "is required") for key in e.args)},
+                {"message": {key: "is required" for key in e.args}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

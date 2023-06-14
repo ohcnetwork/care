@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
@@ -92,8 +92,8 @@ else:
     router = SimpleRouter()
 
 router.register("users", UserViewSet)
-user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
-user_nested_rotuer.register("skill", UserSkillViewSet)
+user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
+user_nested_router.register("skill", UserSkillViewSet)
 
 router.register("skill", SkillViewSet)
 
@@ -209,11 +209,11 @@ router.register("public/asset", AssetPublicViewSet)
 
 app_name = "api"
 urlpatterns = [
-    url(r"^", include(router.urls)),
-    url(r"^", include(user_nested_rotuer.urls)),
-    url(r"^", include(facility_nested_router.urls)),
-    url(r"^", include(patient_nested_router.urls)),
-    url(r"^", include(consultation_nested_router.urls)),
-    url(r"^", include(resource_nested_router.urls)),
-    url(r"^", include(shifting_nested_router.urls)),
+    path("", include(router.urls)),
+    path("", include(user_nested_router.urls)),
+    path("", include(facility_nested_router.urls)),
+    path("", include(patient_nested_router.urls)),
+    path("", include(consultation_nested_router.urls)),
+    path("", include(resource_nested_router.urls)),
+    path("", include(shifting_nested_router.urls)),
 ]
