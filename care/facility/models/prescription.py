@@ -43,17 +43,8 @@ class MedibaseMedicineType(enum.Enum):
 
 
 class MedibaseMedicine(BaseModel):
-    medibase_id = models.CharField(
-        max_length=32,
-        db_index=True,
-        unique=True,
-    )
-    name = models.CharField(
-        max_length=255,
-        blank=False,
-        null=False,
-        db_index=True,
-    )
+    medibase_id = models.CharField(max_length=32, db_index=True, unique=True)
+    name = models.CharField(max_length=255, blank=False, null=False, db_index=True)
     type = models.CharField(
         max_length=16,
         choices=generate_choices(MedibaseMedicineType),
@@ -61,34 +52,14 @@ class MedibaseMedicine(BaseModel):
         null=False,
         db_index=True,
     )
-    generic = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        db_index=True,
-    )
-    company = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        db_index=True,
-    )
-    contents = models.TextField(
-        blank=True,
-        null=True,
-    )
-    cims_class = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-    )
-    atc_classification = models.TextField(
-        blank=True,
-        null=True,
-    )
+    generic = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    company = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    contents = models.TextField(blank=True, null=True)
+    cims_class = models.CharField(max_length=255, blank=True, null=True)
+    atc_classification = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name + " - " + self.type
+        return f"{self.name} - {self.generic} - {self.company}"
 
 
 class Prescription(BaseModel):
