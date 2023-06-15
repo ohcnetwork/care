@@ -15,9 +15,9 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
-    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
+    PatientAssetBedViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -75,6 +75,7 @@ from care.facility.summarisation.patient_summary import PatientSummaryViewSet
 from care.facility.summarisation.tests_summary import TestsSummaryViewSet
 from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.communication import CommunicationViewSet
 from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
@@ -206,6 +207,7 @@ consultation_nested_router.register(
 # HCX
 router.register("hcx/policy", PolicyViewSet)
 router.register("hcx/claim", ClaimViewSet)
+router.register("hcx/communication", CommunicationViewSet)
 router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
