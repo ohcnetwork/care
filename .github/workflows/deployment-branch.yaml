@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - abdm-m2
+      - hcx-communication
     paths-ignore:
       - "docs/**"
 
