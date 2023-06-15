@@ -55,7 +55,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["CONN_MAX_AGE"] = 300
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=30)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CACHES
@@ -316,7 +316,7 @@ LOGGING = {
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
         # Primary api authentication
         # "rest_framework_simplejwt.authentication.JWTAuthentication",
         "config.authentication.CustomJWTAuthentication",
