@@ -66,13 +66,13 @@ from care.facility.api.viewsets.shifting import (
     ShifitngRequestCommentViewSet,
     ShiftingViewSet,
 )
-from care.facility.summarisation.district.patient_summary import (
+from care.facility.api.viewsets.summary import (
     DistrictPatientSummaryViewSet,
+    FacilityCapacitySummaryViewSet,
+    PatientSummaryViewSet,
+    TestsSummaryViewSet,
+    TriageSummaryViewSet,
 )
-from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
-from care.facility.summarisation.patient_summary import PatientSummaryViewSet
-from care.facility.summarisation.tests_summary import TestsSummaryViewSet
-from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 from care.hcx.api.viewsets.claim import ClaimViewSet
 from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 from care.hcx.api.viewsets.policy import PolicyViewSet

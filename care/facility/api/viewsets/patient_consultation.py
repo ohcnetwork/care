@@ -20,7 +20,7 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.tasks.patient.discharge_report import (
+from care.facility.tasks.discharge_report import (
     email_discharge_summary,
     generate_and_upload_discharge_summary_task,
 )
