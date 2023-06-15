@@ -713,27 +713,6 @@
     }
   },
   {
-    "model": "facility.patientsearch",
-    "pk": 1,
-    "fields": {
-      "external_id": "869f3429-ac7f-423e-8f55-9371fc89ff16",
-      "created_date": "2022-09-27T07:19:20.394Z",
-      "modified_date": "2022-09-27T07:19:20.394Z",
-      "deleted": false,
-      "patient_id": 1,
-      "name": "Dummy Patient",
-      "gender": 1,
-      "phone_number": "+911234567896",
-      "date_of_birth": "1901-10-16",
-      "year_of_birth": 1901,
-      "state_id": 1,
-      "facility": 1,
-      "patient_external_id": "7c1d2896-8ebf-45c7-b507-98fcedd48ef3",
-      "allow_transfer": true,
-      "is_active": true
-    }
-  },
-  {
     "model": "facility.disease",
     "pk": 1,
     "fields": {
