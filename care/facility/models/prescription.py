@@ -59,7 +59,7 @@ class MedibaseMedicine(BaseModel):
     atc_classification = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} - {self.generic} - {self.company}"
+        return " - ".join([self.name, self.generic, self.company])
 
 
 class Prescription(BaseModel):
@@ -128,6 +128,10 @@ class Prescription(BaseModel):
             if not self.discontinued and self.discontinued_date:
                 self.discontinued_date = None
         return super().save(*args, **kwargs)
+
+    @property
+    def medicine_name(self):
+        return str(self.medicine) if self.medicine else self.medicine_old
 
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name

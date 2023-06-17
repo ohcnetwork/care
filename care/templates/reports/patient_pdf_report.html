@@ -367,7 +367,7 @@
           {% for prescription in prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-normal text-sm">
-              {{ prescription.medicine }}
+              {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
@@ -424,7 +424,7 @@
           {% for prescription in prn_prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 text-sm">
-              {{ prescription.medicine }}
+              {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
@@ -771,7 +771,7 @@
           {% for prescription in discharge_prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-normal text-sm">
-              {{ prescription.medicine }}
+              {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
@@ -828,7 +828,7 @@
           {% for prescription in discharge_prn_prescriptions %}
           <tr class="bg-white border-b">
             <td class="p-1 text-sm">
-              {{ prescription.medicine }}
+              {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.dosage }}
