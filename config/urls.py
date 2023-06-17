@@ -12,6 +12,7 @@ from drf_spectacular.views import (
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
+    CommunicationRequestView,
     CoverageElibilityOnCheckView,
     PreAuthOnSubmitView,
 )
@@ -77,6 +78,11 @@ urlpatterns = [
         "claim/on_submit",
         ClaimOnSubmitView.as_view(),
         name="hcx_claim_on_submit",
+    ),
+    path(
+        "communication/request",
+        CommunicationRequestView.as_view(),
+        name="hcx_communication_on_request",
     ),
     # Health check urls
     # url(r"^watchman/", include("watchman.urls")),

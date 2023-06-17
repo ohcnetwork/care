@@ -74,6 +74,7 @@ from care.facility.api.viewsets.summary import (
     TriageSummaryViewSet,
 )
 from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.communication import CommunicationViewSet
 from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
@@ -202,6 +203,7 @@ consultation_nested_router.register(
 # HCX
 router.register("hcx/policy", PolicyViewSet)
 router.register("hcx/claim", ClaimViewSet)
+router.register("hcx/communication", CommunicationViewSet)
 router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
