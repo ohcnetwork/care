@@ -6,15 +6,15 @@ from django.db.models.query_utils import Q
 from django_filters import Filter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from rest_framework import mixins, serializers, status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 from care.facility.api.serializers.patient_investigation import (
+    InvestigationUpdateSerializer,
     InvestigationValueCreateSerializer,
     InvestigationValueSerializer,
     PatientInvestigationGroupSerializer,
@@ -188,7 +188,10 @@ class InvestigationValueViewSet(
         filters |= Q(consultation__patient__assigned_to=self.request.user)
         return queryset.filter(filters).distinct("id")
 
-    @extend_schema(responses={200: PatientInvestigationSessionSerializer(many=True)})
+    @extend_schema(
+        responses={200: PatientInvestigationSessionSerializer(many=True)},
+        tags=["investigation"],
+    )
     @action(detail=False, methods=["GET"])
     def get_sessions(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -203,17 +206,10 @@ class InvestigationValueViewSet(
             )
         )
 
-    class InvestigationUpdateSerializer(Serializer):  # Dummy for Spec
-        class ValueSerializer(serializers.ModelSerializer):
-            class Meta:
-                model = InvestigationValue
-                fields = ("external_id", "value", "notes")
-
-        investigations = ValueSerializer(many=True)
-
     @extend_schema(
         request=InvestigationUpdateSerializer,
         responses={204: "Operation successful"},
+        tags=["investigation"],
     )
     @action(detail=False, methods=["PUT"])
     def batchUpdate(self, request, *args, **kwargs):

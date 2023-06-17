@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +21,7 @@ class UserFilter(filters.FilterSet):
         fields = []
 
 
+@extend_schema_view(list=extend_schema(tags=["facility", "users"]))
 class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
     serializer_class = UserAssignedSerializer
     filterset_class = UserFilter

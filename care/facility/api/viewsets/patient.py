@@ -9,6 +9,7 @@ from django.db.models import Case, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
@@ -242,6 +243,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
         return queryset
 
 
+@extend_schema_view(history=extend_schema(tags=["patient"]))
 class PatientViewSet(
     HistoryMixin,
     mixins.CreateModelMixin,
@@ -393,6 +395,7 @@ class PatientViewSet(
 
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
+    @extend_schema(tags=["patient"])
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
@@ -552,6 +555,7 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
             return queryset
 
+    @extend_schema(tags=["patient"])
     def list(self, request, *args, **kwargs):
         """
         Patient Search

@@ -1,6 +1,7 @@
 from re import error
 
 from django.conf import settings
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -14,6 +15,7 @@ from care.users.models import phone_number_regex
 from config.patient_otp_token import PatientToken
 
 
+@extend_schema_view(create=extend_schema(tags=["auth"]))
 class PatientMobileOTPViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
@@ -22,6 +24,7 @@ class PatientMobileOTPViewSet(
     serializer_class = PatientMobileOTPSerializer
     queryset = PatientMobileOTP.objects.all()
 
+    @extend_schema(tags=["auth"])
     @action(detail=False, methods=["POST"])
     def login(self, request):
         if "phone_number" not in request.data or "otp" not in request.data:

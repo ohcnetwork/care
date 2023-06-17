@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -89,7 +90,11 @@ class ConsultationPrescriptionViewSet(
         consultation_obj = self.get_consultation_obj()
         serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
 
-    @action(methods=["POST"], detail=True)
+    @extend_schema(tags=["prescriptions"])
+    @action(
+        methods=["POST"],
+        detail=True,
+    )
     def discontinue(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
@@ -99,6 +104,7 @@ class ConsultationPrescriptionViewSet(
         prescription_obj.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
+    @extend_schema(tags=["prescriptions"])
     @action(
         methods=["POST"],
         detail=True,

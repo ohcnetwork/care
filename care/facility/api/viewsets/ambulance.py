@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -54,6 +55,7 @@ class AmbulanceViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
+    @extend_schema(tags=["ambulance"])
     @action(methods=["POST"], detail=True)
     def add_driver(self, request):
         ambulance = self.get_object()
@@ -66,6 +68,7 @@ class AmbulanceViewSet(
             status=status.HTTP_201_CREATED,
         )
 
+    @extend_schema(tags=["ambulance"])
     @action(methods=["DELETE"], detail=True)
     def remove_driver(self, request):
         class DeleteDriverSerializer(serializers.Serializer):
@@ -91,6 +94,7 @@ class AmbulanceViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(create=extend_schema(tags=["ambulance"]))
 class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer

@@ -1,5 +1,6 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
@@ -104,6 +105,7 @@ class FacilityInventoryLogViewSet(
             queryset.filter(external_id=self.kwargs.get("facility_external_id"))
         )
 
+    @extend_schema(tags=["inventory"])
     @action(methods=["PUT"], detail=True)
     def flag(self, request, **kwargs):
         log_obj = get_object_or_404(
@@ -114,6 +116,7 @@ class FacilityInventoryLogViewSet(
         set_burn_rate(log_obj.facility, log_obj.item)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(tags=["inventory"])
     @action(methods=["DELETE"], detail=False)
     def delete_last(self, request, **kwargs):
         facility = self.get_facility()

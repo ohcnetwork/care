@@ -3,6 +3,7 @@ from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
@@ -135,6 +136,7 @@ class ShiftingViewSet(
             serializer_class = ShiftingDetailSerializer
         return serializer_class
 
+    @extend_schema(tags=["shift"])
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         shifting_obj = self.get_object()

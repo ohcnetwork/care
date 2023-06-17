@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import PasswordField
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework_simplejwt.views import TokenVerifyView, TokenViewBase
 
 from config.ratelimit import ratelimit
 
@@ -29,7 +30,7 @@ class TokenObtainSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields[self.username_field] = serializers.CharField()
+        self.fields[self.username_field] = serializers.CharField(write_only=True)
         self.fields["password"] = PasswordField()
 
     def validate(self, attrs):
@@ -78,6 +79,7 @@ class TokenObtainSerializer(serializers.Serializer):
 
 
 class TokenRefreshSerializer(serializers.Serializer):
+    access = serializers.CharField(read_only=True)
     refresh = serializers.CharField()
 
     def validate(self, attrs):
@@ -109,6 +111,9 @@ class TokenRefreshSerializer(serializers.Serializer):
 
 
 class TokenObtainPairSerializer(TokenObtainSerializer):
+    refresh = serializers.CharField(read_only=True)
+    access = serializers.CharField(read_only=True)
+
     @classmethod
     def get_token(cls, user):
         return RefreshToken.for_user(user)
@@ -127,17 +132,42 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
 
 class TokenObtainPairView(TokenViewBase):
     """
+    Generate access and refresh tokens for a user.
+
     Takes a set of user credentials and returns an access and refresh JSON web
     token pair to prove the authentication of those credentials.
     """
 
     serializer_class = TokenObtainPairSerializer
 
+    @extend_schema(tags=["auth"])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class TokenRefreshView(TokenViewBase):
     """
+    Refresh access token.
+
     Takes a refresh type JSON web token and returns an access type JSON web
     token if the refresh token is valid.
     """
 
     serializer_class = TokenRefreshSerializer
+
+    @extend_schema(tags=["auth"])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class AnnotatedTokenVerifyView(TokenVerifyView):
+    """
+    Verify tokens are valid.
+
+    Takes a token and returns a boolean of whether it is a valid JSON web token
+    for this project.
+    """
+
+    @extend_schema(tags=["auth"])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

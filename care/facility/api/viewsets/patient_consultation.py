@@ -85,6 +85,7 @@ class PatientConsultationViewSet(
         applied_filters |= Q(patient__assigned_to=self.request.user)
         return self.queryset.filter(applied_filters)
 
+    @extend_schema(tags=["consultation"])
     @action(detail=True, methods=["POST"])
     def discharge_patient(self, request, *args, **kwargs):
         consultation = self.get_object()
@@ -99,6 +100,7 @@ class PatientConsultationViewSet(
         responses={
             200: "Success",
         },
+        tags=["consultation"],
     )
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
@@ -109,9 +111,8 @@ class PatientConsultationViewSet(
 
     @extend_schema(
         description="Get the discharge summary",
-        responses={
-            200: "Success",
-        },
+        responses={200: "Success"},
+        tags=["consultation"],
     )
     @action(detail=True, methods=["GET"])
     def preview_discharge_summary(self, request, *args, **kwargs):
@@ -134,6 +135,7 @@ class PatientConsultationViewSet(
         description="Email the discharge summary to the user",
         request=EmailDischargeSummarySerializer,
         responses={200: "Success"},
+        tags=["consultation"],
     )
     @action(detail=True, methods=["POST"])
     def email_discharge_summary(self, request, *args, **kwargs):
@@ -148,7 +150,9 @@ class PatientConsultationViewSet(
         email_discharge_summary.delay(consultation.external_id, email)
         return Response(status=status.HTTP_200_OK)
 
-    @extend_schema(responses={200: PatientConsultationIDSerializer})
+    @extend_schema(
+        responses={200: PatientConsultationIDSerializer}, tags=["consultation", "asset"]
+    )
     @action(detail=False, methods=["GET"])
     def patient_from_asset(self, request):
         consultation = (

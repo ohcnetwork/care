@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet
@@ -42,9 +43,10 @@ class FacilityCapacitySummaryViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
 
+    @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     # def get_queryset(self):
     #     user = self.request.user
@@ -80,9 +82,10 @@ class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
     #         return queryset.filter(facility__state=user.state)
     #     return queryset.filter(facility__users__id__exact=user.id)
 
-    @method_decorator(cache_page(60 * 60 * 1))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    @extend_schema(tags=["summary"])
+    @method_decorator(cache_page(60 * 60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
@@ -107,9 +110,10 @@ class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
     #         return queryset.filter(facility__state=user.state)
     #     return queryset.filter(facility__users__id__exact=user.id)
 
+    @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
@@ -123,9 +127,10 @@ class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
 
+    @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     # def get_queryset(self):
     #     user = self.request.user
@@ -159,9 +164,10 @@ class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DistrictSummaryFilter
 
+    @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     # def get_queryset(self):
     #     user = self.request.user

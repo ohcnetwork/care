@@ -8,7 +8,6 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework_simplejwt.views import TokenVerifyView
 
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
@@ -25,7 +24,7 @@ from care.users.reset_password_views import (
 from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
 
-from .auth_views import TokenObtainPairView, TokenRefreshView
+from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
 from .views import home_view
 
 urlpatterns = [
@@ -37,7 +36,11 @@ urlpatterns = [
     path(
         "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),
-    path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path(
+        "api/v1/auth/token/verify/",
+        AnnotatedTokenVerifyView.as_view(),
+        name="token_verify",
+    ),
     path(
         "api/v1/password_reset/",
         ResetPasswordRequestToken.as_view(),

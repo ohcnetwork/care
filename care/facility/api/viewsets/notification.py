@@ -46,6 +46,7 @@ class NotificationViewSet(
         user = self.request.user
         return self.queryset.filter(intended_for=user)
 
+    @extend_schema(tags=["notification"])
     @action(
         detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly]
     )
@@ -59,6 +60,7 @@ class NotificationViewSet(
     @extend_schema(
         request=DummyNotificationSerializer,
         responses={204: "Notification Processed"},
+        tags=["notification"],
     )
     @action(detail=False, methods=["POST"])
     def notify(self, request, *args, **kwargs):
