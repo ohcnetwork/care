@@ -56,7 +56,7 @@ class FacilityTests(TestClassMixin, TestCase):
             {"get": "list"},
             FacilityViewSet,
         )
-        self.assertIs(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
 
         sample_data = {}
         create_response = self.new_request(
@@ -64,4 +64,4 @@ class FacilityTests(TestClassMixin, TestCase):
             {"post": "create"},
             FacilityViewSet,
         )
-        self.assertIs(create_response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIs(create_response.status_code, status.HTTP_403_FORBIDDEN)
