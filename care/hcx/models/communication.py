@@ -1,4 +1,3 @@
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from care.hcx.models.claim import Claim
@@ -12,7 +11,7 @@ class Communication(BaseModel):
     identifier = models.TextField(null=True, blank=True)
     claim = models.ForeignKey(Claim, on_delete=models.CASCADE)
 
-    content = JSONField(
+    content = models.JSONField(
         default=list, validators=[JSONFieldSchemaValidator(CONTENT)], null=True
     )
 

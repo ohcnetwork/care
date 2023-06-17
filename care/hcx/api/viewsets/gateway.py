@@ -263,7 +263,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=SendCommunicationSerializer())
+    @extend_schema(tags=["hcx"], request=SendCommunicationSerializer())
     @action(detail=False, methods=["post"])
     def send_communication(self, request):
         data = request.data

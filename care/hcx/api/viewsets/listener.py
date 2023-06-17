@@ -98,7 +98,7 @@ class CommunicationRequestView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_communication_request(response["payload"])
