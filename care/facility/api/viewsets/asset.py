@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
 from rest_framework import filters as drf_filters
@@ -19,7 +19,7 @@ from rest_framework.mixins import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer, UUIDField
+from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
@@ -185,11 +185,10 @@ class AssetViewSet(
         )
         return Response(UserDefaultAssetLocationSerializer(obj).data)
 
-    class DummyAssetSerializer(Serializer):  # Dummy for Spec
-        location = UUIDField(required=True)
-
     @extend_schema(
-        request=DummyAssetSerializer,
+        request=inline_serializer(
+            "AssetLocationFieldSerializer", fields={"location": UUIDField()}
+        ),
         responses={200: UserDefaultAssetLocationSerializer()},
         tags=["asset"],
     )

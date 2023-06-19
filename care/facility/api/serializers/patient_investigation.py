@@ -92,3 +92,6 @@ class ValueSerializer(serializers.ModelSerializer):
 # Dummy for Spec
 class InvestigationUpdateSerializer(serializers.Serializer):
     investigations = ValueSerializer(many=True)
+
+    class Meta:
+        fields = ("investigations",)

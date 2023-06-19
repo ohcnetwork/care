@@ -16,6 +16,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.ambulance import (
     AmbulanceDriverSerializer,
     AmbulanceSerializer,
+    DeleteDriverSerializer,
 )
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.models.ambulance import Ambulance
@@ -55,11 +56,18 @@ class AmbulanceViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
+    def get_serializer_class(self):
+        if self.action == "add_driver":
+            return AmbulanceDriverSerializer
+        elif self.action == "remove_driver":
+            return DeleteDriverSerializer
+        return AmbulanceSerializer
+
     @extend_schema(tags=["ambulance"])
     @action(methods=["POST"], detail=True)
     def add_driver(self, request):
         ambulance = self.get_object()
-        serializer = AmbulanceDriverSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
@@ -71,17 +79,8 @@ class AmbulanceViewSet(
     @extend_schema(tags=["ambulance"])
     @action(methods=["DELETE"], detail=True)
     def remove_driver(self, request):
-        class DeleteDriverSerializer(serializers.Serializer):
-            driver_id = serializers.IntegerField()
-
-            def update(self, instance, validated_data):
-                raise NotImplementedError
-
-            def create(self, validated_data):
-                raise NotImplementedError
-
         ambulance = self.get_object()
-        serializer = DeleteDriverSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.filter(

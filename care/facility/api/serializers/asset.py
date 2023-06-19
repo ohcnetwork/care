@@ -191,11 +191,20 @@ class AssetActionSerializer(Serializer):
     )
     data = JSONField(required=False)
 
+    class Meta:
+        fields = ("type", "data")
+
 
 class DummyAssetOperateSerializer(Serializer):
     action = AssetActionSerializer(required=True)
+
+    class Meta:
+        fields = ("action",)
 
 
 class DummyAssetOperateResponseSerializer(Serializer):
     message = CharField(required=True)
     result = JSONField(required=False)
+
+    class Meta:
+        fields = ("message", "result")

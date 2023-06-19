@@ -480,3 +480,6 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
         if not attrs.get("email"):
             attrs["email"] = self.context["request"].user.email
         return attrs
+
+    class Meta:
+        fields = ("email",)
