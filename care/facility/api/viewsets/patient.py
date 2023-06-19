@@ -491,7 +491,17 @@ class PatientSearchSetPagination(PageNumberPagination):
 
 class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
-    queryset = PatientRegistration.objects.all()
+    queryset = PatientRegistration.objects.only(
+        "id",
+        "external_id",
+        "name",
+        "gender",
+        "phone_number",
+        "state_id",
+        "facility",
+        "allow_transfer",
+        "is_active",
+    )
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     pagination_class = PatientSearchSetPagination

@@ -411,16 +411,18 @@ class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
     patient_id = serializers.UUIDField(source="external_id", read_only=True)
 
-    # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
-
     class Meta:
         model = PatientRegistration
-        exclude = (
-            "date_of_birth",
-            "year_of_birth",
-            "external_id",
-            "id",
-        ) + TIMESTAMP_FIELDS
+        fields = (
+            "patient_id",
+            "name",
+            "gender",
+            "phone_number",
+            "state_id",
+            "facility",
+            "allow_transfer",
+            "is_active",
+        )
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):
