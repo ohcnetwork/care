@@ -194,6 +194,34 @@
         {
           "valueFrom": "/care/backend/VAPID_PRIVATE_KEY",
           "name": "VAPID_PRIVATE_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PROTOCOL_BASE_PATH",
+          "name": "HCX_PROTOCOL_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PARTICIPANT_CODE",
+          "name": "HCX_PARTICIPANT_CODE"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_AUTH_BASE_PATH",
+          "name": "HCX_AUTH_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_USERNAME",
+          "name": "HCX_USERNAME"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PASSWORD",
+          "name": "HCX_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_ENCRYPTION_PRIVATE_KEY_URL",
+          "name": "HCX_ENCRYPTION_PRIVATE_KEY_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_IG_URL",
+          "name": "HCX_IG_URL"
         }
       ],
       "name": "care-backend"

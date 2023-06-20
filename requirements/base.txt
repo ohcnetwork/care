@@ -7,6 +7,7 @@ PyJWT==2.7.0 # https://github.com/jpadilla/pyjwt/blob/master/CHANGELOG.rst
 redis[hiredis]==4.5.5 # https://github.com/redis/redis-py/blob/master/CHANGES
 requests==2.31.0 # https://requests.readthedocs.io/en/latest/community/updates/
 whitenoise==6.4.0  # https://whitenoise.readthedocs.io/en/stable/changelog.html
+psycopg==3.1.9  # https://github.com/psycopg/psycopg
 
 # Django
 # ------------------------------------------------------------------------------
