@@ -137,10 +137,6 @@
           "name": "REDIS_URL"
         },
         {
-          "valueFrom": "/care/backend/POSTGIS_URL",
-          "name": "POSTGIS_URL"
-        },
-        {
           "valueFrom": "/care/backend/EMAIL_USER",
           "name": "EMAIL_USER"
         },
@@ -352,10 +348,6 @@
         {
           "valueFrom": "/care/backend/CELERY_BROKER_URL",
           "name": "REDIS_URL"
-        },
-        {
-          "valueFrom": "/care/backend/POSTGIS_URL",
-          "name": "POSTGIS_URL"
         },
         {
           "valueFrom": "/care/backend/EMAIL_USER",
