@@ -31,7 +31,7 @@
         },
         {
           "name": "CSRF_TRUSTED_ORIGINS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -43,7 +43,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
