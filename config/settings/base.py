@@ -269,20 +269,24 @@ EMAIL_BACKEND = env(
 EMAIL_TIMEOUT = 5
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
-    "EMAIL_FROM", default="Open Healthcare Network <care@ohc.network>"
+    "EMAIL_FROM", default="Open Healthcare Network <ops@care.ohc.network>"
 )
 EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env("EMAIL_PORT", default=587)
 EMAIL_HOST_USER = env("EMAIL_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD", default="")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=False)
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 
 # ADMIN
 # ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#server-email
+# SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""👪""", "admin@ohc.network")]
+# ADMINS = [("""👪""", "admin@ohc.network")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
-MANAGERS = ADMINS
+# MANAGERS = ADMINS
 
 # Django Admin URL.
 ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
