@@ -464,7 +464,6 @@ ICD_SCRAPER_CHILD_CONCEPTS_URL = (
 # ------------------------------------------------------------------------------
 DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
 DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
-GETKEY = "ratelimit"
 GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
 GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
 GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
@@ -540,5 +539,20 @@ JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
 
-# ?!
+
 IS_PRODUCTION = False
+
+# HCX
+
+HCX_PROTOCOL_BASE_PATH = env(
+    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
+)
+HCX_AUTH_BASE_PATH = env(
+    "HCX_AUTH_BASE_PATH",
+    default="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
+)
+HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
+HCX_USERNAME = env("HCX_USERNAME", default="")
+HCX_PASSWORD = env("HCX_PASSWORD", default="")
+HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
+HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")

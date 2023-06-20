@@ -1,7 +1,6 @@
 -r ./base.txt
 -r ./docs.txt
 Werkzeug==2.3.6 # https://werkzeug.palletsprojects.com/en/latest/changes/
-psycopg==3.1.9  # https://psycopg.org/psycopg3/docs/news.html
 
 # Django
 # ------------------------------------------------------------------------------
