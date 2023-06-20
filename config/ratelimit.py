@@ -3,6 +3,10 @@ from django.conf import settings
 from django_ratelimit.core import is_ratelimited
 
 
+def GETKEY(group, request):
+    return "ratelimit"
+
+
 def validatecaptcha(request):
     recaptcha_response = request.data.get(settings.GOOGLE_CAPTCHA_POST_KEY)
     if not recaptcha_response:
@@ -34,7 +38,7 @@ def ratelimit(
             key = "ip"
         else:
             group = group + "-{}".format(key)
-            key = settings.GETKEY
+            key = GETKEY
         if is_ratelimited(
             request,
             group=group,
