@@ -1,10 +1,11 @@
 import enum
 
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import JSONField
 from django.shortcuts import get_object_or_404
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -137,7 +138,11 @@ class DailyRound(PatientBaseModel):
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+        choices=SYMPTOM_CHOICES,
+        default=1,
+        null=True,
+        blank=True,
+        max_length=get_max_length(SYMPTOM_CHOICES, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     deprecated_covid_category = models.CharField(

@@ -5,6 +5,7 @@ from django_filters import Filter
 from django_filters import rest_framework as filters
 from django_filters.filters import DateFromToRangeFilter
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -128,6 +129,7 @@ class PatientExternalTestViewSet(
             )
         return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
+    @extend_schema(tags=["external_result"])
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request, *args, **kwargs):
         if not self.check_upload_permission():

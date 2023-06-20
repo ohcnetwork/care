@@ -1,9 +1,8 @@
 import enum
 import uuid
 
-from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
-from django.db.models import Q
+from django.db.models import JSONField, Q
 
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
