@@ -7,6 +7,6 @@ def check_integer(vals):
     for i in range(len(vals)):
         try:
             vals[i] = int(vals[i])
-        except:
+        except Exception:
             raise ValidationError({"value": "Integer Required"})
     return vals

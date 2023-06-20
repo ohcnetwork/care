@@ -2,9 +2,7 @@ from typing import Iterable, List
 
 import jsonschema
 from django.core.exceptions import ValidationError
-from django.core.validators import BaseValidator
 from django.utils.deconstruct import deconstructible
-from django.utils.translation import gettext_lazy as _
 
 
 @deconstructible
@@ -33,7 +31,9 @@ class JSONFieldSchemaValidator:
         return self.deconstruct() == other.deconstruct()
 
     def _extract_errors(
-        self, errors: Iterable[jsonschema.ValidationError], container: List[ValidationError],
+        self,
+        errors: Iterable[jsonschema.ValidationError],
+        container: List[ValidationError],
     ):
         for error in errors:
             if error.context:

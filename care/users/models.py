@@ -1,10 +1,11 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-from partial_index import PQ, PartialIndex
+from django.utils.translation import gettext_lazy as _
 
 from care.utils.models.base import BaseModel
 
@@ -166,12 +167,17 @@ class UserSkill(BaseModel):
     skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        indexes = [
-            PartialIndex(fields=["skill", "user"], unique=True, where=PQ(deleted=False))
+        constraints = [
+            models.UniqueConstraint(
+                fields=["skill", "user"],
+                condition=models.Q(deleted=False),
+                name="unique_user_skill",
+            )
         ]
 
 
 class User(AbstractUser):
+    external_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     username_validator = UsernameValidator()
     username = models.CharField(
         _("username"),
@@ -264,13 +270,12 @@ class User(AbstractUser):
 
     # Asset Fields
 
-    asset = models.ForeignKey(
+    asset = models.OneToOneField(
         "facility.Asset",
         default=None,
         null=True,
         blank=True,
         on_delete=models.PROTECT,
-        unique=True,
     )
 
     objects = CustomUserManager()

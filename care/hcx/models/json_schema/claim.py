@@ -1,5 +1,5 @@
 ITEMS = {
-    "$schema": f"http://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "array",
     "items": [
         {

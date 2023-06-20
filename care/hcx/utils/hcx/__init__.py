@@ -1,10 +1,10 @@
-from jwcrypto import jwk, jwe
-from urllib.parse import urlencode
-import requests
-import uuid
-import json
 import datetime
-from .operations import HcxOperations
+import json
+import uuid
+from urllib.parse import urlencode
+
+import requests
+from jwcrypto import jwe, jwk
 
 
 class Hcx:
@@ -56,7 +56,7 @@ class Hcx:
         response = requests.request("POST", url, headers=headers, data=payload)
         return dict(json.loads(response.text))
 
-    def createHeaders(self, recipientCode=None):
+    def createHeaders(self, recipientCode=None, correlationId=None):
         # creating HCX headers
         # getting sender code
         # regsitry_user = self.searchRegistry("primary_email", self.username)
@@ -69,13 +69,16 @@ class Hcx:
             .replace(microsecond=0)
             .isoformat(),
             "x-hcx-sender_code": self.participantCode,
-            "x-hcx-correlation_id": str(uuid.uuid4()),
+            "x-hcx-correlation_id": correlationId
+            if correlationId
+            else str(uuid.uuid4()),
             # "x-hcx-workflow_id": str(uuid.uuid4()),
             "x-hcx-api_call_id": str(uuid.uuid4()),
+            "x-hcx-status": "response.complete",
         }
         return hcx_headers
 
-    def encryptJWE(self, recipientCode=None, fhirPayload=None):
+    def encryptJWE(self, recipientCode=None, fhirPayload=None, correlationId=None):
         if recipientCode is None:
             raise ValueError("Recipient code can not be empty, must be a string")
         if type(fhirPayload) is not dict:
@@ -85,9 +88,11 @@ class Hcx:
         )
         public_cert = requests.get(regsitry_data["participants"][0]["encryption_cert"])
         key = jwk.JWK.from_pem(public_cert.text.encode("utf-8"))
-        headers = self.createHeaders(recipientCode)
+        headers = self.createHeaders(recipientCode, correlationId)
         jwePayload = jwe.JWE(
-            str(json.dumps(fhirPayload)), recipient=key, protected=json.dumps(headers)
+            str(json.dumps(fhirPayload)),
+            recipient=key,
+            protected=json.dumps(headers),
         )
         enc = jwePayload.serialize(compact=True)
         return enc
@@ -114,9 +119,13 @@ class Hcx:
         response = requests.request("POST", url, headers=headers, data=payload)
         return dict(json.loads(response.text))
 
-    def generateOutgoingHcxCall(self, fhirPayload, operation, recipientCode):
+    def generateOutgoingHcxCall(
+        self, fhirPayload, operation, recipientCode, correlationId=None
+    ):
         encryptedString = self.encryptJWE(
-            recipientCode=recipientCode, fhirPayload=fhirPayload
+            recipientCode=recipientCode,
+            fhirPayload=fhirPayload,
+            correlationId=correlationId,
         )
         response = self.makeHcxApiCall(
             operation=operation, encryptedString=encryptedString

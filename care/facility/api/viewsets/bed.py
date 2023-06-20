@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,6 +22,7 @@ from care.facility.api.serializers.bed import (
     AssetBedSerializer,
     BedSerializer,
     ConsultationBedSerializer,
+    PatientAssetBedSerializer,
 )
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.patient_base import BedTypeChoices
@@ -90,6 +93,11 @@ class BedViewSet(
     def destroy(self, request, *args, **kwargs):
         if request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             raise PermissionDenied()
+        instance = self.get_object()
+        if instance.is_occupied:
+            raise DRFValidationError(
+                detail="Bed is occupied. Please discharge the patient first"
+            )
         return super().destroy(request, *args, **kwargs)
 
     def handle_exception(self, exc):
@@ -101,6 +109,7 @@ class BedViewSet(
 class AssetBedFilter(filters.FilterSet):
     asset = filters.UUIDFilter(field_name="asset__external_id")
     bed = filters.UUIDFilter(field_name="bed__external_id")
+    facility = filters.UUIDFilter(field_name="bed__facility__external_id")
 
 
 class AssetBedViewSet(
@@ -132,6 +141,52 @@ class AssetBedViewSet(
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
         return queryset
+
+
+class PatientAssetBedFilter(filters.FilterSet):
+    location = filters.UUIDFilter(field_name="bed__location__external_id")
+    asset_class = filters.CharFilter(field_name="asset__asset_class")
+    bed_is_occupied = filters.BooleanFilter(method="filter_bed_is_occupied")
+
+    def filter_bed_is_occupied(self, queryset, name, value):
+        return queryset.filter(
+            bed__id__in=Subquery(
+                ConsultationBed.objects.filter(
+                    bed__id=OuterRef("bed__id"), end_date__isnull=value
+                ).values("bed__id")
+            )
+        )
+
+
+@extend_schema_view(list=extend_schema(tags=["facility"]))
+class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
+    queryset = AssetBed.objects.select_related("asset", "bed").order_by("-created_date")
+    serializer_class = PatientAssetBedSerializer
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        drf_filters.OrderingFilter,
+    )
+    filterset_class = PatientAssetBedFilter
+    ordering_fields = [
+        "bed__name",
+        "created_date",
+    ]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(bed__facility__state=user.state)
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(bed__facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
+        return queryset.filter(
+            bed__facility__external_id=self.kwargs["facility_external_id"]
+        )
 
 
 class ConsultationBedFilter(filters.FilterSet):
