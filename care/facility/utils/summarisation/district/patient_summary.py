@@ -1,66 +1,12 @@
-from celery.decorators import periodic_task
-from celery.schedules import crontab
 from django.db.models import Q
-from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework import serializers
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import DistrictScopedSummary, PatientRegistration
 from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import District, LocalBody
 
 
-class DistrictSummarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DistrictScopedSummary
-        exclude = (
-            "id",
-            "s_type",
-        )
-
-
-class DistrictSummaryFilter(filters.FilterSet):
-    start_date = filters.DateFilter(field_name="created_date", lookup_expr="gte")
-    end_date = filters.DateFilter(field_name="created_date", lookup_expr="lte")
-    district = filters.NumberFilter(field_name="district__id")
-    state = filters.NumberFilter(field_name="district__state__id")
-
-
-class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
-    lookup_field = "external_id"
-    queryset = (
-        DistrictScopedSummary.objects.filter(s_type="PatientSummary")
-        .order_by("-created_date")
-        .select_related("district", "district__state")
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = DistrictSummarySerializer
-
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = DistrictSummaryFilter
-
-    @method_decorator(cache_page(60 * 10))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
-
-
-def DistrictPatientSummary():
+def district_patient_summary():
     for district_object in District.objects.all():
         district_summary = {
             "name": district_object.name,
@@ -149,18 +95,10 @@ def DistrictPatientSummary():
             district_summary_old.save()
         else:
             modified_date = now()
-            district_summary.update(
-                {"modified_date": modified_date.strftime("%d-%m-%Y %H:%M")}
-            )
+            district_summary["modified_date"] = modified_date.strftime("%d-%m-%Y %H:%M")
             DistrictScopedSummary(
                 s_type="PatientSummary",
                 district_id=district_object.id,
                 data=district_summary,
             ).save()
     return True
-
-
-@periodic_task(run_every=crontab(hour="*/1", minute=59))
-def run_midnight():
-    DistrictPatientSummary()
-    print("Summarised Patients")

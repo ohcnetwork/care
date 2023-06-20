@@ -1,53 +1,14 @@
-from celery.decorators import periodic_task
-from celery.schedules import crontab
 from django.db.models import Count, Sum
-from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
-from django.views.decorators.cache import cache_page
-from django_filters import rest_framework as filters
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models import (
     Facility,
     FacilityPatientStatsHistory,
     FacilityRelatedSummary,
 )
-from care.facility.summarisation.facility_capacity import (
-    FacilitySummaryFilter,
-    FacilitySummarySerializer,
-)
 
 
-class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
-    lookup_field = "external_id"
-    queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by(
-        "-created_date"
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = FacilitySummarySerializer
-
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilitySummaryFilter
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
-
-    @method_decorator(cache_page(60 * 60 * 1))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-
-def TriageSummary():
+def triage_summary():
     facilities = Facility.objects.all()
     current_date = localtime(now()).replace(hour=0, minute=0, second=0, microsecond=0)
     for facility in facilities:
@@ -122,8 +83,3 @@ def TriageSummary():
                 data=facility_triage_summarised_data,
             )
         facility_triage_summary.save()
-
-
-@periodic_task(run_every=crontab(hour="*/4", minute=59))
-def run_midnight():
-    TriageSummary()

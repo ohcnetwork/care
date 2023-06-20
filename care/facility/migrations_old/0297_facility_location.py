@@ -6,7 +6,7 @@ from django.db import migrations, models
 def populate_location(apps, schema_editor):
     try:
         from django.contrib.gis.geos import GEOSGeometry
-    except:
+    except Exception:
         return
     Facility = apps.get_model("facility", "Facility")
     facilities = Facility.objects.all()
@@ -19,7 +19,7 @@ def populate_location(apps, schema_editor):
                 facility.latitude = location.tuple[1]
                 facility.location = None
                 facility.save()
-            except Exception as e:
+            except Exception:
                 pass
 
 

@@ -465,3 +465,21 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = ("consultation_id", "patient_id")
+
+
+class EmailDischargeSummarySerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=False,
+        help_text=(
+            "Email address to send the discharge summary to. If not provided, "
+            "the email address of the current user will be used."
+        ),
+    )
+
+    def validate(self, attrs):
+        if not attrs.get("email"):
+            attrs["email"] = self.context["request"].user.email
+        return attrs
+
+    class Meta:
+        fields = ("email",)

@@ -1,5 +1,6 @@
 from django.db import models
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from care.facility.models import SYMPTOM_CHOICES, PatientRegistration
 from care.users.models import User
@@ -7,7 +8,9 @@ from care.users.models import User
 
 class PatientTeleConsultation(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
-    symptoms = MultiSelectField(choices=SYMPTOM_CHOICES)
+    symptoms = MultiSelectField(
+        choices=SYMPTOM_CHOICES, max_length=get_max_length(SYMPTOM_CHOICES, None)
+    )
     other_symptoms = models.TextField(blank=True, null=True)
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")
     created_date = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
@@ -138,6 +139,7 @@ class PatientAssetBedFilter(filters.FilterSet):
         )
 
 
+@extend_schema_view(list=extend_schema(tags=["facility"]))
 class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
     queryset = AssetBed.objects.select_related("asset", "bed").order_by("-created_date")
     serializer_class = PatientAssetBedSerializer

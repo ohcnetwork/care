@@ -57,3 +57,16 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         validated_data.pop("drivers", [])
         ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
         return ambulance
+
+
+class DeleteDriverSerializer(serializers.Serializer):
+    driver_id = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError
+
+    def create(self, validated_data):
+        raise NotImplementedError
+
+    class Meta:
+        fields = ("driver_id",)
