@@ -15,7 +15,7 @@ class Hcx:
         authBasePath="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
         username="qwertyreboot@gmail.com",
         password="Opensaber@123",
-        encryptionPrivateKeyURL="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/sprint-30/demo-app/server/resources/keys/x509-private-key.pem",
+        encryptionPrivateKeyURL="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-private-key.pem",
         igUrl="https://ig.hcxprotocol.io/v0.7.1",
     ):
         self.protocolBasePath = protocolBasePath
