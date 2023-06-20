@@ -4,19 +4,20 @@ import uuid
 from urllib.parse import urlencode
 
 import requests
+from django.conf import settings
 from jwcrypto import jwe, jwk
 
 
 class Hcx:
     def __init__(
         self,
-        protocolBasePath="http://staging-hcx.swasth.app/api/v0.7",
-        participantCode="qwertyreboot.gmail@swasth-hcx-staging",
-        authBasePath="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
-        username="qwertyreboot@gmail.com",
-        password="Opensaber@123",
-        encryptionPrivateKeyURL="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-private-key.pem",
-        igUrl="https://ig.hcxprotocol.io/v0.7.1",
+        protocolBasePath=settings.HCX_PROTOCOL_BASE_PATH,
+        participantCode=settings.HCX_PARTICIPANT_CODE,
+        authBasePath=settings.HCX_AUTH_BASE_PATH,
+        username=settings.HCX_USERNAME,
+        password=settings.HCX_PASSWORD,
+        encryptionPrivateKeyURL=settings.HCX_ENCRYPTION_PRIVATE_KEY_URL,
+        igUrl=settings.HCX_IG_URL,
     ):
         self.protocolBasePath = protocolBasePath
         self.participantCode = participantCode
