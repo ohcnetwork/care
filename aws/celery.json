@@ -26,7 +26,7 @@
         },
         {
           "name": "CSRF_TRUSTED_ORIGINS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -38,7 +38,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
@@ -187,6 +187,34 @@
         {
           "valueFrom": "/care/backend/VAPID_PRIVATE_KEY",
           "name": "VAPID_PRIVATE_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PROTOCOL_BASE_PATH",
+          "name": "HCX_PROTOCOL_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PARTICIPANT_CODE",
+          "name": "HCX_PARTICIPANT_CODE"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_AUTH_BASE_PATH",
+          "name": "HCX_AUTH_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_USERNAME",
+          "name": "HCX_USERNAME"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PASSWORD",
+          "name": "HCX_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_ENCRYPTION_PRIVATE_KEY_URL",
+          "name": "HCX_ENCRYPTION_PRIVATE_KEY_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_IG_URL",
+          "name": "HCX_IG_URL"
         }
       ],
       "name": "care-celery-beat"
@@ -217,7 +245,7 @@
         },
         {
           "name": "CSRF_TRUSTED_ORIGINS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -229,7 +257,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
@@ -376,6 +404,34 @@
         {
           "valueFrom": "/care/backend/VAPID_PRIVATE_KEY",
           "name": "VAPID_PRIVATE_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PROTOCOL_BASE_PATH",
+          "name": "HCX_PROTOCOL_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PARTICIPANT_CODE",
+          "name": "HCX_PARTICIPANT_CODE"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_AUTH_BASE_PATH",
+          "name": "HCX_AUTH_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_USERNAME",
+          "name": "HCX_USERNAME"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PASSWORD",
+          "name": "HCX_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_ENCRYPTION_PRIVATE_KEY_URL",
+          "name": "HCX_ENCRYPTION_PRIVATE_KEY_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_IG_URL",
+          "name": "HCX_IG_URL"
         }
       ],
       "name": "care-celery-worker"

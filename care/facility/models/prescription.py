@@ -1,8 +1,8 @@
 import enum
 
-from django.contrib.postgres.fields.jsonb import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import JSONField
 from django.utils import timezone
 
 from care.facility.models.patient_consultation import PatientConsultation

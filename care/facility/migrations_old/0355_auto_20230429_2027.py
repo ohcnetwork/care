@@ -20,7 +20,7 @@ FREQUENCY_OPTIONS = [
 def clean_integer(value):
     try:
         return round(float(value)) or None
-    except:
+    except Exception:
         return None
 
 

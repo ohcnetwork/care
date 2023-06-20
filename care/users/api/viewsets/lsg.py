@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -21,6 +22,10 @@ class PaginataionOverrideClass(PageNumberPagination):
     page_size = 500
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class StateViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -32,6 +37,7 @@ class StateViewSet(
     queryset = State.objects.all().order_by("id")
     pagination_class = PaginataionOverrideClass
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):
@@ -48,6 +54,10 @@ class DistrictFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class DistrictViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -61,6 +71,7 @@ class DistrictViewSet(
     filterset_class = DistrictFilterSet
     pagination_class = PaginataionOverrideClass
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def local_bodies(self, *args, **kwargs):
@@ -70,6 +81,7 @@ class DistrictViewSet(
         )
         return Response(data=serializer.data)
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def get_all_local_body(self, *args, **kwargs):
@@ -96,6 +108,10 @@ class LocalBodyFilterSet(filters.FilterSet):
     local_body_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class LocalBodyViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -126,6 +142,10 @@ class WardFilterSet(filters.FilterSet):
     ward_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class WardViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,

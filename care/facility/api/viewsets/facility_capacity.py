@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -51,6 +52,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
 
+    @extend_schema(tags=["capacity"])
     @action(detail=True, methods=["get"])
     def history(self, request, *args, **kwargs):
         obj = self.get_object()

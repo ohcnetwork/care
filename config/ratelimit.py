@@ -1,6 +1,6 @@
 import requests
 from django.conf import settings
-from ratelimit.utils import is_ratelimited
+from django_ratelimit.core import is_ratelimited
 
 
 def validatecaptcha(request):

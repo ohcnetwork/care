@@ -4,7 +4,7 @@ from re import IGNORECASE, search
 from uuid import uuid4 as uuid
 
 from django.db.models import Q
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,9 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
-from care.facility.tasks.patient.discharge_report import (
-    generate_discharge_report_signed_url,
-)
+from care.facility.tasks.discharge_report import generate_discharge_report_signed_url
 from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.api.serializers.communication import CommunicationSerializer
 from care.hcx.api.serializers.gateway import (
@@ -45,7 +43,7 @@ class HcxGatewayViewSet(GenericViewSet):
     queryset = Policy.objects.all()
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=CheckEligibilitySerializer())
+    @extend_schema(tags=["hcx"], request=CheckEligibilitySerializer())
     @action(detail=False, methods=["post"])
     def check_eligibility(self, request):
         data = request.data
@@ -102,7 +100,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=MakeClaimSerializer())
+    @extend_schema(tags=["hcx"], request=MakeClaimSerializer())
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
         data = request.data
@@ -265,7 +263,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=SendCommunicationSerializer())
+    @extend_schema(tags=["hcx"], request=SendCommunicationSerializer())
     @action(detail=False, methods=["post"])
     def send_communication(self, request):
         data = request.data
@@ -321,7 +319,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def payors(self, request):
         payors = Hcx().searchRegistry("roles", "payor")["participants"]
@@ -340,7 +338,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def pmjy_packages(self, request):
         from care.hcx.static_data.pmjy_packages import PMJYPackages
@@ -370,4 +368,4 @@ class HcxGatewayViewSet(GenericViewSet):
                 or search(r".*" + query + r".*", row.package_name, IGNORECASE)
                 is not None
             )
-        return Response(serailize_data(queryset[0:limit]))
+        return Response(serailize_data(queryset[:limit]))
