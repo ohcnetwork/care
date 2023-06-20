@@ -32,7 +32,6 @@ from care.facility.api.serializers.patient import (
     PatientTransferSerializer,
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
-from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -489,7 +488,7 @@ class PatientSearchSetPagination(PageNumberPagination):
     page_size = 200
 
 
-class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
+class PatientSearchViewSet(ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
     queryset = PatientRegistration.objects.only(
         "id",
