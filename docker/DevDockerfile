@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED 1 PYTHONDONTWRITEBYTECODE 1 PYTHONBREAKPOINT=ipython
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential libjpeg-dev zlib1g-dev \
-  # psycopg2 dependencies
+  # psycopg dependencies
   libpq-dev \
   # Translations dependencies
   gettext \
