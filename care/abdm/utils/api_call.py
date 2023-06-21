@@ -161,8 +161,13 @@ class HealthIdGateway:
         response = self.api.post(path, data)
         return response.json()
 
+    def check_and_generate_mobile_otp(self, data):
+        path = "/v2/registration/aadhaar/checkAndGenerateMobileOTP"
+        response = self.api.post(path, data)
+        return response.json()
+
     def generate_mobile_otp(self, data):
-        path = "/v1/registration/aadhaar/generateMobileOTP"
+        path = "/v2/registration/aadhaar/generateMobileOTP"
         response = self.api.post(path, data)
         return response.json()
 

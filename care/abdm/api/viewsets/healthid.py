@@ -626,7 +626,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     ############################################################################################################
     # HealthID V2 APIs
     @swagger_auto_schema(
-        # /v1/registration/aadhaar/checkAndGenerateMobileOTP
+        # /v2/registration/aadhaar/checkAndGenerateMobileOTP
         operation_id="check_and_generate_mobile_otp",
         request_body=GenerateMobileOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
