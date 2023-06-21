@@ -28,3 +28,4 @@ djangorestframework-stubs==3.14.1  # https://github.com/typeddjango/djangorestfr
 # Container development
 # ------------------------------------------------------------------------------
 debugpy==1.6.7
+watchdog  # https://github.com/gorakhargosh/watchdog
