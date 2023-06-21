@@ -91,7 +91,7 @@ class PatientConsultationViewSet(
         consultation = self.get_object()
         serializer = self.get_serializer(consultation, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(current_bed=None)
         generate_and_upload_discharge_summary_task.delay(consultation.external_id)
         return Response(status=status.HTTP_200_OK)
 
