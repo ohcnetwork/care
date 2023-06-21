@@ -482,4 +482,5 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
         return attrs
 
     class Meta:
+        model = PatientConsultation
         fields = ("email",)
