@@ -219,6 +219,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         abha_profile = HealthIdGateway().create_health_id(data)
 
+        if "token" not in abha_profile:
+            return Response(
+                abha_profile,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         # have a serializer to verify data of abha_profile
         abha_object = self.create_abha(
             abha_profile,
