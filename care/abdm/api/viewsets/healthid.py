@@ -298,7 +298,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         dob = datetime.strptime(data["dob"], "%d-%m-%Y").date()
 
-        if "patientId" not in data:
+        if "patientId" not in data or data["patientId"] is None:
             patient = PatientRegistration.objects.filter(
                 abha_number__abha_number=data["hidn"]
             ).first()
