@@ -287,7 +287,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     def link_via_qr(self, request):
         data = request.data
 
-        if ratelimit(request, "link_via_qr", [data["hdin"]], increment=False):
+        if ratelimit(request, "link_via_qr", [data["hidn"]], increment=False):
             raise CaptchaRequiredException(
                 detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -320,7 +320,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 )
 
             if not HealthIdGateway().verify_demographics(
-                data["phr"] or data["hdin"],
+                data["phr"] or data["hidn"],
                 data["name"],
                 data["gender"],
                 str(dob.year),
