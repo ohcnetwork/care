@@ -1,30 +1,31 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
+    CharField,
+    FloatField,
+    JSONField,
     ModelSerializer,
     UUIDField,
-    CharField,
-    JSONField,
-    FloatField,
 )
-from config.serializers import ChoiceField
-from care.hcx.models.claim import Claim
-from care.hcx.models.policy import Policy
-from care.hcx.api.serializers.policy import PolicySerializer
-from care.hcx.models.base import (
-    STATUS_CHOICES,
-    PRIORITY_CHOICES,
-    USE_CHOICES,
-    CLAIM_TYPE_CHOICES,
-    OUTCOME_CHOICES,
-)
-from django.shortcuts import get_object_or_404
-from care.facility.models.patient_consultation import PatientConsultation
+
 from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
-from rest_framework.exceptions import ValidationError
-from care.utils.models.validators import JSONFieldSchemaValidator
+from care.facility.models.patient_consultation import PatientConsultation
+from care.hcx.api.serializers.policy import PolicySerializer
+from care.hcx.models.base import (
+    CLAIM_TYPE_CHOICES,
+    OUTCOME_CHOICES,
+    PRIORITY_CHOICES,
+    STATUS_CHOICES,
+    USE_CHOICES,
+)
+from care.hcx.models.claim import Claim
 from care.hcx.models.json_schema.claim import ITEMS
+from care.hcx.models.policy import Policy
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.models.validators import JSONFieldSchemaValidator
+from config.serializers import ChoiceField
 
 TIMESTAMP_FIELDS = (
     "created_date",

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
-from partial_index import PQ, PartialIndex
+from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
@@ -115,7 +115,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(choices=FEATURE_CHOICES, null=True, blank=True)
+    features = MultiSelectField(
+        choices=FEATURE_CHOICES,
+        null=True,
+        blank=True,
+        max_length=get_max_length(FEATURE_CHOICES, None),
+    )
 
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
@@ -269,9 +274,11 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return str(self.facility) + str(self.count)
 
     class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["facility", "area"], unique=True, where=PQ(deleted=False)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["facility", "area"],
+                condition=models.Q(deleted=False),
+                name="unique_facility_doctor",
             )
         ]
 
@@ -294,9 +301,11 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     history = HistoricalRecords()
 
     class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["facility", "room_type"], unique=True, where=PQ(deleted=False)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["facility", "room_type"],
+                condition=models.Q(deleted=False),
+                name="unique_facility_room_type",
             )
         ]
         verbose_name_plural = "Facility Capacities"

@@ -1,10 +1,6 @@
 from django.db import models
 
-from care.facility.models import (
-    FacilityBaseModel,
-    PatientRegistration,
-    reverse_choices,
-)
+from care.facility.models import FacilityBaseModel, PatientRegistration, reverse_choices
 from care.users.models import User
 
 SAMPLE_TYPE_CHOICES = [
@@ -20,6 +16,7 @@ SAMPLE_TYPE_CHOICES = [
     (9, "OTHER TYPE"),
 ]
 REVERSE_SAMPLE_TYPE_CHOICES = reverse_choices(SAMPLE_TYPE_CHOICES)
+
 
 class PatientSample(FacilityBaseModel):
     SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
@@ -53,9 +50,18 @@ class PatientSample(FacilityBaseModel):
             "APPROVED",
             "DENIED",
         },
-        "APPROVED": {"SENT_TO_COLLECTON_CENTRE", "RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
+        "APPROVED": {
+            "SENT_TO_COLLECTON_CENTRE",
+            "RECEIVED_AND_FORWARED",
+            "RECEIVED_AT_LAB",
+            "COMPLETED",
+        },
         "DENIED": {"REQUEST_SUBMITTED"},
-        "SENT_TO_COLLECTON_CENTRE": {"RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB", "COMPLETED"},
+        "SENT_TO_COLLECTON_CENTRE": {
+            "RECEIVED_AND_FORWARED",
+            "RECEIVED_AT_LAB",
+            "COMPLETED",
+        },
         "RECEIVED_AND_FORWARED": {"RECEIVED_AT_LAB", "COMPLETED"},
         "RECEIVED_AT_LAB": {"COMPLETED"},
         "COMPLETED": {"COMPLETED"},
@@ -82,19 +88,29 @@ class PatientSample(FacilityBaseModel):
 
     icmr_label = models.CharField(max_length=200, default="")
 
-    status = models.IntegerField(choices=SAMPLE_TEST_FLOW_CHOICES, default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"])
-    result = models.IntegerField(choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"])
+    status = models.IntegerField(
+        choices=SAMPLE_TEST_FLOW_CHOICES,
+        default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"],
+    )
+    result = models.IntegerField(
+        choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"]
+    )
 
     fast_track = models.TextField(default="")
 
     date_of_sample = models.DateTimeField(null=True, blank=True)
     date_of_result = models.DateTimeField(null=True, blank=True)
 
-    testing_facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True, blank=True)
+    testing_facility = models.ForeignKey(
+        "Facility", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="samples_created")
-    last_edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by")
-
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="samples_created"
+    )
+    last_edited_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by"
+    )
 
     CSV_MAPPING = {
         "patient__name": "Patient Name",
@@ -111,10 +127,13 @@ class PatientSample(FacilityBaseModel):
 
     CSV_MAKE_PRETTY = {
         "sample_type": (lambda x: REVERSE_SAMPLE_TYPE_CHOICES.get(x, "-")),
-        "status": (lambda x: PatientSample.REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")),
-        "result": (lambda x: PatientSample.REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")),
+        "status": (
+            lambda x: PatientSample.REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")
+        ),
+        "result": (
+            lambda x: PatientSample.REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")
+        ),
     }
-
 
     def save(self, *args, **kwargs) -> None:
         if self.testing_facility is None:
@@ -139,11 +158,17 @@ class PatientSample(FacilityBaseModel):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
 
     @staticmethod
     def has_read_permission(request):
-        return request.user.is_superuser or request.user.user_type >= User.TYPE_VALUE_MAP["StaffReadOnly"]
+        return (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["StaffReadOnly"]
+        )
 
     def has_object_read_permission(self, request):
         if self.testing_facility:

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -8,15 +9,18 @@ User = get_user_model()
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    model = User
-
     """
     Serializer for password change endpoint.
     """
+
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
 
+@extend_schema_view(
+    put=extend_schema(tags=["users"]),
+    patch=extend_schema(tags=["users"]),
+)
 class ChangePasswordView(UpdateAPIView):
     """
     An endpoint for changing password.

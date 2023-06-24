@@ -9,5 +9,6 @@ exclude =
   __pycache__,
   .venv,
   */migrations/*,
+  */migrations_old/*,
   */static/CACHE/*,
   docs
