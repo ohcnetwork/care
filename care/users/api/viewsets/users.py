@@ -308,7 +308,7 @@ class UserViewSet(
         if user.home_facility == facility:
             raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
         # ensure that district admin only able to delete in the same district
-        if user.district.id != requesting_user.district.id:
+        if user.district_id != requesting_user.district_id:
             raise ValidationError({"facility": "Cannot delete User's Facility from other district"})
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
