@@ -1,8 +1,12 @@
 from django.core.management.base import BaseCommand
 
-from care.facility.summarisation.district.patient_summary import DistrictPatientSummary
-from care.facility.summarisation.facility_capacity import FacilityCapacitySummary
-from care.facility.summarisation.patient_summary import PatientSummary
+from care.facility.utils.summarisation.district.patient_summary import (
+    district_patient_summary,
+)
+from care.facility.utils.summarisation.facility_capacity import (
+    facility_capacity_summary,
+)
+from care.facility.utils.summarisation.patient_summary import patient_summary
 
 
 class Command(BaseCommand):
@@ -13,9 +17,9 @@ class Command(BaseCommand):
     help = "Force Create Summary Objects"
 
     def handle(self, *args, **options):
-        PatientSummary()
+        patient_summary()
         print("Patients Summarised")
-        FacilityCapacitySummary()
+        facility_capacity_summary()
         print("Capacity Summarised")
-        DistrictPatientSummary()
+        district_patient_summary()
         print("District Wise Patient Summarised")

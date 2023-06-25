@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
@@ -15,9 +15,9 @@ from care.facility.api.viewsets.asset import (
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
-    PatientAssetBedViewSet,
     BedViewSet,
     ConsultationBedViewSet,
+    PatientAssetBedViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -50,7 +50,6 @@ from care.facility.api.viewsets.patient_investigation import (
 from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
-from care.facility.api.viewsets.patient_search import PatientScopedSearchViewSet
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
     MedicineAdministrationViewSet,
@@ -67,14 +66,15 @@ from care.facility.api.viewsets.shifting import (
     ShifitngRequestCommentViewSet,
     ShiftingViewSet,
 )
-from care.facility.summarisation.district.patient_summary import (
+from care.facility.api.viewsets.summary import (
     DistrictPatientSummaryViewSet,
+    FacilityCapacitySummaryViewSet,
+    PatientSummaryViewSet,
+    TestsSummaryViewSet,
+    TriageSummaryViewSet,
 )
-from care.facility.summarisation.facility_capacity import FacilityCapacitySummaryViewSet
-from care.facility.summarisation.patient_summary import PatientSummaryViewSet
-from care.facility.summarisation.tests_summary import TestsSummaryViewSet
-from care.facility.summarisation.triage_summary import TriageSummaryViewSet
 from care.hcx.api.viewsets.claim import ClaimViewSet
+from care.hcx.api.viewsets.communication import CommunicationViewSet
 from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
 from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
@@ -93,8 +93,8 @@ else:
     router = SimpleRouter()
 
 router.register("users", UserViewSet)
-user_nested_rotuer = NestedSimpleRouter(router, r"users", lookup="users")
-user_nested_rotuer.register("skill", UserSkillViewSet)
+user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
+user_nested_router.register("skill", UserSkillViewSet)
 
 router.register("skill", SkillViewSet)
 
@@ -136,9 +136,6 @@ router.register("ward", WardViewSet)
 
 # Patient Sample
 router.register("test_sample", PatientSampleViewSet)
-
-# Patient Search
-router.register("patient_search", PatientScopedSearchViewSet)
 
 # Summarisation
 router.register(
@@ -206,6 +203,7 @@ consultation_nested_router.register(
 # HCX
 router.register("hcx/policy", PolicyViewSet)
 router.register("hcx/claim", ClaimViewSet)
+router.register("hcx/communication", CommunicationViewSet)
 router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
@@ -213,11 +211,11 @@ router.register("public/asset", AssetPublicViewSet)
 
 app_name = "api"
 urlpatterns = [
-    url(r"^", include(router.urls)),
-    url(r"^", include(user_nested_rotuer.urls)),
-    url(r"^", include(facility_nested_router.urls)),
-    url(r"^", include(patient_nested_router.urls)),
-    url(r"^", include(consultation_nested_router.urls)),
-    url(r"^", include(resource_nested_router.urls)),
-    url(r"^", include(shifting_nested_router.urls)),
+    path("", include(router.urls)),
+    path("", include(user_nested_router.urls)),
+    path("", include(facility_nested_router.urls)),
+    path("", include(patient_nested_router.urls)),
+    path("", include(consultation_nested_router.urls)),
+    path("", include(resource_nested_router.urls)),
+    path("", include(shifting_nested_router.urls)),
 ]

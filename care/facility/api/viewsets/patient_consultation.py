@@ -1,8 +1,6 @@
-from django.core.validators import validate_email
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -13,6 +11,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.file_upload import FileUploadRetrieveSerializer
 from care.facility.api.serializers.patient_consultation import (
+    EmailDischargeSummarySerializer,
     PatientConsultationDischargeSerializer,
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
@@ -21,7 +20,7 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.tasks.patient.discharge_report import (
+from care.facility.tasks.discharge_report import (
     email_discharge_summary,
     generate_and_upload_discharge_summary_task,
 )
@@ -59,6 +58,8 @@ class PatientConsultationViewSet(
             return PatientConsultationIDSerializer
         elif self.action == "discharge_patient":
             return PatientConsultationDischargeSerializer
+        elif self.action == "email_discharge_summary":
+            return EmailDischargeSummarySerializer
         else:
             return self.serializer_class
 
@@ -84,20 +85,22 @@ class PatientConsultationViewSet(
         applied_filters |= Q(patient__assigned_to=self.request.user)
         return self.queryset.filter(applied_filters)
 
+    @extend_schema(tags=["consultation"])
     @action(detail=True, methods=["POST"])
     def discharge_patient(self, request, *args, **kwargs):
         consultation = self.get_object()
         serializer = self.get_serializer(consultation, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(current_bed=None)
         generate_and_upload_discharge_summary_task.delay(consultation.external_id)
         return Response(status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        operation_description="Generate a discharge summary",
+    @extend_schema(
+        description="Generate a discharge summary",
         responses={
             200: "Success",
         },
+        tags=["consultation"],
     )
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
@@ -106,11 +109,10 @@ class PatientConsultationViewSet(
         generate_and_upload_discharge_summary_task.delay(consultation.external_id)
         return Response({})
 
-    @swagger_auto_schema(
-        operation_description="Get the discharge summary",
-        responses={
-            200: "Success",
-        },
+    @extend_schema(
+        description="Get the discharge summary",
+        responses={200: "Success"},
+        tags=["consultation"],
     )
     @action(detail=True, methods=["GET"])
     def preview_discharge_summary(self, request, *args, **kwargs):
@@ -129,33 +131,27 @@ class PatientConsultationViewSet(
             "Discharge summary is not ready yet. Please wait if a request has been placed."
         )
 
-    @swagger_auto_schema(
-        operation_description="Email the discharge summary to the user",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "email": openapi.Schema(
-                    type=openapi.TYPE_STRING, description="Email address"
-                )
-            },
-            required=["email"],
-        ),
+    @extend_schema(
+        description="Email the discharge summary to the user",
+        request=EmailDischargeSummarySerializer,
         responses={200: "Success"},
+        tags=["consultation"],
     )
     @action(detail=True, methods=["POST"])
     def email_discharge_summary(self, request, *args, **kwargs):
         consultation = self.get_object()
-        email = request.data.get("email", "")
-        try:
-            validate_email(email)
-        except Exception:
-            email = request.user.email
+        serializer = self.get_serializer(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
 
         email_discharge_summary.delay(consultation.external_id, email)
         return Response(status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        responses={200: PatientConsultationIDSerializer},
+    @extend_schema(
+        responses={200: PatientConsultationIDSerializer}, tags=["consultation", "asset"]
     )
     @action(detail=False, methods=["GET"])
     def patient_from_asset(self, request):

@@ -25,8 +25,9 @@ def send_sms(otp, phone_number):
     if settings.USE_SMS:
         sendSMS(
             phone_number,
-            "CoronaSafe Network Patient Management System Login, OTP is {} . Please do not share this Confidential Login Token with anyone else".format(
-                otp
+            (
+                f"CoronaSafe Network Patient Management System Login, OTP is {otp} . "
+                "Please do not share this Confidential Login Token with anyone else"
             ),
         )
     else:

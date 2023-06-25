@@ -1,7 +1,9 @@
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import JSONField
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -49,13 +51,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=[], blank=True, null=True
+        models.CharField(max_length=100), default=list, blank=True, null=True
     )
     icd11_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=[], blank=True, null=True
+        models.CharField(max_length=100), default=list, blank=True, null=True
     )
     symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+        choices=SYMPTOM_CHOICES,
+        default=1,
+        null=True,
+        blank=True,
+        max_length=get_max_length(SYMPTOM_CHOICES, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
