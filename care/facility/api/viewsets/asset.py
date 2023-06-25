@@ -1,11 +1,9 @@
-import enum
-
 from django.core.cache import cache
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
 from rest_framework import filters as drf_filters
@@ -21,13 +19,15 @@ from rest_framework.mixins import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import CharField, JSONField, Serializer, UUIDField
+from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
     AssetLocationSerializer,
     AssetSerializer,
     AssetTransactionSerializer,
+    DummyAssetOperateResponseSerializer,
+    DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
 from care.facility.models.asset import (
@@ -39,13 +39,10 @@ from care.facility.models.asset import (
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
-from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
-from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
-from config.serializers import ChoiceField
 
 inverse_asset_type = inverse_choices(Asset.AssetTypeChoices)
 inverse_asset_status = inverse_choices(Asset.StatusChoices)
@@ -69,6 +66,12 @@ class AssetLocationViewSet(
     lookup_field = "external_id"
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
+
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context
 
     def get_queryset(self):
         user = self.request.user
@@ -172,7 +175,9 @@ class AssetViewSet(
                 "Only District Admin and above can delete assets"
             )
 
-    @swagger_auto_schema(responses={200: UserDefaultAssetLocationSerializer()})
+    @extend_schema(
+        responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
+    )
     @action(detail=False, methods=["GET"])
     def get_default_user_location(self, request, *args, **kwargs):
         obj = get_object_or_404(
@@ -180,12 +185,12 @@ class AssetViewSet(
         )
         return Response(UserDefaultAssetLocationSerializer(obj).data)
 
-    class DummyAssetSerializer(Serializer):  # Dummy for Spec
-        location = UUIDField(required=True)
-
-    @swagger_auto_schema(
-        request_body=DummyAssetSerializer,
+    @extend_schema(
+        request=inline_serializer(
+            "AssetLocationFieldSerializer", fields={"location": UUIDField()}
+        ),
         responses={200: UserDefaultAssetLocationSerializer()},
+        tags=["asset"],
     )
     @action(detail=False, methods=["POST"])
     def set_default_user_location(self, request, *args, **kwargs):
@@ -204,35 +209,10 @@ class AssetViewSet(
         except Exception as e:
             raise Http404 from e
 
-    # Dummy Serializer for Operate Asset
-    class DummyAssetOperateSerializer(Serializer):
-        class AssetActionSerializer(Serializer):
-            def actionChoices():
-                actions: list[enum.Enum] = [
-                    OnvifAsset.OnvifActions,
-                    HL7MonitorAsset.HL7MonitorActions,
-                ]
-                choices = []
-                for action in actions:
-                    choices += [(e.value, e.name) for e in action]
-                return choices
-
-            type = ChoiceField(
-                choices=actionChoices(),
-                required=True,
-            )
-            data = JSONField(required=False)
-
-        action = AssetActionSerializer(required=True)
-
-    class DummyAssetOperateResponseSerializer(Serializer):
-        message = CharField(required=True)
-        result = JSONField(required=False)
-
-    # Asset Integration API
-    @swagger_auto_schema(
-        request_body=DummyAssetOperateSerializer,
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
         responses={200: DummyAssetOperateResponseSerializer},
+        tags=["asset"],
     )
     @action(detail=True, methods=["POST"])
     def operate_assets(self, request, *args, **kwargs):
@@ -256,7 +236,7 @@ class AssetViewSet(
 
         except KeyError as e:
             return Response(
-                {"message": dict((key, "is required") for key in e.args)},
+                {"message": {key: "is required" for key in e.args}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

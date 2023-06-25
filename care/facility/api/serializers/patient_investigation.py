@@ -1,14 +1,12 @@
-from django.db.models import fields
 from rest_framework import serializers
-from care.facility.models.patient_investigation import (
-    InvestigationValue,
-    PatientInvestigationGroup,
-    PatientInvestigation,
-    InvestigationSession,
-)
-from care.facility.models.notification import Notification
+
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.utils.notification_handler import NotificationGenerator
+from care.facility.models.patient_investigation import (
+    InvestigationSession,
+    InvestigationValue,
+    PatientInvestigation,
+    PatientInvestigationGroup,
+)
 
 
 class PatientInvestigationGroupSerializer(serializers.ModelSerializer):
@@ -18,7 +16,6 @@ class PatientInvestigationGroupSerializer(serializers.ModelSerializer):
 
 
 class PatientInvestigationSerializer(serializers.ModelSerializer):
-
     groups = PatientInvestigationGroupSerializer(many=True)
 
     class Meta:
@@ -42,21 +39,31 @@ class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
 
 
 class InvestigationValueSerializer(serializers.ModelSerializer):
-
     id = serializers.CharField(source="external_id", read_only=True)
 
     group_object = PatientInvestigationGroupSerializer(source="group", read_only=True)
-    investigation_object = MinimalPatientInvestigationSerializer(source="investigation", read_only=True)
-    session_object = PatientInvestigationSessionSerializer(source="session", read_only=True)
+    investigation_object = MinimalPatientInvestigationSerializer(
+        source="investigation", read_only=True
+    )
+    session_object = PatientInvestigationSessionSerializer(
+        source="session", read_only=True
+    )
 
     class Meta:
         model = InvestigationValue
-        read_only_fields = TIMESTAMP_FIELDS + ("session_id", "investigation", "consultation", "session")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "session_id",
+            "investigation",
+            "consultation",
+            "session",
+        )
         exclude = TIMESTAMP_FIELDS + ("external_id",)
 
     def update(self, instance, validated_data):
         if instance.consultation.discharge_date:
-            raise serializers.ValidationError({"consultation": ["Discharged Consultation data cannot be updated"]})
+            raise serializers.ValidationError(
+                {"consultation": ["Discharged Consultation data cannot be updated"]}
+            )
 
         # Removed since it might flood messages
         # NotificationGenerator(
@@ -74,3 +81,17 @@ class InvestigationValueCreateSerializer(serializers.ModelSerializer):
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS
         exclude = TIMESTAMP_FIELDS + ("external_id",)
+
+
+class ValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvestigationValue
+        fields = ("external_id", "value", "notes")
+
+
+# Dummy for Spec
+class InvestigationUpdateSerializer(serializers.Serializer):
+    investigations = ValueSerializer(many=True)
+
+    class Meta:
+        fields = ("investigations",)

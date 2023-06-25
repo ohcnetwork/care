@@ -39,7 +39,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
     )
-    review_interval = serializers.IntegerField(default=-1, required=False)
+    review_interval = serializers.IntegerField(
+        source="consultation__review_interval", required=False
+    )
 
     taken_at = serializers.DateTimeField(required=True)
 
@@ -103,7 +105,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
 
     def update(self, instance, validated_data):
-
         instance.last_edited_by = self.context["request"].user
 
         if instance.consultation.discharge_date:
@@ -111,20 +112,26 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 {"consultation": ["Discharged Consultation data cannot be updated"]}
             )
 
-        if "action" in validated_data or "review_interval" in validated_data:
+        if (
+            "action" in validated_data
+            or "consultation__review_interval" in validated_data
+        ):
             patient = instance.consultation.patient
 
             if "action" in validated_data:
                 action = validated_data.pop("action")
                 patient.action = action
 
-            if "review_interval" in validated_data:
-                review_interval = validated_data.pop("review_interval")
+            if "consultation__review_interval" in validated_data:
+                review_interval = validated_data.pop("consultation__review_interval")
+                instance.consultation.review_interval = review_interval
+                instance.consultation.save(update_fields=["review_interval"])
                 if review_interval >= 0:
-                    instance.consultation.review_interval = review_interval
                     patient.review_time = localtime(now()) + timedelta(
                         minutes=review_interval
                     )
+                else:
+                    patient.review_time = None
             patient.save()
 
         validated_data["last_updated_by_telemedicine"] = False
@@ -154,7 +161,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
-
         # Authorisation Checks
 
         # Skip check for asset user
@@ -232,20 +238,27 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     self.update_last_daily_round(cloned_daily_round_obj)
                     return self.update(cloned_daily_round_obj, validated_data)
 
-            if "action" in validated_data or "review_interval" in validated_data:
+            if (
+                "action" in validated_data
+                or "consultation__review_interval" in validated_data
+            ):
                 patient = validated_data["consultation"].patient
 
                 if "action" in validated_data:
                     action = validated_data.pop("action")
                     patient.action = action
 
-                if "review_interval" in validated_data:
-                    review_interval = validated_data.pop("review_interval")
+                if "consultation__review_interval" in validated_data:
+                    review_interval = validated_data.pop(
+                        "consultation__review_interval"
+                    )
                     if review_interval >= 0:
                         validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
                             minutes=review_interval
                         )
+                    else:
+                        patient.review_time = None
                 patient.save()
 
             validated_data["created_by_telemedicine"] = False
@@ -258,14 +271,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated_data["created_by_telemedicine"] = True
                 validated_data["last_updated_by_telemedicine"] = True
 
-            daily_round_obj = super().create(validated_data)
+            daily_round_obj: DailyRound = super().create(validated_data)
             daily_round_obj.created_by = self.context["request"].user
             daily_round_obj.last_edited_by = self.context["request"].user
             daily_round_obj.consultation.last_updated_by_telemedicine = validated_data[
                 "last_updated_by_telemedicine"
             ]
             daily_round_obj.consultation.save(
-                update_fields=["last_updated_by_telemedicine"]
+                update_fields=["last_updated_by_telemedicine", "review_interval"]
             )
             daily_round_obj.save(
                 update_fields=[
@@ -274,7 +287,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 ]
             )
 
-            self.update_last_daily_round(daily_round_obj)
+            if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
+                self.update_last_daily_round(daily_round_obj)
             return daily_round_obj
 
     def validate(self, obj):
@@ -287,7 +301,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "review_interval" not in validated:
+                if "consultation__review_interval" not in validated:
                     raise ValidationError(
                         {
                             "review_interval": [
@@ -295,7 +309,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
-                if validated["review_interval"] <= 0:
+                if validated["consultation__review_interval"] <= 0:
                     raise ValidationError(
                         {
                             "review_interval": [

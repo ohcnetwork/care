@@ -1,6 +1,8 @@
 import datetime
 
+from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
@@ -22,7 +24,6 @@ from care.facility.models import (
     PatientMetaInfo,
     PatientNotes,
     PatientRegistration,
-    PatientSearch,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -33,6 +34,8 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -44,9 +47,6 @@ from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import (
-    PhoneNumberIsPossibleField,
-)
 from config.serializers import ChoiceField
 
 
@@ -79,13 +79,43 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
+    # HCX
+    has_eligible_policy = serializers.SerializerMethodField(
+        "get_has_eligible_policy", read_only=True
+    )
+
+    def get_has_eligible_policy(self, patient):
+        eligible_policies = Policy.objects.filter(
+            (Q(error_text="") | Q(error_text=None)),
+            outcome="complete",
+            patient=patient.id,
+        )
+        return bool(len(eligible_policies))
+
+    approved_claim_amount = serializers.SerializerMethodField(
+        "get_approved_claim_amount", read_only=True
+    )
+
+    def get_approved_claim_amount(self, patient):
+        if patient.last_consultation is not None:
+            claim = (
+                Claim.objects.filter(
+                    Q(error_text="") | Q(error_text=None),
+                    consultation__external_id=patient.last_consultation.external_id,
+                    outcome="complete",
+                    total_claim_amount__isnull=False,
+                )
+                .order_by("-modified_date")
+                .first()
+            )
+            return claim.total_claim_amount if claim is not None else None
+
     class Meta:
         model = PatientRegistration
         exclude = (
             "created_by",
             "deleted",
             "ongoing_medication",
-            "patient_search_id",
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
@@ -130,9 +160,9 @@ class PatientDetailSerializer(PatientListSerializer):
             model = PatientTeleConsultation
             fields = "__all__"
 
-    phone_number = PhoneNumberIsPossibleField()
-
-    facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
     medical_history = serializers.ListSerializer(
         child=MedicalHistorySerializer(), required=False
     )
@@ -177,11 +207,12 @@ class PatientDetailSerializer(PatientListSerializer):
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
+    allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
+
     class Meta:
         model = PatientRegistration
         exclude = (
             "deleted",
-            "patient_search_id",
             "year_of_birth",
             "countries_travelled_old",
             "external_id",
@@ -378,19 +409,20 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 
 class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
-    phone_number = PhoneNumberIsPossibleField()
     patient_id = serializers.UUIDField(source="external_id", read_only=True)
 
-    # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
-
     class Meta:
-        model = PatientSearch
-        exclude = (
-                      "date_of_birth",
-                      "year_of_birth",
-                      "external_id",
-                      "id",
-                  ) + TIMESTAMP_FIELDS
+        model = PatientRegistration
+        fields = (
+            "patient_id",
+            "name",
+            "gender",
+            "phone_number",
+            "state_id",
+            "facility",
+            "allow_transfer",
+            "is_active",
+        )
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):

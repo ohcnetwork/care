@@ -2,13 +2,11 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -29,7 +27,7 @@ User = get_user_model()
 
 
 def remove_facility_user_cache(user_id):
-    key = "user_facilities:" + str(user_id)
+    key = f"user_facilities:{str(user_id)}"
     cache.delete(key)
     return True
 
@@ -131,6 +129,7 @@ class UserViewSet(
         else:
             return UserSerializer
 
+    @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
@@ -138,35 +137,15 @@ class UserViewSet(
             data=UserSerializer(request.user, context={"request": request}).data,
         )
 
-    @action(detail=False, methods=["GET"])
-    def get_token(self, request):
-        if not request.user.is_authenticated:
-            raise PermissionError
-        token, _ = Token.objects.get_or_create(user=request.user)
-        return Response(status=status.HTTP_200_OK, data={"token": token.key})
-
-    @action(detail=False, methods=["GET"])
-    def delete_token(self, request):
-        if not request.user.is_authenticated:
-            raise PermissionError
-        Token.objects.filter(user=request.user).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
     def destroy(self, request, *args, **kwargs):
         queryset = self.queryset
         username = kwargs["username"]
         if request.user.is_superuser:
             pass
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        elif request.user.user_type >= User.TYPE_VALUE_MAP["StateAdmin"]:
             queryset = queryset.filter(
                 state=request.user.state,
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
-                is_superuser=False,
-            )
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(
-                district=request.user.district,
-                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
@@ -178,6 +157,7 @@ class UserViewSet(
         user.save(update_fields=["is_active"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(tags=["users"])
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         password = request.data.pop(
@@ -215,6 +195,7 @@ class UserViewSet(
     def check_facility_user_exists(self, user, facility):
         return FacilityUser.objects.filter(facility=facility, user=user).exists()
 
+    @extend_schema(tags=["users"])
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
@@ -224,6 +205,7 @@ class UserViewSet(
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
         return Response(facilities.data)
 
+    @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
     def add_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
@@ -247,23 +229,10 @@ class UserViewSet(
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(
-        method="delete",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=["facility"],
-            title="Facility",
-            properties={
-                "facility": openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    format=openapi.FORMAT_UUID,
-                    title="Facility External ID",
-                )
-            },
-        ),
-        responses={
-            204: "Deleted Successfully",
-        },
+    @extend_schema(tags=["users"])
+    @extend_schema(
+        request=None,
+        responses={204: "Deleted Successfully"},
     )
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def clear_home_facility(self, request, *args, **kwargs):
@@ -285,6 +254,7 @@ class UserViewSet(
         user.save(update_fields=["home_facility"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(tags=["users"])
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def delete_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
@@ -313,6 +283,7 @@ class UserViewSet(
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(tags=["users"])
     @action(
         detail=True,
         methods=["PATCH", "GET"],
@@ -335,6 +306,7 @@ class UserViewSet(
         user.save()
         return Response(status=status.HTTP_200_OK)
 
+    @extend_schema(tags=["users"])
     @action(methods=["GET"], detail=True)
     def check_availability(self, request, username):
         """

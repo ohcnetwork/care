@@ -26,7 +26,7 @@ env:
   CONTAINER_NAME_CRON: "care-celery-beat"
 jobs:
   test:
-    if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master'
+    if: github.repository == 'coronasafe/care' && (github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
@@ -117,7 +117,7 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   build-staging:
-    #needs: test
+    needs: test
     name: Build & Push Staging to container registries
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -239,13 +239,13 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  deploy-staging-egov-api:
+  deploy-staging-egov:
     needs: build-staging
     name: Deploy to ECS API Egov
     runs-on: ubuntu-latest
     environment:
       name: Staging-egov
-      url: https://careapi.coronasafe.in
+      url: https://careapi.ohc.network
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -279,29 +279,6 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-  deploy-staging-egov-celery:
-    needs: build-staging
-    name: Deploy to Egov CELERY ECS
-    runs-on: ubuntu-latest
-    environment:
-      name: Staging-egov
-      url: https://careapi.coronasafe.in
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-
-      - name: IMAGE Tagging
-        env:
-          IMAGE_TAG: latest-${{ github.run_number }}
-        run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
-
       - name: Fill Celery Cron definition
         id: task-def-celery-cron
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -326,46 +303,6 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-  deploy-production-gdc:
-    needs: build-production
-    name: Deploy to EKS GDC
-    runs-on: ubuntu-latest
-    environment:
-      name: Staging-gdc
-      url: https://gdcapi.coronasafe.network
-    steps:
-      - name: Checkout Kube Config
-        uses: actions/checkout@v3
-        with:
-          repository: coronasafe/gdc_infra
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          path: kube
-          ref: main
-
-      - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
-        with:
-          version: "v1.23.6"
-        id: install
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
-      - name: Deploy Care Staging GDC
-        run: |
-          mkdir -p $HOME/.kube/
-          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ap-south-1
-          cd kube/deployments/
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
-          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
-          kubectl apply -f care-backend.yaml
-          kubectl apply -f care-celery-beat.yaml
-          kubectl apply -f care-celery-worker.yaml
 
   deploy-production-manipur:
     needs: build-production
@@ -397,7 +334,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -443,7 +380,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -489,7 +426,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -535,7 +472,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
@@ -581,7 +518,7 @@ jobs:
           credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: install kubectl
-        uses: azure/setup-kubectl@v2.0
+        uses: azure/setup-kubectl@v3.0
         with:
           version: "v1.23.6"
         id: install
