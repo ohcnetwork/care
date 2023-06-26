@@ -44,7 +44,7 @@ REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 class ShiftingRequest(FacilityBaseModel):
-    orgin_facility = models.ForeignKey(
+    origin_facility = models.ForeignKey(
         "Facility",
         on_delete=models.PROTECT,
         related_name="requesting_facility",
@@ -121,7 +121,7 @@ class ShiftingRequest(FacilityBaseModel):
         "patient__phone_number": "Patient Phone Number",
         "patient__age": "Patient Age",
         "patient__is_antenatal": "Patient is Antenatal",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
         "status": "Current Status",
