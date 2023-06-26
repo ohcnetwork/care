@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 # These two environment variables prevent __pycache__/ files.
 # since ipython is already present in required, you might as well use it
