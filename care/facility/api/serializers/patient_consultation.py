@@ -328,18 +328,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to"] = None
                 elif validated.get("referred_to"):
                     validated["referred_to_external"] = None
-            if (
-                validated["suggestion"] is SuggestionChoices.A
-                and validated.get("admitted")
-                and not validated.get("admission_date")
-            ):
-                raise ValidationError(
-                    {
-                        "admission_date": [
-                            "This field is required as the patient has been admitted."
-                        ]
-                    }
-                )
+            if validated["suggestion"] is SuggestionChoices.A:
+                if not validated.get("admission_date"):
+                    raise ValidationError(
+                        {
+                            "admission_date": [
+                                "This field is required as the patient has been admitted."
+                            ]
+                        }
+                    )
+                if validated["admission_date"] > now():
+                    raise ValidationError(
+                        {
+                            "admission_date": [
+                                "This field value cannot be in the future."
+                            ]
+                        }
+                    )
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
