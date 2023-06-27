@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
         PatientConsultation = apps.get_model("facility", "PatientConsultation")
         PatientConsultation.objects.filter(
             discharge_reason="EXP", death_datetime__isnull=False
-        ).update(discharge_date=F("death_dateime"))
+        ).update(discharge_date=F("death_datetime"))
 
     dependencies = [
         ("facility", "0365_merge_20230626_1834"),
