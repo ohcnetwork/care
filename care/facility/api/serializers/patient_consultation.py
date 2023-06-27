@@ -332,18 +332,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 if not validated.get("admission_date"):
                     raise ValidationError(
                         {
-                            "admission_date": [
-                                "This field is required as the patient has been admitted."
-                            ]
+                            "admission_date": "This field is required as the patient has been admitted."
                         }
                     )
                 if validated["admission_date"] > now():
                     raise ValidationError(
-                        {
-                            "admission_date": [
-                                "This field value cannot be in the future."
-                            ]
-                        }
+                        {"admission_date": "This field value cannot be in the future."}
                     )
 
         if "action" in validated:
@@ -444,9 +438,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             if attrs.get("death_datetime") < self.instance.admission_date:
                 raise ValidationError(
                     {
-                        "death_datetime": [
-                            "This field value cannot be before the admission date."
-                        ]
+                        "death_datetime": "This field value cannot be before the admission date."
                     }
                 )
             if not attrs.get("death_confirmed_doctor"):
@@ -463,9 +455,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         elif attrs.get("discharge_date") < self.instance.admission_date:
             raise ValidationError(
                 {
-                    "discharge_date": [
-                        "This field value cannot be before the admission date."
-                    ]
+                    "discharge_date": "This field value cannot be before the admission date."
                 }
             )
         return attrs
