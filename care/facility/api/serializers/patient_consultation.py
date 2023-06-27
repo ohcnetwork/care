@@ -437,6 +437,18 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
+            if attrs.get("death_datetime") > now():
+                raise ValidationError(
+                    {"death_datetime": "This field value cannot be in the future."}
+                )
+            if attrs.get("death_datetime") < self.instance.admission_date:
+                raise ValidationError(
+                    {
+                        "death_datetime": [
+                            "This field value cannot be before the admission date."
+                        ]
+                    }
+                )
             if not attrs.get("death_confirmed_doctor"):
                 raise ValidationError(
                     {"death_confirmed_doctor": "This field is required"}
