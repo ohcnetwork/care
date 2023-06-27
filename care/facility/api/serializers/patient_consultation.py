@@ -456,6 +456,18 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             attrs["discharge_date"] = now()
         elif not attrs.get("discharge_date"):
             raise ValidationError({"discharge_date": "This field is required"})
+        elif attrs.get("discharge_date") > now():
+            raise ValidationError(
+                {"discharge_date": "This field value cannot be in the future."}
+            )
+        elif attrs.get("discharge_date") < self.instance.admission_date:
+            raise ValidationError(
+                {
+                    "discharge_date": [
+                        "This field value cannot be before the admission date."
+                    ]
+                }
+            )
         return attrs
 
     def save(self, **kwargs):
