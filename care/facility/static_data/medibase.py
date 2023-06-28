@@ -11,7 +11,6 @@ for obj in medibase_objects:
         {
             "id": obj.id,
             "external_id": obj.external_id,
-            "medibase_id": obj.medibase_id,
             "name": obj.name,
             "type": obj.type,
             "generic": obj.generic or "",

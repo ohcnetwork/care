@@ -43,8 +43,13 @@ class MedibaseMedicineType(enum.Enum):
 
 
 class MedibaseMedicine(BaseModel):
-    medibase_id = models.CharField(max_length=32, db_index=True, unique=True)
-    name = models.CharField(max_length=255, blank=False, null=False, db_index=True)
+    name = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        db_index=True,
+        unique=True,
+    )
     type = models.CharField(
         max_length=16,
         choices=generate_choices(MedibaseMedicineType),

@@ -24,7 +24,6 @@ class Command(BaseCommand):
         MedibaseMedicine.objects.bulk_create(
             [
                 MedibaseMedicine(
-                    medibase_id=medicine["_id"]["$oid"],
                     name=medicine["name"],
                     type=medicine["type"],
                     company=medicine.get("company"),
