@@ -238,5 +238,5 @@ urlpatterns = [
 ]
 
 abdm_urlpatterns = [
-    url(r"^", include(abdm_router.urls)),
+    path("", include(abdm_router.urls)),
 ]

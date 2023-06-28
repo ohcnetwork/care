@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -38,10 +38,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     model = AbhaNumber
     permission_classes = (IsAuthenticated,)
 
-    # TODO: Ratelimiting for all endpoints that generate OTP's / Critical API's
-    @swagger_auto_schema(
+    @extend_schema(
         operation_id="generate_aadhaar_otp",
-        request_body=AadharOtpGenerateRequestPayloadSerializer,
+        request=AadharOtpGenerateRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -60,10 +59,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().generate_aadhaar_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/resendAadhaarOtp
         operation_id="resend_aadhaar_otp",
-        request_body=AadharOtpResendRequestPayloadSerializer,
+        request=AadharOtpResendRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -82,10 +81,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().resend_aadhaar_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/verifyAadhaarOtp
         operation_id="verify_aadhaar_otp",
-        request_body=VerifyOtpRequestPayloadSerializer,
+        request=VerifyOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -106,10 +105,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         )  # HealthIdGatewayV2().verify_document_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/generateMobileOTP
         operation_id="generate_mobile_otp",
-        request_body=GenerateMobileOtpRequestPayloadSerializer,
+        request=GenerateMobileOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -128,10 +127,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().generate_mobile_otp(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/verifyMobileOTP
         operation_id="verify_mobile_otp",
-        request_body=VerifyOtpRequestPayloadSerializer,
+        request=VerifyOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -198,10 +197,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         patient_object.save()
         return True
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/createHealthId
         operation_id="create_health_id",
-        request_body=CreateHealthIdSerializer,
+        request=CreateHealthIdSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -258,10 +257,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
     # APIs to Find & Link Existing HealthID
     # searchByHealthId
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/searchByHealthId
         operation_id="search_by_health_id",
-        request_body=HealthIdSerializer,
+        request=HealthIdSerializer,
         responses={"200": "{'status': 'boolean'}"},
         tags=["ABDM HealthID"],
     )
@@ -282,10 +281,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().search_by_health_id(data)
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/registration/aadhaar/searchByHealthId
         operation_id="link_via_qr",
-        request_body=HealthIdSerializer,
+        request=HealthIdSerializer,
         responses={"200": "{'status': 'boolean'}"},
         tags=["ABDM HealthID"],
     )
@@ -396,7 +395,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         patient_serialized = PatientDetailSerializer(patient).data
         return Response(patient_serialized, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
+    @extend_schema(
         operation_id="get_new_linking_token",
         responses={"200": "{'status': 'boolean'}"},
         tags=["ABDM HealthID"],
@@ -480,10 +479,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return Response(response, status=status.HTTP_202_ACCEPTED)
 
     # auth/init
-    @swagger_auto_schema(
+    @extend_schema(
         # /v1/auth/init
         operation_id="auth_init",
-        request_body=HealthIdAuthSerializer,
+        request=HealthIdAuthSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -503,9 +502,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return Response(response, status=status.HTTP_200_OK)
 
     # /v1/auth/confirmWithAadhaarOtp
-    @swagger_auto_schema(
+    @extend_schema(
         operation_id="confirm_with_aadhaar_otp",
-        request_body=VerifyOtpRequestPayloadSerializer,
+        request=VerifyOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -556,9 +555,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         )
 
     # /v1/auth/confirmWithMobileOtp
-    @swagger_auto_schema(
+    @extend_schema(
         operation_id="confirm_with_mobile_otp",
-        request_body=VerifyOtpRequestPayloadSerializer,
+        request=VerifyOtpRequestPayloadSerializer,
         # responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID"],
     )
@@ -608,9 +607,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             status=status.HTTP_200_OK,
         )
 
-    @swagger_auto_schema(
+    @extend_schema(
         operation_id="confirm_with_demographics",
-        request_body=VerifyDemographicsRequestPayloadSerializer,
+        request=VerifyDemographicsRequestPayloadSerializer,
         responses={"200": "{'status': true}"},
         tags=["ABDM HealthID"],
     )
@@ -631,10 +630,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
     ############################################################################################################
     # HealthID V2 APIs
-    @swagger_auto_schema(
+    @extend_schema(
         # /v2/registration/aadhaar/checkAndGenerateMobileOTP
         operation_id="check_and_generate_mobile_otp",
-        request_body=GenerateMobileOtpRequestPayloadSerializer,
+        request=GenerateMobileOtpRequestPayloadSerializer,
         responses={"200": "{'txnId': 'string'}"},
         tags=["ABDM HealthID V2"],
     )
