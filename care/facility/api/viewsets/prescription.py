@@ -184,4 +184,4 @@ class MedibaseViewSet(ViewSet):
                 searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )
             queryset = self.sort(query, queryset)
-        return Response(self.serailize_data(queryset[0:15]))
+        return Response(self.serailize_data(queryset[:15]))
