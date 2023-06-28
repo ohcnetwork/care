@@ -464,7 +464,6 @@ ICD_SCRAPER_CHILD_CONCEPTS_URL = (
 # ------------------------------------------------------------------------------
 DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
 DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
-GETKEY = "ratelimit"
 GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
 GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
 GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"

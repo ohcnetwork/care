@@ -120,6 +120,10 @@
           "name": "POSTGRES_PASSWORD"
         },
         {
+          "valueFrom": "/care/backend/DATABASE_URL",
+          "name": "DATABASE_URL"
+        },
+        {
           "valueFrom": "/care/backend/SENTRY_DSN",
           "name": "SENTRY_DSN"
         },
@@ -142,10 +146,6 @@
         {
           "valueFrom": "/care/backend/CELERY_BROKER_URL",
           "name": "REDIS_URL"
-        },
-        {
-          "valueFrom": "/care/backend/POSTGIS_URL",
-          "name": "POSTGIS_URL"
         },
         {
           "valueFrom": "/care/backend/EMAIL_USER",

@@ -85,7 +85,6 @@ urlpatterns = [
         name="hcx_communication_on_request",
     ),
     # Health check urls
-    # url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
     path(
         ".well-known/openid-configuration",

@@ -24,7 +24,9 @@ tblib==1.7.0  # https://github.com/ionelmc/python-tblib
 mypy==1.3.0  # https://github.com/python/mypy
 django-stubs==4.2.1  # https://github.com/typeddjango/django-stubs
 djangorestframework-stubs==3.14.1  # https://github.com/typeddjango/djangorestframework-stubs
+boto3-stubs[boto3,s3] # https://pypi.org/project/boto3-stubs/
 
 # Container development
 # ------------------------------------------------------------------------------
 debugpy==1.6.7
+watchdog  # https://github.com/gorakhargosh/watchdog
