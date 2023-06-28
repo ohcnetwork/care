@@ -436,7 +436,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"death_confirmed_doctor": "This field is required"}
                 )
-            attrs["discharge_date"] = now()
+            attrs["discharge_date"] = attrs["death_datetime"]
         elif not attrs.get("discharge_date"):
             raise ValidationError({"discharge_date": "This field is required"})
         return attrs
