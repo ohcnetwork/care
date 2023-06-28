@@ -81,3 +81,17 @@ class InvestigationValueCreateSerializer(serializers.ModelSerializer):
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS
         exclude = TIMESTAMP_FIELDS + ("external_id",)
+
+
+class ValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvestigationValue
+        fields = ("external_id", "value", "notes")
+
+
+# Dummy for Spec
+class InvestigationUpdateSerializer(serializers.Serializer):
+    investigations = ValueSerializer(many=True)
+
+    class Meta:
+        fields = ("investigations",)

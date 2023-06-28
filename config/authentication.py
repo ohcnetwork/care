@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
+from drf_spectacular.plumbing import build_bearer_security_scheme_object
 from rest_framework import HTTP_HEADER_ENCODING, exceptions, status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -230,3 +232,58 @@ class ABDMAuthentication(JWTAuthentication):
             )
             user.save()
         return user
+
+
+class CustomJWTAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "config.authentication.CustomJWTAuthentication"
+    name = "jwtAuth"
+
+    def get_security_definition(self, auto_schema):
+        return build_bearer_security_scheme_object(
+            header_name="Authorization", token_prefix="Bearer", bearer_format="JWT"
+        )
+
+
+class MiddlewareAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "config.authentication.MiddlewareAuthentication"
+    name = "middlewareAuth"
+
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            "description": _(
+                "Used for authenticating requests from the middleware. "
+                "The scheme requires a valid JWT token in the Authorization header "
+                "along with the facility id in the X-Facility-Id header. "
+                "--The value field is just for preview, filling it will show allowed "
+                "endpoints.--"
+            ),
+        }
+
+
+class CustomBasicAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "config.authentication.CustomBasicAuthentication"
+    name = "basicAuth"
+
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "http",
+            "scheme": "basic",
+            "description": _("Do not use this scheme for production."),
+        }
+
+
+class SessionAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "rest_framework.authentication.SessionAuthentication"
+    name = "cookieAuth"
+
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "apiKey",
+            "in": "cookie",
+            "name": "sessionid",
+            "scheme": "http",
+            "description": _("Do not use this scheme for production."),
+        }

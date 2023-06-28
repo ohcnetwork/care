@@ -3,6 +3,7 @@ from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
@@ -64,7 +65,7 @@ class ShiftingFilterSet(filters.FilterSet):
     patient_phone_number = filters.CharFilter(
         field_name="patient__phone_number", lookup_expr="icontains"
     )
-    orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
+    origin_facility = filters.UUIDFilter(field_name="origin_facility__external_id")
     shifting_approving_facility = filters.UUIDFilter(
         field_name="shifting_approving_facility__external_id"
     )
@@ -90,11 +91,11 @@ class ShiftingViewSet(
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
     queryset = ShiftingRequest.objects.all().select_related(
-        "orgin_facility",
-        "orgin_facility__ward",
-        "orgin_facility__local_body",
-        "orgin_facility__district",
-        "orgin_facility__state",
+        "origin_facility",
+        "origin_facility__ward",
+        "origin_facility__local_body",
+        "origin_facility__district",
+        "origin_facility__state",
         "shifting_approving_facility",
         "shifting_approving_facility__ward",
         "shifting_approving_facility__local_body",
@@ -135,6 +136,7 @@ class ShiftingViewSet(
             serializer_class = ShiftingDetailSerializer
         return serializer_class
 
+    @extend_schema(tags=["shift"])
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         shifting_obj = self.get_object()
@@ -199,7 +201,7 @@ class ShifitngRequestCommentViewSet(
             pass
         else:
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                q_objects = Q(request__orgin_facility__state=self.request.user.state)
+                q_objects = Q(request__origin_facility__state=self.request.user.state)
                 q_objects |= Q(
                     request__shifting_approving_facility__state=self.request.user.state
                 )
@@ -209,7 +211,7 @@ class ShifitngRequestCommentViewSet(
                 return queryset.filter(q_objects)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(
-                    request__orgin_facility__district=self.request.user.district
+                    request__origin_facility__district=self.request.user.district
                 )
                 q_objects |= Q(
                     request__shifting_approving_facility__district=self.request.user.district
@@ -219,7 +221,7 @@ class ShifitngRequestCommentViewSet(
                 )
                 return queryset.filter(q_objects)
             facility_ids = get_accessible_facilities(self.request.user)
-            q_objects = Q(request__orgin_facility__id__in=facility_ids)
+            q_objects = Q(request__origin_facility__id__in=facility_ids)
             q_objects |= Q(request__shifting_approving_facility__id__in=facility_ids)
             q_objects |= Q(request__assigned_facility__id__in=facility_ids)
             q_objects |= Q(request__patient__facility__id__in=facility_ids)

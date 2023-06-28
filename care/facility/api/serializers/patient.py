@@ -26,7 +26,6 @@ from care.facility.models import (
     PatientMetaInfo,
     PatientNotes,
     PatientRegistration,
-    PatientSearch,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
@@ -50,9 +49,6 @@ from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import (
-    PhoneNumberIsPossibleField,
-)
 from config.serializers import ChoiceField
 
 
@@ -122,7 +118,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "patient_search_id",
             "year_of_birth",
             "meta_info",
             "countries_travelled_old",
@@ -166,8 +161,6 @@ class PatientDetailSerializer(PatientListSerializer):
         class Meta:
             model = PatientTeleConsultation
             fields = "__all__"
-
-    phone_number = PhoneNumberIsPossibleField()
 
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
@@ -227,7 +220,6 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "patient_search_id",
             "year_of_birth",
             "countries_travelled_old",
             "external_id",
@@ -424,19 +416,20 @@ class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
 
 class PatientSearchSerializer(serializers.ModelSerializer):
     gender = ChoiceField(choices=GENDER_CHOICES)
-    phone_number = PhoneNumberIsPossibleField()
     patient_id = serializers.UUIDField(source="external_id", read_only=True)
 
-    # facility_id = serializers.UUIDField(read_only=True, allow_null=True)
-
     class Meta:
-        model = PatientSearch
-        exclude = (
-            "date_of_birth",
-            "year_of_birth",
-            "external_id",
-            "id",
-        ) + TIMESTAMP_FIELDS
+        model = PatientRegistration
+        fields = (
+            "patient_id",
+            "name",
+            "gender",
+            "phone_number",
+            "state_id",
+            "facility",
+            "allow_transfer",
+            "is_active",
+        )
 
 
 class PatientTransferSerializer(serializers.ModelSerializer):

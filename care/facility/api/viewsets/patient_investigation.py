@@ -1,18 +1,20 @@
+import contextlib
+
 from django.db import transaction
 from django.db.models import F
 from django.db.models.query_utils import Q
 from django_filters import Filter
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins, serializers, status, viewsets
+from drf_spectacular.utils import extend_schema
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 from care.facility.api.serializers.patient_investigation import (
+    InvestigationUpdateSerializer,
     InvestigationValueCreateSerializer,
     InvestigationValueSerializer,
     PatientInvestigationGroupSerializer,
@@ -107,10 +109,8 @@ class PatientInvestigationSummaryViewSet(
 
     def get_queryset(self):
         session_page = self.request.GET.get("session_page", 1)
-        try:
+        with contextlib.suppress(ValueError):
             session_page = int(session_page)
-        except ValueError:
-            pass
         investigations = self.request.GET.get("investigations", "")
         queryset = self.queryset.filter(
             consultation__patient__external_id=self.kwargs.get("patient_external_id")
@@ -188,8 +188,9 @@ class InvestigationValueViewSet(
         filters |= Q(consultation__patient__assigned_to=self.request.user)
         return queryset.filter(filters).distinct("id")
 
-    @swagger_auto_schema(
-        responses={200: PatientInvestigationSessionSerializer(many=True)}
+    @extend_schema(
+        responses={200: PatientInvestigationSessionSerializer(many=True)},
+        tags=["investigation"],
     )
     @action(detail=False, methods=["GET"])
     def get_sessions(self, request, *args, **kwargs):
@@ -205,17 +206,10 @@ class InvestigationValueViewSet(
             )
         )
 
-    class InvestigationUpdateSerializer(Serializer):  # Dummy for Spec
-        class ValueSerializer(serializers.ModelSerializer):
-            class Meta:
-                model = InvestigationValue
-                fields = ("external_id", "value", "notes")
-
-        investigations = ValueSerializer(many=True)
-
-    @swagger_auto_schema(
-        request_body=InvestigationUpdateSerializer,
+    @extend_schema(
+        request=InvestigationUpdateSerializer,
         responses={204: "Operation successful"},
+        tags=["investigation"],
     )
     @action(detail=False, methods=["PUT"])
     def batchUpdate(self, request, *args, **kwargs):

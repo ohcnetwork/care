@@ -1,6 +1,6 @@
 from django.conf import settings
 from django_filters import rest_framework as filters
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -8,7 +8,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.serializers import CharField, Serializer, UUIDField
+from rest_framework.serializers import CharField, UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.notification import NotificationSerializer
@@ -46,19 +46,23 @@ class NotificationViewSet(
         user = self.request.user
         return self.queryset.filter(intended_for=user)
 
+    @extend_schema(tags=["notification"])
     @action(
         detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly]
     )
     def public_key(self, request, *args, **kwargs):
         return Response({"public_key": settings.VAPID_PUBLIC_KEY})
 
-    class DummyNotificationSerializer(Serializer):  # Dummy for Spec
-        facility = UUIDField(required=True)
-        message = CharField(required=True)
-
-    @swagger_auto_schema(
-        request_body=DummyNotificationSerializer,
+    @extend_schema(
+        request=inline_serializer(
+            "BoardMessageSerializer",
+            fields={
+                "facility": UUIDField(required=True),
+                "message": CharField(required=True),
+            },
+        ),
         responses={204: "Notification Processed"},
+        tags=["notification"],
     )
     @action(detail=False, methods=["POST"])
     def notify(self, request, *args, **kwargs):

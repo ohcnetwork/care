@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Index
-from partial_index import PQ, PartialIndex
 
 from care.facility.models import FacilityBaseModel
 from care.facility.models.mixins.permissions.facility import (
@@ -138,9 +137,11 @@ class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin
     is_low = models.BooleanField(default=False)
 
     class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["facility", "item"], unique=True, where=PQ(deleted=False)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["facility", "item"],
+                condition=models.Q(deleted=False),
+                name="unique_facility_item_summary",
             )
         ]
 
@@ -159,9 +160,11 @@ class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionM
     min_quantity = models.FloatField(default=0)
 
     class Meta:
-        indexes = [
-            PartialIndex(
-                fields=["facility", "item"], unique=True, where=PQ(deleted=False)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["facility", "item"],
+                condition=models.Q(deleted=False),
+                name="unique_facility_item_min_quantity",
             )
         ]
 
