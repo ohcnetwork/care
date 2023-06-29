@@ -120,6 +120,10 @@
           "name": "POSTGRES_PASSWORD"
         },
         {
+          "valueFrom": "/care/backend/DATABASE_URL",
+          "name": "DATABASE_URL"
+        },
+        {
           "valueFrom": "/care/backend/SENTRY_DSN",
           "name": "SENTRY_DSN"
         },
