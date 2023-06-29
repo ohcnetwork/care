@@ -1,6 +1,6 @@
 argon2-cffi==21.3.0  # https://github.com/hynek/argon2-cffi/blob/main/CHANGELOG.md
 Authlib==1.2.0 # https://docs.authlib.org/en/latest/changelog.html
-boto3==1.12.23 # For AWS interactions
+boto3==1.26.157 # For AWS interactions
 Pillow==9.5.0  # https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst
 python-slugify==8.0.1  # https://github.com/un33k/python-slugify/blob/master/CHANGELOG.md
 PyJWT==2.7.0 # https://github.com/jpadilla/pyjwt/blob/master/CHANGELOG.rst
@@ -37,7 +37,7 @@ django-storages==1.9.1 # For Storing Static Files in AWS
 # Json Schema
 # ------------------------------------------------------------------------------
 jsonschema==3.2.0
-typed-ast==1.5.0
+typed-ast==1.5.4
 # In Memory Database
 # ------------------------------------------------------------------------------
 littletable==2.0.7

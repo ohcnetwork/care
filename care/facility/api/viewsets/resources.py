@@ -42,17 +42,17 @@ def get_request_queryset(request, queryset):
         pass
     else:
         if request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            q_objects = Q(orgin_facility__state=request.user.state)
+            q_objects = Q(origin_facility__state=request.user.state)
             q_objects |= Q(approving_facility__state=request.user.state)
             q_objects |= Q(assigned_facility__state=request.user.state)
             return queryset.filter(q_objects)
         elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            q_objects = Q(orgin_facility__district=request.user.district)
+            q_objects = Q(origin_facility__district=request.user.district)
             q_objects |= Q(approving_facility__district=request.user.district)
             q_objects |= Q(assigned_facility__district=request.user.district)
             return queryset.filter(q_objects)
         facility_ids = get_accessible_facilities(request.user)
-        q_objects = Q(orgin_facility__id__in=facility_ids)
+        q_objects = Q(origin_facility__id__in=facility_ids)
         q_objects |= Q(approving_facility__id__in=facility_ids)
         q_objects |= Q(assigned_facility__id__in=facility_ids)
         queryset = queryset.filter(q_objects)
@@ -65,7 +65,7 @@ class ResourceFilterSet(filters.FilterSet):
     sub_category = CareChoiceFilter(choice_dict=inverse_sub_category)
 
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    orgin_facility = filters.UUIDFilter(field_name="orgin_facility__external_id")
+    origin_facility = filters.UUIDFilter(field_name="origin_facility__external_id")
     approving_facility = filters.UUIDFilter(
         field_name="approving_facility__external_id"
     )
@@ -89,11 +89,11 @@ class ResourceRequestViewSet(
     serializer_class = ResourceRequestSerializer
     lookup_field = "external_id"
     queryset = ResourceRequest.objects.all().select_related(
-        "orgin_facility",
-        "orgin_facility__ward",
-        "orgin_facility__local_body",
-        "orgin_facility__district",
-        "orgin_facility__state",
+        "origin_facility",
+        "origin_facility__ward",
+        "origin_facility__local_body",
+        "origin_facility__district",
+        "origin_facility__state",
         "approving_facility",
         "approving_facility__ward",
         "approving_facility__local_body",
@@ -159,7 +159,7 @@ class ResourceRequestCommentViewSet(
             pass
         else:
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                q_objects = Q(request__orgin_facility__state=self.request.user.state)
+                q_objects = Q(request__origin_facility__state=self.request.user.state)
                 q_objects |= Q(
                     request__approving_facility__state=self.request.user.state
                 )
@@ -169,7 +169,7 @@ class ResourceRequestCommentViewSet(
                 return queryset.filter(q_objects)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(
-                    request__orgin_facility__district=self.request.user.district
+                    request__origin_facility__district=self.request.user.district
                 )
                 q_objects |= Q(
                     request__approving_facility__district=self.request.user.district
@@ -179,7 +179,7 @@ class ResourceRequestCommentViewSet(
                 )
                 return queryset.filter(q_objects)
             facility_ids = get_accessible_facilities(self.request.user)
-            q_objects = Q(request__orgin_facility__id__in=facility_ids)
+            q_objects = Q(request__origin_facility__id__in=facility_ids)
             q_objects |= Q(request__approving_facility__id__in=facility_ids)
             q_objects |= Q(request__assigned_facility__id__in=facility_ids)
             queryset = queryset.filter(q_objects)

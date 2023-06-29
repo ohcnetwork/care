@@ -2759,7 +2759,7 @@
       "created_date": "2022-09-27T07:22:00.581Z",
       "modified_date": "2022-09-27T07:22:00.581Z",
       "deleted": false,
-      "orgin_facility": 1,
+      "origin_facility": 1,
       "shifting_approving_facility": 2,
       "assigned_facility_type": 2,
       "assigned_facility": null,
