@@ -436,7 +436,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"death_confirmed_doctor": "This field is required"}
                 )
-            attrs["discharge_date"] = now()
+            attrs["discharge_date"] = attrs["death_datetime"]
         elif not attrs.get("discharge_date"):
             raise ValidationError({"discharge_date": "This field is required"})
         return attrs
@@ -465,3 +465,22 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = ("consultation_id", "patient_id")
+
+
+class EmailDischargeSummarySerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=False,
+        help_text=(
+            "Email address to send the discharge summary to. If not provided, "
+            "the email address of the current user will be used."
+        ),
+    )
+
+    def validate(self, attrs):
+        if not attrs.get("email"):
+            attrs["email"] = self.context["request"].user.email
+        return attrs
+
+    class Meta:
+        model = PatientConsultation
+        fields = ("email",)

@@ -5,9 +5,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from care.facility.models.notification import Notification
-from care.facility.tasks.notification.delete_older_notifications import (
-    delete_old_notifications,
-)
+from care.facility.tasks.cleanup import delete_old_notifications
 
 
 class DeleteOldNotificationsTest(TestCase):

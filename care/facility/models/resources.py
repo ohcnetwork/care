@@ -36,7 +36,7 @@ REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 class ResourceRequest(FacilityBaseModel):
-    orgin_facility = models.ForeignKey(
+    origin_facility = models.ForeignKey(
         "Facility",
         on_delete=models.PROTECT,
         related_name="resource_requesting_facility",
@@ -67,10 +67,7 @@ class ResourceRequest(FacilityBaseModel):
         choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False
     )
     sub_category = models.IntegerField(
-        choices=RESOURCE_SUB_CATEGORY_CHOICES,
-        default=1000,
-        null=False,
-        blank=False,
+        choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False
     )
     priority = models.IntegerField(default=None, null=True, blank=True)
 
@@ -101,7 +98,7 @@ class ResourceRequest(FacilityBaseModel):
     CSV_MAPPING = {
         "created_date": "Created Date",
         "modified_date": "Modified Date",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "Assigned Facility",
         "approving_facility__name": "Approving Facility",
         "status": "Current Status",

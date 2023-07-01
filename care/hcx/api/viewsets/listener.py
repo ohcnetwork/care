@@ -1,6 +1,6 @@
 import json
 
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -18,7 +18,7 @@ class CoverageElibilityOnCheckView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_coverage_elibility_check_response(response["payload"])
@@ -44,7 +44,7 @@ class PreAuthOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_claim_response(response["payload"])
@@ -71,7 +71,7 @@ class ClaimOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_claim_response(response["payload"])
@@ -98,7 +98,7 @@ class CommunicationRequestView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = []
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         response = Hcx().processIncomingRequest(request.data["payload"])
         data = Fhir().process_communication_request(response["payload"])

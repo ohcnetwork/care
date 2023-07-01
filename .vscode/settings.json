@@ -1,0 +1,28 @@
+{
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "*.envrc": "shellscript",
+    "*.env": "shellscript"
+  },
+  "files.insertFinalNewline": true,
+  "files.readonlyInclude": {
+    ".venv/**": true
+  },
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "githubPullRequests.ignoredPullRequestBranches": ["master"],
+  "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
+  "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
+  "python.linting.flake8Args": ["--config=.flake8"],
+  "python.linting.flake8Path": "${workspaceFolder}/.venv/bin/flake8",
+  "isort.args": ["--profile", "black"]
+}

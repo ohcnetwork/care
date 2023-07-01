@@ -8,7 +8,7 @@ from django.contrib.auth.password_validation import (
 )
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_rest_passwordreset.models import (
     ResetPasswordToken,
     clear_expired,
@@ -21,6 +21,7 @@ from django_rest_passwordreset.signals import (
     pre_password_reset,
     reset_password_token_created,
 )
+from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -48,6 +49,7 @@ class ResetPasswordCheck(GenericAPIView):
 
     permission_classes = ()
 
+    @extend_schema(tags=["auth", "users"])
     def post(self, request, *args, **kwargs):
         token = request.data.get("token", None)
 
@@ -93,6 +95,7 @@ class ResetPasswordConfirm(GenericAPIView):
     permission_classes = ()
     serializer_class = PasswordTokenSerializer
 
+    @extend_schema(tags=["auth", "users"])
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -171,6 +174,7 @@ class ResetPasswordRequestToken(GenericAPIView):
     permission_classes = ()
     serializer_class = ResetPasswordUserSerializer
 
+    @extend_schema(tags=["auth", "users"])
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)

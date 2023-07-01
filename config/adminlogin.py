@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 
 
 def login_wrapper(login_func):
