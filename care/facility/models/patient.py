@@ -478,13 +478,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     CSV_MAPPING = {
         # Patient Details
-        "external_id": "Patient ID",
-        "name": "Patient Name",
         "facility__name": "Facility Name",
         "gender": "Gender",
         "age": "Age",
-        # Policy Details
-        "policy__policy_id": "Policy ID/Name",
         "created_date": "Date of Registration",
         "created_date__time": "Time of Registration",
         # Last Consultation Details
@@ -495,7 +491,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
-        "last_consultation__discharge_reason": "Discharge reason",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
