@@ -478,6 +478,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     CSV_MAPPING = {
         # Patient Details
+        "external_id": "Patient ID",
         "facility__name": "Facility Name",
         "gender": "Gender",
         "age": "Age",
