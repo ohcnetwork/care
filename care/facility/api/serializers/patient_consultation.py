@@ -393,6 +393,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     discharge_reason = serializers.ChoiceField(
         choices=DISCHARGE_REASON_CHOICES, required=True
     )
+    referred_to_external = serializers.CharField(required=False, allow_null=True, allow_blank=True)
     discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
     discharge_date = serializers.DateTimeField(required=True)
@@ -420,6 +421,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to_external",
             "discharge_notes",
             "discharge_date",
             "discharge_prescription",
