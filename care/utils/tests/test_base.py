@@ -3,7 +3,8 @@ import datetime
 from collections import OrderedDict
 from uuid import uuid4
 
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
+from django_rest_passwordreset.models import ResetPasswordToken
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -33,7 +34,7 @@ class TestBase(APITestCase):
     maxDiff = None
 
     @classmethod
-    def create_user(cls, district: District, username: str = "user", **kwargs):
+    def create_user(cls, district: District, username: str = "user", **kwargs) -> User:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
@@ -49,7 +50,7 @@ class TestBase(APITestCase):
         return User.objects.create_user(**data)
 
     @classmethod
-    def create_super_user(cls, district: District, username: str = "superuser"):
+    def create_super_user(cls, district: District, username: str = "superuser") -> User:
         user = cls.create_user(
             district=district,
             username=username,
@@ -60,17 +61,29 @@ class TestBase(APITestCase):
         return user
 
     @classmethod
-    def create_district(cls, state: State):
+    def create_reset_password_token(
+        cls, user: User, expired: bool = False
+    ) -> ResetPasswordToken:
+        token = ResetPasswordToken.objects.create(user=user)
+        if expired:
+            token.created_at = now() - datetime.timedelta(hours=2)
+            token.save()
+        return token
+
+    @classmethod
+    def create_district(cls, state: State) -> District:
         return District.objects.create(
             state=state, name=f"District{datetime.datetime.now().timestamp()}"
         )
 
     @classmethod
-    def create_state(cls):
+    def create_state(cls) -> State:
         return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
 
     @classmethod
-    def create_facility(cls, district: District, user: User = None, **kwargs):
+    def create_facility(
+        cls, district: District, user: User = None, **kwargs
+    ) -> Facility:
         user = user or cls.user
         data = {
             "name": "Foo",
