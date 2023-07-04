@@ -5,6 +5,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
     UUIDField,
+    IntegerField
 )
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
