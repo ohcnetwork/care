@@ -25,10 +25,10 @@ from rest_framework.serializers import CharField, JSONField, Serializer, UUIDFie
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
-    AssetLocationSerializer,
-    AssetSerializer,
     AssetDetailSerializer,
     AssetListSerializer,
+    AssetLocationSerializer,
+    AssetSerializer,
     AssetTransactionSerializer,
     UserDefaultAssetLocationSerializer,
 )

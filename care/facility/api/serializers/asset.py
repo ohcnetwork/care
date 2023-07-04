@@ -71,7 +71,6 @@ class AssetSerializer(ModelSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
@@ -125,15 +124,16 @@ class AssetSerializer(ModelSerializer):
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
 
+
 class AssetListSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
+
     class Meta:
         model = Asset
-        fields = ["id", "name", "asset_class",\
-                "is_working", "location_object"]
+        fields = ["id", "name", "asset_class", "is_working", "location_object"]
         read_only_fields = TIMESTAMP_FIELDS
-        
+
 
 class AssetDetailSerializer(AssetListSerializer):
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
@@ -154,7 +154,6 @@ class AssetDetailSerializer(AssetListSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
@@ -207,6 +206,7 @@ class AssetDetailSerializer(AssetListSerializer):
             updated_instance = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
+
 
 class AssetBareMinimumSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
