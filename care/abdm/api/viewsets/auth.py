@@ -335,6 +335,10 @@ class RequestDataView(GenericAPIView):
             }
         )
 
+        print("______________________________________________")
+        print(consent["notification"]["consentDetail"]["careContexts"][:-2:-1])
+        print("______________________________________________")
+
         AbdmGateway().data_notify(
             {
                 "consent_id": data["hiRequest"]["consent"]["id"],
