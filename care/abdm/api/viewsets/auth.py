@@ -34,7 +34,12 @@ class OnInitView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         print("on-init", data)
-        AbdmGateway().confirm(data["auth"]["transactionId"], data["resp"]["requestId"])
+
+        if data["auth"]["transactionId"]["mode"] != "DIRECT":
+            AbdmGateway().confirm(
+                data["auth"]["transactionId"], data["resp"]["requestId"]
+            )
+
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
@@ -78,7 +83,7 @@ class AuthNotifyView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
+        print("auth-notify", data)
 
         if data["auth"]["status"] != "GRANTED":
             return
