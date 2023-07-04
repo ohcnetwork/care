@@ -447,11 +447,17 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         AbdmGateway().fetch_modes(
             {
                 "healthId": consultation.patient.abha_number.health_id,
-                "name": consultation.patient.abha_number.name,
-                "gender": consultation.patient.abha_number.gender,
-                "dateOfBirth": str(consultation.patient.abha_number.date_of_birth),
+                "name": request.data["name"]
+                if "name" in request.data
+                else consultation.patient.abha_number.name,
+                "gender": request.data["gender"]
+                if "gender" in request.data
+                else consultation.patient.abha_number.gender,
+                "dateOfBirth": request.data["dob"]
+                if "dob" in request.data
+                else str(consultation.patient.abha_number.date_of_birth),
                 "consultationId": consultation_id,
-                "authMode": "DIRECT",
+                # "authMode": "DIRECT",
                 "purpose": "LINK",
             }
         )
