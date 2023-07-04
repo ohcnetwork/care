@@ -305,9 +305,8 @@ class RequestDataView(GenericAPIView):
                                         "data": cipher.encrypt(
                                             Fhir(
                                                 PatientConsultation.objects.get(
-                                                    external_id=context[
-                                                        "careContextReference"
-                                                    ]
+                                                    external_id="6ddf9a81-e6f6-47c2-a2d0-63f64f66fcfd"
+                                                    or context["careContextReference"]
                                                 )
                                             ).create_record(record)
                                         )["data"],
