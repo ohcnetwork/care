@@ -10,6 +10,7 @@ from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from care.abdm.api.viewsets.auth import (
+    AuthNotifyView,
     DiscoverView,
     LinkConfirmView,
     LinkInitView,
@@ -101,6 +102,11 @@ urlpatterns = [
         "v0.5/users/auth/on-confirm",
         OnConfirmView.as_view(),
         name="abdm_on_confirm_view",
+    ),
+    path(
+        "v0.5/users/auth/notify",
+        AuthNotifyView.as_view(),
+        name="abdm_auth_notify_view",
     ),
     path(
         "v0.5/links/link/on-add-contexts",

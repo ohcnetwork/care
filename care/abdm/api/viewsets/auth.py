@@ -72,6 +72,25 @@ class OnConfirmView(GenericAPIView):
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
+class AuthNotifyView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = [ABDMAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print(data)
+
+        if data["auth"]["status"] != "GRANTED":
+            return
+
+        AbdmGateway.auth_on_notify({"request_id": data["auth"]["transactionId"]})
+
+        # AbdmGateway().add_care_context(
+        #     data["auth"]["accessToken"],
+        #     data["resp"]["requestId"],
+        # )
+
+
 class OnAddContextsView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = [ABDMAuthentication]
