@@ -70,5 +70,6 @@ pycryptodome==3.16.0
 pycryptodomex==3.16.0
 # HCX
 fhir.resources==6.5.0
+pydantic==1.*
 jwcrypto==1.4.2
 requests==2.31.0
