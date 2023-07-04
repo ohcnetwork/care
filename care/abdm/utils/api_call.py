@@ -395,8 +395,6 @@ class AbdmGateway:
             self.init(request_id)
             return
 
-        print("auth-init", data)
-
         payload = {
             "requestId": request_id,
             "timestamp": str(
@@ -423,6 +421,8 @@ class AbdmGateway:
 
         data = self.temp_memory[prev_request_id]
         self.temp_memory[request_id] = data
+
+        print("auth-init", data)
 
         payload = {
             "requestId": request_id,
