@@ -35,7 +35,7 @@ class OnInitView(GenericAPIView):
         data = request.data
         print("on-init", data)
 
-        if data["auth"]["transactionId"]["mode"] != "DIRECT":
+        if data["auth"]["mode"] != "DIRECT":
             AbdmGateway().confirm(
                 data["auth"]["transactionId"], data["resp"]["requestId"]
             )
