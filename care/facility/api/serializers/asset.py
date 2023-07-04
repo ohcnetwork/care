@@ -125,6 +125,88 @@ class AssetSerializer(ModelSerializer):
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
 
+class AssetListSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+    class Meta:
+        model = Asset
+        fields = ["id", "name", "asset_class",\
+                "is_working", "location_object"]
+        read_only_fields = TIMESTAMP_FIELDS
+        
+
+class AssetDetailSerializer(AssetListSerializer):
+    status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
+    location = UUIDField(write_only=True, required=True)
+
+    class Meta:
+        model = Asset
+        exclude = ("deleted", "external_id", "current_location")
+        read_only_fields = TIMESTAMP_FIELDS
+
+    def validate_qr_code_id(self, value):
+        value = value or None  # treat empty string as null
+        UniqueValidator(
+            queryset=Asset.objects.filter(qr_code_id__isnull=False),
+            message="QR code already assigned",
+        )(value, self.fields.get("qr_code_id"))
+        return value
+
+    def validate(self, attrs):
+
+        user = self.context["request"].user
+        if "location" in attrs:
+            location = get_object_or_404(
+                AssetLocation.objects.filter(external_id=attrs["location"])
+            )
+
+            facilities = get_facility_queryset(user)
+            if not facilities.filter(id=location.facility.id).exists():
+                raise PermissionError()
+            del attrs["location"]
+            attrs["current_location"] = location
+
+        # validate that warraty date is not in the past
+        if "warranty_amc_end_of_validity" in attrs:
+            if (
+                attrs["warranty_amc_end_of_validity"]
+                and attrs["warranty_amc_end_of_validity"] < datetime.now().date()
+            ):
+                raise ValidationError(
+                    "Warranty/AMC end of validity cannot be in the past"
+                )
+
+        # validate that last serviced date is not in the future
+        if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
+            if attrs["last_serviced_on"] > datetime.now().date():
+                raise ValidationError("Last serviced on cannot be in the future")
+
+        return super().validate(attrs)
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        with transaction.atomic():
+            if (
+                "current_location" in validated_data
+                and instance.current_location != validated_data["current_location"]
+            ):
+                if (
+                    instance.current_location.facility.id
+                    != validated_data["current_location"].facility.id
+                ):
+                    raise ValidationError(
+                        {"location": "Interfacility transfer is not allowed here"}
+                    )
+                AssetTransaction(
+                    from_location=instance.current_location,
+                    to_location=validated_data["current_location"],
+                    asset=instance,
+                    performed_by=user,
+                ).save()
+            updated_instance = super().update(instance, validated_data)
+            cache.delete(f"asset:{instance.external_id}")
+        return updated_instance
 
 class AssetBareMinimumSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)

@@ -27,6 +27,8 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.asset import (
     AssetLocationSerializer,
     AssetSerializer,
+    AssetDetailSerializer,
+    AssetListSerializer,
     AssetTransactionSerializer,
     UserDefaultAssetLocationSerializer,
 )
@@ -145,12 +147,18 @@ class AssetViewSet(
         .select_related("current_location", "current_location__facility")
         .order_by("-created_date")
     )
-    serializer_class = AssetSerializer
+    serializer_class = AssetDetailSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name", "serial_number", "qr_code_id"]
     permission_classes = [IsAuthenticated]
     filterset_class = AssetFilter
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return AssetListSerializer
+        else:
+            return self.serializer_class
 
     def get_queryset(self):
         user = self.request.user
