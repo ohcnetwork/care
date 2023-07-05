@@ -26,10 +26,10 @@ from care.facility.api.serializers.asset import (
     AssetDetailSerializer,
     AssetListSerializer,
     AssetLocationSerializer,
-    AssetSerializer,
     AssetTransactionSerializer,
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
+    PublicAssetDetailSerializer,
     UserDefaultAssetLocationSerializer,
 )
 from care.facility.models.asset import (
@@ -113,8 +113,10 @@ class AssetFilter(filters.FilterSet):
 
 
 class AssetPublicViewSet(GenericViewSet):
-    queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    queryset = Asset.objects.all().select_related(
+        "current_location", "current_location__facility"
+    )
+    serializer_class = PublicAssetDetailSerializer
     lookup_field = "external_id"
 
     def retrieve(self, request, *args, **kwargs):

@@ -301,3 +301,21 @@ class AssetDetailSerializer(ModelSerializer):
             updated_instance = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
+
+
+class PublicAssetDetailSerializer(AssetListSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+
+    class Meta:
+        model = Asset
+        exclude = (
+            "description",
+            "asset_class",
+            "not_working_reason",
+            "qr_code_id",
+            "manufacturer",
+            "warranty_amc_end_of_validity",
+            "last_serviced_on",
+            "notes",
+        )
