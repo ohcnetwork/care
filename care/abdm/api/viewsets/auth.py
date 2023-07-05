@@ -257,8 +257,8 @@ class RequestDataView(GenericAPIView):
         # TODO: uncomment later
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        # if not consent or not consent["notification"]["status"] == "GRANTED":
-        #     return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+        if not consent or not consent["notification"]["status"] == "GRANTED":
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
         # consent_from = datetime.fromisoformat(
