@@ -19,8 +19,6 @@ from pathlib import Path
 
 from django.core.wsgi import get_wsgi_application
 
-from care.facility.static_data.medibase import MedibaseMedicineTable
-
 # This allows easy placement of apps within the interior
 # {{ cookiecutter.project_slug }} directory.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -39,4 +37,4 @@ application = get_wsgi_application()
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
 
-MedibaseMedicineTable.info()
+from care.facility.static_data.medibase import MedibaseMedicineTable  # noqa
