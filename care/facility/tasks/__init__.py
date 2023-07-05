@@ -1,7 +1,10 @@
 from celery import current_app
 from celery.schedules import crontab
 
-from care.facility.tasks.cleanup import delete_old_notifications
+from care.facility.tasks.cleanup import (
+    delete_incomplete_file_uploads,
+    delete_old_notifications,
+)
 from care.facility.tasks.summarisation import (
     summarise_district_patient,
     summarise_facility_capacity,
@@ -17,6 +20,11 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(minute="0", hour="0"),
         delete_old_notifications.s(),
         name="delete_old_notifications",
+    )
+    sender.add_periodic_task(
+        crontab(hour="0", minute="0"),
+        delete_incomplete_file_uploads.s(),
+        name="delete_incomplete_file_uploads",
     )
     sender.add_periodic_task(
         crontab(hour="*/4", minute=59),

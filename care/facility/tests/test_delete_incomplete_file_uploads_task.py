@@ -5,9 +5,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from care.facility.models.file_upload import FileUpload
-from care.facility.tasks.fileupload.delete_incomplete_file_uploads import (
-    delete_incomplete_file_uploads,
-)
+from care.facility.tasks.cleanup import delete_incomplete_file_uploads
 
 
 class DeleteIncompleteFileUploadsTest(TestCase):
