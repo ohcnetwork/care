@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.db import transaction
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
@@ -9,7 +11,77 @@ from care.facility.tests.mixins import TestClassMixin
 from care.utils.tests.test_base import TestBase
 
 
+class ExpectedAssetListKeys(Enum):
+    ID = "id"
+    NAME = "name"
+    ASSET_CLASS = "asset_class"
+    IS_WORKING = "is_working"
+    LOCATION_OBJECT = "location_object"
+
+
+class ExpectedLocationObjectKeys(Enum):
+    ID = "id"
+    FACILITY = "facility"
+    CREATED_DATE = "created_date"
+    MODIFIED_DATE = "modified_date"
+    NAME = "name"
+    DESCRIPTION = "description"
+    LOCATION_TYPE = "location_type"
+
+
+class ExpectedFacilityKeys(Enum):
+    ID = "id"
+    NAME = "name"
+
+
+class ExpectedAssetRetrieveKeys(Enum):
+    ID = "id"
+    STATUS = "status"
+    ASSET_TYPE = "asset_type"
+    CREATED_DATE = "created_date"
+    MODIFIED_DATE = "modified_date"
+    NAME = "name"
+    DESCRIPTION = "description"
+    ASSET_CLASS = "asset_class"
+    IS_WORKING = "is_working"
+    NOT_WORKING_REASON = "not_working_reason"
+    SERIAL_NUMBER = "serial_number"
+    WARRANTY_DETAILS = "warranty_details"
+    META = "meta"
+    VENDOR_NAME = "vendor_name"
+    SUPPORT_NAME = "support_name"
+    SUPPORT_PHONE = "support_phone"
+    SUPPORT_EMAIL = "support_email"
+    QR_CODE_ID = "qr_code_id"
+    MANUFACTURER = "manufacturer"
+    WARRANTY_AMC_END_OF_VALIDITY = "warranty_amc_end_of_validity"
+    LAST_SERVICED_ON = "last_serviced_on"
+    NOTES = "notes"
+
+
+class ExpectedPublicAssetRetrieveKeys(Enum):
+    ID = "id"
+    LOCATION_OBJECT = "location_object"
+    EXTERNAL_ID = "external_id"
+    CREATED_DATE = "created_date"
+    MODIFIED_DATE = "modified_date"
+    DELETED = "deleted"
+    NAME = "name"
+    ASSET_TYPE = "asset_type"
+    STATUS = "status"
+    IS_WORKING = "is_working"
+    SERIAL_NUMBER = "serial_number"
+    WARRANTY_DETAILS = "warranty_details"
+    META = "meta"
+    VENDOR_NAME = "vendor_name"
+    SUPPORT_NAME = "support_name"
+    SUPPORT_PHONE = "support_phone"
+    SUPPORT_EMAIL = "support_email"
+    CURRENT_LOCATION = "current_location"
+
+
 class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+    endpoint = "/api/v1/asset/"
     asset_id = None
 
     def setUp(self):
@@ -31,11 +103,23 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         )
 
     def test_list_assets(self):
-        response = self.client.get("/api/v1/asset/")
+        response = self.client.get(self.endpoint)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
+        # Ensure only necessary data is being sent and no extra data
+        expected_keys = [key.value for key in ExpectedAssetListKeys]
+
+        data = response.json()["results"][0]
+
+        self.assertCountEqual(data.keys(), expected_keys)
+        location_object_keys = [key.value for key in ExpectedLocationObjectKeys]
+        self.assertCountEqual(data["location_object"].keys(), location_object_keys)
+        facility_keys = [key.value for key in ExpectedFacilityKeys]
+        self.assertCountEqual(data["location_object"]["facility"].keys(), facility_keys)
+
+        # Ensure the data is coming in correctly
         data = response.json()["results"][0]
         self.assertIsInstance(data["id"], str)
         self.assertEqual(data["name"], "Test Asset")
@@ -58,7 +142,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             "location": self.asset1_location.external_id,
         }
         response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
+            (self.endpoint, sample_data, "json"),
             {"post": "create"},
             AssetViewSet,
             self.user,
@@ -66,10 +150,15 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_asset(self):
-        response = self.client.get(f"/api/v1/asset/{self.asset.external_id}/")
+        response = self.client.get(f"{self.endpoint}{self.asset.external_id}/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
+
+        # Check if the expected keys are coming in the json response
+        expected_keys = [key.value for key in ExpectedAssetRetrieveKeys]
+        self.assertCountEqual(data.keys(), expected_keys)
+
         self.assertIsInstance(data["id"], int)
         self.assertEqual(data["status"], "ACTIVE")
         self.assertEqual(data["asset_type"], "INTERNAL")
@@ -101,7 +190,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             "location": self.asset1_location.external_id,
         }
         response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
+            (f"{self.endpoint}{self.asset.external_id}", sample_data, "json"),
             {"patch": "partial_update"},
             AssetViewSet,
             self.user,
@@ -115,7 +204,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     def test_delete_asset(self):
         with transaction.atomic():
             response = self.new_request(
-                (f"/api/v1/asset/{self.asset.external_id}",),
+                (f"{self.endpoint}{self.asset.external_id}",),
                 {"delete": "destroy"},
                 AssetViewSet,
                 self.user,
@@ -126,7 +215,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.user.user_type = User.TYPE_VALUE_MAP["DistrictAdmin"]
         self.user.save()
         response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}",),
+            (f"{self.endpoint}{self.asset.external_id}",),
             {"delete": "destroy"},
             AssetViewSet,
             self.user,
@@ -140,7 +229,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         sample_data = {"location": "invalid_location_id"}
 
         response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
+            (self.endpoint, sample_data, "json"),
             {"post": "set_default_user_location"},
             AssetViewSet,
             self.user,
@@ -150,7 +239,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         # tests providing no location
         sample_data = {}
         response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
+            (self.endpoint, sample_data, "json"),
             {"post": "set_default_user_location"},
             AssetViewSet,
             self.user,
@@ -163,10 +252,45 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             user=self.user, location=self.asset1_location
         )
         response = self.new_request(
-            ("/api/v1/asset/",),
+            (self.endpoint,),
             {"get": "get_default_user_location"},
             AssetViewSet,
             self.user,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.asset1_location.external_id)
+
+
+class AssetPublicViewSet(TestBase, TestClassMixin, APITestCase):
+    endpoint = "/api/v1/public/asset/"
+    asset_id = None
+
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        state = self.create_state()
+        district = self.create_district(state=state)
+        self.user = self.create_user(district=district, username="test user")
+        facility = self.create_facility(district=district, user=self.user)
+        # Add access token to the authorization header of test request
+        refresh_token = RefreshToken.for_user(self.user)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
+        )
+        self.asset1_location = AssetLocation.objects.create(
+            name="asset1 location", location_type=1, facility=facility
+        )
+        self.asset = Asset.objects.create(
+            name="Test Asset", current_location=self.asset1_location, asset_type=50
+        )
+
+    def test_public_retrieve_asset(self):
+        response = self.client.get(f"{self.endpoint}{self.asset.external_id}/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        expected_keys = [key.value for key in ExpectedPublicAssetRetrieveKeys]
+        self.assertCountEqual(data.keys(), expected_keys)
+        location_object_keys = [key.value for key in ExpectedLocationObjectKeys]
+        self.assertCountEqual(data["location_object"].keys(), location_object_keys)
+        facility_keys = [key.value for key in ExpectedFacilityKeys]
+        self.assertCountEqual(data["location_object"]["facility"].keys(), facility_keys)
