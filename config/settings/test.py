@@ -2,6 +2,8 @@
 With these settings, tests run faster.
 """
 
+from care.facility.static_data.medibase import MedibaseMedicineTable  # noqa
+
 from .base import *  # noqa
 from .base import env
 
