@@ -19,7 +19,6 @@ from care.facility.models import (
     PrescriptionType,
     generate_choices,
 )
-from care.facility.static_data.medibase import MedibaseMedicineTable
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
@@ -175,6 +174,8 @@ class MedibaseViewSet(ViewSet):
         return exact_matches + partial_matches
 
     def list(self, request):
+        from care.facility.static_data.medibase import MedibaseMedicineTable
+
         queryset = MedibaseMedicineTable
 
         if request.GET.get("query", False):
