@@ -108,7 +108,8 @@ class TestUser(TestBase):
         """
         Runs once per class method
 
-        Create 2 users
+        Create 3 users
+            - 2 users initialized by setUpClass of TestBase
             - 1 will be used to check if they can tinker attributes of the other
         """
         super(TestUser, cls).setUpClass()
@@ -136,7 +137,7 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
         # test total user count
-        self.assertEqual(res_data_json["count"], 2)  # 2 existing, plus the new one
+        self.assertEqual(res_data_json["count"], 3)  # 3 existing, plus the new one
         results = res_data_json["results"]
         # test presence of usernames
         self.assertIn(self.user.id, {r["id"] for r in results})
