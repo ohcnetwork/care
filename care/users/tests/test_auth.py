@@ -41,7 +41,6 @@ class TestAuthTokens(TestBase):
         )
 
     def test_auth_refresh_with_valid_credentials(self):
-        """Testing the refresh token API"""
         response = self.client.post(
             "/api/v1/auth/login/",
             {"username": "user", "password": "bar"},
@@ -62,7 +61,8 @@ class TestAuthTokens(TestBase):
 
     def test_auth_refresh_with_invalid_token(self):
         response = self.client.post(
-            "/api/v1/auth/token/refresh/", {"refresh": "invalid"}
+            "/api/v1/auth/token/refresh/",
+            {"refresh": "invalid"},
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["detail"], "Token is invalid or expired")
