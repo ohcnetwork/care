@@ -300,10 +300,17 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if not patient.abha_number:
             raise ValidationError({"abha": "Patient hasn't linked thier abha"})
 
-        response = HealthIdGateway().get_abha_card_png(
-            {"refreshToken": patient.abha_number.refresh_token}
-        )
+        if data["type"] == "png":
+            response = HealthIdGateway().get_abha_card_png(
+                {"refreshToken": patient.abha_number.refresh_token}
+            )
+            return Response(response, status=status.HTTP_200_OK)
+
+        response = HealthIdGateway().get_abha_card_pdf(
+                {"refreshToken": patient.abha_number.refresh_token}
+            )
         return Response(response, status=status.HTTP_200_OK)
+        
 
     @swagger_auto_schema(
         # /v1/registration/aadhaar/searchByHealthId

@@ -291,7 +291,16 @@ class HealthIdGateway:
         path = "/v1/account/getPngCard"
         access_token = self.generate_access_token(data)
         response = self.api.get(path, {}, access_token)
-        return response
+       
+        return b64encode(response.content)
+    
+    def get_abha_card_pdf(self, data):
+        path = "/v1/account/getCard"
+        access_token = self.generate_access_token(data)
+        response = self.api.get(path, {}, access_token)
+       
+        return b64encode(response.content)
+
 
     # /v1/account/qrCode
     def get_qr_code(self, data, auth):
