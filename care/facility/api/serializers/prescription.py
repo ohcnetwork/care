@@ -1,15 +1,29 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from care.facility.models import MedicineAdministration, Prescription
+from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+
+
+class MedibaseMedicineSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = MedibaseMedicine
+        exclude = ("deleted",)
+        read_only_fields = (
+            "external_id",
+            "created_date",
+            "modified_date",
+        )
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
-
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
-
     last_administered_on = serializers.SerializerMethodField()
+    medicine_object = MedibaseMedicineSerializer(read_only=True, source="medicine")
+    medicine = serializers.UUIDField(write_only=True)
 
     def get_last_administered_on(self, obj):
         last_administration = (
@@ -28,6 +42,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "deleted",
         )
         read_only_fields = (
+            "medicine_old",
             "external_id",
             "prescribed_by",
             "created_date",
@@ -37,12 +52,16 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        if "medicine" in attrs:
+            attrs["medicine"] = get_object_or_404(
+                MedibaseMedicine, external_id=attrs["medicine"]
+            )
+
         if attrs.get("is_prn"):
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
                 )
-
         else:
             if not attrs.get("frequency"):
                 raise serializers.ValidationError(
