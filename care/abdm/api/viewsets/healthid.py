@@ -282,6 +282,29 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         response = HealthIdGateway().search_by_health_id(data)
         return Response(response, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=["post"])
+    def get_abha_card(self, request):
+        data = request.data
+
+        if ratelimit(request, "get_abha_card", [data["patient"]], increment=False):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        allowed_patients = get_patient_queryset(request.user)
+        patient = allowed_patients.filter(external_id=data["patient"]).first()
+        if not patient:
+            raise ValidationError({"patient": "Not Found"})
+
+        if not patient.abha_number:
+            raise ValidationError({"abha": "Patient hasn't linked thier abha"})
+
+        response = HealthIdGateway().get_abha_card_png(
+            {"refreshToken": patient.abha_number.refresh_token}
+        )
+        return Response(response, status=status.HTTP_200_OK)
+
     @swagger_auto_schema(
         # /v1/registration/aadhaar/searchByHealthId
         operation_id="link_via_qr",
