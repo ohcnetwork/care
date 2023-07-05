@@ -38,7 +38,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
@@ -257,7 +257,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
