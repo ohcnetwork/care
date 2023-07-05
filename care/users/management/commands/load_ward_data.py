@@ -3,10 +3,9 @@ import json
 from typing import Optional
 
 from django.core.management.base import BaseCommand, CommandParser
+from django.db import IntegrityError
 
 from care.users.models import LOCAL_BODY_CHOICES, District, LocalBody, Ward
-
-from django.db import IntegrityError
 
 
 class Command(BaseCommand):
@@ -25,7 +24,7 @@ class Command(BaseCommand):
             try:
                 int(value)
                 return value
-            except:
+            except ValueError:
                 return 0
 
         def get_ward_number(ward):
@@ -54,7 +53,10 @@ class Command(BaseCommand):
                 name=lb["name"],
                 district=district_map[lb["district"]],
                 localbody_code=lb.get("localbody_code"),
-                body_type=LOCAL_BODY_CHOICE_MAP.get((lb.get("localbody_code", " "))[0], LOCAL_BODY_CHOICES[-1][0]),
+                body_type=LOCAL_BODY_CHOICE_MAP.get(
+                    (lb.get("localbody_code", " "))[0],
+                    LOCAL_BODY_CHOICES[-1][0],
+                ),
             ).first()
 
         for f in glob.glob(f"{folder}/*.json"):
@@ -70,9 +72,12 @@ class Command(BaseCommand):
                     for ward in wards:
                         counter += 1
                         try:
-                            obj = Ward(local_body=local_body, number=get_ward_number(ward), name=get_ward_name(ward))
+                            obj = Ward(
+                                local_body=local_body,
+                                number=get_ward_number(ward),
+                                name=get_ward_name(ward),
+                            )
                             obj.save()
-                        except IntegrityError as e:
+                        except IntegrityError:
                             pass
         print("Processed ", str(counter), " wards")
-

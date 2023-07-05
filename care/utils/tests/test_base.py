@@ -3,7 +3,6 @@ import datetime
 from collections import OrderedDict
 from uuid import uuid4
 
-import dateparser
 from django.utils.timezone import make_aware
 from pytz import unicode
 from rest_framework import status
@@ -99,6 +98,7 @@ class TestBase(APITestCase):
 
         patient_data.update(
             {
+                "facility": cls.facility,
                 "district_id": district_id,
                 "state_id": state_id,
                 "disease_status": getattr(
@@ -219,6 +219,12 @@ class TestBase(APITestCase):
         cls.super_user = cls.create_super_user(district=cls.district)
         cls.facility = cls.create_facility(cls.district)
         cls.patient = cls.create_patient()
+        cls.state_admin = cls.create_user(
+            cls.district,
+            username="state-admin",
+            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
+            home_facility=cls.facility,
+        )
 
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
@@ -347,7 +353,9 @@ class TestBase(APITestCase):
                         unicode,
                     ),
                 ):
-                    return_value = dateparser.parse(value)
+                    return_value = datetime.datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    )
                 return (
                     return_value.astimezone(tz=datetime.timezone.utc)
                     if isinstance(return_value, datetime.datetime)
@@ -393,13 +401,10 @@ class TestBase(APITestCase):
             "prescribed_medication": "prescribed_medication",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
-            "admitted": False,
             "admission_date": None,
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "discharge_advice": {},
-            "prescriptions": {},
             "created_date": mock_equal,
             "modified_date": mock_equal,
         }

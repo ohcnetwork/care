@@ -29,6 +29,7 @@ class FileUpload(FacilityBaseModel):
         SAMPLE_MANAGEMENT = 3
         CLAIM = 4
         DISCHARGE_SUMMARY = 5
+        COMMUNICATION = 6
 
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"

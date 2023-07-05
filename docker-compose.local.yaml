@@ -23,7 +23,7 @@ services:
     env_file:
       - ./docker/.local.env
       - ./.env
-    entrypoint: [ "bash", "devCelery.sh" ]
+    entrypoint: [ "bash", "celery_dev.sh" ]
     depends_on:
       - db
       - backend

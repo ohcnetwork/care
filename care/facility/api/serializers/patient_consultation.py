@@ -328,18 +328,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to"] = None
                 elif validated.get("referred_to"):
                     validated["referred_to_external"] = None
-            if (
-                validated["suggestion"] is SuggestionChoices.A
-                and validated.get("admitted")
-                and not validated.get("admission_date")
-            ):
-                raise ValidationError(
-                    {
-                        "admission_date": [
-                            "This field is required as the patient has been admitted."
-                        ]
-                    }
-                )
+            if validated["suggestion"] is SuggestionChoices.A:
+                if not validated.get("admission_date"):
+                    raise ValidationError(
+                        {
+                            "admission_date": "This field is required as the patient has been admitted."
+                        }
+                    )
+                if validated["admission_date"] > now():
+                    raise ValidationError(
+                        {"admission_date": "This field value cannot be in the future."}
+                    )
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
@@ -432,13 +431,33 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
+            if attrs.get("death_datetime") > now():
+                raise ValidationError(
+                    {"death_datetime": "This field value cannot be in the future."}
+                )
+            if attrs.get("death_datetime") < self.instance.admission_date:
+                raise ValidationError(
+                    {
+                        "death_datetime": "This field value cannot be before the admission date."
+                    }
+                )
             if not attrs.get("death_confirmed_doctor"):
                 raise ValidationError(
                     {"death_confirmed_doctor": "This field is required"}
                 )
-            attrs["discharge_date"] = now()
+            attrs["discharge_date"] = attrs["death_datetime"]
         elif not attrs.get("discharge_date"):
             raise ValidationError({"discharge_date": "This field is required"})
+        elif attrs.get("discharge_date") > now():
+            raise ValidationError(
+                {"discharge_date": "This field value cannot be in the future."}
+            )
+        elif attrs.get("discharge_date") < self.instance.admission_date:
+            raise ValidationError(
+                {
+                    "discharge_date": "This field value cannot be before the admission date."
+                }
+            )
         return attrs
 
     def save(self, **kwargs):
@@ -465,3 +484,22 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = ("consultation_id", "patient_id")
+
+
+class EmailDischargeSummarySerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=False,
+        help_text=(
+            "Email address to send the discharge summary to. If not provided, "
+            "the email address of the current user will be used."
+        ),
+    )
+
+    def validate(self, attrs):
+        if not attrs.get("email"):
+            attrs["email"] = self.context["request"].user.email
+        return attrs
+
+    class Meta:
+        model = PatientConsultation
+        fields = ("email",)

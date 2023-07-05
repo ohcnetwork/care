@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -24,7 +25,9 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = self.queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
+        queryset = self.queryset.filter(
+            facility__external_id=self.kwargs.get("facility_external_id")
+        )
         if user.is_superuser:
             return queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -34,10 +37,14 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), room_type=self.kwargs.get("external_id"))
+        return get_object_or_404(
+            self.get_queryset(), room_type=self.kwargs.get("external_id")
+        )
 
     def get_facility(self):
-        facility_qs = Facility.objects.filter(external_id=self.kwargs.get("facility_external_id"))
+        facility_qs = Facility.objects.filter(
+            external_id=self.kwargs.get("facility_external_id")
+        )
         if not self.request.user.is_superuser:
             facility_qs.filter(users__id__exact=self.request.user.id)
         return get_object_or_404(facility_qs)
@@ -45,6 +52,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
 
+    @extend_schema(tags=["capacity"])
     @action(detail=True, methods=["get"])
     def history(self, request, *args, **kwargs):
         obj = self.get_object()

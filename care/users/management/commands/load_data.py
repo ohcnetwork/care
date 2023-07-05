@@ -1,12 +1,5 @@
-import csv
-import json
-import os
-from typing import Optional
-
 from django.core import management
 from django.core.management import BaseCommand, CommandParser
-
-from care.users.models import District, State
 
 
 class Command(BaseCommand):
@@ -59,7 +52,6 @@ class Command(BaseCommand):
         parser.add_argument("state", help="")
 
     def handle(self, *args, **options):
-
         state = options["state"]
         states = []
         if state == "all":
@@ -75,4 +67,3 @@ class Command(BaseCommand):
             print("Processing Files From", current_state_data)
             management.call_command("load_lsg_data", current_state_data)
             management.call_command("load_ward_data", current_state_data)
-

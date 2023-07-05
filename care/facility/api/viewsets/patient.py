@@ -9,6 +9,7 @@ from django.db.models import Case, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, serializers, status, viewsets
@@ -31,7 +32,6 @@ from care.facility.api.serializers.patient import (
     PatientTransferSerializer,
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
-from care.facility.api.viewsets import UserAccessMixin
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -44,7 +44,6 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     PatientNotes,
     PatientRegistration,
-    PatientSearch,
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
@@ -52,7 +51,8 @@ from care.facility.models.bed import AssetBed
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters import CareChoiceFilter, MultiSelectFilter
+from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
@@ -242,6 +242,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
         return queryset
 
 
+@extend_schema_view(history=extend_schema(tags=["patient"]))
 class PatientViewSet(
     HistoryMixin,
     mixins.CreateModelMixin,
@@ -393,11 +394,10 @@ class PatientViewSet(
 
         return super(PatientViewSet, self).list(request, *args, **kwargs)
 
+    @extend_schema(tags=["patient"])
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
-        patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
-        )
+        patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
 
         if patient.allow_transfer is False:
             return Response(
@@ -410,9 +410,7 @@ class PatientViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        patient = PatientRegistration.objects.get(
-            id=PatientSearch.objects.get(external_id=kwargs["external_id"]).patient_id
-        )
+        patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
         response_serializer = self.get_serializer(patient)
         # Update all Active Shifting Request to Rejected
 
@@ -490,9 +488,19 @@ class PatientSearchSetPagination(PageNumberPagination):
     page_size = 200
 
 
-class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
+class PatientSearchViewSet(ListModelMixin, GenericViewSet):
     http_method_names = ["get"]
-    queryset = PatientSearch.objects.all()
+    queryset = PatientRegistration.objects.only(
+        "id",
+        "external_id",
+        "name",
+        "gender",
+        "phone_number",
+        "state_id",
+        "facility",
+        "allow_transfer",
+        "is_active",
+    )
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     pagination_class = PatientSearchSetPagination
@@ -556,9 +564,7 @@ class PatientSearchViewSet(UserAccessMixin, ListModelMixin, GenericViewSet):
 
             return queryset
 
-    def retrieve(self, request, *args, **kwargs):
-        raise NotImplementedError()
-
+    @extend_schema(tags=["patient"])
     def list(self, request, *args, **kwargs):
         """
         Patient Search

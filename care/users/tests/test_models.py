@@ -9,7 +9,9 @@ class SkillModelTest(TestCase):
         """
         Initialise test data for all other methods
         """
-        cls.skill = Skill.objects.create(name="ghatak", description="corona virus specialist")
+        cls.skill = Skill.objects.create(
+            name="ghatak", description="corona virus specialist"
+        )
 
     def test_max_length_name(self):
         """Test max length for name is 255"""
@@ -62,7 +64,8 @@ class DistrictModelTest(TestCase):
         """Test that the correct format is returned while printing the object"""
         district = self.district
         self.assertEqual(
-            str(district), f"{district.name}",
+            str(district),
+            f"{district.name}",
         )
 
 
@@ -74,7 +77,9 @@ class LocalBodyModelTest(TestCase):
         """
         state = State.objects.create(name="bihar")
         district = District.objects.create(state=state, name="nam")
-        cls.local_body = LocalBody.objects.create(district=district, name="blabla", body_type=1)
+        cls.local_body = LocalBody.objects.create(
+            district=district, name="blabla", body_type=1
+        )
 
     def test_max_length_name(self):
         """Test max length for name is 255"""
@@ -86,7 +91,8 @@ class LocalBodyModelTest(TestCase):
         """Test that the correct format is returned while printing the object"""
         local_body = self.local_body
         self.assertEqual(
-            str(local_body), f"{local_body.name} ({local_body.body_type})",
+            str(local_body),
+            f"{local_body.name} ({local_body.body_type})",
         )
 
 
@@ -99,7 +105,12 @@ class UserModelTest(TestCase):
         state = State.objects.create(name="uttar pradesh")
         district = District.objects.create(state=state, name="name")
         cls.user = User.objects.create_user(
-            username="test", user_type=5, district=district, phone_number=8_888_888_888, gender=1, age=21,
+            username="test",
+            user_type=5,
+            district=district,
+            phone_number=8_888_888_888,
+            gender=1,
+            age=21,
         )
 
     def test_max_length_phone_number(self):

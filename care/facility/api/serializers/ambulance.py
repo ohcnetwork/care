@@ -16,8 +16,12 @@ class AmbulanceDriverSerializer(serializers.ModelSerializer):
 class AmbulanceSerializer(serializers.ModelSerializer):
     drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
-    primary_district_object = DistrictSerializer(read_only=True, source="primary_district")
-    secondary_district_object = DistrictSerializer(read_only=True, source="secondary_district")
+    primary_district_object = DistrictSerializer(
+        read_only=True, source="primary_district"
+    )
+    secondary_district_object = DistrictSerializer(
+        read_only=True, source="secondary_district"
+    )
     third_district_object = DistrictSerializer(read_only=True, source="third_district")
 
     class Meta:
@@ -32,7 +36,9 @@ class AmbulanceSerializer(serializers.ModelSerializer):
     def validate(self, obj):
         validated = super().validate(obj)
         if not validated.get("price_per_km") and not validated.get("has_free_service"):
-            raise ValidationError("The ambulance must provide a price or be marked as free")
+            raise ValidationError(
+                "The ambulance must provide a price or be marked as free"
+            )
         return validated
 
     def create(self, validated_data):
@@ -51,3 +57,16 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         validated_data.pop("drivers", [])
         ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
         return ambulance
+
+
+class DeleteDriverSerializer(serializers.Serializer):
+    driver_id = serializers.IntegerField()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError
+
+    def create(self, validated_data):
+        raise NotImplementedError
+
+    class Meta:
+        fields = ("driver_id",)
