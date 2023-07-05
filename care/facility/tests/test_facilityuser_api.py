@@ -1,4 +1,5 @@
 from django.test import TestCase
+from rest_framework import status
 
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.models.facility import Facility
@@ -11,7 +12,6 @@ class FacilityUserTest(TestClassMixin, TestCase):
         super().setUp()
         self.creator = self.users[0]
 
-        # Create Facility
         sample_data = {
             "name": "Hospital X",
             "ward": self.creator.ward,
@@ -29,11 +29,9 @@ class FacilityUserTest(TestClassMixin, TestCase):
             **sample_data,
         )
 
-        # Create Skills
         self.skill1 = Skill.objects.create(name="Skill 1")
         self.skill2 = Skill.objects.create(name="Skill 2")
 
-        # Assign Skills to Users
         self.users[0].skills.add(self.skill1, self.skill2)
 
     def test_get_queryset_with_prefetching(self):
@@ -45,7 +43,5 @@ class FacilityUserTest(TestClassMixin, TestCase):
             {"facility_external_id": self.facility.external_id},
         )
 
-        # Assert the response status code
-        self.assertEqual(response.status_code, 200)
-        # Assert the database queries
-        self.assertNumQueries(2)  # 1 for user and 1 user for skills
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNumQueries(2)
