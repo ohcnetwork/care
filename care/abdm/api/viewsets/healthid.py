@@ -231,7 +231,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             {
                 "txn_id": data["txnId"],
                 "access_token": abha_profile["token"],
-                "refresh_token": None,
+                "refresh_token": abha_profile["refreshToken"],
             },
         )
 
