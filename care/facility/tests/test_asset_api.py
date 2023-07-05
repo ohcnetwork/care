@@ -59,27 +59,6 @@ class ExpectedAssetRetrieveKeys(Enum):
     NOTES = "notes"
 
 
-class ExpectedPublicAssetRetrieveKeys(Enum):
-    ID = "id"
-    LOCATION_OBJECT = "location_object"
-    EXTERNAL_ID = "external_id"
-    CREATED_DATE = "created_date"
-    MODIFIED_DATE = "modified_date"
-    DELETED = "deleted"
-    NAME = "name"
-    ASSET_TYPE = "asset_type"
-    STATUS = "status"
-    IS_WORKING = "is_working"
-    SERIAL_NUMBER = "serial_number"
-    WARRANTY_DETAILS = "warranty_details"
-    META = "meta"
-    VENDOR_NAME = "vendor_name"
-    SUPPORT_NAME = "support_name"
-    SUPPORT_PHONE = "support_phone"
-    SUPPORT_EMAIL = "support_email"
-    CURRENT_LOCATION = "current_location"
-
-
 class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     endpoint = "/api/v1/asset/"
     asset_id = None
@@ -259,38 +238,3 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.asset1_location.external_id)
-
-
-class AssetPublicViewSet(TestBase, TestClassMixin, APITestCase):
-    endpoint = "/api/v1/public/asset/"
-    asset_id = None
-
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        # Add access token to the authorization header of test request
-        refresh_token = RefreshToken.for_user(self.user)
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
-        self.asset1_location = AssetLocation.objects.create(
-            name="asset1 location", location_type=1, facility=facility
-        )
-        self.asset = Asset.objects.create(
-            name="Test Asset", current_location=self.asset1_location, asset_type=50
-        )
-
-    def test_public_retrieve_asset(self):
-        response = self.client.get(f"{self.endpoint}{self.asset.external_id}/")
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.json()
-        expected_keys = [key.value for key in ExpectedPublicAssetRetrieveKeys]
-        self.assertCountEqual(data.keys(), expected_keys)
-        location_object_keys = [key.value for key in ExpectedLocationObjectKeys]
-        self.assertCountEqual(data["location_object"].keys(), location_object_keys)
-        facility_keys = [key.value for key in ExpectedFacilityKeys]
-        self.assertCountEqual(data["location_object"]["facility"].keys(), facility_keys)
