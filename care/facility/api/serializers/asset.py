@@ -61,6 +61,7 @@ class AssetLocationSerializer(ModelSerializer):
 
 
 class AssetSerializer(ModelSerializer):
+    # TODO: Remove when issue #5492 is resolved
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
