@@ -291,7 +291,7 @@ class HealthIdGateway:
         path = "/v1/account/getPngCard"
         access_token = self.generate_access_token(data)
         response = self.api.get(path, {}, access_token)
-        return response.json()
+        return response
 
     # /v1/account/qrCode
     def get_qr_code(self, data, auth):
