@@ -22,7 +22,5 @@ for obj in medibase_objects:
         }
     )
 
-# MedibaseMedicineTable.insert_many(medibase_objects)
-
 MedibaseMedicineTable.create_index("id", unique=True)
 MedibaseMedicineTable.create_search_index("searchable")
