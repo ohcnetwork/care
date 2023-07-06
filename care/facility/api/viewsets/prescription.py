@@ -143,7 +143,7 @@ class MedicineViewSet(
     GenericViewSet,
 ):
     serializer_class = MedibaseMedicineSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = MedibaseMedicine.objects.all()
     lookup_field = "external_id"
     filter_backends = (SearchFilter,)
