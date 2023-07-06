@@ -151,14 +151,20 @@ class MedicineViewSet(
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name="search", required=False, type=str),
+            OpenApiParameter(
+                name="search",
+                required=False,
+                type=str,
+                description="Search for medicine by name, brand, composition, etc.",
+            ),
         ]
     )
     def list(self, request, *args, **kwargs):
-        rank = SearchRank(
-            F("search_vector"), SearchQuery(request.query_params.get("search", ""))
-        )
-        queryset = self.queryset.annotate(rank=rank).order_by("-rank")
+        queryset = self.get_queryset()
+        if search := request.query_params.get("search", None):
+            queryset = self.queryset.annotate(
+                rank=SearchRank(F("search_vector"), SearchQuery(search))
+            ).order_by("-rank")
 
         page = self.paginate_queryset(queryset)
         if page is not None:
