@@ -1,5 +1,6 @@
 import enum
 
+from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import JSONField
@@ -65,6 +66,14 @@ class MedibaseMedicine(BaseModel):
 
     def __str__(self):
         return " - ".join([self.name, self.generic, self.company])
+
+    class Meta:
+        indexes = [
+            GinIndex(
+                fields=["name", "generic", "company", "contents", "cims_class"],
+                name="search_idx",
+            )
+        ]
 
 
 class Prescription(BaseModel):
