@@ -150,7 +150,9 @@ class MedicineViewSet(
     lookup_field = "external_id"
 
     @extend_schema(
-        parameters=(OpenApiParameter(name="search", required=False, type=str),)
+        parameters=[
+            OpenApiParameter(name="search", required=False, type=str),
+        ]
     )
     def list(self, request, *args, **kwargs):
         rank = SearchRank(
