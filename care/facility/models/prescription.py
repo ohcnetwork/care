@@ -1,5 +1,6 @@
 import enum
 
+from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -68,6 +69,11 @@ class MedibaseMedicine(BaseModel):
 
     def __str__(self):
         return " - ".join([self.name, self.generic, self.company])
+
+    class Meta:
+        indexes = (
+            GinIndex(fields=["search_vector"], name="medibase_search_vector_idx"),
+        )
 
 
 class Prescription(BaseModel):

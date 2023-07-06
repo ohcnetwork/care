@@ -1,6 +1,8 @@
-from django.db.models.query import QuerySet
+from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.db.models.query import F
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from drf_spectacular.openapi import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -147,6 +149,20 @@ class MedicineViewSet(
     queryset = MedibaseMedicine.objects.all()
     lookup_field = "external_id"
 
-    def get_queryset(self) -> QuerySet:
-        search_term = self.request.query_params.get("search_text", "")
-        return self.queryset.filter(search_vector=search_term)
+    @extend_schema(
+        parameters=(OpenApiParameter(name="search", required=False, type=str),)
+    )
+    def list(self, request, *args, **kwargs):
+        if "search" in request.query_params:
+            rank = SearchRank(
+                F("search_vector"), SearchQuery(request.query_params["search"])
+            )
+            queryset = self.queryset.annotate(rank=rank).order_by("-rank")
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
