@@ -6,7 +6,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0367_prescription_medicine_and_more"),
+        ("facility", "0369_medibase_search_vectors_and_triggers"),
     ]
 
     operations = [

@@ -22,7 +22,7 @@ def compute_search_vector(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0370_merge_20230705_1500"),
+        ("facility", "0368_merge_20230707_0121"),
     ]
     operations = [
         BtreeGinExtension(),
