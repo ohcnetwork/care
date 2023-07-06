@@ -10,11 +10,12 @@ class MedibaseMedicineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MedibaseMedicine
-        exclude = ("deleted",)
-        read_only_fields = (
-            "external_id",
+        exclude = (
             "created_date",
             "modified_date",
+            "deleted",
+            "search_vector",
+            "external_id",
         )
 
 
