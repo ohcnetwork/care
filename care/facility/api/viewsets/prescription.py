@@ -1,9 +1,9 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -143,8 +143,10 @@ class MedicineViewSet(
     GenericViewSet,
 ):
     serializer_class = MedibaseMedicineSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = MedibaseMedicine.objects.all()
     lookup_field = "external_id"
-    filter_backends = (SearchFilter,)
-    search_fields = ("name", "generic", "company", "contents", "cims_class")
+
+    def get_queryset(self) -> QuerySet:
+        search_term = self.request.query_params.get("search_text", "")
+        return self.queryset.filter(search_vector=search_term)

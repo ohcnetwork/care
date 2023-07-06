@@ -1,6 +1,6 @@
 import enum
 
-from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import JSONField
@@ -64,16 +64,10 @@ class MedibaseMedicine(BaseModel):
     cims_class = models.CharField(max_length=255, blank=True, null=True)
     atc_classification = models.TextField(blank=True, null=True)
 
+    search_vector = SearchVectorField(null=True)
+
     def __str__(self):
         return " - ".join([self.name, self.generic, self.company])
-
-    class Meta:
-        indexes = [
-            GinIndex(
-                fields=["name", "generic", "company", "contents", "cims_class"],
-                name="search_idx",
-            )
-        ]
 
 
 class Prescription(BaseModel):
