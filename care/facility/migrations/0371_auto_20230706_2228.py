@@ -10,8 +10,8 @@ def compute_search_vector(apps, schema_editor):
     MedibaseMedicine = apps.get_model("facility", "MedibaseMedicine")
     MedibaseMedicine.objects.update(
         search_vector=(
-            SearchVector("name", weight="A")
-            + SearchVector("generic", weight="B")
+            SearchVector("generic", weight="A")
+            + SearchVector("name", weight="B")
             + SearchVector("company", weight="C")
             + SearchVector("cims_class", weight="D")
             + SearchVector("contents", weight="D")

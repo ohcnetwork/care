@@ -145,7 +145,7 @@ class MedicineViewSet(
     GenericViewSet,
 ):
     serializer_class = MedibaseMedicineSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = MedibaseMedicine.objects.all()
     lookup_field = "external_id"
 
@@ -153,11 +153,10 @@ class MedicineViewSet(
         parameters=(OpenApiParameter(name="search", required=False, type=str),)
     )
     def list(self, request, *args, **kwargs):
-        if "search" in request.query_params:
-            rank = SearchRank(
-                F("search_vector"), SearchQuery(request.query_params["search"])
-            )
-            queryset = self.queryset.annotate(rank=rank).order_by("-rank")
+        rank = SearchRank(
+            F("search_vector"), SearchQuery(request.query_params.get("search", ""))
+        )
+        queryset = self.queryset.annotate(rank=rank).order_by("-rank")
 
         page = self.paginate_queryset(queryset)
         if page is not None:
