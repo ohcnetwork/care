@@ -1,13 +1,11 @@
-from littletable import Table
-
 from care.facility.models.prescription import MedibaseMedicine
 
-MedibaseMedicineTable = Table("MedibaseMedicine")
+MedibaseMedicineTable = []
 
 medibase_objects = MedibaseMedicine.objects.all()
 
 for obj in medibase_objects:
-    MedibaseMedicineTable.insert(
+    MedibaseMedicineTable.append(
         {
             "id": obj.id,
             "external_id": obj.external_id,
@@ -18,9 +16,6 @@ for obj in medibase_objects:
             "contents": obj.contents or "",
             "cims_class": obj.cims_class or "",
             "atc_classification": obj.atc_classification or "",
-            "searchable": f"{obj.name} {obj.generic} {obj.company}",
+            "searchable": f"{obj.name} {obj.generic} {obj.company}".lower(),
         }
     )
-
-MedibaseMedicineTable.create_index("id", unique=True)
-MedibaseMedicineTable.create_search_index("searchable")

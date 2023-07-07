@@ -1,5 +1,3 @@
-from re import IGNORECASE
-
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -146,30 +144,26 @@ class MedibaseViewSet(ViewSet):
                 object = object[0]
             result.append(
                 {
-                    "id": object.external_id,
-                    "name": object.name,
-                    "type": object.type,
-                    "generic": object.generic,
-                    "company": object.company,
-                    "contents": object.contents,
-                    "cims_class": object.cims_class,
-                    "atc_classification": object.atc_classification,
+                    **object,
+                    "id": object["external_id"],
                 }
             )
         return result
 
-    def sort(self, query, results):
+    def sort(self, query, results, limit=15):
         exact_matches = []
         partial_matches = []
 
         for result in results:
-            if type(result) == tuple:
-                result = result[0]
-            words = result.searchable.lower().split()
+            words = result["searchable"].split()
             if query in words:
                 exact_matches.append(result)
+                if len(exact_matches) + len(partial_matches) >= limit:
+                    break
             else:
                 partial_matches.append(result)
+                if len(exact_matches) + len(partial_matches) >= limit:
+                    break
 
         return exact_matches + partial_matches
 
@@ -180,8 +174,6 @@ class MedibaseViewSet(ViewSet):
 
         if request.GET.get("query", False):
             query = request.GET.get("query").strip().lower()
-            queryset = queryset.where(
-                searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
-            )
-            queryset = self.sort(query, queryset)
+            queryset = [x for x in queryset if query in x["searchable"]]
+            queryset = self.sort(query, queryset, limit=15)
         return Response(self.serailize_data(queryset[:15]))
