@@ -26,5 +26,14 @@
       "django": true,
       "justMyCode": false
     },
+    {
+      "name": "Python: Django test",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["test", "--keepdb"],
+      "django": true,
+      "justMyCode": false
+    },
   ]
 }

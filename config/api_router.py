@@ -52,6 +52,7 @@ from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
+    MedibaseViewSet,
     MedicineAdministrationViewSet,
 )
 from care.facility.api.viewsets.prescription_supplier import (
@@ -199,6 +200,7 @@ consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionVi
 consultation_nested_router.register(
     r"prescription_administration", MedicineAdministrationViewSet
 )
+router.register("medibase", MedibaseViewSet, basename="medibase")
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)

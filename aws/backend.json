@@ -227,7 +227,7 @@
       "name": "care-backend"
     }
   ],
-  "memory": "512",
+  "memory": "1024",
   "taskRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
   "family": "care",
   "requiresCompatibilities": [
