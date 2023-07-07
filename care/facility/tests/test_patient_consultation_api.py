@@ -148,3 +148,61 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
             discharge_date="2319-04-01T15:30:00Z",
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_referred_to_external_null(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with null referred_to_external",
+            referred_to_external=None,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_referred_to_external_empty_string(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with empty referred_to_external",
+            referred_to_external="",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_referred_to_external_valid_value(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        referred_to_external = "Test Hospital"
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with valid referred_to_external",
+            referred_to_external=referred_to_external,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_referred_to_external_invalid_value(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        referred_to_external = 12345  # Invalid type, expects string
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with invalid referred_to_external",
+            referred_to_external=referred_to_external,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
