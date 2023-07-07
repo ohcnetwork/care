@@ -1,12 +1,13 @@
-from care.utils.tests.test_base import TestBase
 from rest_framework import status
+from rest_framework.test import APIRequestFactory, APITestCase
+
 from care.facility.api.viewsets.bed import BedViewSet
 from care.facility.models import AssetLocation
 from care.facility.tests.mixins import TestClassMixin
-from rest_framework.test import APIRequestFactory, APITestCase
+from care.utils.tests.test_base import TestBase
+
 
 class SingleBedTest(TestBase, TestClassMixin, APITestCase):
-
     def setUp(self):
         self.factory = APIRequestFactory()
         state = self.create_state()
@@ -28,15 +29,12 @@ class SingleBedTest(TestBase, TestClassMixin, APITestCase):
             "number_of_beds": 1,
         }
         response = self.new_request(
-            ("/api/v1/bed/", sample_data, "json"),
-            {"post": "create"},
-            BedViewSet,
-            user
+            ("/api/v1/bed/", sample_data, "json"), {"post": "create"}, BedViewSet, user
         )
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
 
-class MultipleBedTest(TestBase, TestClassMixin, APITestCase):
 
+class MultipleBedTest(TestBase, TestClassMixin, APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         state = self.create_state()
@@ -58,9 +56,6 @@ class MultipleBedTest(TestBase, TestClassMixin, APITestCase):
             "number_of_beds": 5,
         }
         response = self.new_request(
-            ("/api/v1/bed/", sample_data, "json"),
-            {"post": "create"},
-            BedViewSet,
-            user
+            ("/api/v1/bed/", sample_data, "json"), {"post": "create"}, BedViewSet, user
         )
         self.assertIs(response.status_code, status.HTTP_201_CREATED)

@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
+    IntegerField,
     ModelSerializer,
     SerializerMethodField,
     UUIDField,
-    IntegerField
 )
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -32,7 +32,7 @@ class BedSerializer(ModelSerializer):
     location = UUIDField(write_only=True, required=True)
     facility = UUIDField(write_only=True, required=True)
 
-    number_of_beds = IntegerField(required=False, default=1)
+    number_of_beds = IntegerField(required=False, default=1, write_only=True)
 
     class Meta:
         model = Bed

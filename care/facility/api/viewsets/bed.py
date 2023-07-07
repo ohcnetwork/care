@@ -4,7 +4,6 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.fields import get_error_detail
@@ -16,6 +15,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.bed import (
@@ -62,19 +62,25 @@ class BedViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        number_of_beds = serializer.validated_data.get('number_of_beds')
-
+        validated_data = serializer.validated_data
+        number_of_beds = validated_data.get("number_of_beds")
+        del validated_data["number_of_beds"]
         # Bulk creating n number of beds
         if number_of_beds > 1:
-            data = [serializer.validated_data] * number_of_beds
-            for i, d in enumerate(data):
-                d['name'] = d['name'] + f' - {i}'
-            res = Bed.objects.bulk_create(data)
+            objs = []
+            for i in range(1, number_of_beds + 1):
+                temp_data = dict(validated_data.copy())
+                temp_data["name"] = temp_data["name"] + f" - {i}"
+                objs.append(Bed(**temp_data))
+
+            res = Bed.objects.bulk_create(objs=objs, batch_size=number_of_beds)
             return Response(res, status=status.HTTP_201_CREATED)
-        
+
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def get_queryset(self):
         user = self.request.user
