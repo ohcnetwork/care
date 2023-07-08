@@ -138,32 +138,29 @@ class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
     def serailize_data(self, objects):
-        result = []
-        for object in objects:
-            if type(object) == tuple:
-                object = object[0]
-            result.append(
-                {
-                    **object,
-                    "id": object["external_id"],
-                }
-            )
-        return result
+        return [
+            {
+                "external_id": x[0],
+                "name": x[1],
+                "type": x[2],
+                "generic": x[3],
+                "company": x[4],
+                "contents": x[5],
+                "cims_class": x[6],
+                "atc_classification": x[7],
+            }
+            for x in objects
+        ]
 
-    def sort(self, query, results, limit=15):
+    def sort(self, query, results):
         exact_matches = []
         partial_matches = []
 
-        for result in results:
-            words = result["searchable"].split()
-            if query in words:
-                exact_matches.append(result)
-                if len(exact_matches) + len(partial_matches) >= limit:
-                    break
+        for x in results:
+            if query in f"{x[1]} {x[3]} {x[4]}".lower().split():
+                exact_matches.append(x)
             else:
-                partial_matches.append(result)
-                if len(exact_matches) + len(partial_matches) >= limit:
-                    break
+                partial_matches.append(x)
 
         return exact_matches + partial_matches
 
@@ -174,6 +171,6 @@ class MedibaseViewSet(ViewSet):
 
         if request.GET.get("query", False):
             query = request.GET.get("query").strip().lower()
-            queryset = [x for x in queryset if query in x["searchable"]]
+            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset, limit=15)
         return Response(self.serailize_data(queryset[:15]))
