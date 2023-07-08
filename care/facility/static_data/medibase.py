@@ -1,20 +1,24 @@
 from care.facility.models.prescription import MedibaseMedicine
 
-medibase_objects = MedibaseMedicine.objects.all()
 
-MedibaseMedicineTable = tuple(
-    (
-        obj.external_id,
-        obj.name,
-        obj.type,
-        obj.generic or "",
-        obj.company or "",
-        obj.contents or "",
-        obj.cims_class or "",
-        obj.atc_classification or "",
+def load_medibase_in_memory():
+    medibase_objects = MedibaseMedicine.objects.all()
+    return tuple(
+        (
+            obj.external_id,
+            obj.name,
+            obj.type,
+            obj.generic or "",
+            obj.company or "",
+            obj.contents or "",
+            obj.cims_class or "",
+            obj.atc_classification or "",
+        )
+        for obj in medibase_objects
     )
-    for obj in medibase_objects
-)
+
+
+MedibaseMedicineTable = load_medibase_in_memory()
 
 
 # for obj in medibase_objects:
