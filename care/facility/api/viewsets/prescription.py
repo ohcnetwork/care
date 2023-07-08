@@ -140,7 +140,7 @@ class MedibaseViewSet(ViewSet):
     def serailize_data(self, objects):
         return [
             {
-                "external_id": x[0],
+                "id": x[0],
                 "name": x[1],
                 "type": x[2],
                 "generic": x[3],
@@ -172,5 +172,5 @@ class MedibaseViewSet(ViewSet):
         if request.GET.get("query", False):
             query = request.GET.get("query").strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
-            queryset = self.sort(query, queryset, limit=15)
+            queryset = self.sort(query, queryset)
         return Response(self.serailize_data(queryset[:15]))
