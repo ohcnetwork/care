@@ -7,7 +7,6 @@ from django.db.models import JSONField
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
-    DISEASE_CHOICES,
     DiseaseStatusEnum,
     District,
     Facility,
@@ -30,6 +29,7 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_CONSULTATION_STATUS_CHOICES,
     REVERSE_DISCHARGE_REASON_CHOICES,
+    VACCINE_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
@@ -59,17 +59,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         STAY = 30
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
-
-    class vaccineEnum(enum.Enum):
-        COVISHIELD = "CoviShield"
-        COVAXIN = "Covaxin"
-        SPUTNIK = "Sputnik"
-        MODERNA = "Moderna"
-        PFIZER = "Pfizer"
-        JANSSEN = "Janssen"
-        SINOVAC = "Sinovac"
-
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
 
     class ActionEnum(enum.Enum):
         NO_ACTION = 10
@@ -150,7 +139,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         blank=False,
         max_length=4,
         verbose_name="Blood Group of Patient",
-    )
+    )  # deprecated
 
     contact_with_confirmed_carrier = models.BooleanField(
         default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
@@ -183,11 +172,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     allergies = models.TextField(
         default="", blank=True, verbose_name="Patient's Known Allergies"
-    )
+    )  # deprecated
 
     present_health = models.TextField(
         default="", blank=True, verbose_name="Patient's Current Health Details"
     )
+
     ongoing_medication = models.TextField(
         default="",
         blank=True,
@@ -245,7 +235,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
+        choices=ActionChoices,
+        blank=True,
+        null=True,
+        default=ActionEnum.NO_ACTION.value,
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
@@ -363,14 +356,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=False,
         blank=False,
         validators=[MinValueValidator(0), MaxValueValidator(3)],
-    )
+    )  # deprecated
     vaccine_name = models.CharField(
-        choices=vaccineChoices,
+        choices=VACCINE_CHOICES,
         default=None,
         null=True,
         blank=False,
         max_length=15,
-    )
+    )  # deprecated
 
     covin_id = models.CharField(
         max_length=15,
@@ -381,7 +374,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     last_vaccinated_date = models.DateTimeField(
         null=True, blank=True, verbose_name="Date Last Vaccinated"
-    )
+    )  # deprecated
 
     # Extras
     cluster_name = models.CharField(
@@ -609,34 +602,6 @@ class PatientContactDetails(models.Model):
     objects = BaseManager()
 
 
-class Disease(models.Model):
-    patient = models.ForeignKey(
-        PatientRegistration,
-        on_delete=models.CASCADE,
-        related_name="medical_history",
-    )
-    disease = models.IntegerField(choices=DISEASE_CHOICES)
-    details = models.TextField(blank=True, null=True)
-    deleted = models.BooleanField(default=False)
-
-    objects = BaseManager()
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["patient", "disease"],
-                condition=models.Q(deleted=False),
-                name="unique_patient_disease",
-            )
-        ]
-
-    def __str__(self):
-        return self.patient.name + " - " + self.get_disease_display()
-
-    def get_disease_display(self):
-        return DISEASE_CHOICES[self.disease - 1][1]
-
-
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
     entry_date = models.DateField()
@@ -683,3 +648,111 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+
+class PatientHealthDetails(PatientBaseModel, PatientRelatedPermissionMixin):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    family_details = models.TextField(
+        default="", blank=True, verbose_name="Patient's Family Details"
+    )
+
+    has_allergy = models.BooleanField(default=False)
+    allergies = models.TextField(
+        default="", blank=True, verbose_name="Patient's Known Allergies"
+    )
+
+    blood_group = models.CharField(
+        choices=BLOOD_GROUP_CHOICES,
+        null=True,
+        blank=False,
+        max_length=4,
+        verbose_name="Blood Group of Patient",
+    )
+
+    height = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Height in CM",
+        validators=[MinValueValidator(0)],
+    )
+
+    weight = models.FloatField(
+        default=None,
+        null=True,
+        verbose_name="Patient's Weight in KG",
+        validators=[MinValueValidator(0)],
+    )
+
+
+class VaccinationHistory(models.Model):
+    health_details = models.ForeignKey(
+        PatientHealthDetails,
+        on_delete=models.CASCADE,
+        related_name="vaccination_history",
+    )
+    vaccine = models.CharField(max_length=100)
+    doses = models.IntegerField(default=0)
+    date = models.DateField(null=True, blank=True)
+    precision = models.IntegerField(default=0)
+
+    deleted = models.BooleanField(default=False)
+    objects = BaseManager()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["health_details", "vaccine"],
+                condition=models.Q(deleted=False),
+                name="unique_health_details_vaccine",
+            )
+        ]
+
+
+class MedicalHistory(PatientBaseModel, PatientRelatedPermissionMixin):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    ongoing_medication = models.TextField(
+        default="",
+        blank=True,
+        verbose_name="Already pescribed medication if any",
+    )
+
+    present_health = models.TextField(
+        default="",
+        blank=True,
+        verbose_name="Patient's Current Health Details",
+    )
+
+
+class Disease(models.Model):
+    medical_history = models.ForeignKey(
+        MedicalHistory,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="patient_diseases",
+    )
+    disease = models.CharField(max_length=100)
+    details = models.TextField(blank=True, null=True)
+    date = models.DateField(null=True, blank=True)
+    precision = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
+
+    objects = BaseManager()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["medical_history", "disease"],
+                condition=models.Q(deleted=False),
+                name="unique_medical_history_disease",
+            )
+        ]

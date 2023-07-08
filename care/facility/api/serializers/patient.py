@@ -15,9 +15,7 @@ from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
 from care.facility.models import (
-    DISEASE_CHOICES,
     GENDER_CHOICES,
-    Disease,
     Facility,
     FacilityPatientStatsHistory,
     PatientContactDetails,
@@ -26,11 +24,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-)
+from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
@@ -71,9 +65,9 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     last_consultation = PatientConsultationSerializer(read_only=True)
 
-    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
     source = ChoiceField(choices=PatientRegistration.SourceChoices)
 
@@ -151,10 +145,6 @@ class PatientContactDetailsSerializer(serializers.ModelSerializer):
 
 
 class PatientDetailSerializer(PatientListSerializer):
-    class MedicalHistorySerializer(serializers.Serializer):
-        disease = ChoiceField(choices=DISEASE_CHOICES)
-        details = serializers.CharField(required=False, allow_blank=True)
-
     class PatientTeleConsultationSerializer(serializers.ModelSerializer):
         class Meta:
             model = PatientTeleConsultation
@@ -162,9 +152,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
-    )
-    medical_history = serializers.ListSerializer(
-        child=MedicalHistorySerializer(), required=False
     )
 
     tele_consultation_history = serializers.ListSerializer(
@@ -181,7 +168,8 @@ class PatientDetailSerializer(PatientListSerializer):
         default=PatientRegistration.SourceEnum.CARE.value,
     )
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DISEASE_STATUS_CHOICES,
+        default=DiseaseStatusEnum.SUSPECTED.value,
     )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -197,9 +185,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
-    vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
-    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
@@ -218,7 +203,11 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -249,12 +238,6 @@ class PatientDetailSerializer(PatientListSerializer):
                 {"non_field_errors": ["Either age or date_of_birth should be passed"]}
             )
 
-        if validated.get("is_vaccinated"):
-            if validated.get("number_of_doses") == 0:
-                raise serializers.ValidationError("Number of doses cannot be 0")
-            if validated.get("vaccine_name") is None:
-                raise serializers.ValidationError("Vaccine name cannot be null")
-
         return validated
 
     def check_external_entry(self, srf_id):
@@ -265,7 +248,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
 
@@ -294,12 +276,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
-            diseases = []
-
-            for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
-            if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
@@ -327,7 +303,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def update(self, instance, validated_data):
         with transaction.atomic():
-            medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
 
@@ -343,12 +318,6 @@ class PatientDetailSerializer(PatientListSerializer):
                     self.check_external_entry(validated_data["srf_id"])
 
             patient = super().update(instance, validated_data)
-            Disease.objects.filter(patient=patient).update(deleted=True)
-            diseases = []
-            for disease in medical_history:
-                diseases.append(Disease(patient=patient, **disease))
-            if diseases:
-                Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
                 for key, value in meta_info.items():

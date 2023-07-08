@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import timedelta
 
 from django.db import transaction
@@ -9,6 +10,8 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.api.serializers.health_details import PatientHealthDetailsSerializer
+from care.facility.api.serializers.medical_history import MedicalHistorySerializer
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -19,6 +22,7 @@ from care.facility.models import (
 )
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient import MedicalHistory, PatientHealthDetails
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
@@ -90,6 +94,30 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     last_daily_round = DailyRoundSerializer(read_only=True)
+
+    health_details = ExternalIdSerializerField(
+        queryset=PatientHealthDetails.objects.all(),
+        required=False,
+    )
+
+    health_details_object = PatientHealthDetailsSerializer(
+        source="health_details",
+        read_only=True,
+    )
+
+    new_health_details = PatientHealthDetailsSerializer(required=False)
+
+    medical_history = ExternalIdSerializerField(
+        queryset=MedicalHistory.objects.all(),
+        required=False,
+    )
+
+    medical_history_object = MedicalHistorySerializer(
+        source="medical_history",
+        read_only=True,
+    )
+
+    new_medical_history = MedicalHistorySerializer(required=False)
 
     current_bed = ConsultationBedSerializer(read_only=True)
 
@@ -182,8 +210,37 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 validated_data["kasp_enabled_date"] = localtime(now())
 
         _temp = instance.assigned_to
+        health_details_data = validated_data.pop("new_health_details", OrderedDict())
+        medical_history_data = validated_data.pop("new_medical_history", OrderedDict())
 
         consultation = super().update(instance, validated_data)
+
+        with transaction.atomic():
+            if health_details_data:
+                health_details_object = PatientHealthDetails.objects.get(
+                    consultation=consultation
+                )
+
+                health_details_serializer = PatientHealthDetailsSerializer(
+                    health_details_object,
+                    data=health_details_data,
+                    context={
+                        "request": self.context["request"],
+                    },
+                )
+                health_details_serializer.is_valid(raise_exception=True)
+                health_details_serializer.save()
+            if medical_history_data:
+                medical_history_object = MedicalHistory.objects.get(
+                    consultation=consultation
+                )
+
+                medical_history_serializer = MedicalHistorySerializer(
+                    medical_history_object,
+                    data=medical_history_data,
+                )
+                medical_history_serializer.is_valid(raise_exception=True)
+                medical_history_serializer.save()
 
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
@@ -253,10 +310,40 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated_data["facility_id"] = validated_data[
             "patient"
         ].facility_id  # Coercing facility as the patient's facility
+        health_details_data = validated_data.pop("new_health_details", OrderedDict())
+        medical_history_data = validated_data.pop("new_medical_history", OrderedDict())
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
         consultation.save()
+
+        with transaction.atomic():
+            if health_details_data:
+                health_details_serializer = PatientHealthDetailsSerializer(
+                    data={
+                        "patient": consultation.patient.external_id.hex,
+                        "consultation": consultation.external_id.hex,
+                        **health_details_data,
+                    },
+                    context={
+                        "request": self.context["request"],
+                    },
+                )
+                health_details_serializer.is_valid(raise_exception=True)
+                health_details = health_details_serializer.save()
+                consultation.health_details = health_details
+            if medical_history_data:
+                medical_history_serializer = MedicalHistorySerializer(
+                    data={
+                        "patient": consultation.patient.external_id.hex,
+                        "consultation": consultation.external_id.hex,
+                        **medical_history_data,
+                    }
+                )
+                medical_history_serializer.is_valid(raise_exception=True)
+                medical_history = medical_history_serializer.save()
+                consultation.medical_history = medical_history
+            consultation.save(update_fields=["health_details", "medical_history"])
 
         if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(

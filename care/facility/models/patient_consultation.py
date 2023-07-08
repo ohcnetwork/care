@@ -137,6 +137,20 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"
     )
 
+    health_details = models.ForeignKey(
+        "PatientHealthDetails",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+    )
+
+    medical_history = models.ForeignKey(
+        "MedicalHistory",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+    )
+
     last_edited_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -166,13 +180,13 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
         verbose_name="Patient's Height in CM",
         validators=[MinValueValidator(0)],
-    )
+    )  # deprecated
     weight = models.FloatField(
         default=None,
         null=True,
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
-    )
+    )  # deprecated
     HBA1C = models.FloatField(
         default=None,
         null=True,
