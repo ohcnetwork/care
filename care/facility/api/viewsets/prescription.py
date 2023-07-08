@@ -157,7 +157,8 @@ class MedibaseViewSet(ViewSet):
         partial_matches = []
 
         for x in results:
-            if query in f"{x[1]} {x[3]} {x[4]}".lower().split():
+            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
+            if query in words:
                 exact_matches.append(x)
             else:
                 partial_matches.append(x)
