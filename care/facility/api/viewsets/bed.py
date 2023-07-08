@@ -63,8 +63,7 @@ class BedViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-        number_of_beds = validated_data.get("number_of_beds")
-        del validated_data["number_of_beds"]
+        number_of_beds = validated_data.pop("number_of_beds", 1)
         # Bulk creating n number of beds
         if number_of_beds > 1:
             objs = []
