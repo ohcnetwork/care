@@ -36,6 +36,7 @@ from care.facility.models.asset import (
     AssetTransaction,
     UserDefaultAssetLocation,
 )
+from care.facility.models.bed import AssetBed
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -228,9 +229,17 @@ class AssetViewSet(
                     "middleware_hostname": asset.current_location.facility.middleware_address,
                 }
             )
-            result = asset_class.handle_action(action)
-            return Response({"result": result}, status=status.HTTP_200_OK)
-
+            validation_result = True
+            if asset_class._name == "onvif":
+                boundary_preset: AssetBed = AssetBed.objects.filter(
+                    external_id=action["data"]["id"]
+                ).first()
+                validation_result = asset_class.validate_action(action, boundary_preset)
+            if validation_result:
+                result = asset_class.handle_action(action)
+                return Response({"result": result}, status=status.HTTP_200_OK)
+            else:
+                raise ValidationError({"action": "invalid action type"})
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
