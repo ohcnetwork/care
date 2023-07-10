@@ -333,7 +333,9 @@ class UserSerializer(SignUpSerializer):
 
 class UserBaseMinimumSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-    home_facility = serializers.CharField(source='home_facility.external_id', read_only=True,default=None)
+    home_facility = serializers.CharField(
+        source="home_facility.external_id", read_only=True, default=None
+    )
 
     class Meta:
         model = User
