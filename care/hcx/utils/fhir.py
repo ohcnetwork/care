@@ -1044,7 +1044,7 @@ class Fhir:
 
     def process_claim_response(self, response):
         claim_bundle = bundle.Bundle(**response)
-
+        print("claim bundle", claim_bundle)
         claim_response = claimresponse.ClaimResponse(
             **list(
                 filter(
@@ -1053,6 +1053,7 @@ class Fhir:
                 )
             )[0].resource.dict()
         )
+        print("claim response", claim_response)
 
         def get_errors_from_coding(codings):
             return "; ".join(
@@ -1060,12 +1061,7 @@ class Fhir:
             )
 
         return {
-            "id": list(
-                filter(
-                    lambda identifier: identifier.system == SYSTEM.claim_identifier,
-                    claim_response.identifier,
-                )
-            )[0].value,
+            "id": claim_bundle.id,
             "total_approved": reduce(
                 lambda price, acc: price + acc,
                 map(
