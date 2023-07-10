@@ -21,7 +21,53 @@ from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
+class BedListSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    bed_type = ChoiceField(choices=BedTypeChoices)
+    is_occupied = BooleanField(default=False, read_only=True)
+
+    class Meta:
+        model = Bed
+        fields = ["id", "bed_type", "description", "name", "is_occupied"]
+
+
+class BedDetailSerializer(BedListSerializer):
+    location_object = AssetLocationSerializer(source="location", read_only=True)
+
+    location = UUIDField(write_only=True, required=True)
+    facility = UUIDField(write_only=True, required=True)
+
+    class Meta:
+        model = Bed
+        exclude = ("deleted", "external_id", "assets")
+        read_only_fields = TIMESTAMP_FIELDS
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        if "location" in attrs and "facility" in attrs:
+            location = get_object_or_404(
+                AssetLocation.objects.filter(external_id=attrs["location"])
+            )
+            facility = get_object_or_404(
+                Facility.objects.filter(external_id=attrs["facility"])
+            )
+            facilities = get_facility_queryset(user)
+            if (not facilities.filter(id=location.facility.id).exists()) or (
+                not facilities.filter(id=facility.id).exists()
+            ):
+                raise PermissionError()
+            del attrs["location"]
+            attrs["location"] = location
+            attrs["facility"] = facility
+        else:
+            raise ValidationError(
+                {"location": "Field is Required", "facility": "Field is Required"}
+            )
+        return super().validate(attrs)
+
+
 class BedSerializer(ModelSerializer):
+    # Remove when issue #5492 is complete
     id = UUIDField(source="external_id", read_only=True)
     bed_type = ChoiceField(choices=BedTypeChoices)
 
@@ -64,7 +110,7 @@ class AssetBedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
     asset_object = AssetSerializer(source="asset", read_only=True)
-    bed_object = BedSerializer(source="bed", read_only=True)
+    bed_object = BedDetailSerializer(source="bed", read_only=True)
 
     asset = UUIDField(write_only=True, required=True)
     bed = UUIDField(write_only=True, required=True)
@@ -110,7 +156,7 @@ class AssetBedSerializer(ModelSerializer):
 
 class PatientAssetBedSerializer(ModelSerializer):
     asset = AssetSerializer(read_only=True)
-    bed = BedSerializer(read_only=True)
+    bed = BedDetailSerializer(read_only=True)
     patient = SerializerMethodField()
 
     def get_patient(self, obj):
@@ -130,7 +176,7 @@ class PatientAssetBedSerializer(ModelSerializer):
 class ConsultationBedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
-    bed_object = BedSerializer(source="bed", read_only=True)
+    bed_object = BedDetailSerializer(source="bed", read_only=True)
 
     consultation = ExternalIdSerializerField(
         queryset=PatientConsultation.objects.all(), write_only=True, required=True
