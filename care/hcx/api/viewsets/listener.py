@@ -46,10 +46,14 @@ class PreAuthOnSubmitView(GenericAPIView):
 
     @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
+        print(request.data)
         response = Hcx().processIncomingRequest(request.data["payload"])
+        print(response)
         data = Fhir().process_claim_response(response["payload"])
+        print(data)
 
         claim = Claim.objects.filter(external_id=data["id"]).first()
+        print(claim)
         claim.outcome = data["outcome"]
         claim.total_amount_approved = data["total_approved"]
         claim.error_text = data["error"]
