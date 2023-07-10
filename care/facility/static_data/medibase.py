@@ -19,18 +19,3 @@ def load_medibase_in_memory():
 
 
 MedibaseMedicineTable = load_medibase_in_memory()
-
-
-# for obj in medibase_objects:
-# MedibaseMedicineTable.append(
-#     {
-#         "external_id": obj.external_id,
-#         "name": obj.name,
-#         "type": obj.type,
-#         "generic": obj.generic or "",
-#         "company": obj.company or "",
-#         "contents": obj.contents or "",
-#         "cims_class": obj.cims_class or "",
-#         "atc_classification": obj.atc_classification or "",
-#     }
-# )
