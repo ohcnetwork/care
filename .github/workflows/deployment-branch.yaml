@@ -7,6 +7,7 @@ on:
     branches:
       - abdm-m2
       - hcx-communications
+      - fix-hcx
     paths-ignore:
       - "docs/**"
 
