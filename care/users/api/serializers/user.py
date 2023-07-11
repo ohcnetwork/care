@@ -344,6 +344,7 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
             "last_name",
             "user_type",
             "last_login",
+            "home_facility",
         )
 
 

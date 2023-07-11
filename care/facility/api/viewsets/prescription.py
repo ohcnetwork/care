@@ -1,3 +1,5 @@
+from re import IGNORECASE
+
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -5,7 +7,7 @@ from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
     MedicineAdministrationSerializer,
@@ -132,3 +134,54 @@ class ConsultationPrescriptionViewSet(
     #     administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
     #     administered_obj.delete()
     #     return Response({"success": True}, status=status.HTTP_200_OK)
+
+
+class MedibaseViewSet(ViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    def serailize_data(self, objects):
+        result = []
+        for object in objects:
+            if type(object) == tuple:
+                object = object[0]
+            result.append(
+                {
+                    "id": object.external_id,
+                    "name": object.name,
+                    "type": object.type,
+                    "generic": object.generic,
+                    "company": object.company,
+                    "contents": object.contents,
+                    "cims_class": object.cims_class,
+                    "atc_classification": object.atc_classification,
+                }
+            )
+        return result
+
+    def sort(self, query, results):
+        exact_matches = []
+        partial_matches = []
+
+        for result in results:
+            if type(result) == tuple:
+                result = result[0]
+            words = result.searchable.lower().split()
+            if query in words:
+                exact_matches.append(result)
+            else:
+                partial_matches.append(result)
+
+        return exact_matches + partial_matches
+
+    def list(self, request):
+        from care.facility.static_data.medibase import MedibaseMedicineTable
+
+        queryset = MedibaseMedicineTable
+
+        if request.GET.get("query", False):
+            query = request.GET.get("query").strip().lower()
+            queryset = queryset.where(
+                searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
+            )
+            queryset = self.sort(query, queryset)
+        return Response(self.serailize_data(queryset[:15]))
