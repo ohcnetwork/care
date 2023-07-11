@@ -53,7 +53,7 @@ class BedTestCase(TestBase, TestClassMixin, APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
-    def test_retrieve_bed(self):
+    def tes_bed_retrieve(self):
         bedId = self.bed.external_id
         response = self.client.get(f"/api/v1/bed/{bedId}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)

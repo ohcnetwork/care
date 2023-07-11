@@ -16,6 +16,7 @@ from care.facility.models import (
     SYMPTOM_CHOICES,
     AssetLocation,
     Bed,
+    ConsultationBed,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -471,3 +472,12 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return Bed.objects.create(**data)
+
+    def create_consultation_bed(self, **kwargs):
+        data = {
+            "consultation": self.create_consultation(),
+            "bed": self.create_bed(),
+            "start_date": make_aware(datetime.datetime(2020, 4, 7, 15, 30)),
+        }
+        data.update(kwargs)
+        return ConsultationBed.objects.create(**data)
