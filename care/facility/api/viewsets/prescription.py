@@ -1,5 +1,3 @@
-from re import IGNORECASE
-
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -140,36 +138,30 @@ class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
     def serailize_data(self, objects):
-        result = []
-        for object in objects:
-            if type(object) == tuple:
-                object = object[0]
-            result.append(
-                {
-                    "id": object.external_id,
-                    "name": object.name,
-                    "type": object.type,
-                    "generic": object.generic,
-                    "company": object.company,
-                    "contents": object.contents,
-                    "cims_class": object.cims_class,
-                    "atc_classification": object.atc_classification,
-                }
-            )
-        return result
+        return [
+            {
+                "id": x[0],
+                "name": x[1],
+                "type": x[2],
+                "generic": x[3],
+                "company": x[4],
+                "contents": x[5],
+                "cims_class": x[6],
+                "atc_classification": x[7],
+            }
+            for x in objects
+        ]
 
     def sort(self, query, results):
         exact_matches = []
         partial_matches = []
 
-        for result in results:
-            if type(result) == tuple:
-                result = result[0]
-            words = result.searchable.lower().split()
+        for x in results:
+            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
             if query in words:
-                exact_matches.append(result)
+                exact_matches.append(x)
             else:
-                partial_matches.append(result)
+                partial_matches.append(x)
 
         return exact_matches + partial_matches
 
@@ -178,10 +170,8 @@ class MedibaseViewSet(ViewSet):
 
         queryset = MedibaseMedicineTable
 
-        if request.GET.get("query", False):
-            query = request.GET.get("query").strip().lower()
-            queryset = queryset.where(
-                searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
-            )
+        if query := request.query_params.get("query"):
+            query = query.strip().lower()
+            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
         return Response(self.serailize_data(queryset[:15]))

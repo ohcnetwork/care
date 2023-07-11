@@ -6,6 +6,7 @@ Werkzeug==2.3.6 # https://werkzeug.palletsprojects.com/en/latest/changes/
 # ------------------------------------------------------------------------------
 django-debug-toolbar==4.1  # https://github.com/jazzband/django-debug-toolbar/releases
 django-extensions==3.2.3  # https://github.com/django-extensions/django-extensions/blob/main/CHANGELOG.md
+django-silk==5.0.3  # https://github.com/jazzband/django-silk/blob/master/CHANGELOG.md
 
 # Code quality
 # ------------------------------------------------------------------------------
