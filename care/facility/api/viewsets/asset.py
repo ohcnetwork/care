@@ -223,6 +223,7 @@ class AssetViewSet(
         try:
             action = request.data["action"]
             asset: Asset = self.get_object()
+            print(asset.asset_class)
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,

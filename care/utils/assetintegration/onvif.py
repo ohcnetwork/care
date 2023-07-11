@@ -65,8 +65,6 @@ class OnvifAsset(BaseAssetIntegration):
         if action_type != self.OnvifActions.RELATIVE_MOVE.value:
             return True
 
-        print(action_data)
-
         if (
             not boundary_preset
             or not action_data.get("camera_stae", None)
