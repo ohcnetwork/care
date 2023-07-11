@@ -170,8 +170,8 @@ class MedibaseViewSet(ViewSet):
 
         queryset = MedibaseMedicineTable
 
-        if request.GET.get("query", False):
-            query = request.GET.get("query").strip().lower()
+        if query := request.query_params.get("query"):
+            query = query.strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
         return Response(self.serailize_data(queryset[:15]))
