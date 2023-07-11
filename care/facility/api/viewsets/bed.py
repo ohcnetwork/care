@@ -20,7 +20,8 @@ from care.facility.api.serializers.bed import (
     AssetBedSerializer,
     BedDetailSerializer,
     BedListSerializer,
-    ConsultationBedSerializer,
+    ConsulationBedListSerializer,
+    ConsultationBedDetailSerializer,
     PatientAssetBedSerializer,
 )
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
@@ -193,10 +194,15 @@ class ConsultationBedViewSet(
         .select_related("consultation", "bed")
         .order_by("-created_date")
     )
-    serializer_class = ConsultationBedSerializer
+    serializer_class = ConsultationBedDetailSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ConsulationBedListSerializer
+        return self.serializer_class
 
     def get_queryset(self):
         user = self.request.user
