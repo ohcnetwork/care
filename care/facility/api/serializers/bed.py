@@ -60,6 +60,11 @@ class BedSerializer(ModelSerializer):
             raise ValidationError(
                 {"location": "Field is Required", "facility": "Field is Required"}
             )
+
+        if attrs["number_of_beds"] > 100:
+            raise ValidationError(
+                {"number_of_beds": "Cannot create more than 100 beds at once."}
+            )
         return super().validate(attrs)
 
 
