@@ -49,9 +49,9 @@ class Command(BaseCommand):
                 return item["label"] if item["classKind"] == x else None
 
             self.roots_lookup[id] = {
-                "chapter": parent.get("chapter", my("chapter")),
-                "block": parent.get("block", my("block")),
-                "category": parent.get("category", my("category")),
+                "chapter": parent.get("chapter") or my("chapter"),
+                "block": parent.get("block") or my("block"),
+                "category": parent.get("category") or my("category"),
             }
             return self.roots_lookup[id]
 
