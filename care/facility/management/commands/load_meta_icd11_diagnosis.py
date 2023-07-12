@@ -14,9 +14,21 @@ class Command(BaseCommand):
     help = "Loads ICD11 data to a table in to database."
 
     def handle(self, *args, **options):
-        print("Loading ICD11 data to database...")
+        print("Loading ICD11 data to DB Table (meta_icd11_diagnosis)...")
         try:
             icd11_objects = fetch_data()
+
+            def find_root(icd11_object):
+                if icd11_object["parentId"] is None:
+                    return icd11_object["label"]
+                return find_root(
+                    next(
+                        filter(
+                            lambda x: x["ID"] == icd11_object["parentId"], icd11_objects
+                        )
+                    )
+                )
+
             MetaICD11Diagnosis.objects.all().delete()
             MetaICD11Diagnosis.objects.bulk_create(
                 [
@@ -30,6 +42,7 @@ class Command(BaseCommand):
                         is_leaf=icd11_object["isLeaf"],
                         label=icd11_object["label"],
                         breadth_value=icd11_object["breadthValue"],
+                        root_label=find_root(icd11_object),
                     )
                     for icd11_object in icd11_objects
                     if icd11_object["ID"].split("/")[-1].isnumeric()
