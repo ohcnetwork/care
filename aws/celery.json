@@ -96,8 +96,8 @@
       "repositoryCredentials": {
         "credentialsParameter": "arn:aws:secretsmanager:ap-south-1:299650323339:secret:/github/pat-UHmr0B"
       },
-      "memory": 256,
-      "memoryReservation": 256,
+      "memory": 512,
+      "memoryReservation": 512,
       "workingDirectory": "/app",
       "secrets": [
         {
@@ -232,8 +232,8 @@
         "/app/celery_worker-ecs.sh"
       ],
       "cpu": 384,
-      "memory": 768,
-      "memoryReservation": 768,
+      "memory": 1536,
+      "memoryReservation": 1536,
       "environment": [
         {
           "name": "AUDIT_LOG_ENABLED",
@@ -437,7 +437,7 @@
       "name": "care-celery-worker"
     }
   ],
-  "memory": "1024",
+  "memory": "2048",
   "taskRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
   "family": "care-celery",
   "requiresCompatibilities": [
