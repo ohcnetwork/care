@@ -105,6 +105,28 @@ class Asset(BaseModel):
         return self.name
 
 
+class AssetAvailabilityRecord(BaseModel):
+    class AvailabilityStatus(enum.Enum):
+        NOT_MONITORED = 0
+        OPERATIONAL = 1
+        DOWN = 2
+        UNDER_MAINTENANCE = 3
+
+    AvailabilityStatusChoices = [(e.value, e.name) for e in AvailabilityStatus]
+
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+    status = models.IntegerField(
+        choices=AvailabilityStatusChoices, default=AvailabilityStatus.UNKNOWN
+    )
+    timestamp = models.DateTimeField(null=False, blank=False)
+
+    class Meta:
+        ordering = ["-timestamp"]
+
+    def __str__(self):
+        return f"{self.asset.name} - {self.status} - {self.time}"
+
+
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)
     location = models.ForeignKey(
