@@ -29,9 +29,9 @@ class OnvifAsset(BaseAssetIntegration):
     def handle_action(self, action):
         action_type = action["type"]
         action_data = action.get("data", {})
-        allowed_actions = ["x", "y", "zoom"]
+        allowed_action_data = ["x", "y", "zoom"]
         action_data = {
-            key: action_data[key] for key in action_data if key in allowed_actions
+            key: action_data[key] for key in action_data if key in allowed_action_data
         }
         request_body = {
             "hostname": self.host,
@@ -59,15 +59,26 @@ class OnvifAsset(BaseAssetIntegration):
 
         raise ValidationError({"action": "invalid action type"})
 
-    def validate_action(self, action, boundary_preset=None):
+    def validate_action(self, action):
+        from care.facility.models.bed import AssetBed
+
         action_type = action["type"]
         action_data = action.get("data", {})
-        if action_type != self.OnvifActions.RELATIVE_MOVE.value:
+        boundary_preset_id = action_data.get("id", None)
+
+        if (
+            not boundary_preset_id
+            or action_type != self.OnvifActions.RELATIVE_MOVE.value
+        ):
             return True
+
+        boundary_preset = AssetBed.objects.filter(
+            external_id=boundary_preset_id
+        ).first()
 
         if (
             not boundary_preset
-            or not action_data.get("camera_stae", None)
+            or not action_data.get("camera_state", None)
             or not action_data["camera_state"].get("x", None)
             or not action_data["camera_state"].get("y", None)
         ):
