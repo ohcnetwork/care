@@ -1,9 +1,8 @@
 import enum
 import uuid
 
-from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
-from django.db.models import Q
+from django.db.models import JSONField, Q
 
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
@@ -100,6 +99,12 @@ class Asset(BaseModel):
                 condition=Q(qr_code_id__isnull=False),
             ),
         ]
+
+    def delete(self, *args, **kwargs):
+        from care.facility.models.bed import AssetBed
+
+        AssetBed.objects.filter(asset=self).update(deleted=True)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name

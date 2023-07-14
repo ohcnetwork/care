@@ -5,7 +5,13 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, UUIDField
+from rest_framework.serializers import (
+    CharField,
+    JSONField,
+    ModelSerializer,
+    Serializer,
+    UUIDField,
+)
 from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
@@ -18,6 +24,9 @@ from care.facility.models.asset import (
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
+from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 
@@ -93,7 +102,6 @@ class AssetSerializer(ModelSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
@@ -121,6 +129,15 @@ class AssetSerializer(ModelSerializer):
             if attrs["last_serviced_on"] > datetime.now().date():
                 raise ValidationError("Last serviced on cannot be in the future")
 
+        # only allow setting asset class on creation (or updation if asset class is not set)
+        if (
+            attrs.get("asset_class")
+            and self.instance
+            and self.instance.asset_class
+            and self.instance.asset_class != attrs["asset_class"]
+        ):
+            raise ValidationError({"asset_class": "Cannot change asset class"})
+
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -138,22 +155,24 @@ class AssetSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
-        if (
-            not instance.last_service
-            or instance.last_service.serviced_on
-            != validated_data.get("last_serviced_on", instance.last_service.serviced_on)
-            or instance.last_service.note
-            != validated_data.get("note", instance.last_service.note)
-        ):
-            asset_service = AssetService(
-                asset=instance,
-                serviced_on=validated_data.get("last_serviced_on"),
-                note=validated_data.get("note"),
-            )
-            asset_service.save()
-            instance.last_service = asset_service
-
         with transaction.atomic():
+            if (
+                not instance.last_service
+                or instance.last_service.serviced_on
+                != validated_data.get(
+                    "last_serviced_on", instance.last_service.serviced_on
+                )
+                or instance.last_service.note
+                != validated_data.get("note", instance.last_service.note)
+            ):
+                asset_service = AssetService(
+                    asset=instance,
+                    serviced_on=validated_data.get("last_serviced_on"),
+                    note=validated_data.get("note"),
+                )
+                asset_service.save()
+                instance.last_service = asset_service
+
             if (
                 "current_location" in validated_data
                 and instance.current_location != validated_data["current_location"]
@@ -194,3 +213,40 @@ class UserDefaultAssetLocationSerializer(ModelSerializer):
     class Meta:
         model = UserDefaultAssetLocation
         exclude = ("deleted", "external_id", "location", "user", "id")
+
+
+class AssetActionSerializer(Serializer):
+    def actionChoices():
+        actions = [
+            OnvifAsset.OnvifActions,
+            HL7MonitorAsset.HL7MonitorActions,
+            VentilatorAsset.VentilatorActions,
+        ]
+        choices = []
+        for action in actions:
+            choices += [(e.value, e.name) for e in action]
+        return choices
+
+    type = ChoiceField(
+        choices=actionChoices(),
+        required=True,
+    )
+    data = JSONField(required=False)
+
+    class Meta:
+        fields = ("type", "data")
+
+
+class DummyAssetOperateSerializer(Serializer):
+    action = AssetActionSerializer(required=True)
+
+    class Meta:
+        fields = ("action",)
+
+
+class DummyAssetOperateResponseSerializer(Serializer):
+    message = CharField(required=True)
+    result = JSONField(required=False)
+
+    class Meta:
+        fields = ("message", "result")

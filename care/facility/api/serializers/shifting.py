@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Q
+from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -11,7 +12,6 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
-    CATEGORY_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
@@ -21,13 +21,12 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from care.utils.serializer.phonenumber_ispossible_field import (
-    PhoneNumberIsPossibleField,
-)
 from config.serializers import ChoiceField
 
 
@@ -56,6 +55,31 @@ def has_facility_permission(user, facility):
             and (facility and user.state == facility.state)
         )
     )
+
+
+def discharge_patient(patient: PatientRegistration):
+    current_time = localtime(now())
+
+    patient.is_active = False
+    patient.allow_transfer = True
+    patient.review_time = None
+    patient.save(update_fields=["allow_transfer", "is_active", "review_time"])
+
+    last_consultation = (
+        PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
+    )
+    if last_consultation:
+        reason = "REF"
+        notes = "Patient Shifted to another facility"
+        last_consultation.discharge_reason = reason
+        last_consultation.discharge_notes = notes
+        last_consultation.discharge_date = current_time
+        last_consultation.current_bed = None
+        last_consultation.save()
+
+    ConsultationBed.objects.filter(
+        consultation=last_consultation, end_date__isnull=True
+    ).update(end_date=current_time)
 
 
 class ShiftingSerializer(serializers.ModelSerializer):
@@ -157,11 +181,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
         choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
     )
 
-    orgin_facility = ExternalIdSerializerField(
+    origin_facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), allow_null=False, required=True
     )
-    orgin_facility_object = FacilityBasicInfoSerializer(
-        source="orgin_facility", read_only=True
+    origin_facility_object = FacilityBasicInfoSerializer(
+        source="origin_facility", read_only=True
     )
 
     shifting_approving_facility = ExternalIdSerializerField(
@@ -193,13 +217,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
     )
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
-    ambulance_phone_number = PhoneNumberIsPossibleField(
-        required=False, allow_null=True, allow_blank=True
-    )
+
     ambulance_number = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -221,7 +242,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
-        validated_data.pop("orgin_facility")
+        validated_data.pop("origin_facility")
         validated_data.pop("patient")
 
         user = self.context["request"].user
@@ -250,12 +271,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
             if settings.PEACETIME_MODE:
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
-                    and has_facility_permission(user, instance.orgin_facility)
+                    and has_facility_permission(user, instance.origin_facility)
                 ):
                     pass
                 elif (
                     status in self.PEACETIME_RECIEVING_STATUS
-                    and not has_facility_permission(user, instance.assigned_facility)
+                    and has_facility_permission(user, instance.assigned_facility)
                 ):
                     pass
                 else:
@@ -296,8 +317,18 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         validated_data["last_edited_by"] = self.context["request"].user
 
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(instance.patient)
+
         old_status = instance.status
         new_instance = super().update(instance, validated_data)
+
+        patient = new_instance.patient
+        patient.last_consultation.category = self.initial_data["patient_category"]
+        patient.last_consultation.save()
 
         if (
             "status" in validated_data
@@ -347,7 +378,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         patient = validated_data["patient"]
         if ShiftingRequest.objects.filter(
-            ~Q(status__in=[30, 50, 80]), patient=patient
+            ~Q(status__in=[30, 50, 80, 100]), patient=patient
         ).exists():
             raise ValidationError(
                 {"request": ["Shifting Request for Patient already exists"]}
@@ -359,10 +390,20 @@ class ShiftingSerializer(serializers.ModelSerializer):
             patient.allow_transfer = True
             patient.save()
 
-        validated_data["orgin_facility"] = patient.facility
+        if patient.last_consultation:
+            patient.last_consultation.category = self.initial_data["patient_category"]
+            patient.last_consultation.save()
+
+        validated_data["origin_facility"] = patient.facility
 
         validated_data["created_by"] = self.context["request"].user
         validated_data["last_edited_by"] = self.context["request"].user
+
+        if (
+            "status" in validated_data
+            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+        ):
+            discharge_patient(patient)
 
         return super().create(validated_data)
 

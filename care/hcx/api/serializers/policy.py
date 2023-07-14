@@ -1,17 +1,18 @@
-from rest_framework.serializers import ModelSerializer, UUIDField, CharField
-from config.serializers import ChoiceField
-from care.hcx.models.policy import Policy
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
+from rest_framework.serializers import CharField, ModelSerializer, UUIDField
+
+from care.facility.api.serializers.patient import PatientDetailSerializer
+from care.facility.models.patient import PatientRegistration
 from care.hcx.models.policy import (
-    STATUS_CHOICES,
+    OUTCOME_CHOICES,
     PRIORITY_CHOICES,
     PURPOSE_CHOICES,
-    OUTCOME_CHOICES,
+    STATUS_CHOICES,
+    Policy,
 )
-from django.shortcuts import get_object_or_404
-from care.facility.models.patient import PatientRegistration
-from care.facility.api.serializers.patient import PatientDetailSerializer
-from rest_framework.exceptions import ValidationError
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from config.serializers import ChoiceField
 
 TIMESTAMP_FIELDS = (
     "created_date",

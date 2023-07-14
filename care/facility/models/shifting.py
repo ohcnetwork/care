@@ -7,7 +7,6 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
-from care.facility.models.patient_base import CATEGORY_CHOICES
 from care.users.models import User, phone_number_regex
 
 SHIFTING_STATUS_CHOICES = (
@@ -45,9 +44,10 @@ REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 class ShiftingRequest(FacilityBaseModel):
-
-    orgin_facility = models.ForeignKey(
-        "Facility", on_delete=models.PROTECT, related_name="requesting_facility"
+    origin_facility = models.ForeignKey(
+        "Facility",
+        on_delete=models.PROTECT,
+        related_name="requesting_facility",
     )
     shifting_approving_facility = models.ForeignKey(
         "Facility",
@@ -96,9 +96,6 @@ class ShiftingRequest(FacilityBaseModel):
         null=True,
         related_name="shifting_assigned_to",
     )
-    patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
-    )
     ambulance_driver_name = models.TextField(default="", blank=True)
     ambulance_phone_number = models.CharField(
         max_length=14, validators=[phone_number_regex], default="", blank=True
@@ -124,7 +121,7 @@ class ShiftingRequest(FacilityBaseModel):
         "patient__phone_number": "Patient Phone Number",
         "patient__age": "Patient Age",
         "patient__is_antenatal": "Patient is Antenatal",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
         "status": "Current Status",

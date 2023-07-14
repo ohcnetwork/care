@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 # These two environment variables prevent __pycache__/ files.
 # since ipython is already present in required, you might as well use it
@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED 1 PYTHONDONTWRITEBYTECODE 1 PYTHONBREAKPOINT=ipython
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential libjpeg-dev zlib1g-dev \
-  # psycopg2 dependencies
+  # psycopg dependencies
   libpq-dev \
   # Translations dependencies
   gettext \
