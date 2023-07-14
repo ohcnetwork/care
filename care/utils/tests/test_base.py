@@ -14,6 +14,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
+    DailyRound,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -448,3 +449,18 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    def create_daily_round(self, consultation=None):
+        data = {
+            "consultation": consultation or self.consultation,
+            "temperature": 98.6,
+            "spo2": 98,
+            "temperature_measured_at": make_aware(
+                datetime.datetime(2020, 4, 7, 15, 30)
+            ),
+            "physical_examination_info": "physical_examination_info",
+            "additional_symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
+            "other_symptoms": "No other symptoms",
+            "created_by": self.user,
+        }
+        return DailyRound.objects.create(**data)
