@@ -27,6 +27,7 @@ from config.serializers import ChoiceField
 
 
 class DailyRoundSerializer(serializers.ModelSerializer):
+    # Remove when issue #5492 is fixed
     id = serializers.CharField(source="external_id", read_only=True)
     additional_symptoms = serializers.MultipleChoiceField(
         choices=SYMPTOM_CHOICES, required=False

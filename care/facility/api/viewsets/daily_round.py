@@ -11,7 +11,6 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.daily_round import (
     DailyRoundsDetailSerializer,
-    DailyRoundSerializer,
     DailyRoundsListSerializer,
 )
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
@@ -44,7 +43,7 @@ class DailyRoundsViewSet(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
-    serializer_class = DailyRoundSerializer
+    serializer_class = DailyRoundsDetailSerializer
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
