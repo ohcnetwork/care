@@ -9,6 +9,7 @@ from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
 from care.users.models import User, phone_number_regex_11
 from care.utils.assetintegration.asset_classes import AssetClasses
+from care.utils.assetintegration.asset_statuses import AvailabilityStatus
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
 
@@ -106,17 +107,12 @@ class Asset(BaseModel):
 
 
 class AssetAvailabilityRecord(BaseModel):
-    class AvailabilityStatus(enum.Enum):
-        NOT_MONITORED = 0
-        OPERATIONAL = 1
-        DOWN = 2
-        UNDER_MAINTENANCE = 3
-
     AvailabilityStatusChoices = [(e.value, e.name) for e in AvailabilityStatus]
 
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     status = models.IntegerField(
-        choices=AvailabilityStatusChoices, default=AvailabilityStatus.UNKNOWN
+        choices=AvailabilityStatusChoices,
+        default=AvailabilityStatus.NOT_MONITORED.value,
     )
     timestamp = models.DateTimeField(null=False, blank=False)
 
