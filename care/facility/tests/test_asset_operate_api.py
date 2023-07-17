@@ -110,3 +110,15 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(
             response_invalid.data.get("message", {}).get("action", {}).code, "invalid"
         )
+
+    def test_hl7monitor(self):
+        self.asset.asset_class = "HL7MONITOR"
+        self.asset.meta = self.hl7monitor_meta
+        self.asset.save()
+        pass
+
+    def test_ventilator(self):
+        self.asset.asset_class = "VENTILATOR"
+        self.asset.meta = self.ventilator_meta
+        self.asset.save()
+        pass
