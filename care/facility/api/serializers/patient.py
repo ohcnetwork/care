@@ -455,6 +455,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    created_by_local_user = serializers.BooleanField(read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -463,5 +464,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientNotes
-        fields = ("note", "facility", "created_by_object", "created_date")
+        fields = (
+            "note",
+            "facility",
+            "created_by_object",
+            "created_by_local_user",
+            "created_date",
+        )
         read_only_fields = ("created_date",)
