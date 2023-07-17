@@ -68,7 +68,7 @@ def save_fields_before_update(sender, instance, raw, using, update_fields, **kwa
 def track_user_facility_allocation(
     sender, instance, created, raw, using, update_fields, **kwargs
 ):
-    if raw:
+    if raw or (update_fields and "home_facility" not in update_fields):
         return
 
     if created and instance.home_facility:
