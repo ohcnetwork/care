@@ -23,18 +23,18 @@ def check_asset_status():
                 "middleware_hostname",
                 asset.current_location.facility.middleware_address,
             )
-            asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
-                {
-                    **asset.meta,
-                    "middleware_hostname": hostname,
-                }
-            )
             result: Any = {}
 
             if hostname in middleware_status_cache:
                 result = middleware_status_cache[hostname]
             else:
                 try:
+                    asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
+                        {
+                            **asset.meta,
+                            "middleware_hostname": hostname,
+                        }
+                    )
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
                     middleware_status_cache[hostname] = result
                 except Exception as e:
