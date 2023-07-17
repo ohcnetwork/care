@@ -118,11 +118,9 @@ class AssetAvailabilityRecord(BaseModel):
     Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
     """
 
-    AvailabilityStatusChoices = [(e.value, e.name) for e in AvailabilityStatus]
-
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     status = models.IntegerField(
-        choices=AvailabilityStatusChoices,
+        choices=AvailabilityStatus.choices,
         default=AvailabilityStatus.NOT_MONITORED.value,
     )
     timestamp = models.DateTimeField(null=False, blank=False)
