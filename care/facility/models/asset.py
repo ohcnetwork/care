@@ -107,6 +107,17 @@ class Asset(BaseModel):
 
 
 class AssetAvailabilityRecord(BaseModel):
+    """
+    Model to store the availability status of an asset at a particular timestamp.
+
+    Fields:
+    - asset: ForeignKey to Asset model
+    - status: IntegerField with choices from AvailabilityStatus enum
+    - timestamp: DateTimeField to store the timestamp of the availability record
+
+    Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
+    """
+
     AvailabilityStatusChoices = [(e.value, e.name) for e in AvailabilityStatus]
 
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
@@ -117,10 +128,11 @@ class AssetAvailabilityRecord(BaseModel):
     timestamp = models.DateTimeField(null=False, blank=False)
 
     class Meta:
+        unique_together = (("asset", "timestamp"),)
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.asset.name} - {self.status} - {self.time}"
+        return f"{self.asset.name} - {self.status} - {self.timestamp}"
 
 
 class UserDefaultAssetLocation(BaseModel):

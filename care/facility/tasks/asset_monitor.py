@@ -18,24 +18,32 @@ def check_asset_status():
     for asset in assets:
         if not asset.asset_class or not asset.meta.get("local_ip_address", None):
             continue
-        hostname = asset.meta.get(
-            "middleware_hostname",
-            asset.current_location.facility.middleware_address,
-        )
-        asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
-            {
-                **asset.meta,
-                "middleware_hostname": hostname,
-            }
-        )
         try:
+            hostname = asset.meta.get(
+                "middleware_hostname",
+                asset.current_location.facility.middleware_address,
+            )
+            asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
+                {
+                    **asset.meta,
+                    "middleware_hostname": hostname,
+                }
+            )
             result: Any = {}
 
             if hostname in middleware_status_cache:
                 result = middleware_status_cache[hostname]
             else:
-                result = asset_class.api_get(asset_class.get_url("/devices/status"))
-                middleware_status_cache[hostname] = result
+                try:
+                    result = asset_class.api_get(asset_class.get_url("devices/status"))
+                    middleware_status_cache[hostname] = result
+                except Exception as e:
+                    print("Error in Asset Status Check", e)
+                    middleware_status_cache[hostname] = None
+                    continue
+
+            if not result:
+                continue
 
             new_status = None
             for status_record in result:
@@ -63,7 +71,11 @@ def check_asset_status():
                 else:
                     new_status = AvailabilityStatus.NOT_MONITORED
 
-                if not last_record or last_record.status != new_status.value:
+                if not last_record or (
+                    datetime.fromisoformat(status_record.get("time"))
+                    > last_record.timestamp
+                    and last_record.status != new_status.value
+                ):
                     AssetAvailabilityRecord.objects.create(
                         asset=asset,
                         status=new_status.value,

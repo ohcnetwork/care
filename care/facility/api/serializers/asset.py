@@ -172,7 +172,6 @@ class AssetAvailabilitySerializer(ModelSerializer):
 
     class Meta:
         model = AssetAvailabilityRecord
-        fields = ("asset", "status", "timestamp")
         exclude = ("deleted", "external_id")
 
 
