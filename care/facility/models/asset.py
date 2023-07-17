@@ -9,13 +9,19 @@ from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
 from care.users.models import User, phone_number_regex_11
 from care.utils.assetintegration.asset_classes import AssetClasses
-from care.utils.assetintegration.asset_statuses import AvailabilityStatus
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 def get_random_asset_id():
     return str(uuid.uuid4())
+
+
+class AvailabilityStatus(models.IntegerChoices):
+    NOT_MONITORED = 0
+    OPERATIONAL = 1
+    DOWN = 2
+    UNDER_MAINTENANCE = 3
 
 
 class AssetLocation(BaseModel, AssetsPermissionMixin):

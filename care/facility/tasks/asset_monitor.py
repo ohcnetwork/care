@@ -3,9 +3,12 @@ from typing import Any
 
 from celery import shared_task
 
-from care.facility.models.asset import Asset, AssetAvailabilityRecord
+from care.facility.models.asset import (
+    Asset,
+    AssetAvailabilityRecord,
+    AvailabilityStatus,
+)
 from care.utils.assetintegration.asset_classes import AssetClasses
-from care.utils.assetintegration.asset_statuses import AvailabilityStatus
 from care.utils.assetintegration.base import BaseAssetIntegration
 
 
@@ -29,7 +32,9 @@ def check_asset_status():
                 result = middleware_status_cache[hostname]
             else:
                 try:
-                    asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
+                    asset_class: BaseAssetIntegration = AssetClasses[
+                        asset.asset_class
+                    ].value(
                         {
                             **asset.meta,
                             "middleware_hostname": hostname,
