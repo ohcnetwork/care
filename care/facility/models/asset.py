@@ -17,11 +17,11 @@ def get_random_asset_id():
     return str(uuid.uuid4())
 
 
-class AvailabilityStatus(models.IntegerChoices):
-    NOT_MONITORED = 0
-    OPERATIONAL = 1
-    DOWN = 2
-    UNDER_MAINTENANCE = 3
+class AvailabilityStatus(models.TextChoices):
+    NOT_MONITORED = "Not Monitored"
+    OPERATIONAL = "Operational"
+    DOWN = "Down"
+    UNDER_MAINTENANCE = "Under Maintenance"
 
 
 class AssetLocation(BaseModel, AssetsPermissionMixin):
@@ -118,16 +118,16 @@ class AssetAvailabilityRecord(BaseModel):
 
     Fields:
     - asset: ForeignKey to Asset model
-    - status: IntegerField with choices from AvailabilityStatus enum
+    - status: TextField with choices from AvailabilityStatus
     - timestamp: DateTimeField to store the timestamp of the availability record
 
     Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
     """
 
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
-    status = models.IntegerField(
+    status = models.TextField(
         choices=AvailabilityStatus.choices,
-        default=AvailabilityStatus.NOT_MONITORED.value,
+        default=AvailabilityStatus.NOT_MONITORED,
     )
     timestamp = models.DateTimeField(null=False, blank=False)
 
