@@ -10,24 +10,25 @@ from care.utils.tests.test_base import TestBase
 
 
 class AssetAvailabilityViewSetTestCase(TestBase, TestClassMixin, APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        self.asset_from_location = AssetLocation.objects.create(
+    @classmethod
+    def setUp(cls):
+        cls.factory = APIRequestFactory()
+        state = cls.create_state()
+        district = cls.create_district(state=state)
+        cls.user = cls.create_user(district=district, username="test user")
+        facility = cls.create_facility(district=district, user=cls.user)
+        cls.asset_from_location = AssetLocation.objects.create(
             name="asset from location", location_type=1, facility=facility
         )
-        self.asset_to_location = AssetLocation.objects.create(
+        cls.asset_to_location = AssetLocation.objects.create(
             name="asset to location", location_type=1, facility=facility
         )
-        self.asset = Asset.objects.create(
-            name="Test Asset", current_location=self.asset_from_location, asset_type=50
+        cls.asset = Asset.objects.create(
+            name="Test Asset", current_location=cls.asset_from_location, asset_type=50
         )
 
-        self.asset_availability = AssetAvailabilityRecord.objects.create(
-            asset=self.asset,
+        cls.asset_availability = AssetAvailabilityRecord.objects.create(
+            asset=cls.asset,
             status=AvailabilityStatus.OPERATIONAL.value,
             timestamp=timezone.now(),
         )
