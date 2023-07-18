@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Any
 
@@ -11,10 +12,14 @@ from care.facility.models.asset import (
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
 
+logger = logging.getLogger(__name__)
+
 
 @shared_task
 def check_asset_status():
     print("Checking Asset Status", datetime.now())
+    logger.info(f"Checking Asset Status: {datetime.now()}")
+
     assets = Asset.objects.all()
     middleware_status_cache = {}
 
@@ -42,8 +47,8 @@ def check_asset_status():
                     )
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
                     middleware_status_cache[hostname] = result
-                except Exception as e:
-                    print("Error in Asset Status Check", e)
+                except Exception:
+                    logger.exception("Error in Asset Status Check - Fetching Status")
                     middleware_status_cache[hostname] = None
                     continue
 
@@ -87,5 +92,5 @@ def check_asset_status():
                         timestamp=status_record.get("time", datetime.now()),
                     )
 
-        except Exception as e:
-            print("Error in Asset Status Check", e)
+        except Exception:
+            logger.exception("Error in Asset Status Check")
