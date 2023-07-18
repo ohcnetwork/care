@@ -286,6 +286,22 @@ class HealthIdGateway:
         response = self.api.get(path, {}, access_token)
         return response.json()
 
+    # /v1/account/getPngCard
+    def get_abha_card_png(self, data):
+        path = "/v1/account/getPngCard"
+        access_token = self.generate_access_token(data)
+        response = self.api.get(path, {}, access_token)
+       
+        return b64encode(response.content)
+    
+    def get_abha_card_pdf(self, data):
+        path = "/v1/account/getCard"
+        access_token = self.generate_access_token(data)
+        response = self.api.get(path, {}, access_token)
+       
+        return b64encode(response.content)
+
+
     # /v1/account/qrCode
     def get_qr_code(self, data, auth):
         path = "/v1/account/qrCode"
@@ -391,6 +407,10 @@ class AbdmGateway:
         """
         self.temp_memory[request_id] = data
 
+        if "authMode" in data and data["authMode"] == "DIRECT":
+            self.init(request_id)
+            return
+
         payload = {
             "requestId": request_id,
             "timestamp": str(
@@ -418,6 +438,8 @@ class AbdmGateway:
         data = self.temp_memory[prev_request_id]
         self.temp_memory[request_id] = data
 
+        print("auth-init", data)
+
         payload = {
             "requestId": request_id,
             "timestamp": str(
@@ -426,7 +448,7 @@ class AbdmGateway:
             "query": {
                 "id": data["healthId"],
                 "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
-                "authMode": "DEMOGRAPHICS",
+                "authMode": data["authMode"] if "authMode" in data else "DEMOGRAPHICS",
                 "requester": {"type": "HIP", "id": self.hip_id},
             },
         }
@@ -463,6 +485,24 @@ class AbdmGateway:
         }
 
         print(payload)
+
+        response = self.api.post(path, payload, None, additional_headers)
+        return response
+
+    def auth_on_notify(self, data):
+        path = "/v0.5/links/link/on-init"
+        additional_headers = {"X-CM-ID": settings.X_CM_ID}
+
+        request_id = str(uuid.uuid4())
+        payload = {
+            "requestId": request_id,
+            "timestamp": str(
+                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            ),
+            "acknowledgement": {"status": "OK"},
+            # "error": {"code": 1000, "message": "string"},
+            "resp": {"requestId": data["request_id"]},
+        }
 
         response = self.api.post(path, payload, None, additional_headers)
         return response

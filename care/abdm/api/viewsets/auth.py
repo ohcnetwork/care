@@ -34,7 +34,9 @@ class OnInitView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         print("on-init", data)
+
         AbdmGateway().confirm(data["auth"]["transactionId"], data["resp"]["requestId"])
+
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
@@ -70,6 +72,25 @@ class OnConfirmView(GenericAPIView):
             )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
+
+
+class AuthNotifyView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = [ABDMAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print("auth-notify", data)
+
+        if data["auth"]["status"] != "GRANTED":
+            return
+
+        AbdmGateway.auth_on_notify({"request_id": data["auth"]["transactionId"]})
+
+        # AbdmGateway().add_care_context(
+        #     data["auth"]["accessToken"],
+        #     data["resp"]["requestId"],
+        # )
 
 
 class OnAddContextsView(GenericAPIView):
@@ -236,8 +257,8 @@ class RequestDataView(GenericAPIView):
         # TODO: uncomment later
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        # if not consent or not consent["notification"]["status"] == "GRANTED":
-        #     return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+        if not consent or not consent["notification"]["status"] == "GRANTED":
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
         # consent_from = datetime.fromisoformat(
@@ -313,6 +334,10 @@ class RequestDataView(GenericAPIView):
                 },
             }
         )
+
+        print("______________________________________________")
+        print(consent["notification"]["consentDetail"]["careContexts"][:-2:-1])
+        print("______________________________________________")
 
         AbdmGateway().data_notify(
             {

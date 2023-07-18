@@ -230,7 +230,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             {
                 "txn_id": data["txnId"],
                 "access_token": abha_profile["token"],
-                "refresh_token": None,
+                "refresh_token": abha_profile["refreshToken"],
             },
         )
 
@@ -279,6 +279,35 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         serializer = HealthIdSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         response = HealthIdGateway().search_by_health_id(data)
+        return Response(response, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"])
+    def get_abha_card(self, request):
+        data = request.data
+
+        if ratelimit(request, "get_abha_card", [data["patient"]], increment=False):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        allowed_patients = get_patient_queryset(request.user)
+        patient = allowed_patients.filter(external_id=data["patient"]).first()
+        if not patient:
+            raise ValidationError({"patient": "Not Found"})
+
+        if not patient.abha_number:
+            raise ValidationError({"abha": "Patient hasn't linked thier abha"})
+
+        if data["type"] == "png":
+            response = HealthIdGateway().get_abha_card_png(
+                {"refreshToken": patient.abha_number.refresh_token}
+            )
+            return Response(response, status=status.HTTP_200_OK)
+
+        response = HealthIdGateway().get_abha_card_pdf(
+            {"refreshToken": patient.abha_number.refresh_token}
+        )
         return Response(response, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -445,11 +474,18 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         AbdmGateway().fetch_modes(
             {
-                "healthId": consultation.patient.abha_number.abha_number,
-                "name": consultation.patient.abha_number.name,
-                "gender": consultation.patient.abha_number.gender,
-                "dateOfBirth": str(consultation.patient.abha_number.date_of_birth),
+                "healthId": consultation.patient.abha_number.health_id,
+                "name": request.data["name"]
+                if "name" in request.data
+                else consultation.patient.abha_number.name,
+                "gender": request.data["gender"]
+                if "gender" in request.data
+                else consultation.patient.abha_number.gender,
+                "dateOfBirth": request.data["dob"]
+                if "dob" in request.data
+                else str(consultation.patient.abha_number.date_of_birth),
                 "consultationId": consultation_id,
+                # "authMode": "DIRECT",
                 "purpose": "LINK",
             }
         )
