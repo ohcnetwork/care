@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any
 
 from celery import shared_task
+from django.utils import timezone
 
 from care.facility.models.asset import (
     Asset,
@@ -17,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def check_asset_status():
-    print("Checking Asset Status", datetime.now())
-    logger.info(f"Checking Asset Status: {datetime.now()}")
+    print("Checking Asset Status", timezone.now())
+    logger.info(f"Checking Asset Status: {timezone.now()}")
 
     assets = Asset.objects.all()
     middleware_status_cache = {}
@@ -89,7 +90,7 @@ def check_asset_status():
                     AssetAvailabilityRecord.objects.create(
                         asset=asset,
                         status=new_status.value,
-                        timestamp=status_record.get("time", datetime.now()),
+                        timestamp=status_record.get("time", timezone.now()),
                     )
 
         except Exception:
