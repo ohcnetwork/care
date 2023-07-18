@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def check_asset_status():
-    print("Checking Asset Status", timezone.now())
     logger.info(f"Checking Asset Status: {timezone.now()}")
 
     assets = Asset.objects.all()
