@@ -118,16 +118,17 @@ class AssetAvailabilityRecord(BaseModel):
 
     Fields:
     - asset: ForeignKey to Asset model
-    - status: TextField with choices from AvailabilityStatus
+    - status: CharField with choices from AvailabilityStatus
     - timestamp: DateTimeField to store the timestamp of the availability record
 
     Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
     """
 
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
-    status = models.TextField(
+    status = models.CharField(
         choices=AvailabilityStatus.choices,
         default=AvailabilityStatus.NOT_MONITORED,
+        max_length=20,
     )
     timestamp = models.DateTimeField(null=False, blank=False)
 
