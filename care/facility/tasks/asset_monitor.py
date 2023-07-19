@@ -55,7 +55,7 @@ def check_asset_status():
                     logger.warn(f"Middleware {hostname} is down", exc_info=True)
 
             # If no status is returned, setting default status as down
-            if not result or len(result) == 0:
+            if not result:
                 result = [{"time": timezone.now().isoformat(), "status": []}]
 
             middleware_status_cache[hostname] = result
