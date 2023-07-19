@@ -386,7 +386,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             patient.save()
 
         abha_serialized = AbhaNumberSerializer(abha_number).data
-        return Response(abha_serialized, status=status.HTTP_200_OK)
+        return Response(
+            {"id": abha_serialized["external_id"], "abha_profile": abha_serialized},
+            status=status.HTTP_200_OK,
+        )
 
     @swagger_auto_schema(
         operation_id="get_new_linking_token",
