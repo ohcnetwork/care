@@ -181,7 +181,7 @@ class HealthIdGateway:
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
         print("Creating Health ID with data: {}".format(data))
-        data.pop("healthId", None)
+        # data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
 
@@ -291,16 +291,15 @@ class HealthIdGateway:
         path = "/v1/account/getPngCard"
         access_token = self.generate_access_token(data)
         response = self.api.get(path, {}, access_token)
-       
+
         return b64encode(response.content)
-    
+
     def get_abha_card_pdf(self, data):
         path = "/v1/account/getCard"
         access_token = self.generate_access_token(data)
         response = self.api.get(path, {}, access_token)
-       
-        return b64encode(response.content)
 
+        return b64encode(response.content)
 
     # /v1/account/qrCode
     def get_qr_code(self, data, auth):
