@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
 from care.abdm.api.serializers.healthid import (
     AadharOtpGenerateRequestPayloadSerializer,
     AadharOtpResendRequestPayloadSerializer,
@@ -25,7 +26,6 @@ from care.abdm.api.serializers.healthid import (
 from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.api.serializers.patient import PatientDetailSerializer
-from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientConsultation, PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
@@ -307,10 +307,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             return Response(response, status=status.HTTP_200_OK)
 
         response = HealthIdGateway().get_abha_card_pdf(
-                {"refreshToken": patient.abha_number.refresh_token}
-            )
+            {"refreshToken": patient.abha_number.refresh_token}
+        )
         return Response(response, status=status.HTTP_200_OK)
-        
 
     @swagger_auto_schema(
         # /v1/registration/aadhaar/searchByHealthId
@@ -334,70 +333,16 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         dob = datetime.strptime(data["dob"], "%d-%m-%Y").date()
 
-        if "patientId" not in data or data["patientId"] is None:
-            patient = PatientRegistration.objects.filter(
-                abha_number__abha_number=data["hidn"]
-            ).first()
-            if patient:
-                return Response(
-                    {
-                        "message": "A patient is already associated with the provided Abha Number"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            if (
-                "facilityId" not in data
-                or not Facility.objects.filter(external_id=data["facilityId"]).first()
-            ):
-                return Response(
-                    {"message": "Enter a valid facilityId"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            if not HealthIdGateway().verify_demographics(
-                data["phr"] or data["hidn"],
-                data["name"],
-                data["gender"],
-                str(dob.year),
-            ):
-                return Response(
-                    {"message": "Please enter valid data"},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
-            patient = PatientRegistration.objects.create(
-                facility=Facility.objects.get(external_id=data["facilityId"]),
-                name=data["name"],
-                gender=1
-                if data["gender"] == "M"
-                else 2
-                if data["gender"] == "F"
-                else 3,
-                is_antenatal=False,
-                phone_number=data["mobile"],
-                emergency_phone_number=data["mobile"],
-                date_of_birth=dob,
-                blood_group="UNK",
-                nationality="India",
-                address=data["address"],
-                pincode=None,
-                created_by=None,
-                state=None,
-                district=None,
-                local_body=None,
-                ward=None,
+        patient = PatientRegistration.objects.filter(
+            abha_number__abha_number=data["hidn"]
+        ).first()
+        if patient:
+            return Response(
+                {
+                    "message": "A patient is already associated with the provided Abha Number"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        else:
-            patient = PatientRegistration.objects.filter(
-                external_id=data["patientId"]
-            ).first()
-
-            if not patient:
-                return Response(
-                    {"message": "Enter a valid patientId"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
 
         abha_number = AbhaNumber.objects.create(
             abha_number=data["hidn"],
@@ -411,8 +356,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         )
 
         abha_number.save()
-        patient.abha_number = abha_number
-        patient.save()
 
         AbdmGateway().fetch_modes(
             {
@@ -423,8 +366,22 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             }
         )
 
-        patient_serialized = PatientDetailSerializer(patient).data
-        return Response(patient_serialized, status=status.HTTP_200_OK)
+        if "patientId" in data or data["patientId"] is not None:
+            patient = PatientRegistration.objects.filter(
+                external_id=data["patientId"]
+            ).first()
+
+            if not patient:
+                return Response(
+                    {"message": "Enter a valid patientId"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            patient.abha_number = abha_number
+            patient.save()
+
+        abha_serialized = AbhaNumberSerializer(abha_number).data
+        return Response(abha_serialized, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_id="get_new_linking_token",
