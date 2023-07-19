@@ -344,29 +344,34 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        abha_number = AbhaNumber.objects.create(
-            abha_number=data["hidn"],
-            health_id=data["phr"],
-            name=data["name"],
-            gender=data["gender"],
-            date_of_birth=str(dob)[0:10],
-            address=data["address"],
-            district=data["dist name"],
-            state=data["state name"],
-        )
+        abha_number = AbhaNumber.objects.filter(abha_number=data["hidn"]).first()
 
-        abha_number.save()
+        if not abha_number:
+            abha_number = AbhaNumber.objects.create(
+                abha_number=data["hidn"],
+                health_id=data["phr"],
+                name=data["name"],
+                gender=data["gender"],
+                date_of_birth=str(dob)[0:10],
+                address=data["address"],
+                district=data["dist name"],
+                state=data["state name"],
+            )
 
-        AbdmGateway().fetch_modes(
-            {
-                "healthId": data["phr"] or data["hidn"],
-                "name": data["name"],
-                "gender": data["gender"],
-                "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[0:10],
-            }
-        )
+            abha_number.save()
 
-        if "patientId" in data or data["patientId"] is not None:
+            AbdmGateway().fetch_modes(
+                {
+                    "healthId": data["phr"] or data["hidn"],
+                    "name": data["name"],
+                    "gender": data["gender"],
+                    "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[
+                        0:10
+                    ],
+                }
+            )
+
+        if "patientId" in data and data["patientId"] is not None:
             patient = PatientRegistration.objects.filter(
                 external_id=data["patientId"]
             ).first()
