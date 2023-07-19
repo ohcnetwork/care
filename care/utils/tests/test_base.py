@@ -439,7 +439,7 @@ class TestBase(APITestCase):
         return PatientConsultation.objects.create(**data)
 
     def create_patient_note(
-        self, patient=None, facility=None, note="Patient is doing find", **kwargs
+        self, patient=None, facility=None, note="Patient is doing fine", **kwargs
     ):
         data = {
             "patient": patient or self.patient,

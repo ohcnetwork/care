@@ -9,10 +9,13 @@ from care.utils.tests.test_base import TestBase
 
 
 class ExpectedPatientNoteKeys(Enum):
+    ID = "id"
     NOTE = "note"
     FACILITY = "facility"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
+    EDITABLE_UNTIL = "editable_until"
+    MODIFIED_DATE = "modified_date"
 
 
 class ExpectedFacilityKeys(Enum):
