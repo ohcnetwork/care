@@ -8,6 +8,7 @@ from care.facility.api.viewsets.ambulance import (
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
+    AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicViewSet,
     AssetTransactionViewSet,
@@ -52,6 +53,7 @@ from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
+    MedibaseViewSet,
     MedicineAdministrationViewSet,
 )
 from care.facility.api.viewsets.prescription_supplier import (
@@ -184,6 +186,7 @@ facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 
 router.register("asset", AssetViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
+router.register("asset_availability", AssetAvailabilityViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
@@ -199,6 +202,7 @@ consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionVi
 consultation_nested_router.register(
     r"prescription_administration", MedicineAdministrationViewSet
 )
+router.register("medibase", MedibaseViewSet, basename="medibase")
 
 # HCX
 router.register("hcx/policy", PolicyViewSet)

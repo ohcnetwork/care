@@ -5,7 +5,7 @@ from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
     MedicineAdministrationSerializer,
@@ -132,3 +132,46 @@ class ConsultationPrescriptionViewSet(
     #     administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
     #     administered_obj.delete()
     #     return Response({"success": True}, status=status.HTTP_200_OK)
+
+
+class MedibaseViewSet(ViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    def serailize_data(self, objects):
+        return [
+            {
+                "id": x[0],
+                "name": x[1],
+                "type": x[2],
+                "generic": x[3],
+                "company": x[4],
+                "contents": x[5],
+                "cims_class": x[6],
+                "atc_classification": x[7],
+            }
+            for x in objects
+        ]
+
+    def sort(self, query, results):
+        exact_matches = []
+        partial_matches = []
+
+        for x in results:
+            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
+            if query in words:
+                exact_matches.append(x)
+            else:
+                partial_matches.append(x)
+
+        return exact_matches + partial_matches
+
+    def list(self, request):
+        from care.facility.static_data.medibase import MedibaseMedicineTable
+
+        queryset = MedibaseMedicineTable
+
+        if query := request.query_params.get("query"):
+            query = query.strip().lower()
+            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
+            queryset = self.sort(query, queryset)
+        return Response(self.serailize_data(queryset[:15]))

@@ -21,7 +21,7 @@ GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
 
 phone_number_regex = RegexValidator(
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}$",
+    regex=r"^(?:(?:(?:\+|0{0,2})91|0{0,2})(?:\()?\d{3}(?:\))?[\-]?\d{3}[\-]?\d{4})$",
     message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
     code="invalid_mobile",
 )
