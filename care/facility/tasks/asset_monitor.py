@@ -33,7 +33,7 @@ def check_asset_status():
                 "middleware_hostname",
                 asset.current_location.facility.middleware_address,
             )
-            result: Any = {}
+            result: Any = None
 
             # Checking if middleware status is already cached
             if hostname in middleware_status_cache:
@@ -51,15 +51,14 @@ def check_asset_status():
                     )
                     # Fetching the status of the device
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
-                    middleware_status_cache[hostname] = result
                 except Exception:
                     logger.warn(f"Middleware {hostname} is down", exc_info=True)
-                    result = [{"time": timezone.now(), "status": []}]
-                    middleware_status_cache[hostname] = result
 
             # If no status is returned, setting default status as down
             if not result or len(result) == 0:
-                result = [{"time": timezone.now(), "status": []}]
+                result = [{"time": timezone.now().isoformat(), "status": []}]
+
+            middleware_status_cache[hostname] = result
 
             # Setting new status as down by default
             new_status = AvailabilityStatus.DOWN
