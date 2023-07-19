@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -8,11 +9,15 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.ambulance import AmbulanceDriverSerializer, AmbulanceSerializer
+from care.facility.api.serializers.ambulance import (
+    AmbulanceDriverSerializer,
+    AmbulanceSerializer,
+    DeleteDriverSerializer,
+)
 from care.facility.api.viewsets import UserAccessMixin
 from care.facility.models.ambulance import Ambulance
 
@@ -24,13 +29,24 @@ class AmbulanceFilterSet(filters.FilterSet):
     secondary_district = filters.CharFilter(field_name="secondary_district_id")
     third_district = filters.CharFilter(field_name="third_district_id")
 
-    primary_district_name = filters.CharFilter(field_name="primary_district__name", lookup_expr="icontains")
-    secondary_district_name = filters.CharFilter(field_name="secondary_district__name", lookup_expr="icontains")
-    third_district_name = filters.CharFilter(field_name="third_district__name", lookup_expr="icontains")
+    primary_district_name = filters.CharFilter(
+        field_name="primary_district__name", lookup_expr="icontains"
+    )
+    secondary_district_name = filters.CharFilter(
+        field_name="secondary_district__name", lookup_expr="icontains"
+    )
+    third_district_name = filters.CharFilter(
+        field_name="third_district__name", lookup_expr="icontains"
+    )
 
 
 class AmbulanceViewSet(
-    UserAccessMixin, RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet,
+    UserAccessMixin,
+    RetrieveModelMixin,
+    ListModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
 ):
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
@@ -40,31 +56,36 @@ class AmbulanceViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
 
+    def get_serializer_class(self):
+        if self.action == "add_driver":
+            return AmbulanceDriverSerializer
+        elif self.action == "remove_driver":
+            return DeleteDriverSerializer
+        return AmbulanceSerializer
+
+    @extend_schema(tags=["ambulance"])
     @action(methods=["POST"], detail=True)
     def add_driver(self, request):
         ambulance = self.get_object()
-        serializer = AmbulanceDriverSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
-        return Response(data=AmbulanceDriverSerializer(driver).data, status=status.HTTP_201_CREATED)
+        return Response(
+            data=AmbulanceDriverSerializer(driver).data,
+            status=status.HTTP_201_CREATED,
+        )
 
+    @extend_schema(tags=["ambulance"])
     @action(methods=["DELETE"], detail=True)
     def remove_driver(self, request):
-        class DeleteDriverSerializer(serializers.Serializer):
-            driver_id = serializers.IntegerField()
-
-            def update(self, instance, validated_data):
-                raise NotImplementedError
-
-            def create(self, validated_data):
-                raise NotImplementedError
-
         ambulance = self.get_object()
-        serializer = DeleteDriverSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        driver = ambulance.ambulancedriver_set.filter(id=serializer.validated_data["driver_id"]).first()
+        driver = ambulance.ambulancedriver_set.filter(
+            id=serializer.validated_data["driver_id"]
+        ).first()
         if not driver:
             raise serializers.ValidationError({"driver_id": "Detail not found"})
 
@@ -72,6 +93,7 @@ class AmbulanceViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(create=extend_schema(tags=["ambulance"]))
 class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer

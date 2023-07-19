@@ -1,7 +1,7 @@
 from uuid import uuid4
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import JSONField
 
 from care.facility.models.facility import Facility
 from care.users.models import District, LocalBody
@@ -26,9 +26,21 @@ class FacilityRelatedSummary(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["-modified_date",]),
-            models.Index(fields=["-created_date",]),
-            models.Index(fields=["s_type",]),
+            models.Index(
+                fields=[
+                    "-modified_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "-created_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "s_type",
+                ]
+            ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
 
@@ -48,9 +60,21 @@ class DistrictScopedSummary(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["-modified_date",]),
-            models.Index(fields=["-created_date",]),
-            models.Index(fields=["s_type",]),
+            models.Index(
+                fields=[
+                    "-modified_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "-created_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "s_type",
+                ]
+            ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
 
@@ -68,8 +92,20 @@ class LocalBodyScopedSummary(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["-modified_date",]),
-            models.Index(fields=["-created_date",]),
-            models.Index(fields=["s_type",]),
+            models.Index(
+                fields=[
+                    "-modified_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "-created_date",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "s_type",
+                ]
+            ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
