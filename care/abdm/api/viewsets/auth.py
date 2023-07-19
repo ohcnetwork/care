@@ -121,11 +121,14 @@ class DiscoverView(GenericAPIView):
             )
         else:
             for identifier in verified_identifiers:
+                if identifier["value"] is None:
+                    continue
+
                 if identifier["type"] == "MOBILE":
                     matched_by.append(identifier["value"])
+                    mobile = identifier["value"].replace("+91", "").replace("-", "")
                     patients = patients.filter(
-                        Q(phone_number=f"+91{identifier['value']}")
-                        | Q(phone_number=identifier["value"])
+                        Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
                     )
 
                 if identifier["type"] == "NDHM_HEALTH_NUMBER":
