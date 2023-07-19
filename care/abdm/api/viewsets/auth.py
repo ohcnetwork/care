@@ -109,6 +109,7 @@ class DiscoverView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
+        print(data)
 
         patients = PatientRegistration.objects.all()
         verified_identifiers = data["patient"]["verifiedIdentifiers"]
@@ -139,11 +140,8 @@ class DiscoverView(GenericAPIView):
                         abha_number__health_id=identifier["value"]
                     )
 
-        patient = patients.filter(
-            abha_number__name=data["patient"]["name"],
-            abha_number__gender=data["patient"]["gender"],
-            # TODO: check date also
-        ).last()
+        # TODO: also filter by demographics
+        patient = patients.last()
 
         if not patient:
             return Response(
