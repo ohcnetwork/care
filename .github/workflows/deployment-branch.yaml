@@ -5,6 +5,7 @@ on:
 
   push:
     branches:
+      - abdm
       - abdm-m2
       - hcx-communications
     paths-ignore:
