@@ -56,11 +56,7 @@ class HipViewSet(GenericViewSet):
                 patient = PatientRegistration.objects.create(
                     facility=Facility.objects.get(external_id=counter_id),
                     name=patient_data["name"],
-                    gender=1
-                    if patient_data["gender"] == "M"
-                    else 2
-                    if patient_data["gender"] == "F"
-                    else 3,
+                    gender={ "M": 1, "F": 2 }.get(patient_data["gender"], 3)
                     is_antenatal=False,
                     phone_number=patient_data["mobile"],
                     emergency_phone_number=patient_data["mobile"],
