@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -16,7 +16,7 @@ from config.authentication import ABDMAuthentication
 
 
 class HipViewSet(GenericViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def get_linking_token(self, data):
