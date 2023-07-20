@@ -8,10 +8,6 @@ class Migration(migrations.Migration):
         ("facility", "0002_auto_20230613_1657"),
     ]
 
-    replaces = [
-        ("facility", "0331_auto_20230130_1652"),
-    ]
-
     operations = [
         migrations.RemoveField(
             model_name="patientregistration",
