@@ -109,6 +109,7 @@ class DiscoverView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
+        print(data)
 
         patients = PatientRegistration.objects.all()
         verified_identifiers = data["patient"]["verifiedIdentifiers"]
@@ -120,11 +121,14 @@ class DiscoverView(GenericAPIView):
             )
         else:
             for identifier in verified_identifiers:
+                if identifier["value"] is None:
+                    continue
+
                 if identifier["type"] == "MOBILE":
                     matched_by.append(identifier["value"])
+                    mobile = identifier["value"].replace("+91", "").replace("-", "")
                     patients = patients.filter(
-                        Q(phone_number=f"+91{identifier['value']}")
-                        | Q(phone_number=identifier["value"])
+                        Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
                     )
 
                 if identifier["type"] == "NDHM_HEALTH_NUMBER":
@@ -139,11 +143,8 @@ class DiscoverView(GenericAPIView):
                         abha_number__health_id=identifier["value"]
                     )
 
-        patient = patients.filter(
-            abha_number__name=data["patient"]["name"],
-            abha_number__gender=data["patient"]["gender"],
-            # TODO: check date also
-        ).last()
+        # TODO: also filter by demographics
+        patient = patients.last()
 
         if not patient:
             return Response(
