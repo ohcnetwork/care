@@ -1,11 +1,9 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
 
 
 class ExpectedPatientNoteKeys(Enum):
@@ -26,6 +24,7 @@ class ExpectedFacilityKeys(Enum):
     DISTRICT_OBJECT = "district_object"
     STATE_OBJECT = "state_object"
     FACILITY_TYPE = "facility_type"
+    CONSULTATION = "consultation"
     READ_COVER_IMAGE_URL = "read_cover_image_url"
     FEATURES = "features"
     PATIENT_COUNT = "patient_count"
@@ -74,20 +73,13 @@ class ExpectedCreatedByObjectKeys(Enum):
     HOME_FACILITY = "home_facility"
 
 
-class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
+class PatientNotesTestCase(TestClassMixin):
     asset_id = None
 
     def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
+        facility = self.create_facility(district=self.district, user=self.users[0])
 
-        # Create users and facility
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-
-        self.patient = self.create_patient(district=district.id)
-
+        self.patient = self.create_patient(district=self.district.id)
         self.patient_note = self.create_patient_note(
             patient=self.patient, facility=facility
         )
