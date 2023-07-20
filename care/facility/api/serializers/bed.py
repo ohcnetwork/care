@@ -34,6 +34,11 @@ class BedSerializer(ModelSerializer):
 
     number_of_beds = IntegerField(required=False, default=1, write_only=True)
 
+    def validate_number_of_beds(self, value):
+        if value > 100:
+            raise ValidationError("Cannot create more than 100 beds at once.")
+        return value
+
     class Meta:
         model = Bed
         exclude = ("deleted", "external_id", "assets")
@@ -59,11 +64,6 @@ class BedSerializer(ModelSerializer):
         else:
             raise ValidationError(
                 {"location": "Field is Required", "facility": "Field is Required"}
-            )
-
-        if attrs["number_of_beds"] > 100:
-            raise ValidationError(
-                {"number_of_beds": "Cannot create more than 100 beds at once."}
             )
         return super().validate(attrs)
 

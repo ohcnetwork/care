@@ -62,18 +62,20 @@ class BedViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        validated_data = serializer.validated_data
-        number_of_beds = validated_data.pop("number_of_beds", 1)
+        number_of_beds = serializer.validated_data.pop("number_of_beds", 1)
         # Bulk creating n number of beds
-        if number_of_beds > 1 and number_of_beds <= 100:
-            objs = []
-            for i in range(1, number_of_beds + 1):
-                temp_data = dict(validated_data.copy())
-                temp_data["name"] = temp_data["name"] + f" - {i}"
-                objs.append(Bed(**temp_data))
-
-            res = Bed.objects.bulk_create(objs=objs, batch_size=number_of_beds)
-            return Response(res, status=status.HTTP_201_CREATED)
+        if number_of_beds > 1:
+            data = serializer.validated_data.copy()
+            data.pop("name")
+            beds = [
+                Bed(
+                    **data,
+                    name=f"{serializer.validated_data['name']} {i+1}",
+                )
+                for i in range(number_of_beds)
+            ]
+            Bed.objects.bulk_create(beds)
+            return Response(status=status.HTTP_201_CREATED)
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
