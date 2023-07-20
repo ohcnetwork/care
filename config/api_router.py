@@ -227,8 +227,9 @@ router.register("hcx", HcxGatewayViewSet)
 router.register("public/asset", AssetPublicViewSet)
 
 # ABDM endpoints
-router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
-abdm_router.register("profile", HipViewSet, basename="hip")
+if settings.ENABLE_ABDM:
+    router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
+    abdm_router.register("profile", HipViewSet, basename="hip")
 
 app_name = "api"
 urlpatterns = [

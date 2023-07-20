@@ -540,6 +540,7 @@ JWKS = JsonWebKey.import_key_set(
 )
 
 # ABDM
+ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
 ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
 ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
 ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
