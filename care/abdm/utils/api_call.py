@@ -61,7 +61,6 @@ class APIGateway:
 
     def add_auth_header(self, headers):
         token = cache.get(ABDM_TOKEN_CACHE_KEY)
-        print("Using Cached Token")
         if not token:
             print("No Token in Cache")
             data = {

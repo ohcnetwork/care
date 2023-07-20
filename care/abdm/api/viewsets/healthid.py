@@ -186,13 +186,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return abha_object
 
     def add_abha_details_to_patient(self, abha_object, patient_object):
-        # patient = PatientRegistration.objects.filter(
-        #     abha_number__abha_number=abha_object.abha_number
-        # ).first()
-
-        # if patient or patient_object.abha_number:
-        #     return False
-
         patient_object.abha_number = abha_object
         patient_object.save()
         return True

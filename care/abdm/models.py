@@ -25,9 +25,7 @@ class AbhaNumber(BaseModel):
     pincode = models.TextField(null=True, blank=True)
 
     email = models.EmailField(null=True, blank=True)
-    profile_photo = models.TextField(
-        null=True, blank=True
-    )  # What is profile photo? how is it stored as?
+    profile_photo = models.TextField(null=True, blank=True)
 
     txn_id = models.TextField(null=True, blank=True)
     access_token = models.TextField(null=True, blank=True)

@@ -68,11 +68,6 @@ class HipViewSet(GenericViewSet):
                     nationality="India",
                     address=patient_data["address"]["line"],
                     pincode=patient_data["address"]["pincode"],
-                    created_by=None,
-                    state=None,
-                    district=None,
-                    local_body=None,
-                    ward=None,
                 )
 
                 abha_number = AbhaNumber.objects.create(
@@ -141,12 +136,4 @@ class HipViewSet(GenericViewSet):
                 "healthId": patient_data["healthId"] or patient_data["healthIdNumber"],
             },
             status=status.HTTP_202_ACCEPTED,
-        )
-
-        return Response(
-            {
-                "status": "FAILURE",
-                "healthId": patient_data["healthId"] or patient_data["healthIdNumber"],
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
         )
