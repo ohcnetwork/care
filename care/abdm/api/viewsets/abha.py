@@ -18,9 +18,6 @@ class AbhaViewSet(GenericViewSet):
 
     def get_abha_object(self):
         queryset = get_patient_queryset(self.request.user)
-        print(
-            "Finding patient with external_id: ", self.kwargs.get("patient_external_id")
-        )
         patient_obj = get_object_or_404(
             queryset.filter(external_id=self.kwargs.get("patient_external_id"))
         )
@@ -30,7 +27,6 @@ class AbhaViewSet(GenericViewSet):
     def get_qr_code(self, request, *args, **kwargs):
         obj = self.get_abha_object()
         gateway = HealthIdGateway()
-        # Empty Dict as data, obj.access_token as auth
         response = gateway.get_qr_code(obj)
         return Response(response)
 
@@ -38,6 +34,5 @@ class AbhaViewSet(GenericViewSet):
     def get_profile(self, request, *args, **kwargs):
         obj = self.get_abha_object()
         gateway = HealthIdGateway()
-        # Empty Dict as data, obj.access_token as auth
         response = gateway.get_profile(obj)
         return Response(response)
