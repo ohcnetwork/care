@@ -173,12 +173,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
     )
-    HBA1C = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="HBA1C parameter for reference to current blood sugar levels",
-        validators=[MinValueValidator(0)],
-    )
 
     # ICU Information
 
