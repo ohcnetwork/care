@@ -19,6 +19,7 @@ from care.facility.models import (
     Facility,
     LocalBody,
     PatientConsultation,
+    PatientNotes,
     PatientRegistration,
     User,
 )
@@ -436,3 +437,14 @@ class TestBase(APITestCase):
         )
         data.update(kwargs)
         return PatientConsultation.objects.create(**data)
+
+    def create_patient_note(
+        self, patient=None, facility=None, note="Patient is doing find", **kwargs
+    ):
+        data = {
+            "patient": patient or self.patient,
+            "facility": facility or self.facility,
+            "note": note,
+        }
+        data.update(kwargs)
+        return PatientNotes.objects.create(**data)
