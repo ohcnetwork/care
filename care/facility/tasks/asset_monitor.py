@@ -24,19 +24,23 @@ def check_asset_status():
     middleware_status_cache = {}
 
     for asset in assets:
+        # Skipping if asset class or local IP address is not present
         if not asset.asset_class or not asset.meta.get("local_ip_address", None):
             continue
         try:
+            # Fetching middleware hostname
             hostname = asset.meta.get(
                 "middleware_hostname",
                 asset.current_location.facility.middleware_address,
             )
-            result: Any = {}
+            result: Any = None
 
+            # Checking if middleware status is already cached
             if hostname in middleware_status_cache:
                 result = middleware_status_cache[hostname]
             else:
                 try:
+                    # Creating an instance of the asset class
                     asset_class: BaseAssetIntegration = AssetClasses[
                         asset.asset_class
                     ].value(
@@ -45,42 +49,43 @@ def check_asset_status():
                             "middleware_hostname": hostname,
                         }
                     )
+                    # Fetching the status of the device
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
-                    middleware_status_cache[hostname] = result
                 except Exception:
-                    logger.exception("Error in Asset Status Check - Fetching Status")
-                    middleware_status_cache[hostname] = None
-                    continue
+                    logger.warn(f"Middleware {hostname} is down", exc_info=True)
 
+            # If no status is returned, setting default status as down
             if not result:
-                continue
+                result = [{"time": timezone.now().isoformat(), "status": []}]
 
-            new_status = None
+            middleware_status_cache[hostname] = result
+
+            # Setting new status as down by default
+            new_status = AvailabilityStatus.DOWN
             for status_record in result:
                 if asset.meta.get("local_ip_address") in status_record.get(
                     "status", {}
                 ):
-                    new_status = status_record["status"][
+                    asset_status = status_record["status"][
                         asset.meta.get("local_ip_address")
                     ]
                 else:
-                    new_status = "not_monitored"
+                    asset_status = "down"
 
+                # Fetching the last record of the asset
                 last_record = (
                     AssetAvailabilityRecord.objects.filter(asset=asset)
                     .order_by("-timestamp")
                     .first()
                 )
 
-                if new_status == "up":
+                # Setting new status based on the status returned by the device
+                if asset_status == "up":
                     new_status = AvailabilityStatus.OPERATIONAL
-                elif new_status == "down":
-                    new_status = AvailabilityStatus.DOWN
-                elif new_status == "maintenance":
+                elif asset_status == "maintenance":
                     new_status = AvailabilityStatus.UNDER_MAINTENANCE
-                else:
-                    new_status = AvailabilityStatus.NOT_MONITORED
 
+                # Creating a new record if the status has changed
                 if not last_record or (
                     datetime.fromisoformat(status_record.get("time"))
                     > last_record.timestamp
@@ -93,4 +98,4 @@ def check_asset_status():
                     )
 
         except Exception:
-            logger.exception("Error in Asset Status Check")
+            logger.error("Error in Asset Status Check", exc_info=True)
