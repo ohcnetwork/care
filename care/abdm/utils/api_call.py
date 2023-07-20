@@ -24,9 +24,7 @@ ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 def encrypt_with_public_key(a_message):
     rsa_public_key = RSA.importKey(
-        requests.get(
-            HEALTH_SERVICE_API_URL + "/v2/auth/cert", verify=False
-        ).text.strip()
+        requests.get(HEALTH_SERVICE_API_URL + "/v2/auth/cert").text.strip()
     )
     rsa_public_key = PKCS1_v1_5.new(rsa_public_key)
     encrypted_text = rsa_public_key.encrypt(a_message.encode())
@@ -72,10 +70,7 @@ class APIGateway:
                 "Accept": "application/json",
             }
             resp = requests.post(
-                ABDM_TOKEN_URL,
-                data=json.dumps(data),
-                headers=auth_headers,
-                verify=False,
+                ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers
             )
             print("Token Response Status: {}".format(resp.status_code))
             if resp.status_code < 300:
@@ -113,7 +108,7 @@ class APIGateway:
         if auth:
             headers = self.add_user_header(headers, auth)
         print("Making GET Request to: {}".format(url))
-        response = requests.get(url, headers=headers, params=params, verify=False)
+        response = requests.get(url, headers=headers, params=params)
         print("{} Response: {}".format(response.status_code, response.text))
         return response
 
@@ -135,7 +130,7 @@ class APIGateway:
         data_json = json.dumps(data)
         # print("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
         print("Posting Request to: {}".format(url))
-        response = requests.post(url, headers=headers, data=data_json, verify=False)
+        response = requests.post(url, headers=headers, data=data_json)
         print("{} Response: {}".format(response.status_code, response.text))
         return response
 
