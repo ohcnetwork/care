@@ -530,18 +530,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
 
 class PatientMetaInfo(models.Model):
-    class OccupationEnum(enum.Enum):
-        STUDENT = 1
-        MEDICAL_WORKER = 2
-        GOVT_EMPLOYEE = 3
-        PRIVATE_EMPLOYEE = 4
-        HOME_MAKER = 5
-        WORKING_ABROAD = 6
-        OTHERS = 7
-
-    OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
-
-    occupation = models.IntegerField(choices=OccupationChoices)
+    occupation = models.CharField(max_length=100, null=True, blank=True)
     head_of_household = models.BooleanField()
 
 

@@ -51,8 +51,6 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
-
     class Meta:
         model = PatientMetaInfo
         fields = "__all__"
