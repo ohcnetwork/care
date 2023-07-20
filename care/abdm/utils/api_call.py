@@ -15,7 +15,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 
 GATEWAY_API_URL = settings.ABDM_URL
 HEALTH_SERVICE_API_URL = settings.HEALTH_SERVICE_API_URL
-ABDM_GATEWAY_URL = GATEWAY_API_URL + "gateway"
+ABDM_GATEWAY_URL = GATEWAY_API_URL + "/gateway"
 ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
