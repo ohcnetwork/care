@@ -1,6 +1,5 @@
 -r ./base.txt
 -r ./docs.txt
-
 Werkzeug==2.3.6 # https://werkzeug.palletsprojects.com/en/latest/changes/
 
 # Django

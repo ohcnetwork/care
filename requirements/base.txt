@@ -50,6 +50,7 @@ celery==5.3.0 # https://docs.celeryq.dev/en/latest/changelog.html
 # ------------------------------------------------------------------------------
 pywebpush==1.11.0
 
+
 # HCX
 # ------------------------------------------------------------------------------
 fhir.resources==6.5.0
@@ -57,4 +58,3 @@ pydantic==1.*
 jwcrypto==1.5.0 # https://github.com/latchset/jwcrypto/releases
 pycryptodome==3.16.0
 pycryptodomex==3.16.0
-pydantic==1.*
