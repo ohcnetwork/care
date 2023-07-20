@@ -2,7 +2,6 @@ import json
 from datetime import datetime, timedelta
 
 from django.core.cache import cache
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny
@@ -124,12 +123,12 @@ class DiscoverView(GenericAPIView):
                 if identifier["value"] is None:
                     continue
 
-                if identifier["type"] == "MOBILE":
-                    matched_by.append(identifier["value"])
-                    mobile = identifier["value"].replace("+91", "").replace("-", "")
-                    patients = patients.filter(
-                        Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
-                    )
+                # if identifier["type"] == "MOBILE":
+                #     matched_by.append(identifier["value"])
+                #     mobile = identifier["value"].replace("+91", "").replace("-", "")
+                #     patients = patients.filter(
+                #         Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
+                #     )
 
                 if identifier["type"] == "NDHM_HEALTH_NUMBER":
                     matched_by.append(identifier["value"])
