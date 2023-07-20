@@ -1,4 +1,5 @@
 import json
+import logging
 import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta, timezone
@@ -20,6 +21,8 @@ ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
+
+logger = logging.getLogger(__name__)
 
 
 def encrypt_with_public_key(a_message):
@@ -60,7 +63,7 @@ class APIGateway:
     def add_auth_header(self, headers):
         token = cache.get(ABDM_TOKEN_CACHE_KEY)
         if not token:
-            print("No Token in Cache")
+            logger.info("No Token in Cache")
             data = {
                 "clientId": settings.ABDM_CLIENT_ID,
                 "clientSecret": settings.ABDM_CLIENT_SECRET,
@@ -72,29 +75,29 @@ class APIGateway:
             resp = requests.post(
                 ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers
             )
-            print("Token Response Status: {}".format(resp.status_code))
+            logger.info("Token Response Status: {}".format(resp.status_code))
             if resp.status_code < 300:
                 # Checking if Content-Type is application/json
                 if resp.headers["Content-Type"] != "application/json":
-                    print(
+                    logger.info(
                         "Unsupported Content-Type: {}".format(
                             resp.headers["Content-Type"]
                         )
                     )
-                    print("Response: {}".format(resp.text))
+                    logger.info("Response: {}".format(resp.text))
                     return None
                 else:
                     data = resp.json()
                     token = data["accessToken"]
                     expires_in = data["expiresIn"]
-                    print("New Token: {}".format(token))
-                    print("Expires in: {}".format(expires_in))
+                    logger.info("New Token: {}".format(token))
+                    logger.info("Expires in: {}".format(expires_in))
                     cache.set(ABDM_TOKEN_CACHE_KEY, token, expires_in)
             else:
-                print("Bad Response: {}".format(resp.text))
+                logger.info("Bad Response: {}".format(resp.text))
                 return None
-        # print("Returning Authorization Header: Bearer {}".format(token))
-        print("Adding Authorization Header")
+        # logger.info("Returning Authorization Header: Bearer {}".format(token))
+        logger.info("Adding Authorization Header")
         auth_header = {"Authorization": "Bearer {}".format(token)}
         return {**headers, **auth_header}
 
@@ -107,9 +110,9 @@ class APIGateway:
         headers = self.add_auth_header(headers)
         if auth:
             headers = self.add_user_header(headers, auth)
-        print("Making GET Request to: {}".format(url))
+        logger.info("Making GET Request to: {}".format(url))
         response = requests.get(url, headers=headers, params=params)
-        print("{} Response: {}".format(response.status_code, response.text))
+        logger.info("{} Response: {}".format(response.status_code, response.text))
         return response
 
     def post(self, path, data=None, auth=None, additional_headers=None):
@@ -128,10 +131,10 @@ class APIGateway:
         #     ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
         # )
         data_json = json.dumps(data)
-        # print("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
-        print("Posting Request to: {}".format(url))
+        # logger.info("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
+        logger.info("Posting Request to: {}".format(url))
         response = requests.post(url, headers=headers, data=data_json)
-        print("{} Response: {}".format(response.status_code, response.text))
+        logger.info("{} Response: {}".format(response.status_code, response.text))
         return response
 
 
@@ -142,7 +145,7 @@ class HealthIdGateway:
     def generate_aadhaar_otp(self, data):
         path = "/v1/registration/aadhaar/generateOtp"
         response = self.api.post(path, data)
-        print("{} Response: {}".format(response.status_code, response.text))
+        logger.info("{} Response: {}".format(response.status_code, response.text))
         return response.json()
 
     def resend_aadhaar_otp(self, data):
@@ -174,7 +177,7 @@ class HealthIdGateway:
     # /v1/registration/aadhaar/createHealthIdWithPreVerified
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
-        print("Creating Health ID with data: {}".format(data))
+        logger.info("Creating Health ID with data: {}".format(data))
         # data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
@@ -299,9 +302,9 @@ class HealthIdGateway:
     def get_qr_code(self, data, auth):
         path = "/v1/account/qrCode"
         access_token = self.generate_access_token(data)
-        print("Getting QR Code for: {}".format(data))
+        logger.info("Getting QR Code for: {}".format(data))
         response = self.api.get(path, {}, access_token)
-        print("QR Code Response: {}".format(response.text))
+        logger.info("QR Code Response: {}".format(response.text))
         return response.json()
 
 

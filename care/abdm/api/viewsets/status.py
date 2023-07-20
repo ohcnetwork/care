@@ -33,6 +33,4 @@ class SMSOnNotifyView(GenericAPIView):
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
-        data = request.data
-        print(data)
         return Response(status=status.HTTP_202_ACCEPTED)
