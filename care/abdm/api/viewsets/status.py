@@ -15,7 +15,6 @@ class NotifyView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print("patient_status_notify", data)
 
         PatientRegistration.objects.filter(
             abha_number__health_id=data["notification"]["patient"]["id"]
@@ -35,6 +34,5 @@ class SMSOnNotifyView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print("patient_sms_on_notify", data)
-
+        print(data)
         return Response(status=status.HTTP_202_ACCEPTED)

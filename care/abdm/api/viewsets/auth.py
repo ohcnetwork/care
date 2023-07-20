@@ -21,8 +21,9 @@ class OnFetchView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print("on-fetch-modes", data)
+
         AbdmGateway().init(data["resp"]["requestId"])
+
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
@@ -32,7 +33,6 @@ class OnInitView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print("on-init", data)
 
         AbdmGateway().confirm(data["auth"]["transactionId"], data["resp"]["requestId"])
 
@@ -45,7 +45,6 @@ class OnConfirmView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
 
         if "validity" in data["auth"]:
             if data["auth"]["validity"]["purpose"] == "LINK":
@@ -79,7 +78,6 @@ class AuthNotifyView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print("auth-notify", data)
 
         if data["auth"]["status"] != "GRANTED":
             return
@@ -108,7 +106,6 @@ class DiscoverView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
 
         patients = PatientRegistration.objects.all()
         verified_identifiers = data["patient"]["verifiedIdentifiers"]
@@ -232,9 +229,7 @@ class NotifyView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
 
-        # TODO: create a seperate cache and also add a expiration time
         cache.set(data["notification"]["consentId"], json.dumps(data))
 
         AbdmGateway().on_notify(
@@ -252,9 +247,7 @@ class RequestDataView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
 
-        # TODO: uncomment later
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
         if not consent or not consent["notification"]["status"] == "GRANTED":
@@ -285,8 +278,6 @@ class RequestDataView(GenericAPIView):
             data["hiRequest"]["keyMaterial"]["dhPublicKey"]["keyValue"],
             data["hiRequest"]["keyMaterial"]["nonce"],
         )
-
-        print(consent["notification"]["consentDetail"]["careContexts"][:1:-1])
 
         AbdmGateway().data_transfer(
             {
@@ -334,10 +325,6 @@ class RequestDataView(GenericAPIView):
                 },
             }
         )
-
-        print("______________________________________________")
-        print(consent["notification"]["consentDetail"]["careContexts"][:-2:-1])
-        print("______________________________________________")
 
         AbdmGateway().data_notify(
             {
