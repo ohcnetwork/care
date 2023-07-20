@@ -5,7 +5,6 @@ from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.abdm.api.viewsets.abha import AbhaViewSet
 from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
-from care.abdm.api.viewsets.hip import HipViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
@@ -92,19 +91,10 @@ from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
-
-class OptionalSlashRouter(SimpleRouter):
-    def __init__(self):
-        super().__init__()
-        self.trailing_slash = "/?"
-
-
 if settings.DEBUG:
     router = DefaultRouter()
-    # abdm_router = DefaultRouter()
 else:
     router = SimpleRouter()
-abdm_router = OptionalSlashRouter()
 
 router.register("users", UserViewSet)
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
@@ -229,7 +219,6 @@ router.register("public/asset", AssetPublicViewSet)
 # ABDM endpoints
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
-    abdm_router.register("profile", HipViewSet, basename="hip")
 
 app_name = "api"
 urlpatterns = [
@@ -240,8 +229,4 @@ urlpatterns = [
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
     path("", include(shifting_nested_router.urls)),
-]
-
-abdm_urlpatterns = [
-    path("", include(abdm_router.urls)),
 ]
