@@ -411,8 +411,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
                 "id": data["healthId"],
@@ -438,8 +438,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
                 "id": data["healthId"],
@@ -466,8 +466,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": transaction_id,
             "credential": {
@@ -490,8 +490,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK"},
             # "error": {"code": 1000, "message": "string"},
@@ -510,8 +510,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "link": {
                 "accessToken": data["access_token"],
@@ -538,8 +538,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": data["transaction_id"],
             "patient": {
@@ -570,8 +570,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": data["transaction_id"],
             "link": {
@@ -601,8 +601,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "patient": {
                 "referenceNumber": data["patient_id"],
@@ -631,8 +631,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK", "consentId": data["consent_id"]},
             # "error": {"code": 1000, "message": "string"},
@@ -649,8 +649,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "hiRequest": {
                 "transactionId": data["transaction_id"],
@@ -696,8 +696,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "notification": {
                 "consentId": data["consent_id"],
@@ -732,8 +732,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK"},
             # "error": {"code": 1000, "message": "string"},
@@ -750,8 +750,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": str(
-                datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "notification": {
                 "phoneNo": f"+91-{data['phone']}",
