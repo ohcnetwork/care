@@ -419,6 +419,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to_external",
             "discharge_notes",
             "discharge_date",
             "discharge_prescription",
