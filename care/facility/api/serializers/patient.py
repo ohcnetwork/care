@@ -483,10 +483,14 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "facility",
             "created_by_object",
             "created_by_local_user",
+            "created_date",
+            "modified_date",
             "edit_window_seconds",
         )
         read_only_fields = (
             "id",
             "created_by_local_user",
+            "created_date",
+            "modified_date",
             "edit_window_seconds",
         )
