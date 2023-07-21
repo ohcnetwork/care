@@ -2,11 +2,11 @@ from rest_framework.serializers import CharField, Serializer, UUIDField
 
 
 class AadharOtpGenerateRequestPayloadSerializer(Serializer):
-    aadhaar = CharField(max_length=16, min_length=12, required=True, validators=[])
+    aadhaar = CharField(max_length=16, min_length=12, required=True)
 
 
 class AadharOtpResendRequestPayloadSerializer(Serializer):
-    txnId = CharField(max_length=64, min_length=1, required=True, validators=[])
+    txnId = CharField(max_length=64, min_length=1, required=True)
 
 
 class HealthIdSerializer(Serializer):
@@ -38,26 +38,24 @@ class ABHASearchRequestSerializer:
 
 
 class GenerateMobileOtpRequestPayloadSerializer(Serializer):
-    mobile = CharField(max_length=10, min_length=10, required=True, validators=[])
-    txnId = CharField(max_length=64, min_length=1, required=True, validators=[])
+    mobile = CharField(max_length=10, min_length=10, required=True)
+    txnId = CharField(max_length=64, min_length=1, required=True)
 
 
 class VerifyOtpRequestPayloadSerializer(Serializer):
-    otp = CharField(
-        max_length=6, min_length=6, required=True, help_text="OTP", validators=[]
-    )
-    txnId = CharField(max_length=64, min_length=1, required=True, validators=[])
-    patientId = UUIDField(required=False, validators=[])
+    otp = CharField(max_length=6, min_length=6, required=True, help_text="OTP")
+    txnId = CharField(max_length=64, min_length=1, required=True)
+    patientId = UUIDField(required=False)
 
 
 class VerifyDemographicsRequestPayloadSerializer(Serializer):
-    gender = CharField(max_length=10, min_length=1, required=True, validators=[])
-    name = CharField(max_length=64, min_length=1, required=True, validators=[])
-    yearOfBirth = CharField(max_length=4, min_length=4, required=True, validators=[])
-    txnId = CharField(max_length=64, min_length=1, required=True, validators=[])
+    gender = CharField(max_length=10, min_length=1, required=True)
+    name = CharField(max_length=64, min_length=1, required=True)
+    yearOfBirth = CharField(max_length=4, min_length=4, required=True)
+    txnId = CharField(max_length=64, min_length=1, required=True)
 
 
 class CreateHealthIdSerializer(Serializer):
-    healthId = CharField(max_length=64, min_length=1, required=False, validators=[])
-    txnId = CharField(max_length=64, min_length=1, required=True, validators=[])
-    patientId = UUIDField(required=False, validators=[])
+    healthId = CharField(max_length=64, min_length=1, required=False)
+    txnId = CharField(max_length=64, min_length=1, required=True)
+    patientId = UUIDField(required=False)
