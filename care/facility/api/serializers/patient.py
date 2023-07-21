@@ -454,6 +454,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     created_by_local_user = serializers.BooleanField(read_only=True)

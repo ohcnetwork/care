@@ -1,11 +1,9 @@
 import datetime
 import enum
 
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
-from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
@@ -687,18 +685,3 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.pk:  # Updating an existing note
-            if not self.patient.is_active:
-                raise ValidationError(
-                    {
-                        "patient": "Updating patient data is only allowed for active patients"
-                    }
-                )
-            if now() > self.created_date + datetime.timedelta(
-                seconds=PATIENT_NOTE_EDIT_WINDOW
-            ):
-                raise ValidationError({"note": "Note is not editable anymore"})
-
-        super().save(*args, **kwargs)
