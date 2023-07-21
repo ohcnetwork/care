@@ -97,3 +97,6 @@ class OnvifAsset(BaseAssetIntegration):
             return False
 
         return True
+
+    def lock_asset(self):
+        pass
