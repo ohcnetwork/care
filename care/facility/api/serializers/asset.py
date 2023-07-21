@@ -143,14 +143,15 @@ class AssetSerializer(ModelSerializer):
     def create(self, validated_data):
         last_serviced_on = validated_data.pop("last_serviced_on", None)
         note = validated_data.pop("note", None)
-        asset_instance = super().create(validated_data)
-        if last_serviced_on or note:
-            asset_service = AssetService(
-                asset=asset_instance, serviced_on=last_serviced_on, note=note
-            )
-            asset_service.save()
-            asset_instance.last_service = asset_service
-            asset_instance.save()
+        with transaction.atomic():
+            asset_instance = super().create(validated_data)
+            if last_serviced_on or note:
+                asset_service = AssetService(
+                    asset=asset_instance, serviced_on=last_serviced_on, note=note
+                )
+                asset_service.save()
+                asset_instance.last_service = asset_service
+                asset_instance.save()
         return asset_instance
 
     def update(self, instance, validated_data):
