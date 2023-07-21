@@ -1,5 +1,6 @@
+from rest_framework.serializers import ModelSerializer, UUIDField
+
 from care.users.models import Skill
-from rest_framework.serializers import UUIDField, ModelSerializer
 
 
 class SkillSerializer(ModelSerializer):
@@ -8,4 +9,3 @@ class SkillSerializer(ModelSerializer):
     class Meta:
         model = Skill
         fields = ("id", "name", "description")
-

@@ -1,7 +1,9 @@
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import JSONField
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -49,13 +51,17 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=[], blank=True, null=True
+        models.CharField(max_length=100), default=list, blank=True, null=True
     )
     icd11_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=[], blank=True, null=True
+        models.CharField(max_length=100), default=list, blank=True, null=True
     )
     symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+        choices=SYMPTOM_CHOICES,
+        default=1,
+        null=True,
+        blank=True,
+        max_length=get_max_length(SYMPTOM_CHOICES, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
@@ -74,8 +80,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescribed_medication = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
-    discharge_advice = JSONField(default=dict)
-    prn_prescription = JSONField(default=dict)
     investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
@@ -104,8 +108,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
-    discharge_prescription = JSONField(default=dict, null=True, blank=True)
-    discharge_prn_prescription = JSONField(default=dict, null=True, blank=True)
+    discharge_prescription = JSONField(
+        default=dict, null=True, blank=True
+    )  # Deprecated
+    discharge_prn_prescription = JSONField(
+        default=dict, null=True, blank=True
+    )  # Deprecated
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
@@ -165,12 +173,6 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         verbose_name="Patient's Weight in KG",
         validators=[MinValueValidator(0)],
     )
-    HBA1C = models.FloatField(
-        default=None,
-        null=True,
-        verbose_name="HBA1C parameter for reference to current blood sugar levels",
-        validators=[MinValueValidator(0)],
-    )
 
     # ICU Information
 
@@ -180,6 +182,11 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     # Intubation details
 
     intubation_history = JSONField(default=list)
+
+    # Deprecated Fields
+
+    prn_prescription = JSONField(default=dict)
+    discharge_advice = JSONField(default=dict)
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
@@ -238,3 +245,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+    def has_object_discharge_patient_permission(self, request):
+        return self.has_object_update_permission(request)
+
+    def has_object_email_discharge_summary_permission(self, request):
+        return self.has_object_read_permission(request)
+
+    def has_object_generate_discharge_summary_permission(self, request):
+        return self.has_object_read_permission(request)

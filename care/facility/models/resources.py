@@ -1,10 +1,12 @@
-import enum
-
 from django.db import models
 
-from care.facility.models import READ_ONLY_USER_TYPES, FacilityBaseModel, reverse_choices, pretty_boolean
+from care.facility.models import (
+    READ_ONLY_USER_TYPES,
+    FacilityBaseModel,
+    pretty_boolean,
+    reverse_choices,
+)
 from care.users.models import User, phone_number_regex
-
 
 RESOURCE_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -34,15 +36,22 @@ REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 class ResourceRequest(FacilityBaseModel):
-
-    orgin_facility = models.ForeignKey(
-        "Facility", on_delete=models.PROTECT, related_name="resource_requesting_facility"
+    origin_facility = models.ForeignKey(
+        "Facility",
+        on_delete=models.PROTECT,
+        related_name="resource_requesting_facility",
     )
     approving_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, related_name="resource_approving_facility"
+        "Facility",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="resource_approving_facility",
     )
     assigned_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, related_name="resource_assigned_facility"
+        "Facility",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="resource_assigned_facility",
     )
     emergency = models.BooleanField(default=False)
     title = models.CharField(max_length=255, null=False, blank=False)
@@ -51,9 +60,15 @@ class ResourceRequest(FacilityBaseModel):
     refering_facility_contact_number = models.CharField(
         max_length=14, validators=[phone_number_regex], default="", blank=True
     )
-    status = models.IntegerField(choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False)
-    category = models.IntegerField(choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False)
-    sub_category = models.IntegerField(choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False)
+    status = models.IntegerField(
+        choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False
+    )
+    category = models.IntegerField(
+        choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False
+    )
+    sub_category = models.IntegerField(
+        choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False
+    )
     priority = models.IntegerField(default=None, null=True, blank=True)
 
     # Quantity
@@ -62,19 +77,28 @@ class ResourceRequest(FacilityBaseModel):
 
     is_assigned_to_user = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="resource_request_assigned_to",
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="resource_request_assigned_to",
     )
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="resource_request_created_by",
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="resource_request_created_by",
     )
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="resource_request_last_edited_by"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="resource_request_last_edited_by",
     )
 
     CSV_MAPPING = {
         "created_date": "Created Date",
         "modified_date": "Modified Date",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "Assigned Facility",
         "approving_facility__name": "Approving Facility",
         "status": "Current Status",
@@ -128,6 +152,12 @@ class ResourceRequest(FacilityBaseModel):
 
 
 class ResourceRequestComment(FacilityBaseModel):
-    request = models.ForeignKey(ResourceRequest, on_delete=models.PROTECT, null=False, blank=False)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,)
+    request = models.ForeignKey(
+        ResourceRequest, on_delete=models.PROTECT, null=False, blank=False
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     comment = models.TextField(default="", blank=True)

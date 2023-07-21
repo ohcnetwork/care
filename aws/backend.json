@@ -31,11 +31,11 @@
         },
         {
           "name": "CSRF_TRUSTED_ORIGINS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+          "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
-          "value": "https://care.coronasafe.in"
+          "value": "https://care.ohc.network"
         },
         {
           "name": "DJANGO_ADMIN_URL",
@@ -43,7 +43,7 @@
         },
         {
           "name": "DJANGO_ALLOWED_HOSTS",
-          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\"]"
+          "value": "[\"care-django-staging\", \"care.coronasafe.in\", \"careapi.coronasafe.in\", \"care.ohc.network\", \"careapi.ohc.network\"]"
         },
         {
           "name": "DJANGO_SECURE_SSL_REDIRECT",
@@ -55,7 +55,7 @@
         },
         {
           "name": "EMAIL_FROM",
-          "value": "Coronasafe network <care@ops.coronasafe.in>"
+          "value": "Open Healthcare Network <ops@care.ohc.network>"
         },
         {
           "name": "EMAIL_HOST",
@@ -100,6 +100,26 @@
         {
           "name": "USE_S3",
           "value": "True"
+        },
+        {
+          "name": "ENABLE_ABDM",
+          "value": "True"
+        },
+        {
+          "name": "ABDM_URL",
+          "value": "https://dev.abdm.gov.in"
+        },
+        {
+          "name": "HEALTH_SERVICE_API_URL",
+          "value": "https://healthidsbx.abdm.gov.in/api"
+        },
+        {
+          "name": "X_CM_ID",
+          "value": "sbx"
+        },
+        {
+          "name": "FIDELIUS_URL",
+          "value": "https://fidelius.ohc.network"
         }
       ],
       "repositoryCredentials": {
@@ -118,6 +138,10 @@
         {
           "valueFrom": "/care/backend/POSTGRES_PASSWORD",
           "name": "POSTGRES_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/DATABASE_URL",
+          "name": "DATABASE_URL"
         },
         {
           "valueFrom": "/care/backend/SENTRY_DSN",
@@ -142,10 +166,6 @@
         {
           "valueFrom": "/care/backend/CELERY_BROKER_URL",
           "name": "REDIS_URL"
-        },
-        {
-          "valueFrom": "/care/backend/POSTGIS_URL",
-          "name": "POSTGIS_URL"
         },
         {
           "valueFrom": "/care/backend/EMAIL_USER",
@@ -194,12 +214,48 @@
         {
           "valueFrom": "/care/backend/VAPID_PRIVATE_KEY",
           "name": "VAPID_PRIVATE_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PROTOCOL_BASE_PATH",
+          "name": "HCX_PROTOCOL_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PARTICIPANT_CODE",
+          "name": "HCX_PARTICIPANT_CODE"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_AUTH_BASE_PATH",
+          "name": "HCX_AUTH_BASE_PATH"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_USERNAME",
+          "name": "HCX_USERNAME"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_PASSWORD",
+          "name": "HCX_PASSWORD"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_ENCRYPTION_PRIVATE_KEY_URL",
+          "name": "HCX_ENCRYPTION_PRIVATE_KEY_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_IG_URL",
+          "name": "HCX_IG_URL"
+        },
+        {
+          "valueFrom": "/care/backend/ABDM_CLIENT_ID",
+          "name": "ABDM_CLIENT_ID"
+        },
+        {
+          "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
+          "name": "ABDM_CLIENT_SECRET"
         }
       ],
       "name": "care-backend"
     }
   ],
-  "memory": "512",
+  "memory": "1024",
   "taskRoleArn": "arn:aws:iam::299650323339:role/ecsTaskExecutionRole",
   "family": "care",
   "requiresCompatibilities": [
@@ -209,4 +265,3 @@
   "cpu": "256",
   "volumes": []
 }
-

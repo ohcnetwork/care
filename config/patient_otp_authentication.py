@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
@@ -44,11 +44,18 @@ class CustomJWTAuthentication(JWTAuthentication):
             return PatientToken(raw_token)
         except TokenError as e:
             messages.append(
-                {"token_class": PatientToken.__name__, "token_type": PatientToken.token_type, "message": e.args[0]}
+                {
+                    "token_class": PatientToken.__name__,
+                    "token_type": PatientToken.token_type,
+                    "message": e.args[0],
+                }
             )
 
         raise InvalidToken(
-            {"detail": _("Given token not valid for any token type"), "messages": messages,}
+            {
+                "detail": _("Given token not valid for any token type"),
+                "messages": messages,
+            }
         )
 
 

@@ -15,13 +15,14 @@ framework.
 """
 import os
 import sys
+from pathlib import Path
 
 from django.core.wsgi import get_wsgi_application
 
 # This allows easy placement of apps within the interior
-# care directory.
-app_path = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
-sys.path.append(os.path.join(app_path, "care"))
+# {{ cookiecutter.project_slug }} directory.
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+sys.path.append(str(BASE_DIR / "care"))
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use
 # mod_wsgi daemon mode with each site in its own daemon process, or use
@@ -35,3 +36,5 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+from care.facility.static_data.medibase import MedibaseMedicineTable  # noqa
