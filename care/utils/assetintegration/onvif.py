@@ -41,7 +41,10 @@ class OnvifAsset(BaseAssetIntegration):
             "accessKey": self.access_key,
             **action_data,
         }
+        print("action type", action_type)
 
+        if action_type == "unlock_asset":
+            return "success"
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
             return self.api_get(self.get_url("status"), request_body)
 
@@ -97,6 +100,3 @@ class OnvifAsset(BaseAssetIntegration):
             return False
 
         return True
-
-    def lock_asset(self):
-        pass

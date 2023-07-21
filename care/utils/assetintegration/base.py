@@ -2,6 +2,7 @@ import json
 
 import requests
 from django.conf import settings
+from django.core.cache import cache
 from rest_framework.exceptions import APIException
 
 from care.utils.jwks.token_generator import generate_jwt
@@ -52,3 +53,23 @@ class BaseAssetIntegration:
             return response
         except json.decoder.JSONDecodeError:
             return {"error": "Invalid Response"}
+
+    def validate_action(self, action):
+        pass
+
+    def verify_access(self, action, user_id, asset_id):
+        if action.get("type", None) == "unlock_asset":
+            if cache.get(asset_id) is None:
+                return True, None
+            elif cache.get(asset_id) == user_id:
+                cache.delete(asset_id)
+                return True, None
+            else:
+                return False, cache.get(asset_id)
+        if cache.get(asset_id) is None:
+            cache.set(asset_id, user_id, timeout=None)
+            return True, None
+        elif cache.get(asset_id) == user_id:
+            return True, None
+        else:
+            return False, cache.get(asset_id)

@@ -9,7 +9,7 @@ from rest_framework import exceptions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -242,12 +242,30 @@ class AssetViewSet(
                 }
             )
 
+            asset_access, current_asset_user_id = asset_class.verify_access(
+                action, request.user.external_id, asset.external_id
+            )
+            if not asset_access:
+                raise PermissionDenied(
+                    {
+                        "message": "Asset is currently in use by another user",
+                        "id": current_asset_user_id,
+                    }
+                )
             validation_result = asset_class.validate_action(action)
             if validation_result:
                 result = asset_class.handle_action(action)
                 return Response({"result": result}, status=status.HTTP_200_OK)
             else:
                 raise ValidationError({"action": "invalid action type"})
+        except PermissionDenied as e:
+            return Response(
+                {
+                    "message": e.detail.get("message", None),
+                    "id": e.detail.get("id", None),
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
