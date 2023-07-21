@@ -53,8 +53,6 @@ pywebpush==1.11.0
 # HCX
 # ------------------------------------------------------------------------------
 fhir.resources==6.5.0
-jwcrypto==1.4.2
-requests==2.25.1
 pydantic==1.*
 jwcrypto==1.5.0 # https://github.com/latchset/jwcrypto/releases
 pycryptodome==3.16.0
