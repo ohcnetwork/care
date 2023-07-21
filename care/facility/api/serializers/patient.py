@@ -456,6 +456,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    created_by_local_user = serializers.BooleanField(read_only=True)
     edit_window_seconds = serializers.SerializerMethodField()
 
     def get_edit_window_seconds(self, obj):

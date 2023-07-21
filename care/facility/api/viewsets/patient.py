@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
+from django.db.models import BooleanField, Case, F, Value, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -604,6 +604,16 @@ class PatientNotesViewSet(
     queryset = (
         PatientNotes.objects.all()
         .select_related("facility", "patient", "created_by")
+        .annotate(
+            created_by_local_user=Case(
+                When(
+                    created_by__home_facility__external_id=F("facility__external_id"),
+                    then=Value(True),
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
         .order_by("-created_date")
     )
     serializer_class = PatientNotesSerializer
@@ -626,6 +636,7 @@ class PatientNotesViewSet(
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
             queryset = queryset.filter(q_filters)
+
         return queryset
 
     def perform_create(self, serializer):
