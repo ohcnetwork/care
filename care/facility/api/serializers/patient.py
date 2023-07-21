@@ -26,6 +26,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PATIENT_NOTE_EDIT_WINDOW
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -455,6 +456,10 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    edit_window_seconds = serializers.SerializerMethodField()
+
+    def get_edit_window_seconds(self, obj):
+        return PATIENT_NOTE_EDIT_WINDOW
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -470,6 +475,5 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "created_by_object",
             "created_date",
             "modified_date",
-            "editable_until",
         )
-        read_only_fields = ("id", "created_date", "modified_date", "editable_until")
+        read_only_fields = ("id", "created_date", "modified_date")

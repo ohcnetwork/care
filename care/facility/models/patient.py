@@ -43,6 +43,8 @@ from care.users.models import (
 )
 from care.utils.models.base import BaseManager, BaseModel
 
+PATIENT_NOTE_EDIT_WINDOW = 30 * 60  # 30 minutes
+
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
@@ -673,8 +675,6 @@ class PatientMobileOTP(BaseModel):
 
 
 class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
-    EDIT_WINDOW_DURATION = 30 * 60  # 30 minutes
-
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -688,22 +688,17 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     )
     note = models.TextField(default="", blank=True)
 
-    editable_until = models.DateTimeField(null=True, blank=True)
-
     def save(self, *args, **kwargs):
-        if not self.pk:  # creating new instance
-            if not self.editable_until:
-                self.editable_until = now() + datetime.timedelta(
-                    seconds=self.EDIT_WINDOW_DURATION
-                )
-        else:  # updating existing instance
+        if self.pk:  # Updating an existing note
             if not self.patient.is_active:
                 raise ValidationError(
                     {
                         "patient": "Updating patient data is only allowed for active patients"
                     }
                 )
-            if not self.editable_until or now() > self.editable_until:
+            if now() > self.created_date + datetime.timedelta(
+                seconds=PATIENT_NOTE_EDIT_WINDOW
+            ):
                 raise ValidationError({"note": "Note is not editable anymore"})
 
-        super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
