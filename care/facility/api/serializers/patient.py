@@ -457,7 +457,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     created_by_local_user = serializers.BooleanField(read_only=True)
-    edit_window_seconds = serializers.SerializerMethodField()
+    edit_window_seconds = serializers.SerializerMethodField(read_only=True)
 
     def get_edit_window_seconds(self, obj):
         return PATIENT_NOTE_EDIT_WINDOW
@@ -474,7 +474,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "note",
             "facility",
             "created_by_object",
-            "created_date",
-            "modified_date",
+            "created_by_local_user",
+            "edit_window_seconds",
         )
-        read_only_fields = ("id", "created_date", "modified_date")
+        read_only_fields = (
+            "id",
+            "created_by_local_user",
+            "edit_window_seconds",
+        )

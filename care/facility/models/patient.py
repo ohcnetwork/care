@@ -701,4 +701,4 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
             ):
                 raise ValidationError({"note": "Note is not editable anymore"})
 
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
