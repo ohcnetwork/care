@@ -11,6 +11,7 @@ from care.utils.tests.test_base import TestBase
 class ExpectedPatientNoteKeys(Enum):
     NOTE = "note"
     FACILITY = "facility"
+    CONSULTATION = "consultation"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
     CREATED_BY_LOCAL_USER = "created_by_local_user"
@@ -95,13 +96,34 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
         self.user2.save()
 
         self.patient = self.create_patient(district=district.id)
+        self.consultation = self.create_consultation(
+            patient=self.patient, facility=facility
+        )
 
+        # Two notes from same consultation but different users with different home facilities
         self.patient_note = self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user
+            patient=self.patient,
+            facility=facility,
+            created_by=self.user,
+            consultation=self.consultation,
         )
 
         self.patient_note2 = self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user2
+            patient=self.patient,
+            facility=facility,
+            created_by=self.user2,
+            consultation=self.consultation,
+        )
+
+        # Note from different consultation
+        self.consultation2 = self.create_consultation(
+            patient=self.patient, facility=facility
+        )
+        self.patient_note_different_consultation = self.create_patient_note(
+            patient=self.patient,
+            facility=facility,
+            consultation=self.consultation2,
+            note="Patient note from consultation 2",
         )
 
         refresh_token = RefreshToken.for_user(self.user)
@@ -111,18 +133,28 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
 
     def test_patient_notes(self):
         patientId = self.patient.external_id
-        response = self.client.get(f"/api/v1/patient/{patientId}/notes/")
+        response = self.client.get(
+            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
+        results = response.json()["results"]
+
+        # Test if all notes are from same consultation as requested
+        self.assertEqual(
+            str(self.consultation.external_id),
+            [note["consultation"] for note in results][0],
+        )
+
         # Test created_by_local_user field if user is not from same facility as patient
-        data2 = response.json()["results"][0]
+        data2 = results[0]
 
         created_by_local_user_content2 = data2["created_by_local_user"]
         self.assertEqual(created_by_local_user_content2, False)
 
         # Ensure only necessary data is being sent and no extra data
-        data = response.json()["results"][1]
+        data = results[1]
 
         self.assertCountEqual(
             data.keys(), [item.value for item in ExpectedPatientNoteKeys]
