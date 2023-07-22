@@ -1,15 +1,19 @@
+import enum
 import json
 
 import requests
 from django.conf import settings
 from django.core.cache import cache
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, PermissionDenied
 
 from care.utils.jwks.token_generator import generate_jwt
 
 
 class BaseAssetIntegration:
     auth_header_type = "Care_Bearer "
+
+    class BaseAssetActions(enum.Enum):
+        UNLOCK_ASSET = "unlock_asset"
 
     def __init__(self, meta):
         self.meta = meta
@@ -57,19 +61,35 @@ class BaseAssetIntegration:
     def validate_action(self, action):
         pass
 
-    def verify_access(self, action, user_id, asset_id):
-        if action.get("type", None) == "unlock_asset":
-            if cache.get(asset_id) is None:
-                return True, None
-            elif cache.get(asset_id) == user_id:
-                cache.delete(asset_id)
-                return True, None
-            else:
-                return False, cache.get(asset_id)
+    def unlock_asset(self, user_id, asset_id):
+        if cache.get(asset_id) is None:
+            return True
+        elif cache.get(asset_id) == user_id:
+            cache.delete(asset_id)
+            return True
+        elif cache.get(asset_id) != user_id:
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "id": cache.get(asset_id),
+                }
+            )
+        return True
+
+    def lock_asset(self, user_id, asset_id):
         if cache.get(asset_id) is None:
             cache.set(asset_id, user_id, timeout=None)
-            return True, None
-        elif cache.get(asset_id) == user_id:
-            return True, None
-        else:
-            return False, cache.get(asset_id)
+            return True
+        return False
+
+    def verify_access(self, user_id, asset_id):
+        if cache.get(asset_id) is None or cache.get(asset_id) == user_id:
+            return True
+        elif cache.get(asset_id) != user_id:
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "id": cache.get(asset_id),
+                }
+            )
+        return True

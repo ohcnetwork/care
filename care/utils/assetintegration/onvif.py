@@ -26,13 +26,16 @@ class OnvifAsset(BaseAssetIntegration):
                 dict((key, f"{key} not found in asset metadata") for key in e.args)
             )
 
-    def handle_action(self, action):
+    def handle_action(self, action, verifcation_data: dict = None):
         action_type = action["type"]
         action_data = action.get("data", {})
         allowed_action_data = ["x", "y", "zoom"]
         action_data = {
             key: action_data[key] for key in action_data if key in allowed_action_data
         }
+
+        user_id = verifcation_data.get("user_id", None)
+        asset_id = verifcation_data.get("asset_id", None)
         request_body = {
             "hostname": self.host,
             "port": 80,
@@ -41,23 +44,31 @@ class OnvifAsset(BaseAssetIntegration):
             "accessKey": self.access_key,
             **action_data,
         }
-        print("action type", action_type)
 
-        if action_type == "unlock_asset":
-            return "success"
+        if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
+            return self.unlock_asset(user_id, asset_id)
+
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
+            self.lock_asset(user_id, asset_id)
             return self.api_get(self.get_url("status"), request_body)
 
         if action_type == self.OnvifActions.GET_PRESETS.value:
+            self.lock_asset(user_id, asset_id)
             return self.api_get(self.get_url("presets"), request_body)
 
         if action_type == self.OnvifActions.GOTO_PRESET.value:
+            self.verify_access(user_id, asset_id)
+            self.lock_asset(user_id, asset_id)
             return self.api_post(self.get_url("gotoPreset"), request_body)
 
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
+            self.verify_access(user_id, asset_id)
+            self.lock_asset(user_id, asset_id)
             return self.api_post(self.get_url("absoluteMove"), request_body)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
+            self.verify_access(user_id, asset_id)
+            self.lock_asset(user_id, asset_id)
             return self.api_post(self.get_url("relativeMove"), request_body)
 
         raise ValidationError({"action": "invalid action type"})

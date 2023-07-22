@@ -241,23 +241,18 @@ class AssetViewSet(
                     "middleware_hostname": asset.current_location.facility.middleware_address,
                 }
             )
-
-            asset_access, current_asset_user_id = asset_class.verify_access(
-                action, request.user.external_id, asset.external_id
-            )
-            if not asset_access:
-                raise PermissionDenied(
-                    {
-                        "message": "Asset is currently in use by another user",
-                        "id": current_asset_user_id,
-                    }
-                )
-            validation_result = asset_class.validate_action(action)
-            if validation_result:
-                result = asset_class.handle_action(action)
-                return Response({"result": result}, status=status.HTTP_200_OK)
-            else:
+            if not asset_class.validate_action(action):
                 raise ValidationError({"action": "invalid action type"})
+
+            result = asset_class.handle_action(
+                action,
+                {
+                    "user_id": request.user.external_id,
+                    "asset_id": asset.external_id,
+                },
+            )
+            return Response({"result": result}, status=status.HTTP_200_OK)
+
         except PermissionDenied as e:
             return Response(
                 {
