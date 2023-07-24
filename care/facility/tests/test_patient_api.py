@@ -13,6 +13,7 @@ class ExpectedPatientNoteKeys(Enum):
     FACILITY = "facility"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
+    CREATED_BY_LOCAL_USER = "created_by_local_user"
 
 
 class ExpectedFacilityKeys(Enum):
@@ -71,7 +72,6 @@ class ExpectedCreatedByObjectKeys(Enum):
     LAST_NAME = "last_name"
     USER_TYPE = "user_type"
     LAST_LOGIN = "last_login"
-    HOME_FACILITY = "home_facility"
 
 
 class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
@@ -85,11 +85,23 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
         # Create users and facility
         self.user = self.create_user(district=district, username="test user")
         facility = self.create_facility(district=district, user=self.user)
+        self.user.home_facility = facility
+        self.user.save()
+
+        # Create another user from different facility
+        self.user2 = self.create_user(district=district, username="test user 2")
+        facility2 = self.create_facility(district=district, user=self.user2)
+        self.user2.home_facility = facility2
+        self.user2.save()
 
         self.patient = self.create_patient(district=district.id)
 
         self.patient_note = self.create_patient_note(
-            patient=self.patient, facility=facility
+            patient=self.patient, facility=facility, created_by=self.user
+        )
+
+        self.patient_note2 = self.create_patient_note(
+            patient=self.patient, facility=facility, created_by=self.user2
         )
 
         refresh_token = RefreshToken.for_user(self.user)
@@ -103,13 +115,22 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
-        # Ensure only necessary data is being sent and no extra data
+        # Test created_by_local_user field if user is not from same facility as patient
+        data2 = response.json()["results"][0]
 
-        data = response.json()["results"][0]
+        created_by_local_user_content2 = data2["created_by_local_user"]
+        self.assertEqual(created_by_local_user_content2, False)
+
+        # Ensure only necessary data is being sent and no extra data
+        data = response.json()["results"][1]
 
         self.assertCountEqual(
             data.keys(), [item.value for item in ExpectedPatientNoteKeys]
         )
+
+        created_by_local_user_content = data["created_by_local_user"]
+
+        self.assertEqual(created_by_local_user_content, True)
 
         facility_content = data["facility"]
 
