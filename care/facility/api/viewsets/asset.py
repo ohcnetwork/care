@@ -23,6 +23,7 @@ from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
+    AssetAvailabilitySerializer,
     AssetLocationSerializer,
     AssetSerializer,
     AssetServiceSerializer,
@@ -33,6 +34,7 @@ from care.facility.api.serializers.asset import (
 )
 from care.facility.models.asset import (
     Asset,
+    AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetTransaction,
@@ -128,6 +130,17 @@ class AssetPublicViewSet(GenericViewSet):
             )  # Cache the asset details for 24 hours
             return Response(serializer.data)
         return Response(hit)
+
+
+class AssetAvailabilityFilter(filters.FilterSet):
+    external_id = filters.CharFilter(field_name="asset__external_id")
+
+
+class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = AssetAvailabilityRecord.objects.all().select_related("asset")
+    serializer_class = AssetAvailabilitySerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetAvailabilityFilter
 
 
 class AssetViewSet(

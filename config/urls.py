@@ -9,6 +9,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
@@ -93,6 +94,9 @@ urlpatterns = [
     ),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.ENABLE_ABDM:
+    urlpatterns += abdm_urlpatterns
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

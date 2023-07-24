@@ -25,6 +25,7 @@ def validatecaptcha(request):
     return False
 
 
+# refer https://django-ratelimit.readthedocs.io/en/stable/rates.html for rate
 def ratelimit(
     request, group="", keys=[None], rate=settings.DJANGO_RATE_LIMIT, increment=True
 ):
