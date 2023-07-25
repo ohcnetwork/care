@@ -18,6 +18,7 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
+    AssetAvailabilityRecord,
     AssetLocation,
     AssetTransaction,
     UserDefaultAssetLocation,
@@ -163,6 +164,15 @@ class AssetTransactionSerializer(ModelSerializer):
 
     class Meta:
         model = AssetTransaction
+        exclude = ("deleted", "external_id")
+
+
+class AssetAvailabilitySerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset = AssetBareMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetAvailabilityRecord
         exclude = ("deleted", "external_id")
 
 

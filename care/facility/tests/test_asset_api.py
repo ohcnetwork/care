@@ -63,22 +63,25 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     endpoint = "/api/v1/asset/"
     asset_id = None
 
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        # Add access token to the authorization header of test request
-        refresh_token = RefreshToken.for_user(self.user)
-        self.client.credentials(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = APIRequestFactory()
+        state = cls.create_state()
+        district = cls.create_district(state=state)
+        cls.user = cls.create_user(district=district, username="test user")
+        facility = cls.create_facility(district=district, user=cls.user)
+        # Refresh token to header
+        refresh_token = RefreshToken.for_user(cls.user)
+        cls.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
-        self.asset1_location = AssetLocation.objects.create(
+
+        cls.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
-        self.asset = Asset.objects.create(
-            name="Test Asset", current_location=self.asset1_location, asset_type=50
+        cls.asset = Asset.objects.create(
+            name="Test Asset", current_location=cls.asset1_location, asset_type=50
         )
 
     def test_list_assets(self):
