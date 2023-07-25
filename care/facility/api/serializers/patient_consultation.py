@@ -437,7 +437,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"death_datetime": "This field value cannot be in the future."}
                 )
-            if attrs.get("death_datetime") < self.instance.admission_date:
+            if (
+                self.instance.admission_date
+                and attrs.get("death_datetime") < self.instance.admission_date
+            ):
                 raise ValidationError(
                     {
                         "death_datetime": "This field value cannot be before the admission date."
