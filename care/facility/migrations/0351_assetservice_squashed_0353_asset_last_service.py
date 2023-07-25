@@ -11,46 +11,78 @@ from django.db import migrations, models
 # RunPython operations to refer to the local versions:
 # care.facility.migrations.0351_assetservice
 
-class Migration(migrations.Migration):
 
-    replaces = [('facility', '0351_assetservice'), ('facility', '0352_auto_20230426_1805'), ('facility', '0353_asset_last_service')]
+class Migration(migrations.Migration):
+    replaces = [
+        ("facility", "0351_assetservice"),
+        ("facility", "0352_auto_20230426_1805"),
+        ("facility", "0353_asset_last_service"),
+    ]
 
     dependencies = [
-        ('facility', '0350_auto_20230422_2114'),
+        ("facility", "0350_auto_20230422_2114"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AssetService',
+            name="AssetService",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('external_id', models.UUIDField(db_index=True, default=uuid.uuid4, unique=True)),
-                ('created_date', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
-                ('modified_date', models.DateTimeField(auto_now=True, db_index=True, null=True)),
-                ('deleted', models.BooleanField(db_index=True, default=False)),
-                ('serviced_on', models.DateField(blank=True, default=None, null=True)),
-                ('note', models.TextField(blank=True, default='', null=True)),
-                ('asset', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facility.asset')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "external_id",
+                    models.UUIDField(db_index=True, default=uuid.uuid4, unique=True),
+                ),
+                (
+                    "created_date",
+                    models.DateTimeField(auto_now_add=True, db_index=True, null=True),
+                ),
+                (
+                    "modified_date",
+                    models.DateTimeField(auto_now=True, db_index=True, null=True),
+                ),
+                ("deleted", models.BooleanField(db_index=True, default=False)),
+                ("serviced_on", models.DateField(blank=True, default=None, null=True)),
+                ("note", models.TextField(blank=True, default="", null=True)),
+                (
+                    "asset",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="facility.asset"
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.RunPython(
-            code=care.facility.migrations.0351_assetservice.move_last_serviced_on_and_notes,
+            code="care.facility.migrations.0351_assetservice.move_last_serviced_on_and_notes",
             reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
         migrations.RemoveField(
-            model_name='asset',
-            name='last_serviced_on',
+            model_name="asset",
+            name="last_serviced_on",
         ),
         migrations.RemoveField(
-            model_name='asset',
-            name='notes',
+            model_name="asset",
+            name="notes",
         ),
         migrations.AddField(
-            model_name='asset',
-            name='last_service',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='last_service', to='facility.assetservice'),
+            model_name="asset",
+            name="last_service",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="last_service",
+                to="facility.assetservice",
+            ),
         ),
     ]
