@@ -8,7 +8,6 @@ from care.utils.jwks.token_generator import generate_jwt
 
 
 class BaseAssetIntegration:
-
     auth_header_type = "Care_Bearer "
 
     def __init__(self, meta):
@@ -47,9 +46,9 @@ class BaseAssetIntegration:
             headers={"Authorization": (self.auth_header_type + generate_jwt())},
         )
         try:
-            response = req.json()
             if req.status_code >= 400:
-                raise APIException(response, req.status_code)
+                raise APIException(req.text, req.status_code)
+            response = req.json()
             return response
         except json.decoder.JSONDecodeError:
             return {"error": "Invalid Response"}

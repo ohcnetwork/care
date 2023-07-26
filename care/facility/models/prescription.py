@@ -1,8 +1,8 @@
 import enum
 
-from django.contrib.postgres.fields.jsonb import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import JSONField
 from django.utils import timezone
 
 from care.facility.models.patient_consultation import PatientConsultation
@@ -37,24 +37,72 @@ def generate_choices(enum_class):
     return [(tag.name, tag.value) for tag in enum_class]
 
 
+class MedibaseMedicineType(enum.Enum):
+    BRAND = "brand"
+    GENERIC = "generic"
+
+
+class MedibaseMedicine(BaseModel):
+    name = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        db_index=True,
+        unique=True,
+    )
+    type = models.CharField(
+        max_length=16,
+        choices=generate_choices(MedibaseMedicineType),
+        blank=False,
+        null=False,
+        db_index=True,
+    )
+    generic = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    company = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    contents = models.TextField(blank=True, null=True)
+    cims_class = models.CharField(max_length=255, blank=True, null=True)
+    atc_classification = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return " - ".join(filter(None, [self.name, self.generic, self.company]))
+
+
 class Prescription(BaseModel):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,
     )
 
-    prescription_type = models.CharField(max_length=100, default=PrescriptionType.REGULAR.value,
-                                         choices=generate_choices(PrescriptionType))
+    prescription_type = models.CharField(
+        max_length=100,
+        default=PrescriptionType.REGULAR.value,
+        choices=generate_choices(PrescriptionType),
+    )
 
-    medicine = models.CharField(max_length=1023, blank=False, null=False)
-    route = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in Routes], blank=True, null=True)
+    medicine = models.ForeignKey(
+        MedibaseMedicine,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=False,
+    )
+    medicine_old = models.CharField(max_length=1023, blank=False, null=True)
+    route = models.CharField(
+        max_length=100,
+        choices=[(tag.name, tag.value) for tag in Routes],
+        blank=True,
+        null=True,
+    )
     dosage = models.CharField(max_length=100, blank=True, null=True)
 
     is_prn = models.BooleanField(default=False)
 
     # non prn fields
-    frequency = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in FrequencyEnum], blank=True,
-                                 null=True)
+    frequency = models.CharField(
+        max_length=100,
+        choices=[(tag.name, tag.value) for tag in FrequencyEnum],
+        blank=True,
+        null=True,
+    )
     days = models.IntegerField(blank=True, null=True)
 
     # prn fields
@@ -74,7 +122,8 @@ class Prescription(BaseModel):
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
     is_migrated = models.BooleanField(
-        default=False)  # This field is to throw caution to data that was previously ported over
+        default=False
+    )  # This field is to throw caution to data that was previously ported over
 
     def save(self, *args, **kwargs) -> None:
         # check if prescription got discontinued just now
@@ -84,6 +133,10 @@ class Prescription(BaseModel):
             if not self.discontinued and self.discontinued_date:
                 self.discontinued_date = None
         return super().save(*args, **kwargs)
+
+    @property
+    def medicine_name(self):
+        return str(self.medicine) if self.medicine else self.medicine_old
 
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
@@ -100,15 +153,19 @@ class MedicineAdministration(BaseModel):
         "users.User",
         on_delete=models.PROTECT,
     )
-    administered_date = models.DateTimeField(null=False, blank=False, default=timezone.now)
+    administered_date = models.DateTimeField(
+        null=False, blank=False, default=timezone.now
+    )
 
     def __str__(self):
-        return self.prescription.medicine + " - " + self.prescription.consultation.patient.name
+        return (
+            self.prescription.medicine
+            + " - "
+            + self.prescription.consultation.patient.name
+        )
 
     def validate(self) -> None:
-        if (
-            self.prescription.discontinued
-        ):
+        if self.prescription.discontinued:
             raise ValidationError(
                 {"prescription": "Prescription has been discontinued."}
             )

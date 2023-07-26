@@ -1,14 +1,14 @@
 from django.db import models
 
-from care.utils.models.base import BaseModel
 from care.facility.models.patient import PatientRegistration
 from care.hcx.models.base import (
-    STATUS_CHOICES,
+    OUTCOME_CHOICES,
     PRIORITY_CHOICES,
     PURPOSE_CHOICES,
-    OUTCOME_CHOICES,
+    STATUS_CHOICES,
 )
 from care.users.models import User
+from care.utils.models.base import BaseModel
 
 
 class Policy(BaseModel):

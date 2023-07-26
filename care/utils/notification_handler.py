@@ -1,6 +1,6 @@
 import json
 
-import celery
+from celery import shared_task
 from django.apps import apps
 from django.conf import settings
 from pywebpush import WebPushException, webpush
@@ -23,12 +23,12 @@ class NotificationCreationException(Exception):
     pass
 
 
-@celery.task()
+@shared_task
 def notification_task_generator(**kwargs):
     NotificationGenerator(**kwargs).generate()
 
 
-@celery.task()
+@shared_task
 def send_webpush(**kwargs):
     user = User.objects.get(username=kwargs.get("username"))
     message = kwargs.get("message")
@@ -42,7 +42,6 @@ def get_model_class(model_name):
 
 
 class NotificationGenerator:
-
     generate_for_facility = False
     generate_for_user = False
     facility = None
@@ -63,7 +62,6 @@ class NotificationGenerator:
         notification_mediums=False,
         worker_initated=False,
     ):
-
         if not worker_initated:
             if not isinstance(event_type, Notification.EventType):
                 raise NotificationCreationException("Event Type Invalid")

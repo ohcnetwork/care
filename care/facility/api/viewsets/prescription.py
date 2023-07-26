@@ -1,15 +1,23 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework import mixins
-from rest_framework import status
+from drf_spectacular.utils import extend_schema
+from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet
 
-from care.facility.api.serializers.prescription import PrescriptionSerializer, MedicineAdministrationSerializer
-from care.facility.models import Prescription, MedicineAdministration, PrescriptionType, generate_choices
-from care.utils.filters import CareChoiceFilter
+from care.facility.api.serializers.prescription import (
+    MedicineAdministrationSerializer,
+    PrescriptionSerializer,
+)
+from care.facility.models import (
+    MedicineAdministration,
+    Prescription,
+    PrescriptionType,
+    generate_choices,
+)
+from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -27,11 +35,11 @@ class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
 
 
-class MedicineAdministrationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
+class MedicineAdministrationViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
+):
     serializer_class = MedicineAdministrationSerializer
-    permission_classes = (
-        IsAuthenticated,
-    )
+    permission_classes = (IsAuthenticated,)
     queryset = MedicineAdministration.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -39,13 +47,14 @@ class MedicineAdministrationViewSet(mixins.ListModelMixin, mixins.RetrieveModelM
 
     def get_consultation_obj(self):
         return get_object_or_404(
-            get_consultation_queryset(self.request.user).filter(external_id=self.kwargs["consultation_external_id"]))
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
 
     def get_queryset(self):
         consultation_obj = self.get_consultation_obj()
-        return self.queryset.filter(
-            prescription__consultation_id=consultation_obj.id
-        )
+        return self.queryset.filter(prescription__consultation_id=consultation_obj.id)
 
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
@@ -60,9 +69,7 @@ class ConsultationPrescriptionViewSet(
     GenericViewSet,
 ):
     serializer_class = PrescriptionSerializer
-    permission_classes = (
-        IsAuthenticated,
-    )
+    permission_classes = (IsAuthenticated,)
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -70,27 +77,39 @@ class ConsultationPrescriptionViewSet(
 
     def get_consultation_obj(self):
         return get_object_or_404(
-            get_consultation_queryset(self.request.user).filter(external_id=self.kwargs["consultation_external_id"]))
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
 
     def get_queryset(self):
         consultation_obj = self.get_consultation_obj()
-        return self.queryset.filter(
-            consultation_id=consultation_obj.id
-        )
+        return self.queryset.filter(consultation_id=consultation_obj.id)
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
         serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
 
-    @action(methods=["POST"], detail=True)
+    @extend_schema(tags=["prescriptions"])
+    @action(
+        methods=["POST"],
+        detail=True,
+    )
     def discontinue(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
-        prescription_obj.discontinued_reason = request.data.get("discontinued_reason", None)
+        prescription_obj.discontinued_reason = request.data.get(
+            "discontinued_reason", None
+        )
         prescription_obj.save()
         return Response({}, status=status.HTTP_201_CREATED)
 
-    @action(methods=["POST"], detail=True, serializer_class=MedicineAdministrationSerializer)
+    @extend_schema(tags=["prescriptions"])
+    @action(
+        methods=["POST"],
+        detail=True,
+        serializer_class=MedicineAdministrationSerializer,
+    )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
         serializer = MedicineAdministrationSerializer(data=request.data)
@@ -113,3 +132,46 @@ class ConsultationPrescriptionViewSet(
     #     administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
     #     administered_obj.delete()
     #     return Response({"success": True}, status=status.HTTP_200_OK)
+
+
+class MedibaseViewSet(ViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    def serailize_data(self, objects):
+        return [
+            {
+                "id": x[0],
+                "name": x[1],
+                "type": x[2],
+                "generic": x[3],
+                "company": x[4],
+                "contents": x[5],
+                "cims_class": x[6],
+                "atc_classification": x[7],
+            }
+            for x in objects
+        ]
+
+    def sort(self, query, results):
+        exact_matches = []
+        partial_matches = []
+
+        for x in results:
+            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
+            if query in words:
+                exact_matches.append(x)
+            else:
+                partial_matches.append(x)
+
+        return exact_matches + partial_matches
+
+    def list(self, request):
+        from care.facility.static_data.medibase import MedibaseMedicineTable
+
+        queryset = MedibaseMedicineTable
+
+        if query := request.query_params.get("query"):
+            query = query.strip().lower()
+            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
+            queryset = self.sort(query, queryset)
+        return Response(self.serailize_data(queryset[:15]))

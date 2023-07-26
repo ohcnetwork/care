@@ -15,5 +15,7 @@ class Command(BaseCommand):
         print("Starting Sync")
         for patient in PatientRegistration.objects.all():
             if patient.srf_id:
-                PatientExternalTest.objects.filter(srf_id__iexact=patient.srf_id).update(patient_created=True)
+                PatientExternalTest.objects.filter(
+                    srf_id__iexact=patient.srf_id
+                ).update(patient_created=True)
         print("Completed Sync")

@@ -1,29 +1,33 @@
+from datetime import datetime, timezone
+from functools import reduce
+from typing import List, Literal, TypedDict
+
+import requests
 from fhir.resources import (
-    meta,
-    organization,
-    identifier,
-    coding,
-    patient,
-    reference,
-    coverage,
-    coverageeligibilityrequest,
-    practitionerrole,
-    coverageeligibilityresponse,
+    annotation,
+    attachment,
     bundle,
-    period,
     claim,
     claimresponse,
-    domainresource,
-    attachment,
     codeableconcept,
-    procedure,
-    annotation,
+    coding,
+    communication,
+    communicationrequest,
     condition,
+    coverage,
+    coverageeligibilityrequest,
+    coverageeligibilityresponse,
+    domainresource,
+    identifier,
+    meta,
+    organization,
+    patient,
+    period,
+    practitionerrole,
+    procedure,
+    reference,
 )
-from typing import TypedDict, Literal, List
-from datetime import datetime, timezone
-import requests
-from functools import reduce
+
 from config.settings.base import CURRENT_DOMAIN
 
 
@@ -42,6 +46,12 @@ class PROFILE:
     )
     procedure = "http://hl7.org/fhir/R4/procedure.html"
     condition = "https://nrces.in/ndhm/fhir/r4/StructureDefinition/Condition"
+    communication = (
+        "https://ig.hcxprotocol.io/v0.7.1/StructureDefinition-Communication.html"
+    )
+    communication_bundle = (
+        "https://ig.hcxprotocol.io/v0.7.1/StructureDefinition-CommunicationBundle.html"
+    )
 
 
 class SYSTEM:
@@ -70,6 +80,8 @@ class SYSTEM:
     diagnosis_type = "http://terminology.hl7.org/CodeSystem/ex-diagnosistype"
     claim_item_category = "https://irdai.gov.in/benefit-billing-group-code"
     claim_item_category_pmjy = "https://pmjay.gov.in/benefit-billing-group-code"
+    communication_identifier = "http://www.providerco.com/communication"
+    communication_bundle_identifier = "https://www.tmh.in/bundle"
 
 
 PRACTIONER_SPECIALITY = {
@@ -908,6 +920,87 @@ class Fhir:
             ],
         )
 
+    def create_communication_profile(
+        self,
+        id: str,
+        identifier_value: str,
+        payload: list,
+        about: list,
+        last_updated=datetime.now().astimezone(tz=timezone.utc),
+    ):
+        return communication.Communication(
+            id=id,
+            identifier=[
+                identifier.Identifier(
+                    system=SYSTEM.communication_identifier, value=identifier_value
+                )
+            ],
+            meta=meta.Meta(lastUpdated=last_updated, profile=[PROFILE.communication]),
+            status="completed",
+            about=list(
+                map(
+                    lambda ref: (reference.Reference(type=ref["type"], id=ref["id"])),
+                    about,
+                )
+            ),
+            payload=list(
+                map(
+                    lambda content: (
+                        communication.CommunicationPayload(
+                            contentString=content["data"]
+                            if content["type"] == "text"
+                            else None,
+                            contentAttachment=attachment.Attachment(
+                                url=content["data"],
+                                title=content["name"] if content["name"] else None,
+                            )
+                            if content["type"] == "url"
+                            else None,
+                        )
+                    ),
+                    payload,
+                )
+            ),
+        )
+
+    def create_communication_bundle(
+        self,
+        id: str,
+        identifier_value: str,
+        communication_id: str,
+        communication_identifier_value: str,
+        payload: list,
+        about: list,
+        last_updated=datetime.now().astimezone(tz=timezone.utc),
+    ):
+        communication_profile = self.create_communication_profile(
+            communication_id,
+            communication_identifier_value,
+            payload,
+            about,
+            last_updated,
+        )
+
+        return bundle.Bundle(
+            id=id,
+            meta=meta.Meta(
+                lastUpdated=last_updated,
+                profile=[PROFILE.communication_bundle],
+            ),
+            identifier=identifier.Identifier(
+                system=SYSTEM.communication_bundle_identifier,
+                value=identifier_value,
+            ),
+            type="collection",
+            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            entry=[
+                bundle.BundleEntry(
+                    fullUrl=self.get_reference_url(communication_profile),
+                    resource=communication_profile,
+                ),
+            ],
+        )
+
     def process_coverage_elibility_check_response(self, response):
         coverage_eligibility_check_bundle = bundle.Bundle(**response)
 
@@ -993,6 +1086,74 @@ class Fhir:
                 )
             ),
         }
+
+    def process_communication_request(self, request):
+        communication_request = communicationrequest.CommunicationRequest(**request)
+
+        data = {
+            "identifier": communication_request.id
+            or communication_request.identifier[0].value,
+            "status": communication_request.status,
+            "priority": communication_request.priority,
+            "about": None,
+            "based_on": None,
+            "payload": None,
+        }
+
+        if communication_request.about:
+            data["about"] = []
+            for object in communication_request.about:
+                about = reference.Reference(**object.dict())
+                if about.identifier:
+                    id = identifier.Identifier(about.identifier).value
+                    data["about"].append(id)
+                    continue
+
+                if about.reference:
+                    id = about.reference.split("/")[-1]
+                    data["about"].append(id)
+                    continue
+
+        if communication_request.basedOn:
+            data["based_on"] = []
+            for object in communication_request.basedOn:
+                based_on = reference.Reference(**object.dict())
+                if based_on.identifier:
+                    id = identifier.Identifier(based_on.identifier).value
+                    data["based_on"].append(id)
+                    continue
+
+                if based_on.reference:
+                    id = based_on.reference.split("/")[-1]
+                    data["based_on"].append(id)
+                    continue
+
+        if communication_request.payload:
+            data["payload"] = []
+            for object in communication_request.payload:
+                payload = communicationrequest.CommunicationRequestPayload(
+                    **object.dict()
+                )
+
+                if payload.contentString:
+                    data["payload"].append(
+                        {"type": "text", "data": payload.contentString}
+                    )
+                    continue
+
+                if payload.contentAttachment:
+                    content = attachment.Attachment(payload.contentAttachment)
+                    if content.data:
+                        data["payload"].append(
+                            {
+                                "type": content.contentType or "text",
+                                "data": content.data,
+                            }
+                        )
+                    elif content.url:
+                        data["payload"].append({"type": "url", "data": content.url})
+
+        return data
 
     def validate_fhir_local(self, fhir_payload, type="bundle"):
         try:

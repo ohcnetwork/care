@@ -1,15 +1,20 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.users.api.serializers.lsg import DistrictSerializer, LocalBodySerializer, StateSerializer, WardSerializer
+from care.users.api.serializers.lsg import (
+    DistrictSerializer,
+    LocalBodySerializer,
+    StateSerializer,
+    WardSerializer,
+)
 from care.users.models import District, LocalBody, State, Ward
-
 from care.utils.cache.mixin import ListCacheResponseMixin, RetrieveCacheResponseMixin
 
 
@@ -17,6 +22,10 @@ class PaginataionOverrideClass(PageNumberPagination):
     page_size = 500
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class StateViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -28,11 +37,14 @@ class StateViewSet(
     queryset = State.objects.all().order_by("id")
     pagination_class = PaginataionOverrideClass
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def districts(self, *args, **kwargs):
         state = self.get_object()
-        serializer = DistrictSerializer(state.district_set.all().order_by("name"), many=True)
+        serializer = DistrictSerializer(
+            state.district_set.all().order_by("name"), many=True
+        )
         return Response(data=serializer.data)
 
 
@@ -42,6 +54,10 @@ class DistrictFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class DistrictViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -55,13 +71,17 @@ class DistrictViewSet(
     filterset_class = DistrictFilterSet
     pagination_class = PaginataionOverrideClass
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def local_bodies(self, *args, **kwargs):
         district = self.get_object()
-        serializer = LocalBodySerializer(district.localbody_set.all().order_by("name"), many=True)
+        serializer = LocalBodySerializer(
+            district.localbody_set.all().order_by("name"), many=True
+        )
         return Response(data=serializer.data)
 
+    @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
     def get_all_local_body(self, *args, **kwargs):
@@ -69,19 +89,29 @@ class DistrictViewSet(
         data = []
         for lsg_object in LocalBody.objects.filter(district=district):
             local_body_object = LocalBodySerializer(lsg_object).data
-            local_body_object["wards"] = WardSerializer(Ward.objects.filter(local_body=lsg_object), many=True).data
+            local_body_object["wards"] = WardSerializer(
+                Ward.objects.filter(local_body=lsg_object), many=True
+            ).data
             data.append(local_body_object)
         return Response(data)
 
 
 class LocalBodyFilterSet(filters.FilterSet):
     state = filters.NumberFilter(field_name="district__state_id")
-    state_name = filters.CharFilter(field_name="district__state__name", lookup_expr="icontains")
+    state_name = filters.CharFilter(
+        field_name="district__state__name", lookup_expr="icontains"
+    )
     district = filters.NumberFilter(field_name="district_id")
-    district_name = filters.CharFilter(field_name="district__name", lookup_expr="icontains")
+    district_name = filters.CharFilter(
+        field_name="district__name", lookup_expr="icontains"
+    )
     local_body_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class LocalBodyViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -98,14 +128,24 @@ class LocalBodyViewSet(
 
 class WardFilterSet(filters.FilterSet):
     state = filters.NumberFilter(field_name="district__state_id")
-    state_name = filters.CharFilter(field_name="district__state__name", lookup_expr="icontains")
+    state_name = filters.CharFilter(
+        field_name="district__state__name", lookup_expr="icontains"
+    )
     district = filters.NumberFilter(field_name="local_body__district_id")
-    district_name = filters.CharFilter(field_name="local_body__district__name", lookup_expr="icontains")
+    district_name = filters.CharFilter(
+        field_name="local_body__district__name", lookup_expr="icontains"
+    )
     local_body = filters.NumberFilter(field_name="local_body_id")
-    local_body_name = filters.CharFilter(field_name="local_body__name", lookup_expr="icontains")
+    local_body_name = filters.CharFilter(
+        field_name="local_body__name", lookup_expr="icontains"
+    )
     ward_name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["places"]),
+    retrieve=extend_schema(tags=["places"]),
+)
 class WardViewSet(
     ListCacheResponseMixin,
     RetrieveCacheResponseMixin,
@@ -118,4 +158,3 @@ class WardViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = WardFilterSet
     pagination_class = PaginataionOverrideClass
-

@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
@@ -16,9 +18,9 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.bed import (
     AssetBedSerializer,
-    PatientAssetBedSerializer,
     BedSerializer,
     ConsultationBedSerializer,
+    PatientAssetBedSerializer,
 )
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.patient_base import BedTypeChoices
@@ -128,13 +130,18 @@ class PatientAssetBedFilter(filters.FilterSet):
     bed_is_occupied = filters.BooleanFilter(method="filter_bed_is_occupied")
 
     def filter_bed_is_occupied(self, queryset, name, value):
-        return queryset.exclude(
-            bed__consultationbed__consultation__current_bed__isnull=value
+        return queryset.filter(
+            bed__id__in=Subquery(
+                ConsultationBed.objects.filter(
+                    bed__id=OuterRef("bed__id"), end_date__isnull=value
+                ).values("bed__id")
+            )
         )
 
 
+@extend_schema_view(list=extend_schema(tags=["facility"]))
 class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
-    queryset = AssetBed.objects.all().select_related("asset", "bed")
+    queryset = AssetBed.objects.select_related("asset", "bed").order_by("-created_date")
     serializer_class = PatientAssetBedSerializer
     filter_backends = (
         filters.DjangoFilterBackend,

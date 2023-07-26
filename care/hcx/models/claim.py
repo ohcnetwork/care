@@ -1,19 +1,19 @@
 from django.db import models
+from django.db.models import JSONField
 
-from care.utils.models.base import BaseModel
 from care.facility.models.patient import PatientConsultation
-from care.hcx.models.policy import Policy
 from care.hcx.models.base import (
-    STATUS_CHOICES,
-    PRIORITY_CHOICES,
-    USE_CHOICES,
     CLAIM_TYPE_CHOICES,
     OUTCOME_CHOICES,
+    PRIORITY_CHOICES,
+    STATUS_CHOICES,
+    USE_CHOICES,
 )
-from django.contrib.postgres.fields import JSONField
-from care.utils.models.validators import JSONFieldSchemaValidator
 from care.hcx.models.json_schema.claim import ITEMS
+from care.hcx.models.policy import Policy
 from care.users.models import User
+from care.utils.models.base import BaseModel
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class Claim(BaseModel):

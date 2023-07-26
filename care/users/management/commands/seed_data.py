@@ -1,8 +1,9 @@
 from django.core.management import BaseCommand
+
 from care.facility.models.inventory import (
+    FacilityInventoryItem,
     FacilityInventoryItemTag,
     FacilityInventoryUnit,
-    FacilityInventoryItem,
     FacilityInventoryUnitConverter,
 )
 
@@ -15,7 +16,6 @@ class Command(BaseCommand):
     help = "Seed Data for Inventory"
 
     def handle(self, *args, **options):
-
         print("Creating Units for Inventory as well as their conversion rates")
 
         # Inventory Unit
