@@ -12,8 +12,9 @@ from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
+    FacilityDetailSerializer,
     FacilityImageUploadSerializer,
-    FacilitySerializer,
+    FacilityListSerializer,
 )
 from care.facility.models import (
     Facility,
@@ -98,11 +99,13 @@ class FacilityViewSet(
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
+        if self.action == "list":
+            return FacilityListSerializer
         if self.action == "cover_image":
             # Check DRYpermissions before updating
             return FacilityImageUploadSerializer
-        else:
-            return FacilitySerializer
+
+        return FacilityDetailSerializer
 
     def destroy(self, request, *args, **kwargs):
         if (

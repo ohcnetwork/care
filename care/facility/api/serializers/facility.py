@@ -87,6 +87,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
 
 
 class FacilitySerializer(FacilityBasicInfoSerializer):
+    # Remove when #5492 is solved
     """Serializer for facility.models.Facility."""
 
     facility_type = ChoiceField(choices=FACILITY_TYPES)
@@ -177,3 +178,103 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         facility.cover_image_url = image_location
         facility.save()
         return facility
+
+
+class FacilityListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    facility_type = ChoiceField(choices=FACILITY_TYPES)
+    read_cover_image_url = serializers.URLField(read_only=True)
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    patient_count = serializers.SerializerMethodField()
+    bed_count = serializers.SerializerMethodField()
+
+    def get_bed_count(self, facility):
+        return Bed.objects.filter(facility=facility).count()
+
+    def get_patient_count(self, facility):
+        return PatientRegistration.objects.filter(
+            facility=facility, is_active=True
+        ).count()
+
+    class Meta:
+        model = Facility
+        fields = fields = [
+            "id",
+            "name",
+            "modified_date",
+            "created_date",
+            "kasp_empanelled",
+            "facility_type",
+            "features",
+            "local_body_object",
+            "phone_number",
+            "read_cover_image_url",
+            "patient_count",
+            "bed_count",
+        ]
+
+
+class FacilityDetailSerializer(FacilityListSerializer, FacilityBasicInfoSerializer):
+    """Serializer for facility.models.Facility."""
+
+    facility_type = ChoiceField(choices=FACILITY_TYPES)
+    # A valid location => {
+    #     "latitude": 49.8782482189424,
+    #     "longitude": 24.452545489
+    # }
+    read_cover_image_url = serializers.URLField(read_only=True)
+    # location = PointField(required=False)
+    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    bed_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Facility
+        fields = [
+            "id",
+            "name",
+            "ward",
+            "local_body",
+            "district",
+            "state",
+            "facility_type",
+            "address",
+            "longitude",
+            "latitude",
+            "features",
+            "pincode",
+            "oxygen_capacity",
+            "phone_number",
+            "ward_object",
+            "local_body_object",
+            "district_object",
+            "state_object",
+            "modified_date",
+            "created_date",
+            "kasp_empanelled",
+            "middleware_address",
+            "expected_oxygen_requirement",
+            "type_b_cylinders",
+            "type_c_cylinders",
+            "type_d_cylinders",
+            "expected_type_b_cylinders",
+            "expected_type_c_cylinders",
+            "expected_type_d_cylinders",
+            "read_cover_image_url",
+            "patient_count",
+            "bed_count",
+        ]
+        read_only_fields = ("modified_date", "created_date")
+
+    def validate_middleware_address(self, value):
+        value = value.strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+        return super().create(validated_data)
