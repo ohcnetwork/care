@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.test import APITransactionTestCase
 
 from care.facility.models import AssetLocation, Bed
 from care.utils.tests.test_base import TestBase
@@ -33,7 +32,7 @@ class SingleBedTest(TestBase):
         )
 
 
-class MultipleBedTest(APITransactionTestCase, TestBase):
+class MultipleBedTest(TestBase):
     def setUp(self) -> None:
         super().setUp()
         self.asset_location: AssetLocation = AssetLocation.objects.create(
