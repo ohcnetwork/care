@@ -463,8 +463,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     created_by_local_user = serializers.BooleanField(read_only=True)
-    consultation = serializers.CharField(
-        source="consultation.external_id", read_only=True
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(),
+        required=False,
+        allow_null=True,
+        read_only=True,
     )
 
     def validate_empty_values(self, data):

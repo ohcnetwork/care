@@ -647,13 +647,9 @@ class PatientNotesViewSet(
                 {"patient": "Only active patients data can be updated"}
             )
 
-        consultation = None
-        if self.request.data.get("consultation"):
-            consultation = patient.last_consultation
-
         return serializer.save(
             facility=patient.facility,
             patient=patient,
-            consultation=consultation,
+            consultation=patient.last_consultation,
             created_by=self.request.user,
         )
