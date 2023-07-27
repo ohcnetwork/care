@@ -87,7 +87,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
 
 
 class FacilitySerializer(FacilityBasicInfoSerializer):
-    # Remove when #5492 is solved
+    # TODO: Remove when #5492 is solved
     """Serializer for facility.models.Facility."""
 
     facility_type = ChoiceField(choices=FACILITY_TYPES)
