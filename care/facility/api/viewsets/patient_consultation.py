@@ -1,4 +1,3 @@
-from celery import chord
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
@@ -205,9 +204,10 @@ class PatientConsultationViewSet(
             .first()
         )
         if not summary_file:
-            chord(generate_discharge_summary_task.s(consultation_ext_id))(
-                email_discharge_summary_task.s([email])
-            )
+            (
+                generate_discharge_summary_task.s(consultation_ext_id)
+                | email_discharge_summary_task.s(emails=[email])
+            ).delay()
         else:
             email_discharge_summary_task.delay(summary_file.id, [email])
         return Response(
