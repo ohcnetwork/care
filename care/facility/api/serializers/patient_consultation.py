@@ -5,6 +5,7 @@ from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedDetailSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
@@ -419,6 +420,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to_external",
             "discharge_notes",
             "discharge_date",
             "discharge_prescription",
@@ -471,6 +473,18 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
+            if patient.abha_number:
+                abha_number = patient.abha_number
+                AbdmGateway().fetch_modes(
+                    {
+                        "healthId": abha_number.abha_number,
+                        "name": abha_number.name,
+                        "gender": abha_number.gender,
+                        "dateOfBirth": str(abha_number.date_of_birth),
+                        "consultationId": abha_number.external_id,
+                        "purpose": "LINK",
+                    }
+                )
             return instance
 
     def create(self, validated_data):

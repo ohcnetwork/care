@@ -46,9 +46,9 @@ class BaseAssetIntegration:
             headers={"Authorization": (self.auth_header_type + generate_jwt())},
         )
         try:
-            response = req.json()
             if req.status_code >= 400:
-                raise APIException(response, req.status_code)
+                raise APIException(req.text, req.status_code)
+            response = req.json()
             return response
         except json.decoder.JSONDecodeError:
             return {"error": "Invalid Response"}
