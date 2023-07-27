@@ -3,11 +3,14 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
+from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
+    AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicViewSet,
     AssetTransactionViewSet,
@@ -185,11 +188,13 @@ facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 
 router.register("asset", AssetViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
+router.register("asset_availability", AssetAvailabilityViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 patient_nested_router.register(r"notes", PatientNotesViewSet)
+patient_nested_router.register(r"abha", AbhaViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
@@ -210,6 +215,10 @@ router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
+
+# ABDM endpoints
+if settings.ENABLE_ABDM:
+    router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
 
 app_name = "api"
 urlpatterns = [
