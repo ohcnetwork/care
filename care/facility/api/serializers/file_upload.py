@@ -31,7 +31,10 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
-        elif file_type == FileUpload.FileType.CONSULTATION.value:
+        elif (
+            file_type == FileUpload.FileType.CONSULTATION.value
+            or file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value
+        ):
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if consultation.discharge_date:
                 if not action == "read":
