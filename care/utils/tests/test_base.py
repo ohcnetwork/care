@@ -439,20 +439,22 @@ class TestBase(APITestCase):
         data.update(kwargs)
         return PatientConsultation.objects.create(**data)
 
+    @classmethod
     def create_patient_note(
-        self, patient=None, facility=None, note="Patient is doing find", **kwargs
+        cls, patient=None, facility=None, note="Patient is doing find", **kwargs
     ):
         data = {
-            "patient": patient or self.patient,
-            "facility": facility or self.facility,
+            "patient": patient or cls.patient,
+            "facility": facility or cls.facility,
             "note": note,
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
 
-    def create_daily_round(self, consultation=None):
+    @classmethod
+    def create_daily_round(cls, consultation=None):
         data = {
-            "consultation": consultation or self.consultation,
+            "consultation": consultation or cls.consultation,
             "temperature": 98.6,
             "spo2": 98,
             "temperature_measured_at": make_aware(
@@ -461,6 +463,6 @@ class TestBase(APITestCase):
             "physical_examination_info": "physical_examination_info",
             "additional_symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
-            "created_by": self.user,
+            "created_by": cls.user,
         }
         return DailyRound.objects.create(**data)
