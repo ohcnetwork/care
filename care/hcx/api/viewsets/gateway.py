@@ -14,7 +14,9 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
-from care.facility.tasks.discharge_report import generate_discharge_report_signed_url
+from care.facility.utils.reports.discharge_summary import (
+    generate_discharge_report_signed_url,
+)
 from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.api.serializers.communication import CommunicationSerializer
 from care.hcx.api.serializers.gateway import (
