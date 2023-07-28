@@ -1,10 +1,9 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from care.facility.tests.mixins import TestClassMixin
 from care.utils.tests.test_base import TestBase
 
 
@@ -140,7 +139,6 @@ class ExpectedCreatedByRetrieveKeys(Enum):
     LAST_NAME = "last_name"
     USER_TYPE = "user_type"
     LAST_LOGIN = "last_login"
-    HOME_FACILITY = "home_facility"
 
 
 class ExpectedLastEditedByRetrieveKeys(Enum):
@@ -154,18 +152,21 @@ class ExpectedLastEditedByRetrieveKeys(Enum):
     HOME_FACILITY = "home_facility"
 
 
-class TestDailyRoundApi(TestBase, TestClassMixin, APITestCase):
+class TestDailyRoundApi(TestBase):
     analyse_url = "/api/v1/consultation/{}/daily_rounds/analyse/"
     daily_rounds_url = "/api/v1/consultation/{}/daily_rounds/"
 
-    def setUp(self):
-        self.factory = APIRequestFactory()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = APIRequestFactory()
 
-        self.consultation = self.create_consultation()
+        cls.consultation = cls.create_consultation()
 
         # create daily round
-        self.daily_round = self.create_daily_round(consultation=self.consultation)
+        cls.daily_round = cls.create_daily_round(consultation=cls.consultation)
 
+    def setUp(self):
         refresh_token = RefreshToken.for_user(self.user)
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
