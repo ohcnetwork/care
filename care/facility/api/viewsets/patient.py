@@ -81,6 +81,10 @@ class PatientFilterSet(filters.FilterSet):
     ip_no = filters.CharFilter(
         field_name="last_consultation__ip_no", lookup_expr="icontains"
     )
+    op_no = filters.CharFilter(
+        field_name="last_consultation__op_no", lookup_expr="icontains"
+    )
+    ip_or_op_no = filters.CharFilter(method="filter_by_ip_or_op_no")
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
@@ -93,6 +97,14 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+
+    def filter_by_ip_or_op_no(self, queryset, name, value):
+        if value:
+            queryset = queryset.filter(
+                Q(last_consultation__ip_no__icontains=value)
+                | Q(last_consultation__op_no__icontains=value)
+            )
+        return queryset
 
     def filter_by_category(self, queryset, name, value):
         if value:
