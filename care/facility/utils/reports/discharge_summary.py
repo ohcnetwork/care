@@ -158,7 +158,7 @@ def email_discharge_summary(summary_file: FileUpload, emails: Iterable[str]):
         "Patient Discharge Summary",
         "Please find the attached file",
         settings.DEFAULT_FROM_EMAIL,
-        (emails,),
+        emails,
     )
     msg.content_subtype = "html"
     _, data = summary_file.file_contents()
