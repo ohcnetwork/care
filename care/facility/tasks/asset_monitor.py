@@ -40,10 +40,10 @@ def check_asset_status():
             # Checking if middleware status is already cached
             if (
                 hostname in middleware_camera_status_cache
-                and asset.asset_class == "onvif"
+                and asset.asset_class == "ONVIF"
             ):
                 result = middleware_camera_status_cache[hostname]
-            elif hostname in middleware_status_cache and asset.asset_class != "onvif":
+            elif hostname in middleware_status_cache and asset.asset_class != "ONVIF":
                 result = middleware_status_cache[hostname]
             else:
                 try:
@@ -57,9 +57,9 @@ def check_asset_status():
                         }
                     )
                     # Fetching the status of the device
-                    if asset.asset_class == "onvif":
+                    if asset.asset_class == "ONVIF":
                         similar_assets = Asset.objects.filter(
-                            asset_class="onvif"
+                            asset_class="ONVIF"
                         ).filter(
                             Q(meta__middleware_hostname=hostname)
                             | Q(current_location__facility__middleware_address=hostname)
@@ -72,10 +72,7 @@ def check_asset_status():
                                 )
                                 assets_config.append(
                                     {
-                                        "hostname": asset.meta.get(
-                                            "middleware_hostname",
-                                            asset.current_location.facility.middleware_address,
-                                        ),
+                                        "hostname": asset.meta.get("local_ip_address"),
                                         "port": 80,
                                         "username": asset_config[0],
                                         "password": asset_config[1],
@@ -84,7 +81,7 @@ def check_asset_status():
                             except Exception:
                                 pass
                         result = asset_class.api_post(
-                            asset_class.get_url("cameras/status"), data={assets_config}
+                            asset_class.get_url("cameras/status"), data=assets_config
                         )
                     else:
                         result = asset_class.api_get(
@@ -97,7 +94,7 @@ def check_asset_status():
             if not result:
                 result = [{"time": timezone.now().isoformat(), "status": []}]
 
-            if asset.asset_class == "onvif":
+            if asset.asset_class == "ONVIF":
                 middleware_camera_status_cache[hostname] = result
             else:
                 middleware_status_cache[hostname] = result
