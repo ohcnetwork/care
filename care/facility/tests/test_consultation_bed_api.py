@@ -1,10 +1,9 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from care.facility.tests.mixins import TestClassMixin
 from care.utils.tests.test_base import TestBase
 
 
@@ -63,7 +62,7 @@ class ExpectedBareMinimumLocationObjectKeys(Enum):
     NAME = "name"
 
 
-class ConsultationBedTestCase(TestBase, TestClassMixin, APITestCase):
+class ConsultationBedTestCase(TestBase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.consultation_bed = self.create_consultation_bed()
