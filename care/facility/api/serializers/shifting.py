@@ -329,7 +329,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
         new_instance = super().update(instance, validated_data)
 
         patient = new_instance.patient
-        patient_category = self.validated_data.pop("patient_category")
+        patient_category = validated_data.pop("patient_category", None)
         if patient.last_consultation and patient_category is not None:
             patient.last_consultation.category = patient_category
             patient.last_consultation.save(update_fields=["category"])
@@ -394,7 +394,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             patient.allow_transfer = True
             patient.save()
 
-        patient_category = self.validated_data.pop("patient_category")
+        patient_category = validated_data.pop("patient_category", None)
         if patient.last_consultation and patient_category is not None:
             patient.last_consultation.category = patient_category
             patient.last_consultation.save(update_fields=["category"])
