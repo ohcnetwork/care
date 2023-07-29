@@ -14,6 +14,7 @@ class BaseAssetIntegration:
 
     class BaseAssetActions(enum.Enum):
         UNLOCK_ASSET = "unlock_asset"
+        LOCK_ASSET = "lock_asset"
 
     def __init__(self, meta):
         self.meta = meta
@@ -61,35 +62,37 @@ class BaseAssetIntegration:
     def validate_action(self, action):
         pass
 
-    def unlock_asset(self, user_id, asset_id):
+    def unlock_asset(self, username, asset_id):
         if cache.get(asset_id) is None:
             return True
-        elif cache.get(asset_id) == user_id:
+        elif cache.get(asset_id) == username:
             cache.delete(asset_id)
             return True
-        elif cache.get(asset_id) != user_id:
+        elif cache.get(asset_id) != username:
             raise PermissionDenied(
                 {
                     "message": "Asset is currently in use by another user",
-                    "id": cache.get(asset_id),
+                    "username": cache.get(asset_id),
                 }
             )
         return True
 
-    def lock_asset(self, user_id, asset_id):
+    def lock_asset(self, username, asset_id):
         if cache.get(asset_id) is None:
-            cache.set(asset_id, user_id, timeout=None)
+            cache.set(asset_id, username, timeout=None)
+            return True
+        elif cache.get(asset_id) == username:
             return True
         return False
 
-    def verify_access(self, user_id, asset_id):
-        if cache.get(asset_id) is None or cache.get(asset_id) == user_id:
+    def verify_access(self, username, asset_id):
+        if cache.get(asset_id) is None or cache.get(asset_id) == username:
             return True
-        elif cache.get(asset_id) != user_id:
+        elif cache.get(asset_id) != username:
             raise PermissionDenied(
                 {
                     "message": "Asset is currently in use by another user",
-                    "id": cache.get(asset_id),
+                    "username": cache.get(asset_id),
                 }
             )
         return True

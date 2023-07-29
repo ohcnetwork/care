@@ -247,7 +247,7 @@ class AssetViewSet(
             result = asset_class.handle_action(
                 action,
                 {
-                    "user_id": request.user.external_id,
+                    "username": request.user.username,
                     "asset_id": asset.external_id,
                 },
             )
@@ -257,9 +257,9 @@ class AssetViewSet(
             return Response(
                 {
                     "message": e.detail.get("message", None),
-                    "id": e.detail.get("id", None),
+                    "username": e.detail.get("username", None),
                 },
-                status=status.HTTP_403_FORBIDDEN,
+                status=status.HTTP_409_CONFLICT,
             )
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)

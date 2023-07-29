@@ -1,6 +1,7 @@
 import enum
 
-from rest_framework.exceptions import ValidationError
+from django.core.cache import cache
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
 
@@ -34,7 +35,7 @@ class OnvifAsset(BaseAssetIntegration):
             key: action_data[key] for key in action_data if key in allowed_action_data
         }
 
-        user_id = verifcation_data.get("user_id", None)
+        username = verifcation_data.get("username", None)
         asset_id = verifcation_data.get("asset_id", None)
         request_body = {
             "hostname": self.host,
@@ -46,29 +47,39 @@ class OnvifAsset(BaseAssetIntegration):
         }
 
         if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
-            return self.unlock_asset(user_id, asset_id)
+            return self.unlock_asset(username, asset_id)
+
+        if action_type == BaseAssetIntegration.BaseAssetActions.LOCK_ASSET.value:
+            if self.lock_asset(username, asset_id):
+                return {"message": "Asset Locked"}
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "username": cache.get(asset_id),
+                }
+            )
 
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
-            self.lock_asset(user_id, asset_id)
+            self.lock_asset(username, asset_id)
             return self.api_get(self.get_url("status"), request_body)
 
         if action_type == self.OnvifActions.GET_PRESETS.value:
-            self.lock_asset(user_id, asset_id)
+            self.lock_asset(username, asset_id)
             return self.api_get(self.get_url("presets"), request_body)
 
         if action_type == self.OnvifActions.GOTO_PRESET.value:
-            self.verify_access(user_id, asset_id)
-            self.lock_asset(user_id, asset_id)
+            self.verify_access(username, asset_id)
+            self.lock_asset(username, asset_id)
             return self.api_post(self.get_url("gotoPreset"), request_body)
 
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
-            self.verify_access(user_id, asset_id)
-            self.lock_asset(user_id, asset_id)
+            self.verify_access(username, asset_id)
+            self.lock_asset(username, asset_id)
             return self.api_post(self.get_url("absoluteMove"), request_body)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
-            self.verify_access(user_id, asset_id)
-            self.lock_asset(user_id, asset_id)
+            self.verify_access(username, asset_id)
+            self.lock_asset(username, asset_id)
             return self.api_post(self.get_url("relativeMove"), request_body)
 
         raise ValidationError({"action": "invalid action type"})
