@@ -17,12 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
 
 #      - name: Configure AWS credentials
 #        uses: aws-actions/configure-aws-credentials@v1
@@ -79,64 +79,64 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      - name: Create Lambda function for migration
-        run: |
-          pip3 install --upgrade --user awscli
-          if aws lambda get-function --function-name migration_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
-            aws lambda update-function-code \
-              --function-name migration_${{ github.event.pull_request.number }} \
-              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
-              --publish
-
-          else
-            aws lambda create-function \
-              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
-              --handler migration_handler.handler \
-              --function-name migration_${{ github.event.pull_request.number }} \
-              --package-type Image \
-              --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
-              --memory-size 256 \
-              --timeout 30 \
-              --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
-              --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
-                  POSTGRES_DB=${{ env.POSTGRES_DB }}, \
-                  POSTGRES_USER=${{ secrets.POSTGRES_USER }}, \
-                  POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
-                  POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}, \
-                  DJANGO_SETTINGS_MODULE=config.settings.lambda, \
-                  DJANGO_SECURE_SSL_REDIRECT=False, \
-                  USE_S3=True, \
-                  CSRF_TRUSTED_ORIGINS='[\"*\"]', \
-                  DJANGO_ALLOWED_HOSTS='[\"*\"]', \
-                  RATE_LIMIT=5/10m, \
-                  MAINTANANCE_MODE=0, \
-                  DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}, \
-                  NEWRELIC_INI='', \
-                  POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}, \
-                  CELERY_BROKER_URL=redis://redis:6379/0, \
-                  REDIS_URL=redis://redis:6379/0, \
-                  DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
-                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
-                  EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
-                  EMAIL_USER=${{ secrets.EMAIL_USER }}, \
-                  EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
-                  SENTRY_DSN=${{ secrets.SENTRY_DSN }}, \
-                  SENTRY_ENVIRONMENT=preview, \
-                  FILE_UPLOAD_BUCKET=${{ secrets.FILE_UPLOAD_BUCKET }}, \
-                  FILE_UPLOAD_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
-                  FILE_UPLOAD_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
-                  AUDIT_LOG_ENABLED=1, \
-                  GOOGLE_RECAPTCHA_SITE_KEY=${{ secrets.GOOGLE_RECAPTCHA_SITE_KEY }}, \
-                  GOOGLE_RECAPTCHA_SECRET_KEY=${{ secrets.GOOGLE_RECAPTCHA_SECRET_KEY }}, \
-                  VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}, \
-                  VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}, \
-                  AWS_STORAGE_BUCKET_NAME=care-preview, \
-                  FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
-                  FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
-                  FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
-                  FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com \
-              }"
-          fi
+#      - name: Create Lambda function for migration
+#        run: |
+#          pip3 install --upgrade --user awscli
+#          if aws lambda get-function --function-name migration_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
+#            aws lambda update-function-code \
+#              --function-name migration_${{ github.event.pull_request.number }} \
+#              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+#              --publish
+#
+#          else
+#            aws lambda create-function \
+#              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
+#              --handler migration_handler.handler \
+#              --function-name migration_${{ github.event.pull_request.number }} \
+#              --package-type Image \
+#              --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+#              --memory-size 256 \
+#              --timeout 30 \
+#              --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
+#              --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+#                  POSTGRES_DB=${{ env.POSTGRES_DB }}, \
+#                  POSTGRES_USER=${{ secrets.POSTGRES_USER }}, \
+#                  POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+#                  POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}, \
+#                  DJANGO_SETTINGS_MODULE=config.settings.lambda, \
+#                  DJANGO_SECURE_SSL_REDIRECT=False, \
+#                  USE_S3=True, \
+#                  CSRF_TRUSTED_ORIGINS='[\"*\"]', \
+#                  DJANGO_ALLOWED_HOSTS='[\"*\"]', \
+#                  RATE_LIMIT=5/10m, \
+#                  MAINTANANCE_MODE=0, \
+#                  DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}, \
+#                  NEWRELIC_INI='', \
+#                  POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}, \
+#                  CELERY_BROKER_URL=redis://redis:6379/0, \
+#                  REDIS_URL=redis://redis:6379/0, \
+#                  DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
+#                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
+#                  EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
+#                  EMAIL_USER=${{ secrets.EMAIL_USER }}, \
+#                  EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
+#                  SENTRY_DSN=${{ secrets.SENTRY_DSN }}, \
+#                  SENTRY_ENVIRONMENT=preview, \
+#                  FILE_UPLOAD_BUCKET=${{ secrets.FILE_UPLOAD_BUCKET }}, \
+#                  FILE_UPLOAD_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+#                  FILE_UPLOAD_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+#                  AUDIT_LOG_ENABLED=1, \
+#                  GOOGLE_RECAPTCHA_SITE_KEY=${{ secrets.GOOGLE_RECAPTCHA_SITE_KEY }}, \
+#                  GOOGLE_RECAPTCHA_SECRET_KEY=${{ secrets.GOOGLE_RECAPTCHA_SECRET_KEY }}, \
+#                  VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}, \
+#                  VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}, \
+#                  AWS_STORAGE_BUCKET_NAME=care-preview, \
+#                  FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
+#                  FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+#                  FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+#                  FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com \
+#              }"
+#          fi
 
       - name: Invoke migration lambda
         run: |
