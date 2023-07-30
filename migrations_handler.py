@@ -35,13 +35,8 @@ def handler(*args, **kwargs):
 
     django.setup()
     call_command('migrate')
-
-    BASE_URL = "data/dummy/"
-    call_command("loaddata", BASE_URL + "users.json")
     call_command("load_data", "kerala")
     call_command("load_medicines_data")
     call_command("seed_data")
-    call_command("loaddata", BASE_URL + "facility.json")
-    call_command("loaddata", BASE_URL + "cypress_users.json")
-    call_command("loaddata", BASE_URL + "facility_users.json")
+
 
