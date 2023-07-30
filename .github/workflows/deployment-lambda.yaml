@@ -137,12 +137,12 @@ jobs:
 #                  FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com \
 #              }"
 #          fi
-
-      - name: Invoke migration lambda
-        run: |
-          aws lambda invoke \
-            --function-name migration_${{ github.event.pull_request.number }} \
-            --invocation-type Event
+#
+#      - name: Invoke migration lambda
+#        run: |
+#          aws lambda invoke \
+#            --function-name migration_${{ github.event.pull_request.number }} \
+#            --invocation-type Event
 
       - name: Create Lambda function from Docker image
         run: |
