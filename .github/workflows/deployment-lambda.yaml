@@ -139,6 +139,10 @@ jobs:
               }"
           fi
 
+      - name: Wait for migration lambda
+        run: |
+          aws lambda wait function-active-v2 --function-name=migration_${{ github.event.pull_request.number }}
+
       - name: Invoke migration lambda
         run: |
           aws lambda invoke \
