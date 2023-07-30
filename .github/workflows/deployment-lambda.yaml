@@ -187,7 +187,8 @@ jobs:
                   CELERY_BROKER_URL=redis://redis:6379/0, \
                   REDIS_URL=redis://redis:6379/0, \
                   DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
-                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
+                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
                   EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
                   EMAIL_USER=${{ secrets.EMAIL_USER }}, \
                   EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
@@ -206,5 +207,7 @@ jobs:
                   FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
                   FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
                   FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com \
+                  SNS_SECRET_KEY=${{ secrets.SNS_SECRET_KEY }}, \
+                  SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }}, \
               }"
           fi
