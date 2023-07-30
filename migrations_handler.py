@@ -1,7 +1,6 @@
 from django.core.management import call_command
 import django
 import os
-from django.conf import settings
 import psycopg
 from psycopg import sql
 
@@ -13,10 +12,10 @@ from psycopg import sql
 # }
 
 def handler(*args, **kwargs):
-    con = psycopg.connect(dbname=settings.POSTGRES_DB,
-                        user=settings.POSTGRES_USER,
-                        host=settings.POSTGRES_HOST,
-                        password=settings.POSTGRES_PASSWORD,
+    con = psycopg.connect(dbname=os.environ.get("POSTGRES_DB"),
+                        user=os.environ.get("POSTGRES_USER"),
+                        host=os.environ.get("POSTGRES_HOST"),
+                        password=os.environ.get("POSTGRES_PASSWORD"),
                         autocommit=True
                         )
 
@@ -26,7 +25,7 @@ def handler(*args, **kwargs):
     # in order to avoid sql injection attacks.
     try:
         cur.execute(sql.SQL("CREATE DATABASE {};").format(
-            sql.Identifier('previewlocal'))
+            sql.Identifier(os.environ.get("POSTGRES_DB")))
         )
     except psycopg.errors.DuplicateDatabase:
         pass
