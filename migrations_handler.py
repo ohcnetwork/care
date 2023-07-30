@@ -16,6 +16,7 @@ def handler(*args, **kwargs):
                         user=os.environ.get("POSTGRES_USER"),
                         host=os.environ.get("POSTGRES_HOST"),
                         password=os.environ.get("POSTGRES_PASSWORD"),
+                        port=os.environ.get("POSTGRES_PORT"),
                         autocommit=True
                         )
 
