@@ -84,5 +84,5 @@ COPY . ${APP_HOME}
 #RUN chown django:django ${APP_HOME}
 #
 #USER django
-
+RUN python manage.py collectstatic --noinput
 CMD ["mangum_handler.handler"]
