@@ -123,6 +123,7 @@ jobs:
 
           else
             aws lambda create-function \
+              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
               --handler migration_handler.handler \
               --function-name migration_${{ github.event.pull_request.number }} \
               --package-type Image \
@@ -186,6 +187,7 @@ jobs:
               --publish
           else
             aws lambda create-function \
+              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
               --function-name preview_${{ github.event.pull_request.number }} \
               --package-type Image \
               --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
