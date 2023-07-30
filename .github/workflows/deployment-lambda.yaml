@@ -1,6 +1,6 @@
 name: Lambda Deployment
 on:
-  pull_request:
+  push:
     branches:
       - devops/lambda-changes
     paths-ignore:
