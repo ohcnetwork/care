@@ -96,7 +96,7 @@ jobs:
               --package-type Image \
               --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
               --memory-size 1024 \
-              --timeout 30 \
+              --timeout 600 \
               --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
               --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
                   POSTGRES_DB=${{ env.POSTGRES_DB }}, \
