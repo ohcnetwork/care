@@ -144,6 +144,7 @@ jobs:
           aws lambda invoke \
             --function-name migration_${{ github.event.pull_request.number }} \
             --invocation-type Event
+            response.json
 
       - name: Create Lambda function from Docker image
         run: |
