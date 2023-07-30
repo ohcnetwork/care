@@ -3,7 +3,7 @@ FROM public.ecr.aws/lambda/python:3.10 as python
 # Python build stage
 FROM python as python-build-stage
 
-ARG BUILD_ENVIRONMENT=production
+ARG BUILD_ENVIRONMENT=lambda
 
 # Install yum packages
 #RUN yum update -y && yum install -y \
