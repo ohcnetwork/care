@@ -12,7 +12,7 @@ from psycopg import sql
 # }
 
 def handler(*args, **kwargs):
-    con = psycopg.connect(dbname=os.environ.get("POSTGRES_DB"),
+    con = psycopg.connect(dbname='postgres',
                         user=os.environ.get("POSTGRES_USER"),
                         host=os.environ.get("POSTGRES_HOST"),
                         password=os.environ.get("POSTGRES_PASSWORD"),
