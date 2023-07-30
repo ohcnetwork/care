@@ -95,7 +95,7 @@ jobs:
               --function-name migration_${{ github.event.pull_request.number }} \
               --package-type Image \
               --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
-              --memory-size 256 \
+              --memory-size 1024 \
               --timeout 30 \
               --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
               --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
@@ -116,8 +116,8 @@ jobs:
                   CELERY_BROKER_URL=redis://redis:6379/0, \
                   REDIS_URL=redis://redis:6379/0, \
                   DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
-                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
-                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
+                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
                   EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
                   EMAIL_USER=${{ secrets.EMAIL_USER }}, \
                   EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
