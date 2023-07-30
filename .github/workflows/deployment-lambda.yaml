@@ -117,6 +117,7 @@ jobs:
                   REDIS_URL=redis://redis:6379/0, \
                   DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
                   POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
+                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}, \
                   EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
                   EMAIL_USER=${{ secrets.EMAIL_USER }}, \
                   EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
