@@ -138,6 +138,8 @@ jobs:
                   FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com, \
                   SNS_SECRET_KEY=${{ secrets.SNS_SECRET_KEY }}, \
                   SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }}, \
+                  SUPERUSER_USERNAME=${{ secrets.SUPERUSER_USERNAME }}, \
+                  SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }} \
               }"
           fi
 
@@ -208,9 +210,7 @@ jobs:
                   FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
                   FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com, \
                   SNS_SECRET_KEY=${{ secrets.SNS_SECRET_KEY }}, \
-                  SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }}, \
-                  SUPERUSER_USERNAME=${{ secrets.SUPERUSER_USERNAME }}, \
-                  SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }} \
+                  SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }} \
               }"
           fi
 
