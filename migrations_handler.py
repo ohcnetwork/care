@@ -13,12 +13,12 @@ from psycopg import sql
 
 def handler(*args, **kwargs):
     con = psycopg.connect(dbname='postgres',
-                        user=os.environ.get("POSTGRES_USER"),
-                        host=os.environ.get("POSTGRES_HOST"),
-                        password=os.environ.get("POSTGRES_PASSWORD"),
-                        port=os.environ.get("POSTGRES_PORT"),
-                        autocommit=True
-                        )
+                          user=os.environ.get("POSTGRES_USER"),
+                          host=os.environ.get("POSTGRES_HOST"),
+                          password=os.environ.get("POSTGRES_PASSWORD"),
+                          port=os.environ.get("POSTGRES_PORT"),
+                          autocommit=True
+                          )
 
     cur = con.cursor()
 
@@ -39,4 +39,11 @@ def handler(*args, **kwargs):
     call_command("load_medicines_data")
     call_command("seed_data")
 
-
+    from care.users.models import User
+    User.objects.create_user(is_superuser=True,
+                             user_type=40,
+                             gender=1,
+                             age=26,
+                             username=os.environ.get("SUPERUSER_USERNAME"),
+                             password=os.environ.get("SUPERUSER_PASSWORD"),
+                             email="")
