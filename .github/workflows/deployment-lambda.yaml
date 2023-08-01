@@ -217,20 +217,26 @@ jobs:
           aws lambda wait function-active-v2 \
             --function-name=preview_${{ github.event.pull_request.number }}
 
-      - name: Create Function URL for Preview lambda
-        run: |
-          aws lambda create-function-url-config \
-            --function-name preview_${{ github.event.pull_request.number }} \
-            --auth-type NONE
 
       - name: Get Function URL for Preview lambda
         run: |
+          if ! aws lambda get-function-url-config \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --output text \
+            --query 'FunctionUrl' >/dev/null 2>&1; then
+
+              aws lambda create-function-url-config \
+              --function-name preview_${{ github.event.pull_request.number }} \
+              --auth-type NONE
+          fi
+
           PREVIEW_URL=$(aws lambda get-function-url-config \
             --function-name preview_${{ github.event.pull_request.number }} \
             --output text \
             --query 'FunctionUrl')
           )
           echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
+
 
       - name: Comment function URL on PR
         uses: actions/github-script@v6
