@@ -211,3 +211,32 @@ jobs:
                   SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }}, \
               }"
           fi
+
+      - name: Wait for Preview lambda
+        run: |
+          aws lambda wait function-active-v2 \
+            --function-name=preview_${{ github.event.pull_request.number }}
+
+      - name: Create Function URL for Preview lambda
+        run: |
+          aws lambda create-function-url-config \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --auth-type NONE
+
+      - name: Get Function URL for Preview lambda
+        run: |
+          PREVIEW_URL=$(aws lambda get-function-url \
+            --function-name preview_${{ github.event.pull_request.number }})
+          echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
+
+      - name: Comment function URL on PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview URL: ${process.env.PREVIEW_URL}`
+            })
