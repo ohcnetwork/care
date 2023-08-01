@@ -227,8 +227,8 @@ jobs:
 
               aws lambda create-function-url-config \
               --function-name preview_${{ github.event.pull_request.number }} \
-              --auth-type NONE
-
+              --auth-type NONE \
+              && \
               aws lambda add-permission \
                 --function-name preview_${{ github.event.pull_request.number }} \
                 --statement-id AllowPublicAccess \
