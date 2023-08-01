@@ -228,6 +228,14 @@ jobs:
               aws lambda create-function-url-config \
               --function-name preview_${{ github.event.pull_request.number }} \
               --auth-type NONE
+
+              aws lambda add-permission \
+                --function-name preview_${{ github.event.pull_request.number }} \
+                --statement-id AllowPublicAccess \
+                --action "lambda:InvokeFunction" \
+                --principal "*" \
+                --function-url-auth-type NONE
+
           fi
 
           PREVIEW_URL=$(aws lambda get-function-url-config \
@@ -236,7 +244,6 @@ jobs:
             --query 'FunctionUrl')
 
           echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
-
 
       - name: Comment function URL on PR
         uses: actions/github-script@v6
