@@ -1,8 +1,6 @@
 name: Lambda Deployment
 on:
   pull_request:
-    branches:
-      - devops/mangum-changes
     paths-ignore:
       - "docs/**"
 env:
