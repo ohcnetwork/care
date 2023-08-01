@@ -36,14 +36,16 @@ def handler(*args, **kwargs):
     django.setup()
     call_command('migrate')
     call_command("load_data", "kerala")
-    call_command("load_medicines_data")
-    call_command("seed_data")
 
     from care.users.models import User
     User.objects.create_user(is_superuser=True,
+                             is_staff=True,
                              user_type=40,
                              gender=1,
                              age=26,
                              username=os.environ.get("SUPERUSER_USERNAME"),
                              password=os.environ.get("SUPERUSER_PASSWORD"),
                              email="")
+
+    call_command("load_medicines_data")
+    call_command("seed_data")
