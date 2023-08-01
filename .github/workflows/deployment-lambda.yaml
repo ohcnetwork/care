@@ -232,7 +232,7 @@ jobs:
               aws lambda add-permission \
                 --function-name preview_${{ github.event.pull_request.number }} \
                 --statement-id AllowPublicAccess \
-                --action "lambda:InvokeFunction" \
+                --action "lambda:InvokeFunctionUrl" \
                 --principal "*" \
                 --function-url-auth-type NONE
 
