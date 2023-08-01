@@ -225,8 +225,11 @@ jobs:
 
       - name: Get Function URL for Preview lambda
         run: |
-          PREVIEW_URL=$(aws lambda get-function-url \
-            --function-name preview_${{ github.event.pull_request.number }})
+          PREVIEW_URL=$(aws lambda get-function-url-config \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --output text \
+            --query 'FunctionUrl')
+          )
           echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
 
       - name: Comment function URL on PR
