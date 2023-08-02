@@ -243,6 +243,9 @@ class User(AbstractUser):
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
+    weekly_working_hours = models.IntegerField(
+        default=168, validators=[MinValueValidator(0), MaxValueValidator(168)]
+    )
 
     doctor_qualification = models.TextField(
         blank=False,
