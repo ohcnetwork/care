@@ -244,7 +244,7 @@ class User(AbstractUser):
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
     weekly_working_hours = models.IntegerField(
-        default=168, validators=[MinValueValidator(0), MaxValueValidator(168)]
+        validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
 
     doctor_qualification = models.TextField(
