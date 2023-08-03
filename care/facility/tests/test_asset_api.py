@@ -71,17 +71,19 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         district = cls.create_district(state=state)
         cls.user = cls.create_user(district=district, username="test user")
         facility = cls.create_facility(district=district, user=cls.user)
-        # Refresh token to header
-        refresh_token = RefreshToken.for_user(cls.user)
-        cls.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
 
         cls.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
         cls.asset = Asset.objects.create(
             name="Test Asset", current_location=cls.asset1_location, asset_type=50
+        )
+
+    def setUp(self) -> None:
+        # Refresh token to header
+        refresh_token = RefreshToken.for_user(self.user)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
     def test_list_assets(self):

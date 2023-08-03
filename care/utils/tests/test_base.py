@@ -17,6 +17,7 @@ from care.facility.models import (
     Disease,
     DiseaseStatusEnum,
     Facility,
+    HospitalDoctors,
     LocalBody,
     PatientConsultation,
     PatientNotes,
@@ -470,3 +471,7 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_hospital_doctor(cls, facility: Facility = None) -> HospitalDoctors:
+        return HospitalDoctors(facility=facility or cls.facility, area=1, count=10)

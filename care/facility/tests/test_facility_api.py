@@ -1,7 +1,7 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -85,7 +85,7 @@ class ExpectedFacilityRetrieveKeys(Enum):
     BED_COUNT = "bed_count"
 
 
-class FacilityTests(TestClassMixin, TestBase):
+class FacilityTests(TestClassMixin, TestBase, APITestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
