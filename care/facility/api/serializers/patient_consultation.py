@@ -405,8 +405,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     referred_to = ExternalIdSerializerField(
         queryset=Facility.objects.all(),
         required=False,
+        allow_null=True,
     )
-    referred_to_external = serializers.CharField(required=False, allow_blank=True)
+    referred_to_external = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
 
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(

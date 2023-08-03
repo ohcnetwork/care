@@ -217,6 +217,49 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
+    def test_referred_to_empty_facility(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with empty referred_to_external",
+            referred_to=None,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_referred_to_and_external_together(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with null referred_to_external",
+            referred_to_external="External Facility",
+            referred_to=self.facility.external_id,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_referred_to_valid_value(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        referred_to_external = "Test Hospital"
+        res = self.discharge(
+            consultation,
+            discharge_reason="REF",
+            discharge_date="2023-07-01T12:00:00Z",
+            referred_to_external=referred_to_external,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
     def test_referred_to_external_valid_value(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
