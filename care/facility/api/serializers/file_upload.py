@@ -53,6 +53,21 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.id
+        elif file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
+            consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if (
+                consultation.patient.assigned_to
+                and user == consultation.patient.assigned_to
+            ):
+                return consultation.external_id
+            if consultation.assigned_to and user == consultation.assigned_to:
+                return consultation.external_id
+            if not (
+                has_facility_permission(user, consultation.patient.facility)
+                or has_facility_permission(user, consultation.facility)
+            ):
+                raise Exception("No Permission")
+            return consultation.external_id
         elif file_type == FileUpload.FileType.SAMPLE_MANAGEMENT.value:
             sample = PatientSample.objects.get(external_id=associating_id)
             patient = sample.patient
@@ -86,6 +101,8 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 or has_facility_permission(user, claim.consultation.facility)
             ):
                 raise Exception("No Permission")
+            return associating_id
+        elif file_type == FileUpload.FileType.COMMUNICATION.value:
             return associating_id
         else:
             raise Exception("Undefined File Type")

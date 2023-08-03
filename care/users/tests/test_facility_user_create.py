@@ -1,6 +1,5 @@
 from rest_framework import status
 
-from care.facility.models import FacilityUser
 from care.users.models import User
 from care.utils.tests.test_base import TestBase
 
@@ -32,7 +31,7 @@ class TestFacilityUserApi(TestBase):
             "pf_endpoint": obj.pf_endpoint,
             "pf_p256dh": obj.pf_p256dh,
             "pf_auth": obj.pf_auth,
-            "ward": getattr(obj.ward, "id", None)
+            "ward": getattr(obj.ward, "id", None),
         }
 
     def get_new_user_data(self):
@@ -56,7 +55,7 @@ class TestFacilityUserApi(TestBase):
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_facility_user__should_fail__when_different_location(self):
         new_district = self.clone_object(self.district)
@@ -65,4 +64,4 @@ class TestFacilityUserApi(TestBase):
 
         response = self.client.post(self.get_url(), data=data, format="json")
         # Test Creation
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

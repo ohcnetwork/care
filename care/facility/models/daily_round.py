@@ -1,9 +1,11 @@
 import enum
 
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import JSONField
+from django.shortcuts import get_object_or_404
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -20,8 +22,8 @@ from care.facility.models.json_schema.daily_round import (
     META,
     NURSING_PROCEDURE,
     OUTPUT,
-    PRESSURE_SORE,
     PAIN_SCALE_ENHANCED,
+    PRESSURE_SORE,
 )
 from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
@@ -80,6 +82,7 @@ class DailyRound(PatientBaseModel):
         UNKNOWN = 0
         INVASIVE = 5
         NON_INVASIVE = 10
+        OXYGEN_SUPPORT = 15
 
     VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
 
@@ -135,7 +138,11 @@ class DailyRound(PatientBaseModel):
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, default=1, null=True, blank=True
+        choices=SYMPTOM_CHOICES,
+        default=1,
+        null=True,
+        blank=True,
+        max_length=get_max_length(SYMPTOM_CHOICES, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     deprecated_covid_category = models.CharField(
@@ -253,7 +260,7 @@ class DailyRound(PatientBaseModel):
     resp = models.IntegerField(
         default=None,
         null=True,
-        validators=[MinValueValidator(10), MaxValueValidator(70)],
+        validators=[MinValueValidator(0), MaxValueValidator(70)],
     )
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
@@ -502,8 +509,9 @@ class DailyRound(PatientBaseModel):
 
     @staticmethod
     def has_read_permission(request):
-        consultation = PatientConsultation.objects.get(
-            external_id=request.parser_context["kwargs"]["consultation_external_id"]
+        consultation = get_object_or_404(
+            PatientConsultation,
+            external_id=request.parser_context["kwargs"]["consultation_external_id"],
         )
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())

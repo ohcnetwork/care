@@ -5,6 +5,7 @@ Base settings to build other settings files upon.
 import base64
 import json
 from datetime import timedelta
+from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
@@ -14,20 +15,23 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 from care.utils.csp import config as csp_config
 from care.utils.jwks.generate_jwk import generate_encoded_jwks
 
-SILENCED_SYSTEM_CHECKS = ["postgres.E003", "fields.W342"]
-
-ROOT_DIR = environ.Path(__file__) - 3  # (care/config/settings/base.py - 3 = care/)
-APPS_DIR = ROOT_DIR.path("care")
-
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
+APPS_DIR = BASE_DIR / "care"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
-if READ_DOT_ENV_FILE:
+if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=False):
     # OS environment variables take precedence over variables from .env
-    env.read_env(str(ROOT_DIR.path(".env")))
+    env.read_env(str(BASE_DIR / ".env"))
 
 # GENERAL
 # ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY",
+    default="eXZQzOzx8gV38rDG0Z0fFZWweUGl3LwMZ9aTKqJiXQTI0nKMh0Z7sbHfqT8KFEnd",
+)
+# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = env.json("DJANGO_ALLOWED_HOSTS", default=["*"])
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DJANGO_DEBUG", False)
 # Local time zone. Choices are
@@ -35,27 +39,41 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "Asia/Kolkata"
-
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
-# https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
-USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
-LOCALE_PATHS = [ROOT_DIR.path("locale")]
+LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
 DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-DATABASES["default"]["CONN_MAX_AGE"] = 300
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CACHES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#caches
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_URL", default="redis://localhost:6379"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # Mimicing memcache behavior.
+            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+            "IGNORE_EXCEPTIONS": True,
+        },
+    }
+}
+
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -63,9 +81,6 @@ DATABASES["default"]["CONN_MAX_AGE"] = 300
 ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = "config.wsgi.application"
-
-# CollectFast
-#
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -83,26 +98,23 @@ THIRD_PARTY_APPS = [
     "storages",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_yasg",
-    "drf_extra_fields",
+    "drf_spectacular",
     "django_filters",
     "simple_history",
-    "ratelimit",
+    "django_ratelimit",
     "dry_rest_permissions",
     "corsheaders",
-    "watchman",
     "djangoql",
     "maintenance_mode",
     "django.contrib.postgres",
-    "django_celery_beat",
     "django_rest_passwordreset",
     "healthy_django",
 ]
-
 LOCAL_APPS = [
-    "care.users.apps.UsersConfig",
     "care.facility",
-    "care.audit_log.apps.AuditLogConfig",
+    "care.abdm",
+    "care.users",
+    "care.audit_log",
     "care.hcx",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -124,6 +136,8 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = "/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "/"
+# https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
+LOGOUT_REDIRECT_URL = "/"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -167,26 +181,28 @@ MIDDLEWARE = [
 
 # STATIC
 # ------------------------------------------------------------------------------
-USE_S3 = env.bool("USE_S3", default=False)
-
-if USE_S3:
-    # aws settings
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_DEFAULT_ACL = "public-read"
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-files
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/staticfiles/"
-STATIC_ROOT = str(ROOT_DIR("staticfiles"))
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-WHITENOISE_MANIFEST_STRICT = False
+# https://docs.djangoproject.com/en/dev/ref/settings/#staticfiles-dirs
+STATICFILES_DIRS = [str(APPS_DIR / "static")]
 
-STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
-
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = str(APPS_DIR / "media")
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/mediafiles/"
-MEDIA_ROOT = str(APPS_DIR("media"))
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#std-setting-STORAGES
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    }
+}
+
+# https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_MANIFEST_STRICT
+WHITENOISE_MANIFEST_STRICT = False
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -196,7 +212,7 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        "DIRS": [str(APPS_DIR.path("templates"))],
+        "DIRS": [str(APPS_DIR / "templates")],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
@@ -225,7 +241,7 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 # FIXTURES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#fixture-dirs
-FIXTURE_DIRS = (str(APPS_DIR.path("fixtures")),)
+FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),)
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -233,30 +249,48 @@ FIXTURE_DIRS = (str(APPS_DIR.path("fixtures")),)
 SESSION_COOKIE_HTTPONLY = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
 CSRF_COOKIE_HTTPONLY = True
-# https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
-SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
+# https://docs.djangoproject.com/en/dev/ref/settings/#csrf-trusted-origins
+CSRF_TRUSTED_ORIGINS = env.json("CSRF_TRUSTED_ORIGINS", default=[])
 
-CSRF_TRUSTED_ORIGINS = json.loads(env("CSRF_TRUSTED_ORIGINS", default="[]"))
+# https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
+CORS_ORIGIN_ALLOW_ALL = True  # WARNING: This is not secure
+# https://github.com/adamchainz/django-cors-headers#cors_allowed_origin_regexes-sequencestr--patternstr
+# CORS_URLS_REGEX = r"^/api/.*$"
 
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+    "DJANGO_EMAIL_BACKEND",
+    default="django.core.mail.backends.smtp.EmailBackend",
 )
-# https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
+# https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
+DEFAULT_FROM_EMAIL = env(
+    "EMAIL_FROM", default="Open Healthcare Network <ops@care.ohc.network>"
+)
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD", default="")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS", default=False)
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 
 # ADMIN
 # ------------------------------------------------------------------------------
-# Django Admin URL.
-ADMIN_URL = "admin/"
+# https://docs.djangoproject.com/en/dev/ref/settings/#server-email
+# SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""👪""", "admin@coronasafe.in")]
+# ADMINS = [("""👪""", "admin@ohc.network")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
-MANAGERS = ADMINS
+# MANAGERS = ADMINS
+
+# Django Admin URL.
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -284,7 +318,7 @@ LOGGING = {
 
 # Django Rest Framework
 # ------------------------------------------------------------------------------
-
+# https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # "rest_framework.authentication.BasicAuthentication",
@@ -293,22 +327,26 @@ REST_FRAMEWORK = {
         "config.authentication.CustomJWTAuthentication",
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
+    "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
 }
 
-# Your stuff...
+# drf-spectacular (schema generation)
 # ------------------------------------------------------------------------------
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Care API",
+    "DESCRIPTION": "Documentation of API endpoints of Care ",
+    "VERSION": "1.0.0",
+    # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+}
 
-
-ACCOUNT_EMAIL_VERIFICATION = False
-LOGOUT_REDIRECT_URL = "/"
-STAFF_ACCOUNT_TYPE = 10
-
-# Simple JWT
+# Simple JWT (JWT Authentication)
+# ------------------------------------------------------------------------------
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)
@@ -317,122 +355,65 @@ SIMPLE_JWT = {
         minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)
     ),
     "ROTATE_REFRESH_TOKENS": True,
+    "USER_ID_FIELD": "external_id",
 }
 
-
-def GETKEY(group, request):
-    return "ratelimit"
-
-
-DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
-
-GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
-
-GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
-
-GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
-
-# Celery
+# Celery (background tasks)
 # ------------------------------------------------------------------------------
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-timezone
 if USE_TZ:
-    # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-timezone
+    # https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-timezone
     CELERY_TIMEZONE = TIME_ZONE
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-broker_url
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-accept_content
 CELERY_ACCEPT_CONTENT = ["json"]
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-task_serializer
 CELERY_TASK_SERIALIZER = "json"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#std:setting-result_serializer
 CELERY_RESULT_SERIALIZER = "json"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-time-limit
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#task-time-limit
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_TIME_LIMIT = 1800 * 5
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
+# https://docs.celeryq.dev/en/latest/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_SOFT_TIME_LIMIT = 1800
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
-# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_TIMEZONE = "Asia/Kolkata"
 
-CSV_REQUEST_PARAMETER = "csv"
+# Maintenance Mode
+# ------------------------------------------------------------------------------
+# https://github.com/fabiocaccamo/django-maintenance-mode/tree/main#configuration-optional
+MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
-DEFAULT_FROM_EMAIL = env(
-    "EMAIL_FROM", default="Coronasafe network <care@coronasafe.network>"
-)
 
-CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
-
+#  Password Reset
+# ------------------------------------------------------------------------------
+# https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
-
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
-
+# https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
 
-CHROME_WINDOW_SIZE = "2480,3508"
 
+# Hardcopy settings (pdf generation)
+# ------------------------------------------------------------------------------
+# https://github.com/loftylabs/django-hardcopy#installation
+CHROME_WINDOW_SIZE = "2480,3508"
 CHROME_PATH = "/usr/bin/chromium"
 
-IS_PRODUCTION = False
-
-OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
-
-OTP_MAX_REPEATS_WINDOW = (
-    10  # can only send this many OTP's in current OTP_REPEAT_WINDOW
-)
-
-OTP_LENGTH = 5
-
-# ICD
-ICD_SCRAPER_ROOT_CONCEPTS_URL = (
-    "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
-)
-ICD_SCRAPER_CHILD_CONCEPTS_URL = (
-    "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
-)
-
-# SMS
-USE_SMS = False
-
-DEFAULT_VAPID_PUBLIC_KEY = "BKNxrOpAeB_OBfXI-GlRAlw_vUVCc3mD_AkpE74iZj97twMOHXEFUeJqA7bDqGY10O-RmkvG30NaMf5ZWihnT3k"
-
-DEFAULT_VAPID_PRIVATE_KEY = "7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
-
-VAPID_PUBLIC_KEY = env("VAPID_PUBLIC_KEY", default=DEFAULT_VAPID_PUBLIC_KEY)
-VAPID_PRIVATE_KEY = env("VAPID_PRIVATE_KEY", default=DEFAULT_VAPID_PRIVATE_KEY)
-
-#######################
-# File Upload Parameters
-
-FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
-# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
-FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
-FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
-FILE_UPLOAD_BUCKET_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_ENDPOINT",
-    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
-)
-
-FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
-FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
-FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
-FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
-FACILITY_S3_BUCKET_ENDPOINT = env(
-    "FACILITY_S3_BUCKET_ENDPOINT",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
-)
-FACILITY_S3_STATIC_PREFIX = env(
-    "FACILITY_S3_STATIC_PREFIX",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
-)
+# Health Django (Health Check Config)
+# ------------------------------------------------------------------------------
+# https://github.com/vigneshhari/healthy_django
+HEALTHY_DJANGO = [
+    DjangoDatabaseHealthCheck(
+        "Database", slug="main_database", connection_name="default"
+    ),
+    DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+]
 
 # Audit logs
+# ------------------------------------------------------------------------------
 AUDIT_LOG_ENABLED = env.bool("AUDIT_LOG_ENABLED", default=False)
 AUDIT_LOG = {
     "globals": {
@@ -465,40 +446,47 @@ AUDIT_LOG = {
     },
 }
 
+# OTP
+# ------------------------------------------------------------------------------
+OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
+OTP_MAX_REPEATS_WINDOW = 10  # times OTPs can be sent within OTP_REPEAT_WINDOW
+OTP_LENGTH = 5
+
+# ICD
+# ------------------------------------------------------------------------------
+ICD_SCRAPER_ROOT_CONCEPTS_URL = (
+    "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
+)
+ICD_SCRAPER_CHILD_CONCEPTS_URL = (
+    "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
+)
+
+# Rate Limiting
+# ------------------------------------------------------------------------------
+DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
+DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
+GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
+GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
+GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
+
+# SMS
+# ------------------------------------------------------------------------------
+USE_SMS = False
+
+# Push Notifications
+# ------------------------------------------------------------------------------
+VAPID_PUBLIC_KEY = env(
+    "VAPID_PUBLIC_KEY",
+    default="BKNxrOpAeB_OBfXI-GlRAlw_vUVCc3mD_AkpE74iZj97twMOHXEFUeJqA7bDqGY10O-RmkvG30NaMf5ZWihnT3k",
+)
+VAPID_PRIVATE_KEY = env(
+    "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
+)
 SEND_SMS_NOTIFICATION = False
 
-# Whatsapp Integrations
-ENABLE_WHATSAPP = env.bool("ENABLE_WHATSAPP", default=False)
-WHATSAPP_API_ENDPOINT = env("WHATSAPP_API_ENDPOINT", default="")
-WHATSAPP_API_USERNAME = env("WHATSAPP_API_USERNAME", default="")
-WHATSAPP_API_PASSWORD = env("WHATSAPP_API_PASSWORD", default="")
-WHATSAPP_ENCRYPTION_KEY = env("WHATSAPP_ENCRYPTION_KEY", default="")
-WHATSAPP_MESSAGE_CONFIG = env("WHATSAPP_MESSAGE_CONFIG", default=None)
 
-DISABLE_RATELIMIT = False
-
-ENABLE_ADMIN_REPORTS = env.bool("ENABLE_ADMIN_REPORTS", default=False)
-
-# Health Check Config
-
-default_configuration = [
-    DjangoDatabaseHealthCheck(
-        "Database", slug="main_database", connection_name="default"
-    ),
-    DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
-]
-# DjangoCeleryQueueLengthHealthCheck(
-#     "Celery Queue Length",
-#     slug="celery_queue",
-#     broker=CELERY_BROKER_URL,
-#     queue_name="celery",
-#     info_length=10,
-#     warning_length=20,
-#     alert_length=30,
-# ),
-
-HEALTHY_DJANGO = default_configuration
-
+# Cloud and Buckets
+# ------------------------------------------------------------------------------
 CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
 
 CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
@@ -506,14 +494,83 @@ CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
 if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")
 
+if USE_S3 := env.bool("USE_S3", default=False):
+    # aws settings
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_DEFAULT_ACL = "public-read"
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
+# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_BUCKET_ENDPOINT = env(
+    "FILE_UPLOAD_BUCKET_ENDPOINT",
+    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+)
+
+FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
+FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_BUCKET_ENDPOINT = env(
+    "FACILITY_S3_BUCKET_ENDPOINT",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+)
+FACILITY_S3_STATIC_PREFIX = env(
+    "FACILITY_S3_STATIC_PREFIX",
+    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+)
+
+
+# for setting the shifting mode
+PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
+
+# for exporting csv
+CSV_REQUEST_PARAMETER = "csv"
+
+# current hosted domain
+CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+
+# open id connect
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
 
+
+# ABDM
+ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
+ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
+ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
+ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
+HEALTH_SERVICE_API_URL = env(
+    "HEALTH_SERVICE_API_URL", default="https://healthidsbx.abdm.gov.in/api"
+)
+ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
+X_CM_ID = env("X_CM_ID", default="sbx")
+FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
+
+
+IS_PRODUCTION = False
+
 # HCX
+HCX_PROTOCOL_BASE_PATH = env(
+    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
+)
+HCX_AUTH_BASE_PATH = env(
+    "HCX_AUTH_BASE_PATH",
+    default="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
+)
 HCX_CERT_URL = env(
     "HCX_CERT_URL",
     default="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/sprint-27/hcx-apis/src/test/resources/examples/x509-self-signed-certificate.pem",
 )
 
 HCX_USERNAME = env("HCX_USERNAME", default="hcx_user_internal")
+HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
+HCX_PASSWORD = env("HCX_PASSWORD", default="")
+HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
+HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")

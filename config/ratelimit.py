@@ -1,6 +1,10 @@
 import requests
 from django.conf import settings
-from ratelimit.utils import is_ratelimited
+from django_ratelimit.core import is_ratelimited
+
+
+def GETKEY(group, request):
+    return "ratelimit"
 
 
 def validatecaptcha(request):
@@ -21,6 +25,7 @@ def validatecaptcha(request):
     return False
 
 
+# refer https://django-ratelimit.readthedocs.io/en/stable/rates.html for rate
 def ratelimit(
     request, group="", keys=[None], rate=settings.DJANGO_RATE_LIMIT, increment=True
 ):
@@ -34,7 +39,7 @@ def ratelimit(
             key = "ip"
         else:
             group = group + "-{}".format(key)
-            key = settings.GETKEY
+            key = GETKEY
         if is_ratelimited(
             request,
             group=group,

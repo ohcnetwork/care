@@ -1,5 +1,5 @@
-from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import JSONField
 
 from care.facility.models.patient import PatientConsultation
 from care.hcx.models.base import (

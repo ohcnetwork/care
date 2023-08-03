@@ -27,6 +27,8 @@ class FileUpload(FacilityBaseModel):
         CONSULTATION = 2
         SAMPLE_MANAGEMENT = 3
         CLAIM = 4
+        DISCHARGE_SUMMARY = 5
+        COMMUNICATION = 6
 
     class FileCategory(enum.Enum):
         UNSPECIFIED = "UNSPECIFIED"
@@ -77,30 +79,51 @@ class FileUpload(FacilityBaseModel):
             if self.internal_name:
                 parts = self.internal_name.split(".")
                 if len(parts) > 1:
-                    internal_name = internal_name + "." + parts[-1]
+                    internal_name = f"{internal_name}.{parts[-1]}"
             self.internal_name = internal_name
         return super().save(*args, **kwargs)
 
-    def signed_url(self):
+    def signed_url(self, duration=60 * 60):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
-        signed_url = s3Client.generate_presigned_url(
+        return s3Client.generate_presigned_url(
             "put_object",
             Params={
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
-                "Key": self.FileType(self.file_type).name + "/" + self.internal_name,
+                "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,  # One Hour
+            ExpiresIn=duration,  # seconds
         )
-        return signed_url
 
-    def read_signed_url(self):
+    def read_signed_url(self, duration=60 * 60):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
-        signed_url = s3Client.generate_presigned_url(
+        return s3Client.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
-                "Key": self.FileType(self.file_type).name + "/" + self.internal_name,
+                "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,  # One Hour
+            ExpiresIn=duration,  # seconds
         )
-        return signed_url
+
+    def put_object(self, file, bucket=settings.FILE_UPLOAD_BUCKET, **kwargs):
+        s3 = boto3.client("s3", **cs_provider.get_client_config())
+        return s3.put_object(
+            Body=file,
+            Bucket=bucket,
+            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            **kwargs,
+        )
+
+    def get_object(self, bucket=settings.FILE_UPLOAD_BUCKET, **kwargs):
+        s3 = boto3.client("s3", **cs_provider.get_client_config())
+        return s3.get_object(
+            Bucket=bucket,
+            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            **kwargs,
+        )
+
+    def file_contents(self):
+        response = self.get_object()
+        content_type = response["ContentType"]
+        content = response["Body"].read()
+        return content_type, content

@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -66,9 +67,9 @@ class DailyRoundsViewSet(
             ).id
         return super().get_serializer(*args, **kwargs)
 
+    @extend_schema(tags=["daily_rounds"])
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
-
         # Request Body Validations
 
         if self.FIELDS_KEY not in request.data:

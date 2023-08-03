@@ -1,21 +1,32 @@
+import enum
 from datetime import datetime
 
 from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, UUIDField
+from rest_framework.serializers import (
+    CharField,
+    JSONField,
+    ModelSerializer,
+    Serializer,
+    UUIDField,
+)
 from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
+    AssetAvailabilityRecord,
     AssetLocation,
     AssetTransaction,
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
+from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 
@@ -23,6 +34,23 @@ from config.serializers import ChoiceField
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
+
+    def validate(self, data):
+        facility = self.context["facility"]
+        if "name" in data:
+            name = data["name"]
+            asset_location_id = self.instance.id if self.instance else None
+            if (
+                AssetLocation.objects.filter(name=name, facility=facility)
+                .exclude(id=asset_location_id)
+                .exists()
+            ):
+                raise ValidationError(
+                    {
+                        "name": "Asset location with this name and facility already exists."
+                    }
+                )
+        return data
 
     class Meta:
         model = AssetLocation
@@ -54,7 +82,6 @@ class AssetSerializer(ModelSerializer):
         return value
 
     def validate(self, attrs):
-
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
@@ -69,7 +96,10 @@ class AssetSerializer(ModelSerializer):
 
         # validate that warraty date is not in the past
         if "warranty_amc_end_of_validity" in attrs:
-            if attrs["warranty_amc_end_of_validity"] and attrs["warranty_amc_end_of_validity"] < datetime.now().date():
+            if (
+                attrs["warranty_amc_end_of_validity"]
+                and attrs["warranty_amc_end_of_validity"] < datetime.now().date()
+            ):
                 raise ValidationError(
                     "Warranty/AMC end of validity cannot be in the past"
                 )
@@ -79,10 +109,20 @@ class AssetSerializer(ModelSerializer):
             if attrs["last_serviced_on"] > datetime.now().date():
                 raise ValidationError("Last serviced on cannot be in the future")
 
+        # only allow setting asset class on creation (or updation if asset class is not set)
+        if (
+            attrs.get("asset_class")
+            and self.instance
+            and self.instance.asset_class
+            and self.instance.asset_class != attrs["asset_class"]
+        ):
+            raise ValidationError({"asset_class": "Cannot change asset class"})
+
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
+
         with transaction.atomic():
             if (
                 "current_location" in validated_data
@@ -126,9 +166,55 @@ class AssetTransactionSerializer(ModelSerializer):
         exclude = ("deleted", "external_id")
 
 
+class AssetAvailabilitySerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset = AssetBareMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetAvailabilityRecord
+        exclude = ("deleted", "external_id")
+
+
 class UserDefaultAssetLocationSerializer(ModelSerializer):
     location_object = AssetLocationSerializer(source="location", read_only=True)
 
     class Meta:
         model = UserDefaultAssetLocation
         exclude = ("deleted", "external_id", "location", "user", "id")
+
+
+class AssetActionSerializer(Serializer):
+    def actionChoices():
+        actions: list[enum.Enum] = [
+            OnvifAsset.OnvifActions,
+            HL7MonitorAsset.HL7MonitorActions,
+            VentilatorAsset.VentilatorActions,
+        ]
+        choices = []
+        for action in actions:
+            choices += [(e.value, e.name) for e in action]
+        return choices
+
+    type = ChoiceField(
+        choices=actionChoices(),
+        required=True,
+    )
+    data = JSONField(required=False)
+
+    class Meta:
+        fields = ("type", "data")
+
+
+class DummyAssetOperateSerializer(Serializer):
+    action = AssetActionSerializer(required=True)
+
+    class Meta:
+        fields = ("action",)
+
+
+class DummyAssetOperateResponseSerializer(Serializer):
+    message = CharField(required=True)
+    result = JSONField(required=False)
+
+    class Meta:
+        fields = ("message", "result")

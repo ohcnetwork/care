@@ -1,13 +1,14 @@
 import json
 
 from django.conf import settings
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from care.hcx.models.claim import Claim
+from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
 from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx
@@ -19,7 +20,7 @@ class CoverageElibilityOnCheckView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = [HCXAuthentication]
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         if not request.user.username == settings.HCX_USERNAME:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
@@ -48,7 +49,7 @@ class PreAuthOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = [HCXAuthentication]
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         if not request.user.username == settings.HCX_USERNAME:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
@@ -78,7 +79,7 @@ class ClaimOnSubmitView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = [HCXAuthentication]
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     def post(self, request, *args, **kwargs):
         if not request.user.username == settings.HCX_USERNAME:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
@@ -96,6 +97,36 @@ class ClaimOnSubmitView(GenericAPIView):
             "type": "MESSAGE",
             "from": "preauth/on_submit",
             "message": "success" if not data["error"] else "failed",
+        }
+        send_webpush(
+            username=claim.last_modified_by.username, message=json.dumps(message)
+        )
+
+        return Response({}, status=status.HTTP_202_ACCEPTED)
+
+
+class CommunicationRequestView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = []
+
+    @extend_schema(tags=["hcx"])
+    def post(self, request, *args, **kwargs):
+        response = Hcx().processIncomingRequest(request.data["payload"])
+        data = Fhir().process_communication_request(response["payload"])
+
+        claim = Claim.objects.filter(external_id__in=data["about"] or []).last()
+        communication = Communication.objects.create(
+            claim=claim,
+            content=data["payload"],
+            identifier=data[
+                "identifier"
+            ],  # TODO: replace identifier with corelation id
+        )
+
+        message = {
+            "type": "MESSAGE",
+            "from": "communication/request",
+            "message": f"{communication.external_id}",
         }
         send_webpush(
             username=claim.last_modified_by.username, message=json.dumps(message)

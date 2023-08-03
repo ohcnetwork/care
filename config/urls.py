@@ -1,20 +1,22 @@
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
-from rest_framework_simplejwt.views import TokenVerifyView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 
+from care.abdm.urls import abdm_urlpatterns
+from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.hcx.api.viewsets.listener import (
+    ClaimOnSubmitView,
+    CommunicationRequestView,
     CoverageElibilityOnCheckView,
     PreAuthOnSubmitView,
-    ClaimOnSubmitView,
 )
-from care.facility.api.viewsets.open_id import OpenIdConfigView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -24,39 +26,11 @@ from care.users.reset_password_views import (
 from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
 
-from .auth_views import TokenObtainPairView, TokenRefreshView
+from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
 from .views import home_view
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Care API",
-        default_version="v1",
-        description="Api Documentation for Care. ** Please use HTTPS for all API calls ( other than local dev) ",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="-"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
-
 
 urlpatterns = [
     path("", home_view, name="home"),
-    # API Docs
-    url(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    url(
-        r"^swagger/$",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    url(
-        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
-    ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Rest API
@@ -64,7 +38,11 @@ urlpatterns = [
     path(
         "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),
-    path("api/v1/auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path(
+        "api/v1/auth/token/verify/",
+        AnnotatedTokenVerifyView.as_view(),
+        name="token_verify",
+    ),
     path(
         "api/v1/password_reset/",
         ResetPasswordRequestToken.as_view(),
@@ -102,8 +80,12 @@ urlpatterns = [
         ClaimOnSubmitView.as_view(),
         name="hcx_claim_on_submit",
     ),
+    path(
+        "communication/request",
+        CommunicationRequestView.as_view(),
+        name="hcx_communication_on_request",
+    ),
     # Health check urls
-    url(r"^watchman/", include("watchman.urls")),
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
     path(
         ".well-known/openid-configuration",
@@ -112,6 +94,9 @@ urlpatterns = [
     ),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.ENABLE_ABDM:
+    urlpatterns += abdm_urlpatterns
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
@@ -135,6 +120,18 @@ if settings.DEBUG:
         path("500/", default_views.server_error),
     ]
     if "debug_toolbar" in settings.INSTALLED_APPS:
-        import debug_toolbar
+        urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
 
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    if "silk" in settings.INSTALLED_APPS:
+        urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+
+if settings.DEBUG or not settings.IS_PRODUCTION:
+    urlpatterns += [
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path(
+            "swagger/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui",
+        ),
+        path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    ]

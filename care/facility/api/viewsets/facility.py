@@ -1,6 +1,7 @@
 from django.conf import settings
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
@@ -141,6 +142,7 @@ class FacilityViewSet(
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
+    @extend_schema(tags=["facility"])
     @action(methods=["POST"], detail=True)
     def cover_image(self, request, external_id):
         facility = self.get_object()
@@ -149,6 +151,7 @@ class FacilityViewSet(
         serializer.save()
         return Response(serializer.data)
 
+    @extend_schema(tags=["facility"])
     @cover_image.mapping.delete
     def cover_image_delete(self, *args, **kwargs):
         facility = self.get_object()
@@ -157,6 +160,10 @@ class FacilityViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(
+    list=extend_schema(tags=["facility"]),
+    retrieve=extend_schema(tags=["facility"]),
+)
 class AllFacilityViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,

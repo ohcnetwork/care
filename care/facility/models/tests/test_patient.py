@@ -20,7 +20,10 @@ class PatientRegistrationTest(TestBase):
         data.pop("district", "")
         data.pop("disease_status", 0)
         data.update(
-            {"state_id": cls.state.id, "district_id": cls.district.id,}
+            {
+                "state_id": cls.state.id,
+                "district_id": cls.district.id,
+            }
         )
         return PatientRegistration.objects.create(**data)
 

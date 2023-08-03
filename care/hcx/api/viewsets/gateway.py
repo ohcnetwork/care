@@ -4,7 +4,7 @@ from re import IGNORECASE, search
 from uuid import uuid4 as uuid
 
 from django.db.models import Q
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -17,9 +17,11 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
 from care.facility.tasks.patient.discharge_report import generate_discharge_report
 from care.hcx.api.serializers.claim import ClaimSerializer
+from care.hcx.api.serializers.communication import CommunicationSerializer
 from care.hcx.api.serializers.gateway import (
     CheckEligibilitySerializer,
     MakeClaimSerializer,
+    SendCommunicationSerializer,
 )
 from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.models.base import (
@@ -30,16 +32,18 @@ from care.hcx.models.base import (
     UseEnum,
 )
 from care.hcx.models.claim import Claim
+from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
 from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx, HcxOperations
+from care.utils.queryset.communications import get_communications
 
 
 class HcxGatewayViewSet(GenericViewSet):
     queryset = Policy.objects.all()
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=CheckEligibilitySerializer())
+    @extend_schema(tags=["hcx"], request=CheckEligibilitySerializer())
     @action(detail=False, methods=["post"])
     def check_eligibility(self, request):
         data = request.data
@@ -91,12 +95,12 @@ class HcxGatewayViewSet(GenericViewSet):
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
             operation=HcxOperations.COVERAGE_ELIGIBILITY_CHECK,
-            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            recipientCode=policy["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"], request_body=MakeClaimSerializer())
+    @extend_schema(tags=["hcx"], request=MakeClaimSerializer())
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
         data = request.data
@@ -186,7 +190,11 @@ class HcxGatewayViewSet(GenericViewSet):
         docs = list(
             map(
                 lambda file: (
-                    {"type": "MB", "name": file.name, "url": file.read_signed_url()}
+                    {
+                        "type": "MB",
+                        "name": file.name,
+                        "url": file.read_signed_url(),
+                    }
                 ),
                 FileUpload.objects.filter(
                     Q(associating_id=claim["consultation_object"]["id"])
@@ -253,12 +261,68 @@ class HcxGatewayViewSet(GenericViewSet):
             operation=HcxOperations.CLAIM_SUBMIT
             if UseEnum[claim["use"]].value == "claim"
             else HcxOperations.PRE_AUTH_SUBMIT,
-            recipientCode="1-29482df3-e875-45ef-a4e9-592b6f565782",
+            recipientCode=claim["policy_object"]["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"], request=SendCommunicationSerializer())
+    @action(detail=False, methods=["post"])
+    def send_communication(self, request):
+        data = request.data
+
+        serializer = SendCommunicationSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        communication = CommunicationSerializer(
+            get_communications(self.request.user).get(external_id=data["communication"])
+        ).data
+
+        payload = [
+            *communication["content"],
+            *list(
+                map(
+                    lambda file: (
+                        {
+                            "type": "url",
+                            "name": file.name,
+                            "data": file.read_signed_url(),
+                        }
+                    ),
+                    FileUpload.objects.filter(associating_id=communication["id"]),
+                )
+            ),
+        ]
+
+        communication_fhir_bundle = Fhir().create_communication_bundle(
+            communication["id"],
+            communication["id"],
+            communication["id"],
+            communication["id"],
+            payload,
+            [{"type": "Claim", "id": communication["claim_object"]["id"]}],
+        )
+
+        if not Fhir().validate_fhir_remote(communication_fhir_bundle.json())["valid"]:
+            return Response(
+                Fhir().validate_fhir_remote(communication_fhir_bundle.json())["issues"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        response = Hcx().generateOutgoingHcxCall(
+            fhirPayload=json.loads(communication_fhir_bundle.json()),
+            operation=HcxOperations.COMMUNICATION_ON_REQUEST,
+            recipientCode=communication["claim_object"]["policy_object"]["insurer_id"],
+            correlationId=Communication.objects.filter(
+                claim__external_id=communication["claim_object"]["id"], created_by=None
+            )
+            .last()
+            .identifier,
+        )
+
+        return Response(dict(response.get("response")), status=status.HTTP_200_OK)
+
+    @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def payors(self, request):
         payors = Hcx().searchRegistry("roles", "payor")["participants"]
@@ -277,7 +341,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(response, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["hcx"])
+    @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def pmjy_packages(self, request):
         from care.hcx.static_data.pmjy_packages import PMJYPackages
@@ -307,4 +371,4 @@ class HcxGatewayViewSet(GenericViewSet):
                 or search(r".*" + query + r".*", row.package_name, IGNORECASE)
                 is not None
             )
-        return Response(serailize_data(queryset[0:limit]))
+        return Response(serailize_data(queryset[:limit]))

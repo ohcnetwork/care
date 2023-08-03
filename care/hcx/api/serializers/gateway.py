@@ -1,8 +1,11 @@
-from rest_framework.serializers import UUIDField, Serializer
-from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from care.hcx.models.policy import Policy
+from rest_framework.exceptions import ValidationError
+from rest_framework.serializers import Serializer, UUIDField
+
 from care.hcx.models.claim import Claim
+from care.hcx.models.communication import Communication
+from care.hcx.models.policy import Policy
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 
 
 class CheckEligibilitySerializer(Serializer):
@@ -27,3 +30,9 @@ class MakeClaimSerializer(Serializer):
             raise ValidationError({"claim": "Field is Required"})
 
         return super().validate(attrs)
+
+
+class SendCommunicationSerializer(Serializer):
+    communication = ExternalIdSerializerField(
+        queryset=Communication.objects.all(), required=True
+    )

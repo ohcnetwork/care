@@ -1,7 +1,11 @@
 from rest_framework import serializers
 
 from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SYMPTOM_CHOICES
-from care.facility.models.patient_icmr import PatientConsultationICMR, PatientIcmr, PatientSampleICMR
+from care.facility.models.patient_icmr import (
+    PatientConsultationICMR,
+    PatientIcmr,
+    PatientSampleICMR,
+)
 from care.users.models import GENDER_CHOICES
 from config.serializers import ChoiceField
 
@@ -45,7 +49,9 @@ class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
     lab_name = serializers.CharField()
     lab_pincode = serializers.CharField()
 
-    icmr_category = ChoiceField(choices=PatientSampleICMR.PATIENT_ICMR_CATEGORY, required=False)
+    icmr_category = ChoiceField(
+        choices=PatientSampleICMR.PATIENT_ICMR_CATEGORY, required=False
+    )
 
     class Meta:
         model = PatientSampleICMR
@@ -66,8 +72,12 @@ class ICMRPatientCategorySerializer(serializers.ModelSerializer):
     symptomatic_contact_of_confirmed_case = serializers.BooleanField(allow_null=True)
     symptomatic_healthcare_worker = serializers.BooleanField(allow_null=True)
     hospitalized_sari_patient = serializers.BooleanField(allow_null=True)
-    asymptomatic_family_member_of_confirmed_case = serializers.BooleanField(allow_null=True)
-    asymptomatic_healthcare_worker_without_protection = serializers.BooleanField(allow_null=True)
+    asymptomatic_family_member_of_confirmed_case = serializers.BooleanField(
+        allow_null=True
+    )
+    asymptomatic_healthcare_worker_without_protection = serializers.BooleanField(
+        allow_null=True
+    )
 
     class Meta:
         model = PatientConsultationICMR
@@ -87,7 +97,9 @@ class ICMRExposureHistorySerializer(serializers.ModelSerializer):
     travel_start_date = serializers.DateField()
     travel_end_date = serializers.DateField()
 
-    contact_with_confirmed_case = serializers.BooleanField(source="contact_with_confirmed_carrier")
+    contact_with_confirmed_case = serializers.BooleanField(
+        source="contact_with_confirmed_carrier"
+    )
     contact_case_name = serializers.CharField()
 
     was_quarantined = serializers.BooleanField(allow_null=True)
@@ -114,11 +126,15 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     date_of_onset_of_symptoms = serializers.DateField()
     symptoms = serializers.ListSerializer(child=ChoiceField(choices=SYMPTOM_CHOICES))
     hospitalization_date = serializers.DateField()
-    hospital_phone_number = serializers.CharField(source="consultation.facility.phone_number")
+    hospital_phone_number = serializers.CharField(
+        source="consultation.facility.phone_number"
+    )
     hospital_name = serializers.CharField(source="consultation.facility.name")
     hospital_pincode = serializers.CharField(source="consultation.facility.pincode")
 
-    medical_conditions_list = serializers.ListSerializer(child=ChoiceField(choices=DISEASE_CHOICES))
+    medical_conditions_list = serializers.ListSerializer(
+        child=ChoiceField(choices=DISEASE_CHOICES)
+    )
 
     class Meta:
         model = PatientSampleICMR
