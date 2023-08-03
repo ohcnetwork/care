@@ -462,12 +462,24 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    created_by_local_user = serializers.BooleanField(read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
             raise serializers.ValidationError({"note": ["Note cannot be empty"]})
         return super().validate_empty_values(data)
+
+    def create(self, validated_data):
+        user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
+
+        if user_type == "Doctor":
+            if validated_data["created_by"].home_facility == validated_data["facility"]:
+                validated_data["created_by_local_user"] = "Doctor"
+            else:
+                validated_data["created_by_local_user"] = "RemoteSpecialist"
+        else:
+            validated_data["created_by_local_user"] = user_type
+
+        return super().create(validated_data)
 
     class Meta:
         model = PatientNotes
