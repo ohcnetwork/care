@@ -402,6 +402,12 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     death_datetime = serializers.DateTimeField(required=False, allow_null=True)
     death_confirmed_doctor = serializers.CharField(required=False, allow_null=True)
 
+    referred_to = ExternalIdSerializerField(
+        queryset=Facility.objects.all(),
+        required=False,
+    )
+    referred_to_external = serializers.CharField(required=False, allow_blank=True)
+
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
@@ -420,6 +426,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to",
             "referred_to_external",
             "discharge_notes",
             "discharge_date",
@@ -430,6 +437,18 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        if attrs.get("referred_to") and attrs.get("referred_to_external"):
+            raise ValidationError(
+                {
+                    "referred_to": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                    "referred_to_external": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                }
+            )
+
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
