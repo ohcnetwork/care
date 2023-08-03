@@ -15,7 +15,9 @@ from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
-from care.facility.tasks.patient.discharge_report import generate_discharge_report
+from care.facility.utils.reports.discharge_summary import (
+    generate_discharge_report_signed_url,
+)
 from care.hcx.api.serializers.claim import ClaimSerializer
 from care.hcx.api.serializers.communication import CommunicationSerializer
 from care.hcx.api.serializers.gateway import (
@@ -35,7 +37,8 @@ from care.hcx.models.claim import Claim
 from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
 from care.hcx.utils.fhir import Fhir
-from care.hcx.utils.hcx import Hcx, HcxOperations
+from care.hcx.utils.hcx import Hcx
+from care.hcx.utils.hcx.operations import HcxOperations
 from care.utils.queryset.communications import get_communications
 
 
@@ -204,7 +207,7 @@ class HcxGatewayViewSet(GenericViewSet):
         )
 
         if UseEnum[claim["use"]].value == "claim":
-            discharge_summary_url = generate_discharge_report(
+            discharge_summary_url = generate_discharge_report_signed_url(
                 PatientRegistration.objects.get(
                     external_id=claim["policy_object"]["patient_object"]["id"]
                 ).id,
