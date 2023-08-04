@@ -10,7 +10,7 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.hcx.api.serializers.claim import ClaimListSerializer, ClaimSerializer
+from care.hcx.api.serializers.claim import ClaimDetailSerializer, ClaimListSerializer
 from care.hcx.models.base import USE_CHOICES
 from care.hcx.models.claim import Claim
 
@@ -31,7 +31,7 @@ class ClaimViewSet(
 ):
     queryset = Claim.objects.all()
     permission_classes = (IsAuthenticated,)
-    serializer_class = ClaimSerializer
+    serializer_class = ClaimDetailSerializer
     lookup_field = "external_id"
     search_fields = ["consultation", "policy"]
     filter_backends = (
@@ -49,4 +49,4 @@ class ClaimViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return ClaimListSerializer
-        return ClaimSerializer
+        return self.serializer_class

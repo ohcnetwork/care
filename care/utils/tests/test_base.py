@@ -23,6 +23,8 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
+from care.hcx.models.claim import Claim
+from care.hcx.models.policy import Policy
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
 
@@ -243,6 +245,8 @@ class TestBase(APITestCase):
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
+        cls.policy = cls.create_hcx_policy()
+        cls.claim = cls.create_hcx_claim()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -448,3 +452,44 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_hcx_policy(cls, **kwargs):
+        data = {
+            "patient": cls.patient,
+            "subscriber_id": "subscriber_id",
+            "policy_id": "policy_id",
+            "insurer_id": "insurer_id",
+            "insurer_name": "insurer_name",
+            "status": "active",
+            "priority": "stat",
+            "purpose": "benefits",
+            "outcome": "queued",
+            "error_text": "error_text",
+            "created_by": cls.user,
+            "last_modified_by": cls.user,
+        }
+        data.update(kwargs)
+        return Policy.objects.create(**data)
+
+    @classmethod
+    def create_hcx_claim(cls, policy=None, **kwargs):
+        data = {
+            "consultation": cls.create_consultation(),
+            "policy": policy or cls.policy,
+            "items": [
+                {"id": "1", "name": "Item 1", "price": 9.99, "category": "Category 1"}
+            ],
+            "total_claim_amount": 1000,
+            "total_amount_approved": 1000,
+            "use": "claim",
+            "status": "active",
+            "priority": "stat",
+            "type": "institutional",
+            "outcome": "queued",
+            "error_text": "error_text",
+            "created_by": cls.user,
+            "last_modified_by": cls.user,
+        }
+        data.update(kwargs)
+        return Claim.objects.create(**data)
