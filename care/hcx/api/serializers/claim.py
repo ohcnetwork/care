@@ -1,3 +1,4 @@
+from django.db import models
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
@@ -96,3 +97,56 @@ class ClaimSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         instance.last_modified_by = self.context["request"].user
         return super().update(instance, validated_data)
+
+
+class BareMinimumPolicyClaimSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    subscriber_id = models.TextField(null=True, blank=True)
+    policy_id = models.TextField(null=True, blank=True)
+
+    insurer_id = models.TextField(null=True, blank=True)
+    insurer_name = models.TextField(null=True, blank=True)
+
+    class Meta:
+        model = Policy
+        fields = [
+            "id",
+            "created_date",
+            "modified_date",
+            "subscriber_id",
+            "policy_id",
+            "insurer_id",
+            "insurer_name",
+        ]
+        read_only_fields = TIMESTAMP_FIELDS
+
+
+class ClaimListSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
+    error_text = CharField(read_only=True)
+    policy_object = BareMinimumPolicyClaimSerializer(source="policy", read_only=True)
+    use = ChoiceField(choices=USE_CHOICES, default="claim")
+    items = JSONField(required=False, validators=[JSONFieldSchemaValidator(ITEMS)])
+    total_claim_amount = FloatField(required=False)
+
+    class Meta:
+        model = Claim
+        fields = [
+            "id",
+            "outcome",
+            "error_text",
+            "created_date",
+            "use",
+            "policy_object",
+            "items",
+            "total_claim_amount",
+            "error_text",
+            "created_date",
+            "modified_date",
+        ]
+        read_only_fields = TIMESTAMP_FIELDS
+
+
+class ClaimRetrieveSerializer(ClaimListSerializer):
+    pass
