@@ -473,11 +473,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
         if user_type == "Doctor":
             if validated_data["created_by"].home_facility == validated_data["facility"]:
-                validated_data["created_by_local_user"] = "Doctor"
+                validated_data["user_type"] = "Doctor"
             else:
-                validated_data["created_by_local_user"] = "RemoteSpecialist"
+                validated_data["user_type"] = "RemoteSpecialist"
         else:
-            validated_data["created_by_local_user"] = user_type
+            validated_data["user_type"] = user_type
 
         return super().create(validated_data)
 
@@ -487,7 +487,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "note",
             "facility",
             "created_by_object",
-            "created_by_local_user",
+            "user_type",
             "created_date",
         )
         read_only_fields = ("created_date",)
