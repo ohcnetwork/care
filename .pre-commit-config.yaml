@@ -40,7 +40,7 @@ repos:
       - id: django-migrations-check
         name: check django migrations
         language: system
-        entry: .venv/bin/python manage.py makemigrations --dry-run --check
+        entry: .venv/bin/python manage.py makemigrations --dry-run --check --noinput
         pass_filenames: false
         exclude: migrations
         types: [python]
