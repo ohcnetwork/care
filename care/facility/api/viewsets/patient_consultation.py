@@ -108,7 +108,7 @@ class PatientConsultationViewSet(
 
     def _generate_discharge_summary(self, consultation_ext_id: str):
         current_progress = discharge_summary.get_progress(consultation_ext_id)
-        if current_progress:
+        if current_progress is not None:
             return Response(
                 {
                     "detail": (
@@ -118,7 +118,7 @@ class PatientConsultationViewSet(
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
-        discharge_summary.set_lock(consultation_ext_id, 0)
+        discharge_summary.set_lock(consultation_ext_id, 1)
         generate_discharge_summary_task.delay(consultation_ext_id)
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},
