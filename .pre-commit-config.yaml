@@ -43,3 +43,4 @@ repos:
         entry: .venv/bin/python manage.py makemigrations --dry-run --check
         pass_filenames: false
         exclude: migrations
+        types: [python]
