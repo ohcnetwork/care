@@ -123,7 +123,7 @@ def generate_discharge_summary_pdf(data, file):
 def generate_and_upload_discharge_summary(consultation: PatientConsultation):
     logger.info(f"Generating Discharge Summary for {consultation.external_id}")
 
-    set_lock(consultation.external_id, 0)
+    set_lock(consultation.external_id, 5)
     try:
         current_date = timezone.now()
         summary_file = FileUpload(
