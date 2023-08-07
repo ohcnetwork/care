@@ -41,6 +41,7 @@ class PhoneNumberValidatorTests(TestCase):
     invalid_indian_mobile_numbers = [
         *valid_support_numbers,
         *valid_international_mobile_numbers,
+        "+915678847123",
         "9876543210",
         "98765432101",
         "987654321a",

@@ -65,7 +65,7 @@ class PhoneNumberValidator(RegexValidator):
     ```
     """
 
-    indian_mobile_number_regex = r"^(?=^\+91)(^\+91\d{10}$)"
+    indian_mobile_number_regex = r"^(?=^\+91)(^\+91[6-9]\d{9}$)"
     international_mobile_number_regex = r"^(?!^\+91)(^\+\d{1,3}\d{8,14}$)"
     landline_number_regex = r"^\+91[2-9]\d{7,9}$"
     support_number_regex = r"^(1800|1860)\d{6,7}$"
