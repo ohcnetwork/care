@@ -72,4 +72,5 @@ class ConsultationBed(BaseModel):
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
+    privacy = models.BooleanField(default=False)
     meta = JSONField(default=dict, blank=True)

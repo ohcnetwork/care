@@ -3,6 +3,8 @@ from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.fields import get_error_detail
@@ -14,6 +16,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.bed import (
@@ -205,3 +208,24 @@ class ConsultationBedViewSet(
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
         return queryset
+
+    @extend_schema(
+        description="Toggle patient privacy",
+        responses={status.HTTP_200_OK: None},
+        request=None,
+        tags=["consultationbed"],
+    )
+    @action(detail=True, methods=["PATCH"])
+    def toggle_patient_privacy(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            if user.user_type < User.TYPE_VALUE_MAP["Staff"]:
+                raise PermissionDenied({"permission": "no permission for this action"})
+            consultation_bed: ConsultationBed = self.get_object()
+            consultation_bed.privacy = not consultation_bed.privacy
+            consultation_bed.save()
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        except PermissionDenied as e:
+            return Response({"message": e.detail}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
