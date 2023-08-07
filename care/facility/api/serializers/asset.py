@@ -95,20 +95,16 @@ class AssetSerializer(ModelSerializer):
             attrs["current_location"] = location
 
         # validate that warraty date is not in the past
-        if "warranty_amc_end_of_validity" in attrs:
+        if warranty_amc_end_of_validity := attrs.get("warranty_amc_end_of_validity"):
             # pop out warranty date if it is not changed
             if (
                 self.instance
                 and self.instance.warranty_amc_end_of_validity
-                and self.instance.warranty_amc_end_of_validity
-                == attrs["warranty_amc_end_of_validity"]
+                == warranty_amc_end_of_validity
             ):
                 del attrs["warranty_amc_end_of_validity"]
 
-            if (
-                attrs.get("warranty_amc_end_of_validity")
-                and attrs["warranty_amc_end_of_validity"] < datetime.now().date()
-            ):
+            elif warranty_amc_end_of_validity < datetime.now().date():
                 raise ValidationError(
                     "Warranty/AMC end of validity cannot be in the past"
                 )
