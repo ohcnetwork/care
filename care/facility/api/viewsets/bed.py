@@ -60,6 +60,30 @@ class BedViewSet(
     search_fields = ["name"]
     filterset_class = BedFilter
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        number_of_beds = serializer.validated_data.pop("number_of_beds", 1)
+        # Bulk creating n number of beds
+        if number_of_beds > 1:
+            data = serializer.validated_data.copy()
+            data.pop("name")
+            beds = [
+                Bed(
+                    **data,
+                    name=f"{serializer.validated_data['name']} {i+1}",
+                )
+                for i in range(number_of_beds)
+            ]
+            Bed.objects.bulk_create(beds)
+            return Response(status=status.HTTP_201_CREATED)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset
