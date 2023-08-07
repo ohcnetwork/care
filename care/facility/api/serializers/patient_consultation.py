@@ -430,6 +430,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        if attrs.get("discharge_reason") != "EXP":
+            attrs.pop("death_datetime", None)
+            attrs.pop("death_confirmed_doctor", None)
+
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
