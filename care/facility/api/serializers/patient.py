@@ -28,7 +28,6 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PATIENT_NOTE_EDIT_WINDOW
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
