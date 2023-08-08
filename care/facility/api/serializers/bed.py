@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
+    IntegerField,
     ModelSerializer,
     SerializerMethodField,
     UUIDField,
@@ -30,6 +31,13 @@ class BedSerializer(ModelSerializer):
 
     location = UUIDField(write_only=True, required=True)
     facility = UUIDField(write_only=True, required=True)
+
+    number_of_beds = IntegerField(required=False, default=1, write_only=True)
+
+    def validate_number_of_beds(self, value):
+        if value > 100:
+            raise ValidationError("Cannot create more than 100 beds at once.")
+        return value
 
     class Meta:
         model = Bed

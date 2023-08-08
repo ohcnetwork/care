@@ -32,4 +32,4 @@ class BaseModel(models.Model):
 
     def delete(self, *args):
         self.deleted = True
-        self.save()
+        self.save(update_fields=["deleted"])

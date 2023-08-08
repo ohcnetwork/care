@@ -177,6 +177,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             pincode=abha_profile["pincode"],
             email=abha_profile["email"],
             profile_photo=abha_profile["profilePhoto"],
+            new=abha_profile["new"],
             txn_id=token["txn_id"],
             access_token=token["access_token"],
             refresh_token=token["refresh_token"],

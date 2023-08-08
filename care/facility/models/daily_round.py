@@ -260,7 +260,7 @@ class DailyRound(PatientBaseModel):
     resp = models.IntegerField(
         default=None,
         null=True,
-        validators=[MinValueValidator(10), MaxValueValidator(70)],
+        validators=[MinValueValidator(0), MaxValueValidator(70)],
     )
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
