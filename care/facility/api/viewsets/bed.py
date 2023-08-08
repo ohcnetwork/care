@@ -242,13 +242,26 @@ class ConsultationBedViewSet(
     @action(detail=True, methods=["PATCH"])
     def toggle_patient_privacy(self, request, *args, **kwargs):
         try:
-            user = request.user
-            if user.user_type < User.TYPE_VALUE_MAP["Staff"]:
-                raise PermissionDenied({"permission": "no permission for this action"})
-            consultation_bed: ConsultationBed = self.get_object()
-            consultation_bed.privacy = not consultation_bed.privacy
-            consultation_bed.save()
-            return Response({"status": "success"}, status=status.HTTP_200_OK)
+            user: User = request.user
+            if (
+                user.user_type == User.TYPE_VALUE_MAP["Staff"]
+                or user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+                or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+                or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+                or (
+                    user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                    and user.home_facility.external_id
+                    == self.get_object().bed.facility.external_id
+                )
+            ):
+                consultation_bed: ConsultationBed = self.get_object()
+                consultation_bed.privacy = not consultation_bed.privacy
+                consultation_bed.save()
+                return Response({"status": "success"}, status=status.HTTP_200_OK)
+            raise PermissionDenied(
+                detail="You do not have permission to perform this action"
+            )
         except PermissionDenied as e:
             return Response({"message": e.detail}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
