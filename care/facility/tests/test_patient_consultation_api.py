@@ -189,6 +189,24 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
+    def test_discharge_as_recovered_with_expired_fields(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REC",
+            discharge_date="2023-04-02T15:30:00Z",
+            discharge_notes="Discharge as recovered with expired fields",
+            death_datetime="2023-04-02T15:30:00Z",
+            death_confirmed_doctor="Dr. Test",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        consultation.refresh_from_db()
+        self.assertIsNone(consultation.death_datetime)
+        self.assertIsNot(consultation.death_confirmed_doctor, "Dr. Test")
+
     def test_referred_to_external_null(self):
         consultation = self.create_admission_consultation(
             suggestion="A",

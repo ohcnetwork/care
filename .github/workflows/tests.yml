@@ -59,6 +59,10 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements/local.txt
 
+      - name: Check for missing migrations
+        run: |
+          python manage.py makemigrations --check --dry-run --noinput
+
       - name: Configure environment
         run: |
           echo "JWKS_BASE64=$(python manage.py generate_jwks)" >> $GITHUB_ENV
