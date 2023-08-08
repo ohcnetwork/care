@@ -465,10 +465,6 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     created_by_local_user = serializers.BooleanField(read_only=True)
-    edit_window_seconds = serializers.SerializerMethodField(read_only=True)
-
-    def get_edit_window_seconds(self, obj):
-        return PATIENT_NOTE_EDIT_WINDOW
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
