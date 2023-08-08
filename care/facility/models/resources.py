@@ -6,7 +6,8 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
-from care.users.models import User, phone_number_regex
+from care.users.models import User
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 RESOURCE_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -58,7 +59,10 @@ class ResourceRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     status = models.IntegerField(
         choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False

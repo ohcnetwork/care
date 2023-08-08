@@ -1,7 +1,7 @@
 import boto3
 from django.conf import settings
 
-from care.users.models import phone_number_regex
+from care.utils.models.validators import mobile_validator
 
 
 def sendSMS(phone_numbers, message, many=False):
@@ -10,7 +10,7 @@ def sendSMS(phone_numbers, message, many=False):
     phone_numbers = list(set(phone_numbers))
     for phone in phone_numbers:
         try:
-            phone_number_regex(phone)
+            mobile_validator(phone)
         except Exception:
             continue
         client = boto3.client(

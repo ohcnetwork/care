@@ -7,7 +7,8 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
-from care.users.models import User, phone_number_regex
+from care.users.models import User
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 SHIFTING_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -78,7 +79,10 @@ class ShiftingRequest(FacilityBaseModel):
     comments = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(
@@ -98,7 +102,10 @@ class ShiftingRequest(FacilityBaseModel):
     )
     ambulance_driver_name = models.TextField(default="", blank=True)
     ambulance_phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     ambulance_number = models.TextField(default="", blank=True)
     created_by = models.ForeignKey(
