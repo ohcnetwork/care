@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
+from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -208,6 +210,11 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
+
+    abha_number = ExternalIdSerializerField(
+        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
+    )
+    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -455,6 +462,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    created_by_local_user = serializers.BooleanField(read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -463,5 +471,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientNotes
-        fields = ("note", "facility", "created_by_object", "created_date")
+        fields = (
+            "note",
+            "facility",
+            "created_by_object",
+            "created_by_local_user",
+            "created_date",
+        )
         read_only_fields = ("created_date",)

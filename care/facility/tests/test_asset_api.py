@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils.timezone import datetime, make_aware
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
@@ -11,17 +12,22 @@ from care.utils.tests.test_base import TestBase
 class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     asset_id = None
 
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        self.asset1_location = AssetLocation.objects.create(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = APIRequestFactory()
+        state = cls.create_state()
+        district = cls.create_district(state=state)
+        cls.user = cls.create_user(district=district, username="test user")
+        facility = cls.create_facility(district=district, user=cls.user)
+        cls.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
-        self.asset = Asset.objects.create(
-            name="Test Asset", current_location=self.asset1_location, asset_type=50
+        cls.asset = Asset.objects.create(
+            name="Test Asset",
+            current_location=cls.asset1_location,
+            asset_type=50,
+            warranty_amc_end_of_validity=make_aware(datetime(2021, 4, 1)),
         )
 
     def test_list_assets(self):
@@ -44,6 +50,22 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             self.user,
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_asset_with_warranty_past(self):
+        sample_data = {
+            "name": "Test Asset",
+            "current_location": self.asset1_location.pk,
+            "asset_type": 50,
+            "location": self.asset1_location.external_id,
+            "warranty_amc_end_of_validity": "2000-04-01",
+        }
+        response = self.new_request(
+            ("/api/v1/asset/", sample_data, "json"),
+            {"post": "create"},
+            AssetViewSet,
+            self.user,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve_asset(self):
         response = self.new_request(
@@ -73,6 +95,32 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(response.data["name"], sample_data["name"])
         self.asset.refresh_from_db()
         self.assertEqual(self.asset.name, sample_data["name"])
+
+    def test_update_asset_change_warranty_improperly(self):
+        sample_data = {
+            "warranty_amc_end_of_validity": "2002-04-01",
+        }
+        response = self.new_request(
+            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
+            {"patch": "partial_update"},
+            AssetViewSet,
+            self.user,
+            {"external_id": self.asset.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_asset_change_warranty_properly(self):
+        sample_data = {
+            "warranty_amc_end_of_validity": "2222-04-01",
+        }
+        response = self.new_request(
+            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
+            {"patch": "partial_update"},
+            AssetViewSet,
+            self.user,
+            {"external_id": self.asset.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_asset(self):
         with transaction.atomic():

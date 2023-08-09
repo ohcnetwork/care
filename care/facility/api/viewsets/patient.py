@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
+from django.db.models import BooleanField, Case, F, Value, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -81,6 +81,10 @@ class PatientFilterSet(filters.FilterSet):
     ip_no = filters.CharFilter(
         field_name="last_consultation__ip_no", lookup_expr="icontains"
     )
+    op_no = filters.CharFilter(
+        field_name="last_consultation__op_no", lookup_expr="icontains"
+    )
+    ip_or_op_no = filters.CharFilter(method="filter_by_ip_or_op_no")
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
@@ -93,6 +97,14 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+
+    def filter_by_ip_or_op_no(self, queryset, name, value):
+        if value:
+            queryset = queryset.filter(
+                Q(last_consultation__ip_no__icontains=value)
+                | Q(last_consultation__op_no__icontains=value)
+            )
+        return queryset
 
     def filter_by_category(self, queryset, name, value):
         if value:
@@ -595,6 +607,16 @@ class PatientNotesViewSet(
     queryset = (
         PatientNotes.objects.all()
         .select_related("facility", "patient", "created_by")
+        .annotate(
+            created_by_local_user=Case(
+                When(
+                    created_by__home_facility__external_id=F("facility__external_id"),
+                    then=Value(True),
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
         .order_by("-created_date")
     )
     serializer_class = PatientNotesSerializer
@@ -617,6 +639,7 @@ class PatientNotesViewSet(
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
             queryset = queryset.filter(q_filters)
+
         return queryset
 
     def perform_create(self, serializer):

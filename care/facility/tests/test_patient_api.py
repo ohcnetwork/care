@@ -1,5 +1,7 @@
+from datetime import datetime
 from enum import Enum
 
+from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -13,6 +15,7 @@ class ExpectedPatientNoteKeys(Enum):
     FACILITY = "facility"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
+    CREATED_BY_LOCAL_USER = "created_by_local_user"
 
 
 class ExpectedFacilityKeys(Enum):
@@ -71,7 +74,6 @@ class ExpectedCreatedByObjectKeys(Enum):
     LAST_NAME = "last_name"
     USER_TYPE = "user_type"
     LAST_LOGIN = "last_login"
-    HOME_FACILITY = "home_facility"
 
 
 class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
@@ -85,11 +87,23 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
         # Create users and facility
         self.user = self.create_user(district=district, username="test user")
         facility = self.create_facility(district=district, user=self.user)
+        self.user.home_facility = facility
+        self.user.save()
+
+        # Create another user from different facility
+        self.user2 = self.create_user(district=district, username="test user 2")
+        facility2 = self.create_facility(district=district, user=self.user2)
+        self.user2.home_facility = facility2
+        self.user2.save()
 
         self.patient = self.create_patient(district=district.id)
 
         self.patient_note = self.create_patient_note(
-            patient=self.patient, facility=facility
+            patient=self.patient, facility=facility, created_by=self.user
+        )
+
+        self.patient_note2 = self.create_patient_note(
+            patient=self.patient, facility=facility, created_by=self.user2
         )
 
         refresh_token = RefreshToken.for_user(self.user)
@@ -103,13 +117,22 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
-        # Ensure only necessary data is being sent and no extra data
+        # Test created_by_local_user field if user is not from same facility as patient
+        data2 = response.json()["results"][0]
 
-        data = response.json()["results"][0]
+        created_by_local_user_content2 = data2["created_by_local_user"]
+        self.assertEqual(created_by_local_user_content2, False)
+
+        # Ensure only necessary data is being sent and no extra data
+        data = response.json()["results"][1]
 
         self.assertCountEqual(
             data.keys(), [item.value for item in ExpectedPatientNoteKeys]
         )
+
+        created_by_local_user_content = data["created_by_local_user"]
+
+        self.assertEqual(created_by_local_user_content, True)
 
         facility_content = data["facility"]
 
@@ -165,3 +188,55 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
                 created_by_object_content.keys(),
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
+
+
+class PatientFilterTestCase(TestBase, TestClassMixin, APITestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        state = self.create_state()
+        district = self.create_district(state=state)
+
+        self.user = self.create_super_user(district=district, username="test user")
+        facility = self.create_facility(district=district, user=self.user)
+        self.user.home_facility = facility
+        self.user.save()
+
+        self.patient = self.create_patient(district=district.id, created_by=self.user)
+        self.consultation = self.create_consultation(
+            op_no="OP1234",
+            ip_no="IP5678",
+            patient=self.patient,
+            facility=facility,
+            created_by=self.user,
+            suggestion="A",
+            admission_date=make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        self.patient.last_consultation = self.consultation
+        self.patient.save()
+        refresh_token = RefreshToken.for_user(self.user)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
+        )
+
+    def test_filter_by_op_no(self):
+        response = self.client.get("/api/v1/patient/?op_no=OP1234")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.patient.external_id)
+        )
+
+    def test_filter_by_ip_OR_op_no(self):
+        response = self.client.get("/api/v1/patient/?ip_or_op_no=IP5678")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.patient.external_id)
+        )
+
+        response = self.client.get("/api/v1/patient/?ip_or_op_no=OP1234")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.patient.external_id)
+        )

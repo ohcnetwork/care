@@ -12,6 +12,7 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
+    CATEGORY_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
@@ -217,6 +218,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
     )
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -327,8 +329,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
         new_instance = super().update(instance, validated_data)
 
         patient = new_instance.patient
-        patient.last_consultation.category = self.initial_data["patient_category"]
-        patient.last_consultation.save()
+        patient_category = validated_data.pop("patient_category", None)
+        if patient.last_consultation and patient_category is not None:
+            patient.last_consultation.category = patient_category
+            patient.last_consultation.save(update_fields=["category"])
 
         if (
             "status" in validated_data
@@ -390,9 +394,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
             patient.allow_transfer = True
             patient.save()
 
-        if patient.last_consultation:
-            patient.last_consultation.category = self.initial_data["patient_category"]
-            patient.last_consultation.save()
+        patient_category = validated_data.pop("patient_category", None)
+        if patient.last_consultation and patient_category is not None:
+            patient.last_consultation.category = patient_category
+            patient.last_consultation.save(update_fields=["category"])
 
         validated_data["origin_facility"] = patient.facility
 

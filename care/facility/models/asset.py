@@ -7,14 +7,21 @@ from django.db.models import JSONField, Q
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
-from care.users.models import User, phone_number_regex_11
+from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
-from care.utils.models.validators import JSONFieldSchemaValidator
+from care.utils.models.validators import JSONFieldSchemaValidator, PhoneNumberValidator
 
 
 def get_random_asset_id():
     return str(uuid.uuid4())
+
+
+class AvailabilityStatus(models.TextChoices):
+    NOT_MONITORED = "Not Monitored"
+    OPERATIONAL = "Operational"
+    DOWN = "Down"
+    UNDER_MAINTENANCE = "Under Maintenance"
 
 
 class AssetLocation(BaseModel, AssetsPermissionMixin):
@@ -77,7 +84,9 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14, validators=[phone_number_regex_11], default=""
+        max_length=14,
+        validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))],
+        default="",
     )
     support_email = models.EmailField(blank=True, null=True)
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)
@@ -103,6 +112,34 @@ class Asset(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class AssetAvailabilityRecord(BaseModel):
+    """
+    Model to store the availability status of an asset at a particular timestamp.
+
+    Fields:
+    - asset: ForeignKey to Asset model
+    - status: CharField with choices from AvailabilityStatus
+    - timestamp: DateTimeField to store the timestamp of the availability record
+
+    Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
+    """
+
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+    status = models.CharField(
+        choices=AvailabilityStatus.choices,
+        default=AvailabilityStatus.NOT_MONITORED,
+        max_length=20,
+    )
+    timestamp = models.DateTimeField(null=False, blank=False)
+
+    class Meta:
+        unique_together = (("asset", "timestamp"),)
+        ordering = ["-timestamp"]
+
+    def __str__(self):
+        return f"{self.asset.name} - {self.status} - {self.timestamp}"
 
 
 class UserDefaultAssetLocation(BaseModel):

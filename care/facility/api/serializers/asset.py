@@ -18,6 +18,7 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
+    AssetAvailabilityRecord,
     AssetLocation,
     AssetTransaction,
     UserDefaultAssetLocation,
@@ -94,11 +95,16 @@ class AssetSerializer(ModelSerializer):
             attrs["current_location"] = location
 
         # validate that warraty date is not in the past
-        if "warranty_amc_end_of_validity" in attrs:
+        if warranty_amc_end_of_validity := attrs.get("warranty_amc_end_of_validity"):
+            # pop out warranty date if it is not changed
             if (
-                attrs["warranty_amc_end_of_validity"]
-                and attrs["warranty_amc_end_of_validity"] < datetime.now().date()
+                self.instance
+                and self.instance.warranty_amc_end_of_validity
+                == warranty_amc_end_of_validity
             ):
+                del attrs["warranty_amc_end_of_validity"]
+
+            elif warranty_amc_end_of_validity < datetime.now().date():
                 raise ValidationError(
                     "Warranty/AMC end of validity cannot be in the past"
                 )
@@ -162,6 +168,15 @@ class AssetTransactionSerializer(ModelSerializer):
 
     class Meta:
         model = AssetTransaction
+        exclude = ("deleted", "external_id")
+
+
+class AssetAvailabilitySerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset = AssetBareMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetAvailabilityRecord
         exclude = ("deleted", "external_id")
 
 
