@@ -157,7 +157,7 @@ class AssetSerializer(ModelSerializer):
                 )
                 asset_service.save()
                 asset_instance.last_service = asset_service
-                asset_instance.save()
+                asset_instance.save(update_fields=["last_service"])
         return asset_instance
 
     def update(self, instance, validated_data):
