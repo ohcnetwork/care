@@ -6,10 +6,25 @@ import django.db.migrations.operations.special
 import django.db.models.deletion
 from django.db import migrations, models
 
-# Functions from the following migrations need manual copying.
-# Move them and any dependencies into this file, then update the
-# RunPython operations to refer to the local versions:
-# care.facility.migrations.0351_assetservice
+
+def move_last_serviced_on_and_notes(apps, schema_editor):
+    Asset = apps.get_model("facility", "Asset")
+    AssetService = apps.get_model("facility", "AssetService")
+
+    asset_services = []
+    for asset in Asset.objects.all():
+        if asset.last_serviced_on or asset.notes:
+            asset_services.append(
+                AssetService(
+                    asset=asset, serviced_on=asset.last_serviced_on, note=asset.notes
+                )
+            )
+
+    AssetService.objects.bulk_create(asset_services)
+
+    # Set the default value for the 'last_serviced_on' and 'notes' fields to None
+    # so that they can be safely removed in a later part of this migration
+    Asset.objects.update(last_serviced_on=None, notes=None)
 
 
 class Migration(migrations.Migration):
@@ -63,7 +78,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(
-            code="care.facility.migrations.0351_assetservice.move_last_serviced_on_and_notes",
+            code=move_last_serviced_on_and_notes,
             reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
         migrations.RemoveField(
