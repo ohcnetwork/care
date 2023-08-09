@@ -27,6 +27,8 @@ class AbhaNumber(BaseModel):
     email = models.EmailField(null=True, blank=True)
     profile_photo = models.TextField(null=True, blank=True)
 
+    new = models.BooleanField(default=False)
+
     txn_id = models.TextField(null=True, blank=True)
     access_token = models.TextField(null=True, blank=True)
     refresh_token = models.TextField(null=True, blank=True)
