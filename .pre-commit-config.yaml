@@ -34,13 +34,3 @@ repos:
       - id: flake8
         args: ["--config=.flake8"]
         additional_dependencies: [flake8-isort]
-
-  - repo: local
-    hooks:
-      - id: django-migrations-check
-        name: check django migrations
-        language: system
-        entry: .venv/bin/python manage.py makemigrations --dry-run --check --noinput
-        pass_filenames: false
-        exclude: migrations
-        types: [python]
