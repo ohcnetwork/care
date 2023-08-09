@@ -187,5 +187,5 @@ class AssetTransaction(BaseModel):
 class AssetService(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
 
-    serviced_on = models.DateField(default=None, null=True, blank=True)
+    serviced_on = models.DateField(default=None, null=True, blank=False)
     note = models.TextField(default="", null=True, blank=True)
