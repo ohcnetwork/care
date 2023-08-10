@@ -244,13 +244,17 @@ class ConsultationBedViewSet(
         try:
             user: User = request.user
             if (
-                user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                or user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+                user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
                 or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
                 or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
                 or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
                 or (
                     user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                    and user.home_facility.external_id
+                    == self.get_object().bed.facility.external_id
+                )
+                or (
+                    user.user_type == User.TYPE_VALUE_MAP["Staff"]
                     and user.home_facility.external_id
                     == self.get_object().bed.facility.external_id
                 )
@@ -265,4 +269,4 @@ class ConsultationBedViewSet(
         except PermissionDenied as e:
             return Response({"message": e.detail}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": e}, status=status.HTTP_400_BAD_REQUEST)
