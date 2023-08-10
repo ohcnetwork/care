@@ -3,12 +3,8 @@ from django.db.models import JSONField
 
 from care.facility.models.patient import PatientConsultation
 from care.hcx.models.base import (
-    CLAIM_TYPE_CHOICES,
-    OUTCOME_CHOICES,
-    PRIORITY_CHOICES,
-    STATUS_CHOICES,
-    USE_CHOICES,
     ClaimTypeEnum,
+    OutcomeEnum,
     PriorityEnum,
     StatusEnum,
     UseEnum,
@@ -31,22 +27,22 @@ class Claim(BaseModel):
     total_amount_approved = models.FloatField(blank=True, null=True)
 
     use = models.CharField(
-        choices=USE_CHOICES, max_length=20, default=UseEnum.CLAIM.value
+        choices=UseEnum.choices, max_length=20, default=UseEnum.CLAIM.value
     )
     status = models.CharField(
-        choices=STATUS_CHOICES, max_length=20, default=StatusEnum.ACTIVE.value
+        choices=StatusEnum.choices, max_length=20, default=StatusEnum.ACTIVE.value
     )
     priority = models.CharField(
-        choices=PRIORITY_CHOICES, max_length=20, default=PriorityEnum.NORMAL.value
+        choices=PriorityEnum.choices, max_length=20, default=PriorityEnum.NORMAL.value
     )
     type = models.CharField(
-        choices=CLAIM_TYPE_CHOICES,
+        choices=ClaimTypeEnum.choices,
         max_length=20,
         default=ClaimTypeEnum.INSTITUTIONAL.value,
     )
 
     outcome = models.CharField(
-        choices=OUTCOME_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=OutcomeEnum.choices, max_length=20, default=None, blank=True, null=True
     )
     error_text = models.TextField(null=True, blank=True)
 

@@ -3,11 +3,11 @@ from rest_framework.serializers import CharField, ModelSerializer, UUIDField
 from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.patient import PatientRegistration
 from care.hcx.models.policy import (
-    OUTCOME_CHOICES,
-    PRIORITY_CHOICES,
-    PURPOSE_CHOICES,
-    STATUS_CHOICES,
+    OutcomeEnum,
     Policy,
+    PriorityEnum,
+    PurposeEnum,
+    StatusEnum,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -33,11 +33,11 @@ class PolicySerializer(ModelSerializer):
     insurer_id = CharField(required=False)
     insurer_name = CharField(required=False)
 
-    status = ChoiceField(choices=STATUS_CHOICES, required=False)
-    priority = ChoiceField(choices=PRIORITY_CHOICES, required=False)
-    purpose = ChoiceField(choices=PURPOSE_CHOICES, required=False)
+    status = ChoiceField(choices=StatusEnum.choices, required=False)
+    priority = ChoiceField(choices=PriorityEnum.choices, required=False)
+    purpose = ChoiceField(choices=PurposeEnum.choices, required=False)
 
-    outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
+    outcome = ChoiceField(choices=OutcomeEnum.choices, read_only=True)
     error_text = CharField(read_only=True)
 
     created_by = UserBaseMinimumSerializer(read_only=True)

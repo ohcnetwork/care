@@ -12,11 +12,11 @@ from care.facility.api.serializers.patient_consultation import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.hcx.api.serializers.policy import PolicySerializer
 from care.hcx.models.base import (
-    CLAIM_TYPE_CHOICES,
-    OUTCOME_CHOICES,
-    PRIORITY_CHOICES,
-    STATUS_CHOICES,
-    USE_CHOICES,
+    ClaimTypeEnum,
+    OutcomeEnum,
+    PriorityEnum,
+    StatusEnum,
+    UseEnum,
 )
 from care.hcx.models.claim import Claim
 from care.hcx.models.policy import Policy
@@ -49,12 +49,12 @@ class ClaimSerializer(ModelSerializer):
     total_claim_amount = FloatField(required=False)
     total_amount_approved = FloatField(required=False)
 
-    use = ChoiceField(choices=USE_CHOICES, required=False)
-    status = ChoiceField(choices=STATUS_CHOICES, required=False)
-    priority = ChoiceField(choices=PRIORITY_CHOICES, required=False)
-    type = ChoiceField(choices=CLAIM_TYPE_CHOICES, required=False)
+    use = ChoiceField(choices=UseEnum.choices, required=False)
+    status = ChoiceField(choices=StatusEnum.choices, required=False)
+    priority = ChoiceField(choices=PriorityEnum.choices, required=False)
+    type = ChoiceField(choices=ClaimTypeEnum.choices, required=False)
 
-    outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
+    outcome = ChoiceField(choices=OutcomeEnum.choices, read_only=True)
     error_text = CharField(read_only=True)
 
     created_by = UserBaseMinimumSerializer(read_only=True)

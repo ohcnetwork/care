@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.hcx.api.serializers.claim import ClaimSerializer
-from care.hcx.models.base import USE_CHOICES
+from care.hcx.models.base import UseEnum
 from care.hcx.models.claim import Claim
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -19,7 +19,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 class PolicyFilter(filters.FilterSet):
     consultation = filters.UUIDFilter(field_name="consultation__external_id")
     policy = filters.UUIDFilter(field_name="policy__external_id")
-    use = filters.ChoiceFilter(field_name="use", choices=USE_CHOICES)
+    use = filters.ChoiceFilter(field_name="use", choices=UseEnum.choices)
 
 
 class ClaimViewSet(
