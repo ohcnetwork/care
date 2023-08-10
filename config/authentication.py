@@ -214,10 +214,7 @@ class HCXAuthentication(JWTAuthentication):
         return "Bearer"
 
     def authenticate(self, request):
-        jwt_token = request.META.get("HTTP_AUTHORIZATION")
-        if jwt_token is None:
-            return None
-        jwt_token = self.get_jwt_token(jwt_token)
+        jwt_token = self.get_jwt_token(request.META.get("HTTP_AUTHORIZATION"))
 
         try:
             payload = self.decode_jwt(settings.HCX_CERT_URL, jwt_token)
@@ -231,7 +228,12 @@ class HCXAuthentication(JWTAuthentication):
         return user, payload
 
     def get_jwt_token(self, token):
-        return token.replace("Bearer", "").replace(" ", "")
+        jwt_token = token.replace("Bearer ", "", 1)
+
+        if not jwt_token:
+            raise InvalidToken({"detail": "Missing Authorization token"})
+
+        return jwt_token
 
     def decode_jwt(self, public_key_url, token):
         response = requests.get(public_key_url)
@@ -311,4 +313,20 @@ class SessionAuthenticationScheme(OpenApiAuthenticationExtension):
             "name": "sessionid",
             "scheme": "http",
             "description": _("Do not use this scheme for production."),
+        }
+
+
+class HCXAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "config.authentication.HCXAuthentication"
+    name = "HCXAuth"
+
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            "description": _(
+                "Used for authenticating requests from the HCX servers. "
+                "The scheme requires a valid JWT token in the Authorization header."
+            ),
         }
