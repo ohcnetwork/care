@@ -4,7 +4,7 @@ import json
 import requests
 from django.conf import settings
 from django.core.cache import cache
-from rest_framework.exceptions import APIException, PermissionDenied
+from rest_framework.exceptions import APIException
 
 from care.utils.jwks.token_generator import generate_jwt
 
@@ -69,12 +69,7 @@ class BaseAssetIntegration:
             cache.delete(asset_id)
             return True
         elif cache.get(asset_id) != username:
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            return False
         return True
 
     def lock_asset(self, username, asset_id):
@@ -89,10 +84,5 @@ class BaseAssetIntegration:
         if cache.get(asset_id) is None or cache.get(asset_id) == username:
             return True
         elif cache.get(asset_id) != username:
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            return False
         return True

@@ -47,7 +47,14 @@ class OnvifAsset(BaseAssetIntegration):
         }
 
         if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
-            return self.unlock_asset(username, asset_id)
+            if self.unlock_asset(username, asset_id):
+                return {"message": "Asset Unlocked"}
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "username": cache.get(asset_id),
+                }
+            )
 
         if action_type == BaseAssetIntegration.BaseAssetActions.LOCK_ASSET.value:
             if self.lock_asset(username, asset_id):
@@ -68,20 +75,35 @@ class OnvifAsset(BaseAssetIntegration):
             return self.api_get(self.get_url("presets"), request_body)
 
         if action_type == self.OnvifActions.GOTO_PRESET.value:
-            self.verify_access(username, asset_id)
-            self.lock_asset(username, asset_id)
-            return self.api_post(self.get_url("gotoPreset"), request_body)
-
+            if self.verify_access(username, asset_id):
+                self.lock_asset(username, asset_id)
+                return self.api_post(self.get_url("gotoPreset"), request_body)
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "username": cache.get(asset_id),
+                }
+            )
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
-            self.verify_access(username, asset_id)
-            self.lock_asset(username, asset_id)
-            return self.api_post(self.get_url("absoluteMove"), request_body)
-
+            if self.verify_access(username, asset_id):
+                self.lock_asset(username, asset_id)
+                return self.api_post(self.get_url("absoluteMove"), request_body)
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "username": cache.get(asset_id),
+                }
+            )
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
-            self.verify_access(username, asset_id)
-            self.lock_asset(username, asset_id)
-            return self.api_post(self.get_url("relativeMove"), request_body)
-
+            if self.verify_access(username, asset_id):
+                self.lock_asset(username, asset_id)
+                return self.api_post(self.get_url("relativeMove"), request_body)
+            raise PermissionDenied(
+                {
+                    "message": "Asset is currently in use by another user",
+                    "username": cache.get(asset_id),
+                }
+            )
         raise ValidationError({"action": "invalid action type"})
 
     def validate_action(self, action):
