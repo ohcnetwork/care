@@ -69,15 +69,12 @@ class BaseAssetIntegration:
         from care.utils.notification_handler import NotificationGenerator
 
         class NotificationGeneratorForAsset(NotificationGenerator):
-            def __init__(
-                self, event_type, event, caused_by, caused_object, message, facility
-            ):
+            def __init__(self, event_type, event, caused_by, caused_object, facility):
                 super().__init__(
                     event_type=event_type,
                     event=event,
                     caused_by=caused_by,
                     caused_object=caused_object,
-                    message=message,
                     facility=facility,
                 )
 
@@ -93,15 +90,13 @@ class BaseAssetIntegration:
                     return users_array
 
         asset: Asset = Asset.objects.get(external_id=asset_id)
-        facility = asset.current_location.facility
 
         NotificationGeneratorForAsset(
             event_type=Notification.EventType.CUSTOM_MESSAGE,
-            event=Notification.Event.MESSAGE,
+            event=Notification.Event.ASSET_UNLOCKED,
             caused_by=User.objects.get(username=username),
             caused_object=asset,
-            facility=facility,
-            message=f"{asset.name} is now available for use",
+            facility=asset.current_location.facility,
         ).generate()
 
     def add_to_waiting_queue(self, username, asset_id):

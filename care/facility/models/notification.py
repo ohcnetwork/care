@@ -23,6 +23,7 @@ class Notification(FacilityBaseModel):
 
     class Event(enum.Enum):
         MESSAGE = 0
+        ASSET_UNLOCKED = 10
         PATIENT_CREATED = 20
         PATIENT_UPDATED = 30
         PATIENT_DELETED = 40
