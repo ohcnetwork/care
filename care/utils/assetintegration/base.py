@@ -6,6 +6,8 @@ from django.conf import settings
 from django.core.cache import cache
 from rest_framework.exceptions import APIException
 
+from care.facility.models.notification import Notification
+from care.users.models import User
 from care.utils.jwks.token_generator import generate_jwt
 
 
@@ -62,22 +64,90 @@ class BaseAssetIntegration:
     def validate_action(self, action):
         pass
 
+    def generate_notification(self, asset_id, username):
+        from care.facility.models.asset import Asset
+        from care.utils.notification_handler import NotificationGenerator
+
+        class NotificationGeneratorForAsset(NotificationGenerator):
+            def __init__(
+                self, event_type, event, caused_by, caused_object, message, facility
+            ):
+                super().__init__(
+                    event_type=event_type,
+                    event=event,
+                    caused_by=caused_by,
+                    caused_object=caused_object,
+                    message=message,
+                    facility=facility,
+                )
+
+            def generate_system_users(self):
+                asset_queue_key = f"waiting_queue_{asset_id}"
+                if cache.get(asset_queue_key) is None:
+                    return []
+                else:
+                    queue = cache.get(asset_queue_key)
+                    users_array = []
+                    for user in queue:
+                        users_array.append(User.objects.get(username=user))
+                    return users_array
+
+        asset: Asset = Asset.objects.get(external_id=asset_id)
+        facility = asset.current_location.facility
+
+        NotificationGeneratorForAsset(
+            event_type=Notification.EventType.CUSTOM_MESSAGE,
+            event=Notification.Event.MESSAGE,
+            caused_by=User.objects.get(username=username),
+            caused_object=asset,
+            facility=facility,
+            message=f"{asset.name} is now available for use",
+        ).generate()
+
+    def add_to_waiting_queue(self, username, asset_id):
+        asset_queue_key = f"waiting_queue_{asset_id}"
+        if cache.get(asset_queue_key) is None:
+            cache.set(asset_queue_key, [username], timeout=None)
+        else:
+            queue = cache.get(asset_queue_key)
+            if username not in queue:
+                queue.append(username)
+                cache.set(asset_queue_key, queue, timeout=None)
+
+    def remove_from_waiting_queue(self, username, asset_id):
+        asset_queue_key = f"waiting_queue_{asset_id}"
+        if cache.get(asset_queue_key) is None:
+            return
+        else:
+            queue = cache.get(asset_queue_key)
+            if username in queue:
+                queue = [x for x in queue if x != username]
+            cache.set(asset_queue_key, queue, timeout=None)
+
     def unlock_asset(self, username, asset_id):
         if cache.get(asset_id) is None:
+            self.remove_from_waiting_queue(username, asset_id)
+            self.generate_notification(asset_id, username)
             return True
         elif cache.get(asset_id) == username:
             cache.delete(asset_id)
+            self.remove_from_waiting_queue(username, asset_id)
+            self.generate_notification(asset_id, username)
             return True
         elif cache.get(asset_id) != username:
+            self.remove_from_waiting_queue(username, asset_id)
             return False
         return True
 
     def lock_asset(self, username, asset_id):
-        if cache.get(asset_id) is None:
+        if cache.get(asset_id) is None or not cache.get(asset_id):
             cache.set(asset_id, username, timeout=None)
+            self.remove_from_waiting_queue(username, asset_id)
             return True
         elif cache.get(asset_id) == username:
+            self.remove_from_waiting_queue(username, asset_id)
             return True
+        self.add_to_waiting_queue(username, asset_id)
         return False
 
     def verify_access(self, username, asset_id):
