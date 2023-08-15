@@ -6,7 +6,6 @@ from django.conf import settings
 from django.core.cache import cache
 from rest_framework.exceptions import APIException
 
-from care.facility.models.notification import Notification
 from care.users.models import User
 from care.utils.jwks.token_generator import generate_jwt
 
@@ -64,40 +63,28 @@ class BaseAssetIntegration:
     def validate_action(self, action):
         pass
 
-    def generate_notification(self, asset_id, username):
-        from care.facility.models.asset import Asset
-        from care.utils.notification_handler import NotificationGenerator
+    def generate_system_users(self, asset_id):
+        asset_queue_key = f"waiting_queue_{asset_id}"
+        if cache.get(asset_queue_key) is None:
+            return []
+        else:
+            queue = cache.get(asset_queue_key)
+            users_array = []
+            for user in queue:
+                users_array.append(User.objects.get(username=user))
+            return users_array
 
-        class NotificationGeneratorForAsset(NotificationGenerator):
-            def __init__(self, event_type, event, caused_by, caused_object, facility):
-                super().__init__(
-                    event_type=event_type,
-                    event=event,
-                    caused_by=caused_by,
-                    caused_object=caused_object,
-                    facility=facility,
-                )
+    def generate_notification(self, asset_id):
+        from care.utils.notification_handler import send_webpush
 
-            def generate_system_users(self):
-                asset_queue_key = f"waiting_queue_{asset_id}"
-                if cache.get(asset_queue_key) is None:
-                    return []
-                else:
-                    queue = cache.get(asset_queue_key)
-                    users_array = []
-                    for user in queue:
-                        users_array.append(User.objects.get(username=user))
-                    return users_array
-
-        asset: Asset = Asset.objects.get(external_id=asset_id)
-
-        NotificationGeneratorForAsset(
-            event_type=Notification.EventType.CUSTOM_MESSAGE,
-            event=Notification.Event.ASSET_UNLOCKED,
-            caused_by=User.objects.get(username=username),
-            caused_object=asset,
-            facility=asset.current_location.facility,
-        ).generate()
+        message = {
+            "type": "MESSAGE",
+            "status": "success",
+            "message": "Asset Unlocked",
+        }
+        user_array = self.generate_system_users(asset_id)
+        for username in user_array:
+            send_webpush(username=username, message=json.dumps(message))
 
     def add_to_waiting_queue(self, username, asset_id):
         asset_queue_key = f"waiting_queue_{asset_id}"
@@ -122,12 +109,12 @@ class BaseAssetIntegration:
     def unlock_asset(self, username, asset_id):
         if cache.get(asset_id) is None:
             self.remove_from_waiting_queue(username, asset_id)
-            self.generate_notification(asset_id, username)
+            self.generate_notification(asset_id)
             return True
         elif cache.get(asset_id) == username:
             cache.delete(asset_id)
             self.remove_from_waiting_queue(username, asset_id)
-            self.generate_notification(asset_id, username)
+            self.generate_notification(asset_id)
             return True
         elif cache.get(asset_id) != username:
             self.remove_from_waiting_queue(username, asset_id)
