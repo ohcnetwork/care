@@ -6,12 +6,13 @@ from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import FacilityBaseModel, phone_number_regex, reverse_choices
+from care.facility.models import FacilityBaseModel, reverse_choices
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
@@ -150,7 +151,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     expected_type_d_cylinders = models.IntegerField(default=0)
 
     phone_number = models.CharField(
-        max_length=14, blank=True, validators=[phone_number_regex]
+        max_length=14, blank=True, validators=[mobile_or_landline_number_validator]
     )
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
