@@ -268,7 +268,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     area = models.IntegerField(choices=DOCTOR_TYPES)
-    count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    count = models.PositiveIntegerField()
 
     def __str__(self):
         return str(self.facility) + str(self.count)
