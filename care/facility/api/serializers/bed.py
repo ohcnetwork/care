@@ -1,8 +1,11 @@
+from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
     IntegerField,
+    ListField,
     ModelSerializer,
     SerializerMethodField,
     UUIDField,
@@ -11,7 +14,12 @@ from rest_framework.serializers import (
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer, AssetSerializer
 from care.facility.models.asset import Asset, AssetLocation
-from care.facility.models.bed import AssetBed, Bed, ConsultationBed
+from care.facility.models.bed import (
+    AssetBed,
+    Bed,
+    ConsultationBed,
+    ConsultationBedAsset,
+)
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_base import BedTypeChoices
@@ -147,6 +155,9 @@ class ConsultationBedSerializer(ModelSerializer):
         queryset=Bed.objects.all(), write_only=True, required=True
     )
 
+    assets = ListField(child=UUIDField(), required=False, write_only=True)
+    assets_objects = AssetSerializer(source="assets", many=True, read_only=True)
+
     class Meta:
         model = ConsultationBed
         exclude = ("deleted", "external_id")
@@ -161,9 +172,10 @@ class ConsultationBedSerializer(ModelSerializer):
             consultation = get_object_or_404(
                 permitted_consultations.filter(id=attrs["consultation"].id)
             )
-            if not facilities.filter(id=bed.facility.id).exists():
+            if not facilities.filter(id=bed.facility_id).exists():
                 raise PermissionError()
-            if consultation.facility.id != bed.facility.id:
+
+            if consultation.facility_id != bed.facility_id:
                 raise ValidationError(
                     {"consultation": "Should be in the same facility as the bed"}
                 )
@@ -223,12 +235,42 @@ class ConsultationBedSerializer(ModelSerializer):
         if occupied_beds.filter(bed=bed).exists():
             raise ValidationError({"bed:": ["Bed already in use by patient"]})
 
-        occupied_beds.filter(consultation=consultation).update(
-            end_date=validated_data["start_date"]
-        )
+        if assets_ids := validated_data.pop("assets", None):
+            # validate consultation assets
+            assets = Asset.objects.filter(
+                Q(assigned_consultation_beds__isnull=True)
+                | Q(assigned_consultation_beds__end_date__isnull=False),
+                external_id__in=assets_ids,
+                current_location__facility=consultation.facility_id,
+            ).values_list("external_id", flat=True)
+            not_found_assets = list(set(assets_ids) - set(assets))
+            if not_found_assets:
+                raise ValidationError(
+                    f"Some assets are not available - {' ,'.join(not_found_assets)}"
+                )
 
-        # This needs better logic, when an update occurs and the latest bed is no longer the last bed consultation relation added.
-        obj = super().create(validated_data)
-        consultation.current_bed = obj
-        consultation.save(update_fields=["current_bed"])
-        return obj
+        with transaction.atomic():
+            occupied_beds.filter(consultation=consultation).update(
+                end_date=validated_data["start_date"]
+            )
+            obj: ConsultationBed = super().create(validated_data)
+            if assets_ids:
+                asset_objects = Asset.objects.filter(external_id__in=assets_ids).only(
+                    "id"
+                )
+                ConsultationBedAsset.objects.bulk_create(
+                    [
+                        ConsultationBedAsset(consultation_bed=obj, asset=asset)
+                        for asset in asset_objects
+                    ]
+                )
+
+                consultation.current_bed = obj
+                consultation.save(update_fields=["current_bed"])
+            return obj
+
+    def update(self, instance: ConsultationBed, validated_data) -> ConsultationBed:
+        # assets once linked are not allowed to be changed
+        validated_data.pop("assets", None)
+
+        return super().update(instance, validated_data)

@@ -110,6 +110,22 @@ class AssetFilter(filters.FilterSet):
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
+    in_use_by_consultation = filters.BooleanFilter(
+        method="filter_in_use_by_consultation"
+    )
+
+    def filter_in_use_by_consultation(self, queryset, name, value):
+        if value is not None:
+            if value:
+                return queryset.filter(
+                    assigned_consultation_beds__end_date__isnull=True
+                ).distinct()
+            else:
+                return queryset.filter(
+                    Q(assigned_consultation_beds__isnull=True)
+                    | Q(assigned_consultation_beds__end_date__isnull=False)
+                ).distinct()
+        return queryset
 
 
 class AssetPublicViewSet(GenericViewSet):
