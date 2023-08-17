@@ -24,6 +24,7 @@ from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_base import BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -93,13 +94,17 @@ class AssetBedSerializer(ModelSerializer):
     def validate(self, attrs):
         user = self.context["request"].user
         if "asset" in attrs and "bed" in attrs:
-            asset = get_object_or_404(Asset.objects.filter(external_id=attrs["asset"]))
-            bed = get_object_or_404(Bed.objects.filter(external_id=attrs["bed"]))
+            asset: Asset = get_object_or_404(
+                Asset.objects.filter(external_id=attrs["asset"])
+            )
+            bed: Bed = get_object_or_404(Bed.objects.filter(external_id=attrs["bed"]))
             facilities = get_facility_queryset(user)
             if (
                 not facilities.filter(id=asset.current_location.facility.id).exists()
             ) or (not facilities.filter(id=bed.facility.id).exists()):
                 raise PermissionError()
+            if asset.asset_class not in [AssetClasses.HL7MONITOR, AssetClasses.ONVIF]:
+                raise ValidationError({"asset": "Asset is not a monitor or camera"})
             attrs["asset"] = asset
             attrs["bed"] = bed
             if asset.current_location.facility.id != bed.facility.id:
@@ -235,24 +240,31 @@ class ConsultationBedSerializer(ModelSerializer):
         if occupied_beds.filter(bed=bed).exists():
             raise ValidationError({"bed:": ["Bed already in use by patient"]})
 
-        if assets_ids := validated_data.pop("assets", None):
-            # validate consultation assets
-            assets = Asset.objects.filter(
-                Q(assigned_consultation_beds__isnull=True)
-                | Q(assigned_consultation_beds__end_date__isnull=False),
-                external_id__in=assets_ids,
-                current_location__facility=consultation.facility_id,
-            ).values_list("external_id", flat=True)
-            not_found_assets = list(set(assets_ids) - set(assets))
-            if not_found_assets:
-                raise ValidationError(
-                    f"Some assets are not available - {' ,'.join(not_found_assets)}"
-                )
-
         with transaction.atomic():
             occupied_beds.filter(consultation=consultation).update(
                 end_date=validated_data["start_date"]
             )
+            if assets_ids := validated_data.pop("assets", None):
+                assets = (
+                    Asset.objects.filter(
+                        Q(assigned_consultation_beds__isnull=True)
+                        | Q(assigned_consultation_beds__end_date__isnull=False),
+                        external_id__in=assets_ids,
+                        current_location__facility=consultation.facility_id,
+                    )
+                    .exclude(
+                        asset_class__in=[
+                            AssetClasses.HL7MONITOR,
+                            AssetClasses.ONVIF,
+                        ]
+                    )
+                    .values_list("external_id", flat=True)
+                )
+                not_found_assets = list(set(assets_ids) - set(assets))
+                if not_found_assets:
+                    raise ValidationError(
+                        f"Some assets are not available - {' ,'.join(not_found_assets)}"
+                    )
             obj: ConsultationBed = super().create(validated_data)
             if assets_ids:
                 asset_objects = Asset.objects.filter(external_id__in=assets_ids).only(
