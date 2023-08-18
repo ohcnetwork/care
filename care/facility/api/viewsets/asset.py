@@ -131,11 +131,17 @@ class AssetFilter(filters.FilterSet):
             return queryset
         if value:
             return queryset.filter(
-                asset_class__in=[AssetClasses.ONVIF, AssetClasses.HL7MONITOR]
+                asset_class__in=[
+                    AssetClasses.ONVIF.name,
+                    AssetClasses.HL7MONITOR.name,
+                ]
             )
         else:
             return queryset.exclude(
-                asset_class__in=[AssetClasses.ONVIF, AssetClasses.HL7MONITOR]
+                asset_class__in=[
+                    AssetClasses.ONVIF.name,
+                    AssetClasses.HL7MONITOR.name,
+                ]
             )
 
 
