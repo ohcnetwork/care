@@ -198,12 +198,18 @@ class ConsultationBedSerializer(ModelSerializer):
                 raise ValidationError(
                     {"bed": "Bed is already in use by another patient"}
                 )
+            previous_consultation_bed = consultation.current_bed
 
-            if consultation.current_bed.bed == bed and set(
-                consultation.current_bed.assets.order_by("external_id").values_list(
-                    "external_id", flat=True
+            if (
+                previous_consultation_bed
+                and previous_consultation_bed.bed == bed
+                and set(
+                    previous_consultation_bed.assets.order_by(
+                        "external_id"
+                    ).values_list("external_id", flat=True)
                 )
-            ) == set(attrs.get("assets", [])):
+                == set(attrs.get("assets", []))
+            ):
                 raise ValidationError(
                     {"consultation": "These set of bed and assets are already assigned"}
                 )
@@ -257,8 +263,8 @@ class ConsultationBedSerializer(ModelSerializer):
                     ]
                 )
 
-                consultation.current_bed = obj
-                consultation.save(update_fields=["current_bed"])
+            consultation.current_bed = obj
+            consultation.save(update_fields=["current_bed"])
             return obj
 
     def update(self, instance: ConsultationBed, validated_data) -> ConsultationBed:
