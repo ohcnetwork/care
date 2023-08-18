@@ -190,15 +190,6 @@ class ConsultationBedSerializer(ModelSerializer):
                     {"consultation": "Should be in the same facility as the bed"}
                 )
 
-            # if (
-            #     ConsultationBed.objects.filter(bed=bed, end_date__isnull=True)
-            #     .exclude(consultation=consultation)
-            #     .exists()
-            # ):
-            #     raise ValidationError(
-            #         {"bed": "Bed is already in use by another patient"}
-            #     )
-
             previous_consultation_bed = consultation.current_bed
             if (
                 previous_consultation_bed
