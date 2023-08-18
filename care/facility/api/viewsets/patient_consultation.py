@@ -78,6 +78,10 @@ class PatientConsultationViewSet(
                     "assigned_to__skills",
                     queryset=Skill.objects.filter(userskill__deleted=False),
                 ),
+                "current_bed",
+                "current_bed__bed",
+                "current_bed__assets",
+                "current_bed__assets__current_location",
             )
         if self.request.user.is_superuser:
             return self.queryset
