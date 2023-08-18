@@ -212,8 +212,6 @@ class ConsultationBedSerializer(ModelSerializer):
             # Validations based of the latest entry
             if qs.exists():
                 latest_qs = qs.latest("id")
-                # if latest_qs.bed == bed:
-                #     raise ValidationError({"bed": "Bed is already in use"})
                 if start_date < latest_qs.start_date:
                     raise ValidationError(
                         {
