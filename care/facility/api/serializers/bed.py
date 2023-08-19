@@ -227,7 +227,9 @@ class ConsultationBedSerializer(ModelSerializer):
                     )
 
             # Conflict checking logic
-            existing_qs = ConsultationBed.objects.filter(consultation=consultation)
+            existing_qs = ConsultationBed.objects.filter(bed=bed).exclude(
+                consultation=consultation
+            )
             if existing_qs.filter(start_date__gt=start_date).exists():
                 raise ValidationError({"start_date": "Cannot create conflicting entry"})
             if end_date:
