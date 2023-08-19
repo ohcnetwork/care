@@ -103,7 +103,10 @@ class AssetBedSerializer(ModelSerializer):
                 not facilities.filter(id=asset.current_location.facility.id).exists()
             ) or (not facilities.filter(id=bed.facility.id).exists()):
                 raise PermissionError()
-            if asset.asset_class not in [AssetClasses.HL7MONITOR, AssetClasses.ONVIF]:
+            if asset.asset_class not in [
+                AssetClasses.HL7MONITOR.name,
+                AssetClasses.ONVIF.name,
+            ]:
                 raise ValidationError({"asset": "Asset is not a monitor or camera"})
             attrs["asset"] = asset
             attrs["bed"] = bed
@@ -112,7 +115,7 @@ class AssetBedSerializer(ModelSerializer):
                     {"asset": "Should be in the same facility as the bed"}
                 )
             if (
-                asset.asset_class in ["HL7MONITOR", "VENTILATOR"]
+                asset.asset_class == AssetClasses.HL7MONITOR.name
                 and AssetBed.objects.filter(
                     bed=bed, asset__asset_class=asset.asset_class
                 ).exists()
@@ -262,8 +265,8 @@ class ConsultationBedSerializer(ModelSerializer):
                     )
                     .exclude(
                         asset_class__in=[
-                            AssetClasses.HL7MONITOR,
-                            AssetClasses.ONVIF,
+                            AssetClasses.HL7MONITOR.name,
+                            AssetClasses.ONVIF.name,
                         ]
                     )
                     .values_list("external_id", flat=True)
