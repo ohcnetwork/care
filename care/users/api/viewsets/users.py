@@ -19,8 +19,8 @@ from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
+    UserDetailSerializer,
     UserListSerializer,
-    UserSerializer,
 )
 
 User = get_user_model()
@@ -127,14 +127,14 @@ class UserViewSet(
         # elif self.action == "create":
         #     return SignUpSerializer
         else:
-            return UserSerializer
+            return UserDetailSerializer
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(
             status=status.HTTP_200_OK,
-            data=UserSerializer(request.user, context={"request": request}).data,
+            data=UserDetailSerializer(request.user, context={"request": request}).data,
         )
 
     def destroy(self, request, *args, **kwargs):

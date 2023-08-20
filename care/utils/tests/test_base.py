@@ -35,7 +35,13 @@ class TestBase(APITestCase):
     maxDiff = None
 
     @classmethod
-    def create_user(cls, district: District, username: str = "user", **kwargs) -> User:
+    def create_user(
+        cls,
+        district: District = None,
+        username: str = "user",
+        user_type: User.TYPE_VALUE_MAP = None,
+        **kwargs,
+    ) -> User:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
@@ -44,8 +50,8 @@ class TestBase(APITestCase):
             "verified": True,
             "username": username,
             "password": "bar",
-            "district": district,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "district": district or cls.district,
+            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
         }
         data.update(kwargs)
         return User.objects.create_user(**data)
@@ -94,7 +100,7 @@ class TestBase(APITestCase):
             "pincode": 123456,
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
-            "created_by": user,
+            "created_by": user or cls.user,
         }
         data.update(kwargs)
         f = Facility(**data)

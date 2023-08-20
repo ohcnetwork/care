@@ -257,6 +257,7 @@ class UserCreateSerializer(SignUpSerializer):
 
 
 class UserSerializer(SignUpSerializer):
+    # TODO: Remove when #5492 is completed
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
     created_by = serializers.CharField(source="created_by_user", read_only=True)
     is_superuser = serializers.BooleanField(read_only=True)
@@ -374,34 +375,130 @@ class UserAssignedSerializer(serializers.ModelSerializer):
         )
 
 
+# class UserListSerializer(serializers.ModelSerializer):
+#     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+#     district_object = DistrictSerializer(source="district", read_only=True)
+#     state_object = StateSerializer(source="state", read_only=True)
+#     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+#     created_by = serializers.CharField(source="created_by_user", read_only=True)
+#     home_facility_object = FacilityBareMinimumSerializer(
+#         source="home_facility", read_only=True
+#     )
+#     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+
+#     class Meta:
+#         model = User
+#         fields = (
+#             "id",
+#             "first_name",
+#             "last_name",
+#             "username",
+#             "local_body_object",
+#             "district_object",
+#             "state_object",
+#             "user_type",
+#             "doctor_qualification",
+#             "doctor_experience_commenced_on",
+#             "doctor_medical_council_registration",
+#             "weekly_working_hours",
+#             "created_by",
+#             "last_login",
+#             "home_facility_object",
+#             "home_facility",
+#         )
+
+
 class UserListSerializer(serializers.ModelSerializer):
-    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
-    district_object = DistrictSerializer(source="district", read_only=True)
-    state_object = StateSerializer(source="state", read_only=True)
-    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-    created_by = serializers.CharField(source="created_by_user", read_only=True)
+    home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "last_login",
+            "first_name",
+            "last_name",
+            "home_facility",
+            "home_facility_object",
+            "user_type",
+        ]
+
+
+class UserDetailSerializer(UserListSerializer):
+    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    created_by = serializers.CharField(source="created_by_user", read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
+
+    local_body_object = LocalBodySerializer(source="local_body", read_only=True)
+    district_object = DistrictSerializer(source="district", read_only=True)
+    state_object = StateSerializer(source="state", read_only=True)
+    home_facility_object = FacilityBareMinimumSerializer(
+        source="home_facility", read_only=True
+    )
+
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
     class Meta:
         model = User
         fields = (
             "id",
+            "username",
             "first_name",
             "last_name",
-            "username",
-            "local_body_object",
-            "district_object",
-            "state_object",
+            "email",
             "user_type",
             "doctor_qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
-            "weekly_working_hours",
             "created_by",
-            "last_login",
-            "home_facility_object",
             "home_facility",
+            "weekly_working_hours",
+            "local_body",
+            "district",
+            "state",
+            "phone_number",
+            "alt_phone_number",
+            "gender",
+            "age",
+            "is_superuser",
+            "verified",
+            "home_facility_object",
+            "local_body_object",
+            "district_object",
+            "state_object",
+            "pf_endpoint",
+            "pf_p256dh",
+            "pf_auth",
         )
+        read_only_fields = (
+            "is_superuser",
+            "verified",
+            "user_type",
+            "ward",
+            "local_body",
+            "district",
+            "state",
+            "pf_endpoint",
+            "pf_p256dh",
+            "pf_auth",
+        )
+
+    extra_kwargs = {"url": {"lookup_field": "username"}}
+
+    def validate(self, attrs):
+        validated = super(UserSerializer, self).validate(attrs)
+        if "home_facility" in validated:
+            allowed_facilities = get_home_facility_queryset(
+                self.context["request"].user
+            )
+            if not allowed_facilities.filter(id=validated["home_facility"].id).exists():
+                raise exceptions.ValidationError(
+                    {
+                        "home_facility": "Cannot create users with different Home Facility"
+                    }
+                )
+        return validated
