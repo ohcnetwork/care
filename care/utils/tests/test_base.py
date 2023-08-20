@@ -1,6 +1,7 @@
 import abc
 import datetime
 from collections import OrderedDict
+import random
 from uuid import uuid4
 
 from django.utils.timezone import make_aware, now
@@ -23,6 +24,7 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
+from care.facility.models.notification import Notification
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
 
@@ -448,3 +450,24 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_notification(
+        cls, intended_for = None, **kwargs
+    ):
+        users = User.objects.exclude(username = cls.user.username)
+        medium_sent = random.choice([choice[0] for choice in Notification.MediumChoices])
+        event_type = random.choice([choice[0] for choice in Notification.EventTypeChoices])
+        event = random.choice([choice[0] for choice in Notification.EventChoices])
+        data = {
+            "intended_for": intended_for or cls.user,
+            "medium_sent": medium_sent,
+            "caused_by": random.choice(users),
+            "read_at": None,
+            "event_type": event_type,
+            "event": event,
+            "message": "Test Message",
+            "caused_objects": None,
+        }
+        data.update(kwargs)
+        return Notification.objects.create(**data)
