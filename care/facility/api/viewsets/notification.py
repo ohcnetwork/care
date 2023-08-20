@@ -1,4 +1,3 @@
-from typing import Any
 from django.conf import settings
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, inline_serializer
@@ -9,10 +8,13 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.serializers import BaseSerializer, CharField, UUIDField
+from rest_framework.serializers import CharField, UUIDField
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.notification import NotificationDetailSerializer, NotificationListSerializer
+from care.facility.api.serializers.notification import (
+    NotificationDetailSerializer,
+    NotificationListSerializer,
+)
 from care.facility.models.notification import Notification
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.notification_handler import NotificationGenerator

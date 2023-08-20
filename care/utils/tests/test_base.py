@@ -1,7 +1,7 @@
 import abc
 import datetime
-from collections import OrderedDict
 import random
+from collections import OrderedDict
 from uuid import uuid4
 
 from django.utils.timezone import make_aware, now
@@ -452,12 +452,14 @@ class TestBase(APITestCase):
         return PatientNotes.objects.create(**data)
 
     @classmethod
-    def create_notification(
-        cls, intended_for = None, **kwargs
-    ):
-        users = User.objects.exclude(username = cls.user.username)
-        medium_sent = random.choice([choice[0] for choice in Notification.MediumChoices])
-        event_type = random.choice([choice[0] for choice in Notification.EventTypeChoices])
+    def create_notification(cls, intended_for=None, **kwargs):
+        users = User.objects.exclude(username=cls.user.username)
+        medium_sent = random.choice(
+            [choice[0] for choice in Notification.MediumChoices]
+        )
+        event_type = random.choice(
+            [choice[0] for choice in Notification.EventTypeChoices]
+        )
         event = random.choice([choice[0] for choice in Notification.EventChoices])
         data = {
             "intended_for": intended_for or cls.user,

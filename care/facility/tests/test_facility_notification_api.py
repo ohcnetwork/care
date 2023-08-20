@@ -1,7 +1,9 @@
 from enum import Enum
+
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from care.facility.tests.mixins import TestClassMixin
 from care.utils.tests.test_base import TestBase
 
@@ -14,11 +16,13 @@ class ExpectedListNotitificationKeys(Enum):
     created_date = "created_date"
     read_at = "read_at"
 
+
 class ExpectedListCausedByKeys(Enum):
     id = "id"
     first_name = "first_name"
     last_name = "last_name"
     user_type = "user_type"
+
 
 class ExpectedRetrieveNotificationKeys(Enum):
     id = "id"
@@ -29,6 +33,7 @@ class ExpectedRetrieveNotificationKeys(Enum):
     read_at = "read_at"
     message = "message"
     caused_objects = "caused_objects"
+
 
 class ExpectedRetrieveCausedByKeys(Enum):
     id = "id"
@@ -41,7 +46,6 @@ class ExpectedRetrieveCausedByKeys(Enum):
 
 
 class NotificationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -72,7 +76,9 @@ class NotificationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertCountEqual(data["caused_by"].keys(), caused_by_keys)
 
     def test_retrieve_notification(self):
-        response = self.client.get(f"/api/v1/notification/{self.notification.external_id}/")
+        response = self.client.get(
+            f"/api/v1/notification/{self.notification.external_id}/"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -99,13 +105,9 @@ class NotificationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertCountEqual(data.keys(), expected_keys)
 
     def test_notify(self):
-        data = {
-            "facility": self.facility.external_id,
-            "message": "Test Message"
-        }
+        data = {"facility": self.facility.external_id, "message": "Test Message"}
         response = self.client.post("/api/v1/notification/notify/", data=data)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
 
     def test_notify_missing_facility_message(self):
         data = {
@@ -117,9 +119,7 @@ class NotificationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
 
         self.assertEqual(response.json()["message"], "is required")
 
-        data = {
-            "message": "Test Message"
-        }
+        data = {"message": "Test Message"}
         response = self.client.post("/api/v1/notification/notify/", data=data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
