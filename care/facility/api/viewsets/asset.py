@@ -111,13 +111,12 @@ class AssetFilter(filters.FilterSet):
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
     in_use_by_consultation = filters.BooleanFilter(
-        method="filter_in_use_by_consultation"
+        method="filter_in_use_by_consultation",
+        distinct=True,
     )
-    is_permanent = filters.BooleanFilter(method="filter_is_permanent")
+    is_permanent = filters.BooleanFilter(method="filter_is_permanent", distinct=True)
 
-    def filter_in_use_by_consultation(self, queryset, name, value):
-        if value is None:
-            return queryset
+    def filter_in_use_by_consultation(self, queryset, _, value):
         if value:
             return queryset.filter(assigned_consultation_beds__end_date__isnull=True)
         else:
@@ -126,9 +125,7 @@ class AssetFilter(filters.FilterSet):
                 | Q(assigned_consultation_beds__end_date__isnull=False)
             )
 
-    def filter_is_permanent(self, queryset, name, value):
-        if value is None:
-            return queryset
+    def filter_is_permanent(self, queryset, _, value):
         if value:
             return queryset.filter(
                 asset_class__in=[
