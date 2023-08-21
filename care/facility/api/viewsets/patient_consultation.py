@@ -78,6 +78,10 @@ class PatientConsultationViewSet(
                     "assigned_to__skills",
                     queryset=Skill.objects.filter(userskill__deleted=False),
                 ),
+                "current_bed",
+                "current_bed__bed",
+                "current_bed__assets",
+                "current_bed__assets__current_location",
             )
         if self.request.user.is_superuser:
             return self.queryset
@@ -108,7 +112,7 @@ class PatientConsultationViewSet(
 
     def _generate_discharge_summary(self, consultation_ext_id: str):
         current_progress = discharge_summary.get_progress(consultation_ext_id)
-        if current_progress:
+        if current_progress is not None:
             return Response(
                 {
                     "detail": (
@@ -118,7 +122,7 @@ class PatientConsultationViewSet(
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
-        discharge_summary.set_lock(consultation_ext_id, 0)
+        discharge_summary.set_lock(consultation_ext_id, 1)
         generate_discharge_summary_task.delay(consultation_ext_id)
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},
