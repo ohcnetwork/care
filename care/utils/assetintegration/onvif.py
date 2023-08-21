@@ -1,7 +1,6 @@
 import enum
 
-from django.core.cache import cache
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
 
@@ -49,22 +48,12 @@ class OnvifAsset(BaseAssetIntegration):
         if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
             if self.unlock_asset(username, asset_id):
                 return {"message": "Asset Unlocked"}
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            self.raise_conflict(asset_id=asset_id)
 
         if action_type == BaseAssetIntegration.BaseAssetActions.LOCK_ASSET.value:
             if self.lock_asset(username, asset_id):
                 return {"message": "Asset Locked"}
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
             self.lock_asset(username, asset_id)
@@ -78,32 +67,20 @@ class OnvifAsset(BaseAssetIntegration):
             if self.verify_access(username, asset_id):
                 self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("gotoPreset"), request_body)
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            self.raise_conflict(asset_id=asset_id)
+
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
             if self.verify_access(username, asset_id):
                 self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("absoluteMove"), request_body)
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            self.raise_conflict(asset_id=asset_id)
+
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             if self.verify_access(username, asset_id):
                 self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("relativeMove"), request_body)
-            raise PermissionDenied(
-                {
-                    "message": "Asset is currently in use by another user",
-                    "username": cache.get(asset_id),
-                }
-            )
+            self.raise_conflict(asset_id=asset_id)
+
         raise ValidationError({"action": "invalid action type"})
 
     def validate_action(self, action):

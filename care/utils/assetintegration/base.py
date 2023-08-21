@@ -4,7 +4,7 @@ import json
 import requests
 from django.conf import settings
 from django.core.cache import cache
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, PermissionDenied
 
 from care.users.models import User
 from care.utils.jwks.token_generator import generate_jwt
@@ -79,8 +79,8 @@ class BaseAssetIntegration:
 
         message = {
             "type": "MESSAGE",
+            "asset_id": str(asset_id),
             "status": "success",
-            "message": "Asset Unlocked",
         }
         user_array = self.generate_system_users(asset_id)
         for username in user_array:
@@ -131,6 +131,21 @@ class BaseAssetIntegration:
             return True
         self.add_to_waiting_queue(username, asset_id)
         return False
+
+    def raise_conflict(self, asset_id):
+        user: User = User.objects.get(username=cache.get(asset_id))
+        raise PermissionDenied(
+            {
+                "message": "Asset is currently in use by another user",
+                "username": user.username,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+                "role": [x for x in User.TYPE_CHOICES if x[0] == user.user_type][0][1],
+                "homeFacility": user.home_facility.name
+                if (user.home_facility and user.home_facility.name)
+                else "",
+            }
+        )
 
     def verify_access(self, username, asset_id):
         if cache.get(asset_id) is None or cache.get(asset_id) == username:
