@@ -44,7 +44,7 @@ class UserSkillViewSet(
     def get_queryset(self):
         username = self.kwargs["users_username"]
         user = get_object_or_404(User, username=username)
-        return self.queryset.filter(user=user)
+        return self.queryset.filter(user=user).distinct()
 
     def perform_create(self, serializer):
         username = self.kwargs["users_username"]
