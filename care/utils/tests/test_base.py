@@ -23,7 +23,7 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
-from care.users.models import District, State
+from care.users.models import District, State, Ward
 from config.tests.helper import EverythingEquals, mock_equal
 
 
@@ -83,7 +83,7 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_facility(
-        cls, district: District, user: User = None, **kwargs
+        cls, district: District, user: User = None, ward=None, local_body=None, **kwargs
     ) -> Facility:
         user = user or cls.user
         data = {
@@ -95,6 +95,8 @@ class TestBase(APITestCase):
             "oxygen_capacity": 10,
             "phone_number": "9998887776",
             "created_by": user,
+            "ward": ward or cls.ward,
+            "local_body": local_body or cls.local_body,
         }
         data.update(kwargs)
         f = Facility(**data)
@@ -231,6 +233,8 @@ class TestBase(APITestCase):
         cls.user_type = User.TYPE_VALUE_MAP["Staff"]
         cls.user = cls.create_user(cls.district)
         cls.super_user = cls.create_super_user(district=cls.district)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.ward = cls.create_ward()
         cls.facility = cls.create_facility(cls.district)
         cls.patient = cls.create_patient()
         cls.state_admin = cls.create_user(
@@ -448,3 +452,21 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_ward(cls, local_body=None, name=None, number=10, **kwargs):
+        data = {
+            "local_body": local_body or cls.local_body,
+            "name": "Test Ward",
+            "number": number,
+        }
+        return Ward.objects.create(**data)
+
+    @classmethod
+    def create_local_body(cls, district=None, name=None, body_type=1, **kwargs):
+        data = {
+            "district": district or cls.district,
+            "name": name or "Test Local Body",
+            "body_type": body_type,
+        }
+        return LocalBody.objects.create(**data)

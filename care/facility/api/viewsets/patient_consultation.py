@@ -13,9 +13,10 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.file_upload import FileUploadRetrieveSerializer
 from care.facility.api.serializers.patient_consultation import (
     EmailDischargeSummarySerializer,
+    PatientConsulationDetailSerializer,
     PatientConsultationDischargeSerializer,
     PatientConsultationIDSerializer,
-    PatientConsultationSerializer,
+    PatientConsultationListSerializer,
 )
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.file_upload import FileUpload
@@ -44,7 +45,7 @@ class PatientConsultationViewSet(
     GenericViewSet,
 ):
     lookup_field = "external_id"
-    serializer_class = PatientConsultationSerializer
+    serializer_class = PatientConsulationDetailSerializer
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
@@ -56,6 +57,8 @@ class PatientConsultationViewSet(
     filterset_class = PatientConsultationFilter
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return PatientConsultationListSerializer
         if self.action == "patient_from_asset":
             return PatientConsultationIDSerializer
         elif self.action == "discharge_patient":
@@ -71,7 +74,7 @@ class PatientConsultationViewSet(
         return super().get_permissions()
 
     def get_queryset(self):
-        if self.serializer_class == PatientConsultationSerializer:
+        if self.serializer_class == PatientConsulationDetailSerializer:
             self.queryset = self.queryset.prefetch_related(
                 "assigned_to",
                 Prefetch(
