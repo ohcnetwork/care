@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from django.utils.timezone import make_aware, now
 from django_rest_passwordreset.models import ResetPasswordToken
+from faker import Faker
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -19,12 +20,16 @@ from care.facility.models import (
     Facility,
     LocalBody,
     PatientConsultation,
+    PatientExternalTest,
     PatientNotes,
     PatientRegistration,
     User,
+    Ward,
 )
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
+
+fake = Faker()
 
 
 class TestBase(APITestCase):
@@ -231,6 +236,8 @@ class TestBase(APITestCase):
         cls.user_type = User.TYPE_VALUE_MAP["Staff"]
         cls.user = cls.create_user(cls.district)
         cls.super_user = cls.create_super_user(district=cls.district)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.ward = cls.create_ward()
         cls.facility = cls.create_facility(cls.district)
         cls.patient = cls.create_patient()
         cls.state_admin = cls.create_user(
@@ -448,3 +455,50 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_patient_external_test(
+        cls, ward=None, local_body=None, district=None, **kwargs
+    ):
+        patient = PatientExternalTest(
+            srf_id=fake.uuid4(),
+            name=fake.name(),
+            age=fake.random_int(min=1, max=100),
+            age_in=fake.word(ext_word_list=["years", "months"]),
+            gender=fake.random_element(elements=("Male", "Female")),
+            address=fake.address(),
+            mobile_number=fake.phone_number()[:10],
+            is_repeat=fake.boolean(),
+            patient_status=fake.random_element(
+                elements=("Recovered", "Deceased", "Active")
+            ),
+            lab_name=fake.company(),
+            test_type=fake.random_element(elements=("PCR", "Antigen", "Antibody")),
+            sample_type=fake.random_element(elements=("Nasal swab", "Saliva", "Blood")),
+            result=fake.random_element(elements=("Positive", "Negative", "Pending")),
+            sample_collection_date=fake.date_this_year(),
+            result_date=fake.date_this_year(),
+            district=district or cls.district,
+            local_body=local_body or cls.local_body,
+            ward=ward or cls.ward,
+        )
+        patient.save()
+        return patient
+
+    @classmethod
+    def create_local_body(cls, district=None, name=None, body_type=1, **kwargs):
+        data = {
+            "district": district or cls.district,
+            "name": name or "Test Local Body",
+            "body_type": body_type,
+        }
+        return LocalBody.objects.create(**data)
+
+    @classmethod
+    def create_ward(cls, local_body=None, name=None, number=10, **kwargs):
+        data = {
+            "local_body": local_body or cls.local_body,
+            "name": "Test Ward",
+            "number": number,
+        }
+        return Ward.objects.create(**data)

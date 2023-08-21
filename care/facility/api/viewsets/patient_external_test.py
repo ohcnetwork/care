@@ -21,7 +21,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_external_test import (
-    PatientExternalTestSerializer,
+    PatientExternalDetailSerializer,
+    PatientExternalListSerializer,
     PatientExternalTestUpdateSerializer,
 )
 from care.facility.models import PatientExternalTest
@@ -71,7 +72,7 @@ class PatientExternalTestViewSet(
     DestroyModelMixin,
     GenericViewSet,
 ):
-    serializer_class = PatientExternalTestSerializer
+    serializer_class = PatientExternalDetailSerializer
     queryset = (
         PatientExternalTest.objects.select_related("ward", "local_body", "district")
         .all()
@@ -100,6 +101,8 @@ class PatientExternalTestViewSet(
         return queryset
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return PatientExternalListSerializer
         if self.action == "update" or self.action == "partial_update":
             return PatientExternalTestUpdateSerializer
         return super().get_serializer_class()
@@ -149,7 +152,7 @@ class PatientExternalTestViewSet(
         invalid = False
         for sample in request.data["sample_tests"]:
             counter += 1
-            serialiser_obj = PatientExternalTestSerializer(data=sample)
+            serialiser_obj = PatientExternalDetailSerializer(data=sample)
             valid = serialiser_obj.is_valid()
             current_error = prettyerrors(serialiser_obj._errors)
             if current_error and (not valid):
