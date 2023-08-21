@@ -212,6 +212,7 @@ class ConsultationBedViewSet(
     queryset = (
         ConsultationBed.objects.all()
         .select_related("consultation", "bed")
+        .prefetch_related("assets")
         .order_by("-created_date")
     )
     serializer_class = ConsultationBedSerializer
