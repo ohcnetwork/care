@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
 from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
@@ -219,6 +220,9 @@ router.register("public/asset", AssetPublicViewSet)
 # ABDM endpoints
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
+    router.register(
+        "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
+    )
 
 app_name = "api"
 urlpatterns = [
