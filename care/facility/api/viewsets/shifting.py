@@ -15,7 +15,9 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.shifting import (
     ShiftingDetailSerializer,
-    ShiftingRequestCommentSerializer,
+    ShiftingListSerializer,
+    ShiftingRequestCommentDetailSerializer,
+    ShiftingRequestCommentListSerializer,
     ShiftingSerializer,
     has_facility_permission,
 )
@@ -132,6 +134,8 @@ class ShiftingViewSet(
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
+        if self.action == "list":
+            return ShiftingListSerializer
         if self.action == "retrieve":
             serializer_class = ShiftingDetailSerializer
         return serializer_class
@@ -187,7 +191,7 @@ class ShifitngRequestCommentViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    serializer_class = ShiftingRequestCommentSerializer
+    serializer_class = ShiftingRequestCommentDetailSerializer
     lookup_field = "external_id"
     queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
 
@@ -235,3 +239,8 @@ class ShifitngRequestCommentViewSet(
 
     def perform_create(self, serializer):
         serializer.save(request=self.get_request())
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ShiftingRequestCommentListSerializer
+        return ShiftingRequestCommentDetailSerializer

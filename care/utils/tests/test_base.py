@@ -5,15 +5,20 @@ from uuid import uuid4
 
 from django.utils.timezone import make_aware, now
 from django_rest_passwordreset.models import ResetPasswordToken
+from faker import Faker
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import (
+    BREATHLESSNESS_CHOICES,
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    FACILITY_TYPES,
+    SHIFTING_STATUS_CHOICES,
     SYMPTOM_CHOICES,
+    VEHICLE_CHOICES,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -21,10 +26,14 @@ from care.facility.models import (
     PatientConsultation,
     PatientNotes,
     PatientRegistration,
+    ShiftingRequest,
+    ShiftingRequestComment,
     User,
 )
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
+
+fake = Faker()
 
 
 class TestBase(APITestCase):
@@ -243,6 +252,7 @@ class TestBase(APITestCase):
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
+        cls.patient_shift = cls.create_patient_shift()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -448,3 +458,47 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_patient_shift(cls, **kwargs):
+        shifting_approving_facility = cls.create_facility(cls.district)
+        assigned_facility = shifting_approving_facility
+        data = {
+            "origin_facility": cls.facility,
+            "shifting_approving_facility": shifting_approving_facility,
+            "assigned_facility_type": fake.random_element(FACILITY_TYPES)[0],
+            "assigned_facility": assigned_facility,
+            "assigned_facility_external": "Assigned Facility External",
+            "patient": cls.patient,
+            "emergency": False,
+            "is_up_shift": False,
+            "reason": "Reason",
+            "vehicle_preference": "Vehicle Preference",
+            "preferred_vehicle_choice": fake.random_element(VEHICLE_CHOICES)[0],
+            "comments": "Comments",
+            "refering_facility_contact_name": "9900199001",
+            "refering_facility_contact_number": "9900199001",
+            "is_kasp": False,
+            "status": fake.random_element(SHIFTING_STATUS_CHOICES)[0],
+            "breathlessness_level": fake.random_element(BREATHLESSNESS_CHOICES)[0],
+            "is_assigned_to_user": False,
+            "assigned_to": cls.user,
+            "ambulance_driver_name": fake.name(),
+            "ambulance_phone_number": "9900199001",
+            "ambulance_number": fake.license_plate(),
+            "created_by": cls.user,
+            "last_edited_by": cls.user,
+        }
+        data.update(kwargs)
+        return ShiftingRequest.objects.create(**data)
+
+    @classmethod
+    def create_patient_shift_comment(cls, resource=None, **kwargs):
+        kwargs.update(
+            {
+                "request": resource or cls.patient_shift,
+                "comment": "comment",
+                "created_by": cls.user,
+            }
+        )
+        return ShiftingRequestComment.objects.create(**kwargs)
