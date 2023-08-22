@@ -171,3 +171,29 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
 class PatientSampleDetailSerializer(PatientSampleSerializer):
     flow = serializers.ListSerializer(child=PatientSampleFlowSerializer())
     facility_object = FacilityBasicInfoSerializer(source="consultation.facility")
+
+
+class PatientSampleListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
+    date_of_sample = serializers.DateTimeField(required=False)
+    date_of_result = serializers.DateTimeField(required=False)
+    last_edited_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientSample
+        fields = [
+            "id",
+            "status",
+            "sample_type",
+            "result",
+            "date_of_sample",
+            "date_of_result",
+            "created_date",
+            "created_by",
+            "last_edited_by",
+            "modified_date",
+            "sample_type_other",
+            "fast_track",
+        ]

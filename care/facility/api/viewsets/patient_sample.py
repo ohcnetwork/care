@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.serializers.patient_sample import (
     PatientSampleDetailSerializer,
+    PatientSampleListSerializer,
     PatientSamplePatchSerializer,
     PatientSampleSerializer,
 )
@@ -89,6 +90,8 @@ class PatientSampleViewSet(
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
+        if self.action == "list":
+            return PatientSampleListSerializer
         if self.action == "retrieve":
             serializer_class = PatientSampleDetailSerializer
         elif self.action == "partial_update":
