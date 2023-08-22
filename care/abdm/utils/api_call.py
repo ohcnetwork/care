@@ -16,6 +16,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 
 GATEWAY_API_URL = settings.ABDM_URL
 HEALTH_SERVICE_API_URL = settings.HEALTH_SERVICE_API_URL
+ABDM_DEVSERVICE_URL = GATEWAY_API_URL + "/devservice"
 ABDM_GATEWAY_URL = GATEWAY_API_URL + "/gateway"
 ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
@@ -42,6 +43,8 @@ class APIGateway:
             self.url = GATEWAY_API_URL
         elif gateway == "abdm_gateway":
             self.url = ABDM_GATEWAY_URL
+        elif gateway == "abdm_devservice":
+            self.url = ABDM_DEVSERVICE_URL
         else:
             self.url = GATEWAY_API_URL
         self.token = token
@@ -115,7 +118,7 @@ class APIGateway:
         logger.info("{} Response: {}".format(response.status_code, response.text))
         return response
 
-    def post(self, path, data=None, auth=None, additional_headers=None):
+    def post(self, path, data=None, auth=None, additional_headers=None, method="POST"):
         url = self.url + path
         headers = {
             "Content-Type": "application/json",
@@ -133,7 +136,7 @@ class APIGateway:
         data_json = json.dumps(data)
         # logger.info("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
         logger.info("Posting Request to: {}".format(url))
-        response = requests.post(url, headers=headers, data=data_json)
+        response = requests.request(method, url, headers=headers, data=data_json)
         logger.info("{} Response: {}".format(response.status_code, response.text))
         return response
 
@@ -765,4 +768,14 @@ class AbdmGateway:
         path = "/v1.0/patients/profile/on-share"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
         response = self.api.post(path, data, None, additional_headers)
+        return response
+
+
+class Bridge:
+    def __init__(self):
+        self.api = APIGateway("abdm_devservice", None)
+
+    def add_update_service(self, data):
+        path = "/v1/bridges/addUpdateServices"
+        response = self.api.post(path, data, method="PUT")
         return response

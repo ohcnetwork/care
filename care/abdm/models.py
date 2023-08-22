@@ -44,4 +44,4 @@ class HealthFacility(BaseModel):
     )
 
     def __str__(self):
-        return self.id + " " + self.facility.name
+        return self.hf_id + " " + self.facility.name
