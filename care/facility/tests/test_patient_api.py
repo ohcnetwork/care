@@ -203,8 +203,7 @@ class PatientFilterTestCase(TestBase, TestClassMixin, APITestCase):
 
         self.patient = self.create_patient(district=district.id, created_by=self.user)
         self.consultation = self.create_consultation(
-            op_no="OP1234",
-            ip_no="IP5678",
+            patient_no="IP5678",
             patient=self.patient,
             facility=facility,
             created_by=self.user,
@@ -218,23 +217,8 @@ class PatientFilterTestCase(TestBase, TestClassMixin, APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
-    def test_filter_by_op_no(self):
-        response = self.client.get("/api/v1/patient/?op_no=OP1234")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(
-            response.data["results"][0]["id"], str(self.patient.external_id)
-        )
-
-    def test_filter_by_ip_OR_op_no(self):
-        response = self.client.get("/api/v1/patient/?ip_or_op_no=IP5678")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(
-            response.data["results"][0]["id"], str(self.patient.external_id)
-        )
-
-        response = self.client.get("/api/v1/patient/?ip_or_op_no=OP1234")
+    def test_filter_by_patient_no(self):
+        response = self.client.get("/api/v1/patient/?patient_no=IP5678")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(

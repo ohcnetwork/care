@@ -104,7 +104,13 @@
       {% endif %}
       <div class="flex gap-6">
         <p>
-          <span class="mt-1 text-sm leading-5 text-gray-500">IP No:</span> {{consultation.ip_no}}
+          <span class="mt-1 text-sm leading-5 text-gray-500">
+            {% if consultation.suggestion == 'A' %}
+            IP No:
+            {% else %}
+            OP No:
+            {% endif %}
+          </span> {{consultation.patient_no}}
         </p>
         <p>
           <span class="text-sm leading-5 font-medium text-gray-500">Weight: </span>
