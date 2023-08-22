@@ -326,6 +326,7 @@ class RequestDataView(GenericAPIView):
 
         AbdmGateway().data_notify(
             {
+                "health_id": consent["notification"]["consentDetail"]["patient"]["id"],
                 "consent_id": data["hiRequest"]["consent"]["id"],
                 "transaction_id": data["transactionId"],
                 "care_contexts": list(

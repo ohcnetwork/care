@@ -341,11 +341,16 @@ class HealthIdGatewayV2:
 class AbdmGateway:
     # TODO: replace this with in-memory db (redis)
     temp_memory = {}
-    hip_name = "Coronasafe Care 01"
-    hip_id = "IN3210000017"
 
     def __init__(self):
         self.api = APIGateway("abdm_gateway", None)
+
+    def get_hip_id_by_health_id(self, health_id):
+        return (
+            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
+            .first()
+            .patientregistration.facility.healthfacility.hf_id
+        )
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
@@ -418,7 +423,10 @@ class AbdmGateway:
             "query": {
                 "id": data["healthId"],
                 "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
-                "requester": {"type": "HIP", "id": self.hip_id},
+                "requester": {
+                    "type": "HIP",
+                    "id": self.get_hip_id_by_health_id(data["healthId"]),
+                },
             },
         }
         response = self.api.post(path, payload, None, additional_headers)
@@ -446,7 +454,10 @@ class AbdmGateway:
                 "id": data["healthId"],
                 "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
                 "authMode": data["authMode"] if "authMode" in data else "DEMOGRAPHICS",
-                "requester": {"type": "HIP", "id": self.hip_id},
+                "requester": {
+                    "type": "HIP",
+                    "id": self.get_hip_id_by_health_id(data["healthId"]),
+                },
             },
         }
         response = self.api.post(path, payload, None, additional_headers)
@@ -708,7 +719,7 @@ class AbdmGateway:
                 ),
                 "statusNotification": {
                     "sessionStatus": "TRANSFERRED",
-                    "hipId": self.hip_id,
+                    "hipId": self.get_hip_id_by_health_id(data["health_id"]),
                     "statusResponses": list(
                         map(
                             lambda context: {
@@ -756,7 +767,7 @@ class AbdmGateway:
             ),
             "notification": {
                 "phoneNo": f"+91-{data['phone']}",
-                "hip": {"name": self.hip_name, "id": self.hip_id},
+                "hip": {"id": self.get_hip_id_by_health_id(data["healthId"])},
             },
         }
 
