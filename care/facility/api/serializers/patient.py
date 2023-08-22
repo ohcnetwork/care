@@ -470,13 +470,15 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
-
+        # If the user is a doctor and the note is being created in the home facility
+        # then the user type is doctor else it is a remote specialist
         if user_type == "Doctor":
             if validated_data["created_by"].home_facility == validated_data["facility"]:
                 validated_data["user_type"] = "Doctor"
             else:
                 validated_data["user_type"] = "RemoteSpecialist"
         else:
+            # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
 
         return super().create(validated_data)
