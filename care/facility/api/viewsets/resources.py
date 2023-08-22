@@ -9,9 +9,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from care.facility.api.serializers.resources import (
-    ResourceRequestCommentSerializer,
-    ResourceRequestSerializer,
+from care.facility.api.serializers.resources import (  # ResourceRequestCommentSerializer,; ResourceRequestSerializer,
+    ResourceRequestCommentDetailSerializer,
+    ResourceRequestCommentListSerializer,
+    ResourceRequestDetailSerializer,
+    ResourceRequestListSerializer,
 )
 from care.facility.models import (
     RESOURCE_CATEGORY_CHOICES,
@@ -86,7 +88,7 @@ class ResourceRequestViewSet(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
-    serializer_class = ResourceRequestSerializer
+    serializer_class = ResourceRequestDetailSerializer
     lookup_field = "external_id"
     queryset = ResourceRequest.objects.all().select_related(
         "origin_facility",
@@ -138,6 +140,11 @@ class ResourceRequestViewSet(
             )
         return super().list(request, *args, **kwargs)
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ResourceRequestListSerializer
+        return self.serializer_class
+
 
 class ResourceRequestCommentViewSet(
     mixins.CreateModelMixin,
@@ -145,7 +152,7 @@ class ResourceRequestCommentViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    serializer_class = ResourceRequestCommentSerializer
+    serializer_class = ResourceRequestCommentDetailSerializer
     lookup_field = "external_id"
     queryset = ResourceRequestComment.objects.all().order_by("-created_date")
 
@@ -192,3 +199,8 @@ class ResourceRequestCommentViewSet(
 
     def perform_create(self, serializer):
         serializer.save(request=self.get_request())
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ResourceRequestCommentListSerializer
+        return self.serializer_class

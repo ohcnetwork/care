@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from django.utils.timezone import make_aware, now
 from django_rest_passwordreset.models import ResetPasswordToken
+from faker import Faker
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -13,6 +14,9 @@ from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    RESOURCE_CATEGORY_CHOICES,
+    RESOURCE_STATUS_CHOICES,
+    RESOURCE_SUB_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
     Disease,
     DiseaseStatusEnum,
@@ -21,10 +25,14 @@ from care.facility.models import (
     PatientConsultation,
     PatientNotes,
     PatientRegistration,
+    ResourceRequest,
+    ResourceRequestComment,
     User,
 )
 from care.users.models import District, State
 from config.tests.helper import EverythingEquals, mock_equal
+
+fake = Faker()
 
 
 class TestBase(APITestCase):
@@ -243,6 +251,8 @@ class TestBase(APITestCase):
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
+        cls.resource = cls.create_resource()
+        cls.resource_comment = cls.create_resource_comment()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -448,3 +458,46 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_resource(
+        cls,
+        origin_facility=None,
+        approving_facility=None,
+        assigned_facility=None,
+        **kwargs,
+    ):
+        kwargs.update(
+            {
+                "origin_facility": origin_facility or cls.facility,
+                "approving_facility": approving_facility or cls.facility,
+                "assigned_facility": assigned_facility or cls.facility,
+                "emergency": True,
+                "title": "title",
+                "reason": "reason",
+                "refering_facility_contact_name": fake.phone_number()[:10],
+                "refering_facility_contact_number": fake.phone_number()[:10],
+                "status": RESOURCE_STATUS_CHOICES[0][0],
+                "category": RESOURCE_CATEGORY_CHOICES[0][0],
+                "sub_category": RESOURCE_SUB_CATEGORY_CHOICES[0][0],
+                "priority": 1,
+                "requested_quantity": 1,
+                "assigned_quantity": 1,
+                "is_assigned_to_user": True,
+                "assigned_to": cls.user,
+                "created_by": cls.user,
+                "last_edited_by": cls.user,
+            }
+        )
+        return ResourceRequest.objects.create(**kwargs)
+
+    @classmethod
+    def create_resource_comment(cls, resource=None, **kwargs):
+        kwargs.update(
+            {
+                "request": resource or cls.resource,
+                "comment": "comment",
+                "created_by": cls.user,
+            }
+        )
+        return ResourceRequestComment.objects.create(**kwargs)

@@ -44,6 +44,7 @@ def has_facility_permission(user, facility):
 
 
 class ResourceRequestSerializer(serializers.ModelSerializer):
+    # TODO: Remove when #5492 is merged
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
@@ -179,6 +180,229 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
 
 class ResourceRequestCommentSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    def validate_empty_values(self, data):
+        if not data.get("comment", "").strip():
+            raise serializers.ValidationError({"comment": ["Comment cannot be empty"]})
+        return super().validate_empty_values(data)
+
+    def create(self, validated_data):
+        validated_data["created_by"] = self.context["request"].user
+
+        return super().create(validated_data)
+
+    class Meta:
+        model = ResourceRequestComment
+        exclude = ("deleted", "request")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "created_by",
+            "external_id",
+            "id",
+        )
+
+
+class FacilityResourceBareMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facility
+        fields = ["id", "name"]
+
+
+class ResourceRequestListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
+
+    origin_facility_object = FacilityResourceBareMinimumSerializer(
+        source="origin_facility", read_only=True, required=False
+    )
+    approving_facility_object = FacilityResourceBareMinimumSerializer(
+        source="approving_facility", read_only=True, required=False
+    )
+    assigned_facility_object = FacilityResourceBareMinimumSerializer(
+        source="assigned_facility", read_only=True, required=False
+    )
+
+    class Meta:
+        model = ResourceRequest
+        exclude = [
+            "last_edited_by",
+            "assigned_to",
+            "created_by",
+            "is_assigned_to_user",
+            "assigned_quantity",
+            "requested_quantity",
+            "priority",
+            "refering_facility_contact_number",
+            "refering_facility_contact_name",
+            "deleted",
+            "modified_date",
+            "origin_facility",
+            "approving_facility",
+            "assigned_facility",
+            "created_date",
+            "reason",
+            "category",
+            "sub_category",
+        ]
+
+
+class ResourceRequestDetailSerializer(ResourceRequestListSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
+
+    origin_facility_object = FacilityBasicInfoSerializer(
+        source="origin_facility", read_only=True, required=False
+    )
+    approving_facility_object = FacilityBasicInfoSerializer(
+        source="approving_facility", read_only=True, required=False
+    )
+    assigned_facility_object = FacilityBasicInfoSerializer(
+        source="assigned_facility", read_only=True, required=False
+    )
+
+    category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
+    sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
+
+    origin_facility = serializers.UUIDField(
+        source="origin_facility.external_id", allow_null=False, required=True
+    )
+    approving_facility = serializers.UUIDField(
+        source="approving_facility.external_id", allow_null=False, required=True
+    )
+    assigned_facility = serializers.UUIDField(
+        source="assigned_facility.external_id", allow_null=True, required=False
+    )
+
+    assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    last_edited_by_object = UserBaseMinimumSerializer(
+        source="last_edited_by", read_only=True
+    )
+
+    def __init__(self, instance=None, **kwargs):
+        if instance:
+            kwargs["partial"] = True
+        super().__init__(instance=instance, **kwargs)
+
+    def update(self, instance, validated_data):
+        LIMITED_RECIEVING_STATUS_ = []
+        LIMITED_RECIEVING_STATUS = [
+            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_
+        ]
+        LIMITED_REQUEST_STATUS_ = [
+            "ON HOLD",
+            "APPROVED",
+            "REJECTED",
+            "TRANSPORTATION TO BE ARRANGED",
+            "TRANSFER IN PROGRESS",
+            "COMPLETED",
+        ]
+        LIMITED_REQUEST_STATUS = [
+            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_
+        ]
+        # LIMITED_ORGIN_STATUS = []
+
+        user = self.context["request"].user
+
+        if "status" in validated_data:
+            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+                if instance.assigned_facility:
+                    if not has_facility_permission(user, instance.assigned_facility):
+                        raise ValidationError({"status": ["Permission Denied"]})
+            elif validated_data["status"] in LIMITED_REQUEST_STATUS:
+                if not has_facility_permission(user, instance.approving_facility):
+                    raise ValidationError({"status": ["Permission Denied"]})
+
+        # Dont allow editing origin or patient
+        if "origin_facility" in validated_data:
+            validated_data.pop("origin_facility")
+
+        if "approving_facility" in validated_data:
+            approving_facility_external_id = validated_data.pop("approving_facility")[
+                "external_id"
+            ]
+            if approving_facility_external_id:
+                validated_data["approving_facility_id"] = Facility.objects.get(
+                    external_id=approving_facility_external_id
+                ).id
+
+        if "assigned_facility" in validated_data:
+            assigned_facility_external_id = validated_data.pop("assigned_facility")[
+                "external_id"
+            ]
+            if assigned_facility_external_id:
+                validated_data["assigned_facility_id"] = Facility.objects.get(
+                    external_id=assigned_facility_external_id
+                ).id
+
+        instance.last_edited_by = self.context["request"].user
+
+        new_instance = super().update(instance, validated_data)
+
+        return new_instance
+
+    def create(self, validated_data):
+        # Do Validity checks for each of these data
+        if "status" in validated_data:
+            validated_data.pop("status")
+
+        origin_facility_external_id = validated_data.pop("origin_facility")[
+            "external_id"
+        ]
+        validated_data["origin_facility_id"] = Facility.objects.get(
+            external_id=origin_facility_external_id
+        ).id
+
+        request_approving_facility_external_id = validated_data.pop(
+            "approving_facility"
+        )["external_id"]
+        validated_data["approving_facility_id"] = Facility.objects.get(
+            external_id=request_approving_facility_external_id
+        ).id
+
+        if "assigned_facility" in validated_data:
+            assigned_facility_external_id = validated_data.pop("assigned_facility")[
+                "external_id"
+            ]
+            if assigned_facility_external_id:
+                validated_data["assigned_facility_id"] = Facility.objects.get(
+                    external_id=assigned_facility_external_id
+                ).id
+
+        validated_data["created_by"] = self.context["request"].user
+        validated_data["last_edited_by"] = self.context["request"].user
+
+        return super().create(validated_data)
+
+    class Meta:
+        model = ResourceRequest
+        exclude = ("deleted",)
+        read_only_fields = TIMESTAMP_FIELDS + ("external_id",)
+
+
+class ResourceUserBareMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name"]
+
+
+class ResourceRequestCommentListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    comment = serializers.CharField(required=True)
+    created_by_object = ResourceUserBareMinimumSerializer(
+        source="created_by", read_only=True
+    )
+
+    class Meta:
+        model = ResourceRequestComment
+        fields = ["id", "comment", "modified_date", "created_by_object"]
+
+
+class ResourceRequestCommentDetailSerializer(ResourceRequestCommentListSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
