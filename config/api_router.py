@@ -228,6 +228,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
