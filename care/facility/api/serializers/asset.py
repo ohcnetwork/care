@@ -202,7 +202,6 @@ class AssetSerializer(ModelSerializer):
         with transaction.atomic():
             if validated_data.get("last_serviced_on") and (
                 not instance.last_service
-                and validated_data.get("last_serviced_on")
                 or instance.last_service.serviced_on
                 != validated_data.get(
                     "last_serviced_on", instance.last_service.serviced_on
