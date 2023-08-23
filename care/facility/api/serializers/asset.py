@@ -200,8 +200,9 @@ class AssetSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context["request"].user
         with transaction.atomic():
-            if (
+            if validated_data.get("last_serviced_on") and (
                 not instance.last_service
+                and validated_data.get("last_serviced_on")
                 or instance.last_service.serviced_on
                 != validated_data.get(
                     "last_serviced_on", instance.last_service.serviced_on

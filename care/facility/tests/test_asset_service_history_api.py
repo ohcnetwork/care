@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
@@ -34,13 +35,13 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             asset_service=self.asset_service,
             serviced_on=self.today,
             note="Test Note",
-            edited_on=self.today,
+            edited_on=now(),
             edited_by=self.user,
         )
 
     def test_list_asset_service(self):
         response = self.new_request(
-            ("/api/v1/asset_service/",),
+            (f"/api/v1/asset/{self.asset.external_id}/asset_service/",),
             {"get": "list"},
             AssetServiceViewSet,
             self.user,
@@ -49,7 +50,9 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
 
     def test_retrieve_asset_service(self):
         response = self.new_request(
-            (f"/api/v1/asset_service/{self.asset_service.id}/",),
+            (
+                f"/api/v1/asset/{self.asset.external_id}/asset_service/{self.asset_service.id}/",
+            ),
             {"get": "retrieve"},
             AssetServiceViewSet,
             self.user,
@@ -96,7 +99,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         sample_data = {"serviced_on": self.yesterday, "note": "Hello 3"}
         response = self.new_request(
             (
-                f"/api/v1/asset_service/{self.asset_service.external_id}",
+                f"/api/v1/asset/{self.asset.external_id}/asset_service/{self.asset_service.external_id}",
                 sample_data,
                 "json",
             ),
