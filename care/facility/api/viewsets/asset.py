@@ -372,7 +372,7 @@ class AssetServiceViewSet(
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset.filter(
-            asset__external_id=self.kwargs["asset_external_id"]
+            asset__external_id=self.kwargs.get("asset_external_id")
         )
         if user.is_superuser:
             pass

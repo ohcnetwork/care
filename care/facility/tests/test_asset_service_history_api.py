@@ -45,6 +45,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"get": "list"},
             AssetServiceViewSet,
             self.user,
+            {"asset_external_id": self.asset.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -56,7 +57,10 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"get": "retrieve"},
             AssetServiceViewSet,
             self.user,
-            {"external_id": self.asset_service.external_id},
+            {
+                "external_id": self.asset_service.external_id,
+                "asset_external_id": self.asset.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -66,7 +70,9 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"get": "retrieve"},
             AssetViewSet,
             self.user,
-            {"external_id": self.asset.external_id},
+            {
+                "external_id": self.asset.external_id,
+            },
         )
         self.assertEqual(response.data["last_service"], None)
 
@@ -76,7 +82,9 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"patch": "partial_update"},
             AssetViewSet,
             self.user,
-            {"external_id": self.asset.external_id},
+            {
+                "external_id": self.asset.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["last_service"]["serviced_on"], self.today)
@@ -89,7 +97,9 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"patch": "partial_update"},
             AssetViewSet,
             self.user,
-            {"external_id": self.asset.external_id},
+            {
+                "external_id": self.asset.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["last_service"]["serviced_on"], self.today)
@@ -106,7 +116,10 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"patch": "partial_update"},
             AssetServiceViewSet,
             self.user,
-            {"external_id": self.asset_service.external_id},
+            {
+                "external_id": self.asset_service.external_id,
+                "asset_external_id": self.asset.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["serviced_on"], self.yesterday)
