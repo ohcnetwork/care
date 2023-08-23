@@ -5,10 +5,7 @@ from django.db import migrations
 
 def rename_skill_and_add_new(apps, schema_editor):
     Skill = apps.get_model("users", "Skill")
-    skill = Skill.objects.filter(name="Genreal Surgeon").first()
-    if skill:
-        skill.name = "General Surgeon"
-        skill.save()
+    Skill.objects.filter(name="Genreal Surgeon").update(name="General Surgeon")
 
     Skill.objects.get_or_create(name="General Medicine")
 
