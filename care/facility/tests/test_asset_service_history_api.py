@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from care.facility.api.viewsets.asset import AssetServiceViewSet, AssetViewSet
 from care.facility.models import Asset, AssetLocation, AssetService
+from care.facility.models.asset import AssetServiceEdit
 from care.facility.tests.mixins import TestClassMixin
 from care.utils.tests.test_base import TestBase
 
@@ -12,6 +13,7 @@ from care.utils.tests.test_base import TestBase
 class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     def setUp(self):
         self.today = datetime.today().strftime("%Y-%m-%d")
+        self.yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         self.factory = APIRequestFactory()
         state = self.create_state()
         district = self.create_district(state=state)
@@ -27,6 +29,13 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             asset=self.asset,
             serviced_on=self.today,
             note="Test Note",
+        )
+        self.asset_service_initital_edit = AssetServiceEdit.objects.create(
+            asset_service=self.asset_service,
+            serviced_on=self.today,
+            note="Test Note",
+            edited_on=self.today,
+            edited_by=self.user,
         )
 
     def test_list_asset_service(self):
@@ -44,7 +53,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             {"get": "retrieve"},
             AssetServiceViewSet,
             self.user,
-            {"pk": self.asset_service.id},
+            {"external_id": self.asset_service.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -82,3 +91,21 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["last_service"]["serviced_on"], self.today)
         self.assertEqual(response.data["last_service"]["note"], "Hello 2")
+
+    def test_edit_asset_service_record(self):
+        sample_data = {"serviced_on": self.yesterday, "note": "Hello 3"}
+        response = self.new_request(
+            (
+                f"/api/v1/asset_service/{self.asset_service.external_id}",
+                sample_data,
+                "json",
+            ),
+            {"patch": "partial_update"},
+            AssetServiceViewSet,
+            self.user,
+            {"external_id": self.asset_service.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["serviced_on"], self.yesterday)
+        self.assertEqual(response.data["note"], "Hello 3")
+        self.assertEqual(len(response.data["edits"]), 2)
