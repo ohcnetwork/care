@@ -105,8 +105,8 @@ class AssetServiceSerializer(ModelSerializer):
                 asset_service=instance,
                 edited_on=now(),
                 edited_by=user,
-                serviced_on=validated_data.get("serviced_on", instance.serviced_on),
-                note=validated_data.get("note", instance.note),
+                serviced_on=serviced_on,
+                note=note,
             )
             edit.save()
 
