@@ -27,6 +27,3 @@ class HL7MonitorAsset(BaseAssetIntegration):
             return self.api_get(self.get_url("vitals"), request_params)
 
         raise ValidationError({"action": "invalid action type"})
-
-    def validate_action(self, action):
-        return True

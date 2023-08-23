@@ -52,3 +52,6 @@ class BaseAssetIntegration:
             return response
         except json.decoder.JSONDecodeError:
             return {"error": "Invalid Response"}
+
+    def validate_action(self, action):
+        pass

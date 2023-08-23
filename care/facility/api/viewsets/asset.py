@@ -272,12 +272,9 @@ class AssetViewSet(
                 }
             )
 
-            validation_result = asset_class.validate_action(action)
-            if validation_result:
-                result = asset_class.handle_action(action)
-                return Response({"result": result}, status=status.HTTP_200_OK)
-            else:
-                raise ValidationError({"action": "invalid action type"})
+            asset_class.validate_action(action)
+            result = asset_class.handle_action(action)
+            return Response({"result": result}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 

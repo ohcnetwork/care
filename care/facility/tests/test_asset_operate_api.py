@@ -19,6 +19,8 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
+
+        # depends upon the operational dev camera config
         self.onvif_meta = {
             "asset_type": "CAMERA",
             "local_ip_address": "192.168.1.64",
