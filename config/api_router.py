@@ -189,7 +189,7 @@ facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 
 router.register("asset", AssetViewSet)
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
-asset_nested_router.register(r"asset_service", AssetServiceViewSet)
+asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
 router.register("asset_availability", AssetAvailabilityViewSet)
 

@@ -41,7 +41,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
 
     def test_list_asset_service(self):
         response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}/asset_service/",),
+            (f"/api/v1/asset/{self.asset.external_id}/service_records/",),
             {"get": "list"},
             AssetServiceViewSet,
             self.user,
@@ -51,7 +51,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
     def test_retrieve_asset_service(self):
         response = self.new_request(
             (
-                f"/api/v1/asset/{self.asset.external_id}/asset_service/{self.asset_service.id}/",
+                f"/api/v1/asset/{self.asset.external_id}/service_records/{self.asset_service.id}/",
             ),
             {"get": "retrieve"},
             AssetServiceViewSet,
@@ -99,7 +99,7 @@ class AssetServiceViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         sample_data = {"serviced_on": self.yesterday, "note": "Hello 3"}
         response = self.new_request(
             (
-                f"/api/v1/asset/{self.asset.external_id}/asset_service/{self.asset_service.external_id}",
+                f"/api/v1/asset/{self.asset.external_id}/service_records/{self.asset_service.external_id}",
                 sample_data,
                 "json",
             ),
