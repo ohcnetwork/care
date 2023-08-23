@@ -317,7 +317,12 @@ class AssetServiceFilter(filters.FilterSet):
     external_id = filters.CharFilter(field_name="asset__external_id")
 
 
-class AssetServiceViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class AssetServiceViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
     queryset = (
         AssetService.objects.all()
         .select_related(
@@ -328,6 +333,8 @@ class AssetServiceViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = AssetServiceSerializer
 
     permission_classes = (IsAuthenticated,)
+
+    lookup_field = "external_id"
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetServiceFilter

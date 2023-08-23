@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
@@ -21,6 +22,7 @@ from care.facility.models.asset import (
     AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
+    AssetServiceEdit,
     AssetTransaction,
     UserDefaultAssetLocation,
 )
@@ -70,13 +72,48 @@ class AssetBareMinimumSerializer(ModelSerializer):
         fields = ("name", "id")
 
 
+class AssetServiceEditSerializer(ModelSerializer):
+    id = UUIDField(source="asset_service.external_id", read_only=True)
+    edited_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = AssetServiceEdit
+        exclude = ("asset_service",)
+
+
 class AssetServiceSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     asset = AssetBareMinimumSerializer(read_only=True)
+    edits = serializers.SerializerMethodField()
+
+    def get_edits(self, obj):
+        edits = AssetServiceEdit.objects.filter(asset_service=obj)
+        return AssetServiceEditSerializer(edits, many=True).data
 
     class Meta:
         model = AssetService
-        exclude = ("deleted", "external_id")
+        exclude = ("deleted",)
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        serviced_on = validated_data.get("serviced_on", instance.serviced_on)
+        note = validated_data.get("note", instance.note)
+        if serviced_on == instance.serviced_on and note == instance.note:
+            return instance
+
+        with transaction.atomic():
+            edit = AssetServiceEdit(
+                asset_service=instance,
+                edited_on=now(),
+                edited_by=user,
+                serviced_on=validated_data.get("serviced_on", instance.serviced_on),
+                note=validated_data.get("note", instance.note),
+            )
+            edit.save()
+
+            updated_instance = super().update(instance, validated_data)
+
+        return updated_instance
 
 
 class AssetSerializer(ModelSerializer):
@@ -177,7 +214,15 @@ class AssetSerializer(ModelSerializer):
                     serviced_on=validated_data.get("last_serviced_on"),
                     note=validated_data.get("note"),
                 )
+                asset_service_initial_edit = AssetServiceEdit(
+                    asset_service=asset_service,
+                    edited_on=now(),
+                    edited_by=user,
+                    serviced_on=asset_service.serviced_on,
+                    note=asset_service.note,
+                )
                 asset_service.save()
+                asset_service_initial_edit.save()
                 instance.last_service = asset_service
 
             if (
