@@ -83,7 +83,6 @@ class AssetServiceEditSerializer(ModelSerializer):
 
 class AssetServiceSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    asset = AssetBareMinimumSerializer(read_only=True)
     edits = serializers.SerializerMethodField()
 
     def get_edits(self, obj):
