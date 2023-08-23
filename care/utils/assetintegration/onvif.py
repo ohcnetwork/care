@@ -94,7 +94,7 @@ class OnvifAsset(BaseAssetIntegration):
             not boundary_preset_id
             or action_type != self.OnvifActions.RELATIVE_MOVE.value
         ):
-            return True
+            return
 
         boundary_preset = AssetBed.objects.filter(
             external_id=boundary_preset_id
@@ -106,18 +106,17 @@ class OnvifAsset(BaseAssetIntegration):
             or not action_data["camera_state"].get("x", None)
             or not action_data["camera_state"].get("y", None)
         ):
-            return False
+            raise ValidationError({"action": "invalid action type"})
 
         boundary_range = boundary_preset.meta.get("range", None)
         camera_state = action_data["camera_state"]
 
-        if camera_state["x"] + action_data["x"] < boundary_range["min_x"]:
-            return False
-        if camera_state["x"] + action_data["x"] > boundary_range["max_x"]:
-            return False
-        if camera_state["y"] + action_data["y"] < boundary_range["min_y"]:
-            return False
-        if camera_state["y"] + action_data["y"] > boundary_range["max_y"]:
-            return False
+        if (
+            (camera_state["x"] + action_data["x"] < boundary_range["min_x"])
+            or (camera_state["x"] + action_data["x"] > boundary_range["max_x"])
+            or (camera_state["y"] + action_data["y"] < boundary_range["min_y"])
+            or (camera_state["y"] + action_data["y"] > boundary_range["max_y"])
+        ):
+            raise ValidationError({"action": "invalid action type"})
 
-        return True
+        return

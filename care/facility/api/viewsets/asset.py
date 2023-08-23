@@ -271,9 +271,7 @@ class AssetViewSet(
                     "middleware_hostname": asset.current_location.facility.middleware_address,
                 }
             )
-            if not asset_class.validate_action(action):
-                raise ValidationError({"action": "invalid action type"})
-
+            asset_class.validate_action(action)
             result = asset_class.handle_action(
                 action,
                 {
