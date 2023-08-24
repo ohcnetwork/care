@@ -251,6 +251,6 @@ def dev_preview_discharge_summary(request, consultation_id):
         .first()
     )
     if not consultation:
-        raise NotFound({"detail": "No consultation found for this asset"})
+        raise NotFound({"detail": "Consultation not found"})
     data = discharge_summary.get_discharge_summary_data(consultation)
     return render(request, "reports/patient_discharge_summary_pdf.html", data)
