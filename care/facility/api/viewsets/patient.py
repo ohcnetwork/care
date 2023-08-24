@@ -48,11 +48,13 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
+from care.facility.models.facility import FacilityUser
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.notification_handler import send_webpush
 from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
@@ -652,6 +654,19 @@ class PatientNotesViewSet(
             raise ValidationError(
                 {"patient": "Only active patients data can be updated"}
             )
+
+        message = {
+            "type": "MESSAGE",
+            "facility_id": str(patient.facility.external_id),
+            "patient_id": str(patient.external_id),
+            "status": "updated",
+        }
+
+        facility_users = FacilityUser.objects.filter(facility_id=patient.facility.id)
+        for facility_user in facility_users:
+            if facility_user.user.id != self.request.user.id:
+                send_webpush(username=facility_user.user, message=json.dumps(message))
+
         return serializer.save(
             facility=patient.facility,
             patient=patient,
