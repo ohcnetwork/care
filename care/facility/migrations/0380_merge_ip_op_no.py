@@ -30,7 +30,10 @@ def merge_ip_op_no(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0378_consultationbedasset_consultationbed_assets"),
+        (
+            "facility",
+            "0379_rename_prescribed_medication_patientconsultation_treatment_plan",
+        ),
     ]
 
     operations = [
