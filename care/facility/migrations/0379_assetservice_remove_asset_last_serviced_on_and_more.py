@@ -12,19 +12,18 @@ def move_last_serviced_on_and_notes(apps, schema_editor):
     AssetService = apps.get_model("facility", "AssetService")
 
     asset_services = []
+    asset_linked_last_services = []
     for asset in Asset.objects.all():
         if asset.last_serviced_on or asset.notes:
-            asset_services.append(
-                AssetService(
-                    asset=asset, serviced_on=asset.last_serviced_on, note=asset.notes
-                )
+            service_record = AssetService(
+                asset=asset, serviced_on=asset.last_serviced_on, note=asset.notes
             )
+            asset_services.append(service_record)
+            asset.last_service = service_record
+            asset_linked_last_services.append(asset)
 
     AssetService.objects.bulk_create(asset_services)
-
-    # Set the default value for the 'last_serviced_on' and 'notes' fields to None
-    # so that they can be safely removed in a later step of the migration
-    Asset.objects.update(last_serviced_on=None, notes=None)
+    Asset.objects.bulk_update(asset_linked_last_services, ["last_service"])
 
 
 class Migration(migrations.Migration):
@@ -65,18 +64,6 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-        ),
-        migrations.RunPython(
-            code=move_last_serviced_on_and_notes,
-            reverse_code=django.db.migrations.operations.special.RunPython.noop,
-        ),
-        migrations.RemoveField(
-            model_name="asset",
-            name="last_serviced_on",
-        ),
-        migrations.RemoveField(
-            model_name="asset",
-            name="notes",
         ),
         migrations.CreateModel(
             name="AssetServiceEdit",
@@ -130,5 +117,17 @@ class Migration(migrations.Migration):
                 related_name="last_service",
                 to="facility.assetservice",
             ),
+        ),
+        migrations.RunPython(
+            code=move_last_serviced_on_and_notes,
+            reverse_code=django.db.migrations.operations.special.RunPython.noop,
+        ),
+        migrations.RemoveField(
+            model_name="asset",
+            name="last_serviced_on",
+        ),
+        migrations.RemoveField(
+            model_name="asset",
+            name="notes",
         ),
     ]
