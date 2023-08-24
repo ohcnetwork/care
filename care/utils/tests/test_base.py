@@ -1,5 +1,6 @@
 import abc
 import datetime
+import random
 from collections import OrderedDict
 from uuid import uuid4
 
@@ -18,9 +19,12 @@ from care.facility.models import (
     DiseaseStatusEnum,
     Facility,
     LocalBody,
+    MedibaseMedicine,
+    MedicineAdministration,
     PatientConsultation,
     PatientNotes,
     PatientRegistration,
+    Prescription,
     User,
 )
 from care.users.models import District, State
@@ -239,10 +243,12 @@ class TestBase(APITestCase):
             user_type=User.TYPE_VALUE_MAP["StateAdmin"],
             home_facility=cls.facility,
         )
-
+        cls.consultation = cls.create_consultation()
         cls.user_data = cls.get_user_data(cls.district, cls.user_type)
         cls.facility_data = cls.get_facility_data(cls.district)
         cls.patient_data = cls.get_patient_data(cls.district)
+        cls.prescription = cls.create_prescription()
+        cls.medicine_administration = cls.create_medicine_administration()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -448,3 +454,42 @@ class TestBase(APITestCase):
         }
         data.update(kwargs)
         return PatientNotes.objects.create(**data)
+
+    @classmethod
+    def create_prescription(cls, consultation=None, user=None, **kwargs):
+        medicine = random.choice(MedibaseMedicine.objects.all())
+        data = {
+            "consultation": consultation or cls.consultation,
+            "prescription_type": "REGULAR",
+            "medicine": medicine,
+            "medicine_old": "Paracetamol",
+            "route": "ORAL",
+            "dosage": "1-0-1",
+            "is_prn": False,
+            "frequency": "OD",
+            "days": 5,
+            "indicator": "Take only when fever is above 100",
+            "max_dosage": "2-0-2",
+            "min_hours_between_doses": 4,
+            "notes": "Take with water",
+            "meta": {},
+            "prescribed_by": user or cls.user,
+            "discontinued": False,
+            "discontinued_reason": "",
+            "discontinued_date": None,
+            "is_migrated": False,
+        }
+        data.update(**kwargs)
+        return Prescription.objects.create(**data)
+
+    @classmethod
+    def create_medicine_administration(cls, **kwargs):
+        data = {
+            "prescription": cls.create_prescription(),
+            "notes": "Take with water",
+            "administered_by": cls.user,
+            "administered_date": make_aware(datetime.datetime(2020, 4, 7, 15, 30)),
+        }
+
+        data.update(kwargs)
+        return MedicineAdministration.objects.create(**data)
