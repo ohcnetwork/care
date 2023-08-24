@@ -2,7 +2,7 @@
 
 from django.core.paginator import Paginator
 from django.db import migrations
-from django.db.models import CharField, F, Q, Value, functions
+from django.db.models import CharField, Q
 
 
 def merge_ip_op_no(apps, schema_editor):
@@ -19,6 +19,8 @@ def merge_ip_op_no(apps, schema_editor):
     for page_number in paginator.page_range:
         bulk = []
         for patient in paginator.page(page_number).object_list:
+            if not patient.op_no.strip():
+                continue
             if patient.patient_no:
                 patient.patient_no = f"{patient.patient_no} | {patient.op_no}"
             else:
