@@ -358,6 +358,7 @@ class AssetServiceViewSet(
         .select_related(
             "asset",
         )
+        .prefetch_related("edits")
         .order_by("-created_date")
     )
     serializer_class = AssetServiceSerializer

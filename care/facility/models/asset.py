@@ -190,7 +190,6 @@ class AssetService(BaseModel):
     serviced_on = models.DateField(default=None, null=True, blank=False)
     note = models.TextField(default="", null=True, blank=True)
 
-    edits = models.ManyToManyField("AssetServiceEdit", related_name="edits")
 
     @property
     def edit_history(self):
@@ -199,7 +198,7 @@ class AssetService(BaseModel):
 
 class AssetServiceEdit(models.Model):
     asset_service = models.ForeignKey(
-        AssetService, on_delete=models.CASCADE, null=False, blank=False
+        AssetService, on_delete=models.CASCADE, null=False, blank=False, related_name="edits"
     )
     edited_on = models.DateTimeField(auto_now_add=True)
     edited_by = models.ForeignKey(

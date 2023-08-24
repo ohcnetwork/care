@@ -83,11 +83,7 @@ class AssetServiceEditSerializer(ModelSerializer):
 
 class AssetServiceSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    edits = serializers.SerializerMethodField()
-
-    def get_edits(self, obj):
-        edits = AssetServiceEdit.objects.filter(asset_service=obj)
-        return AssetServiceEditSerializer(edits, many=True).data
+    edits = AssetServiceEditSerializer(many=True)
 
     class Meta:
         model = AssetService
