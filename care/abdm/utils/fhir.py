@@ -211,7 +211,7 @@ class Fhir:
                 else None,
             ),
             note=[
-                Annotation(text=self.consultation.prescribed_medication),
+                Annotation(text=self.consultation.treatment_plan),
                 Annotation(text=self.consultation.consultation_notes),
                 Annotation(text=self.consultation.special_instruction),
             ],

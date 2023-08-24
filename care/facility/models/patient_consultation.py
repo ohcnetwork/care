@@ -85,7 +85,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
-    prescribed_medication = models.TextField(null=True, blank=True)
+    treatment_plan = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
     investigation = JSONField(default=dict)
