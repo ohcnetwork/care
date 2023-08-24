@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
     dependencies = [
         (
             "facility",
-            "0379_rename_prescribed_medication_patientconsultation_treatment_plan",
+            "0380_patientnotes_user_type",
         ),
     ]
 
