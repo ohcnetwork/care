@@ -29,7 +29,10 @@ def move_last_serviced_on_and_notes(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0378_consultationbedasset_consultationbed_assets"),
+        (
+            "facility",
+            "0379_rename_prescribed_medication_patientconsultation_treatment_plan",
+        ),
     ]
 
     operations = [
