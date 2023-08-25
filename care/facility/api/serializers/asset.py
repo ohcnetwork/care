@@ -83,11 +83,11 @@ class AssetServiceEditSerializer(ModelSerializer):
 
 class AssetServiceSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    edits = AssetServiceEditSerializer(many=True)
+    edits = AssetServiceEditSerializer(many=True, read_only=True)
 
     class Meta:
         model = AssetService
-        exclude = ("deleted",)
+        exclude = ("deleted", "asset")
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
@@ -119,7 +119,7 @@ class AssetSerializer(ModelSerializer):
     location = UUIDField(write_only=True, required=True)
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
-    note = serializers.CharField(write_only=True, required=False)
+    note = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = Asset
