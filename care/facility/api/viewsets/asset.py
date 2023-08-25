@@ -1,8 +1,10 @@
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters import rest_framework as filters
+from django_filters.constants import EMPTY_VALUES
 from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
@@ -32,12 +34,13 @@ from care.facility.api.serializers.asset import (
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
-from care.facility.models.asset import (
+from care.facility.models import (
     Asset,
     AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetTransaction,
+    ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
 from care.users.models import User
@@ -113,35 +116,41 @@ class AssetFilter(filters.FilterSet):
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
     in_use_by_consultation = filters.BooleanFilter(
-        method="filter_in_use_by_consultation",
-        distinct=True,
+        method="filter_in_use_by_consultation"
     )
-    is_permanent = filters.BooleanFilter(method="filter_is_permanent", distinct=True)
+    is_permanent = filters.BooleanFilter(method="filter_is_permanent")
 
     def filter_in_use_by_consultation(self, queryset, _, value):
-        if value:
-            return queryset.filter(assigned_consultation_beds__end_date__isnull=True)
-        else:
-            return queryset.filter(
-                Q(assigned_consultation_beds__isnull=True)
-                | Q(assigned_consultation_beds__end_date__isnull=False)
+        if value not in EMPTY_VALUES:
+            queryset = queryset.annotate(
+                is_in_use=Exists(
+                    ConsultationBedAsset.objects.filter(
+                        Q(consultation_bed__end_date__gt=timezone.now())
+                        | Q(consultation_bed__end_date__isnull=True),
+                        asset=OuterRef("pk"),
+                    )
+                )
             )
+            queryset = queryset.filter(is_in_use=value)
+        return queryset.distinct()
 
     def filter_is_permanent(self, queryset, _, value):
-        if value:
-            return queryset.filter(
-                asset_class__in=[
-                    AssetClasses.ONVIF.name,
-                    AssetClasses.HL7MONITOR.name,
-                ]
-            )
-        else:
-            return queryset.exclude(
-                asset_class__in=[
-                    AssetClasses.ONVIF.name,
-                    AssetClasses.HL7MONITOR.name,
-                ]
-            )
+        if value not in EMPTY_VALUES:
+            if value:
+                queryset = queryset.filter(
+                    asset_class__in=[
+                        AssetClasses.ONVIF.name,
+                        AssetClasses.HL7MONITOR.name,
+                    ]
+                )
+            else:
+                queryset = queryset.exclude(
+                    asset_class__in=[
+                        AssetClasses.ONVIF.name,
+                        AssetClasses.HL7MONITOR.name,
+                    ]
+                )
+        return queryset.distinct()
 
 
 class AssetPublicViewSet(GenericViewSet):
