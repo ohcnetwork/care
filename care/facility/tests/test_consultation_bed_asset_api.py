@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.db.models import Q
 from rest_framework import status
 
 from care.facility.models import Asset, AssetLocation, Bed, ConsultationBedAsset
@@ -8,9 +7,6 @@ from care.utils.tests.test_base import TestBase
 
 
 class ConsultationBedAssetApiTestCase(TestBase):
-    def create_asset(self, **kwargs):
-        return Asset.objects.create(**kwargs)
-
     def setUp(self) -> None:
         super().setUp()
         self.asset_location: AssetLocation = AssetLocation.objects.create(
@@ -19,13 +15,16 @@ class ConsultationBedAssetApiTestCase(TestBase):
         self.bed1 = Bed.objects.create(
             name="bed1", location=self.asset_location, facility=self.facility
         )
-        self.asset1 = self.create_asset(
+        self.bed2 = Bed.objects.create(
+            name="bed2", location=self.asset_location, facility=self.facility
+        )
+        self.asset1 = Asset.objects.create(
             name="asset1", current_location=self.asset_location
         )
-        self.asset2 = self.create_asset(
+        self.asset2 = Asset.objects.create(
             name="asset2", current_location=self.asset_location
         )
-        self.asset3 = self.create_asset(
+        self.asset3 = Asset.objects.create(
             name="asset3", current_location=self.asset_location
         )
 
@@ -42,10 +41,26 @@ class ConsultationBedAssetApiTestCase(TestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ConsultationBedAsset.objects.count(), 2)
-        self.assertEqual(
-            Asset.objects.filter(
-                Q(assigned_consultation_beds__isnull=True)
-                | Q(assigned_consultation_beds__end_date__isnull=False)
-            ).count(),
-            1,
+
+    def test_link_asset_to_consultation_bed_with_asset_already_in_use(self):
+        consultation = self.create_consultation()
+        self.client.post(
+            "/api/v1/consultationbed/",
+            {
+                "consultation": consultation.external_id,
+                "bed": self.bed1.external_id,
+                "start_date": datetime.now().isoformat(),
+                "assets": [self.asset1.external_id, self.asset2.external_id],
+            },
         )
+        consultation2 = self.create_consultation()
+        response = self.client.post(
+            "/api/v1/consultationbed/",
+            {
+                "consultation": consultation2.external_id,
+                "bed": self.bed2.external_id,
+                "start_date": datetime.now().isoformat(),
+                "assets": [self.asset1.external_id, self.asset3.external_id],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

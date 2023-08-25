@@ -14,6 +14,7 @@ from care.facility.api.viewsets.asset import (
     AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicViewSet,
+    AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
 )
@@ -188,6 +189,8 @@ facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
+asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
+asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
 router.register("asset_availability", AssetAvailabilityViewSet)
 
@@ -229,6 +232,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
