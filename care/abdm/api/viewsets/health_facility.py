@@ -28,6 +28,11 @@ class HealthFacilityViewSet(
     permission_classes = (IsAuthenticated,)
     lookup_field = "facility__external_id"
 
+    def get_queryset(self):
+        queryset = self.queryset
+        facilities = get_facility_queryset(self.request.user)
+        return queryset.filter(facility__in=facilities)
+
     def get_facility(self, facility_external_id):
         facilities = get_facility_queryset(self.request.user)
         return get_object_or_404(facilities.filter(external_id=facility_external_id))
