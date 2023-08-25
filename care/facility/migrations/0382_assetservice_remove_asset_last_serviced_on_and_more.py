@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         (
             "facility",
-            "0379_rename_prescribed_medication_patientconsultation_treatment_plan",
+            "0381_merge_ip_op_no",
         ),
     ]
 
