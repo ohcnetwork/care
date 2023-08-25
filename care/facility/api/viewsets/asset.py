@@ -26,6 +26,7 @@ from care.facility.api.serializers.asset import (
     AssetAvailabilitySerializer,
     AssetLocationSerializer,
     AssetSerializer,
+    AssetServiceSerializer,
     AssetTransactionSerializer,
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
@@ -35,6 +36,7 @@ from care.facility.models.asset import (
     Asset,
     AssetAvailabilityRecord,
     AssetLocation,
+    AssetService,
     AssetTransaction,
     UserDefaultAssetLocation,
 )
@@ -336,5 +338,56 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
             queryset = queryset.filter(
                 Q(from_location__facility__id__in=allowed_facilities)
                 | Q(to_location__facility__id__in=allowed_facilities)
+            )
+        return queryset
+
+
+class AssetServiceFilter(filters.FilterSet):
+    qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
+    external_id = filters.CharFilter(field_name="asset__external_id")
+
+
+class AssetServiceViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = (
+        AssetService.objects.all()
+        .select_related(
+            "asset",
+        )
+        .prefetch_related("edits")
+        .order_by("-created_date")
+    )
+    serializer_class = AssetServiceSerializer
+
+    permission_classes = (IsAuthenticated,)
+
+    lookup_field = "external_id"
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetServiceFilter
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.filter(
+            asset__external_id=self.kwargs.get("asset_external_id")
+        )
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                asset__current_location__facility__state=user.state
+            )
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                asset__current_location__facility__district=user.district
+            )
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(
+                asset__current_location__facility__id__in=allowed_facilities
             )
         return queryset
