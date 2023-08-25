@@ -83,11 +83,11 @@ class AssetServiceEditSerializer(ModelSerializer):
 
 class AssetServiceSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    edits = AssetServiceEditSerializer(many=True)
+    edits = AssetServiceEditSerializer(many=True, read_only=True)
 
     class Meta:
         model = AssetService
-        exclude = ("deleted",)
+        exclude = ("deleted", "asset")
 
     def update(self, instance, validated_data):
         user = self.context["request"].user
