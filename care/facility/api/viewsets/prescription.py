@@ -176,8 +176,7 @@ class MedibaseViewSet(ViewSet):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
         queryset = MedibaseMedicineTable
-
-        limit = request.query_params.get("limit", 30)
+        limit = min(int(request.query_params.get("limit", 30)), 100)
 
         if query := request.query_params.get("query"):
             query = query.strip().lower()
