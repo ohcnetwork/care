@@ -462,7 +462,6 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    created_by_local_user = serializers.BooleanField(read_only=True)
     consultation = ExternalIdSerializerField(
         queryset=PatientConsultation.objects.all(),
         required=False,
@@ -475,6 +474,21 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"note": ["Note cannot be empty"]})
         return super().validate_empty_values(data)
 
+    def create(self, validated_data):
+        user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
+        # If the user is a doctor and the note is being created in the home facility
+        # then the user type is doctor else it is a remote specialist
+        if user_type == "Doctor":
+            if validated_data["created_by"].home_facility == validated_data["facility"]:
+                validated_data["user_type"] = "Doctor"
+            else:
+                validated_data["user_type"] = "RemoteSpecialist"
+        else:
+            # If the user is not a doctor then the user type is the same as the user type
+            validated_data["user_type"] = user_type
+
+        return super().create(validated_data)
+
     class Meta:
         model = PatientNotes
         fields = (
@@ -482,7 +496,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "facility",
             "consultation",
             "created_by_object",
-            "created_by_local_user",
+            "user_type",
             "created_date",
         )
         read_only_fields = ("created_date",)
