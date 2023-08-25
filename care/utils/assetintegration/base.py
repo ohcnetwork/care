@@ -16,6 +16,7 @@ class BaseAssetIntegration:
     class BaseAssetActions(enum.Enum):
         UNLOCK_ASSET = "unlock_asset"
         LOCK_ASSET = "lock_asset"
+        REQUEST_ACCESS = "request_access"
 
     def __init__(self, meta):
         self.meta = meta
@@ -153,3 +154,25 @@ class BaseAssetIntegration:
         elif cache.get(asset_id) != username:
             return False
         return True
+
+    def request_access(self, username, asset_id):
+        from care.utils.notification_handler import send_webpush
+
+        if cache.get(asset_id) is None or cache.get(asset_id) == username:
+            return {}
+        elif cache.get(asset_id) != username:
+            user: User = User.objects.get(username=username)
+            message = {
+                "type": "MESSAGE",
+                "status": "request",
+                "username": user.username,
+                "firstName": user.first_name,
+                "lastName": user.last_name,
+                "role": [x for x in User.TYPE_CHOICES if x[0] == user.user_type][0][1],
+                "homeFacility": user.home_facility.name
+                if (user.home_facility and user.home_facility.name)
+                else "",
+            }
+
+            send_webpush(username=cache.get(asset_id), message=json.dumps(message))
+            return {"message": "user notified"}

@@ -45,6 +45,9 @@ class OnvifAsset(BaseAssetIntegration):
             **action_data,
         }
 
+        if action_type == BaseAssetIntegration.BaseAssetActions.REQUEST_ACCESS.value:
+            return self.request_access(username, asset_id)
+
         if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
             if self.unlock_asset(username, asset_id):
                 return {"message": "Asset Unlocked"}
