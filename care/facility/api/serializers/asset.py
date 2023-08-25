@@ -119,7 +119,7 @@ class AssetSerializer(ModelSerializer):
     location = UUIDField(write_only=True, required=True)
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
-    note = serializers.CharField(write_only=True, required=False)
+    note = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = Asset
