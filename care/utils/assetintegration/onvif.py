@@ -1,5 +1,6 @@
 import enum
 
+from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -45,6 +46,8 @@ class OnvifAsset(BaseAssetIntegration):
             **action_data,
         }
 
+        print(cache.get(f"waiting_queue_{asset_id}"))
+
         if action_type == BaseAssetIntegration.BaseAssetActions.REQUEST_ACCESS.value:
             return self.request_access(username, asset_id)
 
@@ -59,28 +62,23 @@ class OnvifAsset(BaseAssetIntegration):
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
-            self.lock_asset(username, asset_id)
             return self.api_get(self.get_url("status"), request_body)
 
         if action_type == self.OnvifActions.GET_PRESETS.value:
-            self.lock_asset(username, asset_id)
             return self.api_get(self.get_url("presets"), request_body)
 
         if action_type == self.OnvifActions.GOTO_PRESET.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("gotoPreset"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("absoluteMove"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
                 return self.api_post(self.get_url("relativeMove"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
