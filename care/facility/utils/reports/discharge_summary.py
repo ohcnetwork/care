@@ -81,6 +81,12 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         prescription_type=PrescriptionType.DISCHARGE.value,
         is_prn=True,
     )
+    files = FileUpload.objects.filter(
+        associating_id=consultation.id,
+        file_type=FileUpload.FileType.CONSULTATION.value,
+        upload_completed=True,
+        is_archived=False,
+    )
 
     return {
         "patient": consultation.patient,
@@ -96,6 +102,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "dailyrounds": daily_rounds,
         "medical_history": medical_history,
         "investigations": investigations,
+        "files": files,
     }
 
 

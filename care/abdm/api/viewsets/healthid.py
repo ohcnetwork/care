@@ -470,7 +470,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        response = AbdmGateway().patient_sms_notify({"phone": patient.phone_number})
+        response = AbdmGateway().patient_sms_notify(
+            {"phone": patient.phone_number, "healthId": patient.abha_number.health_id}
+        )
 
         return Response(response, status=status.HTTP_202_ACCEPTED)
 
