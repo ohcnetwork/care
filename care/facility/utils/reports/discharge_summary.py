@@ -123,7 +123,7 @@ def generate_discharge_summary_pdf(data, file):
 def generate_and_upload_discharge_summary(consultation: PatientConsultation):
     logger.info(f"Generating Discharge Summary for {consultation.external_id}")
 
-    set_lock(consultation.external_id, 0)
+    set_lock(consultation.external_id, 5)
     try:
         current_date = timezone.now()
         summary_file = FileUpload(
@@ -158,7 +158,7 @@ def email_discharge_summary(summary_file: FileUpload, emails: Iterable[str]):
         "Patient Discharge Summary",
         "Please find the attached file",
         settings.DEFAULT_FROM_EMAIL,
-        (emails,),
+        emails,
     )
     msg.content_subtype = "html"
     _, data = summary_file.file_contents()

@@ -1060,12 +1060,7 @@ class Fhir:
             )
 
         return {
-            "id": list(
-                filter(
-                    lambda identifier: identifier.system == SYSTEM.claim_identifier,
-                    claim_response.identifier,
-                )
-            )[0].value,
+            "id": claim_bundle.id,
             "total_approved": reduce(
                 lambda price, acc: price + acc,
                 map(

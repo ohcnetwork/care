@@ -1,6 +1,7 @@
 from enum import Enum
 
 from django.db import transaction
+from django.utils.timezone import datetime, make_aware
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -75,7 +76,10 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             name="asset1 location", location_type=1, facility=facility
         )
         cls.asset = Asset.objects.create(
-            name="Test Asset", current_location=cls.asset1_location, asset_type=50
+            name="Test Asset",
+            current_location=cls.asset1_location,
+            asset_type=50,
+            warranty_amc_end_of_validity=make_aware(datetime(2021, 4, 1)),
         )
 
     def setUp(self):
@@ -132,6 +136,22 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_create_asset_with_warranty_past(self):
+        sample_data = {
+            "name": "Test Asset",
+            "current_location": self.asset1_location.pk,
+            "asset_type": 50,
+            "location": self.asset1_location.external_id,
+            "warranty_amc_end_of_validity": "2000-04-01",
+        }
+        response = self.new_request(
+            ("/api/v1/asset/", sample_data, "json"),
+            {"post": "create"},
+            AssetViewSet,
+            self.user,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_retrieve_asset(self):
         response = self.client.get(f"{self.endpoint}{self.asset.external_id}/")
 
@@ -183,6 +203,32 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         self.assertEqual(response.data["name"], sample_data["name"])
         self.asset.refresh_from_db()
         self.assertEqual(self.asset.name, sample_data["name"])
+
+    def test_update_asset_change_warranty_improperly(self):
+        sample_data = {
+            "warranty_amc_end_of_validity": "2002-04-01",
+        }
+        response = self.new_request(
+            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
+            {"patch": "partial_update"},
+            AssetViewSet,
+            self.user,
+            {"external_id": self.asset.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_asset_change_warranty_properly(self):
+        sample_data = {
+            "warranty_amc_end_of_validity": "2222-04-01",
+        }
+        response = self.new_request(
+            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
+            {"patch": "partial_update"},
+            AssetViewSet,
+            self.user,
+            {"external_id": self.asset.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_asset(self):
         with transaction.atomic():
