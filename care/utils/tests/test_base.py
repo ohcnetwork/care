@@ -7,7 +7,7 @@ from django.utils.timezone import make_aware, now
 from django_rest_passwordreset.models import ResetPasswordToken
 from pytz import unicode
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
@@ -440,10 +440,10 @@ class TestBase(APITestCase):
 
     @classmethod
     def create_patient_note(
-        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+        cls, patient=None, note="Patient is doing find", created_by=None, **kwargs
     ):
         data = {
-            "facility": patient.facility or self.facility,
+            "facility": patient.facility or cls.facility,
             "note": note,
         }
         data.update(kwargs)
@@ -451,8 +451,8 @@ class TestBase(APITestCase):
         patientId = patient.external_id
 
         refresh_token = RefreshToken.for_user(created_by)
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
 
-        self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}")
+
+        client.post(f"/api/v1/patient/{patientId}/notes/", data=data)

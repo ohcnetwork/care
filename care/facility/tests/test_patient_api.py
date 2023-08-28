@@ -80,41 +80,45 @@ class ExpectedCreatedByObjectKeys(Enum):
 class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
     asset_id = None
 
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = APIRequestFactory()
+        state = cls.create_state()
+        district = cls.create_district(state=state)
 
         # Create users and facility
-        self.user = self.create_user(
+        cls.user = cls.create_user(
             district=district,
             username="test user",
             user_type=User.TYPE_VALUE_MAP["Doctor"],
         )
-        facility = self.create_facility(district=district)
-        self.user.home_facility = facility
-        self.user.save()
+        facility = cls.create_facility(district=district)
+        cls.user.home_facility = facility
+        cls.user.save()
+        cls.user.refresh_from_db()
 
         # Create another user from different facility
-        self.user2 = self.create_user(
+        cls.user2 = cls.create_user(
             district=district,
             username="test user 2",
             user_type=User.TYPE_VALUE_MAP["Doctor"],
         )
-        facility2 = self.create_facility(district=district)
-        self.user2.home_facility = facility2
-        self.user2.save()
+        facility2 = cls.create_facility(district=district)
+        cls.user2.home_facility = facility2
+        cls.user2.save()
 
-        self.patient = self.create_patient(district=district.id, facility=facility)
+        cls.patient = cls.create_patient(district=district.id, facility=facility)
 
-        self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user
+        cls.create_patient_note(
+            patient=cls.patient, facility=facility, created_by=cls.user
         )
 
-        self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user2
+        cls.create_patient_note(
+            patient=cls.patient, facility=facility, created_by=cls.user2
         )
 
+    def setUp(self):
         refresh_token = RefreshToken.for_user(self.user)
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"

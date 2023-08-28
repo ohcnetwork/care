@@ -47,8 +47,6 @@ class ExpectedAssetRetrieveKeys(Enum):
     QR_CODE_ID = "qr_code_id"
     MANUFACTURER = "manufacturer"
     WARRANTY_AMC_END_OF_VALIDITY = "warranty_amc_end_of_validity"
-    LAST_SERVICED_ON = "last_serviced_on"
-    NOTES = "notes"
 
 
 class ExpectedPublicAssetRetrieveKeys(Enum):
@@ -70,6 +68,7 @@ class ExpectedPublicAssetRetrieveKeys(Enum):
     SUPPORT_PHONE = "support_phone"
     SUPPORT_EMAIL = "support_email"
     CURRENT_LOCATION = "current_location"
+    LAST_SERVICE = "last_service"
 
 
 class AssetPublicViewSetTestCase(TestBase, TestClassMixin, APITestCase):

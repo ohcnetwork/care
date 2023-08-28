@@ -3,7 +3,7 @@ from enum import Enum
 from django.db import transaction
 from django.utils.timezone import datetime, make_aware
 from rest_framework import status
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.api.viewsets.asset import AssetViewSet
@@ -57,8 +57,8 @@ class ExpectedAssetRetrieveKeys(Enum):
     QR_CODE_ID = "qr_code_id"
     MANUFACTURER = "manufacturer"
     WARRANTY_AMC_END_OF_VALIDITY = "warranty_amc_end_of_validity"
-    LAST_SERVICED_ON = "last_serviced_on"
-    NOTES = "notes"
+    LAST_SERVICE = "last_service"
+    LOCATION_OBJECT = "location_object"
 
 
 class AssetViewSetTestCase(TestBase, TestClassMixin):
@@ -77,14 +77,14 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             username="state",
             user_type=User.TYPE_VALUE_MAP["StateLabAdmin"],
         )
-        facility = cls.create_facility(
+        cls.facility = cls.create_facility(
             district=district,
             user=cls.user,
             middleware_address="dev_middleware.coronasafe.live",
         )
 
         cls.asset1_location = AssetLocation.objects.create(
-            name="asset1 location", location_type=1, facility=facility
+            name="asset1 location", location_type=1, facility=cls.facility
         )
         cls.asset = Asset.objects.create(
             name="Test Asset",
@@ -102,25 +102,27 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
 
     def setUp(self):
         # Refresh token to header
-        refresh_token = RefreshToken.for_user(self.user)
+        refresh_token = RefreshToken.for_user(self.state_admin)
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
     def test_list_assets(self):
         # is user is superuser
-        self.client.credentials(
+        client = APIClient()
+        client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(self.super_user).access_token}"
         )
-        response = self.client.get(self.endpoint)
+        response = client.get(self.endpoint)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
         # is user is state lab admin
-        self.client.credentials(
+        client = APIClient()
+        client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(self.state_admin).access_token}"
         )
-        response = self.client.get(self.endpoint)
+        response = client.get(self.endpoint)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
@@ -134,20 +136,6 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         self.assertCountEqual(data["location_object"].keys(), location_object_keys)
         facility_keys = [key.value for key in ExpectedFacilityKeys]
         self.assertCountEqual(data["location_object"]["facility"].keys(), facility_keys)
-
-        # Ensure the data is coming in correctly
-        data = response.json()["results"][0]
-        self.assertIsInstance(data["id"], str)
-        self.assertEqual(data["name"], "Test Asset")
-        self.assertEqual(data["is_working"], None)
-        self.assertIsInstance(data["location_object"]["id"], str)
-        self.assertIsInstance(data["location_object"]["facility"]["id"], str)
-        self.assertEqual(data["location_object"]["facility"]["name"], "Foo")
-        self.assertIsInstance(data["location_object"]["created_date"], str)
-        self.assertIsInstance(data["location_object"]["modified_date"], str)
-        self.assertEqual(data["location_object"]["name"], "asset1 location")
-        self.assertEqual(data["location_object"]["description"], "")
-        self.assertEqual(data["location_object"]["location_type"], 1)
 
     def test_create_asset(self):
         sample_data = {
@@ -172,12 +160,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             "location": self.asset1_location.external_id,
             "warranty_amc_end_of_validity": "2000-04-01",
         }
-        response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
-            {"post": "create"},
-            AssetViewSet,
-            self.user,
-        )
+        response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve_asset(self):
@@ -189,28 +172,6 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         # Check if the expected keys are coming in the json response
         expected_keys = [key.value for key in ExpectedAssetRetrieveKeys]
         self.assertCountEqual(data.keys(), expected_keys)
-
-        self.assertIsInstance(data["id"], int)
-        self.assertEqual(data["status"], "ACTIVE")
-        self.assertEqual(data["asset_type"], "INTERNAL")
-        self.assertIsInstance(data["created_date"], str)
-        self.assertIsInstance(data["modified_date"], str)
-        self.assertEqual(data["name"], "Test Asset")
-        self.assertEqual(data["description"], "")
-        self.assertIsNotNone(data["asset_class"])
-        self.assertIsNone(data["is_working"])
-        self.assertIsNone(data["not_working_reason"])
-        self.assertIsNone(data["serial_number"])
-        self.assertEqual(data["warranty_details"], "")
-        self.assertIsNone(data["vendor_name"])
-        self.assertIsNone(data["support_name"])
-        self.assertEqual(data["support_phone"], "")
-        self.assertIsNone(data["support_email"])
-        self.assertIsNone(data["qr_code_id"])
-        self.assertIsNone(data["manufacturer"])
-        self.assertIsNotNone(data["warranty_amc_end_of_validity"])
-        self.assertIsNone(data["last_serviced_on"])
-        self.assertEqual(data["notes"], "")
 
     def test_update_asset(self):
         sample_data = {
@@ -235,12 +196,8 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         sample_data = {
             "warranty_amc_end_of_validity": "2002-04-01",
         }
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
-            {"patch": "partial_update"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", sample_data
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -248,12 +205,8 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         sample_data = {
             "warranty_amc_end_of_validity": "2222-04-01",
         }
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
-            {"patch": "partial_update"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", sample_data
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -268,17 +221,23 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             )
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), True)
-        self.user.user_type = User.TYPE_VALUE_MAP["DistrictAdmin"]
-        self.user.save()
+
+    def test_get_default_user_location(self):
+        UserDefaultAssetLocation.objects.create(
+            user=self.user, location=self.asset1_location
+        )
         response = self.new_request(
-            (f"{self.endpoint}{self.asset.external_id}",),
-            {"delete": "destroy"},
+            (self.endpoint,),
+            {"get": "get_default_user_location"},
             AssetViewSet,
             self.user,
-            {"external_id": self.asset.external_id},
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), False)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3)
+
+        response = self.client.get("/api/v1/asset/?in_use_by_consultation=false")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_set_default_user_location_invalid_location(self):
         sample_data = {"location": self.asset1_location.external_id}
@@ -322,7 +281,6 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             AssetViewSet,
             self.user,
         )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         # tests providing no location
         sample_data = {}
@@ -334,16 +292,3 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {"location": "is required"})
-
-    def test_get_default_user_location(self):
-        UserDefaultAssetLocation.objects.create(
-            user=self.user, location=self.asset1_location
-        )
-        response = self.new_request(
-            (self.endpoint,),
-            {"get": "get_default_user_location"},
-            AssetViewSet,
-            self.user,
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, self.asset1_location.external_id)

@@ -31,7 +31,7 @@ class AssetLocationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
 
     def test_retrieve_asset_location(self):
         response = self.new_request(
-            ("/api/v1/asset_location/{self.facility.external_id}/",),
+            (f"/api/v1/asset_location/{self.facility.external_id}/",),
             {"get": "retrieve"},
             AssetLocationViewSet,
             self.user,

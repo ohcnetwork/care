@@ -154,24 +154,33 @@ class MedibaseViewSet(ViewSet):
 
     def sort(self, query, results):
         exact_matches = []
+        word_matches = []
         partial_matches = []
 
         for x in results:
-            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
-            if query in words:
+            name = x[1].lower()
+            generic = x[3].lower()
+            company = x[4].lower()
+            words = f"{name} {generic} {company}".split()
+
+            if name == query:
                 exact_matches.append(x)
+            elif query in words:
+                word_matches.append(x)
             else:
                 partial_matches.append(x)
 
-        return exact_matches + partial_matches
+        return exact_matches + word_matches + partial_matches
 
     def list(self, request):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
         queryset = MedibaseMedicineTable
 
+        limit = request.query_params.get("limit", 30)
+
         if query := request.query_params.get("query"):
             query = query.strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
-        return Response(self.serailize_data(queryset[:15]))
+        return Response(self.serailize_data(queryset[:limit]))
