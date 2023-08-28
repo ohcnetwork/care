@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from care.facility.api.viewsets.asset import AssetViewSet
 from care.facility.models import Asset, AssetLocation, User, UserDefaultAssetLocation
 from care.facility.tests.mixins import TestClassMixin
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.tests.test_base import TestBase
 
 
@@ -71,7 +72,17 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         state = cls.create_state()
         district = cls.create_district(state=state)
         cls.user = cls.create_user(district=district, username="test user")
-        facility = cls.create_facility(district=district, user=cls.user)
+        cls.state_admin = cls.create_user(
+            district=district,
+            username="state",
+            user_type=User.TYPE_VALUE_MAP["StateLabAdmin"],
+        )
+        facility = cls.create_facility(
+            district=district,
+            user=cls.user,
+            middleware_address="dev_middleware.coronasafe.live",
+        )
+
         cls.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
@@ -80,6 +91,13 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
             current_location=cls.asset1_location,
             asset_type=50,
             warranty_amc_end_of_validity=make_aware(datetime(2021, 4, 1)),
+            asset_class=AssetClasses.ONVIF.name,
+            meta={
+                "asset_type": "CAMERA",
+                "local_ip_address": "192.168.0.65",
+                "camera_access_key": "remoteuser:aeAE55L5Po*S*C5:3af9acd0-2d4a-49e4-bb72-45cf7be0ae65",
+                "middleware_hostname": "ka-kr-mysore.10bedicu.in",
+            },
         )
 
     def setUp(self):
@@ -90,8 +108,19 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         )
 
     def test_list_assets(self):
+        # is user is superuser
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(self.super_user).access_token}"
+        )
         response = self.client.get(self.endpoint)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.json()["results"], list)
 
+        # is user is state lab admin
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(self.state_admin).access_token}"
+        )
+        response = self.client.get(self.endpoint)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
@@ -110,7 +139,6 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         data = response.json()["results"][0]
         self.assertIsInstance(data["id"], str)
         self.assertEqual(data["name"], "Test Asset")
-        self.assertEqual(data["asset_class"], None)
         self.assertEqual(data["is_working"], None)
         self.assertIsInstance(data["location_object"]["id"], str)
         self.assertIsInstance(data["location_object"]["facility"]["id"], str)
@@ -169,19 +197,18 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         self.assertIsInstance(data["modified_date"], str)
         self.assertEqual(data["name"], "Test Asset")
         self.assertEqual(data["description"], "")
-        self.assertIsNone(data["asset_class"])
+        self.assertIsNotNone(data["asset_class"])
         self.assertIsNone(data["is_working"])
         self.assertIsNone(data["not_working_reason"])
         self.assertIsNone(data["serial_number"])
         self.assertEqual(data["warranty_details"], "")
-        self.assertEqual(data["meta"], {})
         self.assertIsNone(data["vendor_name"])
         self.assertIsNone(data["support_name"])
         self.assertEqual(data["support_phone"], "")
         self.assertIsNone(data["support_email"])
         self.assertIsNone(data["qr_code_id"])
         self.assertIsNone(data["manufacturer"])
-        self.assertIsNone(data["warranty_amc_end_of_validity"])
+        self.assertIsNotNone(data["warranty_amc_end_of_validity"])
         self.assertIsNone(data["last_serviced_on"])
         self.assertEqual(data["notes"], "")
 
@@ -254,6 +281,38 @@ class AssetViewSetTestCase(TestBase, TestClassMixin):
         self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), False)
 
     def test_set_default_user_location_invalid_location(self):
+        sample_data = {"location": self.asset1_location.external_id}
+        response = self.new_request(
+            (self.endpoint, sample_data, "json"),
+            {"post": "set_default_user_location"},
+            AssetViewSet,
+            self.user,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        sample_data = {"location": self.asset1_location.external_id}
+        UserDefaultAssetLocation.objects.create(
+            user=self.user, location=self.asset1_location
+        )
+        response = self.new_request(
+            (self.endpoint, sample_data, "json"),
+            {"post": "set_default_user_location"},
+            AssetViewSet,
+            self.user,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # tests invalid location
+        sample_data = {"location": "invalid_location_id"}
+
+        response = self.new_request(
+            (self.endpoint, sample_data, "json"),
+            {"post": "set_default_user_location"},
+            AssetViewSet,
+            self.user,
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
         # tests invalid location
         sample_data = {"location": "invalid_location_id"}
 
