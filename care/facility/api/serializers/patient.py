@@ -28,6 +28,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -459,10 +460,20 @@ class PatientTransferSerializer(serializers.ModelSerializer):
         self.instance.save()
 
 
+class PatientNotesEditSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="patient_note.external_id", read_only=True)
+    edited_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientNotesEdit
+        exclude = ("patient_note",)
+
+
 class PatientNotesSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    edits = PatientNotesEditSerializer(many=True, read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -482,7 +493,37 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
 
-        return super().create(validated_data)
+        user = self.context["request"].user
+        note = validated_data.get("note")
+        with transaction.atomic():
+            instance = super().create(validated_data)
+            initial_edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_on=now(),
+                edited_by=user,
+                note=note,
+            )
+            initial_edit.save()
+
+        return instance
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        note = validated_data.get("note")
+
+        if note == instance.note:
+            return instance
+
+        with transaction.atomic():
+            edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_on=now(),
+                edited_by=user,
+                note=note,
+            )
+            edit.save()
+
+        return super().update(instance, validated_data)
 
     class Meta:
         model = PatientNotes
@@ -494,12 +535,12 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "user_type",
             "created_date",
             "modified_date",
-            "edit_window_seconds",
+            "edits",
         )
         read_only_fields = (
             "id",
             "created_by_local_user",
             "created_date",
             "modified_date",
-            "edit_window_seconds",
+            "edits",
         )

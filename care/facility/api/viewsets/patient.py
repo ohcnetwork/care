@@ -7,7 +7,6 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import Case, When
 from django.db.models.query_utils import Q
-from django.utils.timezone import now
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -54,7 +53,6 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
-from care.facility.models.patient import PATIENT_NOTE_EDIT_WINDOW
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -647,20 +645,3 @@ class PatientNotesViewSet(
             patient=patient,
             created_by=self.request.user,
         )
-
-    def perform_update(self, serializer):
-        user = self.request.user
-        patient_note = serializer.instance
-        if not user.is_superuser:
-            if not patient_note.patient.is_active:
-                raise ValidationError(
-                    {
-                        "patient": "Updating patient data is only allowed for active patients"
-                    }
-                )
-            if now() > patient_note.created_date + datetime.timedelta(
-                seconds=PATIENT_NOTE_EDIT_WINDOW
-            ):
-                raise ValidationError({"note": "Note is not editable anymore"})
-        validated_data = serializer.validated_data
-        serializer.save(**validated_data)

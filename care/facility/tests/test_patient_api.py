@@ -16,6 +16,7 @@ class ExpectedPatientNoteKeys(Enum):
     NOTE = "note"
     FACILITY = "facility"
     CREATED_BY_OBJECT = "created_by_object"
+    CREATED_BY_LOCAL_USER = "created_by_local_user"
     CREATED_DATE = "created_date"
     USER_TYPE = "user_type"
 

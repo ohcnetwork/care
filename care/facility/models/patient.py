@@ -38,8 +38,6 @@ from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
-PATIENT_NOTE_EDIT_WINDOW = 30 * 60  # 30 minutes
-
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
@@ -690,3 +688,22 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+
+class PatientNotesEdit(models.Model):
+    patient_note = models.ForeignKey(
+        PatientNotes,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_on = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_on"]
