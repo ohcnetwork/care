@@ -1,8 +1,10 @@
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters import rest_framework as filters
+from django_filters.constants import EMPTY_VALUES
 from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
@@ -26,16 +28,19 @@ from care.facility.api.serializers.asset import (
     AssetAvailabilitySerializer,
     AssetLocationSerializer,
     AssetSerializer,
+    AssetServiceSerializer,
     AssetTransactionSerializer,
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
-from care.facility.models.asset import (
+from care.facility.models import (
     Asset,
     AssetAvailabilityRecord,
     AssetLocation,
+    AssetService,
     AssetTransaction,
+    ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
 from care.users.models import User
@@ -110,6 +115,42 @@ class AssetFilter(filters.FilterSet):
     status = CareChoiceFilter(choice_dict=inverse_asset_status)
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
+    in_use_by_consultation = filters.BooleanFilter(
+        method="filter_in_use_by_consultation"
+    )
+    is_permanent = filters.BooleanFilter(method="filter_is_permanent")
+
+    def filter_in_use_by_consultation(self, queryset, _, value):
+        if value not in EMPTY_VALUES:
+            queryset = queryset.annotate(
+                is_in_use=Exists(
+                    ConsultationBedAsset.objects.filter(
+                        Q(consultation_bed__end_date__gt=timezone.now())
+                        | Q(consultation_bed__end_date__isnull=True),
+                        asset=OuterRef("pk"),
+                    )
+                )
+            )
+            queryset = queryset.filter(is_in_use=value)
+        return queryset.distinct()
+
+    def filter_is_permanent(self, queryset, _, value):
+        if value not in EMPTY_VALUES:
+            if value:
+                queryset = queryset.filter(
+                    asset_class__in=[
+                        AssetClasses.ONVIF.name,
+                        AssetClasses.HL7MONITOR.name,
+                    ]
+                )
+            else:
+                queryset = queryset.exclude(
+                    asset_class__in=[
+                        AssetClasses.ONVIF.name,
+                        AssetClasses.HL7MONITOR.name,
+                    ]
+                )
+        return queryset.distinct()
 
 
 class AssetPublicViewSet(GenericViewSet):
@@ -306,5 +347,56 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
             queryset = queryset.filter(
                 Q(from_location__facility__id__in=allowed_facilities)
                 | Q(to_location__facility__id__in=allowed_facilities)
+            )
+        return queryset
+
+
+class AssetServiceFilter(filters.FilterSet):
+    qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
+    external_id = filters.CharFilter(field_name="asset__external_id")
+
+
+class AssetServiceViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = (
+        AssetService.objects.all()
+        .select_related(
+            "asset",
+        )
+        .prefetch_related("edits")
+        .order_by("-created_date")
+    )
+    serializer_class = AssetServiceSerializer
+
+    permission_classes = (IsAuthenticated,)
+
+    lookup_field = "external_id"
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AssetServiceFilter
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = self.queryset.filter(
+            asset__external_id=self.kwargs.get("asset_external_id")
+        )
+        if user.is_superuser:
+            pass
+        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                asset__current_location__facility__state=user.state
+            )
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                asset__current_location__facility__district=user.district
+            )
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(
+                asset__current_location__facility__id__in=allowed_facilities
             )
         return queryset

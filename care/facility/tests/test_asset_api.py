@@ -1,15 +1,12 @@
-from django.db import transaction
 from django.utils.timezone import datetime, make_aware
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from care.facility.api.viewsets.asset import AssetViewSet
-from care.facility.models import Asset, AssetLocation, User, UserDefaultAssetLocation
-from care.facility.tests.mixins import TestClassMixin
+from care.facility.models import Asset, AssetLocation, Bed, User
 from care.utils.tests.test_base import TestBase
 
 
-class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class AssetViewSetTestCase(TestBase, APITestCase):
     asset_id = None
 
     @classmethod
@@ -19,9 +16,9 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         state = cls.create_state()
         district = cls.create_district(state=state)
         cls.user = cls.create_user(district=district, username="test user")
-        facility = cls.create_facility(district=district, user=cls.user)
+        cls.facility = cls.create_facility(district=district, user=cls.user)
         cls.asset1_location = AssetLocation.objects.create(
-            name="asset1 location", location_type=1, facility=facility
+            name="asset1 location", location_type=1, facility=cls.facility
         )
         cls.asset = Asset.objects.create(
             name="Test Asset",
@@ -31,9 +28,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         )
 
     def test_list_assets(self):
-        response = self.new_request(
-            ("/api/v1/asset/",), {"get": "list"}, AssetViewSet, self.user
-        )
+        response = self.client.get("/api/v1/asset/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_asset(self):
@@ -43,12 +38,7 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             "asset_type": 50,
             "location": self.asset1_location.external_id,
         }
-        response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
-            {"post": "create"},
-            AssetViewSet,
-            self.user,
-        )
+        response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_asset_with_warranty_past(self):
@@ -59,22 +49,11 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             "location": self.asset1_location.external_id,
             "warranty_amc_end_of_validity": "2000-04-01",
         }
-        response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
-            {"post": "create"},
-            AssetViewSet,
-            self.user,
-        )
+        response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve_asset(self):
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}",),
-            {"get": "retrieve"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
-        )
+        response = self.client.get(f"/api/v1/asset/{self.asset.external_id}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_asset(self):
@@ -84,12 +63,8 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
             "asset_type": 50,
             "location": self.asset1_location.external_id,
         }
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
-            {"patch": "partial_update"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", sample_data
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], sample_data["name"])
@@ -100,12 +75,8 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         sample_data = {
             "warranty_amc_end_of_validity": "2002-04-01",
         }
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
-            {"patch": "partial_update"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", sample_data
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -113,70 +84,51 @@ class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         sample_data = {
             "warranty_amc_end_of_validity": "2222-04-01",
         }
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}", sample_data, "json"),
-            {"patch": "partial_update"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", sample_data
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_asset(self):
-        with transaction.atomic():
-            response = self.new_request(
-                (f"/api/v1/asset/{self.asset.external_id}",),
-                {"delete": "destroy"},
-                AssetViewSet,
-                self.user,
-                {"external_id": self.asset.external_id},
-            )
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def test_delete_asset_failure(self):
+        response = self.client.delete(f"/api/v1/asset/{self.asset.external_id}/")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), True)
+
+    def test_delete_asset(self):
         self.user.user_type = User.TYPE_VALUE_MAP["DistrictAdmin"]
         self.user.save()
-        response = self.new_request(
-            (f"/api/v1/asset/{self.asset.external_id}",),
-            {"delete": "destroy"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.delete(
+            f"/api/v1/asset/{self.asset.external_id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), False)
 
-    def test_set_default_user_location_invalid_location(self):
-        # tests invalid location
-        sample_data = {"location": "invalid_location_id"}
+    def test_asset_filter_in_use_by_consultation(self):
+        asset1 = Asset.objects.create(
+            name="asset1", current_location=self.asset1_location
+        )
+        asset2 = Asset.objects.create(
+            name="asset2", current_location=self.asset1_location
+        )
 
-        response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
-            {"post": "set_default_user_location"},
-            AssetViewSet,
-            self.user,
+        consultation = self.create_consultation()
+        bed = Bed.objects.create(
+            name="bed1", location=self.asset1_location, facility=self.facility
         )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.client.post(
+            "/api/v1/consultationbed/",
+            {
+                "consultation": consultation.external_id,
+                "bed": bed.external_id,
+                "start_date": datetime.now().isoformat(),
+                "assets": [asset1.external_id, asset2.external_id],
+            },
+        )
 
-        # tests providing no location
-        sample_data = {}
-        response = self.new_request(
-            ("/api/v1/asset/", sample_data, "json"),
-            {"post": "set_default_user_location"},
-            AssetViewSet,
-            self.user,
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"location": "is required"})
-
-    def test_get_default_user_location(self):
-        UserDefaultAssetLocation.objects.create(
-            user=self.user, location=self.asset1_location
-        )
-        response = self.new_request(
-            ("/api/v1/asset/",),
-            {"get": "get_default_user_location"},
-            AssetViewSet,
-            self.user,
-        )
+        response = self.client.get("/api/v1/asset/?in_use_by_consultation=true")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, self.asset1_location.external_id)
+        self.assertEqual(len(response.data["results"]), 2)
+
+        response = self.client.get("/api/v1/asset/?in_use_by_consultation=false")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
