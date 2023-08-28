@@ -8,7 +8,7 @@ from pywebpush import WebPushException, webpush
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient import PatientNotes, PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import (
     InvestigationSession,
@@ -308,6 +308,12 @@ class NotificationGenerator:
                 )
         if isinstance(self.caused_object, ShiftingRequest):
             self.caused_objects["shifting"] = str(self.caused_object.external_id)
+
+        if isinstance(self.caused_object, PatientNotes):
+            self.caused_objects["patient"] = str(self.caused_object.patient.external_id)
+            self.caused_objects["facility"] = str(
+                self.caused_object.facility.external_id
+            )
 
         return True
 
