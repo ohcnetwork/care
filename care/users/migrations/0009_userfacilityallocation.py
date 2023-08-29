@@ -6,10 +6,29 @@ from django.conf import settings
 from django.db import migrations, models
 
 
+def fill_user_facility_allocation(apps, schema_editor):
+    UserFacilityAllocation = apps.get_model("users", "UserFacilityAllocation")
+    User = apps.get_model("users", "User")
+    users = User.objects.filter(home_facility__isnull=False)
+
+    to_create = [
+        UserFacilityAllocation(
+            user=user, facility=user.home_facility, start_date=user.date_joined
+        )
+        for user in users
+    ]
+    UserFacilityAllocation.objects.bulk_create(to_create, batch_size=2000)
+
+
+def reverse_fill_user_facility_allocation(apps, schema_editor):
+    UserFacilityAllocation = apps.get_model("users", "UserFacilityAllocation")
+    UserFacilityAllocation.objects.all().delete()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("facility", "0370_merge_20230705_1500"),
-        ("users", "0005_alter_user_alt_phone_number_alter_user_phone_number"),
+        ("users", "0008_rename_skill_and_add_new_20230817_1937"),
     ]
 
     operations = [
@@ -44,5 +63,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
+        ),
+        migrations.RunPython(
+            fill_user_facility_allocation, reverse_fill_user_facility_allocation
         ),
     ]
