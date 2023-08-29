@@ -2,6 +2,7 @@
 
 import django.db.models.deletion
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.db import migrations, models
 
 
@@ -9,12 +10,20 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
     PatientNotes = apps.get_model("facility", "PatientNotes")
     PatientNotesEdit = apps.get_model("facility", "PatientNotesEdit")
 
-    edit_records = []
+    notes_without_edits = (
+        PatientNotes.objects.annotate(
+            has_edits=models.Exists(
+                PatientNotesEdit.objects.filter(patient_note=models.OuterRef("pk"))
+            )
+        )
+        .filter(has_edits=False)
+        .order_by("id")
+    )
 
-    for patient_note in PatientNotes.objects.all():
-        if (
-            not patient_note.edits.all()  # Check to not re-create records when rolling back and re-migrating
-        ):
+    paginator = Paginator(notes_without_edits, 1000)
+    for page_number in paginator.page_range:
+        edit_records = []
+        for patient_note in paginator.page(page_number).object_list:
             edit_record = PatientNotesEdit(
                 patient_note=patient_note,
                 edited_on=patient_note.created_date,
@@ -24,7 +33,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
 
             edit_records.append(edit_record)
 
-    PatientNotesEdit.objects.bulk_create(edit_records)
+        PatientNotesEdit.objects.bulk_create(edit_records)
 
 
 class Migration(migrations.Migration):
@@ -70,6 +79,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=create_initial_patient_notes_edit_record,
-            reverse_code=django.db.migrations.operations.special.RunPython.noop,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
