@@ -104,7 +104,13 @@
       {% endif %}
       <div class="flex gap-6">
         <p>
-          <span class="mt-1 text-sm leading-5 text-gray-500">IP No:</span> {{consultation.ip_no}}
+          <span class="mt-1 text-sm leading-5 text-gray-500">
+            {% if consultation.suggestion == 'A' %}
+            IP No:
+            {% else %}
+            OP No:
+            {% endif %}
+          </span> {{consultation.patient_no}}
         </p>
         <p>
           <span class="text-sm leading-5 font-medium text-gray-500">Weight: </span>
@@ -534,12 +540,12 @@
     </div>
     {% endif %}
 
-    {% if consultation.prescribed_medication %}
+    {% if consultation.treatment_plan %}
     <h4 class="mt-6 font-medium text-gray-500">
       Prescribed medication:
     </h4>
     <p>
-      {{ consultation.prescribed_medication }}
+      {{ consultation.treatment_plan }}
     </p>
     {% endif %}
 
@@ -860,6 +866,46 @@
       <span class="text-sm text-gray-500">Discharge Notes:</span> {{consultation.discharge_notes}}
     </p>
   </div>
+
+  {% if files %}
+  <div class="mt-6 px-4 py-5 border-b border-t border-gray-200">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Annexes
+    </h3>
+  </div>
+  <div class="px-4 py-5">
+    <h4 class="font-medium text-gray-500">
+      Uploaded Files:
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              Uploaded at
+            </th>
+            <th class="p-2">
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for file in files %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-normal text-sm">
+              {{file.modified_date}}
+            </td>
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{file.name}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
 
   <div class="m-4 mb-12">
     <div class="text-sm leading-5 font-bold text-gray-500">
