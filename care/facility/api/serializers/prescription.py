@@ -67,7 +67,10 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             ).exists():
                 raise serializers.ValidationError(
                     {
-                        "medicine": "This medicine is already prescribed to this patient. Please discontinue the existing prescription to prescribe again."
+                        "medicine": (
+                            "This medicine is already prescribed to this patient. "
+                            "Please discontinue the existing prescription to prescribe again."
+                            )
                     }
                 )
 
