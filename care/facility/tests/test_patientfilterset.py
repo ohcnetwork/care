@@ -1,4 +1,3 @@
-from django.test import TestCase
 from django.utils import timezone
 
 from care.facility.api.viewsets.patient import PatientFilterSet
@@ -11,7 +10,7 @@ from care.facility.models import (
 from care.utils.tests.test_base import TestBase
 
 
-class PatientFilterSetTestCase(TestBase, TestCase):
+class PatientFilterSetTestCase(TestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -19,7 +18,7 @@ class PatientFilterSetTestCase(TestBase, TestCase):
     def test_filter_by_bed_type(self):
         patient1 = self.create_patient(name="patient1")
         patient2 = self.create_patient(name="patient2")
-        patient3 = self.create_patient(name="patient3")
+        patient3 = self.patient
 
         # create asset
         asset1 = AssetLocation.objects.create(
@@ -83,10 +82,27 @@ class PatientFilterSetTestCase(TestBase, TestCase):
             value="1,None",
             queryset=PatientRegistration.objects.all(),
         )
-
-        # Assert
-        self.assertEqual(len(filtered_queryset), 3)  # patient, patient1 and patient3
+        self.assertEqual(len(filtered_queryset), 2)  # patient, patient1 and patient3
         self.assertTrue(patient1 in filtered_queryset)
         self.assertFalse(patient2 in filtered_queryset)
         self.assertTrue(patient3 in filtered_queryset)
-        self.assertTrue(self.patient in filtered_queryset)
+
+        filtered_queryset = filterset.filter_by_bed_type(
+            name="last_consultation_admitted_bed_type_list",
+            value="None",
+            queryset=PatientRegistration.objects.all(),
+        )
+        self.assertEqual(len(filtered_queryset), 1)
+        self.assertFalse(patient1 in filtered_queryset)
+        self.assertFalse(patient2 in filtered_queryset)
+        self.assertTrue(patient3 in filtered_queryset)
+
+        filtered_queryset = filterset.filter_by_bed_type(
+            name="last_consultation_admitted_bed_type_list",
+            value="2",
+            queryset=PatientRegistration.objects.all(),
+        )
+        self.assertEqual(len(filtered_queryset), 1)
+        self.assertFalse(patient1 in filtered_queryset)
+        self.assertTrue(patient2 in filtered_queryset)
+        self.assertFalse(patient3 in filtered_queryset)
