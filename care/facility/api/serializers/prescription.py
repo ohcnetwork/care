@@ -1,12 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from care.facility.models import (
-    MedibaseMedicine,
-    MedicineAdministration,
-    PatientConsultation,
-    Prescription,
-)
+from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
@@ -63,15 +58,10 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             )
 
         if not self.instance:
-            consultation_obj = get_object_or_404(
-                PatientConsultation,
-                external_id=self.context["request"].parser_context["kwargs"][
-                    "consultation_external_id"
-                ],
-            )
-
             if Prescription.objects.filter(
-                consultation=consultation_obj,
+                consultation__external_id=self.context["request"].parser_context[
+                    "kwargs"
+                ]["consultation_external_id"],
                 medicine=attrs["medicine"],
                 discontinued=False,
             ).exists():
