@@ -5,6 +5,28 @@ from django.conf import settings
 from django.db import migrations, models
 
 
+def create_initial_patient_notes_edit_record(apps, schema_editor):
+    PatientNotes = apps.get_model("facility", "PatientNotes")
+    PatientNotesEdit = apps.get_model("facility", "PatientNotesEdit")
+
+    edit_records = []
+
+    for patient_note in PatientNotes.objects.all():
+        if (
+            not patient_note.edits.all()  # Check to not re-create records when rolling back and re-migrating
+        ):
+            edit_record = PatientNotesEdit(
+                patient_note=patient_note,
+                edited_on=patient_note.created_date,
+                edited_by=patient_note.created_by,
+                note=patient_note.note,
+            )
+
+            edit_records.append(edit_record)
+
+    PatientNotesEdit.objects.bulk_create(edit_records)
+
+
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -45,5 +67,9 @@ class Migration(migrations.Migration):
             options={
                 "ordering": ["-edited_on"],
             },
+        ),
+        migrations.RunPython(
+            code=create_initial_patient_notes_edit_record,
+            reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
     ]
