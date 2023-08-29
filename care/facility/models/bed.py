@@ -73,3 +73,17 @@ class ConsultationBed(BaseModel):
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
     meta = JSONField(default=dict, blank=True)
+    assets = models.ManyToManyField(
+        Asset, through="ConsultationBedAsset", related_name="assigned_consultation_beds"
+    )
+
+
+class ConsultationBedAsset(BaseModel):
+    consultation_bed = models.ForeignKey(
+        ConsultationBed,
+        on_delete=models.PROTECT,
+    )
+    asset = models.ForeignKey(
+        Asset,
+        on_delete=models.PROTECT,
+    )

@@ -63,7 +63,7 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         "category": CATEGORY_CHOICES[0][0],
         "examination_details": "examination_details",
         "history_of_present_illness": "history_of_present_illness",
-        "prescribed_medication": "prescribed_medication",
+        "treatment_plan": "treatment_plan",
         "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
     }
 
