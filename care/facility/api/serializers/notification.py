@@ -7,19 +7,10 @@ from config.serializers import ChoiceField
 
 User = get_user_model()
 
-
-class BareMinimumCausedBySerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="external_id", read_only=True)
-
-    class Meta:
-        model = User
-        fields = ("id", "first_name", "last_name", "user_type")
-
-
 class NotificationListSerializer(serializers.ModelSerializer):
     event = ChoiceField(choices=Notification.EventChoices, read_only=True)
     id = serializers.UUIDField(source="external_id", read_only=True)
-    caused_by = BareMinimumCausedBySerializer(read_only=True)
+    caused_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = Notification

@@ -22,6 +22,9 @@ class ExpectedListCausedByKeys(Enum):
     first_name = "first_name"
     last_name = "last_name"
     user_type = "user_type"
+    username = "username"
+    email = "email"
+    last_login = "last_login"
 
 
 class ExpectedRetrieveNotificationKeys(Enum):
