@@ -7,10 +7,10 @@ from django.db.models import JSONField, Q
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
-from care.users.models import User, phone_number_regex_11
+from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
-from care.utils.models.validators import JSONFieldSchemaValidator
+from care.utils.models.validators import JSONFieldSchemaValidator, PhoneNumberValidator
 
 
 def get_random_asset_id():
@@ -84,14 +84,21 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14, validators=[phone_number_regex_11], default=""
+        max_length=14,
+        validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))],
+        default="",
     )
     support_email = models.EmailField(blank=True, null=True)
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)
     manufacturer = models.CharField(max_length=1024, blank=True, null=True)
     warranty_amc_end_of_validity = models.DateField(default=None, null=True, blank=True)
-    last_serviced_on = models.DateField(default=None, null=True, blank=True)
-    notes = models.TextField(default="", null=True, blank=True)
+    last_service = models.ForeignKey(
+        "facility.AssetService",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="last_service",
+    )
 
     class Meta:
         constraints = [
@@ -175,3 +182,34 @@ class AssetTransaction(BaseModel):
     performed_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=False, blank=False
     )
+
+
+class AssetService(BaseModel):
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+
+    serviced_on = models.DateField(default=None, null=True, blank=False)
+    note = models.TextField(default="", null=True, blank=True)
+
+    @property
+    def edit_history(self):
+        return self.edits.order_by("-edited_on")
+
+
+class AssetServiceEdit(models.Model):
+    asset_service = models.ForeignKey(
+        AssetService,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_on = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    serviced_on = models.DateField()
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_on"]
