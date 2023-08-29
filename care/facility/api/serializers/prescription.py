@@ -1,7 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
+from care.facility.models import (
+    MedibaseMedicine,
+    MedicineAdministration,
+    PatientConsultation,
+    Prescription,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
@@ -56,6 +61,26 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             attrs["medicine"] = get_object_or_404(
                 MedibaseMedicine, external_id=attrs["medicine"]
             )
+
+        if not self.instance:
+            # consultation_obj can be retrieved from the request context's path parameter: 'consultation_external_id'
+            consultation_obj = get_object_or_404(
+                PatientConsultation,
+                external_id=self.context["request"].parser_context["kwargs"][
+                    "consultation_external_id"
+                ],
+            )
+
+            if Prescription.objects.filter(
+                consultation=consultation_obj,
+                medicine=attrs["medicine"],
+                discontinued=False,
+            ).exists():
+                raise serializers.ValidationError(
+                    {
+                        "medicine": "This medicine is already prescribed to this patient. Please discontinue the existing prescription to prescribe again."
+                    }
+                )
 
         if attrs.get("is_prn"):
             if not attrs.get("indicator"):
