@@ -7,6 +7,7 @@ from config.serializers import ChoiceField
 
 User = get_user_model()
 
+
 class NotificationListSerializer(serializers.ModelSerializer):
     event = ChoiceField(choices=Notification.EventChoices, read_only=True)
     id = serializers.UUIDField(source="external_id", read_only=True)
