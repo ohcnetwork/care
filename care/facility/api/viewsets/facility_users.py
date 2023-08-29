@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
@@ -7,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.facility import Facility
 from care.users.api.serializers.user import UserAssignedSerializer
-from care.users.models import User
+from care.users.models import Skill, User
 
 
 class UserFilter(filters.FilterSet):
@@ -34,6 +35,12 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
             facility = Facility.objects.get(
                 external_id=self.kwargs.get("facility_external_id")
             )
-            return facility.users.filter(deleted=False).order_by("-last_login")
+            queryset = facility.users.filter(deleted=False).order_by("-last_login")
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    "skills", queryset=Skill.objects.filter(userskill__deleted=False)
+                )
+            )
+            return queryset
         except Facility.DoesNotExist:
             raise ValidationError({"Facility": "Facility not found"})

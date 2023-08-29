@@ -17,12 +17,7 @@ from care.facility.models.inventory import (
 
 
 def facility_capacity_summary():
-    capacity_objects = FacilityCapacity.objects.all().select_related(
-        "facility",
-        "facility__state",
-        "facility__district",
-        "facility__local_body",
-    )
+    capacity_objects = FacilityCapacity.objects.all()
     capacity_summary = {}
     current_date = localtime(now()).replace(hour=0, minute=0, second=0, microsecond=0)
 
@@ -106,11 +101,10 @@ def facility_capacity_summary():
         capacity_summary[facility_obj.id]["inventory"] = temp_inventory_summary_obj
 
     for capacity_object in capacity_objects:
-        facility_id = capacity_object.facility.id
+        facility_id = capacity_object.facility_id
         if facility_id not in capacity_summary:
-            capacity_summary[facility_id] = FacilitySerializer(
-                capacity_object.facility
-            ).data
+            # This facility is either deleted or not active
+            continue
         if "availability" not in capacity_summary[facility_id]:
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(

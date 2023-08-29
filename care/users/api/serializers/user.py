@@ -284,6 +284,7 @@ class UserSerializer(SignUpSerializer):
             "doctor_medical_council_registration",
             "created_by",
             "home_facility",
+            "weekly_working_hours",
             "local_body",
             "district",
             "state",
@@ -344,7 +345,6 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
             "last_name",
             "user_type",
             "last_login",
-            "home_facility",
         )
 
 
@@ -353,11 +353,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
     home_facility_object = FacilityBareMinimumSerializer(
         source="home_facility", read_only=True
     )
-    skills = serializers.SerializerMethodField()
-
-    def get_skills(self, obj):
-        qs = obj.skills.filter(userskill__deleted=False)
-        return SkillSerializer(qs, many=True).data
+    skills = SkillSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -403,6 +399,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "doctor_qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
+            "weekly_working_hours",
             "created_by",
             "last_login",
             "home_facility_object",

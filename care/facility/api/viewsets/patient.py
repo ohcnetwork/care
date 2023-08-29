@@ -78,8 +78,8 @@ class PatientFilterSet(filters.FilterSet):
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    ip_no = filters.CharFilter(
-        field_name="last_consultation__ip_no", lookup_expr="icontains"
+    patient_no = filters.CharFilter(
+        field_name="last_consultation__patient_no", lookup_expr="icontains"
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
@@ -617,6 +617,7 @@ class PatientNotesViewSet(
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
             queryset = queryset.filter(q_filters)
+
         return queryset
 
     def perform_create(self, serializer):

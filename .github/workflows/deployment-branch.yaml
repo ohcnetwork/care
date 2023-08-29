@@ -5,13 +5,14 @@ on:
 
   push:
     branches:
+      - abdm
       - abdm-m2
       - hcx-communications
+      - fix-hcx
     paths-ignore:
       - "docs/**"
 
 jobs:
-
   build-image:
     name: Build & Push Staging to container registries
     runs-on: ubuntu-latest
@@ -27,7 +28,6 @@ jobs:
           tags: |
             type=raw,value=${{ github.ref_name}}-${{ github.run_number }}
             type=raw,value=${{ github.ref_name}}
-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

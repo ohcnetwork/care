@@ -11,7 +11,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient_otp import PatientMobileOTPSerializer
 from care.facility.models.patient import PatientMobileOTP
-from care.users.models import phone_number_regex
+from care.utils.models.validators import mobile_validator
 from config.patient_otp_token import PatientToken
 
 
@@ -32,7 +32,7 @@ class PatientMobileOTPViewSet(
         phone_number = request.data["phone_number"]
         otp = request.data["otp"]
         try:
-            phone_number_regex(phone_number)
+            mobile_validator(phone_number)
         except error:
             raise ValidationError({"phone_number": "Invalid phone number format"})
         if len(otp) != settings.OTP_LENGTH:

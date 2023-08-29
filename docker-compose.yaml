@@ -38,5 +38,10 @@ services:
       - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "./docker/awslocal:/docker-entrypoint-initaws.d"
 
+  fidelius:
+    container_name: care_fidelius
+    image: khavinshankar/fidelius:v1.0
+    restart: always
+
 volumes:
   postgres-data:
