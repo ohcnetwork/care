@@ -16,8 +16,9 @@ class ExpectedPatientNoteKeys(Enum):
     NOTE = "note"
     FACILITY = "facility"
     CREATED_BY_OBJECT = "created_by_object"
-    CREATED_BY_LOCAL_USER = "created_by_local_user"
     CREATED_DATE = "created_date"
+    MODIFIED_DATE = "modified_date"
+    EDITS = "edits"
     USER_TYPE = "user_type"
 
 
@@ -199,6 +200,28 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
                 created_by_object_content.keys(),
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
+
+    def test_patient_note_edit(self):
+        patientId = self.patient.external_id
+        response = self.client.get(f"/api/v1/patient/{patientId}/notes/")
+
+        data = response.json()["results"][0]
+        self.assertEqual(len(data["edits"]), 1)
+
+        note_id = data["id"]
+        note_content = data["note"]
+        new_note_content = note_content + " edited"
+
+        response = self.client.put(
+            f"/api/v1/patient/{patientId}/notes/{note_id}/", {"note": new_note_content}
+        )
+        updated_data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(updated_data["note"], new_note_content)
+        self.assertEqual(len(updated_data["edits"]), 2)
+        self.assertEqual(updated_data["edits"][0]["note"], new_note_content)
+        self.assertEqual(updated_data["edits"][1]["note"], note_content)
 
 
 class PatientFilterTestCase(TestBase, TestClassMixin, APITestCase):

@@ -539,7 +539,6 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             "id",
-            "created_by_local_user",
             "created_date",
             "modified_date",
             "edits",
