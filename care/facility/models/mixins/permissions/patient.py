@@ -210,6 +210,7 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
                 getattr(self, "assigned_to", None)
                 and getattr(self, "assigned_to", None) == request.user
             )
+            or request.user == getattr(self.patient, "assigned_to", None)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
