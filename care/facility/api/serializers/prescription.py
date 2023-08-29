@@ -63,7 +63,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             )
 
         if not self.instance:
-            # consultation_obj can be retrieved from the request context's path parameter: 'consultation_external_id'
             consultation_obj = get_object_or_404(
                 PatientConsultation,
                 external_id=self.context["request"].parser_context["kwargs"][
