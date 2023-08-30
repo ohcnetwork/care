@@ -17,7 +17,7 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     model = Consent
     queryset = Consent.objects.all()
     permission_classes = (IsAuthenticated,)
-    filterset_fields = ["status", "patient_health_id", "requester"]
+    filterset_fields = ["status", "patient_abha", "requester"]
 
     def get_queryset(self):
         queryset = self.queryset
