@@ -22,7 +22,7 @@ class Gateway:
                     "text": Purpose(consent.purpose).label,
                     "code": Purpose(consent.purpose).value,
                 },
-                "patient": {"id": consent.patient_health_id},
+                "patient": {"id": consent.patient_abha.health_id},
                 "hiu": {
                     "id": "IN3210000017"
                 },  # TODO: get the HIU ID associated with the patient's facility
