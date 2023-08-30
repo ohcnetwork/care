@@ -4,8 +4,8 @@ from care.utils.models.base import BaseModel
 
 
 class AbhaNumber(BaseModel):
-    abha_number = models.TextField(null=True, blank=True)
-    health_id = models.TextField(null=True, blank=True)
+    abha_number = models.TextField(null=True, blank=True, unique=True)
+    health_id = models.TextField(null=True, blank=True, unique=True)
 
     name = models.TextField(null=True, blank=True)
     first_name = models.TextField(null=True, blank=True)

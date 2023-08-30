@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 
+from care.abdm.models import AbhaNumber
 from care.abdm.models.base import (
     AccessMode,
     FrequencyUnit,
@@ -32,7 +33,9 @@ class Consent(BaseModel):
 
     consent_id = models.UUIDField(null=True, blank=True)
 
-    patient_health_id = models.CharField(max_length=50, null=True, blank=True)
+    patient_abha = models.ForeignKey(
+        AbhaNumber, on_delete=models.PROTECT, to_field="health_id"
+    )
 
     artefacts = models.JSONField(
         default=list, validators=[JSONFieldSchemaValidator(CONSENT_ARTEFACTS)]

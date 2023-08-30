@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.abdm.api.serializers.consent import ConsentSerializer
 from care.abdm.models.consent import Consent
 from care.abdm.service.gateway import Gateway
+from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import ABDMAuthentication
 
 
@@ -16,10 +17,12 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     model = Consent
     queryset = Consent.objects.all()
     permission_classes = (IsAuthenticated,)
+    filterset_fields = ["status", "patient_health_id", "requester"]
 
     def get_queryset(self):
-        # TODO: Filter by facility of the user
-        return self.queryset
+        queryset = self.queryset
+        facilities = get_facility_queryset(self.request.user)
+        return queryset.filter(requester__facility__in=facilities)
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
