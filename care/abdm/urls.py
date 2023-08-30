@@ -13,6 +13,7 @@ from care.abdm.api.viewsets.auth import (
     OnInitView,
     RequestDataView,
 )
+from care.abdm.api.viewsets.consent import ConsentCallbackViewSet
 from care.abdm.api.viewsets.hip import HipViewSet
 from care.abdm.api.viewsets.monitoring import HeartbeatView
 from care.abdm.api.viewsets.status import NotifyView as PatientStatusNotifyView
@@ -31,6 +32,21 @@ abdm_router.register("profile/v1.0/patients/", HipViewSet, basename="hip")
 
 abdm_urlpatterns = [
     *abdm_router.urls,
+    path(
+        "v0.5/consent-requests/on-init",
+        ConsentCallbackViewSet.as_view({"post": "consent_request__on_init"}),
+        name="abdm__consent_request__on_init",
+    ),
+    path(
+        "v0.5/consent-requests/on-status",
+        ConsentCallbackViewSet.as_view({"post": "consent_request__on_status"}),
+        name="abdm__consent_request__on_status",
+    ),
+    path(
+        "v0.5/consents/hiu/notify",
+        ConsentCallbackViewSet.as_view({"post": "consents__hiu__notify"}),
+        name="abdm__consents__hiu__notify",
+    ),
     path(
         "v0.5/users/auth/on-fetch-modes",
         OnFetchView.as_view(),
