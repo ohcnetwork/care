@@ -70,7 +70,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                         "medicine": (
                             "This medicine is already prescribed to this patient. "
                             "Please discontinue the existing prescription to prescribe again."
-                            )
+                        )
                     }
                 )
 
