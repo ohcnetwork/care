@@ -177,13 +177,18 @@ class MedibaseViewSet(ViewSet):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
         queryset = MedibaseMedicineTable
-        try:
-            limit = min(int(request.query_params.get("limit", 30)), 100)
-        except ValueError:
-            limit = 30
+
+        if type := request.query_params.get("type"):
+            queryset = [x for x in queryset if x[2] == type]
 
         if query := request.query_params.get("query"):
             query = query.strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
+
+        try:
+            limit = min(int(request.query_params.get("limit", 30)), 100)
+        except ValueError:
+            limit = 30
+
         return Response(self.serailize_data(queryset[:limit]))
