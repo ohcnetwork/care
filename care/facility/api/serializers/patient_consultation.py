@@ -153,7 +153,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError("Only Doctors can verify a Consultation")
 
         if (
-            str(verified_by.home_facility.external_id)
+            verified_by.home_facility
+            and str(verified_by.home_facility.external_id)
             != self.context["request"].data["facility"]
         ):
             raise ValidationError(
