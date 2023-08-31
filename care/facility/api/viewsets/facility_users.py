@@ -1,6 +1,7 @@
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import filters as drf_filters
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -28,7 +29,11 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
     filterset_class = UserFilter
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        drf_filters.SearchFilter,
+    ]
+    search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
         try:

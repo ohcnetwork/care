@@ -199,7 +199,6 @@
       "is_telemedicine": false,
       "last_updated_by_telemedicine": false,
       "assigned_to": null,
-      "verified_by": "",
       "created_by": 2,
       "last_edited_by": 2,
       "last_daily_round": null,
@@ -2470,8 +2469,14 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 150.0,
-      "allowed_units": [1, 2],
-      "tags": [1, 2]
+      "allowed_units": [
+        1,
+        2
+      ],
+      "tags": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -2482,8 +2487,13 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 2.0,
-      "allowed_units": [1, 2],
-      "tags": [2]
+      "allowed_units": [
+        1,
+        2
+      ],
+      "tags": [
+        2
+      ]
     }
   },
   {
@@ -2494,8 +2504,12 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [7],
-      "tags": [2]
+      "allowed_units": [
+        7
+      ],
+      "tags": [
+        2
+      ]
     }
   },
   {
@@ -2506,7 +2520,9 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [4],
+      "allowed_units": [
+        4
+      ],
       "tags": []
     }
   },
@@ -2518,7 +2534,9 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [4],
+      "allowed_units": [
+        4
+      ],
       "tags": []
     }
   },
@@ -2530,7 +2548,9 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [4],
+      "allowed_units": [
+        4
+      ],
       "tags": []
     }
   },
@@ -2542,8 +2562,12 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [7],
-      "tags": [2]
+      "allowed_units": [
+        7
+      ],
+      "tags": [
+        2
+      ]
     }
   },
   {
@@ -2562,7 +2586,14 @@
         "address": "127.0.0.1",
         "pincode": 670000,
         "district": 7,
-        "features": [1, 2, 3, 4, 5, 6],
+        "features": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
         "latitude": null,
         "inventory": {},
         "longitude": null,
@@ -2634,7 +2665,10 @@
         "address": "89.66.33.55",
         "pincode": 670112,
         "district": 7,
-        "features": [1, 6],
+        "features": [
+          1,
+          6
+        ],
         "latitude": null,
         "inventory": {},
         "longitude": null,

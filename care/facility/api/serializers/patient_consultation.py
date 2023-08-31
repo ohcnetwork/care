@@ -67,9 +67,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     facility = ExternalIdSerializerField(read_only=True)
 
     assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
-
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
+    )
+
+    verified_by_object = UserBaseMinimumSerializer(source="verified_by", read_only=True)
+    verified_by = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=True, allow_null=False
     )
 
     discharge_reason = serializers.ChoiceField(
@@ -132,6 +136,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "last_edited_by",
             "created_by",
             "kasp_enabled_date",
+            "deprecated_verified_by",
         )
         exclude = ("deleted", "external_id")
 
@@ -142,6 +147,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         except KeyError:
             bed_number = None
         return bed_number
+
+    def validate_verified_by(self, verified_by):
+        if not verified_by.user_type == User.TYPE_VALUE_MAP["Doctor"]:
+            raise ValidationError("Only Doctors can verify a Consultation")
+
+        if (
+            str(verified_by.home_facility.external_id)
+            != self.context["request"].data["facility"]
+        ):
+            raise ValidationError(
+                "Home Facility of the Doctor must be the same as the Consultation Facility"
+            )
+        return verified_by
 
     def update(self, instance, validated_data):
         instance.last_edited_by = self.context["request"].user

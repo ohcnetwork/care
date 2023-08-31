@@ -88,7 +88,10 @@ class Fhir:
 
         id = str(uuid())
         name = (
-            self.consultation.verified_by
+            (
+                self.consultation.verified_by
+                and f"{self.consultation.verified_by.first_name} {self.consultation.verified_by.last_name}"
+            )
             or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"
         )
         self._practitioner_profile = Practitioner(
