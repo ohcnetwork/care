@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -12,12 +13,24 @@ from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import ABDMAuthentication
 
 
+class ConsentFilter(filters.FilterSet):
+    patient = filters.UUIDFilter(
+        field_name="patient_abha__patientregistration__external_id"
+    )
+    health_id = filters.CharFilter(field_name="patient_abha__health_id")
+
+    class Meta:
+        model = Consent
+        fields = ["patient", "health_id", "status", "purpose"]
+
+
 class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     serializer_class = ConsentSerializer
     model = Consent
     queryset = Consent.objects.all()
     permission_classes = (IsAuthenticated,)
-    filterset_fields = ["status", "patient_abha", "requester"]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ConsentFilter
 
     def get_queryset(self):
         queryset = self.queryset
