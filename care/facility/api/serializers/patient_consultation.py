@@ -148,20 +148,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             bed_number = None
         return bed_number
 
-    def validate_verified_by(self, verified_by):
-        if not verified_by.user_type == User.TYPE_VALUE_MAP["Doctor"]:
-            raise ValidationError("Only Doctors can verify a Consultation")
-
-        if (
-            verified_by.home_facility
-            and str(verified_by.home_facility.external_id)
-            != self.context["request"].data["facility"]
-        ):
-            raise ValidationError(
-                "Home Facility of the Doctor must be the same as the Consultation Facility"
-            )
-        return verified_by
-
     def update(self, instance, validated_data):
         instance.last_edited_by = self.context["request"].user
 
@@ -331,6 +317,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
+
+        if not validated["verified_by"].user_type == User.TYPE_VALUE_MAP["Doctor"]:
+            raise ValidationError("Only Doctors can verify a Consultation")
+
+        facility = (
+            self.instance and self.instance.facility or validated["patient"].facility
+        )
+        if (
+            validated["verified_by"].home_facility
+            and validated["verified_by"].home_facility != facility
+        ):
+            raise ValidationError(
+                "Home Facility of the Doctor must be the same as the Consultation Facility"
+            )
 
         if "suggestion" in validated:
             if validated["suggestion"] is SuggestionChoices.R:
