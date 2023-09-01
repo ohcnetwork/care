@@ -83,14 +83,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Administered Date cannot be in the future."
             )
-
-        prescription = self.context["prescription"]
-        if prescription.discontinued and value > prescription.discontinued_date:
-            raise serializers.ValidationError(
-                "Administered Date cannot be after Discontinued Date."
-            )
-
-        if prescription.created_date > value:
+        if self.context["prescription"].created_date > value:
             raise serializers.ValidationError(
                 "Administered Date cannot be before Prescription Date."
             )
