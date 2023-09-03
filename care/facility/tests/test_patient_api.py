@@ -82,33 +82,52 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user(
-            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+            "doctor1",
+            cls.district,
+            home_facility=cls.facility,
+            user_type=15,
         )
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset = cls.create_asset(cls.asset_location)
         cls.state_admin = cls.create_user(
-            "state-admin", cls.district, home_facility=cls.facility, user_type=40
+            "state-admin",
+            cls.district,
+            home_facility=cls.facility,
+            user_type=40,
         )
 
         cls.facility2 = cls.create_facility(
-            cls.super_user, cls.district, cls.local_body
+            cls.super_user,
+            cls.district,
+            cls.local_body,
         )
         cls.user2 = cls.create_user(
-            "doctor2", cls.district, home_facility=cls.facility2, user_type=15
+            "doctor2",
+            cls.district,
+            home_facility=cls.facility2,
+            user_type=15,
         )
         cls.patient = cls.create_patient(cls.district, cls.facility)
 
     def setUp(self):
         super().setUp()
         self.create_patient_note(
-            patient=self.patient, facility=self.facility, created_by=self.user
+            patient=self.patient,
+            facility=self.facility,
+            created_by=self.user,
         )
         self.create_patient_note(
-            patient=self.patient, facility=self.facility, created_by=self.user2
+            patient=self.patient,
+            facility=self.facility,
+            created_by=self.user2,
         )
 
     def create_patient_note(
-        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+        self,
+        patient=None,
+        note="Patient is doing find",
+        created_by=None,
+        **kwargs,
     ):
         data = {
             "facility": patient.facility or self.facility,
@@ -119,8 +138,8 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         self.client.post(f"/api/v1/patient/{patient.external_id}/notes/", data=data)
 
     def test_patient_notes(self):
-        patientId = self.patient.external_id
-        response = self.client.get(f"/api/v1/patient/{patientId}/notes/")
+        patient_id = self.patient.external_id
+        response = self.client.get(f"/api/v1/patient/{patient_id}/notes/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
@@ -134,7 +153,8 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         data = response.json()["results"][1]
 
         self.assertCountEqual(
-            data.keys(), [item.value for item in ExpectedPatientNoteKeys]
+            data.keys(),
+            [item.value for item in ExpectedPatientNoteKeys],
         )
 
         user_type_content = data["user_type"]
@@ -145,7 +165,8 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
         if facility_content is not None:
             self.assertCountEqual(
-                facility_content.keys(), [item.value for item in ExpectedFacilityKeys]
+                facility_content.keys(),
+                [item.value for item in ExpectedFacilityKeys],
             )
 
         ward_object_content = facility_content["ward_object"]
@@ -206,7 +227,10 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user(
-            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+            "doctor1",
+            cls.district,
+            home_facility=cls.facility,
+            user_type=15,
         )
         cls.patient = cls.create_patient(cls.district, cls.facility)
         cls.consultation = cls.create_consultation(
@@ -226,5 +250,6 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
-            response.data["results"][0]["id"], str(self.patient.external_id)
+            response.data["results"][0]["id"],
+            str(self.patient.external_id),
         )

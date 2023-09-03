@@ -13,11 +13,12 @@ class Command(BaseCommand):
     Command to add data related to inventory and their conversion rates
     """
 
-    help = "Seed Data for Inventory"
+    help = "Seed Data for Inventory"  # noqa: A003
 
     def handle(self, *args, **options):
-        print("Creating Units for Inventory as well as their conversion rates")
-
+        self.stdout.write(
+            "Creating Units for Inventory as well as their conversion rates",
+        )
         # Inventory Unit
 
         items, _ = FacilityInventoryUnit.objects.get_or_create(name="Items")
@@ -37,19 +38,25 @@ class Command(BaseCommand):
         # Inventory Item
 
         ppe, _ = FacilityInventoryItem.objects.get_or_create(
-            name="PPE", default_unit=items, min_quantity=150
+            name="PPE",
+            default_unit=items,
+            min_quantity=150,
         )
         ppe.tags.add(safety, medical)
         ppe.allowed_units.add(items, dozen)
 
         fluid, _ = FacilityInventoryItem.objects.get_or_create(
-            name="IV Fluid 500 ml", default_unit=items, min_quantity=2
+            name="IV Fluid 500 ml",
+            default_unit=items,
+            min_quantity=2,
         )
         fluid.tags.add(medical)
         fluid.allowed_units.add(items, dozen)
 
         liquid_oxygen, _ = FacilityInventoryItem.objects.get_or_create(
-            name="Liquid Oxygen", default_unit=cubic_meter, min_quantity=10
+            name="Liquid Oxygen",
+            default_unit=cubic_meter,
+            min_quantity=10,
         )
         liquid_oxygen.tags.add(medical)
         liquid_oxygen.allowed_units.add(cubic_meter)
@@ -62,17 +69,23 @@ class Command(BaseCommand):
         jumbo_d.allowed_units.add(cylinders)
 
         type_b, _ = FacilityInventoryItem.objects.get_or_create(
-            name="B Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+            name="B Type Oxygen Cylinder",
+            default_unit=cylinders,
+            min_quantity=100,
         )
         type_b.allowed_units.add(cylinders)
 
         type_c, _ = FacilityInventoryItem.objects.get_or_create(
-            name="C Type Oxygen Cylinder", default_unit=cylinders, min_quantity=100
+            name="C Type Oxygen Cylinder",
+            default_unit=cylinders,
+            min_quantity=100,
         )
         type_c.allowed_units.add(cylinders)
 
         gaseous_oxygen, _ = FacilityInventoryItem.objects.get_or_create(
-            name="Gaseous Oxygen", default_unit=cubic_meter, min_quantity=10
+            name="Gaseous Oxygen",
+            default_unit=cubic_meter,
+            min_quantity=10,
         )
         gaseous_oxygen.tags.add(medical)
         gaseous_oxygen.allowed_units.add(cubic_meter)
@@ -80,9 +93,13 @@ class Command(BaseCommand):
         # Conversion Rates
 
         _, _ = FacilityInventoryUnitConverter.objects.get_or_create(
-            from_unit=kg, to_unit=gram, multiplier=1000
+            from_unit=kg,
+            to_unit=gram,
+            multiplier=1000,
         )
 
         _, _ = FacilityInventoryUnitConverter.objects.get_or_create(
-            from_unit=dozen, to_unit=items, multiplier=12
+            from_unit=dozen,
+            to_unit=items,
+            multiplier=12,
         )

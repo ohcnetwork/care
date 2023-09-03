@@ -41,21 +41,21 @@ class PatientFilterSetTestCase(TestUtils, APITestCase):
         bed2 = Bed.objects.create(**bed2_data)
 
         consultation1 = self.create_consultation(
-            patient=patient1, facility=self.facility
+            patient=patient1, facility=self.facility,
         )
         consultation2 = self.create_consultation(
-            patient=patient2, facility=self.facility
+            patient=patient2, facility=self.facility,
         )
         consultation3 = self.create_consultation(
-            patient=patient3, facility=self.facility
+            patient=patient3, facility=self.facility,
         )
 
         # consultation beds
         consultation_bed1 = ConsultationBed.objects.create(
-            consultation=consultation1, bed=bed1, start_date=timezone.now()
+            consultation=consultation1, bed=bed1, start_date=timezone.now(),
         )
         consultation_bed2 = ConsultationBed.objects.create(
-            consultation=consultation2, bed=bed2, start_date=timezone.now()
+            consultation=consultation2, bed=bed2, start_date=timezone.now(),
         )
 
         consultation1.current_bed = consultation_bed1

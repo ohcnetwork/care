@@ -24,7 +24,11 @@ class PatientInvestigation(BaseModel):
     min_value = models.FloatField(blank=True, default=None, null=True)
     max_value = models.FloatField(blank=True, default=None, null=True)
     investigation_type = models.CharField(
-        max_length=10, choices=TestTypeChoices, blank=False, null=True, default=None
+        max_length=10,
+        choices=TestTypeChoices,
+        blank=False,
+        null=True,
+        default=None,
     )
     choices = models.TextField(null=True, blank=True)
 
@@ -34,10 +38,15 @@ class PatientInvestigation(BaseModel):
 
 class InvestigationSession(BaseModel):
     external_id = models.UUIDField(
-        default=uuid4, unique=True, db_index=True
+        default=uuid4,
+        unique=True,
+        db_index=True,
     )  # session_id
     created_by = models.ForeignKey(
-        User, null=False, blank=False, on_delete=models.PROTECT
+        User,
+        null=False,
+        blank=False,
+        on_delete=models.PROTECT,
     )
 
     class Meta:
@@ -45,23 +54,35 @@ class InvestigationSession(BaseModel):
             models.Index(
                 fields=[
                     "-created_date",
-                ]
+                ],
             ),
         ]
 
 
 class InvestigationValue(BaseModel):
     investigation = models.ForeignKey(
-        PatientInvestigation, on_delete=models.PROTECT, blank=False, null=False
+        PatientInvestigation,
+        on_delete=models.PROTECT,
+        blank=False,
+        null=False,
     )
     group = models.ForeignKey(
-        PatientInvestigationGroup, on_delete=models.PROTECT, blank=True, null=True
+        PatientInvestigationGroup,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
     value = models.FloatField(blank=True, null=True, default=None)
     notes = models.TextField(blank=True, null=True, default=None)
     consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.PROTECT, blank=False, null=False
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        blank=False,
+        null=False,
     )
     session = models.ForeignKey(
-        InvestigationSession, on_delete=models.PROTECT, blank=False, null=False
+        InvestigationSession,
+        on_delete=models.PROTECT,
+        blank=False,
+        null=False,
     )

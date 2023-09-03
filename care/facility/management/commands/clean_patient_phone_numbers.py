@@ -1,6 +1,3 @@
-import json
-from typing import Optional
-
 import phonenumbers
 from django.core.management.base import BaseCommand
 from phonenumber_field.serializerfields import PhoneNumberField
@@ -22,9 +19,11 @@ class Command(BaseCommand):
     Management command to clean the phone number field of patient to support E164 format.
     """
 
-    help = "Cleans the phone number field of patient to support E164 field"
+    help = (  # noqa: A003
+        "Cleans the phone number field of patient to support E164 field"
+    )
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         qs = PatientRegistration.objects.all()
         failed = []
         for patient in qs:
@@ -32,7 +31,18 @@ class Command(BaseCommand):
                 patient.phone_number = to_phone_number_field(patient.phone_number)
                 patient.save()
             except Exception:
-                failed.append({"id": patient.id, "phone_number": patient.phone_number})
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Failed to clean phone number for {patient.id} {patient.phone_number}",
+                    ),
+                )
 
-        print(f"Completed for {qs.count()} | Failed for {len(failed)}")
-        print(f"Failed for {json.dumps(failed)}")
+        if failed:
+            self.stdout.write(
+                self.style.ERROR(f"Failed to sync {len(failed)} patients"),
+            )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Successfully Synced {qs.count() - len(failed)} patients",
+            ),
+        )

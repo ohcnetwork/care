@@ -61,7 +61,8 @@ class FileUpload(FacilityBaseModel):
     )
     archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
-        choices=FileTypeChoices, default=FileType.PATIENT.value
+        choices=FileTypeChoices,
+        default=FileType.PATIENT.value,
     )
     file_category = models.CharField(
         choices=FileCategoryChoices,
@@ -84,8 +85,8 @@ class FileUpload(FacilityBaseModel):
         return super().save(*args, **kwargs)
 
     def signed_url(self, duration=60 * 60):
-        s3Client = boto3.client("s3", **cs_provider.get_client_config())
-        return s3Client.generate_presigned_url(
+        s3 = boto3.client("s3", **cs_provider.get_client_config())
+        return s3.generate_presigned_url(
             "put_object",
             Params={
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
@@ -95,8 +96,8 @@ class FileUpload(FacilityBaseModel):
         )
 
     def read_signed_url(self, duration=60 * 60):
-        s3Client = boto3.client("s3", **cs_provider.get_client_config())
-        return s3Client.generate_presigned_url(
+        s3 = boto3.client("s3", **cs_provider.get_client_config())
+        return s3.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": settings.FILE_UPLOAD_BUCKET,

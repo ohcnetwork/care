@@ -158,7 +158,7 @@ class Command(BaseCommand):
     Populates Investigation seed data
     """
 
-    help = "Seed Data for Investigations"
+    help = "Seed Data for Investigations"  # noqa: A003
 
     def handle(self, *args, **options):
         investigation_group_data = investigation_groups.split("\n")[1:]
@@ -166,11 +166,11 @@ class Command(BaseCommand):
         for investigation_group in investigation_group_data:
             current_investigation_group = investigation_group.split("\t")
             current_obj = PatientInvestigationGroup.objects.filter(
-                name=current_investigation_group[1]
+                name=current_investigation_group[1],
             ).first()
             if not current_obj:
                 current_obj = PatientInvestigationGroup(
-                    name=current_investigation_group[1]
+                    name=current_investigation_group[1],
                 )
                 current_obj.save()
             investigation_group_dict[current_investigation_group[0]] = current_obj

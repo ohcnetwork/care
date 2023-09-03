@@ -50,7 +50,8 @@ class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
     lab_pincode = serializers.CharField()
 
     icmr_category = ChoiceField(
-        choices=PatientSampleICMR.PATIENT_ICMR_CATEGORY, required=False
+        choices=PatientSampleICMR.PATIENT_ICMR_CATEGORY,
+        required=False,
     )
 
     class Meta:
@@ -73,10 +74,10 @@ class ICMRPatientCategorySerializer(serializers.ModelSerializer):
     symptomatic_healthcare_worker = serializers.BooleanField(allow_null=True)
     hospitalized_sari_patient = serializers.BooleanField(allow_null=True)
     asymptomatic_family_member_of_confirmed_case = serializers.BooleanField(
-        allow_null=True
+        allow_null=True,
     )
     asymptomatic_healthcare_worker_without_protection = serializers.BooleanField(
-        allow_null=True
+        allow_null=True,
     )
 
     class Meta:
@@ -98,7 +99,7 @@ class ICMRExposureHistorySerializer(serializers.ModelSerializer):
     travel_end_date = serializers.DateField()
 
     contact_with_confirmed_case = serializers.BooleanField(
-        source="contact_with_confirmed_carrier"
+        source="contact_with_confirmed_carrier",
     )
     contact_case_name = serializers.CharField()
 
@@ -127,13 +128,13 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     symptoms = serializers.ListSerializer(child=ChoiceField(choices=SYMPTOM_CHOICES))
     hospitalization_date = serializers.DateField()
     hospital_phone_number = serializers.CharField(
-        source="consultation.facility.phone_number"
+        source="consultation.facility.phone_number",
     )
     hospital_name = serializers.CharField(source="consultation.facility.name")
     hospital_pincode = serializers.CharField(source="consultation.facility.pincode")
 
     medical_conditions_list = serializers.ListSerializer(
-        child=ChoiceField(choices=DISEASE_CHOICES)
+        child=ChoiceField(choices=DISEASE_CHOICES),
     )
 
     class Meta:

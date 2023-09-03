@@ -34,12 +34,16 @@ class PatientMobileOTPViewSet(
         try:
             mobile_validator(phone_number)
         except error:
-            raise ValidationError({"phone_number": "Invalid phone number format"})
+            raise ValidationError(
+                {"phone_number": "Invalid phone number format"},
+            ) from None
         if len(otp) != settings.OTP_LENGTH:
             raise ValidationError({"otp": "Invalid OTP"})
 
         otp_object = PatientMobileOTP.objects.filter(
-            phone_number=phone_number, otp=otp, is_used=False
+            phone_number=phone_number,
+            otp=otp,
+            is_used=False,
         ).first()
 
         if not otp_object:

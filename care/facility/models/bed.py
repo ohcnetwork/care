@@ -19,15 +19,22 @@ class Bed(BaseModel):
     name = models.CharField(max_length=1024)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(
-        choices=BedTypeChoices, default=BedType.REGULAR.value
+        choices=BedTypeChoices,
+        default=BedType.REGULAR.value,
     )
     facility = models.ForeignKey(
-        Facility, on_delete=models.PROTECT, null=False, blank=False
+        Facility,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )  # Deprecated
     meta = JSONField(default=dict, blank=True)
     assets = models.ManyToManyField(Asset, through="AssetBed")
     location = models.ForeignKey(
-        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+        AssetLocation,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
     @property
@@ -44,7 +51,7 @@ class Bed(BaseModel):
             .exists()
         ):
             raise ValidationError(
-                {"name": "Bed with same name already exists in location."}
+                {"name": "Bed with same name already exists in location."},
             )
 
     def save(self, *args, **kwargs) -> None:
@@ -67,14 +74,19 @@ class AssetBed(BaseModel):
 
 class ConsultationBed(BaseModel):
     consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.PROTECT, null=False, blank=False
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
     meta = JSONField(default=dict, blank=True)
     assets = models.ManyToManyField(
-        Asset, through="ConsultationBedAsset", related_name="assigned_consultation_beds"
+        Asset,
+        through="ConsultationBedAsset",
+        related_name="assigned_consultation_beds",
     )
 
 

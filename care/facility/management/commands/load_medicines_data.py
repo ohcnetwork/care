@@ -11,14 +11,14 @@ class Command(BaseCommand):
     Usage: python manage.py load_medicines_data
     """
 
-    help = "Loads Medibase Medicines into the database from medibase.json"
+    help = "Loads Medibase Medicines into the database from medibase.json"  # noqa: A003
 
     def fetch_data(self):
-        with open("data/medibase.json", "r") as json_file:
+        with open("data/medibase.json") as json_file:
             return json.load(json_file)
 
     def handle(self, *args, **options):
-        print("Loading Medibase Medicines into the database from medibase.json")
+        self.stdout.write("Loading Medibase Medicines into the database")
 
         medibase_objects = self.fetch_data()
         MedibaseMedicine.objects.bulk_create(
@@ -37,3 +37,5 @@ class Command(BaseCommand):
             batch_size=1000,
             ignore_conflicts=True,
         )
+
+        self.stdout.write(self.style.SUCCESS("Successfully Loaded"))

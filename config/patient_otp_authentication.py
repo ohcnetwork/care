@@ -48,14 +48,14 @@ class CustomJWTAuthentication(JWTAuthentication):
                     "token_class": PatientToken.__name__,
                     "token_type": PatientToken.token_type,
                     "message": e.args[0],
-                }
+                },
             )
 
         raise InvalidToken(
             {
                 "detail": _("Given token not valid for any token type"),
                 "messages": messages,
-            }
+            },
         )
 
 

@@ -30,11 +30,13 @@ class FacilityFilter(filters.FilterSet):
     facility_type = filters.NumberFilter(field_name="facility_type")
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(
-        field_name="district__name", lookup_expr="icontains"
+        field_name="district__name",
+        lookup_expr="icontains",
     )
     local_body = filters.NumberFilter(field_name="local_body__id")
     local_body_name = filters.CharFilter(
-        field_name="local_body__name", lookup_expr="icontains"
+        field_name="local_body__name",
+        lookup_expr="icontains",
     )
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
@@ -66,7 +68,10 @@ class FacilityViewSet(
     """Viewset for facility CRUD operations."""
 
     queryset = Facility.objects.all().select_related(
-        "ward", "local_body", "district", "state"
+        "ward",
+        "local_body",
+        "district",
+        "state",
     )
     permission_classes = (
         IsAuthenticated,
@@ -101,8 +106,7 @@ class FacilityViewSet(
         if self.action == "cover_image":
             # Check DRYpermissions before updating
             return FacilityImageUploadSerializer
-        else:
-            return FacilitySerializer
+        return FacilitySerializer
 
     def destroy(self, request, *args, **kwargs):
         if (
@@ -110,14 +114,14 @@ class FacilityViewSet(
             or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
         ):
             if not PatientRegistration.objects.filter(
-                facility=self.get_object(), is_active=True
+                facility=self.get_object(),
+                is_active=True,
             ).exists():
                 return super().destroy(request, *args, **kwargs)
-            else:
-                return Response(
-                    {"facility": "cannot delete facility with active patients"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            return Response(
+                {"facility": "cannot delete facility with active patients"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
@@ -133,14 +137,16 @@ class FacilityViewSet(
             elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
                 mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING.copy())
                 pretty_mapping.update(
-                    FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy()
+                    FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy(),
                 )
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+                queryset,
+                field_header_map=mapping,
+                field_serializer_map=pretty_mapping,
             )
 
-        return super(FacilityViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["facility"])
     @action(methods=["POST"], detail=True)

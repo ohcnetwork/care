@@ -63,7 +63,7 @@ class FacilityCapacitySummaryViewSet(
 class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="TriageSummary").order_by(
-        "-created_date"
+        "-created_date",
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
@@ -91,7 +91,7 @@ class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
 class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="TestSummary").order_by(
-        "-created_date"
+        "-created_date",
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer
@@ -119,7 +119,7 @@ class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
 class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
     queryset = FacilityRelatedSummary.objects.filter(s_type="PatientSummary").order_by(
-        "-created_date"
+        "-created_date",
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FacilitySummarySerializer

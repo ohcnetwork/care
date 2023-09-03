@@ -4,7 +4,7 @@ from littletable import Table
 
 
 def fetch_data():
-    with open("data/pmjy_packages.json", "r") as json_file:
+    with open("data/pmjy_packages.json") as json_file:
         return json.load(json_file)
 
 
@@ -27,6 +27,8 @@ for pmjy_package in pmjy_packages:
     pmjy_package["name"] = pmjy_package.pop("procedure_label")
     pmjy_package["price"] = pmjy_package.pop("procedure_price")
     PMJYPackages.insert(pmjy_package)
+
+del pmjy_packages
 
 PMJYPackages.create_search_index("name")
 PMJYPackages.create_search_index("package_name")

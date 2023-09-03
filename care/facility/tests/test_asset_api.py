@@ -17,7 +17,9 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
         cls.patient = cls.create_patient(
-            cls.district, cls.facility, local_body=cls.local_body
+            cls.district,
+            cls.facility,
+            local_body=cls.local_body,
         )
 
     def setUp(self) -> None:
@@ -61,7 +63,8 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
             "location": self.asset_location.external_id,
         }
         response = self.client.patch(
-            f"/api/v1/asset/{self.asset.external_id}/", sample_data
+            f"/api/v1/asset/{self.asset.external_id}/",
+            sample_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], sample_data["name"])
@@ -73,7 +76,8 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
             "warranty_amc_end_of_validity": "2002-04-01",
         }
         response = self.client.patch(
-            f"/api/v1/asset/{self.asset.external_id}/", sample_data
+            f"/api/v1/asset/{self.asset.external_id}/",
+            sample_data,
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -82,7 +86,8 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
             "warranty_amc_end_of_validity": "2222-04-01",
         }
         response = self.client.patch(
-            f"/api/v1/asset/{self.asset.external_id}/", sample_data
+            f"/api/v1/asset/{self.asset.external_id}/",
+            sample_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -93,7 +98,10 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
 
     def test_delete_asset(self):
         user = self.create_user(
-            "distadmin", self.district, home_facility=self.facility, user_type=30
+            "distadmin",
+            self.district,
+            home_facility=self.facility,
+            user_type=30,
         )
         self.client.force_authenticate(user=user)
         response = self.client.delete(
@@ -104,15 +112,19 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
 
     def test_asset_filter_in_use_by_consultation(self):
         asset1 = Asset.objects.create(
-            name="asset1", current_location=self.asset_location
+            name="asset1",
+            current_location=self.asset1_location,
         )
         asset2 = Asset.objects.create(
-            name="asset2", current_location=self.asset_location
+            name="asset2",
+            current_location=self.asset1_location,
         )
 
         consultation = self.create_consultation(self.patient, self.facility)
         bed = Bed.objects.create(
-            name="bed1", location=self.asset_location, facility=self.facility
+            name="bed1",
+            location=self.asset1_location,
+            facility=self.facility,
         )
         self.client.post(
             "/api/v1/consultationbed/",

@@ -31,10 +31,14 @@ from config.ratelimit import ratelimit
 User = get_user_model()
 
 HTTP_USER_AGENT_HEADER = getattr(
-    settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT"
+    settings,
+    "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER",
+    "HTTP_USER_AGENT",
 )
 HTTP_IP_ADDRESS_HEADER = getattr(
-    settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR"
+    settings,
+    "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER",
+    "REMOTE_ADDR",
 )
 
 
@@ -73,7 +77,7 @@ class ResetPasswordCheck(GenericAPIView):
 
         # check expiry date
         expiry_date = reset_password_token.created_at + timedelta(
-            hours=password_reset_token_validation_time
+            hours=password_reset_token_validation_time,
         )
 
         if timezone.now() > expiry_date:
@@ -122,7 +126,7 @@ class ResetPasswordConfirm(GenericAPIView):
 
         # check expiry date
         expiry_date = reset_password_token.created_at + timedelta(
-            hours=password_reset_token_validation_time
+            hours=password_reset_token_validation_time,
         )
 
         if timezone.now() > expiry_date:
@@ -136,7 +140,8 @@ class ResetPasswordConfirm(GenericAPIView):
         # change users password (if we got to this code it means that the user is_active)
         if reset_password_token.user.eligible_for_reset():
             pre_password_reset.send(
-                sender=self.__class__, user=reset_password_token.user
+                sender=self.__class__,
+                user=reset_password_token.user,
             )
             try:
                 # validate the password against existing validators
@@ -144,17 +149,18 @@ class ResetPasswordConfirm(GenericAPIView):
                     password,
                     user=reset_password_token.user,
                     password_validators=get_password_validators(
-                        settings.AUTH_PASSWORD_VALIDATORS
+                        settings.AUTH_PASSWORD_VALIDATORS,
                     ),
                 )
             except ValidationError as e:
                 # raise a validation error for the serializer
-                raise exceptions.ValidationError({"password": e.messages})
+                raise exceptions.ValidationError({"password": e.messages}) from e
 
             reset_password_token.user.set_password(password)
             reset_password_token.user.save()
             post_password_reset.send(
-                sender=self.__class__, user=reset_password_token.user
+                sender=self.__class__,
+                user=reset_password_token.user,
             )
 
         # Delete all password reset tokens for this user
@@ -191,7 +197,7 @@ class ResetPasswordRequestToken(GenericAPIView):
 
         # datetime.now minus expiry hours
         now_minus_expiry_time = timezone.now() - timedelta(
-            hours=password_reset_token_validation_time
+            hours=password_reset_token_validation_time,
         )
 
         # delete all tokens where created_at < now - 24 hours
@@ -199,7 +205,7 @@ class ResetPasswordRequestToken(GenericAPIView):
 
         # find a user
         users = User.objects.filter(
-            **{"{}__exact".format(get_password_reset_lookup_field()): username}
+            **{f"{get_password_reset_lookup_field()}__exact": username},
         )
 
         active_user_found = False
@@ -214,16 +220,18 @@ class ResetPasswordRequestToken(GenericAPIView):
         # No active user found, raise a validation error
         # but not if DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE == True
         if not active_user_found and not getattr(
-            settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
+            settings,
+            "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE",
+            False,
         ):
             raise exceptions.ValidationError(
                 {
                     "email": [
                         _(
-                            "There is no active user associated with this e-mail address or the password can not be changed"
-                        )
+                            "There is no active user associated with this e-mail address or the password can not be changed",
+                        ),
                     ],
-                }
+                },
             )
 
         # last but not least: iterate over all users that are active and can change their password
@@ -247,7 +255,9 @@ class ResetPasswordRequestToken(GenericAPIView):
                 # send a signal that the password token was created
                 # let whoever receives this signal handle sending the email for the password reset
                 reset_password_token_created.send(
-                    sender=self.__class__, instance=self, reset_password_token=token
+                    sender=self.__class__,
+                    instance=self,
+                    reset_password_token=token,
                 )
         # done
         return Response({"status": "OK"})

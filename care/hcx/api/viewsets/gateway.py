@@ -4,6 +4,7 @@ from re import IGNORECASE, search
 from uuid import uuid4 as uuid
 
 from django.db.models import Q
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
@@ -74,7 +75,7 @@ class HcxGatewayViewSet(GenericViewSet):
                 "male"
                 if policy["patient_object"]["gender"] == 1
                 else "female"
-                if policy["patient_object"]["gender"] == 2
+                if policy["patient_object"]["gender"] == 2  # noqa: PLR2004
                 else "other",
                 policy["subscriber_id"],
                 policy["policy_id"],
@@ -94,10 +95,10 @@ class HcxGatewayViewSet(GenericViewSet):
         #         {"message": "Invalid FHIR object"}, status=status.HTTP_400_BAD_REQUEST
         #     )
 
-        response = Hcx().generateOutgoingHcxCall(
-            fhirPayload=json.loads(eligibility_check_fhir_bundle.json()),
+        response = Hcx().generate_outgoing_hcx_call(
+            fhir_payload=json.loads(eligibility_check_fhir_bundle.json()),
             operation=HcxOperations.COVERAGE_ELIGIBILITY_CHECK,
-            recipientCode=policy["insurer_id"],
+            recipient_code=policy["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
@@ -112,7 +113,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         claim = ClaimSerializer(Claim.objects.get(external_id=data["claim"])).data
         consultation = PatientConsultation.objects.get(
-            external_id=claim["consultation_object"]["id"]
+            external_id=claim["consultation_object"]["id"],
         )
 
         procedures = []
@@ -127,15 +128,18 @@ class HcxGatewayViewSet(GenericViewSet):
                         else procedure["frequency"],
                         "status": (
                             "completed"
-                            if datetime.strptime(procedure["time"], "%Y-%m-%dT%H:%M")
-                            < datetime.now()
+                            if datetime.strptime(
+                                procedure["time"],
+                                "%Y-%m-%dT%H:%M",
+                            ).astimezone(timezone.get_current_timezone())
+                            < timezone.now()
                             else "preparation"
                         )
                         if "time" in procedure
                         else "in-progress",
                     },
                     consultation.procedure,
-                )
+                ),
             )
 
         diagnoses = []
@@ -152,9 +156,9 @@ class HcxGatewayViewSet(GenericViewSet):
                         map(
                             lambda icd_id: ICDDiseases.by.id[icd_id],
                             consultation.icd11_diagnoses,
-                        )
+                        ),
                     ),
-                )
+                ),
             )
 
         if len(consultation.icd11_provisional_diagnoses):
@@ -170,14 +174,14 @@ class HcxGatewayViewSet(GenericViewSet):
                         map(
                             lambda icd_id: ICDDiseases.by.id[icd_id],
                             consultation.icd11_provisional_diagnoses,
-                        )
+                        ),
                     ),
-                )
+                ),
             )
 
         previous_claim = (
             Claim.objects.filter(
-                consultation__external_id=claim["consultation_object"]["id"]
+                consultation__external_id=claim["consultation_object"]["id"],
             )
             .order_by("-modified_date")
             .exclude(external_id=claim["id"])
@@ -186,7 +190,7 @@ class HcxGatewayViewSet(GenericViewSet):
         related_claims = []
         if previous_claim:
             related_claims.append(
-                {"id": str(previous_claim.external_id), "type": "prior"}
+                {"id": str(previous_claim.external_id), "type": "prior"},
             )
 
         docs = list(
@@ -200,21 +204,21 @@ class HcxGatewayViewSet(GenericViewSet):
                 ),
                 FileUpload.objects.filter(
                     Q(associating_id=claim["consultation_object"]["id"])
-                    | Q(associating_id=claim["id"])
+                    | Q(associating_id=claim["id"]),
                 ),
-            )
+            ),
         )
 
         if REVERSE_USE_CHOICES[claim["use"]] == "claim":
             discharge_summary_url = generate_discharge_report_signed_url(
-                claim["policy_object"]["patient_object"]["id"]
+                claim["policy_object"]["patient_object"]["id"],
             )
             docs.append(
                 {
                     "type": "DIA",
                     "name": "Discharge Summary",
                     "url": discharge_summary_url,
-                }
+                },
             )
 
         claim_fhir_bundle = Fhir().create_claim_bundle(
@@ -231,7 +235,7 @@ class HcxGatewayViewSet(GenericViewSet):
             "male"
             if claim["policy_object"]["patient_object"]["gender"] == 1
             else "female"
-            if claim["policy_object"]["patient_object"]["gender"] == 2
+            if claim["policy_object"]["patient_object"]["gender"] == 2  # noqa: PLR2004
             else "other",
             claim["policy_object"]["subscriber_id"],
             claim["policy_object"]["policy_id"],
@@ -255,12 +259,12 @@ class HcxGatewayViewSet(GenericViewSet):
         #         status=status.HTTP_400_BAD_REQUEST,
         #     )
 
-        response = Hcx().generateOutgoingHcxCall(
-            fhirPayload=json.loads(claim_fhir_bundle.json()),
+        response = Hcx().generate_outgoing_hcx_call(
+            fhir_payload=json.loads(claim_fhir_bundle.json()),
             operation=HcxOperations.CLAIM_SUBMIT
             if REVERSE_USE_CHOICES[claim["use"]] == "claim"
             else HcxOperations.PRE_AUTH_SUBMIT,
-            recipientCode=claim["policy_object"]["insurer_id"],
+            recipient_code=claim["policy_object"]["insurer_id"],
         )
 
         return Response(dict(response.get("response")), status=status.HTTP_200_OK)
@@ -274,7 +278,9 @@ class HcxGatewayViewSet(GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         communication = CommunicationSerializer(
-            get_communications(self.request.user).get(external_id=data["communication"])
+            get_communications(self.request.user).get(
+                external_id=data["communication"],
+            ),
         ).data
 
         payload = [
@@ -289,7 +295,7 @@ class HcxGatewayViewSet(GenericViewSet):
                         }
                     ),
                     FileUpload.objects.filter(associating_id=communication["id"]),
-                )
+                ),
             ),
         ]
 
@@ -308,12 +314,13 @@ class HcxGatewayViewSet(GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = Hcx().generateOutgoingHcxCall(
-            fhirPayload=json.loads(communication_fhir_bundle.json()),
+        response = Hcx().generate_outgoing_hcx_call(
+            fhir_payload=json.loads(communication_fhir_bundle.json()),
             operation=HcxOperations.COMMUNICATION_ON_REQUEST,
-            recipientCode=communication["claim_object"]["policy_object"]["insurer_id"],
-            correlationId=Communication.objects.filter(
-                claim__external_id=communication["claim_object"]["id"], created_by=None
+            recipient_code=communication["claim_object"]["policy_object"]["insurer_id"],
+            correlation_id=Communication.objects.filter(
+                claim__external_id=communication["claim_object"]["id"],
+                created_by=None,
             )
             .last()
             .identifier,
@@ -324,7 +331,7 @@ class HcxGatewayViewSet(GenericViewSet):
     @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def payors(self, request):
-        payors = Hcx().searchRegistry("roles", "payor")["participants"]
+        payors = Hcx().search_registry("roles", "payor")["participants"]
 
         active_payors = list(filter(lambda payor: payor["status"] == "Active", payors))
 
@@ -335,7 +342,7 @@ class HcxGatewayViewSet(GenericViewSet):
                     "code": payor["participant_code"],
                 },
                 active_payors,
-            )
+            ),
         )
 
         return Response(response, status=status.HTTP_200_OK)
@@ -347,16 +354,18 @@ class HcxGatewayViewSet(GenericViewSet):
 
         def serailize_data(pmjy_packages):
             result = []
-            for pmjy_package in pmjy_packages:
-                if type(pmjy_package) == tuple:
-                    pmjy_package = pmjy_package[0]
+            for _pmjy_package in pmjy_packages:
+                if isinstance(_pmjy_package, tuple):
+                    pmjy_package = _pmjy_package[0]
+                else:
+                    pmjy_package = _pmjy_package
                 result.append(
                     {
                         "code": pmjy_package.code,
                         "name": pmjy_package.name,
                         "price": pmjy_package.price,
                         "package_name": pmjy_package.package_name,
-                    }
+                    },
                 )
             return result
 
@@ -368,6 +377,6 @@ class HcxGatewayViewSet(GenericViewSet):
                 lambda row: search(r".*" + query + r".*", row.name, IGNORECASE)
                 is not None
                 or search(r".*" + query + r".*", row.package_name, IGNORECASE)
-                is not None
+                is not None,
             )
         return Response(serailize_data(queryset[:limit]))

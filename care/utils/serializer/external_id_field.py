@@ -1,19 +1,19 @@
 import uuid
 
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import serializers
 from rest_framework.fields import empty
+from rest_framework.serializers import Field, ValidationError
 
 
-class UUIDValidator(object):
+class UUIDValidator:
     def __call__(self, value):
         try:
             return uuid.UUID(value)
         except ValueError:
-            raise serializers.ValidationError("invalid uuid")
+            raise ValidationError("invalid uuid") from None
 
 
-class ExternalIdSerializerField(serializers.Field):
+class ExternalIdSerializerField(Field):
     def __init__(self, queryset=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = queryset
@@ -35,5 +35,5 @@ class ExternalIdSerializerField(serializers.Field):
             try:
                 value = self.queryset.get(external_id=value)
             except ObjectDoesNotExist:
-                raise serializers.ValidationError("object with this id not found")
+                raise ValidationError("object with this id not found") from None
         return value

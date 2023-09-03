@@ -1,9 +1,9 @@
-import datetime
 import enum
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
@@ -39,6 +39,14 @@ from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 
+def format_as_date(date):
+    return date.strftime("%d/%m/%Y")
+
+
+def format_as_time(time):
+    return time.strftime("%H:%M")
+
+
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # fields in the PatientSearch model
     PATIENT_SEARCH_KEYS = [
@@ -57,7 +65,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    class vaccineEnum(enum.Enum):
+    class VaccineEnum(enum.Enum):
         COVISHIELD = "CoviShield"
         COVAXIN = "Covaxin"
         SPUTNIK = "Sputnik"
@@ -66,7 +74,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         JANSSEN = "Janssen"
         SINOVAC = "Sinovac"
 
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
+    VaccineChoices = [(e.value, e.name) for e in VaccineEnum]
 
     class ActionEnum(enum.Enum):
         NO_ACTION = 10
@@ -100,7 +108,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         related_name="nearest_facility",
     )
     meta_info = models.OneToOneField(
-        "PatientMetaInfo", on_delete=models.SET_NULL, null=True
+        "PatientMetaInfo",
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     # name_old = EncryptedCharField(max_length=200, default="")
@@ -111,11 +121,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator], default=""
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
     )
 
     emergency_phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator], default=""
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
     )
 
     # address_old = EncryptedTextField(default="")
@@ -128,7 +142,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     year_of_birth = models.IntegerField(default=0, null=True)
 
     nationality = models.CharField(
-        max_length=255, default="", verbose_name="Nationality of Patient"
+        max_length=255,
+        default="",
+        verbose_name="Nationality of Patient",
     )
     passport_no = models.CharField(
         max_length=255,
@@ -138,7 +154,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
 
     is_medical_worker = models.BooleanField(
-        default=False, verbose_name="Is the Patient a Medical Worker"
+        default=False,
+        verbose_name="Is the Patient a Medical Worker",
     )
 
     blood_group = models.CharField(
@@ -150,10 +167,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     contact_with_confirmed_carrier = models.BooleanField(
-        default=False, verbose_name="Confirmed Contact with a Covid19 Carrier"
+        default=False,
+        verbose_name="Confirmed Contact with a Covid19 Carrier",
     )
     contact_with_suspected_carrier = models.BooleanField(
-        default=False, verbose_name="Suspected Contact with a Covid19 Carrier"
+        default=False,
+        verbose_name="Suspected Contact with a Covid19 Carrier",
     )
     estimated_contact_date = models.DateTimeField(null=True, blank=True)
 
@@ -179,35 +198,50 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     allergies = models.TextField(
-        default="", blank=True, verbose_name="Patient's Known Allergies"
+        default="",
+        blank=True,
+        verbose_name="Patient's Known Allergies",
     )
 
     present_health = models.TextField(
-        default="", blank=True, verbose_name="Patient's Current Health Details"
+        default="",
+        blank=True,
+        verbose_name="Patient's Current Health Details",
     )
     ongoing_medication = models.TextField(
         default="",
         blank=True,
         verbose_name="Already pescribed medication if any",
     )
-    has_SARI = models.BooleanField(
-        default=False, verbose_name="Does the Patient Suffer from SARI"
+    has_SARI = models.BooleanField(  # noqa: N815
+        default=False,
+        verbose_name="Does the Patient Suffer from SARI",
     )
 
     is_antenatal = models.BooleanField(
-        default=None, verbose_name="Does the patient require Prenatal Care ?"
+        default=None,
+        verbose_name="Does the patient require Prenatal Care ?",
     )
 
     ward_old = models.CharField(
-        max_length=255, default="", verbose_name="Ward of Patient", blank=False
+        max_length=255,
+        default="",
+        verbose_name="Ward of Patient",
+        blank=False,
     )
 
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     local_body = models.ForeignKey(
-        LocalBody, on_delete=models.SET_NULL, null=True, blank=True
+        LocalBody,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     district = models.ForeignKey(
-        District, on_delete=models.SET_NULL, null=True, blank=True
+        District,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -242,10 +276,15 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
+        choices=ActionChoices,
+        blank=True,
+        null=True,
+        default=ActionEnum.NO_ACTION.value,
     )
     review_time = models.DateTimeField(
-        null=True, blank=True, verbose_name="Patient's next review time"
+        null=True,
+        blank=True,
+        verbose_name="Patient's next review time",
     )
 
     created_by = models.ForeignKey(
@@ -269,17 +308,23 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # Issue #600 Care_Fe
     date_of_test = models.DateTimeField(
-        null=True, blank=True, verbose_name="Patient's test Date"
+        null=True,
+        blank=True,
+        verbose_name="Patient's test Date",
     )
     srf_id = models.CharField(max_length=200, blank=True, default="")
     test_type = models.IntegerField(
-        choices=TestTypeChoices, default=TestTypeEnum.UNK.value
+        choices=TestTypeChoices,
+        default=TestTypeEnum.UNK.value,
     )
 
     allow_transfer = models.BooleanField(default=False)
 
     last_consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.SET_NULL, null=True, default=None
+        PatientConsultation,
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
     )
 
     will_donate_blood = models.BooleanField(
@@ -362,7 +407,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices,
+        choices=VaccineChoices,
         default=None,
         null=True,
         blank=False,
@@ -377,7 +422,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         verbose_name="COVID-19 Vaccination ID",
     )
     last_vaccinated_date = models.DateTimeField(
-        null=True, blank=True, verbose_name="Date Last Vaccinated"
+        null=True,
+        blank=True,
+        verbose_name="Date Last Vaccinated",
     )
 
     # Extras
@@ -394,7 +441,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         verbose_name="Is Patient Declared Positive",
     )
     date_declared_positive = models.DateTimeField(
-        null=True, blank=True, verbose_name="Date Patient is Declared Positive"
+        null=True,
+        blank=True,
+        verbose_name="Date Patient is Declared Positive",
     )
 
     # Permission Scopes
@@ -409,7 +458,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # ABDM Health ID
     abha_number = models.OneToOneField(
-        AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
+        AbhaNumber,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     history = HistoricalRecords(excluded_fields=["meta_info"])
@@ -417,7 +469,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     objects = BaseManager()
 
     def __str__(self):
-        return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
+        return f"{self.name} - {self.age} - {self.get_gender_display()}"
 
     @property
     def tele_consultation_history(self):
@@ -452,10 +504,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self.year_of_birth = (
             self.date_of_birth.year
             if self.date_of_birth is not None
-            else datetime.datetime.now().year - self.age
+            else timezone.now().year - self.age
         )
 
-        today = datetime.date.today()
+        today = timezone.now().date()
 
         if self.date_of_birth:
             self.age = (
@@ -472,7 +524,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
             if self.date_of_receipt_of_information is not None
-            else datetime.datetime.now()
+            else timezone.now()
         )
 
         self._alias_recovery_to_recovered()
@@ -497,12 +549,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
-
-    def format_as_date(date):
-        return date.strftime("%d/%m/%Y")
-
-    def format_as_time(time):
-        return time.strftime("%H:%M")
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
@@ -545,6 +591,9 @@ class PatientMetaInfo(models.Model):
 
     occupation = models.IntegerField(choices=OccupationChoices)
     head_of_household = models.BooleanField()
+
+    def __str__(self):
+        return self.get_occupation_display()
 
 
 class PatientContactDetails(models.Model):
@@ -603,12 +652,15 @@ class PatientContactDetails(models.Model):
 
     is_primary = models.BooleanField(help_text="If false, then secondary contact")
     condition_of_contact_is_symptomatic = models.BooleanField(
-        help_text="While in contact, did the patient showing symptoms"
+        help_text="While in contact, did the patient showing symptoms",
     )
 
     deleted = models.BooleanField(default=False)
 
     objects = BaseManager()
+
+    def __str__(self):
+        return f"{self.patient} - {self.patient_in_contact} - {self.get_relation_with_patient_display()}"
 
 
 class Disease(models.Model):
@@ -629,7 +681,7 @@ class Disease(models.Model):
                 fields=["patient", "disease"],
                 condition=models.Q(deleted=False),
                 name="unique_patient_disease",
-            )
+            ),
         ]
 
     def __str__(self):
@@ -669,17 +721,24 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
 class PatientMobileOTP(BaseModel):
     is_used = models.BooleanField(default=False)
     phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator]
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
     )
     otp = models.CharField(max_length=10)
 
 
 class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     patient = models.ForeignKey(
-        PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
+        PatientRegistration,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     facility = models.ForeignKey(
-        Facility, on_delete=models.PROTECT, null=False, blank=False
+        Facility,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     user_type = models.CharField(max_length=25, default="")
     created_by = models.ForeignKey(

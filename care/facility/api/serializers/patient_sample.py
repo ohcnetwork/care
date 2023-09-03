@@ -29,38 +29,47 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
     patient_name = serializers.CharField(read_only=True, source="patient.name")
     patient_has_sari = serializers.BooleanField(
-        read_only=True, source="patient.has_SARI"
+        read_only=True,
+        source="patient.has_SARI",
     )
     patient_has_confirmed_contact = serializers.BooleanField(
-        read_only=True, source="patient.contact_with_confirmed_carrier"
+        read_only=True,
+        source="patient.contact_with_confirmed_carrier",
     )
     patient_has_suspected_contact = serializers.BooleanField(
-        read_only=True, source="patient.contact_with_suspected_carrier"
+        read_only=True,
+        source="patient.contact_with_suspected_carrier",
     )
     patient_travel_history = serializers.JSONField(
-        read_only=True, source="patient.countries_travelled"
+        read_only=True,
+        source="patient.countries_travelled",
     )
 
     facility = ExternalIdSerializerField(read_only=True, source="consultation.facility")
     facility_object = FacilityBasicInfoSerializer(
-        source="consultation.facility", read_only=True
+        source="consultation.facility",
+        read_only=True,
     )
 
     sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES, required=False)
     status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
     result = ChoiceField(
-        choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False
+        choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES,
+        required=False,
     )
 
     icmr_category = ChoiceField(
-        choices=PatientSample.PATIENT_ICMR_CATEGORY, required=False
+        choices=PatientSample.PATIENT_ICMR_CATEGORY,
+        required=False,
     )
 
     patient = ExternalIdSerializerField(
-        required=False, queryset=PatientRegistration.objects.all()
+        required=False,
+        queryset=PatientRegistration.objects.all(),
     )
     consultation = ExternalIdSerializerField(
-        required=False, queryset=PatientConsultation.objects.all()
+        required=False,
+        queryset=PatientConsultation.objects.all(),
     )
 
     date_of_sample = serializers.DateTimeField(required=False)
@@ -69,10 +78,12 @@ class PatientSampleSerializer(serializers.ModelSerializer):
     notes = serializers.CharField(required=False, allow_blank=True)
 
     testing_facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), required=False
+        queryset=Facility.objects.all(),
+        required=False,
     )
     testing_facility_object = FacilityBasicInfoSerializer(
-        source="testing_facility", read_only=True
+        source="testing_facility",
+        read_only=True,
     )
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
@@ -91,7 +102,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
         validated_data.pop("status", None)
         validated_data.pop("result", None)
 
-        sample = super(PatientSampleSerializer, self).create(validated_data)
+        sample = super().create(validated_data)
         sample.created_by = self.context["request"].user
         sample.last_edited_by = self.context["request"].user
         sample.save()
@@ -118,23 +129,26 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
                     "COMPLETED"
                 ]
         except KeyError:
-            raise ValidationError({"status": ["is required"]})
+            raise ValidationError({"status": ["is required"]}) from None
         valid_choices = PatientSample.SAMPLE_FLOW_RULES[
             PatientSample.SAMPLE_TEST_FLOW_CHOICES[instance.status - 1][1]
         ]
         if choice not in valid_choices:
             raise ValidationError(
-                {"status": ["Next valid choices are: {', '.join(valid_choices)}"]}
+                {"status": ["Next valid choices are: {', '.join(valid_choices)}"]},
             )
         if choice != "COMPLETED" and validated_data.get("result"):
             raise ValidationError(
-                {"result": ["Result can't be updated unless test is complete"]}
+                {"result": ["Result can't be updated unless test is complete"]},
             )
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": ["is required as the test is complete"]})
-        if choice == "COMPLETED" and instance.result != 3:
+        if (
+            choice == "COMPLETED"
+            and instance.result != PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
+        ):
             raise ValidationError(
-                {"result": ["cannot change result for completed test."]}
+                {"result": ["cannot change result for completed test."]},
             )
 
         if (
@@ -142,7 +156,7 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             and validated_data.get("date_of_result") is not None
         ):
             raise ValidationError(
-                {"date_of_result": ["cannot be provided without result"]}
+                {"date_of_result": ["cannot be provided without result"]},
             )
 
         if not instance.date_of_sample and validated_data.get("status") in [

@@ -2,6 +2,9 @@ import json
 
 import requests
 from django.conf import settings
+from rest_framework import status
+
+FIDELIUS_API_TIMEOUT = 5
 
 
 class Cipher:
@@ -18,9 +21,12 @@ class Cipher:
         self.key_to_share = None
 
     def generate_key_pair(self):
-        response = requests.get(f"{self.server_url}/keys/generate")
+        response = requests.get(
+            f"{self.server_url}/keys/generate",
+            timeout=FIDELIUS_API_TIMEOUT,
+        )
 
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             key_material = response.json()
 
             self.sender_private_key = key_material["privateKey"]
@@ -40,6 +46,7 @@ class Cipher:
 
         response = requests.post(
             f"{self.server_url}/encrypt",
+            timeout=FIDELIUS_API_TIMEOUT,
             headers={"Content-Type": "application/json"},
             data=json.dumps(
                 {
@@ -49,11 +56,11 @@ class Cipher:
                     "senderPublicKey": self.sender_public_key,
                     "senderNonce": self.sender_nonce,
                     "plainTextData": paylaod,
-                }
+                },
             ),
         )
 
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             data = response.json()
             self.key_to_share = data["keyToShare"]
 

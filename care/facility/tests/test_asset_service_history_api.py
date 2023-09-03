@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from django.utils.timezone import now
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -20,8 +20,8 @@ class AssetServiceViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset = cls.create_asset(cls.asset_location)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
-        cls.today = datetime.today().strftime("%Y-%m-%d")
-        cls.yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+        cls.today = timezone.now().strftime("%Y-%m-%d")
+        cls.yesterday = (timezone.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         cls.asset_service = AssetService.objects.create(
             asset=cls.asset,
             serviced_on=cls.today,
@@ -31,19 +31,19 @@ class AssetServiceViewSetTestCase(TestUtils, APITestCase):
             asset_service=cls.asset_service,
             serviced_on=cls.today,
             note="Test Note",
-            edited_on=now(),
+            edited_on=timezone.now(),
             edited_by=cls.user,
         )
 
     def test_list_asset_service(self):
         response = self.client.get(
-            f"/api/v1/asset/{self.asset.external_id}/service_records/"
+            f"/api/v1/asset/{self.asset.external_id}/service_records/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_asset_service(self):
         response = self.client.get(
-            f"/api/v1/asset/{self.asset.external_id}/service_records/{self.asset_service.external_id}/"
+            f"/api/v1/asset/{self.asset.external_id}/service_records/{self.asset_service.external_id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -53,7 +53,8 @@ class AssetServiceViewSetTestCase(TestUtils, APITestCase):
 
         sample_data = {"last_serviced_on": self.today, "note": "Hello"}
         response = self.client.patch(
-            f"/api/v1/asset/{self.asset.external_id}/", sample_data
+            f"/api/v1/asset/{self.asset.external_id}/",
+            sample_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["last_service"]["serviced_on"], self.today)
@@ -62,7 +63,8 @@ class AssetServiceViewSetTestCase(TestUtils, APITestCase):
     def test_update_asset_service_record(self):
         sample_data = {"last_serviced_on": self.today, "note": "Hello 2"}
         response = self.client.patch(
-            f"/api/v1/asset/{self.asset.external_id}/", sample_data
+            f"/api/v1/asset/{self.asset.external_id}/",
+            sample_data,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["last_service"]["serviced_on"], self.today)

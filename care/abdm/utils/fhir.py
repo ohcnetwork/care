@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4 as uuid
 
 from fhir.resources.address import Address
@@ -77,7 +77,11 @@ class Fhir:
             id=id,
             identifier=[Identifier(value=id)],
             name=[HumanName(text=name)],
-            gender="male" if gender == 1 else "female" if gender == 2 else "other",
+            gender="male"
+            if gender == 1
+            else "female"
+            if gender == 2  # noqa: PLR2004
+            else "other",
         )
 
         return self._patient_profile
@@ -119,7 +123,7 @@ class Fhir:
         self._organization_profile = Organization(
             id=id,
             identifier=[
-                Identifier(system="https://facilitysbx.ndhm.gov.in", value=hip_id)
+                Identifier(system="https://facilitysbx.ndhm.gov.in", value=hip_id),
             ],
             name=name,
             telecom=[ContactPoint(system="phone", value=phone)],
@@ -130,7 +134,7 @@ class Fhir:
                     state=state,
                     postalCode=pincode,
                     country="INDIA",
-                )
+                ),
             ],
         )
 
@@ -149,10 +153,10 @@ class Fhir:
                             system="http://terminology.hl7.org/CodeSystem/condition-category",
                             code="encounter-diagnosis",
                             display="Encounter Diagnosis",
-                        )
+                        ),
                     ],
                     text="Encounter Diagnosis",
-                )
+                ),
             ],
             verificationStatus=CodeableConcept(
                 coding=[
@@ -160,8 +164,8 @@ class Fhir:
                         system="http://terminology.hl7.org/CodeSystem/condition-ver-status",
                         code="provisional" if provisional else "confirmed",
                         display="Provisional" if provisional else "Confirmed",
-                    )
-                ]
+                    ),
+                ],
             ),
             code=CodeableConcept(
                 coding=[
@@ -169,7 +173,7 @@ class Fhir:
                         system="http://id.who.int/icd/release/11/mms",
                         code=code,
                         display=label,
-                    )
+                    ),
                 ],
                 text=diagnosis.label,
             ),
@@ -243,10 +247,10 @@ class Fhir:
                             },
                             id=str(investigation.external_id),
                             date=investigation.created_date.isoformat(),
-                        )
+                        ),
                     ),
                     InvestigationValue.objects.filter(consultation=self.consultation),
-                )
+                ),
             ),
             subject=self._reference(self._patient()),
             performer=[self._reference(self._organization())],
@@ -257,8 +261,8 @@ class Fhir:
         return self._diagnostic_report_profile
 
     def _observation(self, title, value, id, date):
-        if not value or (type(value) == dict and not value["value"]):
-            return
+        if not value or (isinstance(value, dict) and not value["value"]):
+            return None
 
         return Observation(
             id=f"{id}.{title.replace(' ', '').replace('_', '-')}"
@@ -268,24 +272,25 @@ class Fhir:
             effectiveDateTime=date if date else None,
             code=CodeableConcept(text=title),
             valueQuantity=Quantity(value=str(value["value"]), unit=value["unit"])
-            if type(value) == dict
+            if isinstance(value, dict)
             else None,
-            valueString=value if type(value) == str else None,
+            valueString=value if isinstance(value, str) else None,
             component=list(
                 map(
                     lambda component: ObservationComponent(
                         code=CodeableConcept(text=component["title"]),
                         valueQuantity=Quantity(
-                            value=component["value"], unit=component["unit"]
+                            value=component["value"],
+                            unit=component["unit"],
                         )
-                        if type(component) == dict
+                        if isinstance(component, dict)
                         else None,
-                        valueString=component if type(component) == str else None,
+                        valueString=component if isinstance(component, str) else None,
                     ),
                     value,
-                )
+                ),
             )
-            if type(value) == list
+            if isinstance(value, list)
             else None,
         )
 
@@ -341,7 +346,7 @@ class Fhir:
         # TODO: do it for other fields like bp, pulse, spo2, ...
 
         observation_profiles = list(
-            filter(lambda profile: profile is not None, observation_profiles)
+            filter(lambda profile: profile is not None, observation_profiles),
         )
         self._observation_profiles.extend(observation_profiles)
         return observation_profiles
@@ -371,22 +376,22 @@ class Fhir:
                         lambda diagnosis: EncounterDiagnosis(
                             condition=self._reference(
                                 self._condition(diagnosis),
-                            )
+                            ),
                         ),
                         self.consultation.icd11_diagnoses,
-                    )
+                    ),
                 )
                 + list(
                     map(
                         lambda diagnosis: EncounterDiagnosis(
-                            condition=self._reference(self._condition(diagnosis))
+                            condition=self._reference(self._condition(diagnosis)),
                         ),
                         self.consultation.icd11_provisional_diagnoses,
-                    )
+                    ),
                 )
                 if include_diagnosis
                 else None,
-            }
+            },
         )
 
         return self._encounter_profile
@@ -396,7 +401,7 @@ class Fhir:
             return self._immunization_profile
 
         if not self.consultation.patient.is_vaccinated:
-            return
+            return None
 
         self._immunization_profile = Immunization(
             id=str(uuid()),
@@ -405,7 +410,7 @@ class Fhir:
                 Identifier(
                     type=CodeableConcept(text="Covin Id"),
                     value=self.consultation.patient.covin_id,
-                )
+                ),
             ],
             vaccineCode=CodeableConcept(
                 coding=[
@@ -413,7 +418,7 @@ class Fhir:
                         system="http://snomed.info/sct",
                         code="1119305005",
                         display="COVID-19 antigen vaccine",
-                    )
+                    ),
                 ],
                 text=self.consultation.patient.vaccine_name,
             ),
@@ -424,16 +429,17 @@ class Fhir:
                         system="https://projecteka.in/sct",
                         code="47625008",
                         display="Intravenous route",
-                    )
-                ]
+                    ),
+                ],
             ),
             occurrenceDateTime=self.consultation.patient.last_vaccinated_date.isoformat(),
             protocolApplied=[
                 ImmunizationProtocolApplied(
-                    doseNumberPositiveInt=self.consultation.patient.number_of_doses
-                )
+                    doseNumberPositiveInt=self.consultation.patient.number_of_doses,
+                ),
             ],
         )
+        return None
 
     def _document_reference(self, file):
         id = str(file.external_id)
@@ -446,9 +452,10 @@ class Fhir:
             content=[
                 DocumentReferenceContent(
                     attachment=Attachment(
-                        contentType=content_type, data=base64.b64encode(content)
-                    )
-                )
+                        contentType=content_type,
+                        data=base64.b64encode(content),
+                    ),
+                ),
             ],
             author=[self._reference(self._organization())],
         )
@@ -498,11 +505,11 @@ class Fhir:
                         system="https://projecteka.in/sct",
                         code="440545006",
                         display="Prescription record",
-                    )
-                ]
+                    ),
+                ],
             ),
             title="Prescription",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="In Patient Prescriptions",
@@ -512,18 +519,18 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="440545006",
                                 display="Prescription record",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda medicine: self._reference(
-                                self._medication_request(medicine)[1]
+                                self._medication_request(medicine)[1],
                             ),
                             self.consultation.discharge_advice,
-                        )
+                        ),
                     ),
-                )
+                ),
             ],
             subject=self._reference(self._patient()),
             encounter=self._reference(self._encounter()),
@@ -542,11 +549,11 @@ class Fhir:
                         system="https://projecteka.in/sct",
                         code="419891008",
                         display="Record artifact",
-                    )
-                ]
+                    ),
+                ],
             ),
             title="Health Document Record",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Health Document Record",
@@ -556,20 +563,20 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="419891008",
                                 display="Record artifact",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda file: self._reference(
-                                self._document_reference(file)
+                                self._document_reference(file),
                             ),
                             FileUpload.objects.filter(
-                                associating_id=self.consultation.id
+                                associating_id=self.consultation.id,
                             ),
-                        )
+                        ),
                     ),
-                )
+                ),
             ],
             subject=self._reference(self._patient()),
             encounter=self._reference(self._encounter()),
@@ -587,11 +594,11 @@ class Fhir:
                     Coding(
                         system="https://projecteka.in/sct",
                         display="Wellness Record",
-                    )
-                ]
+                    ),
+                ],
             ),
             title="Wellness Record",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=list(
                 map(
                     lambda daily_round: CompositionSection(
@@ -601,20 +608,20 @@ class Fhir:
                                 Coding(
                                     system="https://projecteka.in/sct",
                                     display="Wellness Record",
-                                )
-                            ]
+                                ),
+                            ],
                         ),
                         entry=list(
                             map(
                                 lambda observation_profile: self._reference(
-                                    observation_profile
+                                    observation_profile,
                                 ),
                                 self._observations_from_daily_round(daily_round),
-                            )
+                            ),
                         ),
                     ),
                     self.consultation.daily_rounds.all(),
-                )
+                ),
             ),
             subject=self._reference(self._patient()),
             encounter=self._reference(self._encounter()),
@@ -637,7 +644,7 @@ class Fhir:
                 ],
             ),
             title="Immunization",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="IPD Immunization",
@@ -655,12 +662,12 @@ class Fhir:
                             [self._reference(self._immunization())]
                             if self._immunization()
                             else []
-                        )
+                        ),
                     ],
                     emptyReason=None
                     if self._immunization()
                     else CodeableConcept(
-                        coding=[Coding(code="notasked", display="Not Asked")]
+                        coding=[Coding(code="notasked", display="Not Asked")],
                     ),
                 ),
             ],
@@ -685,7 +692,7 @@ class Fhir:
                 ],
             ),
             title="Diagnostic Report",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Investigation Report",
@@ -718,11 +725,11 @@ class Fhir:
                         system="https://projecteka.in/sct",
                         code="373942005",
                         display="Discharge Summary Record",
-                    )
-                ]
+                    ),
+                ],
             ),
             title="Discharge Summary Document",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Prescribed medications",
@@ -732,16 +739,16 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="440545006",
                                 display="Prescription",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda medicine: self._reference(
-                                self._medication_request(medicine)[1]
+                                self._medication_request(medicine)[1],
                             ),
                             self.consultation.discharge_advice,
-                        )
+                        ),
                     ),
                 ),
                 CompositionSection(
@@ -752,18 +759,18 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="419891008",
                                 display="Record",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda file: self._reference(
-                                self._document_reference(file)
+                                self._document_reference(file),
                             ),
                             FileUpload.objects.filter(
-                                associating_id=self.consultation.id
+                                associating_id=self.consultation.id,
                             ),
-                        )
+                        ),
                     ),
                 ),
                 *list(
@@ -775,20 +782,20 @@ class Fhir:
                                     Coding(
                                         system="https://projecteka.in/sct",
                                         display="Wellness Record",
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                             entry=list(
                                 map(
                                     lambda observation_profile: self._reference(
-                                        observation_profile
+                                        observation_profile,
                                     ),
                                     self._observations_from_daily_round(daily_round),
-                                )
+                                ),
                             ),
                         ),
                         self.consultation.daily_rounds.all(),
-                    )
+                    ),
                 ),
                 CompositionSection(
                     title="Procedures",
@@ -798,16 +805,16 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="371525003",
                                 display="Clinical procedure report",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda procedure: self._reference(
-                                self._procedure(procedure)
+                                self._procedure(procedure),
                             ),
                             self.consultation.procedure,
-                        )
+                        ),
                     ),
                 ),
                 CompositionSection(
@@ -818,8 +825,8 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="734163000",
                                 display="Care Plan",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=[self._reference(self._careplan())],
                 ),
@@ -841,11 +848,11 @@ class Fhir:
                         system="https://projecteka.in/sct",
                         code="371530004",
                         display="Clinical consultation report",
-                    )
-                ]
+                    ),
+                ],
             ),
             title="OP Consultation Document",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Prescribed medications",
@@ -855,16 +862,16 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="440545006",
                                 display="Prescription",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda medicine: self._reference(
-                                self._medication_request(medicine)[1]
+                                self._medication_request(medicine)[1],
                             ),
                             self.consultation.discharge_advice,
-                        )
+                        ),
                     ),
                 ),
                 CompositionSection(
@@ -875,18 +882,18 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="419891008",
                                 display="Record",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda file: self._reference(
-                                self._document_reference(file)
+                                self._document_reference(file),
                             ),
                             FileUpload.objects.filter(
-                                associating_id=self.consultation.id
+                                associating_id=self.consultation.id,
                             ),
-                        )
+                        ),
                     ),
                 ),
                 *list(
@@ -898,20 +905,20 @@ class Fhir:
                                     Coding(
                                         system="https://projecteka.in/sct",
                                         display="Wellness Record",
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                             entry=list(
                                 map(
                                     lambda observation_profile: self._reference(
-                                        observation_profile
+                                        observation_profile,
                                     ),
                                     self._observations_from_daily_round(daily_round),
-                                )
+                                ),
                             ),
                         ),
                         self.consultation.daily_rounds.all(),
-                    )
+                    ),
                 ),
                 CompositionSection(
                     title="Procedures",
@@ -921,16 +928,16 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="371525003",
                                 display="Clinical procedure report",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=list(
                         map(
                             lambda procedure: self._reference(
-                                self._procedure(procedure)
+                                self._procedure(procedure),
                             ),
                             self.consultation.procedure,
-                        )
+                        ),
                     ),
                 ),
                 CompositionSection(
@@ -941,8 +948,8 @@ class Fhir:
                                 system="https://projecteka.in/sct",
                                 code="734163000",
                                 display="Care Plan",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     entry=[self._reference(self._careplan())],
                 ),
@@ -957,7 +964,7 @@ class Fhir:
 
     def create_prescription_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -974,20 +981,20 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_request_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
     def create_wellness_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1004,14 +1011,14 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._observation_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
     def create_immunization_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1030,7 +1037,7 @@ class Fhir:
 
     def create_diagnostic_report_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1047,14 +1054,14 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._observation_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
     def create_health_document_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1071,14 +1078,14 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._document_reference_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
     def create_discharge_summary_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1096,44 +1103,44 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_request_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._condition_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._procedure_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._document_reference_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._observation_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
     def create_op_consultation_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1151,55 +1158,54 @@ class Fhir:
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._medication_request_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._condition_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._procedure_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._document_reference_profiles,
-                    )
+                    ),
                 ),
                 *list(
                     map(
                         lambda resource: self._bundle_entry(resource),
                         self._observation_profiles,
-                    )
+                    ),
                 ),
             ],
         ).json()
 
-    def create_record(self, record_type):
+    def create_record(self, record_type):  # noqa: PLR0911
         if record_type == "Prescription":
             return self.create_prescription_record()
-        elif record_type == "WellnessRecord":
+        if record_type == "WellnessRecord":
             return self.create_wellness_record()
-        elif record_type == "ImmunizationRecord":
+        if record_type == "ImmunizationRecord":
             return self.create_immunization_record()
-        elif record_type == "HealthDocumentRecord":
+        if record_type == "HealthDocumentRecord":
             return self.create_health_document_record()
-        elif record_type == "DiagnosticReport":
+        if record_type == "DiagnosticReport":
             return self.create_diagnostic_report_record()
-        elif record_type == "DischargeSummary":
+        if record_type == "DischargeSummary":
             return self.create_discharge_summary_record()
-        elif record_type == "OPConsultation":
+        if record_type == "OPConsultation":
             return self.create_op_consultation_record()
-        else:
-            return self.create_discharge_summary_record()
+        return self.create_discharge_summary_record()

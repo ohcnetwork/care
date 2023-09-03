@@ -34,5 +34,6 @@ class MakeClaimSerializer(Serializer):
 
 class SendCommunicationSerializer(Serializer):
     communication = ExternalIdSerializerField(
-        queryset=Communication.objects.all(), required=True
+        queryset=Communication.objects.all(),
+        required=True,
     )

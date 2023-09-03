@@ -80,7 +80,9 @@ class BedViewSet(
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers,
         )
 
     def get_queryset(self):
@@ -103,7 +105,7 @@ class BedViewSet(
         instance = self.get_object()
         if instance.is_occupied:
             raise DRFValidationError(
-                detail="Bed is occupied. Please discharge the patient first"
+                detail="Bed is occupied. Please discharge the patient first",
             )
         return super().destroy(request, *args, **kwargs)
 
@@ -159,9 +161,10 @@ class PatientAssetBedFilter(filters.FilterSet):
         return queryset.filter(
             bed__id__in=Subquery(
                 ConsultationBed.objects.filter(
-                    bed__id=OuterRef("bed__id"), end_date__isnull=value
-                ).values("bed__id")
-            )
+                    bed__id=OuterRef("bed__id"),
+                    end_date__isnull=value,
+                ).values("bed__id"),
+            ),
         )
 
 
@@ -192,7 +195,7 @@ class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
         return queryset.filter(
-            bed__facility__external_id=self.kwargs["facility_external_id"]
+            bed__facility__external_id=self.kwargs["facility_external_id"],
         )
 
 

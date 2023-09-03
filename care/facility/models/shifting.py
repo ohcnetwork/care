@@ -57,7 +57,10 @@ class ShiftingRequest(FacilityBaseModel):
         related_name="shifting_approving_facility",
     )
     assigned_facility_type = models.IntegerField(
-        choices=FACILITY_TYPES, default=None, null=True, blank=True
+        choices=FACILITY_TYPES,
+        default=None,
+        null=True,
+        blank=True,
     )
     assigned_facility = models.ForeignKey(
         "Facility",
@@ -67,14 +70,19 @@ class ShiftingRequest(FacilityBaseModel):
     )
     assigned_facility_external = models.TextField(default="", null=True, blank=True)
     patient = models.ForeignKey(
-        "PatientRegistration", on_delete=models.CASCADE, related_name="patient"
+        "PatientRegistration",
+        on_delete=models.CASCADE,
+        related_name="patient",
     )
     emergency = models.BooleanField(default=False)
     is_up_shift = models.BooleanField(default=False)  # False for Down , True for UP
     reason = models.TextField(default="", blank=True)
     vehicle_preference = models.TextField(default="", blank=True)
     preferred_vehicle_choice = models.IntegerField(
-        choices=VEHICLE_CHOICES, default=None, null=True, blank=True
+        choices=VEHICLE_CHOICES,
+        default=None,
+        null=True,
+        blank=True,
     )
     comments = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
@@ -86,11 +94,17 @@ class ShiftingRequest(FacilityBaseModel):
     )
     is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(
-        choices=SHIFTING_STATUS_CHOICES, default=10, null=False, blank=False
+        choices=SHIFTING_STATUS_CHOICES,
+        default=10,
+        null=False,
+        blank=False,
     )
 
     breathlessness_level = models.IntegerField(
-        choices=BREATHLESSNESS_CHOICES, default=10, null=True, blank=True
+        choices=BREATHLESSNESS_CHOICES,
+        default=10,
+        null=True,
+        blank=True,
     )
 
     is_assigned_to_user = models.BooleanField(default=False)
@@ -179,7 +193,10 @@ class ShiftingRequest(FacilityBaseModel):
 
 class ShiftingRequestComment(FacilityBaseModel):
     request = models.ForeignKey(
-        ShiftingRequest, on_delete=models.PROTECT, null=False, blank=False
+        ShiftingRequest,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     created_by = models.ForeignKey(
         User,

@@ -50,7 +50,7 @@ class MedibaseMedicine(BaseModel):
         db_index=True,
         unique=True,
     )
-    type = models.CharField(
+    type = models.CharField(  # noqa: A003
         max_length=16,
         choices=generate_choices(MedibaseMedicineType),
         blank=False,
@@ -122,7 +122,7 @@ class Prescription(BaseModel):
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
     is_migrated = models.BooleanField(
-        default=False
+        default=False,
     )  # This field is to throw caution to data that was previously ported over
 
     def save(self, *args, **kwargs) -> None:
@@ -154,7 +154,9 @@ class MedicineAdministration(BaseModel):
         on_delete=models.PROTECT,
     )
     administered_date = models.DateTimeField(
-        null=False, blank=False, default=timezone.now
+        null=False,
+        blank=False,
+        default=timezone.now,
     )
 
     def __str__(self):
@@ -167,7 +169,7 @@ class MedicineAdministration(BaseModel):
     def validate(self) -> None:
         if self.prescription.discontinued:
             raise ValidationError(
-                {"prescription": "Prescription has been discontinued."}
+                {"prescription": "Prescription has been discontinued."},
             )
 
     def save(self, *args, **kwargs) -> None:

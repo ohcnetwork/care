@@ -40,10 +40,14 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     location_type = models.IntegerField(
-        choices=RoomTypeChoices, default=RoomType.OTHER.value
+        choices=RoomTypeChoices,
+        default=RoomType.OTHER.value,
     )
     facility = models.ForeignKey(
-        Facility, on_delete=models.PROTECT, null=False, blank=False
+        Facility,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
 
@@ -72,21 +76,31 @@ class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(
-        choices=AssetTypeChoices, default=AssetType.INTERNAL.value
+        choices=AssetTypeChoices,
+        default=AssetType.INTERNAL.value,
     )
     asset_class = models.CharField(
-        choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
+        choices=AssetClassChoices,
+        default=None,
+        null=True,
+        blank=True,
+        max_length=20,
     )
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(
-        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+        AssetLocation,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     is_working = models.BooleanField(default=None, null=True, blank=True)
     not_working_reason = models.CharField(max_length=1024, blank=True, null=True)
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")  # Deprecated
     meta = JSONField(
-        default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)]
+        default=dict,
+        blank=True,
+        validators=[JSONFieldSchemaValidator(ASSET_META)],
     )
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
@@ -187,16 +201,25 @@ class AssetAvailabilityRecord(BaseModel):
 class UserDefaultAssetLocation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=False, blank=False)
     location = models.ForeignKey(
-        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+        AssetLocation,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
 
 class FacilityDefaultAssetLocation(BaseModel):
     facility = models.ForeignKey(
-        Facility, on_delete=models.PROTECT, null=False, blank=False
+        Facility,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     location = models.ForeignKey(
-        AssetLocation, on_delete=models.PROTECT, null=False, blank=False
+        AssetLocation,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
 
@@ -217,7 +240,10 @@ class AssetTransaction(BaseModel):
         blank=False,
     )
     performed_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=False, blank=False
+        User,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
 
@@ -242,7 +268,10 @@ class AssetServiceEdit(models.Model):
     )
     edited_on = models.DateTimeField(auto_now_add=True)
     edited_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, null=False, blank=False
+        User,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
 
     serviced_on = models.DateField()
@@ -250,3 +279,6 @@ class AssetServiceEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_on"]
+
+    def __str__(self):
+        return f"{self.asset_service.asset.name} - {self.serviced_on}"

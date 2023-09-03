@@ -14,12 +14,12 @@ class Command(BaseCommand):
     Management command to Force Create Summary objects.
     """
 
-    help = "Force Create Summary Objects"
+    help = "Force Create Summary Objects"  # noqa: A003
 
     def handle(self, *args, **options):
         patient_summary()
-        print("Patients Summarised")
+        self.stdout.write(self.style.SUCCESS("Patients Summarized"))
         facility_capacity_summary()
-        print("Capacity Summarised")
+        self.stdout.write(self.style.SUCCESS("Capacity Summarized"))
         district_patient_summary()
-        print("District Wise Patient Summarised")
+        self.stdout.write(self.style.SUCCESS("District Wise Patient Summarized"))

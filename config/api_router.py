@@ -93,10 +93,7 @@ from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
-if settings.DEBUG:
-    router = DefaultRouter()
-else:
-    router = SimpleRouter()
+router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet)
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
@@ -145,7 +142,9 @@ router.register("test_sample", PatientSampleViewSet)
 
 # Summarisation
 router.register(
-    "facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility"
+    "facility_summary",
+    FacilityCapacitySummaryViewSet,
+    basename="summary-facility",
 )
 router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
 router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
@@ -175,7 +174,6 @@ resource_nested_router.register(r"comment", ResourceRequestCommentViewSet)
 router.register("investigation/group", InvestigationGroupViewset)
 router.register("investigation", PatientInvestigationViewSet)
 
-# Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"get_users", FacilityUserViewSet)
 facility_nested_router.register(r"hospital_doctor", HospitalDoctorViewSet)
@@ -201,13 +199,16 @@ patient_nested_router.register(r"notes", PatientNotesViewSet)
 patient_nested_router.register(r"abha", AbhaViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
-    router, r"consultation", lookup="consultation"
+    router,
+    r"consultation",
+    lookup="consultation",
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
 consultation_nested_router.register(
-    r"prescription_administration", MedicineAdministrationViewSet
+    r"prescription_administration",
+    MedicineAdministrationViewSet,
 )
 router.register("medibase", MedibaseViewSet, basename="medibase")
 
@@ -224,7 +225,9 @@ router.register("public/asset", AssetPublicViewSet)
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
 router.register(
-    "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
+    "abdm/health_facility",
+    HealthFacilityViewSet,
+    basename="abdm-healthfacility",
 )
 
 app_name = "api"

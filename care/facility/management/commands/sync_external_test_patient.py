@@ -9,13 +9,13 @@ class Command(BaseCommand):
     Management command to Sync the patient created flag in external tests.
     """
 
-    help = "Sync the patient created flag in external tests"
+    help = "Sync the patient created flag in external tests"  # noqa: A003
 
     def handle(self, *args, **options):
-        print("Starting Sync")
+        self.stdout.write("Syncing Patient Created Flag")
         for patient in PatientRegistration.objects.all():
             if patient.srf_id:
                 PatientExternalTest.objects.filter(
-                    srf_id__iexact=patient.srf_id
+                    srf_id__iexact=patient.srf_id,
                 ).update(patient_created=True)
-        print("Completed Sync")
+        self.stdout.write(self.style.SUCCESS("Successfully Synced"))

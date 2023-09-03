@@ -28,19 +28,24 @@ from config.serializers import ChoiceField
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     additional_symptoms = serializers.MultipleChoiceField(
-        choices=SYMPTOM_CHOICES, required=False
+        choices=SYMPTOM_CHOICES,
+        required=False,
     )
     deprecated_covid_category = ChoiceField(
-        choices=COVID_CATEGORY_CHOICES, required=False
+        choices=COVID_CATEGORY_CHOICES,
+        required=False,
     )  # Deprecated
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
     review_interval = serializers.IntegerField(
-        source="consultation__review_interval", required=False
+        source="consultation__review_interval",
+        required=False,
     )
 
     taken_at = serializers.DateTimeField(required=True)
@@ -50,42 +55,55 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     # Critical Care Components
 
     consciousness_level = ChoiceField(
-        choices=DailyRound.ConsciousnessChoice, required=False
+        choices=DailyRound.ConsciousnessChoice,
+        required=False,
     )
     left_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionChoice,
+        required=False,
     )
     right_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionChoice,
+        required=False,
     )
     limb_response_upper_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoice,
+        required=False,
     )
     limb_response_upper_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoice,
+        required=False,
     )
     limb_response_lower_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoice,
+        required=False,
     )
     limb_response_lower_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoice,
+        required=False,
     )
     rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
     ventilator_interface = ChoiceField(
-        choices=DailyRound.VentilatorInterfaceChoice, required=False
+        choices=DailyRound.VentilatorInterfaceChoice,
+        required=False,
     )
     ventilator_mode = ChoiceField(
-        choices=DailyRound.VentilatorModeChoice, required=False
+        choices=DailyRound.VentilatorModeChoice,
+        required=False,
     )
     ventilator_oxygen_modality = ChoiceField(
-        choices=DailyRound.VentilatorOxygenModalityChoice, required=False
+        choices=DailyRound.VentilatorOxygenModalityChoice,
+        required=False,
     )
     insulin_intake_frequency = ChoiceField(
-        choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
+        choices=DailyRound.InsulinIntakeFrequencyChoice,
+        required=False,
     )
 
     clone_last = serializers.BooleanField(
-        write_only=True, default=False, required=False
+        write_only=True,
+        default=False,
+        required=False,
     )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
@@ -109,7 +127,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
         if instance.consultation.discharge_date:
             raise ValidationError(
-                {"consultation": ["Discharged Consultation data cannot be updated"]}
+                {"consultation": ["Discharged Consultation data cannot be updated"]},
             )
 
         if (
@@ -128,7 +146,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 instance.consultation.save(update_fields=["review_interval"])
                 if review_interval >= 0:
                     patient.review_time = localtime(now()) + timedelta(
-                        minutes=review_interval
+                        minutes=review_interval,
                     )
                 else:
                     patient.review_time = None
@@ -160,21 +178,21 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             facility=daily_round_obj.consultation.patient.facility,
         ).generate()
 
-    def create(self, validated_data):
+    def create(self, validated_data):  # noqa: PLR0915
         # Authorisation Checks
 
         # Skip check for asset user
         if self.context["request"].user.asset_id is None:
             allowed_facilities = get_home_facility_queryset(
-                self.context["request"].user
+                self.context["request"].user,
             )
             if not allowed_facilities.filter(
-                id=self.validated_data["consultation"].facility.id
+                id=self.validated_data["consultation"].facility.id,
             ).exists():
                 raise ValidationError(
                     {
-                        "facility": "Daily Round creates are only allowed in home facility"
-                    }
+                        "facility": "Daily Round creates are only allowed in home facility",
+                    },
                 )
 
         # Authorisation Checks End
@@ -185,20 +203,20 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 if should_clone:
                     consultation = get_object_or_404(
                         get_consultation_queryset(self.context["request"].user).filter(
-                            id=validated_data["consultation"].id
-                        )
+                            id=validated_data["consultation"].id,
+                        ),
                     )
                     last_objects = DailyRound.objects.filter(
-                        consultation=consultation
+                        consultation=consultation,
                     ).order_by("-created_date")
                     if not last_objects.exists():
                         raise ValidationError(
-                            {"daily_round": "No Daily Round record available to copy"}
+                            {"daily_round": "No Daily Round record available to copy"},
                         )
 
                     if "rounds_type" not in validated_data:
                         raise ValidationError(
-                            {"daily_round": "Rounds type is required to clone"}
+                            {"daily_round": "Rounds type is required to clone"},
                         )
 
                     rounds_type = validated_data.get("rounds_type")
@@ -250,12 +268,12 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
                 if "consultation__review_interval" in validated_data:
                     review_interval = validated_data.pop(
-                        "consultation__review_interval"
+                        "consultation__review_interval",
                     )
                     if review_interval >= 0:
                         validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
-                            minutes=review_interval
+                            minutes=review_interval,
                         )
                     else:
                         patient.review_time = None
@@ -278,13 +296,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 "last_updated_by_telemedicine"
             ]
             daily_round_obj.consultation.save(
-                update_fields=["last_updated_by_telemedicine", "review_interval"]
+                update_fields=["last_updated_by_telemedicine", "review_interval"],
             )
             daily_round_obj.save(
                 update_fields=[
                     "created_by",
                     "last_edited_by",
-                ]
+                ],
             )
 
             if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
@@ -296,27 +314,29 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
         if validated["consultation"].discharge_date:
             raise ValidationError(
-                {"consultation": ["Discharged Consultation data cannot be updated"]}
+                {"consultation": ["Discharged Consultation data cannot be updated"]},
             )
 
-        if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "consultation__review_interval" not in validated:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field is required as the patient has been requested Review."
-                            ]
-                        }
-                    )
-                if validated["consultation__review_interval"] <= 0:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field value is must be greater than 0."
-                            ]
-                        }
-                    )
+        if (
+            "action" in validated
+            and validated["action"] == PatientRegistration.ActionEnum.REVIEW
+        ):
+            if "consultation__review_interval" not in validated:
+                raise ValidationError(
+                    {
+                        "review_interval": [
+                            "This field is required as the patient has been requested Review.",
+                        ],
+                    },
+                )
+            if validated["consultation__review_interval"] <= 0:
+                raise ValidationError(
+                    {
+                        "review_interval": [
+                            "This field value is must be greater than 0.",
+                        ],
+                    },
+                )
 
         if "bed" in validated:
             external_id = validated.pop("bed")["external_id"]

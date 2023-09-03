@@ -1,14 +1,13 @@
-from datetime import datetime
-
 from authlib.jose import jwt
 from django.conf import settings
+from django.utils import timezone
 
 
 def generate_jwt(claims=None, exp=60):
     if claims is None:
         claims = {}
     header = {"alg": "RS256"}
-    time = int(datetime.now().timestamp())
+    time = int(timezone.now().timestamp())
     payload = {
         "iat": time,
         "exp": time + exp,

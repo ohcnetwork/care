@@ -34,7 +34,7 @@ class TestUserFacilityAllocation(TestUtils, APITestCase):
         user.home_facility = None
         user.save()
         allocation = UserFacilityAllocation.objects.get(
-            user=user, facility=self.facility
+            user=user, facility=self.facility,
         )
         self.assertIsNotNone(allocation.end_date)
 
@@ -47,7 +47,7 @@ class TestUserFacilityAllocation(TestUtils, APITestCase):
         user.deleted = True
         user.save()
         allocation = UserFacilityAllocation.objects.get(
-            user=user, facility=self.facility
+            user=user, facility=self.facility,
         )
         self.assertIsNotNone(allocation.end_date)
 
@@ -58,25 +58,25 @@ class TestUserFacilityAllocation(TestUtils, APITestCase):
             home_facility=self.facility,
         )
         new_facility = self.create_facility(
-            self.super_user, self.district, self.local_body
+            self.super_user, self.district, self.local_body,
         )
         user.home_facility = new_facility
         user.save()
         allocation = UserFacilityAllocation.objects.get(
-            user=user, facility=self.facility
+            user=user, facility=self.facility,
         )
         self.assertIsNotNone(allocation.end_date)
         self.assertTrue(
             UserFacilityAllocation.objects.filter(
-                user=user, facility=new_facility
-            ).exists()
+                user=user, facility=new_facility,
+            ).exists(),
         )
 
     def test_user_facility_allocation_is_not_created_when_user_is_created_without_home_facility(
         self,
     ):
         user = self.create_user(
-            district=self.district, username="facility_allocation_test_user"
+            district=self.district, username="facility_allocation_test_user",
         )
         self.assertFalse(UserFacilityAllocation.objects.filter(user=user).exists())
 

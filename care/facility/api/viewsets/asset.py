@@ -9,9 +9,8 @@ from django_filters.constants import EMPTY_VALUES
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework import filters as drf_filters
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
@@ -97,13 +96,13 @@ class AssetLocationViewSet(
             queryset = queryset.filter(facility__id__in=allowed_facilities)
 
         return queryset.filter(
-            facility__external_id=self.kwargs["facility_external_id"]
+            facility__external_id=self.kwargs["facility_external_id"],
         )
 
     def get_facility(self):
         facilities = get_facility_queryset(self.request.user)
         return get_object_or_404(
-            facilities.filter(external_id=self.kwargs["facility_external_id"])
+            facilities.filter(external_id=self.kwargs["facility_external_id"]),
         )
 
     def perform_create(self, serializer):
@@ -119,7 +118,7 @@ class AssetFilter(filters.FilterSet):
     is_working = filters.BooleanFilter()
     qr_code_id = filters.CharFilter(field_name="qr_code_id", lookup_expr="icontains")
     in_use_by_consultation = filters.BooleanFilter(
-        method="filter_in_use_by_consultation"
+        method="filter_in_use_by_consultation",
     )
     is_permanent = filters.BooleanFilter(method="filter_is_permanent")
 
@@ -131,8 +130,8 @@ class AssetFilter(filters.FilterSet):
                         Q(consultation_bed__end_date__gt=timezone.now())
                         | Q(consultation_bed__end_date__isnull=True),
                         asset=OuterRef("pk"),
-                    )
-                )
+                    ),
+                ),
             )
             queryset = queryset.filter(is_in_use=value)
         return queryset.distinct()
@@ -144,14 +143,14 @@ class AssetFilter(filters.FilterSet):
                     asset_class__in=[
                         AssetClasses.ONVIF.name,
                         AssetClasses.HL7MONITOR.name,
-                    ]
+                    ],
                 )
             else:
                 queryset = queryset.exclude(
                     asset_class__in=[
                         AssetClasses.ONVIF.name,
                         AssetClasses.HL7MONITOR.name,
-                    ]
+                    ],
                 )
         return queryset.distinct()
 
@@ -168,7 +167,9 @@ class AssetPublicViewSet(GenericViewSet):
             instance = self.get_object()
             serializer = self.get_serializer(instance)
             cache.set(
-                key, serializer.data, 60 * 60 * 24
+                key,
+                serializer.data,
+                60 * 60 * 24,
             )  # Cache the asset details for 24 hours
             return Response(serializer.data)
         return Response(hit)
@@ -214,12 +215,12 @@ class AssetViewSet(
             queryset = queryset.filter(current_location__facility__state=user.state)
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
-                current_location__facility__district=user.district
+                current_location__facility__district=user.district,
             )
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(
-                current_location__facility__id__in=allowed_facilities
+                current_location__facility__id__in=allowed_facilities,
             )
         return queryset
 
@@ -229,33 +230,34 @@ class AssetViewSet(
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             pretty_mapping = Asset.CSV_MAKE_PRETTY.copy()
             return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping,
             )
 
-        return super(AssetViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        else:
-            raise exceptions.AuthenticationFailed(
-                "Only District Admin and above can delete assets"
-            )
+        raise exceptions.AuthenticationFailed(
+            "Only District Admin and above can delete assets",
+        )
 
     @extend_schema(
-        responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
+        responses={200: UserDefaultAssetLocationSerializer()},
+        tags=["asset"],
     )
     @action(detail=False, methods=["GET"])
     def get_default_user_location(self, request, *args, **kwargs):
         obj = get_object_or_404(
-            UserDefaultAssetLocation.objects.filter(user=request.user)
+            UserDefaultAssetLocation.objects.filter(user=request.user),
         )
         return Response(UserDefaultAssetLocationSerializer(obj).data)
 
     @extend_schema(
         request=inline_serializer(
-            "AssetLocationFieldSerializer", fields={"location": UUIDField()}
+            "AssetLocationFieldSerializer",
+            fields={"location": UUIDField()},
         ),
         responses={200: UserDefaultAssetLocationSerializer()},
         tags=["asset"],
@@ -294,7 +296,7 @@ class AssetViewSet(
                 {
                     **asset.meta,
                     "middleware_hostname": asset.current_location.facility.middleware_address,
-                }
+                },
             )
             result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)
@@ -311,8 +313,7 @@ class AssetViewSet(
         except APIException as e:
             return Response(e.detail, e.status_code)
 
-        except Exception as e:
-            print(f"error: {e}")
+        except Exception:
             return Response(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -349,18 +350,18 @@ class AssetTransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
                 Q(from_location__facility__state=user.state)
-                | Q(to_location__facility__state=user.state)
+                | Q(to_location__facility__state=user.state),
             )
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
                 Q(from_location__facility__district=user.district)
-                | Q(to_location__facility__district=user.district)
+                | Q(to_location__facility__district=user.district),
             )
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(
                 Q(from_location__facility__id__in=allowed_facilities)
-                | Q(to_location__facility__id__in=allowed_facilities)
+                | Q(to_location__facility__id__in=allowed_facilities),
             )
         return queryset
 
@@ -396,21 +397,21 @@ class AssetServiceViewSet(
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset.filter(
-            asset__external_id=self.kwargs.get("asset_external_id")
+            asset__external_id=self.kwargs.get("asset_external_id"),
         )
         if user.is_superuser:
             pass
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(
-                asset__current_location__facility__state=user.state
+                asset__current_location__facility__state=user.state,
             )
         elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             queryset = queryset.filter(
-                asset__current_location__facility__district=user.district
+                asset__current_location__facility__district=user.district,
             )
         else:
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(
-                asset__current_location__facility__id__in=allowed_facilities
+                asset__current_location__facility__id__in=allowed_facilities,
             )
         return queryset

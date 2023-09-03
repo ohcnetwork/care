@@ -1,6 +1,7 @@
 import datetime
 
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
@@ -48,11 +49,16 @@ class PatientIcmr(PatientRegistration):
     @property
     def age_years(self):
         if self.date_of_birth is not None:
-            age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
+            age_years = relativedelta(timezone.now(), self.date_of_birth).years
         else:
             age_years = relativedelta(
-                datetime.datetime.now(),
-                datetime.datetime(year=self.year_of_birth, month=1, day=1),
+                timezone.now(),
+                datetime.datetime(
+                    year=self.year_of_birth,
+                    month=1,
+                    day=1,
+                    tzinfo=timezone.get_default_timezone(),
+                ),
             ).years
         return age_years
 
@@ -62,7 +68,8 @@ class PatientIcmr(PatientRegistration):
             age_months = 0
         else:
             age_months = relativedelta(
-                datetime.datetime.now(), self.date_of_birth
+                timezone.now(),
+                self.date_of_birth,
             ).months
         return age_months
 
@@ -87,9 +94,10 @@ class PatientIcmr(PatientRegistration):
         if self.countries_travelled:
             return len(self.countries_travelled) != 0 and (
                 self.date_of_return
-                and (self.date_of_return.date() - datetime.datetime.now().date()).days
-                <= 14
+                and (self.date_of_return.date() - timezone.now().date()).days
+                <= 14  # noqa: PLR2004
             )
+        return None
 
     @property
     def travel_end_date(self):
@@ -214,13 +222,10 @@ class PatientConsultationICMR(PatientConsultation):
         proxy = True
 
     def is_symptomatic(self):
-        if (
-            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys()
-            or self.symptoms_onset_date is not None
-        ):
-            return True
-        else:
-            return False
+        return bool(
+            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices
+            or self.symptoms_onset_date is not None,
+        )
 
     def symptomatic_international_traveller(
         self,
@@ -230,12 +235,10 @@ class PatientConsultationICMR(PatientConsultation):
             and len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
-                and (
-                    self.patient.date_of_return.date() - datetime.datetime.now().date()
-                ).days
-                <= 14
+                and (self.patient.date_of_return.date() - timezone.now().date()).days
+                <= 14  # noqa: PLR2004
             )
-            and self.is_symptomatic()
+            and self.is_symptomatic(),
         )
 
     def symptomatic_contact_of_confirmed_case(

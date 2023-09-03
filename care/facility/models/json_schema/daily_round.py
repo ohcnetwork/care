@@ -23,7 +23,7 @@ INFUSIONS = {
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
-        }
+        },
     ],
 }
 
@@ -39,7 +39,7 @@ IV_FLUID = {
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
-        }
+        },
     ],
 }
 
@@ -56,7 +56,7 @@ FEED = {
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
-        }
+        },
     ],
 }
 
@@ -72,7 +72,7 @@ OUTPUT = {
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
-        }
+        },
     ],
 }
 
@@ -94,7 +94,7 @@ PRESSURE_SORE = {
                         "Granulation",
                         "Slough",
                         "Necrotic",
-                    ]
+                    ],
                 },
                 "description": {"type": "string"},
                 "push_score": {"type": "number"},
@@ -103,7 +103,7 @@ PRESSURE_SORE = {
             },
             "additionalProperties": False,
             "required": [],
-        }
+        },
     ],
 }
 
@@ -120,7 +120,7 @@ PAIN_SCALE_ENHANCED = {
             },
             "additionalProperties": False,
             "required": ["region", "scale"],
-        }
+        },
     ],
 }
 
@@ -136,7 +136,7 @@ NURSING_PROCEDURE = {
             },
             "additionalProperties": False,
             "required": ["procedure", "description"],
-        }
+        },
     ],
 }
 

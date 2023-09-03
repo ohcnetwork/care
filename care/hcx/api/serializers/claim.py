@@ -38,7 +38,8 @@ class ClaimSerializer(ModelSerializer):
 
     consultation = UUIDField(write_only=True, required=True)
     consultation_object = PatientConsultationSerializer(
-        source="consultation", read_only=True
+        source="consultation",
+        read_only=True,
     )
 
     policy = UUIDField(write_only=True, required=True)
@@ -51,7 +52,10 @@ class ClaimSerializer(ModelSerializer):
     use = ChoiceField(choices=USE_CHOICES, default="claim")
     status = ChoiceField(choices=STATUS_CHOICES, default="active")
     priority = ChoiceField(choices=PRIORITY_CHOICES, default="normal")
-    type = ChoiceField(choices=CLAIM_TYPE_CHOICES, default="institutional")
+    type = ChoiceField(  # noqa: A003
+        choices=CLAIM_TYPE_CHOICES,
+        default="institutional",
+    )
 
     outcome = ChoiceField(choices=OUTCOME_CHOICES, read_only=True)
     error_text = CharField(read_only=True)
@@ -67,16 +71,16 @@ class ClaimSerializer(ModelSerializer):
     def validate(self, attrs):
         if "consultation" in attrs and "policy" in attrs:
             consultation = get_object_or_404(
-                PatientConsultation.objects.filter(external_id=attrs["consultation"])
+                PatientConsultation.objects.filter(external_id=attrs["consultation"]),
             )
             policy = get_object_or_404(
-                Policy.objects.filter(external_id=attrs["policy"])
+                Policy.objects.filter(external_id=attrs["policy"]),
             )
             attrs["consultation"] = consultation
             attrs["policy"] = policy
         else:
             raise ValidationError(
-                {"consultation": "Field is Required", "policy": "Field is Required"}
+                {"consultation": "Field is Required", "policy": "Field is Required"},
             )
 
         if "total_claim_amount" not in attrs and "items" in attrs:

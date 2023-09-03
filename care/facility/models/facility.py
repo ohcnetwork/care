@@ -124,19 +124,31 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
 
     longitude = models.DecimalField(
-        max_digits=22, decimal_places=16, null=True, blank=True
+        max_digits=22,
+        decimal_places=16,
+        null=True,
+        blank=True,
     )
     latitude = models.DecimalField(
-        max_digits=22, decimal_places=16, null=True, blank=True
+        max_digits=22,
+        decimal_places=16,
+        null=True,
+        blank=True,
     )
     pincode = models.IntegerField(default=None, null=True)
     address = models.TextField()
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     local_body = models.ForeignKey(
-        LocalBody, on_delete=models.SET_NULL, null=True, blank=True
+        LocalBody,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     district = models.ForeignKey(
-        District, on_delete=models.SET_NULL, null=True, blank=True
+        District,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -151,11 +163,16 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     expected_type_d_cylinders = models.IntegerField(default=0)
 
     phone_number = models.CharField(
-        max_length=14, blank=True, validators=[mobile_or_landline_number_validator]
+        max_length=14,
+        blank=True,
+        validators=[mobile_or_landline_number_validator],
     )
     corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     users = models.ManyToManyField(
@@ -166,7 +183,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
 
     cover_image_url = models.CharField(
-        blank=True, null=True, default=None, max_length=500
+        blank=True,
+        null=True,
+        default=None,
+        max_length=500,
     )
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
@@ -196,7 +216,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
 
         if is_create:
             FacilityUser.objects.create(
-                facility=self, user=self.created_by, created_by=self.created_by
+                facility=self,
+                user=self.created_by,
+                created_by=self.created_by,
             )
 
     CSV_MAPPING = {
@@ -229,13 +251,23 @@ class FacilityLocalGovtBody(models.Model):
     """
 
     facility = models.OneToOneField(
-        Facility, unique=True, null=True, blank=True, on_delete=models.SET_NULL
+        Facility,
+        unique=True,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     local_body = models.ForeignKey(
-        LocalBody, null=True, blank=True, on_delete=models.SET_NULL
+        LocalBody,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     district = models.ForeignKey(
-        District, null=True, blank=True, on_delete=models.SET_NULL
+        District,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
 
     class Meta:
@@ -244,7 +276,7 @@ class FacilityLocalGovtBody(models.Model):
                 name="cons_facilitylocalgovtbody_only_one_null",
                 check=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
-            )
+            ),
         ]
 
     def __str__(self):
@@ -266,7 +298,10 @@ class FacilityLocalGovtBody(models.Model):
 
 class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     area = models.IntegerField(choices=DOCTOR_TYPES)
     count = models.IntegerField()
@@ -280,7 +315,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
                 fields=["facility", "area"],
                 condition=models.Q(deleted=False),
                 name="unique_facility_doctor",
-            )
+            ),
         ]
 
     CSV_RELATED_MAPPING = {
@@ -293,7 +328,10 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
 class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     room_type = models.IntegerField(choices=ROOM_TYPES)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -307,7 +345,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
                 fields=["facility", "room_type"],
                 condition=models.Q(deleted=False),
                 name="unique_facility_room_type",
-            )
+            ),
         ]
         verbose_name_plural = "Facility Capacities"
 
@@ -332,7 +370,10 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
 
 class FacilityStaff(FacilityBaseModel):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     staff = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 
@@ -342,10 +383,16 @@ class FacilityStaff(FacilityBaseModel):
 
 class FacilityVolunteer(FacilityBaseModel):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     volunteer = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=False, blank=False
+        User,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
 
     def __str__(self):
@@ -360,13 +407,17 @@ class FacilityVolunteer(FacilityBaseModel):
 
 class Building(FacilityBaseModel):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     name = models.CharField(max_length=1000)
     num_rooms = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     num_floors = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     num_buildings = models.IntegerField(
-        validators=[MinValueValidator(0)], default=0
+        validators=[MinValueValidator(0)],
+        default=0,
     )  # For Internal Use only
 
     def __str__(self):
@@ -381,7 +432,10 @@ class Building(FacilityBaseModel):
 
 class Room(FacilityBaseModel):
     building = models.ForeignKey(
-        "Building", on_delete=models.CASCADE, null=False, blank=False
+        "Building",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     num = models.CharField(max_length=1000)
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -424,7 +478,10 @@ class InventoryItem(FacilityBaseModel):
 
 class Inventory(FacilityBaseModel):
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     item = models.ForeignKey("InventoryItem", on_delete=models.CASCADE)
     quantitiy = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -447,7 +504,10 @@ class Inventory(FacilityBaseModel):
 class InventoryLog(FacilityBaseModel):
     inventory = models.ForeignKey("Inventory", on_delete=models.CASCADE)
     updated_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     prev_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     new_count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -472,7 +532,9 @@ class FacilityUser(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="created_users"
+        User,
+        on_delete=models.PROTECT,
+        related_name="created_users",
     )
 
     class Meta:

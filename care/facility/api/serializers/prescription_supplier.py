@@ -30,12 +30,14 @@ class PrescriptionSupplierSerializer(serializers.ModelSerializer):
     scheme = ChoiceField(choices=PrescriptionSupplier.SchemeChoices)
     status = ChoiceField(choices=PrescriptionSupplier.StatusChoices)
     consultation_object = PrescriptionSupplierConsultationSerializer(
-        source="consultation", read_only=True
+        source="consultation",
+        read_only=True,
     )
     facility_object = FacilityBasicInfoSerializer(source="facility", read_only=True)
 
     consultation = ExternalIdSerializerField(
-        required=True, queryset=PatientConsultation.objects.all()
+        required=True,
+        queryset=PatientConsultation.objects.all(),
     )
     facility = ExternalIdSerializerField(required=True, queryset=Facility.objects.all())
 

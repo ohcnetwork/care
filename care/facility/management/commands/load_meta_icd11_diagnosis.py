@@ -11,7 +11,7 @@ class Command(BaseCommand):
     Usage: python manage.py load_meta_icd11_diagnosis
     """
 
-    help = "Loads ICD11 data to a table in to database."
+    help = "Loads ICD11 data to a table in to database."  # noqa: A003
 
     data = []
     roots_lookup = {}
@@ -88,24 +88,24 @@ class Command(BaseCommand):
 
         # The following code is never executed as the `icd11.json` file is
         # pre-sorted and hence the parent is always present before the child.
-        print("Full-scan for", id, item["label"])
+        self.stdout.write(f"Full-scan for {id} {item['label']}")
         return self.find_roots(
             [
                 icd11_object
                 for icd11_object in self.data
                 if icd11_object["ID"] == item["parentId"]
-            ][0]
+            ][0],
         )
 
     def handle(self, *args, **options):
-        print("Loading ICD11 data to DB Table (meta_icd11_diagnosis)...")
+        self.stdout.write("Loading ICD11 data to DB Table (meta_icd11_diagnosis)...")
         try:
             self.data = fetch_data()
 
             def roots(item):
                 roots = self.find_roots(item)
                 mapped = self.ICD11_GROUP_LABEL_PRETTY.get(
-                    roots["chapter"], roots["chapter"]
+                    roots["chapter"], roots["chapter"],
                 )
                 result = {
                     self.CLASS_KIND_DB_KEYS.get(k, k): v for k, v in roots.items()
@@ -131,8 +131,10 @@ class Command(BaseCommand):
                     )
                     for icd11_object in self.data
                     if icd11_object["ID"].split("/")[-1].isnumeric()
-                ]
+                ],
             )
-            print("Done loading ICD11 data to database.")
+            self.stdout.write(
+                self.style.SUCCESS("Successfully loaded ICD11 data to database"),
+            )
         except Exception as e:
-            raise CommandError(e)
+            raise CommandError("Failed to load ICD11 data to database") from e

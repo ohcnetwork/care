@@ -12,10 +12,14 @@ def load_medibase_in_memory():
             company_pretty=Coalesce("company", Value(""), output_field=CharField()),
             contents_pretty=Coalesce("contents", Value(""), output_field=TextField()),
             cims_class_pretty=Coalesce(
-                "cims_class", Value(""), output_field=CharField()
+                "cims_class",
+                Value(""),
+                output_field=CharField(),
             ),
             atc_classification_pretty=Coalesce(
-                "atc_classification", Value(""), output_field=TextField()
+                "atc_classification",
+                Value(""),
+                output_field=TextField(),
             ),
         )
         .values_list(

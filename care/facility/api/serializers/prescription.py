@@ -55,36 +55,38 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if "medicine" in attrs:
             attrs["medicine"] = get_object_or_404(
-                MedibaseMedicine, external_id=attrs["medicine"]
+                MedibaseMedicine,
+                external_id=attrs["medicine"],
             )
 
-        if not self.instance:
-            if Prescription.objects.filter(
+        if (
+            not self.instance
+            and Prescription.objects.filter(
                 consultation__external_id=self.context["request"].parser_context[
                     "kwargs"
                 ]["consultation_external_id"],
                 medicine=attrs["medicine"],
                 discontinued=False,
-            ).exists():
-                raise serializers.ValidationError(
-                    {
-                        "medicine": (
-                            "This medicine is already prescribed to this patient. "
-                            "Please discontinue the existing prescription to prescribe again."
-                        )
-                    }
-                )
+            ).exists()
+        ):
+            raise serializers.ValidationError(
+                {
+                    "medicine": (
+                        "This medicine is already prescribed to this patient. "
+                        "Please discontinue the existing prescription to prescribe again."
+                    ),
+                },
+            )
 
         if attrs.get("is_prn"):
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
-                    {"indicator": "Indicator should be set for PRN prescriptions."}
+                    {"indicator": "Indicator should be set for PRN prescriptions."},
                 )
-        else:
-            if not attrs.get("frequency"):
-                raise serializers.ValidationError(
-                    {"frequency": "Frequency should be set for prescriptions."}
-                )
+        elif not attrs.get("frequency"):
+            raise serializers.ValidationError(
+                {"frequency": "Frequency should be set for prescriptions."},
+            )
         return super().validate(attrs)
         # TODO: Ensure that this medicine is not already prescribed to the same patient and is currently active.
 
@@ -98,11 +100,11 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
     def validate_administered_date(self, value):
         if value > timezone.now():
             raise serializers.ValidationError(
-                "Administered Date cannot be in the future."
+                "Administered Date cannot be in the future.",
             )
         if self.context["prescription"].created_date > value:
             raise serializers.ValidationError(
-                "Administered Date cannot be before Prescription Date."
+                "Administered Date cannot be before Prescription Date.",
             )
         return value
 

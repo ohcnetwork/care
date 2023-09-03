@@ -50,7 +50,7 @@ class PolicySerializer(ModelSerializer):
     def validate(self, attrs):
         if "patient" in attrs:
             patient = get_object_or_404(
-                PatientRegistration.objects.filter(external_id=attrs["patient"])
+                PatientRegistration.objects.filter(external_id=attrs["patient"]),
             )
             attrs["patient"] = patient
         else:

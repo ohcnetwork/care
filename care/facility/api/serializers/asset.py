@@ -1,9 +1,7 @@
-from datetime import datetime
-
 from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.utils.timezone import now
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
@@ -52,8 +50,8 @@ class AssetLocationSerializer(ModelSerializer):
             ):
                 raise ValidationError(
                     {
-                        "name": "Asset location with this name and facility already exists."
-                    }
+                        "name": "Asset location with this name and facility already exists.",
+                    },
                 )
         return data
 
@@ -101,16 +99,14 @@ class AssetServiceSerializer(ModelSerializer):
         with transaction.atomic():
             edit = AssetServiceEdit(
                 asset_service=instance,
-                edited_on=now(),
+                edited_on=timezone.now(),
                 edited_by=user,
                 serviced_on=serviced_on,
                 note=note,
             )
             edit.save()
 
-            updated_instance = super().update(instance, validated_data)
-
-        return updated_instance
+            return super().update(instance, validated_data)
 
 
 class AssetSerializer(ModelSerializer):
@@ -140,7 +136,7 @@ class AssetSerializer(ModelSerializer):
         user = self.context["request"].user
         if "location" in attrs:
             location = get_object_or_404(
-                AssetLocation.objects.filter(external_id=attrs["location"])
+                AssetLocation.objects.filter(external_id=attrs["location"]),
             )
 
             facilities = get_facility_queryset(user)
@@ -159,15 +155,17 @@ class AssetSerializer(ModelSerializer):
             ):
                 del attrs["warranty_amc_end_of_validity"]
 
-            elif warranty_amc_end_of_validity < datetime.now().date():
+            elif warranty_amc_end_of_validity < timezone.now().date():
                 raise ValidationError(
-                    "Warranty/AMC end of validity cannot be in the past"
+                    "Warranty/AMC end of validity cannot be in the past",
                 )
 
         # validate that last serviced date is not in the future
-        if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
-            if attrs["last_serviced_on"] > datetime.now().date():
-                raise ValidationError("Last serviced on cannot be in the future")
+        if (
+            attrs.get("last_serviced_on")
+            and attrs["last_serviced_on"] > timezone.now().date()
+        ):
+            raise ValidationError("Last serviced on cannot be in the future")
 
         # only allow setting asset class on creation (or updation if asset class is not set)
         if (
@@ -187,7 +185,9 @@ class AssetSerializer(ModelSerializer):
             asset_instance = super().create(validated_data)
             if last_serviced_on or note:
                 asset_service = AssetService(
-                    asset=asset_instance, serviced_on=last_serviced_on, note=note
+                    asset=asset_instance,
+                    serviced_on=last_serviced_on,
+                    note=note,
                 )
                 asset_service.save()
                 asset_instance.last_service = asset_service
@@ -201,7 +201,8 @@ class AssetSerializer(ModelSerializer):
                 not instance.last_service
                 or instance.last_service.serviced_on
                 != validated_data.get(
-                    "last_serviced_on", instance.last_service.serviced_on
+                    "last_serviced_on",
+                    instance.last_service.serviced_on,
                 )
                 or instance.last_service.note
                 != validated_data.get("note", instance.last_service.note)
@@ -213,7 +214,7 @@ class AssetSerializer(ModelSerializer):
                 )
                 asset_service_initial_edit = AssetServiceEdit(
                     asset_service=asset_service,
-                    edited_on=now(),
+                    edited_on=timezone.now(),
                     edited_by=user,
                     serviced_on=asset_service.serviced_on,
                     note=asset_service.note,
@@ -231,7 +232,7 @@ class AssetSerializer(ModelSerializer):
                     != validated_data["current_location"].facility.id
                 ):
                     raise ValidationError(
-                        {"location": "Interfacility transfer is not allowed here"}
+                        {"location": "Interfacility transfer is not allowed here"},
                     )
                 AssetTransaction(
                     from_location=instance.current_location,
@@ -274,7 +275,7 @@ class UserDefaultAssetLocationSerializer(ModelSerializer):
 
 
 class AssetActionSerializer(Serializer):
-    def actionChoices():
+    def action_choices():
         actions = [
             OnvifAsset.OnvifActions,
             HL7MonitorAsset.HL7MonitorActions,
@@ -285,8 +286,8 @@ class AssetActionSerializer(Serializer):
             choices += [(e.value, e.name) for e in action]
         return choices
 
-    type = ChoiceField(
-        choices=actionChoices(),
+    type = ChoiceField(  # noqa: A003
+        choices=action_choices(),
         required=True,
     )
     data = JSONField(required=False)

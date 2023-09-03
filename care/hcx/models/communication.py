@@ -12,7 +12,9 @@ class Communication(BaseModel):
     claim = models.ForeignKey(Claim, on_delete=models.CASCADE)
 
     content = models.JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(CONTENT)], null=True
+        default=list,
+        validators=[JSONFieldSchemaValidator(CONTENT)],
+        null=True,
     )
 
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

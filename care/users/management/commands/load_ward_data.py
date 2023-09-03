@@ -1,6 +1,5 @@
 import glob
 import json
-from typing import Optional
 
 from django.core.management.base import BaseCommand, CommandParser
 from django.db import IntegrityError
@@ -14,12 +13,12 @@ class Command(BaseCommand):
     Sample data: https://github.com/rebuildearth/data/tree/master/data/india/kerala/lsgi_site_data
     """
 
-    help = "Loads Local Body data from a folder of JSONs"
+    help = "Loads Local Body data from a folder of JSONs"  # noqa: A003
 
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("folder", help="path to the folder of JSONs")
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         def int_or_zero(value):
             try:
                 int(value)
@@ -44,7 +43,7 @@ class Command(BaseCommand):
         district_map = {d.name: d for d in districts}
 
         # Creates a map with first char of readable value as key
-        LOCAL_BODY_CHOICE_MAP = dict([(c[1][0], c[0]) for c in LOCAL_BODY_CHOICES])
+        local_body_choice_map = dict([(c[1][0], c[0]) for c in LOCAL_BODY_CHOICES])
 
         def get_local_body(lb):
             if not lb["district"]:
@@ -53,18 +52,18 @@ class Command(BaseCommand):
                 name=lb["name"],
                 district=district_map[lb["district"]],
                 localbody_code=lb.get("localbody_code"),
-                body_type=LOCAL_BODY_CHOICE_MAP.get(
+                body_type=local_body_choice_map.get(
                     (lb.get("localbody_code", " "))[0],
                     LOCAL_BODY_CHOICES[-1][0],
                 ),
             ).first()
 
         for f in glob.glob(f"{folder}/*.json"):
-            with open(f"{f}", "r") as data_f:
+            with open(f"{f}") as data_f:
                 data = json.load(data_f)
                 wards = data.pop("wards", None)
                 if wards is None:
-                    print("Ward Data not Found ")
+                    self.stdout.write(self.style.WARNING(f"Ward Data not Found {f}"))
                 if data.get("district") is not None:
                     local_body = get_local_body(data)
                     if not local_body:
@@ -80,4 +79,4 @@ class Command(BaseCommand):
                             obj.save()
                         except IntegrityError:
                             pass
-        print("Processed ", str(counter), " wards")
+        self.stdout.write(self.style.SUCCESS(f"Processed {str(counter)} wards"))

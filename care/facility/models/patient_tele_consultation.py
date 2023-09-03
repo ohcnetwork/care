@@ -9,7 +9,8 @@ from care.users.models import User
 class PatientTeleConsultation(models.Model):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES, max_length=get_max_length(SYMPTOM_CHOICES, None)
+        choices=SYMPTOM_CHOICES,
+        max_length=get_max_length(SYMPTOM_CHOICES, None),
     )
     other_symptoms = models.TextField(blank=True, null=True)
     reason = models.TextField(blank=True, null=True, verbose_name="Reason for calling")

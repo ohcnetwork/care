@@ -11,12 +11,12 @@ def get_communications(user):
         queryset = queryset.filter(claim__policy__patient__facility__state=user.state)
     elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
         queryset = queryset.filter(
-            claim__policy__patient__facility__district=user.district
+            claim__policy__patient__facility__district=user.district,
         )
     else:
         allowed_facilities = get_accessible_facilities(user)
         queryset = queryset.filter(
-            claim__policy__patient__facility__id__in=allowed_facilities
+            claim__policy__patient__facility__id__in=allowed_facilities,
         )
 
     return queryset

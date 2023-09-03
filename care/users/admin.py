@@ -12,7 +12,7 @@ User = get_user_model()
 class ExportCsvMixin:
     def export_as_csv(self, request, queryset):
         queryset = User.objects.filter(is_superuser=False).values(
-            *User.CSV_MAPPING.keys()
+            *User.CSV_MAPPING.keys(),
         )
         return render_to_csv_response(
             queryset,
@@ -42,7 +42,7 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
                     "gender",
                     "age",
                     "verified",
-                )
+                ),
             },
         ),
     ) + auth_admin.UserAdmin.fieldsets

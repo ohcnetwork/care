@@ -1,8 +1,7 @@
-from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import exceptions, serializers
 
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
@@ -70,7 +69,7 @@ class SignUpSerializer(serializers.ModelSerializer):
                     },
                 )
 
-            if attrs["doctor_experience_commenced_on"] > date.today():
+            if attrs["doctor_experience_commenced_on"] > timezone.now().date():
                 raise serializers.ValidationError(
                     {
                         "doctor_experience_commenced_on": "Experience cannot be in the future",
@@ -117,18 +116,17 @@ class UserCreateSerializer(SignUpSerializer):
         )
 
     def validate_facilities(self, facility_ids):
-        if facility_ids:
-            if (
-                len(facility_ids)
-                != Facility.objects.filter(external_id__in=facility_ids).count()
-            ):
-                available_facility_ids = Facility.objects.filter(
-                    external_id__in=facility_ids,
-                ).values_list("external_id", flat=True)
-                not_found_ids = list(set(facility_ids) - set(available_facility_ids))
-                raise serializers.ValidationError(
-                    f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}",
-                )
+        if facility_ids and (
+            len(facility_ids)
+            != Facility.objects.filter(external_id__in=facility_ids).count()
+        ):
+            available_facility_ids = Facility.objects.filter(
+                external_id__in=facility_ids,
+            ).values_list("external_id", flat=True)
+            not_found_ids = list(set(facility_ids) - set(available_facility_ids))
+            raise serializers.ValidationError(
+                f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}",
+            )
         return facility_ids
 
     def validate_ward(self, value):
@@ -186,15 +184,17 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
-            if validated["user_type"] not in READ_ONLY_USER_TYPES:
-                raise exceptions.ValidationError(
-                    {
-                        "user_type": [
-                            "Read only users can create other read only users only",
-                        ],
-                    },
-                )
+        if (
+            self.context["created_by"].user_type in READ_ONLY_USER_TYPES
+            and validated["user_type"] not in READ_ONLY_USER_TYPES
+        ):
+            raise exceptions.ValidationError(
+                {
+                    "user_type": [
+                        "Read only users can create other read only users only",
+                    ],
+                },
+            )
 
         if (
             self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]

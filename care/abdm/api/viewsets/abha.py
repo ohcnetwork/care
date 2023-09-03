@@ -19,7 +19,7 @@ class AbhaViewSet(GenericViewSet):
     def get_abha_object(self):
         queryset = get_patient_queryset(self.request.user)
         patient_obj = get_object_or_404(
-            queryset.filter(external_id=self.kwargs.get("patient_external_id"))
+            queryset.filter(external_id=self.kwargs.get("patient_external_id")),
         )
         return patient_obj.abha_number
 

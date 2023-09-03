@@ -16,10 +16,16 @@ class PatientExternalTest(FacilityBaseModel):
     patient_status = models.CharField(max_length=15)
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(
-        LocalBody, on_delete=models.PROTECT, null=False, blank=False
+        LocalBody,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     district = models.ForeignKey(
-        District, on_delete=models.PROTECT, null=False, blank=False
+        District,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     source = models.CharField(max_length=255, blank=True, null=True)
     patient_category = models.CharField(max_length=255, blank=True, null=True)
@@ -78,7 +84,7 @@ class PatientExternalTest(FacilityBaseModel):
         "sample_type": "Sample Type",
         "result": "Final Result",
         "sample_collection_date": "Sample Collection Date",
-        "source": "Source"
+        "source": "Source",
         # "result_date": "",
     }
 

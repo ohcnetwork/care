@@ -46,7 +46,7 @@ def get_request_queryset(request, queryset):
             q_objects |= Q(approving_facility__state=request.user.state)
             q_objects |= Q(assigned_facility__state=request.user.state)
             return queryset.filter(q_objects)
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             q_objects = Q(origin_facility__district=request.user.district)
             q_objects |= Q(approving_facility__district=request.user.district)
             q_objects |= Q(assigned_facility__district=request.user.district)
@@ -67,7 +67,7 @@ class ResourceFilterSet(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     origin_facility = filters.UUIDFilter(field_name="origin_facility__external_id")
     approving_facility = filters.UUIDFilter(
-        field_name="approving_facility__external_id"
+        field_name="approving_facility__external_id",
     )
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
@@ -129,7 +129,7 @@ class ResourceRequestViewSet(
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
             queryset = self.filter_queryset(self.get_queryset()).values(
-                *ResourceRequest.CSV_MAPPING.keys()
+                *ResourceRequest.CSV_MAPPING.keys(),
             )
             return render_to_csv_response(
                 queryset,
@@ -153,36 +153,29 @@ class ResourceRequestCommentViewSet(
 
     def get_queryset(self):
         queryset = self.queryset.filter(
-            request__external_id=self.kwargs.get("resource_external_id")
+            request__external_id=self.kwargs.get("resource_external_id"),
         )
         if self.request.user.is_superuser:
             pass
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                Q(request__origin_facility__state=self.request.user.state)
+                | Q(request__approving_facility__state=self.request.user.state)
+                | Q(request__assigned_facility__state=self.request.user.state),
+            )
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                Q(request__origin_facility__district=self.request.user.district)
+                | Q(request__approving_facility__district=self.request.user.district)
+                | Q(request__assigned_facility__district=self.request.user.district),
+            )
         else:
-            if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-                q_objects = Q(request__origin_facility__state=self.request.user.state)
-                q_objects |= Q(
-                    request__approving_facility__state=self.request.user.state
-                )
-                q_objects |= Q(
-                    request__assigned_facility__state=self.request.user.state
-                )
-                return queryset.filter(q_objects)
-            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                q_objects = Q(
-                    request__origin_facility__district=self.request.user.district
-                )
-                q_objects |= Q(
-                    request__approving_facility__district=self.request.user.district
-                )
-                q_objects |= Q(
-                    request__assigned_facility__district=self.request.user.district
-                )
-                return queryset.filter(q_objects)
             facility_ids = get_accessible_facilities(self.request.user)
-            q_objects = Q(request__origin_facility__id__in=facility_ids)
-            q_objects |= Q(request__approving_facility__id__in=facility_ids)
-            q_objects |= Q(request__assigned_facility__id__in=facility_ids)
-            queryset = queryset.filter(q_objects)
+            queryset = queryset.filter(
+                Q(request__origin_facility__id__in=facility_ids)
+                | Q(request__approving_facility__id__in=facility_ids)
+                | Q(request__assigned_facility__id__in=facility_ids),
+            )
         return queryset
 
     def get_request(self):

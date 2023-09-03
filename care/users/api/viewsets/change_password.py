@@ -40,8 +40,8 @@ class ChangePasswordView(UpdateAPIView):
                 return Response(
                     {
                         "old_password": [
-                            "Wrong password entered. Please check your password."
-                        ]
+                            "Wrong password entered. Please check your password.",
+                        ],
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )

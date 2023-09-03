@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -13,6 +13,8 @@ from care.abdm.utils.api_call import AbdmGateway, HealthIdGateway
 from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from config.authentication import ABDMAuthentication
+
+HIP_CODE_LENGTH = 36
 
 
 class HipViewSet(GenericViewSet):
@@ -30,7 +32,7 @@ class HipViewSet(GenericViewSet):
         patient_data = data["profile"]["patient"]
         counter_id = (
             data["profile"]["hipCode"]
-            if len(data["profile"]["hipCode"]) == 36
+            if len(data["profile"]["hipCode"]) == HIP_CODE_LENGTH
             else Facility.objects.first().external_id
         )
 
@@ -49,7 +51,7 @@ class HipViewSet(GenericViewSet):
             patient_data["yearOfBirth"],
         ):
             patient = PatientRegistration.objects.filter(
-                abha_number__abha_number=patient_data["healthIdNumber"]
+                abha_number__abha_number=patient_data["healthIdNumber"],
             ).first()
 
             if not patient:
@@ -60,7 +62,7 @@ class HipViewSet(GenericViewSet):
                     is_antenatal=False,
                     phone_number=patient_data["mobile"],
                     emergency_phone_number=patient_data["mobile"],
-                    date_of_birth=datetime.strptime(
+                    date_of_birth=datetime.strptime(  # noqa: DTZ007
                         f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
                         "%Y-%m-%d",
                     ).date(),
@@ -75,12 +77,7 @@ class HipViewSet(GenericViewSet):
                     health_id=patient_data["healthId"],
                     name=patient_data["name"],
                     gender=patient_data["gender"],
-                    date_of_birth=str(
-                        datetime.strptime(
-                            f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
-                            "%Y-%m-%d",
-                        )
-                    )[0:10],
+                    date_of_birth=f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
                     address=patient_data["address"]["line"],
                     district=patient_data["address"]["district"],
                     state=patient_data["address"]["state"],
@@ -97,19 +94,14 @@ class HipViewSet(GenericViewSet):
                         or patient_data["healthIdNumber"],
                         "name": patient_data["name"],
                         "gender": patient_data["gender"],
-                        "dateOfBirth": str(
-                            datetime.strptime(
-                                f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
-                                "%Y-%m-%d",
-                            )
-                        )[0:10],
-                    }
+                        "dateOfBirth": f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                    },
                 )
 
             payload = {
                 "requestId": str(uuid.uuid4()),
                 "timestamp": str(
-                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                    datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 ),
                 "acknowledgement": {
                     "status": "SUCCESS",
@@ -124,7 +116,7 @@ class HipViewSet(GenericViewSet):
             }
 
             on_share_response = AbdmGateway().on_share(payload)
-            if on_share_response.status_code == 202:
+            if on_share_response.status_code == status.HTTP_202_ACCEPTED:
                 return Response(
                     on_share_response.request.body,
                     status=status.HTTP_202_ACCEPTED,

@@ -29,15 +29,24 @@ class PrescriptionSupplier(FacilityBaseModel):
         related_name="patient_consultation",
     )
     scheme = models.IntegerField(
-        choices=SchemeChoices, default=10, null=False, blank=False
+        choices=SchemeChoices,
+        default=10,
+        null=False,
+        blank=False,
     )
     status = models.IntegerField(
-        choices=StatusChoices, default=10, null=False, blank=False
+        choices=StatusChoices,
+        default=10,
+        null=False,
+        blank=False,
     )
     supplier = models.TextField(default="", blank=True)
     remarks = models.TextField(default="", blank=True)
     updated_user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     def has_object_read_permission(self, request):
@@ -59,10 +68,10 @@ class PrescriptionSupplier(FacilityBaseModel):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in {
+            User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+        }:
             return False
         return self.has_object_read_permission(request)

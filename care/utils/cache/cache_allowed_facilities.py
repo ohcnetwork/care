@@ -10,8 +10,9 @@ def get_accessible_facilities(user):
     if not hit:
         facility_ids = list(
             FacilityUser.objects.filter(user_id=user_id).values_list(
-                "facility__id", flat=True
-            )
+                "facility__id",
+                flat=True,
+            ),
         )
         cache.set(key, facility_ids)
         return facility_ids

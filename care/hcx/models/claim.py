@@ -19,7 +19,8 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 class Claim(BaseModel):
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
     policy = models.ForeignKey(
-        Policy, on_delete=models.CASCADE
+        Policy,
+        on_delete=models.CASCADE,
     )  # cascade - check it with Gigin
 
     items = JSONField(default=list, validators=[JSONFieldSchemaValidator(ITEMS)])
@@ -27,20 +28,38 @@ class Claim(BaseModel):
     total_amount_approved = models.FloatField(blank=True, null=True)
 
     use = models.CharField(
-        choices=USE_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=USE_CHOICES,
+        max_length=20,
+        default=None,
+        blank=True,
+        null=True,
     )
     status = models.CharField(
-        choices=STATUS_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=STATUS_CHOICES,
+        max_length=20,
+        default=None,
+        blank=True,
+        null=True,
     )
     priority = models.CharField(
-        choices=PRIORITY_CHOICES, max_length=20, default="normal"
+        choices=PRIORITY_CHOICES,
+        max_length=20,
+        default="normal",
     )
-    type = models.CharField(
-        choices=CLAIM_TYPE_CHOICES, max_length=20, default=None, blank=True, null=True
+    type = models.CharField(  # noqa: A003
+        choices=CLAIM_TYPE_CHOICES,
+        max_length=20,
+        default=None,
+        blank=True,
+        null=True,
     )
 
     outcome = models.CharField(
-        choices=OUTCOME_CHOICES, max_length=20, default=None, blank=True, null=True
+        choices=OUTCOME_CHOICES,
+        max_length=20,
+        default=None,
+        blank=True,
+        null=True,
     )
     error_text = models.TextField(null=True, blank=True)
 

@@ -65,13 +65,22 @@ class ResourceRequest(FacilityBaseModel):
         blank=True,
     )
     status = models.IntegerField(
-        choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False
+        choices=RESOURCE_STATUS_CHOICES,
+        default=10,
+        null=False,
+        blank=False,
     )
     category = models.IntegerField(
-        choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False
+        choices=RESOURCE_CATEGORY_CHOICES,
+        default=100,
+        null=False,
+        blank=False,
     )
     sub_category = models.IntegerField(
-        choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False
+        choices=RESOURCE_SUB_CATEGORY_CHOICES,
+        default=1000,
+        null=False,
+        blank=False,
     )
     priority = models.IntegerField(default=None, null=True, blank=True)
 
@@ -157,7 +166,10 @@ class ResourceRequest(FacilityBaseModel):
 
 class ResourceRequestComment(FacilityBaseModel):
     request = models.ForeignKey(
-        ResourceRequest, on_delete=models.PROTECT, null=False, blank=False
+        ResourceRequest,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
     )
     created_by = models.ForeignKey(
         User,

@@ -1,5 +1,4 @@
-import random
-import string
+import secrets
 from datetime import timedelta
 
 from django.conf import settings
@@ -8,30 +7,21 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.models.patient import PatientMobileOTP
-from care.utils.sms.sendSMS import sendSMS
+from care.utils import sms
 
 
-def rand_pass(size):
-    if not settings.USE_SMS:
-        return "45612"
-    generate_pass = "".join(
-        [random.choice(string.ascii_uppercase + string.digits) for n in range(size)]
-    )
-
-    return generate_pass
+def rand_pass(size: int) -> str:
+    return secrets.token_urlsafe(size)
 
 
 def send_sms(otp, phone_number):
-    if settings.USE_SMS:
-        sendSMS(
-            phone_number,
-            (
-                f"Open Healthcare Network Patient Management System Login, OTP is {otp} . "
-                "Please do not share this Confidential Login Token with anyone else"
-            ),
-        )
-    else:
-        print(otp, phone_number)
+    sms.send(
+        phone_number,
+        (
+            f"Open Healthcare Network Patient Management System Login, OTP is {otp} . "
+            "Please do not share this Confidential Login Token with anyone else"
+        ),
+    )
 
 
 class PatientMobileOTPSerializer(serializers.ModelSerializer):
@@ -54,9 +44,12 @@ class PatientMobileOTPSerializer(serializers.ModelSerializer):
             raise ValidationError({"phone_number": "Max Retries has exceeded"})
 
         otp_obj = super().create(validated_data)
-        otp = rand_pass(settings.OTP_LENGTH)
 
-        send_sms(otp, otp_obj.phone_number)
+        if settings.USE_SMS:
+            otp = rand_pass(settings.OTP_LENGTH)
+            send_sms(otp, otp_obj.phone_number)
+        else:
+            otp = "45612"
 
         otp_obj.otp = otp
         otp_obj.save()

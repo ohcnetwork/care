@@ -21,7 +21,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.doctor = cls.create_user(
-            "doctor", cls.district, home_facility=cls.facility, user_type=15
+            "doctor", cls.district, home_facility=cls.facility, user_type=15,
         )
 
     def get_default_data(self):
@@ -47,7 +47,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
             {
                 "patient": patient.external_id,
                 "facility": self.facility.external_id,
-            }
+            },
         )
         data.update(kwargs)
         res = self.client.post(self.get_url(), data)
@@ -58,7 +58,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
 
     def discharge(self, consultation, **kwargs):
         return self.client.post(
-            f"{self.get_url(consultation)}discharge_patient/", kwargs, "json"
+            f"{self.get_url(consultation)}discharge_patient/", kwargs, "json",
         )
 
     def test_create_consultation_verified_by_invalid_user(self):
@@ -67,7 +67,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
             admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.update_consultation(
-            consultation, verified_by=self.doctor.id, suggestion="A"
+            consultation, verified_by=self.doctor.id, suggestion="A",
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 

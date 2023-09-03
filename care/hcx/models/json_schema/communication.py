@@ -10,6 +10,6 @@ CONTENT = {
             },
             "additionalProperties": False,
             "required": ["type", "data"],
-        }
+        },
     ],
 }

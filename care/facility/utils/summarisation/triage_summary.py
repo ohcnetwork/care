@@ -13,7 +13,7 @@ def triage_summary():
     current_date = localtime(now()).replace(hour=0, minute=0, second=0, microsecond=0)
     for facility in facilities:
         facility_patient_data = FacilityPatientStatsHistory.objects.filter(
-            facility=facility
+            facility=facility,
         ).aggregate(
             total_patients_visited=Sum("num_patients_visited"),
             total_patients_home_quarantine=Sum("num_patients_home_quarantine"),
@@ -24,29 +24,34 @@ def triage_summary():
         )
         total_count = facility_patient_data.get("total_count", 0)
         total_patients_home_quarantine = facility_patient_data.get(
-            "total_patients_home_quarantine", 0
+            "total_patients_home_quarantine",
+            0,
         )
         total_patients_referred = facility_patient_data.get(
-            "total_patients_referred", 0
+            "total_patients_referred",
+            0,
         )
         total_patients_isolation = facility_patient_data.get(
-            "total_patients_visited", 0
+            "total_patients_visited",
+            0,
         )
         total_patients_visited = facility_patient_data.get(
-            "total_patients_isolation", 0
+            "total_patients_isolation",
+            0,
         )
         total_patients_confirmed_positive = facility_patient_data.get(
-            "num_patient_confirmed_positive", 0
+            "num_patient_confirmed_positive",
+            0,
         )
         if total_count:
             avg_patients_home_quarantine = int(
-                total_patients_home_quarantine / total_count
+                total_patients_home_quarantine / total_count,
             )
             avg_patients_referred = int(total_patients_referred / total_count)
             avg_patients_isolation = int(total_patients_isolation / total_count)
             avg_patients_visited = int(total_patients_visited / total_count)
             avg_patients_confirmed_positive = int(
-                total_patients_confirmed_positive / total_count
+                total_patients_confirmed_positive / total_count,
             )
         else:
             avg_patients_home_quarantine = 0
@@ -71,7 +76,9 @@ def triage_summary():
         }
 
         facility_triage_summary = FacilityRelatedSummary.objects.filter(
-            s_type="TriageSummary", facility=facility, created_date__gte=current_date
+            s_type="TriageSummary",
+            facility=facility,
+            created_date__gte=current_date,
         ).first()
 
         if facility_triage_summary:

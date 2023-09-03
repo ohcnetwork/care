@@ -5,7 +5,7 @@ from littletable import Table
 
 
 def fetch_data():
-    with open("data/icd11.json", "r") as json_file:
+    with open("data/icd11.json") as json_file:
         return json.load(json_file)
 
 

@@ -18,10 +18,16 @@ class BaseManager(models.Manager):
 class BaseModel(models.Model):
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
     created_date = models.DateTimeField(
-        auto_now_add=True, null=True, blank=True, db_index=True
+        auto_now_add=True,
+        null=True,
+        blank=True,
+        db_index=True,
     )
     modified_date = models.DateTimeField(
-        auto_now=True, null=True, blank=True, db_index=True
+        auto_now=True,
+        null=True,
+        blank=True,
+        db_index=True,
     )
     deleted = models.BooleanField(default=False, db_index=True)
 

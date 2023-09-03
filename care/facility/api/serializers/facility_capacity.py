@@ -17,8 +17,8 @@ class FacilityCapacitySerializer(serializers.ModelSerializer):
         ):
             raise serializers.ValidationError(
                 {
-                    "current_capacity": "Current capacity cannot be greater than total capacity."
-                }
+                    "current_capacity": "Current capacity cannot be greater than total capacity.",
+                },
             )
         return data
 

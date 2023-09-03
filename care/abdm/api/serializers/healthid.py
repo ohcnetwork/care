@@ -1,3 +1,4 @@
+# ruff: noqa: N815
 from rest_framework.serializers import CharField, Serializer, UUIDField
 
 

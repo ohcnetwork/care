@@ -24,11 +24,11 @@ def facility_capacity_summary():
     for facility_obj in Facility.objects.all():
         # Calculate Actual Patients Discharged and Live in this Facility
         patients_in_facility = PatientRegistration.objects.filter(
-            facility_id=facility_obj.id
+            facility_id=facility_obj.id,
         ).select_related("state", "district", "local_body")
         capacity_summary[facility_obj.id] = FacilitySerializer(facility_obj).data
         capacity_summary[facility_obj.id]["features"] = list(
-            capacity_summary[facility_obj.id]["features"]
+            capacity_summary[facility_obj.id]["features"],
         )
         capacity_summary[facility_obj.id][
             "actual_live_patients"
@@ -41,11 +41,12 @@ def facility_capacity_summary():
 
         temp_inventory_summary_obj = {}
         summary_objs = FacilityInventorySummary.objects.filter(
-            facility_id=facility_obj.id
+            facility_id=facility_obj.id,
         )
         for summary_obj in summary_objs:
             burn_rate = FacilityInventoryBurnRate.objects.filter(
-                facility_id=facility_obj.id, item_id=summary_obj.item.id
+                facility_id=facility_obj.id,
+                item_id=summary_obj.item.id,
             ).first()
             log_query = FacilityInventoryLog.objects.filter(
                 facility_id=facility_obj.id,
@@ -66,13 +67,13 @@ def facility_capacity_summary():
                 end_stock = end_log.current_stock
             total_consumed = 0
             temp1 = log_query.filter(is_incoming=False).aggregate(
-                Sum("quantity_in_default_unit")
+                Sum("quantity_in_default_unit"),
             )
             if temp1:
                 total_consumed = temp1.get("quantity_in_default_unit__sum", 0) or 0
             total_added = 0
             temp2 = log_query.filter(is_incoming=True).aggregate(
-                Sum("quantity_in_default_unit")
+                Sum("quantity_in_default_unit"),
             )
             if temp2:
                 total_added = temp2.get("quantity_in_default_unit__sum", 0) or 0
@@ -108,7 +109,7 @@ def facility_capacity_summary():
         if "availability" not in capacity_summary[facility_id]:
             capacity_summary[facility_id]["availability"] = []
         capacity_summary[facility_id]["availability"].append(
-            FacilityCapacitySerializer(capacity_object).data
+            FacilityCapacitySerializer(capacity_object).data,
         )
 
     for i in capacity_summary:
@@ -125,7 +126,8 @@ def facility_capacity_summary():
             )
         else:
             facility_summary_obj = FacilityRelatedSummary(
-                s_type="FacilityCapacity", facility_id=i
+                s_type="FacilityCapacity",
+                facility_id=i,
             )
         facility_summary_obj.data = capacity_summary[i]
         facility_summary_obj.save()

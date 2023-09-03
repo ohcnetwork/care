@@ -16,6 +16,8 @@ from care.facility.models import Facility
 from care.facility.models.asset import Asset
 from care.users.models import User
 
+OPEN_ID_REQUEST_TIMEOUT = 25
+
 
 class CustomJWTAuthentication(JWTAuthentication):
     def authenticate_header(self, request):
@@ -29,7 +31,7 @@ class CustomJWTAuthentication(JWTAuthentication):
                 {
                     "detail": "Invalid Token, please relogin to continue",
                     "messages": e.detail.get("messages", []),
-                }
+                },
             ) from e
 
 
@@ -49,7 +51,7 @@ class MiddlewareAuthentication(JWTAuthentication):
     auth_header_type_bytes = auth_header_type.encode(HTTP_HEADER_ENCODING)
 
     def open_id_authenticate(self, url, token):
-        public_key = requests.get(url)
+        public_key = requests.get(url, timeout=OPEN_ID_REQUEST_TIMEOUT)
         jwk = public_key.json()["keys"][0]
         public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
         return jwt.decode(token, key=public_key, algorithms=["RS256"])
@@ -99,7 +101,7 @@ class MiddlewareAuthentication(JWTAuthentication):
             # Assume the header does not contain a JSON web token
             return None
 
-        if len(parts) != 2:
+        if len(parts) != 2:  # noqa: PLR2004
             raise AuthenticationFailed(
                 _("Authorization header must contain two space-delimited values"),
                 code="bad_authorization_header",
@@ -115,9 +117,9 @@ class MiddlewareAuthentication(JWTAuthentication):
         try:
             return self.open_id_authenticate(url, raw_token)
         except Exception as e:
-            print(e)
-
-        raise InvalidToken({"detail": "Given token not valid for any token type"})
+            raise InvalidToken(
+                {"detail": "Given token not valid for any token type"},
+            ) from e
 
     def get_user(self, validated_token, facility):
         """
@@ -128,11 +130,11 @@ class MiddlewareAuthentication(JWTAuthentication):
 
         try:
             asset_obj = Asset.objects.select_related("current_location__facility").get(
-                external_id=validated_token["asset_id"]
+                external_id=validated_token["asset_id"],
             )
         except (Asset.DoesNotExist, ValidationError) as e:
             raise InvalidToken(
-                {"detail": "Invalid Asset ID", "messages": [str(e)]}
+                {"detail": "Invalid Asset ID", "messages": [str(e)]},
             ) from e
 
         if asset_obj.current_location.facility != facility:
@@ -159,11 +161,14 @@ class MiddlewareAuthentication(JWTAuthentication):
 
 class ABDMAuthentication(JWTAuthentication):
     def open_id_authenticate(self, url, token):
-        public_key = requests.get(url)
+        public_key = requests.get(url, timeout=OPEN_ID_REQUEST_TIMEOUT)
         jwk = public_key.json()["keys"][0]
         public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
         return jwt.decode(
-            token, key=public_key, audience="account", algorithms=["RS256"]
+            token,
+            key=public_key,
+            audience="account",
+            algorithms=["RS256"],
         )
 
     def authenticate_header(self, request):
@@ -187,8 +192,7 @@ class ABDMAuthentication(JWTAuthentication):
         try:
             return self.open_id_authenticate(url, token)
         except Exception as e:
-            print(e)
-            raise InvalidToken({"detail": f"Invalid Authorization token: {e}"})
+            raise InvalidToken({"detail": f"Invalid Authorization token: {e}"}) from e
 
     def get_user(self, validated_token):
         user = User.objects.filter(username=settings.ABDM_USERNAME).first()
@@ -214,7 +218,9 @@ class CustomJWTAuthenticationScheme(OpenApiAuthenticationExtension):
 
     def get_security_definition(self, auto_schema):
         return build_bearer_security_scheme_object(
-            header_name="Authorization", token_prefix="Bearer", bearer_format="JWT"
+            header_name="Authorization",
+            token_prefix="Bearer",  # noqa: S106
+            bearer_format="JWT",
         )
 
 
@@ -232,7 +238,7 @@ class MiddlewareAuthenticationScheme(OpenApiAuthenticationExtension):
                 "The scheme requires a valid JWT token in the Authorization header "
                 "along with the facility id in the X-Facility-Id header. "
                 "--The value field is just for preview, filling it will show allowed "
-                "endpoints.--"
+                "endpoints.--",
             ),
         }
 

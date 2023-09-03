@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from django.views.generic import TemplateView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -20,6 +21,11 @@ from care.hcx.api.viewsets.listener import (
     CoverageElibilityOnCheckView,
     PreAuthOnSubmitView,
 )
+from care.users.api.viewsets.auth import (
+    AnnotatedTokenVerifyView,
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -29,17 +35,16 @@ from care.users.reset_password_views import (
 from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
 
-from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
-from .views import home_view
-
 urlpatterns = [
-    path("", home_view, name="home"),
+    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
-        "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+        "api/v1/auth/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token_refresh",
     ),
     path(
         "api/v1/auth/token/verify/",

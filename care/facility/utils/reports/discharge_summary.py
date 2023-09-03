@@ -46,24 +46,25 @@ def clear_lock(consultation_ext_id: str):
 
 
 def get_discharge_summary_data(consultation: PatientConsultation):
-    logger.info(f"fetching discharge summary data for {consultation.external_id}")
+    logger.info("fetching discharge summary data for %s", consultation.external_id)
     samples = PatientSample.objects.filter(
-        patient=consultation.patient, consultation=consultation
+        patient=consultation.patient,
+        consultation=consultation,
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
     diagnosis = get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
     provisional_diagnosis = get_icd11_diagnoses_objects_by_ids(
-        consultation.icd11_provisional_diagnoses
+        consultation.icd11_provisional_diagnoses,
     )
     principal_diagnosis = get_icd11_diagnoses_objects_by_ids(
         [consultation.icd11_principal_diagnosis]
         if consultation.icd11_principal_diagnosis
-        else []
+        else [],
     )
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
-        & (Q(value__isnull=False) | Q(notes__isnull=False))
+        & (Q(value__isnull=False) | Q(notes__isnull=False)),
     )
     medical_history = Disease.objects.filter(patient=consultation.patient)
     prescriptions = Prescription.objects.filter(
@@ -114,12 +115,14 @@ def get_discharge_summary_data(consultation: PatientConsultation):
 
 def generate_discharge_summary_pdf(data, file):
     logger.info(
-        f"Generating Discharge Summary html for {data['consultation'].external_id}"
+        "Generating Discharge Summary html for %s",
+        data["consultation"].external_id,
     )
     html_string = render_to_string("reports/patient_discharge_summary_pdf.html", data)
 
     logger.info(
-        f"Generating Discharge Summary pdf for {data['consultation'].external_id}"
+        "Generating Discharge Summary pdf for %s",
+        data["consultation"].external_id,
     )
     bytestring_to_pdf(
         html_string.encode(),
@@ -134,7 +137,7 @@ def generate_discharge_summary_pdf(data, file):
 
 
 def generate_and_upload_discharge_summary(consultation: PatientConsultation):
-    logger.info(f"Generating Discharge Summary for {consultation.external_id}")
+    logger.info("Generating Discharge Summary for %s", consultation.external_id)
 
     set_lock(consultation.external_id, 5)
     try:
@@ -153,12 +156,14 @@ def generate_and_upload_discharge_summary(consultation: PatientConsultation):
         set_lock(consultation.external_id, 50)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as file:
             generate_discharge_summary_pdf(data, file)
-            logger.info(f"Uploading Discharge Summary for {consultation.external_id}")
+            logger.info("Uploading Discharge Summary for %s", consultation.external_id)
             summary_file.put_object(file, ContentType="application/pdf")
             summary_file.upload_completed = True
             summary_file.save()
             logger.info(
-                f"Uploaded Discharge Summary for {consultation.external_id}, file id: {summary_file.id}"
+                "Uploaded Discharge Summary for %s, file id: %s",
+                consultation.external_id,
+                summary_file.id,
             )
     finally:
         clear_lock(consultation.external_id)

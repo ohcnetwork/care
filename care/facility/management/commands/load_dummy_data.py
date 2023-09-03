@@ -11,14 +11,14 @@ class Command(BaseCommand):
     Usage: python manage.py load_dummy_data
     """
 
-    help = "Loads dummy data that is intended to be used for development and testing purpose."
+    help = "Loads dummy data that is intended to be used for development and testing purpose."  # noqa: A003
     BASE_URL = "data/dummy/"
 
     def handle(self, *args, **options):
         env = os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
         if "production" in env or "staging" in env:
             raise CommandError(
-                "This command is not intended to be run in production environment."
+                "This command is not intended to be run in production environment.",
             )
 
         try:
@@ -30,4 +30,4 @@ class Command(BaseCommand):
             management.call_command("loaddata", self.BASE_URL + "cypress_users.json")
             management.call_command("loaddata", self.BASE_URL + "facility_users.json")
         except Exception as e:
-            raise CommandError(e)
+            raise CommandError("Failed to load data to the db") from e

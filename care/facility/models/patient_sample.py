@@ -93,7 +93,8 @@ class PatientSample(FacilityBaseModel):
         default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"],
     )
     result = models.IntegerField(
-        choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"]
+        choices=SAMPLE_TEST_RESULT_CHOICES,
+        default=SAMPLE_TEST_RESULT_MAP["AWAITING"],
     )
 
     fast_track = models.TextField(default="")
@@ -102,14 +103,23 @@ class PatientSample(FacilityBaseModel):
     date_of_result = models.DateTimeField(null=True, blank=True)
 
     testing_facility = models.ForeignKey(
-        "Facility", on_delete=models.SET_NULL, null=True, blank=True
+        "Facility",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="samples_created"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="samples_created",
     )
     last_edited_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="last_edited_by"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="last_edited_by",
     )
 
     CSV_MAPPING = {
@@ -152,11 +162,11 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in {
+            User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+        }:
             return False
         return (
             request.user.is_superuser
@@ -190,11 +200,11 @@ class PatientSample(FacilityBaseModel):
         )
 
     def has_object_update_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in {
+            User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+        }:
             return False
         if not self.has_object_read_permission(request):
             return False

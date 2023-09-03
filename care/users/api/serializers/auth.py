@@ -1,30 +1,25 @@
+import contextlib
+
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import PasswordField
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenVerifyView, TokenViewBase
 
+from care.utils.exceptions import CaptchaRequiredException
 from config.ratelimit import ratelimit
 
 User = get_user_model()
-
-
-class CaptchaRequiredException(AuthenticationFailed):
-    status_code = status.HTTP_429_TOO_MANY_REQUESTS
-    default_detail = _("Too Many Requests Provide Captcha")
-    default_code = "captchaRequired"
 
 
 class TokenObtainSerializer(serializers.Serializer):
     username_field = User.USERNAME_FIELD
 
     default_error_messages = {
-        "no_active_account": _("No active account found with the given credentials")
+        "no_active_account": _("No active account found with the given credentials"),
     }
 
     def __init__(self, *args, **kwargs):
@@ -38,10 +33,9 @@ class TokenObtainSerializer(serializers.Serializer):
             self.username_field: attrs[self.username_field],
             "password": attrs["password"],
         }
-        try:
+        with contextlib.suppress(KeyError):
             authenticate_kwargs["request"] = self.context["request"]
-        except KeyError:
-            pass
+
         if ratelimit(
             self.context["request"],
             "login",
@@ -74,7 +68,7 @@ class TokenObtainSerializer(serializers.Serializer):
     @classmethod
     def get_token(cls, user):
         raise NotImplementedError(
-            "Must implement `get_token` method for `TokenObtainSerializer` subclasses"
+            "Must implement `get_token` method for `TokenObtainSerializer` subclasses",
         )
 
 
@@ -104,7 +98,7 @@ class TokenRefreshSerializer(serializers.Serializer):
 
         # Updating users active status
         User.objects.filter(external_id=refresh["user_id"]).update(
-            last_login=localtime(now())
+            last_login=localtime(now()),
         )
 
         return data
@@ -128,46 +122,3 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
 
         return data
-
-
-class TokenObtainPairView(TokenViewBase):
-    """
-    Generate access and refresh tokens for a user.
-
-    Takes a set of user credentials and returns an access and refresh JSON web
-    token pair to prove the authentication of those credentials.
-    """
-
-    serializer_class = TokenObtainPairSerializer
-
-    @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class TokenRefreshView(TokenViewBase):
-    """
-    Refresh access token.
-
-    Takes a refresh type JSON web token and returns an access type JSON web
-    token if the refresh token is valid.
-    """
-
-    serializer_class = TokenRefreshSerializer
-
-    @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class AnnotatedTokenVerifyView(TokenVerifyView):
-    """
-    Verify tokens are valid.
-
-    Takes a token and returns a boolean of whether it is a valid JSON web token
-    for this project.
-    """
-
-    @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)

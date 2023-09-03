@@ -15,11 +15,10 @@ class UserAccessMixin:
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility"):
                     queryset = queryset.filter(
-                        facility__district=self.request.user.district
+                        facility__district=self.request.user.district,
                     )
-            else:
-                if hasattr(instance, "created_by"):
-                    queryset = queryset.filter(created_by=self.request.user)
+            elif hasattr(instance, "created_by"):
+                queryset = queryset.filter(created_by=self.request.user)
         return queryset
 
     def filter_by_user_scope(self, queryset):
@@ -32,11 +31,10 @@ class UserAccessMixin:
                     queryset = queryset.filter(district=self.request.user.district)
                 if hasattr(instance, "facility_id"):
                     queryset = queryset.filter(
-                        facility__district=self.request.user.district
+                        facility__district=self.request.user.district,
                     )
-            else:
-                if hasattr(instance, "created_by"):
-                    queryset = queryset.filter(created_by=self.request.user)
+            elif hasattr(instance, "created_by"):
+                queryset = queryset.filter(created_by=self.request.user)
         return queryset
 
     def perform_create(self, serializer):
@@ -64,7 +62,7 @@ class AssetUserAccessMixin:
         if bool(
             self.request.user
             and self.request.user.is_authenticated
-            and self.request.user.asset
+            and self.request.user.asset,
         ):
             return tuple(permission() for permission in self.asset_permissions)
         return super().get_permissions()

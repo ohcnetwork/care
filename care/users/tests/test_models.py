@@ -10,7 +10,8 @@ class SkillModelTest(TestCase):
         Initialise test data for all other methods
         """
         cls.skill = Skill.objects.create(
-            name="ghatak", description="corona virus specialist"
+            name="ghatak",
+            description="corona virus specialist",
         )
 
     def test_max_length_name(self):
@@ -78,7 +79,9 @@ class LocalBodyModelTest(TestCase):
         state = State.objects.create(name="bihar")
         district = District.objects.create(state=state, name="nam")
         cls.local_body = LocalBody.objects.create(
-            district=district, name="blabla", body_type=1
+            district=district,
+            name="blabla",
+            body_type=1,
         )
 
     def test_max_length_name(self):

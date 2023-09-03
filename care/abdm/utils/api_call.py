@@ -2,7 +2,7 @@ import json
 import logging
 import uuid
 from base64 import b64encode
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import requests
 from Crypto.Cipher import PKCS1_v1_5
@@ -10,16 +10,19 @@ from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
+from rest_framework import status
 
 from care.abdm.models import AbhaNumber
 from care.facility.models.patient_consultation import PatientConsultation
+
+EXTERNAL_REQUEST_TIMEOUT = 25
 
 GATEWAY_API_URL = settings.ABDM_URL
 HEALTH_SERVICE_API_URL = settings.HEALTH_SERVICE_API_URL
 ABDM_DEVSERVICE_URL = GATEWAY_API_URL + "/devservice"
 ABDM_GATEWAY_URL = GATEWAY_API_URL + "/gateway"
 ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
-ABDM_TOKEN_CACHE_KEY = "abdm_token"
+ABDM_TOKEN_CACHE_KEY = "abdm_token"  # noqa: S105
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
@@ -28,7 +31,10 @@ logger = logging.getLogger(__name__)
 
 def encrypt_with_public_key(a_message):
     rsa_public_key = RSA.importKey(
-        requests.get(HEALTH_SERVICE_API_URL + "/v2/auth/cert").text.strip()
+        requests.get(
+            HEALTH_SERVICE_API_URL + "/v2/auth/cert",
+            timeout=EXTERNAL_REQUEST_TIMEOUT,
+        ).text.strip(),
     )
     rsa_public_key = PKCS1_v1_5.new(rsa_public_key)
     encrypted_text = rsa_public_key.encrypt(a_message.encode())
@@ -59,7 +65,7 @@ class APIGateway:
         headers.update(
             {
                 "X-Token": "Bearer " + user_token,
-            }
+            },
         )
         return headers
 
@@ -76,32 +82,34 @@ class APIGateway:
                 "Accept": "application/json",
             }
             resp = requests.post(
-                ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers
+                ABDM_TOKEN_URL,
+                data=json.dumps(data),
+                headers=auth_headers,
+                timeout=EXTERNAL_REQUEST_TIMEOUT,
             )
-            logger.info("Token Response Status: {}".format(resp.status_code))
-            if resp.status_code < 300:
+            logger.info("Token Response Status: %s", resp.status_code)
+            if resp.status_code < status.HTTP_300_MULTIPLE_CHOICES:
                 # Checking if Content-Type is application/json
                 if resp.headers["Content-Type"] != "application/json":
                     logger.info(
-                        "Unsupported Content-Type: {}".format(
-                            resp.headers["Content-Type"]
-                        )
+                        "Unsupported Content-Type: %s",
+                        resp.headers["Content-Type"],
                     )
-                    logger.info("Response: {}".format(resp.text))
+                    logger.info("Response: %s", resp.text)
                     return None
-                else:
-                    data = resp.json()
-                    token = data["accessToken"]
-                    expires_in = data["expiresIn"]
-                    logger.info("New Token: {}".format(token))
-                    logger.info("Expires in: {}".format(expires_in))
-                    cache.set(ABDM_TOKEN_CACHE_KEY, token, expires_in)
+
+                data = resp.json()
+                token = data["accessToken"]
+                expires_in = data["expiresIn"]
+                logger.info("New Token: %s", token)
+                logger.info("Expires in: %s", expires_in)
+                cache.set(ABDM_TOKEN_CACHE_KEY, token, expires_in)
             else:
-                logger.info("Bad Response: {}".format(resp.text))
+                logger.info("Bad Response: %s", resp.text)
                 return None
         # logger.info("Returning Authorization Header: Bearer {}".format(token))
         logger.info("Adding Authorization Header")
-        auth_header = {"Authorization": "Bearer {}".format(token)}
+        auth_header = {"Authorization": f"Bearer {token}"}
         return {**headers, **auth_header}
 
     def add_additional_headers(self, headers, additional_headers):
@@ -113,9 +121,14 @@ class APIGateway:
         headers = self.add_auth_header(headers)
         if auth:
             headers = self.add_user_header(headers, auth)
-        logger.info("Making GET Request to: {}".format(url))
-        response = requests.get(url, headers=headers, params=params)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info("Making GET Request to: %s", url)
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+            timeout=EXTERNAL_REQUEST_TIMEOUT,
+        )
+        logger.info("%s Response: %s", response.status_code, response.text)
         return response
 
     def post(self, path, data=None, auth=None, additional_headers=None, method="POST"):
@@ -130,14 +143,16 @@ class APIGateway:
             headers = self.add_user_header(headers, auth)
         if additional_headers:
             headers = self.add_additional_headers(headers, additional_headers)
-        # headers_string = " ".join(
-        #     ['-H "{}: {}"'.format(k, v) for k, v in headers.items()]
-        # )
         data_json = json.dumps(data)
-        # logger.info("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
-        logger.info("Posting Request to: {}".format(url))
-        response = requests.request(method, url, headers=headers, data=data_json)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info("Posting Request to: %s", url)
+        response = requests.request(
+            method,
+            url,
+            headers=headers,
+            data=data_json,
+            timeout=EXTERNAL_REQUEST_TIMEOUT,
+        )
+        logger.info("%s Response: %s", response.status_code, response.text)
         return response
 
 
@@ -148,7 +163,7 @@ class HealthIdGateway:
     def generate_aadhaar_otp(self, data):
         path = "/v1/registration/aadhaar/generateOtp"
         response = self.api.post(path, data)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info("%s Response: %s", response.status_code, response.text)
         return response.json()
 
     def resend_aadhaar_otp(self, data):
@@ -180,7 +195,7 @@ class HealthIdGateway:
     # /v1/registration/aadhaar/createHealthIdWithPreVerified
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
-        logger.info("Creating Health ID with data: {}".format(data))
+        logger.info("Creating Health ID with data: %s", data)
         # data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
@@ -243,7 +258,7 @@ class HealthIdGateway:
 
     def verify_demographics(self, health_id, name, gender, year_of_birth):
         auth_init_response = HealthIdGateway().auth_init(
-            {"authMethod": "DEMOGRAPHICS", "healthid": health_id}
+            {"authMethod": "DEMOGRAPHICS", "healthid": health_id},
         )
         if "txnId" in auth_init_response:
             demographics_response = HealthIdGateway().confirm_with_demographics(
@@ -252,7 +267,7 @@ class HealthIdGateway:
                     "name": name,
                     "gender": gender,
                     "yearOfBirth": year_of_birth,
-                }
+                },
             )
             return "status" in demographics_response and demographics_response["status"]
 
@@ -262,19 +277,19 @@ class HealthIdGateway:
     def generate_access_token(self, data):
         if "access_token" in data:
             return data["access_token"]
-        elif "accessToken" in data:
+        if "accessToken" in data:
             return data["accessToken"]
-        elif "token" in data:
+        if "token" in data:
             return data["token"]
 
         if "refreshToken" in data:
-            refreshToken = data["refreshToken"]
+            refresh_token = data["refreshToken"]
         elif "refresh_token" in data:
-            refreshToken = data["refresh_token"]
+            refresh_token = data["refresh_token"]
         else:
             return None
         path = "/v1/auth/generate/access-token"
-        response = self.api.post(path, {"refreshToken": refreshToken})
+        response = self.api.post(path, {"refreshToken": refresh_token})
         return response.json()["accessToken"]
 
     # Account APIs
@@ -305,9 +320,9 @@ class HealthIdGateway:
     def get_qr_code(self, data, auth):
         path = "/v1/account/qrCode"
         access_token = self.generate_access_token(data)
-        logger.info("Getting QR Code for: {}".format(data))
+        logger.info("Getting QR Code for: %s", data)
         response = self.api.get(path, {}, access_token)
-        logger.info("QR Code Response: {}".format(response.text))
+        logger.info("QR Code Response: %s", response.text)
         return response.json()
 
 
@@ -354,38 +369,36 @@ class AbdmGateway:
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
-            return
+            return None
 
         data = self.temp_memory[request_id]
 
         if "consultationId" in data:
             consultation = PatientConsultation.objects.get(
-                external_id=data["consultationId"]
+                external_id=data["consultationId"],
             )
 
-            response = self.add_contexts(
+            return self.add_contexts(
                 {
                     "access_token": access_token,
                     "patient_id": str(consultation.patient.external_id),
                     "patient_name": consultation.patient.name,
                     "context_id": str(consultation.external_id),
                     "context_name": f"Encounter: {str(consultation.created_date.date())}",
-                }
+                },
             )
-
-            return response
 
         return False
 
     def save_linking_token(self, patient, access_token, request_id):
         if request_id not in self.temp_memory:
-            return
+            return None
 
         data = self.temp_memory[request_id]
         health_id = patient and patient["id"] or data["healthId"]
 
         abha_object = AbhaNumber.objects.filter(
-            Q(abha_number=health_id) | Q(health_id=health_id)
+            Q(abha_number=health_id) | Q(health_id=health_id),
         ).first()
 
         if abha_object:
@@ -413,12 +426,12 @@ class AbdmGateway:
 
         if "authMode" in data and data["authMode"] == "DIRECT":
             self.init(request_id)
-            return
+            return None
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "query": {
                 "id": data["healthId"],
@@ -429,13 +442,12 @@ class AbdmGateway:
                 },
             },
         }
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     # "/v0.5/users/auth/init"
     def init(self, prev_request_id):
         if prev_request_id not in self.temp_memory:
-            return
+            return None
 
         path = "/v0.5/users/auth/init"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
@@ -447,8 +459,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "query": {
                 "id": data["healthId"],
@@ -460,13 +472,12 @@ class AbdmGateway:
                 },
             },
         }
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     # "/v0.5/users/auth/confirm"
     def confirm(self, transaction_id, prev_request_id):
         if prev_request_id not in self.temp_memory:
-            return
+            return None
 
         path = "/v0.5/users/auth/confirm"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
@@ -478,8 +489,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "transactionId": transaction_id,
             "credential": {
@@ -492,8 +503,7 @@ class AbdmGateway:
             },
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def auth_on_notify(self, data):
         path = "/v0.5/links/link/on-init"
@@ -502,16 +512,15 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "acknowledgement": {"status": "OK"},
             # "error": {"code": 1000, "message": "string"},
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     # TODO: make it dynamic and call it at discharge (call it from on_confirm)
     def add_contexts(self, data):
@@ -522,8 +531,8 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "link": {
                 "accessToken": data["access_token"],
@@ -534,14 +543,13 @@ class AbdmGateway:
                         {
                             "referenceNumber": data["context_id"],
                             "display": data["context_name"],
-                        }
+                        },
                     ],
                 },
             },
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def on_discover(self, data):
         path = "/v0.5/care-contexts/on-discover"
@@ -550,8 +558,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "transactionId": data["transaction_id"],
             "patient": {
@@ -564,7 +572,7 @@ class AbdmGateway:
                             "display": context["name"],
                         },
                         data["care_contexts"],
-                    )
+                    ),
                 ),
                 "matchedBy": data["matched_by"],
             },
@@ -572,8 +580,7 @@ class AbdmGateway:
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def on_link_init(self, data):
         path = "/v0.5/links/link/on-init"
@@ -582,8 +589,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "transactionId": data["transaction_id"],
             "link": {
@@ -593,9 +600,9 @@ class AbdmGateway:
                     "communicationMedium": "MOBILE",
                     "communicationHint": data["phone"],
                     "communicationExpiry": str(
-                        (datetime.now() + timedelta(minutes=15)).strftime(
-                            "%Y-%m-%dT%H:%M:%S.000Z"
-                        )
+                        (datetime.now(tz=UTC) + timedelta(minutes=15)).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z",
+                        ),
                     ),
                 },
             },
@@ -603,8 +610,7 @@ class AbdmGateway:
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def on_link_confirm(self, data):
         path = "/v0.5/links/link/on-confirm"
@@ -613,8 +619,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "patient": {
                 "referenceNumber": data["patient_id"],
@@ -626,15 +632,14 @@ class AbdmGateway:
                             "display": context["name"],
                         },
                         data["care_contexts"],
-                    )
+                    ),
                 ),
             },
             # "error": {"code": 1000, "message": "string"},
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def on_notify(self, data):
         path = "/v0.5/consents/hip/on-notify"
@@ -643,16 +648,15 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "acknowledgement": {"status": "OK", "consentId": data["consent_id"]},
             # "error": {"code": 1000, "message": "string"},
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def on_data_request(self, data):
         path = "/v0.5/health-information/hip/on-request"
@@ -661,8 +665,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "hiRequest": {
                 "transactionId": data["transaction_id"],
@@ -672,8 +676,7 @@ class AbdmGateway:
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def data_transfer(self, data):
         headers = {"Content-Type": "application/json"}
@@ -691,15 +694,17 @@ class AbdmGateway:
                         "careContextReference": context["consultation_id"],
                     },
                     data["care_contexts"],
-                )
+                ),
             ),
             "keyMaterial": data["key_material"],
         }
 
-        response = requests.post(
-            data["data_push_url"], data=json.dumps(payload), headers=headers
+        return requests.post(
+            data["data_push_url"],
+            data=json.dumps(payload),
+            headers=headers,
+            timeout=EXTERNAL_REQUEST_TIMEOUT,
         )
-        return response
 
     def data_notify(self, data):
         path = "/v0.5/health-information/notify"
@@ -708,14 +713,14 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "notification": {
                 "consentId": data["consent_id"],
                 "transactionId": data["transaction_id"],
                 "doneAt": str(
-                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                    datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 ),
                 "statusNotification": {
                     "sessionStatus": "TRANSFERRED",
@@ -728,14 +733,13 @@ class AbdmGateway:
                                 "description": "success",  # not sure what to put
                             },
                             data["care_contexts"],
-                        )
+                        ),
                     ),
                 },
             },
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def patient_status_on_notify(self, data):
         path = "/v0.5/patients/status/on-notify"
@@ -744,16 +748,15 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "acknowledgement": {"status": "OK"},
             # "error": {"code": 1000, "message": "string"},
             "resp": {"requestId": data["request_id"]},
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     def patient_sms_notify(self, data):
         path = "/v0.5/patients/sms/notify2"
@@ -762,8 +765,8 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.000Z"
+            "timestamp": datetime.now(tz=UTC).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z",
             ),
             "notification": {
                 "phoneNo": f"+91-{data['phone']}",
@@ -771,15 +774,13 @@ class AbdmGateway:
             },
         }
 
-        response = self.api.post(path, payload, None, additional_headers)
-        return response
+        return self.api.post(path, payload, None, additional_headers)
 
     # /v1.0/patients/profile/on-share
     def on_share(self, data):
         path = "/v1.0/patients/profile/on-share"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
-        response = self.api.post(path, data, None, additional_headers)
-        return response
+        return self.api.post(path, data, None, additional_headers)
 
 
 class Bridge:
@@ -788,5 +789,4 @@ class Bridge:
 
     def add_update_service(self, data):
         path = "/v1/bridges/addUpdateServices"
-        response = self.api.post(path, data, method="PUT")
-        return response
+        return self.api.post(path, data, method="PUT")

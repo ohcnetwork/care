@@ -1,3 +1,5 @@
+import contextlib
+
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -25,10 +27,9 @@ class DailyRoundFilterSet(filters.FilterSet):
         rounds_type = set()
         values = value.split(",")
         for v in values:
-            try:
+            with contextlib.suppress(KeyError):
                 rounds_type.add(DailyRound.RoundsTypeDict[v])
-            except KeyError:
-                pass
+
         return queryset.filter(rounds_type__in=list(rounds_type))
 
 
@@ -57,13 +58,13 @@ class DailyRoundsViewSet(
 
     def get_queryset(self):
         return self.queryset.filter(
-            consultation__external_id=self.kwargs["consultation_external_id"]
+            consultation__external_id=self.kwargs["consultation_external_id"],
         )
 
     def get_serializer(self, *args, **kwargs):
         if "data" in kwargs:
             kwargs["data"]["consultation"] = PatientConsultation.objects.get(
-                external_id=self.kwargs["consultation_external_id"]
+                external_id=self.kwargs["consultation_external_id"],
             ).id
         return super().get_serializer(*args, **kwargs)
 
@@ -101,11 +102,11 @@ class DailyRoundsViewSet(
 
         consultation = get_object_or_404(
             get_consultation_queryset(request.user).filter(
-                external_id=self.kwargs["consultation_external_id"]
-            )
+                external_id=self.kwargs["consultation_external_id"],
+            ),
         )
         daily_round_objects = DailyRound.objects.filter(
-            consultation=consultation
+            consultation=consultation,
         ).order_by("-taken_at")
         total_count = daily_round_objects.count()
         daily_round_objects = daily_round_objects[

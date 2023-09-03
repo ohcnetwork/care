@@ -1,10 +1,15 @@
 import json
+import logging
 
 import requests
 from django.conf import settings
 from rest_framework.exceptions import APIException
 
 from care.utils.jwks.token_generator import generate_jwt
+
+logger = logging.getLogger(__name__)
+
+MIDDLEWARE_REQUEST_TIMEOUT = 25
 
 
 class BaseAssetIntegration:
@@ -26,29 +31,33 @@ class BaseAssetIntegration:
         return f"{protocol}://{self.middleware_hostname}/{endpoint}"
 
     def api_post(self, url, data=None):
-        req = requests.post(
-            url,
-            json=data,
-            headers={"Authorization": (self.auth_header_type + generate_jwt())},
-        )
         try:
-            response = req.json()
-            if req.status_code >= 400:
-                raise APIException(response, req.status_code)
-            return response
+            response = requests.post(
+                url,
+                json=data,
+                headers={"Authorization": (self.auth_header_type + generate_jwt())},
+                timeout=MIDDLEWARE_REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as e:
+            logger.error("middleware error: %s", e.errno)
+            raise APIException({"error": "error occurred on middleware"}) from None
         except json.decoder.JSONDecodeError:
-            return {"error": "Invalid Response"}
+            raise APIException({"error": "Invalid Response"}) from None
 
     def api_get(self, url, data=None):
-        req = requests.get(
-            url,
-            params=data,
-            headers={"Authorization": (self.auth_header_type + generate_jwt())},
-        )
         try:
-            if req.status_code >= 400:
-                raise APIException(req.text, req.status_code)
-            response = req.json()
-            return response
+            response = requests.get(
+                url,
+                params=data,
+                headers={"Authorization": (self.auth_header_type + generate_jwt())},
+                timeout=MIDDLEWARE_REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as e:
+            logger.error("middleware error: %s", e.errno)
+            raise APIException({"error": "error occurred on middleware"}) from None
         except json.decoder.JSONDecodeError:
-            return {"error": "Invalid Response"}
+            raise APIException({"error": "Invalid Response"}) from None

@@ -7,10 +7,9 @@ from rest_framework.viewsets import ViewSet
 
 def serailize_data(icd11_object):
     result = []
-    for object in icd11_object:
-        if type(object) == tuple:
-            object = object[0]
-        result.append({"id": object.id, "label": object.label})
+    for _obj in icd11_object:
+        obj = _obj[0] if isinstance(_obj, tuple) else _obj
+        result.append({"id": obj.id, "label": obj.label})
     return result
 
 
@@ -24,6 +23,6 @@ class ICDViewSet(ViewSet):
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
-                label=queryset.re_match(r".*" + query + r".*", IGNORECASE)
+                label=queryset.re_match(r".*" + query + r".*", IGNORECASE),
             )  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))

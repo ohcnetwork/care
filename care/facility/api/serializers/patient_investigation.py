@@ -43,10 +43,12 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
 
     group_object = PatientInvestigationGroupSerializer(source="group", read_only=True)
     investigation_object = MinimalPatientInvestigationSerializer(
-        source="investigation", read_only=True
+        source="investigation",
+        read_only=True,
     )
     session_object = PatientInvestigationSessionSerializer(
-        source="session", read_only=True
+        source="session",
+        read_only=True,
     )
 
     class Meta:
@@ -62,7 +64,7 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if instance.consultation.discharge_date:
             raise serializers.ValidationError(
-                {"consultation": ["Discharged Consultation data cannot be updated"]}
+                {"consultation": ["Discharged Consultation data cannot be updated"]},
             )
 
         # Removed since it might flood messages

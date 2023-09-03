@@ -1,5 +1,6 @@
 from celery import shared_task
 from dry_rest_permissions.generics import DRYPermissions
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -20,7 +21,7 @@ from care.utils.queryset.facility import get_facility_queryset
 @shared_task
 def register_health_facility_as_service(facility_external_id):
     health_facility = HealthFacility.objects.filter(
-        facility__external_id=facility_external_id
+        facility__external_id=facility_external_id,
     ).first()
 
     if not health_facility:
@@ -36,10 +37,10 @@ def register_health_facility_as_service(facility_external_id):
             "type": "HIP",
             "active": True,
             "alias": ["CARE_HIP"],
-        }
+        },
     )
 
-    if response.status_code == 200:
+    if response.status_code == status.HTTP_200_OK:
         health_facility.registered = True
         health_facility.save()
         return True

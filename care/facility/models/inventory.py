@@ -82,7 +82,8 @@ class FacilityInventoryItem(models.Model):
         blank=False,
     )
     allowed_units = models.ManyToManyField(
-        FacilityInventoryUnit, related_name="allowed_units"
+        FacilityInventoryUnit,
+        related_name="allowed_units",
     )
     tags = models.ManyToManyField(FacilityInventoryItemTag)
     description = models.TextField(blank=True)
@@ -101,20 +102,32 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     """
 
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     item = models.ForeignKey(
-        FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False
+        FacilityInventoryItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
     current_stock = models.FloatField(default=0)
     quantity_in_default_unit = models.FloatField(default=0)
     quantity = models.FloatField(default=0)
     unit = models.ForeignKey(
-        FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False
+        FacilityInventoryUnit,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
     is_incoming = models.BooleanField()
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     probable_accident = models.BooleanField(default=False)
 
@@ -126,13 +139,19 @@ class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin
     """
 
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     item = models.ForeignKey(
-        FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False
+        FacilityInventoryItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
     quantity = models.FloatField(
-        default=0
+        default=0,
     )  # Automatically Set // NOT EDITABLE BY ADMIN
     is_low = models.BooleanField(default=False)
 
@@ -142,7 +161,7 @@ class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin
                 fields=["facility", "item"],
                 condition=models.Q(deleted=False),
                 name="unique_facility_item_summary",
-            )
+            ),
         ]
 
 
@@ -152,10 +171,16 @@ class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionM
     """
 
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     item = models.ForeignKey(
-        FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False
+        FacilityInventoryItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
     min_quantity = models.FloatField(default=0)
 
@@ -165,7 +190,7 @@ class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionM
                 fields=["facility", "item"],
                 condition=models.Q(deleted=False),
                 name="unique_facility_item_min_quantity",
-            )
+            ),
         ]
 
 
@@ -175,10 +200,16 @@ class FacilityInventoryBurnRate(FacilityBaseModel, FacilityRelatedPermissionMixi
     """
 
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, null=False, blank=False
+        "Facility",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     item = models.ForeignKey(
-        FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False
+        FacilityInventoryItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
     )
     burn_rate = models.FloatField(default=0)
     current_stock = models.FloatField(default=0)
@@ -193,6 +224,6 @@ class FacilityInventoryBurnRate(FacilityBaseModel, FacilityRelatedPermissionMixi
                 fields=(
                     "facility",
                     "item",
-                )
-            )
+                ),
+            ),
         ]

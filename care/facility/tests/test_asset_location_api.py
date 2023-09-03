@@ -17,14 +17,14 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
 
     def test_list_asset_locations(self):
         response = self.client.get(
-            f"/api/v1/facility/{self.facility.external_id}/asset_location/"
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.asset_location.external_id)
 
     def test_retrieve_asset_location(self):
         response = self.client.get(
-            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/"
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.asset_location.external_id)

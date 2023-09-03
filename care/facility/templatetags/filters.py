@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.template import Library
+from django.utils.timezone import get_default_timezone
 
 register = Library()
 
@@ -28,6 +29,8 @@ def field_name_to_label(value):
 @register.filter(expects_localtime=True)
 def parse_datetime(value):
     try:
-        return datetime.strptime(value, "%Y-%m-%dT%H:%M")
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M").astimezone(
+            get_default_timezone(),
+        )
     except ValueError:
         return None

@@ -122,7 +122,9 @@ class DailyRound(PatientBaseModel):
     ]
 
     consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds"
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        related_name="daily_rounds",
     )
     temperature = models.DecimalField(
         decimal_places=2,
@@ -133,7 +135,11 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(95), MaxValueValidator(106)],
     )
     spo2 = models.DecimalField(
-        max_digits=4, decimal_places=2, blank=True, null=True, default=None
+        max_digits=4,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        default=None,
     )
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
@@ -153,13 +159,19 @@ class DailyRound(PatientBaseModel):
         null=True,
     )  # Deprecated
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES,
+        max_length=8,
+        blank=False,
+        null=True,
     )
     current_health = models.IntegerField(
-        default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
+        default=0,
+        choices=CURRENT_HEALTH_CHOICES,
+        blank=True,
     )
     recommend_discharge = models.BooleanField(
-        default=False, verbose_name="Recommend Discharging Patient"
+        default=False,
+        verbose_name="Recommend Discharging Patient",
     )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
@@ -168,7 +180,10 @@ class DailyRound(PatientBaseModel):
     created_by_telemedicine = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="update_created_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="update_created_user",
     )
 
     last_edited_by = models.ForeignKey(
@@ -181,13 +196,15 @@ class DailyRound(PatientBaseModel):
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(
-        choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
+        choices=RoundsTypeChoice,
+        default=RoundsType.NORMAL.value,
     )
 
     # Critical Care Attributes
 
     consciousness_level = models.IntegerField(
-        choices=ConsciousnessChoice, default=ConsciousnessType.UNKNOWN.value
+        choices=ConsciousnessChoice,
+        default=ConsciousnessType.UNKNOWN.value,
     )
     consciousness_level_detail = models.TextField(default=None, null=True, blank=True)
 
@@ -201,10 +218,13 @@ class DailyRound(PatientBaseModel):
     )
     left_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     left_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoice,
+        default=PupilReactionType.UNKNOWN.value,
     )
     left_pupil_light_reaction_detail = models.TextField(
-        default=None, null=True, blank=True
+        default=None,
+        null=True,
+        blank=True,
     )
     right_pupil_size = models.IntegerField(
         default=None,
@@ -214,10 +234,13 @@ class DailyRound(PatientBaseModel):
     )
     right_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     right_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoice,
+        default=PupilReactionType.UNKNOWN.value,
     )
     right_pupil_light_reaction_detail = models.TextField(
-        default=None, null=True, blank=True
+        default=None,
+        null=True,
+        blank=True,
     )
     glasgow_eye_open = models.IntegerField(
         default=None,
@@ -240,16 +263,20 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(3), MaxValueValidator(15)],
     )
     limb_response_upper_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice,
+        default=LimbResponseType.UNKNOWN.value,
     )
     limb_response_upper_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice,
+        default=LimbResponseType.UNKNOWN.value,
     )
     limb_response_lower_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice,
+        default=LimbResponseType.UNKNOWN.value,
     )
     limb_response_lower_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice,
+        default=LimbResponseType.UNKNOWN.value,
     )
     bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
     pulse = models.IntegerField(
@@ -265,10 +292,12 @@ class DailyRound(PatientBaseModel):
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
-        choices=VentilatorInterfaceChoice, default=VentilatorInterfaceType.UNKNOWN.value
+        choices=VentilatorInterfaceChoice,
+        default=VentilatorInterfaceType.UNKNOWN.value,
     )
     ventilator_mode = models.IntegerField(
-        choices=VentilatorModeChoice, default=VentilatorModeType.UNKNOWN.value
+        choices=VentilatorModeChoice,
+        default=VentilatorModeType.UNKNOWN.value,
     )
     ventilator_peep = models.DecimalField(
         decimal_places=2,
@@ -339,7 +368,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
     pain_scale_enhanced = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)],
     )
     ph = models.DecimalField(
         decimal_places=2,
@@ -414,16 +444,25 @@ class DailyRound(PatientBaseModel):
         default=InsulinIntakeFrequencyType.UNKNOWN.value,
     )
     infusions = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(INFUSIONS)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(INFUSIONS)],
     )
     iv_fluids = JSONField(default=list, validators=[JSONFieldSchemaValidator(IV_FLUID)])
     feeds = JSONField(default=list, validators=[JSONFieldSchemaValidator(FEED)])
     total_intake_calculated = models.DecimalField(
-        decimal_places=2, max_digits=6, blank=True, default=None, null=True
+        decimal_places=2,
+        max_digits=6,
+        blank=True,
+        default=None,
+        null=True,
     )
     output = JSONField(default=list, validators=[JSONFieldSchemaValidator(OUTPUT)])
     total_output_calculated = models.DecimalField(
-        decimal_places=2, max_digits=6, blank=True, default=None, null=True
+        decimal_places=2,
+        max_digits=6,
+        blank=True,
+        default=None,
+        null=True,
     )
     dialysis_fluid_balance = models.IntegerField(
         default=None,
@@ -436,10 +475,12 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(5000)],
     )
     pressure_sore = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(PRESSURE_SORE)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(PRESSURE_SORE)],
     )
     nursing = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(NURSING_PROCEDURE)],
     )
 
     medicine_administration = JSONField(
@@ -494,17 +535,19 @@ class DailyRound(PatientBaseModel):
 
         # self.pressure_sore = self.update_pressure_sore()
 
-        super(DailyRound, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @staticmethod
     def has_write_permission(request):
-        if "/analyse" not in request.get_full_path():
-            if (
-                request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-            ):
-                return False
+        if "/analyse" not in request.get_full_path() and (
+            request.user.user_type
+            in {
+                User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+                User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+                User.TYPE_VALUE_MAP["StaffReadOnly"],
+            }
+        ):
+            return False
         return DailyRound.has_read_permission(request)
 
     @staticmethod
@@ -516,8 +559,8 @@ class DailyRound(PatientBaseModel):
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
-                request.user == consultation.assigned_to
-                or request.user == consultation.patient.assigned_to
+                request.user
+                in (consultation.assigned_to, consultation.patient.assigned_to)
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -537,8 +580,11 @@ class DailyRound(PatientBaseModel):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
+                request.user
+                in {
+                    self.consultation.assigned_to,
+                    self.consultation.patient.assigned_to,
+                }
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -559,11 +605,11 @@ class DailyRound(PatientBaseModel):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in {
+            User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+        }:
             return False
         return (
             request.user.is_superuser
@@ -572,8 +618,11 @@ class DailyRound(PatientBaseModel):
                 and self.consultation.patient.facility == request.user.home_facility
             )
             or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
+                request.user
+                in {
+                    self.consultation.assigned_to,
+                    self.consultation.patient.assigned_to,
+                }
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -598,8 +647,9 @@ class DailyRound(PatientBaseModel):
 
     def has_object_asset_write_permission(self, request):
         consultation = PatientConsultation.objects.select_related(
-            "current_bed__bed"
+            "current_bed__bed",
         ).get(external_id=request.parser_context["kwargs"]["consultation_external_id"])
         return AssetBed.objects.filter(
-            asset=request.user.asset, bed=consultation.current_bed.bed
+            asset=request.user.asset,
+            bed=consultation.current_bed.bed,
         ).exists()

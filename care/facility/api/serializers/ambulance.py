@@ -17,10 +17,12 @@ class AmbulanceSerializer(serializers.ModelSerializer):
     drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
     primary_district_object = DistrictSerializer(
-        read_only=True, source="primary_district"
+        read_only=True,
+        source="primary_district",
     )
     secondary_district_object = DistrictSerializer(
-        read_only=True, source="secondary_district"
+        read_only=True,
+        source="secondary_district",
     )
     third_district_object = DistrictSerializer(read_only=True, source="third_district")
 
@@ -37,7 +39,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
         validated = super().validate(obj)
         if not validated.get("price_per_km") and not validated.get("has_free_service"):
             raise ValidationError(
-                "The ambulance must provide a price or be marked as free"
+                "The ambulance must provide a price or be marked as free",
             )
         return validated
 
@@ -46,7 +48,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             drivers = validated_data.pop("drivers", [])
             validated_data.pop("created_by", None)
 
-            ambulance = super(AmbulanceSerializer, self).create(validated_data)
+            ambulance = super().create(validated_data)
 
             for d in drivers:
                 d["ambulance"] = ambulance
@@ -55,8 +57,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         validated_data.pop("drivers", [])
-        ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
-        return ambulance
+        return super().update(instance, validated_data)
 
 
 class DeleteDriverSerializer(serializers.Serializer):

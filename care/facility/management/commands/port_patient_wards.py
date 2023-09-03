@@ -9,7 +9,7 @@ class Command(BaseCommand):
     Management command to sync Date of Birth and Year of Birth and Age.
     """
 
-    help = "Syncs the age of Patients based on Date of Birth and Year of Birth"
+    help = "Syncs the age of Patients based on Date of Birth and Year of Birth"  # noqa: A003
 
     def handle(self, *args, **options):
         qs = PatientRegistration.objects.all()
@@ -22,7 +22,8 @@ class Command(BaseCommand):
                     continue
                 local_body = patient.local_body
                 ward_object = Ward.objects.filter(
-                    local_body=local_body, number=old_ward
+                    local_body=local_body,
+                    number=old_ward,
                 ).first()
                 if ward_object is None:
                     failed += 1
@@ -32,9 +33,6 @@ class Command(BaseCommand):
                     patient.save()
             except Exception:
                 failed += 1
-        print(
-            str(failed),
-            " failed operations ",
-            str(success),
-            " sucessfull operations",
-        )
+        if failed:
+            self.stdout.write(self.style.ERROR(f"Failed to sync {failed} patients"))
+        self.stdout.write(self.style.SUCCESS(f"Successfully Synced {success} patients"))

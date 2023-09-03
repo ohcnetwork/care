@@ -13,7 +13,7 @@ def district_patient_summary():
             "id": district_object.id,
         }
         for local_body_object in LocalBody.objects.filter(
-            district_id=district_object.id
+            district_id=district_object.id,
         ):
             district_summary[local_body_object.id] = {
                 "name": local_body_object.name,
@@ -34,7 +34,7 @@ def district_patient_summary():
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
                 patient_filters = {
-                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value,
                 }
                 count = patients.filter(**patient_filters).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
@@ -50,19 +50,19 @@ def district_patient_summary():
             # Apply Date Filters
 
             patients_today = patients.filter(
-                last_consultation__created_date__startswith=now().date()
+                last_consultation__created_date__startswith=now().date(),
             )
 
             # Get Todays Counts
 
             today_patients_home_quarantine = patients_today.filter(
-                home_quarantine
+                home_quarantine,
             ).count()
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
                 patient_filters = {
-                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value,
                 }
                 count = patients_today.filter(**patient_filters).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
@@ -74,7 +74,7 @@ def district_patient_summary():
             ] = today_patients_home_quarantine
 
         object_filter = Q(s_type="PatientSummary") & Q(
-            created_date__startswith=now().date()
+            created_date__startswith=now().date(),
         )
         if (
             DistrictScopedSummary.objects.filter(district_id=district_object.id)
@@ -82,7 +82,7 @@ def district_patient_summary():
             .exists()
         ):
             district_summary_old = DistrictScopedSummary.objects.filter(
-                object_filter
+                object_filter,
             ).get(district_id=district_object.id)
             district_summary_old.created_date = now()
             district_summary_old.data.pop("modified_date")
@@ -90,7 +90,7 @@ def district_patient_summary():
             district_summary_old.data = district_summary
             latest_modification_date = now()
             district_summary_old.data.update(
-                {"modified_date": latest_modification_date.strftime("%d-%m-%Y %H:%M")}
+                {"modified_date": latest_modification_date.strftime("%d-%m-%Y %H:%M")},
             )
             district_summary_old.save()
         else:

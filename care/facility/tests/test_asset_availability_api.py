@@ -28,12 +28,13 @@ class AssetAvailabilityViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get("/api/v1/asset_availability/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
+            response.data["results"][0]["status"],
+            AvailabilityStatus.OPERATIONAL.value,
         )
 
     def test_retrieve_asset_availability(self):
         response = self.client.get(
-            f"/api/v1/asset_availability/{self.asset_availability.id}/"
+            f"/api/v1/asset_availability/{self.asset_availability.id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], AvailabilityStatus.OPERATIONAL.value)

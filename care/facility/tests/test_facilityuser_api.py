@@ -20,7 +20,7 @@ class FacilityUserTest(TestUtils, APITestCase):
 
     def test_get_queryset_with_prefetching(self):
         response = self.client.get(
-            f"/api/v1/facility/{self.facility.external_id}/get_users/"
+            f"/api/v1/facility/{self.facility.external_id}/get_users/",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

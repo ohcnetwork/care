@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -19,25 +18,34 @@ class ConsultationBedAssetApiTestCase(TestUtils, APITestCase):
         cls.asset = cls.create_asset(cls.asset_location)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
         cls.patient = cls.create_patient(
-            cls.district, cls.facility, local_body=cls.local_body
+            cls.district,
+            cls.facility,
+            local_body=cls.local_body,
         )
 
     def setUp(self) -> None:
         super().setUp()
         self.bed1 = Bed.objects.create(
-            name="bed1", location=self.asset_location, facility=self.facility
+            name="bed1",
+            location=self.asset_location,
+            facility=self.facility,
         )
         self.bed2 = Bed.objects.create(
-            name="bed2", location=self.asset_location, facility=self.facility
+            name="bed2",
+            location=self.asset_location,
+            facility=self.facility,
         )
         self.asset1 = Asset.objects.create(
-            name="asset1", current_location=self.asset_location
+            name="asset1",
+            current_location=self.asset_location,
         )
         self.asset2 = Asset.objects.create(
-            name="asset2", current_location=self.asset_location
+            name="asset2",
+            current_location=self.asset_location,
         )
         self.asset3 = Asset.objects.create(
-            name="asset3", current_location=self.asset_location
+            name="asset3",
+            current_location=self.asset_location,
         )
 
     def test_link_asset_to_consultation_bed(self):
@@ -47,7 +55,7 @@ class ConsultationBedAssetApiTestCase(TestUtils, APITestCase):
             {
                 "consultation": consultation.external_id,
                 "bed": self.bed1.external_id,
-                "start_date": datetime.now().isoformat(),
+                "start_date": timezone.now().isoformat(),
                 "assets": [self.asset1.external_id, self.asset2.external_id],
             },
         )
@@ -61,7 +69,7 @@ class ConsultationBedAssetApiTestCase(TestUtils, APITestCase):
             {
                 "consultation": consultation.external_id,
                 "bed": self.bed1.external_id,
-                "start_date": datetime.now().isoformat(),
+                "start_date": timezone.now().isoformat(),
                 "assets": [self.asset1.external_id, self.asset2.external_id],
             },
         )
@@ -71,7 +79,7 @@ class ConsultationBedAssetApiTestCase(TestUtils, APITestCase):
             {
                 "consultation": consultation2.external_id,
                 "bed": self.bed2.external_id,
-                "start_date": datetime.now().isoformat(),
+                "start_date": timezone.now().isoformat(),
                 "assets": [self.asset1.external_id, self.asset3.external_id],
             },
         )

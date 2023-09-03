@@ -19,11 +19,12 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
     local_body_type = serializers.CharField(required=False, write_only=True)
 
     sample_collection_date = serializers.DateField(
-        input_formats=["%Y-%m-%d"], required=False
+        input_formats=["%Y-%m-%d"],
+        required=False,
     )
     result_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
 
-    def validate_empty_values(self, data, *args, **kwargs):
+    def validate_empty_values(self, data, *args, **kwargs):  # noqa: PLR0912
         # if "is_repeat" in data:
         #     is_repeat = data["is_repeat"]
         #     if is_repeat.lower() == "yes":
@@ -43,12 +44,12 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
         if "local_body_type" not in data:
             raise ValidationError(
-                {"local_body_type": ["local_body_type is not present in data"]}
+                {"local_body_type": ["local_body_type is not present in data"]},
             )
 
         if not data["local_body_type"]:
             raise ValidationError(
-                {"local_body_type": ["local_body_type cannot be empty"]}
+                {"local_body_type": ["local_body_type cannot be empty"]},
             )
 
         if data["local_body_type"].lower() not in REVERSE_LOCAL_BODY_CHOICES:
@@ -77,10 +78,13 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
             try:
                 int(data["ward"])
             except Exception:
-                raise ValidationError({"ward": ["Ward must be an integer value"]})
+                raise ValidationError(
+                    {"ward": ["Ward must be an integer value"]},
+                ) from None
             if data["ward"]:
                 ward_obj = Ward.objects.filter(
-                    number=data["ward"], local_body=local_body_obj
+                    number=data["ward"],
+                    local_body=local_body_obj,
                 ).first()
                 if ward_obj:
                     data["ward"] = ward_obj.id
@@ -92,11 +96,13 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data, *args, **kwargs)
 
     def create(self, validated_data):
-        if "srf_id" in validated_data:
-            if PatientRegistration.objects.filter(
-                srf_id__iexact=validated_data["srf_id"]
-            ).exists():
-                validated_data["patient_created"] = True
+        if (
+            "srf_id" in validated_data
+            and PatientRegistration.objects.filter(
+                srf_id__iexact=validated_data["srf_id"],
+            ).exists()
+        ):
+            validated_data["patient_created"] = True
         return super().create(validated_data)
 
     class Meta:
@@ -107,10 +113,12 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
 
 class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
     local_body = serializers.PrimaryKeyRelatedField(
-        queryset=LocalBody.objects.all(), required=False
+        queryset=LocalBody.objects.all(),
+        required=False,
     )
     ward = serializers.PrimaryKeyRelatedField(
-        queryset=Ward.objects.all(), required=False
+        queryset=Ward.objects.all(),
+        required=False,
     )
 
     class Meta:
@@ -126,7 +134,7 @@ class PatientExternalTestUpdateSerializer(serializers.ModelSerializer):
 
             if validated_data["local_body"].district != instance.district:
                 raise ValidationError(
-                    {"local_body": "Only supported within same district"}
+                    {"local_body": "Only supported within same district"},
                 )
 
         return super().update(instance, validated_data)

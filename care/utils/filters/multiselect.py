@@ -2,12 +2,11 @@ from django_filters import Filter
 
 
 class MultiSelectFilter(Filter):
-    def filter(self, qs, value):
+    def filter(self, qs, value):  # noqa: A003
         if not value:
             return qs
         if not self.field_name:
-            return
+            return None
         values_list = value.split(",")
         filters = {self.field_name + "__in": values_list}
-        qs = qs.filter(**filters)
-        return qs
+        return qs.filter(**filters)

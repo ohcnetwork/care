@@ -1,7 +1,8 @@
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.core.cache import cache
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -113,29 +114,28 @@ class DiscoverView(GenericAPIView):
                 "No matching records found, need more data",
                 status=status.HTTP_404_NOT_FOUND,
             )
-        else:
-            for identifier in verified_identifiers:
-                if identifier["value"] is None:
-                    continue
+        for identifier in verified_identifiers:
+            if identifier["value"] is None:
+                continue
 
-                # if identifier["type"] == "MOBILE":
-                #     matched_by.append(identifier["value"])
-                #     mobile = identifier["value"].replace("+91", "").replace("-", "")
-                #     patients = patients.filter(
-                #         Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
-                #     )
+            # if identifier["type"] == "MOBILE":
+            #     matched_by.append(identifier["value"])
+            #     mobile = identifier["value"].replace("+91", "").replace("-", "")
+            #     patients = patients.filter(
+            #         Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
+            #     )
 
-                if identifier["type"] == "NDHM_HEALTH_NUMBER":
-                    matched_by.append(identifier["value"])
-                    patients = patients.filter(
-                        abha_number__abha_number=identifier["value"]
-                    )
+            if identifier["type"] == "NDHM_HEALTH_NUMBER":
+                matched_by.append(identifier["value"])
+                patients = patients.filter(
+                    abha_number__abha_number=identifier["value"],
+                )
 
-                if identifier["type"] == "HEALTH_ID":
-                    matched_by.append(identifier["value"])
-                    patients = patients.filter(
-                        abha_number__health_id=identifier["value"]
-                    )
+            if identifier["type"] == "HEALTH_ID":
+                matched_by.append(identifier["value"])
+                patients = patients.filter(
+                    abha_number__health_id=identifier["value"],
+                )
 
         # TODO: also filter by demographics
         patient = patients.last()
@@ -159,10 +159,10 @@ class DiscoverView(GenericAPIView):
                             "name": f"Encounter: {str(consultation.created_date.date())}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
-                    )
+                    ),
                 ),
                 "matched_by": matched_by,
-            }
+            },
         )
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -182,7 +182,7 @@ class LinkInitView(GenericAPIView):
                 "transaction_id": data["transactionId"],
                 "patient_id": data["patient"]["referenceNumber"],
                 "phone": "7639899448",
-            }
+            },
         )
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -198,8 +198,8 @@ class LinkConfirmView(GenericAPIView):
 
         patient = get_object_or_404(
             PatientRegistration.objects.filter(
-                external_id=data["confirmation"]["linkRefNumber"]
-            )
+                external_id=data["confirmation"]["linkRefNumber"],
+            ),
         )
         AbdmGateway().on_link_confirm(
             {
@@ -213,9 +213,9 @@ class LinkConfirmView(GenericAPIView):
                             "name": f"Encounter: {str(consultation.created_date.date())}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
-                    )
+                    ),
                 ),
-            }
+            },
         )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
@@ -234,7 +234,7 @@ class NotifyView(GenericAPIView):
             {
                 "request_id": data["requestId"],
                 "consent_id": data["notification"]["consentId"],
-            }
+            },
         )
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -248,7 +248,7 @@ class RequestDataView(GenericAPIView):
 
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
+        if not consent or consent["notification"]["status"] != "GRANTED":
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
@@ -263,13 +263,13 @@ class RequestDataView(GenericAPIView):
         #     return Response({}, status=status.HTTP_403_FORBIDDEN)
 
         on_data_request_response = AbdmGateway().on_data_request(
-            {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
+            {"request_id": data["requestId"], "transaction_id": data["transactionId"]},
         )
 
-        if not on_data_request_response.status_code == 202:
-            return Response({}, status=status.HTTP_202_ACCEPTED)
+        if on_data_request_response.status_code != status.HTTP_202_ACCEPTED:
             return Response(
-                on_data_request_response, status=status.HTTP_400_BAD_REQUEST
+                on_data_request_response,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         cipher = Cipher(
@@ -296,18 +296,18 @@ class RequestDataView(GenericAPIView):
                                                 PatientConsultation.objects.get(
                                                     external_id=context[
                                                         "careContextReference"
-                                                    ]
-                                                )
-                                            ).create_record(record)
+                                                    ],
+                                                ),
+                                            ).create_record(record),
                                         )["data"],
                                     },
                                     consent["notification"]["consentDetail"]["hiTypes"],
-                                )
+                                ),
                             ),
                             consent["notification"]["consentDetail"]["careContexts"][
                                 :-2:-1
                             ],
-                        )
+                        ),
                     ),
                     [],
                 ),
@@ -315,13 +315,13 @@ class RequestDataView(GenericAPIView):
                     "cryptoAlg": "ECDH",
                     "curve": "Curve25519",
                     "dhPublicKey": {
-                        "expiry": (datetime.now() + timedelta(days=2)).isoformat(),
+                        "expiry": (timezone.now() + timedelta(days=2)).isoformat(),
                         "parameters": "Curve25519/32byte random key",
                         "keyValue": cipher.key_to_share,
                     },
                     "nonce": cipher.sender_nonce,
                 },
-            }
+            },
         )
 
         AbdmGateway().data_notify(
@@ -335,9 +335,9 @@ class RequestDataView(GenericAPIView):
                         consent["notification"]["consentDetail"]["careContexts"][
                             :-2:-1
                         ],
-                    )
+                    ),
                 ),
-            }
+            },
         )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)

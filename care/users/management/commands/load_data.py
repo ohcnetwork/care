@@ -8,7 +8,7 @@ class Command(BaseCommand):
     Usage: python manage.py load_state_data ./data/india/states-and-districts.json
     """
 
-    help = "Loads Local Body data from a folder of JSONs"
+    help = "Loads Local Body data from a folder of JSONs"  # noqa: A003
     BASE_URL = "data/india/"
     valid_states = [
         "andaman_and_nicobar_islands",
@@ -58,12 +58,14 @@ class Command(BaseCommand):
             states = self.valid_states
         else:
             if state not in self.valid_states:
-                print("valid state options are ", self.valid_states)
+                self.stdout.write(
+                    self.style.ERROR(f"valid state options are {self.valid_states}"),
+                )
                 raise Exception("State not found")
             states = [state]
 
         for state in states:
             current_state_data = self.BASE_URL + state + "/lsg/"
-            print("Processing Files From", current_state_data)
+            self.stdout.write(f"Loading State Data {current_state_data}")
             management.call_command("load_lsg_data", current_state_data)
             management.call_command("load_ward_data", current_state_data)

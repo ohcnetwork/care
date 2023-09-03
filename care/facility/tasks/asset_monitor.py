@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
-def check_asset_status():
-    logger.info(f"Checking Asset Status: {timezone.now()}")
+def check_asset_status():  # noqa: PLR0912
+    logger.info("Checking Asset Status: %s", timezone.now().isoformat())
 
     assets = Asset.objects.all()
     middleware_status_cache = {}
@@ -54,41 +54,49 @@ def check_asset_status():
                         {
                             **asset.meta,
                             "middleware_hostname": hostname,
-                        }
+                        },
                     )
                     # Fetching the status of the device
                     if asset.asset_class == "ONVIF":
                         similar_assets = Asset.objects.filter(
-                            asset_class="ONVIF"
+                            asset_class="ONVIF",
                         ).filter(
                             Q(meta__middleware_hostname=hostname)
-                            | Q(current_location__facility__middleware_address=hostname)
+                            | Q(
+                                current_location__facility__middleware_address=hostname,
+                            ),
                         )
                         assets_config = []
-                        for asset in similar_assets:
+                        for similar_asset in similar_assets:
                             try:
-                                asset_config = asset.meta["camera_access_key"].split(
-                                    ":"
-                                )
+                                asset_config = similar_asset.meta[
+                                    "camera_access_key"
+                                ].split(":")
                                 assets_config.append(
                                     {
-                                        "hostname": asset.meta.get("local_ip_address"),
+                                        "hostname": similar_asset.meta.get(
+                                            "local_ip_address",
+                                        ),
                                         "port": 80,
                                         "username": asset_config[0],
                                         "password": asset_config[1],
-                                    }
+                                    },
                                 )
                             except Exception:
-                                pass
+                                logger.error(
+                                    "failed to get camera access key: %s",
+                                    similar_asset.id,
+                                )
                         result = asset_class.api_post(
-                            asset_class.get_url("cameras/status"), data=assets_config
+                            asset_class.get_url("cameras/status"),
+                            data=assets_config,
                         )
                     else:
                         result = asset_class.api_get(
-                            asset_class.get_url("devices/status")
+                            asset_class.get_url("devices/status"),
                         )
                 except Exception:
-                    logger.warn(f"Middleware {hostname} is down", exc_info=True)
+                    logger.warning("Middleware %s is down", hostname, exc_info=True)
 
             # If no status is returned, setting default status as down
             if not result:
@@ -102,8 +110,9 @@ def check_asset_status():
             # Setting new status as down by default
             new_status = AvailabilityStatus.DOWN
             for status_record in result:
-                if asset.meta.get("local_ip_address") in status_record.get(
-                    "status", {}
+                if isinstance(asset.meta, dict) and (
+                    asset.meta.get("local_ip_address")
+                    in status_record.get("status", {})
                 ):
                     asset_status = status_record["status"][
                         asset.meta.get("local_ip_address")
@@ -137,4 +146,4 @@ def check_asset_status():
                     )
 
         except Exception:
-            logger.error("Error in Asset Status Check", exc_info=True)
+            logger.exception("Error in Asset Status Check")

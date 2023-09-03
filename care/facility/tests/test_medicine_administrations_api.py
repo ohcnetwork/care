@@ -16,7 +16,7 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.patient = cls.create_patient(
-            cls.district, cls.facility, local_body=cls.local_body
+            cls.district, cls.facility, local_body=cls.local_body,
         )
 
     def setUp(self) -> None:
@@ -33,7 +33,7 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             "is_prn": False,
         }
         return Prescription.objects.create(
-            **{**data, **kwargs, "prescribed_by": self.user}
+            **{**data, **kwargs, "prescribed_by": self.user},
         )
 
     def test_administer(self):
@@ -62,7 +62,7 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
 
     def test_administer_discontinued(self):
         prescription = self.create_prescription(
-            discontinued=True, discontinued_date=timezone.now()
+            discontinued=True, discontinued_date=timezone.now(),
         )
         res = self.client.post(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",

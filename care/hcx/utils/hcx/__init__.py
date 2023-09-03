@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import uuid
 from urllib.parse import urlencode
 
@@ -7,28 +8,32 @@ import requests
 from django.conf import settings
 from jwcrypto import jwe, jwk
 
+logger = logging.getLogger(__name__)
+
+HCX_API_TIMEOUT = 25
+
 
 class Hcx:
     def __init__(
         self,
-        protocolBasePath=settings.HCX_PROTOCOL_BASE_PATH,
-        participantCode=settings.HCX_PARTICIPANT_CODE,
-        authBasePath=settings.HCX_AUTH_BASE_PATH,
+        protocol_base_path=settings.HCX_PROTOCOL_BASE_PATH,
+        participant_code=settings.HCX_PARTICIPANT_CODE,
+        auth_base_path=settings.HCX_AUTH_BASE_PATH,
         username=settings.HCX_USERNAME,
         password=settings.HCX_PASSWORD,
-        encryptionPrivateKeyURL=settings.HCX_ENCRYPTION_PRIVATE_KEY_URL,
-        igUrl=settings.HCX_IG_URL,
+        encryption_private_key_url=settings.HCX_ENCRYPTION_PRIVATE_KEY_URL,
+        ig_url=settings.HCX_IG_URL,
     ):
-        self.protocolBasePath = protocolBasePath
-        self.participantCode = participantCode
-        self.authBasePath = authBasePath
+        self.protocol_base_path = protocol_base_path
+        self.participant_code = participant_code
+        self.auth_base_path = auth_base_path
         self.username = username
         self.password = password
-        self.encryptionPrivateKeyURL = encryptionPrivateKeyURL
-        self.igUrl = igUrl
+        self.encryption_private_key_url = encryption_private_key_url
+        self.ig_url = ig_url
 
-    def generateHcxToken(self):
-        url = self.authBasePath
+    def generate_hcx_token(self):
+        url = self.auth_base_path
 
         payload = {
             "client_id": "registry-frontend",
@@ -40,15 +45,18 @@ class Hcx:
         headers = {"content-type": "application/x-www-form-urlencoded"}
 
         response = requests.request(
-            "POST", url, headers=headers, data=payload_urlencoded
+            "POST",
+            url,
+            headers=headers,
+            data=payload_urlencoded,
         )
         y = json.loads(response.text)
         return y["access_token"]
 
-    def searchRegistry(self, searchField, searchValue):
-        url = self.protocolBasePath + "/participant/search"
-        access_token = self.generateHcxToken()
-        payload = json.dumps({"filters": {searchField: {"eq": searchValue}}})
+    def search_registry(self, search_field, search_value):
+        url = self.protocol_base_path + "/participant/search"
+        access_token = self.generate_hcx_token()
+        payload = json.dumps({"filters": {search_field: {"eq": search_value}}})
         headers = {
             "Authorization": "Bearer " + access_token,
             "Content-Type": "application/json",
@@ -57,62 +65,64 @@ class Hcx:
         response = requests.request("POST", url, headers=headers, data=payload)
         return dict(json.loads(response.text))
 
-    def createHeaders(self, recipientCode=None, correlationId=None):
-        # creating HCX headers
-        # getting sender code
-        # regsitry_user = self.searchRegistry("primary_email", self.username)
-        hcx_headers = {
+    def create_headers(self, recipient_code=None, correlation_id=None):
+        return {
             "alg": "RSA-OAEP",
             "enc": "A256GCM",
-            "x-hcx-recipient_code": recipientCode,
+            "x-hcx-recipient_code": recipient_code,
             "x-hcx-timestamp": datetime.datetime.now()
             .astimezone()
             .replace(microsecond=0)
             .isoformat(),
-            "x-hcx-sender_code": self.participantCode,
-            "x-hcx-correlation_id": correlationId
-            if correlationId
+            "x-hcx-sender_code": self.participant_code,
+            "x-hcx-correlation_id": correlation_id
+            if correlation_id
             else str(uuid.uuid4()),
             # "x-hcx-workflow_id": str(uuid.uuid4()),
             "x-hcx-api_call_id": str(uuid.uuid4()),
             # "x-hcx-status": "response.complete",
         }
-        return hcx_headers
 
-    def encryptJWE(self, recipientCode=None, fhirPayload=None, correlationId=None):
-        if recipientCode is None:
+    def encrypt_jwe(self, recipient_code=None, fhir_payload=None, correlation_id=None):
+        if recipient_code is None:
             raise ValueError("Recipient code can not be empty, must be a string")
-        if type(fhirPayload) is not dict:
+        if not isinstance(fhir_payload, dict):
             raise ValueError("Fhir paylaod must be a dictionary")
-        regsitry_data = self.searchRegistry(
-            searchField="participant_code", searchValue=recipientCode
+        regsitry_data = self.search_registry(
+            search_field="participant_code",
+            search_value=recipient_code,
         )
-        public_cert = requests.get(regsitry_data["participants"][0]["encryption_cert"])
-        key = jwk.JWK.from_pem(public_cert.text.encode("utf-8"))
-        headers = self.createHeaders(recipientCode, correlationId)
-        jwePayload = jwe.JWE(
-            str(json.dumps(fhirPayload)),
+        response = requests.get(
+            regsitry_data["participants"][0]["encryption_cert"],
+            timeout=HCX_API_TIMEOUT,
+        )
+        key = jwk.JWK.from_pem(response.text.encode("utf-8"))
+        headers = self.create_headers(recipient_code, correlation_id)
+        jwe_payload = jwe.JWE(
+            str(json.dumps(fhir_payload)),
             recipient=key,
             protected=json.dumps(headers),
         )
-        enc = jwePayload.serialize(compact=True)
-        return enc
+        return jwe_payload.serialize(compact=True)
 
-    def decryptJWE(self, encryptedString):
-        private_key = requests.get(self.encryptionPrivateKeyURL)
-        privateKey = jwk.JWK.from_pem(private_key.text.encode("utf-8"))
-        jwetoken = jwe.JWE()
-        jwetoken.deserialize(encryptedString, key=privateKey)
+    def decrypt_jwe(self, encrypted_string):
+        response = requests.get(
+            self.encryption_private_key_url,
+            timeout=HCX_API_TIMEOUT,
+        )
+        private_key = jwk.JWK.from_pem(response.text.encode("utf-8"))
+        jwe_token = jwe.JWE()
+        jwe_token.deserialize(encrypted_string, key=private_key)
         return {
-            "headers": dict(json.loads(jwetoken.payload.decode("utf-8"))),
-            "payload": dict(json.loads(jwetoken.payload.decode("utf-8"))),
+            "headers": dict(json.loads(jwe_token.payload.decode("utf-8"))),
+            "payload": dict(json.loads(jwe_token.payload.decode("utf-8"))),
         }
 
-    def makeHcxApiCall(self, operation, encryptedString):
-        url = "".join(self.protocolBasePath + operation.value)
-        print("making the API call to url " + url)
-        access_token = self.generateHcxToken()
-        payload = json.dumps({"payload": encryptedString})
+    def make_hcx_api_call(self, operation, encrypted_string):
+        url = "".join(self.protocol_base_path + operation.value)
+        logger.info("making hxc api call to url: %s", url)
+        access_token = self.generate_hcx_token()
+        payload = json.dumps({"payload": encrypted_string})
         headers = {
             "Authorization": "Bearer " + access_token,
             "Content-Type": "application/json",
@@ -120,18 +130,23 @@ class Hcx:
         response = requests.request("POST", url, headers=headers, data=payload)
         return dict(json.loads(response.text))
 
-    def generateOutgoingHcxCall(
-        self, fhirPayload, operation, recipientCode, correlationId=None
+    def generate_outgoing_hcx_call(
+        self,
+        fhir_payload,
+        operation,
+        recipient_code,
+        correlation_id=None,
     ):
-        encryptedString = self.encryptJWE(
-            recipientCode=recipientCode,
-            fhirPayload=fhirPayload,
-            correlationId=correlationId,
+        encrypted_string = self.encrypt_jwe(
+            recipient_code=recipient_code,
+            fhir_payload=fhir_payload,
+            correlation_id=correlation_id,
         )
-        response = self.makeHcxApiCall(
-            operation=operation, encryptedString=encryptedString
+        response = self.make_hcx_api_call(
+            operation=operation,
+            encrypted_string=encrypted_string,
         )
-        return {"payload": encryptedString, "response": response}
+        return {"payload": encrypted_string, "response": response}
 
-    def processIncomingRequest(self, encryptedString):
-        return self.decryptJWE(encryptedString=encryptedString)
+    def process_incoming_request(self, encrypted_string):
+        return self.decrypt_jwe(encrypted_string=encrypted_string)

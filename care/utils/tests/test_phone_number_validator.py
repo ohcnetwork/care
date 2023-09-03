@@ -8,7 +8,7 @@ class PhoneNumberValidatorTests(TestCase):
     mobile_validator = PhoneNumberValidator(types=("mobile",))
     indian_mobile_validator = PhoneNumberValidator(types=("indian_mobile",))
     international_mobile_validator = PhoneNumberValidator(
-        types=("international_mobile",)
+        types=("international_mobile",),
     )
     landline_validator = PhoneNumberValidator(types=("landline",))
     support_validator = PhoneNumberValidator(types=("support",))
@@ -90,25 +90,29 @@ class PhoneNumberValidatorTests(TestCase):
     def test_valid_indian_mobile_numbers(self):
         for number in self.valid_indian_mobile_numbers:
             self.assertIsNone(
-                self.indian_mobile_validator(number), msg=f"Failed for {number}"
+                self.indian_mobile_validator(number),
+                msg=f"Failed for {number}",
             )
 
     def test_valid_international_mobile_numbers(self):
         for number in self.valid_international_mobile_numbers:
             self.assertIsNone(
-                self.international_mobile_validator(number), msg=f"Failed for {number}"
+                self.international_mobile_validator(number),
+                msg=f"Failed for {number}",
             )
 
     def test_valid_landline_numbers(self):
         for number in self.valid_landline_numbers:
             self.assertIsNone(
-                self.landline_validator(number), msg=f"Failed for {number}"
+                self.landline_validator(number),
+                msg=f"Failed for {number}",
             )
 
     def test_valid_support_numbers(self):
         for number in self.valid_support_numbers:
             self.assertIsNone(
-                self.support_validator(number), msg=f"Failed for {number}"
+                self.support_validator(number),
+                msg=f"Failed for {number}",
             )
 
     def test_invalid_indian_mobile_numbers(self):

@@ -30,13 +30,16 @@ class AmbulanceFilterSet(filters.FilterSet):
     third_district = filters.CharFilter(field_name="third_district_id")
 
     primary_district_name = filters.CharFilter(
-        field_name="primary_district__name", lookup_expr="icontains"
+        field_name="primary_district__name",
+        lookup_expr="icontains",
     )
     secondary_district_name = filters.CharFilter(
-        field_name="secondary_district__name", lookup_expr="icontains"
+        field_name="secondary_district__name",
+        lookup_expr="icontains",
     )
     third_district_name = filters.CharFilter(
-        field_name="third_district__name", lookup_expr="icontains"
+        field_name="third_district__name",
+        lookup_expr="icontains",
     )
 
 
@@ -51,7 +54,9 @@ class AmbulanceViewSet(
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False).select_related(
-        "primary_district", "secondary_district", "third_district"
+        "primary_district",
+        "secondary_district",
+        "third_district",
     )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AmbulanceFilterSet
@@ -59,7 +64,7 @@ class AmbulanceViewSet(
     def get_serializer_class(self):
         if self.action == "add_driver":
             return AmbulanceDriverSerializer
-        elif self.action == "remove_driver":
+        if self.action == "remove_driver":
             return DeleteDriverSerializer
         return AmbulanceSerializer
 
@@ -84,7 +89,7 @@ class AmbulanceViewSet(
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.filter(
-            id=serializer.validated_data["driver_id"]
+            id=serializer.validated_data["driver_id"],
         ).first()
         if not driver:
             raise serializers.ValidationError({"driver_id": "Detail not found"})

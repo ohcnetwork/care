@@ -17,13 +17,16 @@ from care.users.models import User
 class PrescriptionSupplierConsultationFilter(filters.FilterSet):
     patient = filters.CharFilter(field_name="patient__external_id")
     patient_name = filters.CharFilter(
-        field_name="patient__name", lookup_expr="icontains"
+        field_name="patient__name",
+        lookup_expr="icontains",
     )
     facility = filters.UUIDFilter(field_name="facility_external_id")
 
 
 class PrescriptionSupplierConsultationViewSet(
-    mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    GenericViewSet,
 ):
     lookup_field = "external_id"
     serializer_class = PrescriptionSupplierConsultationSerializer
@@ -39,24 +42,25 @@ class PrescriptionSupplierConsultationViewSet(
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(
-                patient__facility__district=self.request.user.district
+                patient__facility__district=self.request.user.district,
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(
-                patient__facility__state=self.request.user.state
+                patient__facility__state=self.request.user.state,
             )
         return self.queryset.filter(
             Q(patient__created_by=self.request.user)
-            | Q(facility__users__id__exact=self.request.user.id)
+            | Q(facility__users__id__exact=self.request.user.id),
         ).distinct("id")
 
 
 class PrescriptionSupplierFilter(filters.FilterSet):
     patient = filters.CharFilter(field_name="consultation__patient__external_id")
     patient_name = filters.CharFilter(
-        field_name="consultation__patient__name", lookup_expr="icontains"
+        field_name="consultation__patient__name",
+        lookup_expr="icontains",
     )
     facility = filters.UUIDFilter(field_name="facility_external_id")
 
@@ -82,8 +86,8 @@ class PrescriptionSupplierViewSet(
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(facility__district=self.request.user.district)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(facility__state=self.request.user.state)
         return self.queryset.filter(facility__users__id__exact=self.request.user.id)

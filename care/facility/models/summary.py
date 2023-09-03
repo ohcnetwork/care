@@ -19,7 +19,10 @@ class FacilityRelatedSummary(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     facility = models.ForeignKey(
-        Facility, on_delete=models.CASCADE, null=True, blank=True
+        Facility,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     s_type = models.CharField(choices=SUMMARY_CHOICES, max_length=100)
     data = JSONField(null=True, blank=True, default=dict)
@@ -29,20 +32,23 @@ class FacilityRelatedSummary(models.Model):
             models.Index(
                 fields=[
                     "-modified_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "-created_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "s_type",
-                ]
+                ],
             ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
+
+    def __str__(self):
+        return f"{self.facility.name} - {self.created_date}"
 
 
 DISTRICT_SUMMARY_CHOICES = (("PatientSummary", "PatientSummary"),)
@@ -53,7 +59,10 @@ class DistrictScopedSummary(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     modified_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     district = models.ForeignKey(
-        District, on_delete=models.CASCADE, null=True, blank=True
+        District,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     s_type = models.CharField(choices=DISTRICT_SUMMARY_CHOICES, max_length=100)
     data = JSONField(null=True, blank=True, default=dict)
@@ -63,20 +72,23 @@ class DistrictScopedSummary(models.Model):
             models.Index(
                 fields=[
                     "-modified_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "-created_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "s_type",
-                ]
+                ],
             ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
+
+    def __str__(self):
+        return f"{self.district.name} - {self.created_date}"
 
 
 LSG_SUMMARY_CHOICES = (("PatientSummary", "PatientSummary"),)
@@ -95,17 +107,20 @@ class LocalBodyScopedSummary(models.Model):
             models.Index(
                 fields=[
                     "-modified_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "-created_date",
-                ]
+                ],
             ),
             models.Index(
                 fields=[
                     "s_type",
-                ]
+                ],
             ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
+
+    def __str__(self):
+        return f"{self.lsg.name} - {self.created_date}"

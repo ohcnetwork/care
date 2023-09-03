@@ -14,8 +14,8 @@ from care.users.api.serializers.lsg import (
     WardSerializer,
 )
 from care.utils.csp import config as cs_provider
+from care.utils.validators.url_validators import MiddlewareDomainAddressValidator
 from config.serializers import ChoiceField
-from config.validators import MiddlewareDomainAddressValidator
 
 User = get_user_model()
 
@@ -57,7 +57,8 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
 
     def get_patient_count(self, facility):
         return PatientRegistration.objects.filter(
-            facility=facility, is_active=True
+            facility=facility,
+            is_active=True,
         ).count()
 
     def get_facility_type(self, facility):

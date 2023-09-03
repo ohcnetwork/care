@@ -47,7 +47,8 @@ class Notification(FacilityBaseModel):
         related_name="notification_intended_for",
     )
     medium_sent = models.IntegerField(
-        choices=MediumChoices, default=Medium.SYSTEM.value
+        choices=MediumChoices,
+        default=Medium.SYSTEM.value,
     )
     caused_by = models.ForeignKey(
         User,
@@ -57,7 +58,8 @@ class Notification(FacilityBaseModel):
     )
     read_at = models.DateTimeField(null=True, blank=True)
     event_type = models.IntegerField(
-        choices=EventTypeChoices, default=EventType.SYSTEM_GENERATED.value
+        choices=EventTypeChoices,
+        default=EventType.SYSTEM_GENERATED.value,
     )
     event = models.IntegerField(choices=EventChoices, default=Event.MESSAGE.value)
     message = models.TextField(max_length=2000, null=True, default=None)

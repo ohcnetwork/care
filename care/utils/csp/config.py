@@ -33,8 +33,8 @@ def get_client_config(bucket_type=BucketType.PATIENT.value):
         },
     }
 
-    if settings.CLOUD_PROVIDER == CSProvider.GCP.value:
-        for key in config.keys():
+    if CSProvider.GCP.value == settings.CLOUD_PROVIDER:
+        for key in config:
             config[key]["endpoint_url"] = "https://storage.googleapis.com"
 
     return config[bucket_type]

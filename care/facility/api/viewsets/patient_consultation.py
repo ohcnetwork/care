@@ -59,12 +59,11 @@ class PatientConsultationViewSet(
     def get_serializer_class(self):
         if self.action == "patient_from_asset":
             return PatientConsultationIDSerializer
-        elif self.action == "discharge_patient":
+        if self.action == "discharge_patient":
             return PatientConsultationDischargeSerializer
-        elif self.action == "email_discharge_summary":
+        if self.action == "email_discharge_summary":
             return EmailDischargeSummarySerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class
 
     def get_permissions(self):
         if self.action == "patient_from_asset":
@@ -86,13 +85,13 @@ class PatientConsultationViewSet(
             )
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(
-                patient__facility__state=self.request.user.state
+                patient__facility__state=self.request.user.state,
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(
-                patient__facility__district=self.request.user.district
+                patient__facility__district=self.request.user.district,
             )
         allowed_facilities = get_accessible_facilities(self.request.user)
         applied_filters = Q(patient__facility__id__in=allowed_facilities)
@@ -119,7 +118,7 @@ class PatientConsultationViewSet(
                     "detail": (
                         "Discharge Summary is already being generated, "
                         f"current progress {current_progress}%"
-                    )
+                    ),
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
@@ -146,7 +145,7 @@ class PatientConsultationViewSet(
                     "detail": (
                         "Cannot generate a new discharge summary for already "
                         "discharged patient"
-                    )
+                    ),
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
@@ -189,13 +188,14 @@ class PatientConsultationViewSet(
                     "detail": (
                         "Discharge Summary is already being generated, "
                         f"current progress {existing_progress}%"
-                    )
+                    ),
                 },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
 
         serializer = self.get_serializer(
-            data=request.data, context={"request": request}
+            data=request.data,
+            context={"request": request},
         )
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data["email"]
@@ -221,7 +221,8 @@ class PatientConsultationViewSet(
         )
 
     @extend_schema(
-        responses={200: PatientConsultationIDSerializer}, tags=["consultation", "asset"]
+        responses={200: PatientConsultationIDSerializer},
+        tags=["consultation", "asset"],
     )
     @action(detail=False, methods=["GET"])
     def patient_from_asset(self, request):

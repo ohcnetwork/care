@@ -45,7 +45,10 @@ class MultipleBedTest(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset = cls.create_asset(cls.asset_location)
         cls.user = cls.create_user(
-            "distadmin", cls.district, home_facility=cls.facility, user_type=30
+            "distadmin",
+            cls.district,
+            home_facility=cls.facility,
+            user_type=30,
         )
 
     def test_create(self):

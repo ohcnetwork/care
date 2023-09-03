@@ -49,32 +49,45 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
 
     origin_facility_object = FacilityBasicInfoSerializer(
-        source="origin_facility", read_only=True, required=False
+        source="origin_facility",
+        read_only=True,
+        required=False,
     )
     approving_facility_object = FacilityBasicInfoSerializer(
-        source="approving_facility", read_only=True, required=False
+        source="approving_facility",
+        read_only=True,
+        required=False,
     )
     assigned_facility_object = FacilityBasicInfoSerializer(
-        source="assigned_facility", read_only=True, required=False
+        source="assigned_facility",
+        read_only=True,
+        required=False,
     )
 
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
     sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
     origin_facility = serializers.UUIDField(
-        source="origin_facility.external_id", allow_null=False, required=True
+        source="origin_facility.external_id",
+        allow_null=False,
+        required=True,
     )
     approving_facility = serializers.UUIDField(
-        source="approving_facility.external_id", allow_null=False, required=True
+        source="approving_facility.external_id",
+        allow_null=False,
+        required=True,
     )
     assigned_facility = serializers.UUIDField(
-        source="assigned_facility.external_id", allow_null=True, required=False
+        source="assigned_facility.external_id",
+        allow_null=True,
+        required=False,
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     last_edited_by_object = UserBaseMinimumSerializer(
-        source="last_edited_by", read_only=True
+        source="last_edited_by",
+        read_only=True,
     )
 
     def __init__(self, instance=None, **kwargs):
@@ -83,33 +96,35 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         super().__init__(instance=instance, **kwargs)
 
     def update(self, instance, validated_data):
-        LIMITED_RECIEVING_STATUS_ = []
-        LIMITED_RECIEVING_STATUS = [
-            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_
+        limited_receiving_statius = [REVERSE_REQUEST_STATUS_CHOICES[x] for x in []]
+        limited_request_status = [
+            REVERSE_REQUEST_STATUS_CHOICES[x]
+            for x in [
+                "ON HOLD",
+                "APPROVED",
+                "REJECTED",
+                "TRANSPORTATION TO BE ARRANGED",
+                "TRANSFER IN PROGRESS",
+                "COMPLETED",
+            ]
         ]
-        LIMITED_REQUEST_STATUS_ = [
-            "ON HOLD",
-            "APPROVED",
-            "REJECTED",
-            "TRANSPORTATION TO BE ARRANGED",
-            "TRANSFER IN PROGRESS",
-            "COMPLETED",
-        ]
-        LIMITED_REQUEST_STATUS = [
-            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_
-        ]
-        # LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
 
         if "status" in validated_data:
-            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
-                if instance.assigned_facility:
-                    if not has_facility_permission(user, instance.assigned_facility):
-                        raise ValidationError({"status": ["Permission Denied"]})
-            elif validated_data["status"] in LIMITED_REQUEST_STATUS:
-                if not has_facility_permission(user, instance.approving_facility):
+            if validated_data["status"] in limited_receiving_statius:
+                if instance.assigned_facility and not has_facility_permission(
+                    user,
+                    instance.assigned_facility,
+                ):
                     raise ValidationError({"status": ["Permission Denied"]})
+            elif validated_data["status"] in limited_request_status and (
+                not has_facility_permission(
+                    user,
+                    instance.approving_facility,
+                )
+            ):
+                raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
         if "origin_facility" in validated_data:
@@ -121,7 +136,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             ]
             if approving_facility_external_id:
                 validated_data["approving_facility_id"] = Facility.objects.get(
-                    external_id=approving_facility_external_id
+                    external_id=approving_facility_external_id,
                 ).id
 
         if "assigned_facility" in validated_data:
@@ -130,14 +145,12 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             ]
             if assigned_facility_external_id:
                 validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
+                    external_id=assigned_facility_external_id,
                 ).id
 
         instance.last_edited_by = self.context["request"].user
 
-        new_instance = super().update(instance, validated_data)
-
-        return new_instance
+        return super().update(instance, validated_data)
 
     def create(self, validated_data):
         # Do Validity checks for each of these data
@@ -148,14 +161,14 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             "external_id"
         ]
         validated_data["origin_facility_id"] = Facility.objects.get(
-            external_id=origin_facility_external_id
+            external_id=origin_facility_external_id,
         ).id
 
         request_approving_facility_external_id = validated_data.pop(
-            "approving_facility"
+            "approving_facility",
         )["external_id"]
         validated_data["approving_facility_id"] = Facility.objects.get(
-            external_id=request_approving_facility_external_id
+            external_id=request_approving_facility_external_id,
         ).id
 
         if "assigned_facility" in validated_data:
@@ -164,7 +177,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             ]
             if assigned_facility_external_id:
                 validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
+                    external_id=assigned_facility_external_id,
                 ).id
 
         validated_data["created_by"] = self.context["request"].user

@@ -28,13 +28,10 @@ class Ambulance(FacilityBaseModel):
 
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator]
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
     )
     owner_is_smart_phone = models.BooleanField(default=True)
-
-    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
 
     primary_district = models.ForeignKey(
         District,
@@ -65,13 +62,18 @@ class Ambulance(FacilityBaseModel):
     insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
 
     ambulance_type = models.IntegerField(
-        choices=AMBULANCE_TYPES, blank=False, default=1
+        choices=AMBULANCE_TYPES,
+        blank=False,
+        default=1,
     )
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     has_free_service = models.BooleanField(default=False)
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     @property
@@ -122,22 +124,14 @@ class Ambulance(FacilityBaseModel):
             )
         )
 
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(
-    #             name="ambulance_free_or_price",
-    #             check=models.Q(price_per_km__isnull=False)
-    #             | models.Q(has_free_service=True),
-    #         )
-    #     ]
-
 
 class AmbulanceDriver(FacilityBaseModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=255)
     phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator]
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
     )
     is_smart_phone = models.BooleanField()
 

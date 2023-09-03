@@ -28,7 +28,7 @@ def patient_summary():
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
                 patient_filters = {
-                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value,
                 }
                 count = patients.filter(**patient_filters).count()
                 clean_name = "total_patients_" + "_".join(text.lower().split())
@@ -44,19 +44,19 @@ def patient_summary():
             # Apply Date Filters
 
             patients_today = patients.filter(
-                last_consultation__created_date__startswith=now().date()
+                last_consultation__created_date__startswith=now().date(),
             )
 
             # Get Todays Counts
 
             today_patients_home_quarantine = patients_today.filter(
-                home_quarantine
+                home_quarantine,
             ).count()
 
             for bed_type_choice in BedTypeChoices:
                 db_value, text = bed_type_choice
                 patient_filters = {
-                    "last_consultation__" + "current_bed__bed__bed_type": db_value
+                    "last_consultation__" + "current_bed__bed__bed_type": db_value,
                 }
                 count = patients_today.filter(**patient_filters).count()
                 clean_name = "today_patients_" + "_".join(text.lower().split())
@@ -69,7 +69,7 @@ def patient_summary():
 
     for i in list(patient_summary.keys()):
         object_filter = Q(s_type="PatientSummary") & Q(
-            created_date__startswith=now().date()
+            created_date__startswith=now().date(),
         )
         if (
             FacilityRelatedSummary.objects.filter(facility_id=i)
@@ -77,7 +77,7 @@ def patient_summary():
             .exists()
         ):
             facility = FacilityRelatedSummary.objects.filter(object_filter).get(
-                facility_id=i
+                facility_id=i,
             )
             facility.created_date = now()
             facility.data.pop("modified_date")
@@ -87,17 +87,19 @@ def patient_summary():
                 facility.data.update(
                     {
                         "modified_date": latest_modification_date.strftime(
-                            "%d-%m-%Y %H:%M"
-                        )
-                    }
+                            "%d-%m-%Y %H:%M",
+                        ),
+                    },
                 )
                 facility.save()
         else:
             modified_date = now()
             patient_summary[i].update(
-                {"modified_date": modified_date.strftime("%d-%m-%Y %H:%M")}
+                {"modified_date": modified_date.strftime("%d-%m-%Y %H:%M")},
             )
             FacilityRelatedSummary(
-                s_type="PatientSummary", facility_id=i, data=patient_summary[i]
+                s_type="PatientSummary",
+                facility_id=i,
+                data=patient_summary[i],
             ).save()
     return True

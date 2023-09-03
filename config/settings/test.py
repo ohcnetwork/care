@@ -24,7 +24,7 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
             "django.template.loaders.filesystem.Loader",
             "django.template.loaders.app_directories.Loader",
         ],
-    )
+    ),
 ]
 
 # EMAIL
@@ -40,7 +40,7 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    }
+    },
 }
 # for testing retelimit use override_settings decorator
 SILENCED_SYSTEM_CHECKS = ["django_ratelimit.E003", "django_ratelimit.W001"]
@@ -52,20 +52,20 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"}
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"},
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
     },
     "loggers": {
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
-        }
+        },
     },
     "root": {
         "handlers": ["console"],

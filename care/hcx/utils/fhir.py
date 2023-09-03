@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import reduce
-from typing import List, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import requests
 from fhir.resources import (
@@ -258,7 +258,11 @@ class Fhir:
         return f"{resource.resource_type}/{resource.id}"
 
     def create_patient_profile(
-        self, id: str, name: str, gender: str, identifier_value: str
+        self,
+        id: str,
+        name: str,
+        gender: str,
+        identifier_value: str,
     ):
         return patient.Patient(
             id=id,
@@ -271,12 +275,12 @@ class Fhir:
                                 system=SYSTEM.codes,
                                 code="SN",
                                 display="Subscriber Number",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     system=SYSTEM.patient_identifier,
                     value=identifier_value,
-                )
+                ),
             ],
             name=[{"text": name}],
             gender=gender,
@@ -294,12 +298,12 @@ class Fhir:
                                 system=SYSTEM.codes,
                                 code="AC",
                                 display=name,
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     system=SYSTEM.provider_identifier,
                     value=identifier_value,
-                )
+                ),
             ],
             name=name,
         )
@@ -316,18 +320,22 @@ class Fhir:
                                 system=SYSTEM.codes,
                                 code="AC",
                                 display=name,
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     system=SYSTEM.insurer_identifier,
                     value=identifier_value,
-                )
+                ),
             ],
             name=name,
         )
 
     def create_practitioner_role_profile(
-        self, id, identifier_value, speciality: str, phone: str
+        self,
+        id,
+        identifier_value,
+        speciality: str,
+        phone: str,
     ):
         return practitionerrole.PractitionerRole(
             id=id,
@@ -340,11 +348,11 @@ class Fhir:
                                 system=SYSTEM.codes,
                                 code="NP",
                                 display="Nurse practitioner number",
-                            )
-                        ]
+                            ),
+                        ],
                     ),
                     value=identifier_value,
-                )
+                ),
             ],
             specialty=[
                 codeableconcept.CodeableConcept(
@@ -353,9 +361,9 @@ class Fhir:
                             system=SYSTEM.practitioner_speciality,
                             code=speciality,
                             display=PRACTIONER_SPECIALITY[speciality],
-                        )
-                    ]
-                )
+                        ),
+                    ],
+                ),
             ],
             telecom=[{"system": "phone", "value": phone}],
         )
@@ -375,8 +383,9 @@ class Fhir:
             meta=meta.Meta(profile=[PROFILE.coverage]),
             identifier=[
                 identifier.Identifier(
-                    system=SYSTEM.coverage_identifier, value=identifier_value
-                )
+                    system=SYSTEM.coverage_identifier,
+                    value=identifier_value,
+                ),
             ],
             status=status,
             subscriber=reference.Reference(reference=self.get_reference_url(patient)),
@@ -387,8 +396,8 @@ class Fhir:
                     coding.Coding(
                         system=SYSTEM.coverage_relationship,
                         code=relationship,
-                    )
-                ]
+                    ),
+                ],
             ),
             payor=[reference.Reference(reference=self.get_reference_url(insurer))],
         )
@@ -405,9 +414,13 @@ class Fhir:
         priority="normal",
         status="active",
         purpose="validation",
-        service_period_start=datetime.now().astimezone(tz=timezone.utc),
-        service_period_end=datetime.now().astimezone(tz=timezone.utc),
+        service_period_start: datetime | None = None,
+        service_period_end: datetime | None = None,
     ):
+        if service_period_start is None:
+            service_period_start = datetime.now().astimezone(tz=UTC)
+        if service_period_end is None:
+            service_period_end = datetime.now().astimezone(tz=UTC)
         return coverageeligibilityrequest.CoverageEligibilityRequest(
             id=id,
             meta=meta.Meta(profile=[PROFILE.coverage_eligibility_request]),
@@ -418,8 +431,8 @@ class Fhir:
                     coding.Coding(
                         system=SYSTEM.priority,
                         code=priority,
-                    )
-                ]
+                    ),
+                ],
             ),
             purpose=[purpose],
             patient=reference.Reference(reference=self.get_reference_url(patient)),
@@ -427,16 +440,16 @@ class Fhir:
                 start=service_period_start,
                 end=service_period_end,
             ),
-            created=datetime.now().astimezone(tz=timezone.utc),
+            created=datetime.now().astimezone(tz=UTC),
             enterer=reference.Reference(reference=self.get_reference_url(enterer)),
             provider=reference.Reference(reference=self.get_reference_url(provider)),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
             insurance=[
                 coverageeligibilityrequest.CoverageEligibilityRequestInsurance(
                     coverage=reference.Reference(
-                        reference=self.get_reference_url(coverage)
-                    )
-                )
+                        reference=self.get_reference_url(coverage),
+                    ),
+                ),
             ],
         )
 
@@ -444,21 +457,29 @@ class Fhir:
         self,
         id: str,
         identifier_value: str,
-        items: List[IClaimItem],
+        items: list[IClaimItem],
         patient: patient.Patient,
         provider: organization.Organization,
         insurer: organization.Organization,
         coverage: coverage.Coverage,
         use="claim",
         status="active",
-        type="institutional",
+        claim_type="institutional",
         priority="normal",
         claim_payee_type="provider",
-        supporting_info=[],
-        related_claims=[],
-        procedures=[],
-        diagnoses=[],
+        supporting_info=None,
+        related_claims=None,
+        procedures=None,
+        diagnoses=None,
     ):
+        if diagnoses is None:
+            diagnoses = []
+        if procedures is None:
+            procedures = []
+        if related_claims is None:
+            related_claims = []
+        if supporting_info is None:
+            supporting_info = []
         return claim.Claim(
             id=id,
             meta=meta.Meta(
@@ -466,17 +487,18 @@ class Fhir:
             ),
             identifier=[
                 identifier.Identifier(
-                    system=SYSTEM.claim_identifier, value=identifier_value
-                )
+                    system=SYSTEM.claim_identifier,
+                    value=identifier_value,
+                ),
             ],
             status=status,
             type=codeableconcept.CodeableConcept(
                 coding=[
                     coding.Coding(
                         system=SYSTEM.claim_type,
-                        code=type,
-                    )
-                ]
+                        code=claim_type,
+                    ),
+                ],
             ),
             use=use,
             related=list(
@@ -489,19 +511,19 @@ class Fhir:
                                     coding.Coding(
                                         system=SYSTEM.related_claim_relationship,
                                         code=related_claim["type"],
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                             claim=reference.Reference(
-                                reference=f'Claim/{related_claim["id"]}'
+                                reference=f'Claim/{related_claim["id"]}',
                             ),
                         )
                     ),
                     related_claims,
-                )
+                ),
             ),
             patient=reference.Reference(reference=self.get_reference_url(patient)),
-            created=datetime.now().astimezone(tz=timezone.utc),
+            created=datetime.now().astimezone(tz=UTC),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
             provider=reference.Reference(reference=self.get_reference_url(provider)),
             priority=codeableconcept.CodeableConcept(
@@ -509,8 +531,8 @@ class Fhir:
                     coding.Coding(
                         system=SYSTEM.priority,
                         code=priority,
-                    )
-                ]
+                    ),
+                ],
             ),
             payee=claim.ClaimPayee(
                 type=codeableconcept.CodeableConcept(
@@ -518,8 +540,8 @@ class Fhir:
                         coding.Coding(
                             system=SYSTEM.claim_payee_type,
                             code=claim_payee_type,
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 party=reference.Reference(reference=self.get_reference_url(provider)),
             ),
@@ -527,18 +549,18 @@ class Fhir:
                 claim.ClaimCareTeam(
                     sequence=1,
                     provider=reference.Reference(
-                        reference=self.get_reference_url(provider)
+                        reference=self.get_reference_url(provider),
                     ),
-                )
+                ),
             ],
             insurance=[
                 claim.ClaimInsurance(
                     sequence=1,
                     focal=True,
                     coverage=reference.Reference(
-                        reference=self.get_reference_url(coverage)
+                        reference=self.get_reference_url(coverage),
                     ),
-                )
+                ),
             ],
             item=list(
                 map(
@@ -551,8 +573,8 @@ class Fhir:
                                         system=SYSTEM.claim_item,
                                         code=item["id"],
                                         display=item["name"],
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                             unitPrice={"value": item["price"], "currency": "INR"},
                             category=codeableconcept.CodeableConcept(
@@ -562,14 +584,14 @@ class Fhir:
                                         if item["category"] == "HBP"
                                         else SYSTEM.claim_item_category,
                                         code=item["category"],
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                         )
                     ),
                     items,
                     range(1, len(items) + 1),
-                )
+                ),
             ),
             supportingInfo=list(
                 map(
@@ -581,8 +603,8 @@ class Fhir:
                                     coding.Coding(
                                         system=SYSTEM.claim_supporting_info_category,
                                         code=info["type"],
-                                    )
-                                ]
+                                    ),
+                                ],
                             ),
                             valueAttachment=attachment.Attachment(
                                 url=info["url"],
@@ -592,7 +614,7 @@ class Fhir:
                     ),
                     supporting_info,
                     range(1, len(supporting_info) + 1),
-                )
+                ),
             ),
             procedure=list(
                 map(
@@ -600,13 +622,13 @@ class Fhir:
                         claim.ClaimProcedure(
                             sequence=i,
                             procedureReference=reference.Reference(
-                                reference=self.get_reference_url(procedure)
+                                reference=self.get_reference_url(procedure),
                             ),
                         )
                     ),
                     procedures,
                     range(1, len(procedures) + 1),
-                )
+                ),
             ),
             diagnosis=list(
                 map(
@@ -614,7 +636,7 @@ class Fhir:
                         claim.ClaimDiagnosis(
                             sequence=i,
                             diagnosisReference=reference.Reference(
-                                reference=self.get_reference_url(diagnosis["profile"])
+                                reference=self.get_reference_url(diagnosis["profile"]),
                             ),
                             type=[
                                 codeableconcept.CodeableConcept(
@@ -622,15 +644,15 @@ class Fhir:
                                         coding.Coding(
                                             system=SYSTEM.diagnosis_type,
                                             code=diagnosis["type"],
-                                        )
-                                    ]
-                                )
+                                        ),
+                                    ],
+                                ),
                             ],
                         )
                     ),
                     diagnoses,
                     range(1, len(diagnoses) + 1),
-                )
+                ),
             ),
         )
 
@@ -654,9 +676,9 @@ class Fhir:
             performer=[
                 procedure.ProcedurePerformer(
                     actor=reference.Reference(
-                        reference=self.get_reference_url(provider)
-                    )
-                )
+                        reference=self.get_reference_url(provider),
+                    ),
+                ),
             ],
             performedString=performed,
         )
@@ -667,8 +689,8 @@ class Fhir:
             # meta=meta.Meta(profile=[PROFILE.condition]),
             code=codeableconcept.CodeableConcept(
                 coding=[
-                    coding.Coding(system=SYSTEM.condition, code=code, display=label)
-                ]
+                    coding.Coding(system=SYSTEM.condition, code=code, display=label),
+                ],
             ),
             subject=reference.Reference(reference=self.get_reference_url(patient)),
         )
@@ -698,21 +720,37 @@ class Fhir:
         status="active",
         priority="normal",
         purpose="validation",
-        service_period_start=datetime.now().astimezone(tz=timezone.utc),
-        service_period_end=datetime.now().astimezone(tz=timezone.utc),
-        last_upadted=datetime.now().astimezone(tz=timezone.utc),
+        service_period_start: datetime | None = None,
+        service_period_end: datetime | None = None,
+        last_updated: datetime | None = None,
     ):
+        if service_period_start is None:
+            service_period_start = datetime.now().astimezone(tz=UTC)
+        if service_period_end is None:
+            service_period_end = datetime.now().astimezone(tz=UTC)
+        if last_updated is None:
+            last_updated = datetime.now().astimezone(tz=UTC)
         provider = self.create_provider_profile(
-            provider_id, provider_name, provider_identifier_value
+            provider_id,
+            provider_name,
+            provider_identifier_value,
         )
         insurer = self.create_insurer_profile(
-            insurer_id, insurer_name, insurer_identifier_value
+            insurer_id,
+            insurer_name,
+            insurer_identifier_value,
         )
         patient = self.create_patient_profile(
-            patient_id, pateint_name, patient_gender, subscriber_id
+            patient_id,
+            pateint_name,
+            patient_gender,
+            subscriber_id,
         )
         enterer = self.create_practitioner_role_profile(
-            enterer_id, enterer_identifier_value, enterer_speciality, enterer_phone
+            enterer_id,
+            enterer_identifier_value,
+            enterer_speciality,
+            enterer_phone,
         )
         coverage = self.create_coverage_profile(
             coverage_id,
@@ -740,7 +778,7 @@ class Fhir:
         return bundle.Bundle(
             id=id,
             meta=meta.Meta(
-                lastUpdated=last_upadted,
+                lastUpdated=last_updated,
                 profile=[PROFILE.coverage_eligibility_request_bundle],
             ),
             identifier=identifier.Identifier(
@@ -748,7 +786,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(coverage_eligibility_request),
@@ -794,23 +832,40 @@ class Fhir:
         items: list[IClaimItem],
         use="claim",
         status="active",
-        type="institutional",
+        claim_type="institutional",
         priority="normal",
         claim_payee_type="provider",
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
-        supporting_info=[],
-        related_claims=[],
-        procedures=[],
-        diagnoses=[],
+        last_updated: datetime | None = None,
+        supporting_info=None,
+        related_claims=None,
+        procedures=None,
+        diagnoses=None,
     ):
+        if last_updated is None:
+            last_updated = datetime.now().astimezone(tz=UTC)
+        if diagnoses is None:
+            diagnoses = []
+        if procedures is None:
+            procedures = []
+        if related_claims is None:
+            related_claims = []
+        if supporting_info is None:
+            supporting_info = []
         provider = self.create_provider_profile(
-            provider_id, provider_name, provider_identifier_value
+            provider_id,
+            provider_name,
+            provider_identifier_value,
         )
         insurer = self.create_insurer_profile(
-            insurer_id, insurer_name, insurer_identifier_value
+            insurer_id,
+            insurer_name,
+            insurer_identifier_value,
         )
         patient = self.create_patient_profile(
-            patient_id, pateint_name, patient_gender, subscriber_id
+            patient_id,
+            pateint_name,
+            patient_gender,
+            subscriber_id,
         )
         coverage = self.create_coverage_profile(
             coverage_id,
@@ -832,19 +887,22 @@ class Fhir:
                     procedure["performed"],
                 ),
                 procedures,
-            )
+            ),
         )
 
         diagnoses = list(
             map(
                 lambda diagnosis: {
                     "profile": self.create_condition_profile(
-                        diagnosis["id"], diagnosis["code"], diagnosis["label"], patient
+                        diagnosis["id"],
+                        diagnosis["code"],
+                        diagnosis["label"],
+                        patient,
                     ),
                     "type": diagnosis["type"],
                 },
                 diagnoses,
-            )
+            ),
         )
 
         claim = self.create_claim_profile(
@@ -857,7 +915,7 @@ class Fhir:
             coverage,
             use,
             status,
-            type,
+            claim_type,
             priority,
             claim_payee_type,
             supporting_info=supporting_info,
@@ -877,7 +935,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(claim),
@@ -906,7 +964,7 @@ class Fhir:
                             resource=procedure,
                         ),
                         procedures,
-                    )
+                    ),
                 ),
                 *list(
                     map(
@@ -915,7 +973,7 @@ class Fhir:
                             resource=diagnosis["profile"],
                         ),
                         diagnoses,
-                    )
+                    ),
                 ),
             ],
         )
@@ -926,14 +984,17 @@ class Fhir:
         identifier_value: str,
         payload: list,
         about: list,
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
+        last_updated: datetime | None = None,
     ):
+        if last_updated is None:
+            last_updated = datetime.now().astimezone(tz=UTC)
         return communication.Communication(
             id=id,
             identifier=[
                 identifier.Identifier(
-                    system=SYSTEM.communication_identifier, value=identifier_value
-                )
+                    system=SYSTEM.communication_identifier,
+                    value=identifier_value,
+                ),
             ],
             meta=meta.Meta(lastUpdated=last_updated, profile=[PROFILE.communication]),
             status="completed",
@@ -941,7 +1002,7 @@ class Fhir:
                 map(
                     lambda ref: (reference.Reference(type=ref["type"], id=ref["id"])),
                     about,
-                )
+                ),
             ),
             payload=list(
                 map(
@@ -959,7 +1020,7 @@ class Fhir:
                         )
                     ),
                     payload,
-                )
+                ),
             ),
         )
 
@@ -971,8 +1032,11 @@ class Fhir:
         communication_identifier_value: str,
         payload: list,
         about: list,
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
+        last_updated: datetime | None = None,
     ):
+        if last_updated is None:
+            last_updated = datetime.now().astimezone(tz=UTC)
+
         communication_profile = self.create_communication_profile(
             communication_id,
             communication_identifier_value,
@@ -992,7 +1056,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(communication_profile),
@@ -1011,8 +1075,8 @@ class Fhir:
                         lambda entry: type(entry.resource)
                         == coverageeligibilityresponse.CoverageEligibilityResponse,
                         coverage_eligibility_check_bundle.entry,
-                    )
-                )[0].resource.dict()
+                    ),
+                )[0].resource.dict(),
             )
         )
         coverage_request = coverage.Coverage(
@@ -1020,13 +1084,13 @@ class Fhir:
                 filter(
                     lambda entry: type(entry.resource) == coverage.Coverage,
                     coverage_eligibility_check_bundle.entry,
-                )
-            )[0].resource.dict()
+                ),
+            )[0].resource.dict(),
         )
 
         def get_errors_from_coding(codings):
             return "; ".join(
-                list(map(lambda coding: f"{coding.code}: {coding.display}", codings))
+                list(map(lambda coding: f"{coding.code}: {coding.display}", codings)),
             )
 
         return {
@@ -1037,8 +1101,8 @@ class Fhir:
                     map(
                         lambda error: get_errors_from_coding(error.code.coding),
                         coverage_eligibility_check_response.error or [],
-                    )
-                )
+                    ),
+                ),
             ),
         }
 
@@ -1050,13 +1114,13 @@ class Fhir:
                 filter(
                     lambda entry: type(entry.resource) == claimresponse.ClaimResponse,
                     claim_bundle.entry,
-                )
-            )[0].resource.dict()
+                ),
+            )[0].resource.dict(),
         )
 
         def get_errors_from_coding(codings):
             return "; ".join(
-                list(map(lambda coding: f"{coding.code}: {coding.display}", codings))
+                list(map(lambda coding: f"{coding.code}: {coding.display}", codings)),
             )
 
         return {
@@ -1065,7 +1129,7 @@ class Fhir:
                 lambda price, acc: price + acc,
                 map(
                     lambda claim_response_total: float(
-                        claim_response_total.amount.value
+                        claim_response_total.amount.value,
                     ),
                     claim_response.total,
                 ),
@@ -1077,12 +1141,12 @@ class Fhir:
                     map(
                         lambda error: get_errors_from_coding(error.code.coding),
                         claim_response.error or [],
-                    )
-                )
+                    ),
+                ),
             ),
         }
 
-    def process_communication_request(self, request):
+    def process_communication_request(self, request):  # noqa: PLR0912
         communication_request = communicationrequest.CommunicationRequest(**request)
 
         data = {
@@ -1097,8 +1161,8 @@ class Fhir:
 
         if communication_request.about:
             data["about"] = []
-            for object in communication_request.about:
-                about = reference.Reference(**object.dict())
+            for obj in communication_request.about:
+                about = reference.Reference(**obj.dict())
                 if about.identifier:
                     id = identifier.Identifier(about.identifier).value
                     data["about"].append(id)
@@ -1111,8 +1175,8 @@ class Fhir:
 
         if communication_request.basedOn:
             data["based_on"] = []
-            for object in communication_request.basedOn:
-                based_on = reference.Reference(**object.dict())
+            for obj in communication_request.basedOn:
+                based_on = reference.Reference(**obj.dict())
                 if based_on.identifier:
                     id = identifier.Identifier(based_on.identifier).value
                     data["based_on"].append(id)
@@ -1125,14 +1189,14 @@ class Fhir:
 
         if communication_request.payload:
             data["payload"] = []
-            for object in communication_request.payload:
+            for obj in communication_request.payload:
                 payload = communicationrequest.CommunicationRequestPayload(
-                    **object.dict()
+                    **obj.dict(),
                 )
 
                 if payload.contentString:
                     data["payload"].append(
-                        {"type": "text", "data": payload.contentString}
+                        {"type": "text", "data": payload.contentString},
                     )
                     continue
 
@@ -1143,16 +1207,16 @@ class Fhir:
                             {
                                 "type": content.contentType or "text",
                                 "data": content.data,
-                            }
+                            },
                         )
                     elif content.url:
                         data["payload"].append({"type": "url", "data": content.url})
 
         return data
 
-    def validate_fhir_local(self, fhir_payload, type="bundle"):
+    def validate_fhir_local(self, fhir_payload, payload_type="bundle"):
         try:
-            if type == "bundle":
+            if payload_type == "bundle":
                 bundle.Bundle(**fhir_payload)
         except Exception as e:
             return {"valid": False, "issues": [e]}
@@ -1162,7 +1226,10 @@ class Fhir:
     def validate_fhir_remote(self, fhir_payload):
         headers = {"Content-Type": "application/json"}
         response = requests.request(
-            "POST", FHIR_VALIDATION_URL, headers=headers, data=fhir_payload
+            "POST",
+            FHIR_VALIDATION_URL,
+            headers=headers,
+            data=fhir_payload,
         ).json()
 
         issues = response["issue"] if "issue" in response else []

@@ -48,15 +48,17 @@ class UserFilterSet(filters.FilterSet):
     last_name = filters.CharFilter(field_name="last_name", lookup_expr="icontains")
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = filters.CharFilter(
-        field_name="phone_number", lookup_expr="icontains"
+        field_name="phone_number",
+        lookup_expr="icontains",
     )
     alt_phone_number = filters.CharFilter(
-        field_name="alt_phone_number", lookup_expr="icontains"
+        field_name="alt_phone_number",
+        lookup_expr="icontains",
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
     home_facility = filters.UUIDFilter(
-        field_name="home_facility__external_id", lookup_expr="exact"
+        field_name="home_facility__external_id", lookup_expr="exact",
     )
 
     def get_user_type(
@@ -65,9 +67,8 @@ class UserFilterSet(filters.FilterSet):
         field_name,
         value,
     ):
-        if value:
-            if value in INVERSE_USER_TYPE:
-                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+        if value and value in INVERSE_USER_TYPE:
+            return queryset.filter(user_type=INVERSE_USER_TYPE[value])
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
@@ -106,31 +107,13 @@ class UserViewSet(
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
-    # last_login
-    # def get_permissions(self):
-    #     return [
-    #         DRYPermissions(),
-    #         IsAuthenticated(),
-    #     ]
-    # if self.request.method == "POST":
-    #     return [
-    #         DRYPermissions(),
-    #     ]
-    # else:
-    #     return [
-    #         IsAuthenticated(),
-    #         DRYPermissions(),
-    #     ]
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
-        elif self.action == "add_user":
+        if self.action == "add_user":
             return UserCreateSerializer
-        # elif self.action == "create":
-        #     return SignUpSerializer
-        else:
-            return UserSerializer
+        return UserSerializer
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])
@@ -153,7 +136,8 @@ class UserViewSet(
             )
         else:
             return Response(
-                status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"}
+                status=status.HTTP_403_FORBIDDEN,
+                data={"permission": "Denied"},
             )
         user = get_object_or_404(queryset.filter(username=username))
         user.is_active = False
@@ -164,7 +148,8 @@ class UserViewSet(
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         password = request.data.pop(
-            "password", User.objects.make_random_password(length=8)
+            "password",
+            User.objects.make_random_password(length=8),
         )
         serializer = UserCreateSerializer(
             data={**request.data, "password": password},
@@ -203,7 +188,10 @@ class UserViewSet(
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
         facilities = Facility.objects.filter(users=user).select_related(
-            "local_body", "district", "state", "ward"
+            "local_body",
+            "district",
+            "state",
+            "ward",
         )
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
         return Response(facilities.data)
@@ -227,7 +215,7 @@ class UserViewSet(
             raise ValidationError({"facility": "Facility Access not Present"})
         if self.check_facility_user_exists(user, facility):
             raise ValidationError(
-                {"facility": "User Already has permission to this facility"}
+                {"facility": "User Already has permission to this facility"},
             )
         FacilityUser(facility=facility, user=user, created_by=requesting_user).save()
         return Response(status=status.HTTP_201_CREATED)
@@ -276,7 +264,7 @@ class UserViewSet(
             raise ValidationError({"facility": "Facility Access not Present"})
         if not self.has_facility_permission(user, facility):
             raise ValidationError(
-                {"facility": "Intended User Does not have permission to this facility"}
+                {"facility": "Intended User Does not have permission to this facility"},
             )
         if user.home_facility == facility:
             raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
@@ -297,7 +285,7 @@ class UserViewSet(
                     "pf_endpoint": user.pf_endpoint,
                     "pf_p256dh": user.pf_p256dh,
                     "pf_auth": user.pf_auth,
-                }
+                },
             )
         acceptable_fields = ["pf_endpoint", "pf_p256dh", "pf_auth"]
         for field in acceptable_fields:

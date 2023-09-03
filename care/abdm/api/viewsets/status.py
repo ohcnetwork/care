@@ -17,10 +17,10 @@ class NotifyView(GenericAPIView):
         data = request.data
 
         PatientRegistration.objects.filter(
-            abha_number__health_id=data["notification"]["patient"]["id"]
+            abha_number__health_id=data["notification"]["patient"]["id"],
         ).update(abha_number=None)
         AbhaNumber.objects.filter(
-            health_id=data["notification"]["patient"]["id"]
+            health_id=data["notification"]["patient"]["id"],
         ).delete()
 
         AbdmGateway().patient_status_on_notify({"request_id": data["requestId"]})

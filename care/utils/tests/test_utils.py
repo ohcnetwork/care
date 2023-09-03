@@ -27,7 +27,7 @@ from care.facility.models.facility import FacilityUser
 from care.users.models import District, State
 
 
-class override_cache(override_settings):
+class override_cache(override_settings):  # noqa: N801
     """
     Overrides the cache settings for the test to use a
     local memory cache instead of the redis cache
@@ -40,7 +40,7 @@ class override_cache(override_settings):
                 "default": {
                     "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
                     "LOCATION": f"care-test-{uuid.uuid4()}",
-                }
+                },
             },
         )
 
@@ -56,18 +56,16 @@ class EverythingEquals:
 mock_equal = EverythingEquals()
 
 
-def assert_equal_dicts(d1, d2, ignore_keys=[]):
+def assert_equal_dicts(d1, d2, ignore_keys=None):
+    if ignore_keys is None:
+        ignore_keys = []
+
     def check_equal():
         ignored = set(ignore_keys)
         for k1, v1 in d1.items():
             if k1 not in ignored and (k1 not in d2 or d2[k1] != v1):
-                print(k1, v1, d2[k1])
                 return False
-        for k2, v2 in d2.items():
-            if k2 not in ignored and k2 not in d1:
-                print(k2, v2)
-                return False
-        return True
+        return all(not (k2 not in ignored and k2 not in d1) for k2, v2 in d2.items())
 
     return check_equal()
 
@@ -205,7 +203,11 @@ class TestUtils:
 
     @classmethod
     def create_facility(
-        cls, user: User, district: District, local_body: LocalBody, **kwargs
+        cls,
+        user: User,
+        district: District,
+        local_body: LocalBody,
+        **kwargs,
     ) -> Facility:
         data = {
             "name": "Foo",
@@ -254,7 +256,7 @@ class TestUtils:
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
             "date_of_receipt_of_information": make_aware(
-                datetime(2020, 4, 1, 15, 30, 00)
+                datetime(2020, 4, 1, 15, 30, 00),
             ),
         }
 
@@ -267,9 +269,10 @@ class TestUtils:
             {
                 "facility": facility,
                 "disease_status": getattr(
-                    DiseaseStatusEnum, patient_data["disease_status"]
+                    DiseaseStatusEnum,
+                    patient_data["disease_status"],
                 ).value,
-            }
+            },
         )
 
         patient_data.update(kwargs)
@@ -323,7 +326,7 @@ class TestUtils:
                 "patient": patient,
                 "facility": facility,
                 "referred_to": referred_to,
-            }
+            },
         )
         data.update(kwargs)
         return PatientConsultation.objects.create(**data)
@@ -386,10 +389,10 @@ class TestUtils:
         """
         response = {}
         response.update(
-            self.get_local_body_representation(getattr(obj, "local_body", None))
+            self.get_local_body_representation(getattr(obj, "local_body", None)),
         )
         response.update(
-            self.get_district_representation(getattr(obj, "district", None))
+            self.get_district_representation(getattr(obj, "district", None)),
         )
         response.update(self.get_state_representation(getattr(obj, "state", None)))
         return response
@@ -397,17 +400,16 @@ class TestUtils:
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:
             return {"local_body": None, "local_body_object": None}
-        else:
-            return {
-                "local_body": local_body.id,
-                "local_body_object": {
-                    "id": local_body.id,
-                    "name": local_body.name,
-                    "district": local_body.district.id,
-                    "localbody_code": local_body.localbody_code,
-                    "body_type": local_body.body_type,
-                },
-            }
+        return {
+            "local_body": local_body.id,
+            "local_body_object": {
+                "id": local_body.id,
+                "name": local_body.name,
+                "district": local_body.district.id,
+                "localbody_code": local_body.localbody_code,
+                "body_type": local_body.body_type,
+            },
+        }
 
     def get_district_representation(self, district: District):
         if district is None:
@@ -431,22 +433,23 @@ class TestUtils:
             return {k: to_matching_type(k, v) for k, v in d.items()}
 
         def to_matching_type(name: str, value):
-            if isinstance(value, (OrderedDict, dict)):
+            if isinstance(value, OrderedDict | dict):
                 return dict_to_matching_type(dict(value))
-            elif isinstance(value, list):
+            if isinstance(value, list):
                 return [to_matching_type("", v) for v in value]
-            elif "date" in name and not isinstance(
-                value, (type(None), EverythingEquals)
+            if "date" in name and not isinstance(
+                value,
+                type(None) | EverythingEquals,
             ):
                 return_value = value
                 if isinstance(
                     value,
-                    (
-                        str,
-                        unicode,
-                    ),
+                    str | unicode,
                 ):
-                    return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    return_value = datetime.strptime(
+                        value,
+                        "%Y-%m-%dT%H:%M:%S.%f%z",
+                    )
                 return (
                     return_value.astimezone(tz=UTC)
                     if isinstance(return_value, datetime)
@@ -466,13 +469,12 @@ class TestUtils:
     def get_facility_representation(self, facility):
         if facility is None:
             return facility
-        else:
-            return {
-                "id": str(facility.external_id),
-                "name": facility.name,
-                "facility_type": {
-                    "id": facility.facility_type,
-                    "name": facility.get_facility_type_display(),
-                },
-                **self.get_local_body_district_state_representation(facility),
-            }
+        return {
+            "id": str(facility.external_id),
+            "name": facility.name,
+            "facility_type": {
+                "id": facility.facility_type,
+                "name": facility.get_facility_type_display(),
+            },
+            **self.get_local_body_district_state_representation(facility),
+        }

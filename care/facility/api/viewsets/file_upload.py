@@ -44,19 +44,18 @@ class FileUploadViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return FileUploadRetrieveSerializer
-        elif self.action == "list":
+        if self.action == "list":
             return FileUploadListSerializer
-        elif self.action == "create":
+        if self.action == "create":
             return FileUploadCreateSerializer
-        else:
-            return FileUploadUpdateSerializer
+        return FileUploadUpdateSerializer
 
     def get_queryset(self):
         if "file_type" not in self.request.GET:
             raise ValidationError({"file_type": "file_type missing in request params"})
         if "associating_id" not in self.request.GET:
             raise ValidationError(
-                {"associating_id": "associating_id missing in request params"}
+                {"associating_id": "associating_id missing in request params"},
             )
         file_type = self.request.GET["file_type"]
         associating_id = self.request.GET["associating_id"]
@@ -64,8 +63,12 @@ class FileUploadViewSet(
             raise ValidationError({"file_type": "invalid file type"})
         file_type = FileUpload.FileType[file_type].value
         associating_internal_id = check_permissions(
-            file_type, associating_id, self.request.user, "read"
+            file_type,
+            associating_id,
+            self.request.user,
+            "read",
         )
         return self.queryset.filter(
-            file_type=file_type, associating_id=associating_internal_id
+            file_type=file_type,
+            associating_id=associating_internal_id,
         )

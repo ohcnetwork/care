@@ -29,7 +29,10 @@ class NotificationFilter(filters.FilterSet):
 
 
 class NotificationViewSet(
-    RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet
+    RetrieveModelMixin,
+    ListModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
 ):
     queryset = (
         Notification.objects.all()
@@ -48,7 +51,9 @@ class NotificationViewSet(
 
     @extend_schema(tags=["notification"])
     @action(
-        detail=False, methods=["GET"], permission_classes=[IsAuthenticatedOrReadOnly]
+        detail=False,
+        methods=["GET"],
+        permission_classes=[IsAuthenticatedOrReadOnly],
     )
     def public_key(self, request, *args, **kwargs):
         return Response({"public_key": settings.VAPID_PUBLIC_KEY})
@@ -73,7 +78,7 @@ class NotificationViewSet(
             raise ValidationError({"message": "is required"})
         facilities = get_facility_queryset(user)
         facility = get_object_or_404(
-            facilities.filter(external_id=request.data["facility"])
+            facilities.filter(external_id=request.data["facility"]),
         )
         NotificationGenerator(
             event_type=Notification.EventType.CUSTOM_MESSAGE,

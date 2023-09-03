@@ -12,6 +12,6 @@ ITEMS = {
             },
             "additionalProperties": False,
             "required": ["id", "name", "price"],
-        }
+        },
     ],
 }

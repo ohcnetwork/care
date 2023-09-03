@@ -50,4 +50,4 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
                 ),
             )
         except Facility.DoesNotExist:
-            raise ValidationError({"Facility": "Facility not found"})
+            raise ValidationError({"Facility": "Facility not found"}) from None

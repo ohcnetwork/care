@@ -55,17 +55,25 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
 
     facility = models.ForeignKey(
-        "Facility", on_delete=models.CASCADE, related_name="consultations"
+        "Facility",
+        on_delete=models.CASCADE,
+        related_name="consultations",
     )
     diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
     icd11_provisional_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
+        models.CharField(max_length=100),
+        default=list,
+        blank=True,
+        null=True,
     )
     icd11_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
+        models.CharField(max_length=100),
+        default=list,
+        blank=True,
+        null=True,
     )
     icd11_principal_diagnosis = models.CharField(
-        max_length=100, default="", blank=True, null=True
+        max_length=100, default="", blank=True, null=True,
     )
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
@@ -84,7 +92,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES,
+        max_length=8,
+        blank=False,
+        null=True,
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -121,10 +132,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
     discharge_prescription = JSONField(
-        default=dict, null=True, blank=True
+        default=dict,
+        null=True,
+        blank=True,
     )  # Deprecated
     discharge_prn_prescription = JSONField(
-        default=dict, null=True, blank=True
+        default=dict,
+        null=True,
+        blank=True,
     )  # Deprecated
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
@@ -145,11 +160,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     deprecated_verified_by = models.TextField(default="", null=True, blank=True)
     verified_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        User, on_delete=models.SET_NULL, null=True, blank=True,
     )
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="created_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_user",
     )
 
     last_edited_by = models.ForeignKey(
@@ -224,28 +242,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         ),
     }
 
-    # CSV_DATATYPE_DEFAULT_MAPPING = {
-    #     "admission_date": (None, models.DateTimeField(),),
-    #     "symptoms_onset_date": (None, models.DateTimeField(),),
-    #     "symptoms": ("-", models.CharField(),),
-    #     "category": ("-", models.CharField(),),
-    #     "examination_details": ("-", models.CharField(),),
-    #     "suggestion": ("-", models.CharField(),),
-    # }
-
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
-
-    def save(self, *args, **kwargs):
-        """
-        # Removing Patient Hospital Change on Referral
-        if not self.pk or self.referred_to is not None:
-            # pk is None when the consultation is created
-            # referred to is not null when the person is being referred to a new facility
-            self.patient.facility = self.referred_to or self.facility
-            self.patient.save()
-        """
-        super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
         constraints = [

@@ -8,5 +8,5 @@ def check_integer(vals):
         try:
             vals[i] = int(vals[i])
         except Exception:
-            raise ValidationError({"value": "Integer Required"})
+            raise ValidationError({"value": "Integer Required"}) from None
     return vals

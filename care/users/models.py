@@ -123,7 +123,9 @@ class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(deleted=False, is_active=True).select_related(
-            "local_body", "district", "state"
+            "local_body",
+            "district",
+            "state",
         )
 
     def get_entire_queryset(self):
@@ -150,7 +152,7 @@ class Skill(BaseModel):
 class UsernameValidator(UnicodeUsernameValidator):
     regex = r"^[\w.@+-]+[^.@+_-]$"
     message = _(
-        "Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _"
+        "Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _",
     )
 
 
@@ -164,7 +166,7 @@ class UserSkill(BaseModel):
                 fields=["skill", "user"],
                 condition=models.Q(deleted=False),
                 name="unique_user_skill",
-            )
+            ),
         ]
 
 
@@ -213,15 +215,22 @@ class User(AbstractUser):
 
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT, null=True, blank=True)
     local_body = models.ForeignKey(
-        LocalBody, on_delete=models.PROTECT, null=True, blank=True
+        LocalBody,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
     district = models.ForeignKey(
-        District, on_delete=models.PROTECT, null=True, blank=True
+        District,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
     phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator]
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
     )
     alt_phone_number = models.CharField(
         max_length=14,
@@ -235,10 +244,15 @@ class User(AbstractUser):
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
-        "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
+        "facility.Facility",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
     weekly_working_hours = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
+        validators=[MinValueValidator(0), MaxValueValidator(168)],
+        null=True,
+        blank=True,
     )
 
     doctor_qualification = models.TextField(
@@ -369,7 +383,12 @@ class UserFacilityAllocation(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
     facility = models.ForeignKey(
-        "facility.Facility", on_delete=models.CASCADE, related_name="+"
+        "facility.Facility",
+        on_delete=models.CASCADE,
+        related_name="+",
     )
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.facility}"

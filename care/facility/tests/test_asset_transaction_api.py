@@ -16,13 +16,17 @@ class AssetTransactionViewSetTestCase(TestUtils, APITestCase):
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
         cls.asset_from_location = cls.create_asset_location(
-            cls.facility, name="asset from location"
+            cls.facility,
+            name="asset from location",
         )
         cls.asset_to_location = cls.create_asset_location(
-            cls.facility, name="asset to location"
+            cls.facility,
+            name="asset to location",
         )
         cls.asset = cls.create_asset(
-            cls.asset_from_location, name="Test Asset", asset_type=50
+            cls.asset_from_location,
+            name="Test Asset",
+            asset_type=50,
         )
         cls.asset_transaction = AssetTransaction.objects.create(
             asset=cls.asset,
@@ -37,6 +41,6 @@ class AssetTransactionViewSetTestCase(TestUtils, APITestCase):
 
     def test_retrieve_asset_transaction(self):
         response = self.client.get(
-            f"/api/v1/asset_transaction/{self.asset_transaction.id}/"
+            f"/api/v1/asset_transaction/{self.asset_transaction.id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)

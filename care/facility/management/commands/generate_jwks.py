@@ -8,7 +8,7 @@ class Command(BaseCommand):
     Generate JWKS
     """
 
-    help = "Generate JWKS"
+    help = "Generate JWKS"  # noqa: A003
 
     def handle(self, *args, **options):
-        print(generate_encoded_jwks())
+        self.stdout.write(generate_encoded_jwks())

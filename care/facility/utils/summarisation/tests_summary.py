@@ -11,20 +11,20 @@ def tests_summary():
             facility.consultations.all().distinct("patient_id").count()
         )
         facility_patients_samples = PatientSample.objects.filter(
-            consultation__facility_id=facility.id
+            consultation__facility_id=facility.id,
         )
         total_tests_count = facility_patients_samples.count()
         results_positive_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["POSITIVE"]
+            result=PatientSample.SAMPLE_TEST_RESULT_MAP["POSITIVE"],
         ).count()
         results_awaited_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
+            result=PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"],
         ).count()
         results_negative_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["NEGATIVE"]
+            result=PatientSample.SAMPLE_TEST_RESULT_MAP["NEGATIVE"],
         ).count()
         test_discarded_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["INVALID"]
+            result=PatientSample.SAMPLE_TEST_RESULT_MAP["INVALID"],
         ).count()
         facility_tests_summarised_data = {
             "facility_name": facility.name,
@@ -55,7 +55,7 @@ def tests_summary():
         except ObjectDoesNotExist:
             modified_date = timezone.now()
             facility_tests_summarised_data["modified_date"] = modified_date.strftime(
-                "%d-%m-%Y %H:%M"
+                "%d-%m-%Y %H:%M",
             )
             FacilityRelatedSummary.objects.create(
                 s_type="TestSummary",

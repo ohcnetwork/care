@@ -26,24 +26,25 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset.filter(
-            facility__external_id=self.kwargs.get("facility_external_id")
+            facility__external_id=self.kwargs.get("facility_external_id"),
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
     def get_object(self):
         return get_object_or_404(
-            self.get_queryset(), room_type=self.kwargs.get("external_id")
+            self.get_queryset(),
+            room_type=self.kwargs.get("external_id"),
         )
 
     def get_facility(self):
         facility_qs = Facility.objects.filter(
-            external_id=self.kwargs.get("facility_external_id")
+            external_id=self.kwargs.get("facility_external_id"),
         )
         if not self.request.user.is_superuser:
             facility_qs.filter(users__id__exact=self.request.user.id)

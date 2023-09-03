@@ -1,3 +1,4 @@
+import contextlib
 from datetime import timedelta
 
 from django.db import IntegrityError, transaction
@@ -70,20 +71,21 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
             item.allowed_units.get(id=unit.id)
         except FacilityInventoryUnit.DoesNotExist:
             raise serializers.ValidationError(
-                {"unit": ["Item cannot be measured with unit"]}
-            )
+                {"unit": ["Item cannot be measured with unit"]},
+            ) from None
 
         multiplier = 1
 
         try:
             if item.default_unit != unit:
                 multiplier = FacilityInventoryUnitConverter.objects.get(
-                    from_unit=unit, to_unit=item.default_unit
+                    from_unit=unit,
+                    to_unit=item.default_unit,
                 ).multiplier
         except FacilityInventoryUnitConverter.DoesNotExist:
             raise serializers.ValidationError(
-                {"item": ["Please Ask Admin to Add Conversion Metrics"]}
-            )
+                {"item": ["Please Ask Admin to Add Conversion Metrics"]},
+            ) from None
 
         validated_data["created_by"] = self.context["request"].user
 
@@ -96,7 +98,8 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         validated_data["quantity_in_default_unit"] = abs(current_quantity)
         try:
             summary_obj = FacilityInventorySummary.objects.get(
-                facility=facility, item=item
+                facility=facility,
+                item=item,
             )
             current_quantity = summary_obj.quantity + (
                 multiplier * validated_data["quantity"]
@@ -114,12 +117,11 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
         if current_quantity < 0:
             raise serializers.ValidationError({"stock": ["Stock not Available"]})
 
-        try:
+        with contextlib.suppress(FacilityInventoryMinQuantity.DoesNotExist):
             current_min_quantity = FacilityInventoryMinQuantity.objects.get(
-                facility=facility, item=item
+                facility=facility,
+                item=item,
             ).min_quantity
-        except FacilityInventoryMinQuantity.DoesNotExist:
-            pass
 
         summary_obj.is_low = current_quantity < current_min_quantity
 
@@ -153,7 +155,9 @@ def set_burn_rate(facility, item):
         if previous_usage_log_sum["quantity_in_default_unit__sum"]:
             burn_rate = previous_usage_log_sum["quantity_in_default_unit__sum"] / 24
         FacilityInventoryBurnRate.objects.update_or_create(
-            facility=facility, item=item, defaults={"burn_rate": burn_rate}
+            facility=facility,
+            item=item,
+            defaults={"burn_rate": burn_rate},
         )
 
 
@@ -199,12 +203,13 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
             instance = super().create(validated_data)
         except IntegrityError:
             raise serializers.ValidationError(
-                {"item": ["Item min quantity already set"]}
-            )
+                {"item": ["Item min quantity already set"]},
+            ) from None
 
         try:
             summary_obj = FacilityInventorySummary.objects.get(
-                facility=validated_data["facility"], item=item
+                facility=validated_data["facility"],
+                item=item,
             )
             summary_obj.is_low = summary_obj.quantity < validated_data["min_quantity"]
             summary_obj.save()
@@ -214,15 +219,15 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        if "item" in validated_data:
-            if instance.item != validated_data["item"]:
-                raise serializers.ValidationError({"item": ["Item cannot be Changed"]})
+        if "item" in validated_data and instance.item != validated_data["item"]:
+            raise serializers.ValidationError({"item": ["Item cannot be Changed"]})
 
         item = validated_data["item"]
 
         try:
             summary_obj = FacilityInventorySummary.objects.get(
-                facility=instance.facility, item=item
+                facility=instance.facility,
+                item=item,
             )
             summary_obj.is_low = summary_obj.quantity < validated_data["min_quantity"]
             summary_obj.save()

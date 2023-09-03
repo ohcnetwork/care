@@ -1,7 +1,6 @@
 import glob
 import json
 from collections import defaultdict
-from typing import Optional
 
 from django.core.management.base import BaseCommand, CommandParser
 
@@ -14,18 +13,18 @@ class Command(BaseCommand):
     Sample data: https://github.com/rebuildearth/data/tree/master/data/india/kerala/lsgi_site_data
     """
 
-    help = "Loads Local Body data from a folder of JSONs"
+    help = "Loads Local Body data from a folder of JSONs"  # noqa: A003
 
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("folder", help="path to the folder of JSONs")
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         folder = options["folder"]
         counter = 0
         local_bodies = []
 
         # Creates a map with first char of readable value as key
-        LOCAL_BODY_CHOICE_MAP = dict([(c[1][0], c[0]) for c in LOCAL_BODY_CHOICES])
+        local_body_choice_map = dict([(c[1][0], c[0]) for c in LOCAL_BODY_CHOICES])
 
         state = {}
         district = defaultdict(dict)
@@ -35,7 +34,8 @@ class Command(BaseCommand):
                 return state[state_name]
             state_obj = State.objects.filter(name=state_name).first()
             if not state_obj:
-                print(f"Creating State {state_name}")
+                self.stdout.write(f"Creating State {state_name}")
+                self.stdout.write(f"Creating State {state_name}")
                 state_obj = State(name=state_name)
                 state_obj.save()
             state[state_name] = state_obj
@@ -43,16 +43,16 @@ class Command(BaseCommand):
 
         def get_district_obj(district_name, state_name):
             state_obj = get_state_obj(state_name)
-            if state_name in district:
-                if district_name in district[state_name]:
-                    return district[state_name][district_name]
+            if state_name in district and district_name in district[state_name]:
+                return district[state_name][district_name]
             district_obj = District.objects.filter(
-                name=district_name, state=state_obj
+                name=district_name,
+                state=state_obj,
             ).first()
             if not district_obj:
                 if not district_name:
                     return None
-                print(f"Creating District {district_name}")
+                self.stdout.write(f"Creating District {district_name}")
                 district_obj = District(name=district_name, state=state_obj)
                 district_obj.save()
             district[state_name][district_name] = district_obj
@@ -75,11 +75,11 @@ class Command(BaseCommand):
                         name=lb["name"],
                         district=dist_obj,
                         localbody_code=lb.get("localbody_code"),
-                        body_type=LOCAL_BODY_CHOICE_MAP.get(
+                        body_type=local_body_choice_map.get(
                             (lb.get("localbody_code", " "))[0],
                             LOCAL_BODY_CHOICES[-1][0],
                         ),
-                    )
+                    ),
                 )
 
             # Possible conflict is name uniqueness.
@@ -89,7 +89,7 @@ class Command(BaseCommand):
 
         for f in glob.glob(f"{folder}/*.json"):
             counter += 1
-            with open(f"{f}", "r") as data_f:
+            with open(f"{f}") as data_f:
                 data = json.load(data_f)
                 data.pop("wards", None)
                 local_bodies.append(data)
@@ -98,7 +98,7 @@ class Command(BaseCommand):
             if counter % 1000 == 0:
                 create_local_bodies(local_bodies)
                 local_bodies = []
-                print(f"Completed: {counter}")
+                self.stdout.write(f"Completed: {counter}")
 
         if len(local_bodies) > 0:
             create_local_bodies(local_bodies)

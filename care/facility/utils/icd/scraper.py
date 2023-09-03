@@ -1,8 +1,14 @@
 import json
+import logging
 import time
 
 import requests
 from django.conf import settings
+
+# ruff: noqa: G004
+logger = logging.getLogger(__name__)
+
+ICD_REQUEST_TIMEOUT = 30
 
 
 class ICDScraper:
@@ -12,22 +18,15 @@ class ICDScraper:
         self.scraped_concepts = []
         self.scraped_concept_dict = {}
 
-    def add_query(self, url, query={}):
-        return (
-            url
-            + "?"
-            + "&".join(map(lambda k: str(k) + "=" + str(query[k]), query.keys()))
-        )
-
     def get_child_concepts(self, p_concept, p_parent_id):
         if p_concept["ID"] in self.scraped_concept_dict:
-            print(f"[-] Skipped duplicate, {p_concept['label']}")
+            logger.info(f"[-] Skipped duplicate, {p_concept['label']}")
             return
 
         self.scraped_concepts.append({**p_concept, "parentId": p_parent_id})
         self.scraped_concept_dict[p_concept["ID"]] = True
 
-        print(f"[+] Added {p_concept['label']}")
+        logger.info(f"[+] Added {p_concept['label']}")
 
         if p_concept["isLeaf"]:
             return
@@ -35,28 +34,26 @@ class ICDScraper:
         concepts = []
         try:
             concepts = requests.get(
-                self.add_query(
-                    self.child_concept_url,
-                    {
-                        "useHtml": "false",
-                        "ConceptId": p_concept["ID"],
-                    },
-                )
+                self.child_concept_url,
+                params={
+                    "useHtml": "false",
+                    "ConceptId": p_concept["ID"],
+                },
+                timeout=ICD_REQUEST_TIMEOUT,
             ).json()
         except Exception as e:
-            print("[x] Error encountered: ", e)
+            logger.error("[x] Error encountered", exc_info=e)
             with open("error.txt", "a") as error_file:
                 error_file.write(f"{p_concept['label']}\n")
 
             time.sleep(10)
             concepts = requests.get(
-                self.add_query(
-                    self.child_concept_url,
-                    {
-                        "useHtml": "false",
-                        "ConceptId": p_concept["ID"],
-                    },
-                )
+                self.child_concept_url,
+                params={
+                    "useHtml": "false",
+                    "ConceptId": p_concept["ID"],
+                },
+                timeout=ICD_REQUEST_TIMEOUT,
             ).json()
 
         for concept in concepts:
@@ -66,7 +63,9 @@ class ICDScraper:
         self.scraped_concepts = []
         self.scraped_concept_dict = {}
         root_concepts = requests.get(
-            self.add_query(self.root_concept_url, {"useHtml": "false"})
+            self.root_concept_url,
+            params={"useHtml": "false"},
+            timeout=ICD_REQUEST_TIMEOUT,
         ).json()
 
         skip = [

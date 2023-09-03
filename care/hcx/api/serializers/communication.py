@@ -16,7 +16,9 @@ class CommunicationSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
     claim = ExternalIdSerializerField(
-        queryset=Claim.objects.all(), write_only=True, required=True
+        queryset=Claim.objects.all(),
+        write_only=True,
+        required=True,
     )
     claim_object = ClaimSerializer(source="claim", read_only=True)
 

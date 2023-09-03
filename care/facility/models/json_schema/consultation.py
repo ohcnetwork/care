@@ -14,6 +14,6 @@ LINES_CATHETERS = {
             },
             "additionalProperties": False,
             "required": ["start_date", "type", "site"],
-        }
+        },
     ],
 }

@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from collections.abc import Iterable
 
 import jsonschema
 from django.core.exceptions import ValidationError
@@ -34,7 +34,7 @@ class JSONFieldSchemaValidator:
     def _extract_errors(
         self,
         errors: Iterable[jsonschema.ValidationError],
-        container: List[ValidationError],
+        container: list[ValidationError],
     ):
         for error in errors:
             if error.context:
@@ -42,6 +42,7 @@ class JSONFieldSchemaValidator:
 
             message = str(error).replace("\n\n", ": ").replace("\n", "")
             container.append(ValidationError(message))
+        return None
 
 
 @deconstructible
@@ -86,7 +87,7 @@ class PhoneNumberValidator(RegexValidator):
         self.message = f"Invalid phone number. Must be one of the following types: {', '.join(self.types)}. Received: %(value)s"
         self.code = "invalid_phone_number"
 
-        self.regex = r"|".join([self.regex_map[type] for type in self.types])
+        self.regex = r"|".join([self.regex_map[_type] for _type in self.types])
         super().__init__(*args, **kwargs)
 
     def __eq__(self, other):

@@ -79,7 +79,8 @@ def discharge_patient(patient: PatientRegistration):
         last_consultation.save()
 
     ConsultationBed.objects.filter(
-        consultation=last_consultation, end_date__isnull=True
+        consultation=last_consultation,
+        end_date__isnull=True,
     ).update(end_date=current_time)
 
 
@@ -179,52 +180,73 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
     breathlessness_level = ChoiceField(
-        choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
+        choices=BREATHLESSNESS_CHOICES,
+        required=False,
+        allow_null=True,
     )
 
     origin_facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), allow_null=False, required=True
+        queryset=Facility.objects.all(),
+        allow_null=False,
+        required=True,
     )
     origin_facility_object = FacilityBasicInfoSerializer(
-        source="origin_facility", read_only=True
+        source="origin_facility",
+        read_only=True,
     )
 
     shifting_approving_facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), required=False
+        queryset=Facility.objects.all(),
+        required=False,
     )
     shifting_approving_facility_object = FacilityBasicInfoSerializer(
-        source="shifting_approving_facility", read_only=True
+        source="shifting_approving_facility",
+        read_only=True,
     )
 
     assigned_facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), allow_null=True, required=False
+        queryset=Facility.objects.all(),
+        allow_null=True,
+        required=False,
     )
     assigned_facility_external = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
+        required=False,
+        allow_null=True,
+        allow_blank=True,
     )
     assigned_facility_object = FacilityBasicInfoSerializer(
-        source="assigned_facility", read_only=True
+        source="assigned_facility",
+        read_only=True,
     )
 
     assigned_facility_type = ChoiceField(
-        choices=FACILITY_TYPES, required=False, allow_null=True
+        choices=FACILITY_TYPES,
+        required=False,
+        allow_null=True,
     )
     preferred_vehicle_choice = ChoiceField(
-        choices=VEHICLE_CHOICES, required=False, allow_null=True
+        choices=VEHICLE_CHOICES,
+        required=False,
+        allow_null=True,
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     last_edited_by_object = UserBaseMinimumSerializer(
-        source="last_edited_by", read_only=True
+        source="last_edited_by",
+        read_only=True,
     )
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     ambulance_driver_name = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
+        required=False,
+        allow_null=True,
+        allow_blank=True,
     )
 
     ambulance_number = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
+        required=False,
+        allow_null=True,
+        allow_blank=True,
     )
 
     def __init__(self, instance=None, **kwargs):
@@ -237,10 +259,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
             raise ValidationError("Shifting Approving Facility is required")
         return value
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data):  # noqa: PLR0912
         if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
             raise ValidationError("Permission Denied, Shifting request was cancelled.")
-        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
             raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
@@ -274,9 +296,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
                     and has_facility_permission(user, instance.origin_facility)
-                ):
-                    pass
-                elif (
+                ) or (
                     status in self.PEACETIME_RECIEVING_STATUS
                     and has_facility_permission(user, instance.assigned_facility)
                 ):
@@ -288,17 +308,18 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 status in self.LIMITED_RECIEVING_STATUS
                 and instance.assigned_facility
                 and not has_facility_permission(user, instance.assigned_facility)
-            ):
-                raise ValidationError({"status": ["Permission Denied"]})
-
-            elif status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
-                user, instance.shifting_approving_facility
+            ) or (
+                status in self.LIMITED_SHIFTING_STATUS
+                and not has_facility_permission(
+                    user,
+                    instance.shifting_approving_facility,
+                )
             ):
                 raise ValidationError({"status": ["Permission Denied"]})
 
         assigned = bool(
             validated_data.get("assigned_facility")
-            or validated_data.get("assigned_facility_external")
+            or validated_data.get("assigned_facility_external"),
         )
 
         if (
@@ -312,9 +333,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "status": [
-                        "Destination Facility is required for moving to this stage."
-                    ]
-                }
+                        "Destination Facility is required for moving to this stage.",
+                    ],
+                },
             )
 
         validated_data["last_edited_by"] = self.context["request"].user
@@ -337,7 +358,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if (
             "status" in validated_data
             and validated_data["status"] != old_status
-            and validated_data["status"] == 40
+            and validated_data["status"]
+            == REVERSE_SHIFTING_STATUS_CHOICES["DESTINATION APPROVED"]
         ):
             NotificationGenerator(
                 event=Notification.Event.SHIFTING_UPDATED,
@@ -363,7 +385,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         assigned = bool(
             validated_data.get("assigned_facility")
-            or validated_data.get("assigned_facility_external")
+            or validated_data.get("assigned_facility_external"),
         )
         if (
             "status" in validated_data
@@ -373,19 +395,30 @@ class ShiftingSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "status": [
-                        "Destination Facility is required for moving to this stage."
-                    ]
-                }
+                        "Destination Facility is required for moving to this stage.",
+                    ],
+                },
             )
 
         validated_data["is_kasp"] = False
 
         patient = validated_data["patient"]
         if ShiftingRequest.objects.filter(
-            ~Q(status__in=[30, 50, 80, 100]), patient=patient
+            ~Q(
+                status__in=[
+                    REVERSE_SHIFTING_STATUS_CHOICES[x]
+                    for x in [
+                        "REJECTED",
+                        "DESTINATION REJECTED",
+                        "PATIENT EXPIRED",
+                        "CANCELLED",
+                    ]
+                ],
+            ),
+            patient=patient,
         ).exists():
             raise ValidationError(
-                {"request": ["Shifting Request for Patient already exists"]}
+                {"request": ["Shifting Request for Patient already exists"]},
             )
 
         if not patient.is_active:

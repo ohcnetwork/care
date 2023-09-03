@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 
 import base64
 import json
+import logging
 from datetime import timedelta
 from pathlib import Path
 
@@ -14,6 +15,8 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
 from care.utils.jwks.generate_jwk import generate_encoded_jwks
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
@@ -71,7 +74,7 @@ CACHES = {
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
         },
-    }
+    },
 }
 
 
@@ -151,7 +154,7 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
@@ -197,7 +200,7 @@ MEDIA_URL = "/mediafiles/"
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    }
+    },
 }
 
 # https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_MANIFEST_STRICT
@@ -231,7 +234,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
         },
-    }
+    },
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
@@ -269,7 +272,8 @@ EMAIL_BACKEND = env(
 EMAIL_TIMEOUT = 5
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
-    "EMAIL_FROM", default="Open Healthcare Network <ops@care.ohc.network>"
+    "EMAIL_FROM",
+    default="Open Healthcare Network <ops@care.ohc.network>",
 )
 EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env("EMAIL_PORT", default=587)
@@ -302,15 +306,15 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
+            "%(process)d %(thread)d %(message)s",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -348,10 +352,10 @@ SPECTACULAR_SETTINGS = {
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10)
+        minutes=env("JWT_ACCESS_TOKEN_LIFETIME", default=10),
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
-        minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30)
+        minutes=env("JWT_REFRESH_TOKEN_LIFETIME", default=30),
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "USER_ID_FIELD": "external_id",
@@ -406,7 +410,9 @@ CHROME_PATH = "/usr/bin/chromium"
 # https://github.com/vigneshhari/healthy_django
 HEALTHY_DJANGO = [
     DjangoDatabaseHealthCheck(
-        "Database", slug="main_database", connection_name="default"
+        "Database",
+        slug="main_database",
+        connection_name="default",
     ),
     DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
 ]
@@ -425,8 +431,8 @@ AUDIT_LOG = {
                 "glob:auth*",
                 "plain:migrations",
                 "plain:audit_log",
-            ]
-        }
+            ],
+        },
     },
     "models": {
         "exclude": {
@@ -441,7 +447,7 @@ AUDIT_LOG = {
                 ],
                 "facility.PatientExternalTest": ["name", "address", "mobile_number"],
             },
-        }
+        },
     },
 }
 
@@ -479,7 +485,8 @@ VAPID_PUBLIC_KEY = env(
     default="BKNxrOpAeB_OBfXI-GlRAlw_vUVCc3mD_AkpE74iZj97twMOHXEFUeJqA7bDqGY10O-RmkvG30NaMf5ZWihnT3k",
 )
 VAPID_PRIVATE_KEY = env(
-    "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
+    "VAPID_PRIVATE_KEY",
+    default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s",
 )
 SEND_SMS_NOTIFICATION = False
 
@@ -491,7 +498,7 @@ CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
 CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
 
 if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
-    print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")
+    logger.error("invalid CSP found: %s", CLOUD_PROVIDER)
 
 if USE_S3 := env.bool("USE_S3", default=False):
     # aws settings
@@ -536,7 +543,7 @@ CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 
 # open id connect
 JWKS = JsonWebKey.import_key_set(
-    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
+    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks()))),
 )
 
 # ABDM
@@ -545,7 +552,8 @@ ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
 ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
 ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
 HEALTH_SERVICE_API_URL = env(
-    "HEALTH_SERVICE_API_URL", default="https://healthidsbx.abdm.gov.in/api"
+    "HEALTH_SERVICE_API_URL",
+    default="https://healthidsbx.abdm.gov.in/api",
 )
 ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
 X_CM_ID = env("X_CM_ID", default="sbx")
@@ -556,7 +564,8 @@ IS_PRODUCTION = False
 
 # HCX
 HCX_PROTOCOL_BASE_PATH = env(
-    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
+    "HCX_PROTOCOL_BASE_PATH",
+    default="http://staging-hcx.swasth.app/api/v0.7",
 )
 HCX_AUTH_BASE_PATH = env(
     "HCX_AUTH_BASE_PATH",

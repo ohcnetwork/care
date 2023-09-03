@@ -30,7 +30,7 @@ from care.users.models import User
 
 def prettyerrors(errors):
     pretty_errors = defaultdict(list)
-    for attribute in PatientExternalTest.HEADER_CSV_MAPPING.keys():
+    for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
         if attribute in errors:
             for error in errors.get(attribute, ""):
                 pretty_errors[attribute].append(str(error))
@@ -46,15 +46,15 @@ class MFilter(Filter):
             self.field_name + "__in": values,
             self.field_name + "__isnull": False,
         }
-        qs = qs.filter(**_filter)
-        return qs
+        return qs.filter(**_filter)
 
 
 class PatientExternalTestFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     srf_id = filters.CharFilter(field_name="srf_id", lookup_expr="icontains")
     mobile_number = filters.CharFilter(
-        field_name="mobile_number", lookup_expr="icontains"
+        field_name="mobile_number",
+        lookup_expr="icontains",
     )
     wards = MFilter(field_name="ward__id")
     districts = MFilter(field_name="district__id")
@@ -93,14 +93,15 @@ class PatientExternalTestViewSet(
                 queryset = queryset.filter(local_body=self.request.user.local_body)
             elif self.request.user.user_type >= User.TYPE_VALUE_MAP["WardAdmin"]:
                 queryset = queryset.filter(
-                    ward=self.request.user.ward, ward__isnull=False
+                    ward=self.request.user.ward,
+                    ward__isnull=False,
                 )
             else:
                 queryset = queryset.none()
         return queryset
 
     def get_serializer_class(self):
-        if self.action == "update" or self.action == "partial_update":
+        if self.action in {"update", "partial_update"}:
             return PatientExternalTestUpdateSerializer
         return super().get_serializer_class()
 
@@ -127,7 +128,7 @@ class PatientExternalTestViewSet(
                 field_header_map=mapping,
                 field_serializer_map=pretty_mapping,
             )
-        return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["external_result"])
     @action(methods=["POST"], detail=False)
