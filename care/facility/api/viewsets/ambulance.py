@@ -50,6 +50,7 @@ class AmbulanceViewSet(
 ):
     permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
+    lookup_field = "external_id"
     queryset = Ambulance.objects.filter(deleted=False).select_related(
         "primary_district", "secondary_district", "third_district"
     )
@@ -65,9 +66,12 @@ class AmbulanceViewSet(
 
     @extend_schema(tags=["ambulance"])
     @action(methods=["POST"], detail=True)
-    def add_driver(self, request):
+    def add_driver(self, request, *args, **kwargs):
+        """
+        Endpoint to add a driver to an ambulance
+        """
         ambulance = self.get_object()
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(ambulance, data=request.data)
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.create(**serializer.validated_data)
@@ -78,13 +82,16 @@ class AmbulanceViewSet(
 
     @extend_schema(tags=["ambulance"])
     @action(methods=["DELETE"], detail=True)
-    def remove_driver(self, request):
+    def remove_driver(self, request, *args, **kwargs):
+        """
+        Endpoint to remove a driver from an ambulance
+        """
         ambulance = self.get_object()
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(ambulance, data=request.data)
         serializer.is_valid(raise_exception=True)
 
         driver = ambulance.ambulancedriver_set.filter(
-            id=serializer.validated_data["driver_id"]
+            external_id=serializer.validated_data["driver_id"]
         ).first()
         if not driver:
             raise serializers.ValidationError({"driver_id": "Detail not found"})

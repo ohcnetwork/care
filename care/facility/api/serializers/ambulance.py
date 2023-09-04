@@ -14,6 +14,7 @@ class AmbulanceDriverSerializer(serializers.ModelSerializer):
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
     drivers = serializers.ListSerializer(child=AmbulanceDriverSerializer())
 
     primary_district_object = DistrictSerializer(
@@ -31,7 +32,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             "secondary_district_object",
             "third_district_object",
         )
-        exclude = ("created_by",)
+        exclude = ("created_by", "external_id")
 
     def validate(self, obj):
         validated = super().validate(obj)
@@ -46,7 +47,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             drivers = validated_data.pop("drivers", [])
             validated_data.pop("created_by", None)
 
-            ambulance = super(AmbulanceSerializer, self).create(validated_data)
+            ambulance = super().create(validated_data)
 
             for d in drivers:
                 d["ambulance"] = ambulance
@@ -55,12 +56,12 @@ class AmbulanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         validated_data.pop("drivers", [])
-        ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
+        ambulance = super().update(instance, validated_data)
         return ambulance
 
 
 class DeleteDriverSerializer(serializers.Serializer):
-    driver_id = serializers.IntegerField()
+    driver_id = serializers.UUIDField()
 
     def update(self, instance, validated_data):
         raise NotImplementedError

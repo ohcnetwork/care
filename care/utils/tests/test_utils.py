@@ -22,6 +22,7 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
+from care.facility.models.ambulance import Ambulance
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import FacilityUser
 from care.users.models import District, State
@@ -109,7 +110,24 @@ class TestUtils:
         return LocalBody.objects.create(**data)
 
     @classmethod
-    def get_user_data(cls, district: District, user_type: str = None):
+    def create_ambulance(cls, district: District = None, user: User = None, **kwargs):
+        return Ambulance.objects.create(
+            vehicle_number="KL01AB1234",
+            owner_name="Foo",
+            owner_phone_number="9998887776",
+            primary_district=district or cls.district,
+            has_oxygen=True,
+            has_ventilator=True,
+            has_suction_machine=True,
+            has_defibrillator=True,
+            insurance_valid_till_year=2021,
+            price_per_km=10,
+            has_free_service=False,
+            created_by=user or cls.user,
+        )
+
+    @classmethod
+    def get_user_data(cls, district: District = None, user_type: str = None):
         """
         Returns the data to be used for API testing
 
