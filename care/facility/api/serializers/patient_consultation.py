@@ -132,6 +132,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "last_edited_by",
             "created_by",
             "kasp_enabled_date",
+            "is_readmission",
         )
         exclude = ("deleted", "external_id")
 
@@ -257,6 +258,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
+        patient = consultation.patient
+        last_consultation = patient.last_consultation
+        if (
+            last_consultation
+            and consultation.suggestion == SuggestionChoices.A
+            and last_consultation.suggestion == SuggestionChoices.A
+            and last_consultation.discharge_date
+            and last_consultation.discharge_date + timedelta(days=30)
+            > consultation.admission_date
+        ):
+            consultation.is_readmission = True
         consultation.save()
 
         if bed and consultation.suggestion == SuggestionChoices.A:
@@ -269,7 +281,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.current_bed = consultation_bed
             consultation.save(update_fields=["current_bed"])
 
-        patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
             consultation.discharge_date = localtime(now())
             consultation.save()
