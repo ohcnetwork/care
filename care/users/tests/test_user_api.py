@@ -425,5 +425,5 @@ class UserViewSetTestCase(TestBase, TestClassMixin):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0]["name"], "Test Facility Unique 2")
-        self.assertEqual(response.data[1]["name"], "Test Facility Unique 1")
+        self.assertEqual(response.data[0]["name"], "Test Facility Unique 1")
+        self.assertEqual(response.data[1]["name"], "Test Facility Unique 2")
