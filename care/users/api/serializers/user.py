@@ -375,39 +375,6 @@ class UserAssignedSerializer(serializers.ModelSerializer):
         )
 
 
-# class UserListSerializer(serializers.ModelSerializer):
-#     local_body_object = LocalBodySerializer(source="local_body", read_only=True)
-#     district_object = DistrictSerializer(source="district", read_only=True)
-#     state_object = StateSerializer(source="state", read_only=True)
-#     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-#     created_by = serializers.CharField(source="created_by_user", read_only=True)
-#     home_facility_object = FacilityBareMinimumSerializer(
-#         source="home_facility", read_only=True
-#     )
-#     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
-
-#     class Meta:
-#         model = User
-#         fields = (
-#             "id",
-#             "first_name",
-#             "last_name",
-#             "username",
-#             "local_body_object",
-#             "district_object",
-#             "state_object",
-#             "user_type",
-#             "doctor_qualification",
-#             "doctor_experience_commenced_on",
-#             "doctor_medical_council_registration",
-#             "weekly_working_hours",
-#             "created_by",
-#             "last_login",
-#             "home_facility_object",
-#             "home_facility",
-#         )
-
-
 class UserListSerializer(serializers.ModelSerializer):
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
     home_facility_object = FacilityBareMinimumSerializer(
@@ -490,7 +457,7 @@ class UserDetailSerializer(UserListSerializer):
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
     def validate(self, attrs):
-        validated = super(UserSerializer, self).validate(attrs)
+        validated = super(UserDetailSerializer, self).validate(attrs)
         if "home_facility" in validated:
             allowed_facilities = get_home_facility_queryset(
                 self.context["request"].user

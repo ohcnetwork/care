@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from care.facility.models import FACILITY_TYPES
 from care.facility.models.facility import FacilityUser
 from care.facility.tests.mixins import TestClassMixin
 from care.users.models import User
@@ -69,12 +70,15 @@ class ExpectedRetrieveUserKeys(Enum):
 
 
 class UserViewSetTestCase(TestBase, TestClassMixin):
+    current_district = None
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.factory = APIRequestFactory()
         state = cls.create_state()
         district = cls.create_district(state=state)
+        cls.current_district = district
         cls.user = cls.create_user(district=district, username="test user")
         cls.user.pf_endpoint = "test_endpoint"
         cls.user.pf_p256dh = "test_p256dh"
@@ -301,10 +305,11 @@ class UserViewSetTestCase(TestBase, TestClassMixin):
     #     url = "/api/v1/users/add_user/"
     #     data = {
     #         "user_type": "Volunteer",
-    #         "gender": "Male",
+    #         "gender": 1,
     #         "username": "new user",
     #         "phone_number": "1234567890",
-    #         "age": 25
+    #         "age": 25,
+    #         "district": self.current_district
     #     }
     #     self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.get_access_token(self.state_admin)}")
 
@@ -350,3 +355,75 @@ class UserViewSetTestCase(TestBase, TestClassMixin):
         # Ensure user is deleted
         response = self.client.get(f"/api/v1/users/{dummy_user2.username}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_add_facility_missing_facility(self):
+        response = self.client.put(f"/api/v1/users/{self.user.username}/add_facility/")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {"facility": "required"})
+
+    def test_add_facility_non_existent_facility(self):
+        response = self.client.put(
+            f"/api/v1/users/{self.user.username}/add_facility/",
+            data={"facility": "3df87649-e511-4e23-b6b1-182812d8fe44"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {"facility": "Does not Exist"})
+
+    def test_add_facility_no_permission_elevation(self):
+        facility = self.create_facility(district=self.district, name="Test Facility 4")
+        response = self.client.put(
+            f"/api/v1/users/{self.state_admin.username}/add_facility/",
+            data={"facility": facility.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {"facility": "cannot Access Higher Level User"})
+
+    def test_add_facility_already_exists(self):
+        facility = self.create_facility(district=self.district, name="Test Facility 1")
+        response = self.client.put(
+            f"/api/v1/users/{self.user.username}/add_facility/",
+            data={"facility": facility.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data, {"facility": "User Already has permission to this facility"}
+        )
+
+    def test_add_facility_success(self):
+        facility = self.create_facility(district=self.district, name="Test Facility 1")
+        user2 = self.create_user(district=self.district, username="testuser2")
+        response = self.client.put(
+            f"/api/v1/users/{user2.username}/add_facility/",
+            data={"facility": facility.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_get_facilities(self):
+        user1 = self.create_user(
+            district=self.district,
+            username="testuser1",
+            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
+        )
+        facility1 = self.create_facility(
+            name="Test Facility Unique 1",
+            facility_type=FACILITY_TYPES[0][0],
+            district=self.district,
+        )
+        facility2 = self.create_facility(
+            name="Test Facility Unique 2",
+            facility_type=FACILITY_TYPES[0][0],
+            district=self.district,
+        )
+        FacilityUser.objects.create(
+            facility=facility1, user=user1, created_by=self.user
+        )
+        FacilityUser.objects.create(
+            facility=facility2, user=user1, created_by=self.user
+        )
+        response = self.client.get(
+            f"/api/v1/users/{self.user.username}/get_facilities/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]["name"], "Test Facility Unique 2")
+        self.assertEqual(response.data[1]["name"], "Test Facility Unique 1")

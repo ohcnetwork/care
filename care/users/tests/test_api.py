@@ -23,7 +23,7 @@ class TestSuperUser(TestBase):
             "phone_number": obj.phone_number,
             "alt_phone_number": obj.alt_phone_number,
             "age": obj.age,
-            "gender": GENDER_CHOICES[obj.gender - 1][1],
+            "gender": GENDER_CHOICES[obj.gender - 1][0],
             "home_facility": None,
             "home_facility_object": None,
             "is_superuser": obj.is_superuser,
