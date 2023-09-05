@@ -1,5 +1,7 @@
+import collections.abc
 from enum import Enum
 
+from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -86,6 +88,10 @@ class ExpectedFacilityRetrieveKeys(Enum):
 
 
 class FacilityTests(TestClassMixin, TestBase, APITestCase):
+    FACILITY_CAPACITY_CSV_KEY = "capacity"
+    FACILITY_DOCTORS_CSV_KEY = "doctors"
+    FACILITY_TRIAGE_CSV_KEY = "triage"
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -132,6 +138,50 @@ class FacilityTests(TestClassMixin, TestBase, APITestCase):
         self.assertIsNone(data["read_cover_image_url"])
         self.assertIsInstance(data["patient_count"], int)
         self.assertIsInstance(data["bed_count"], int)
+
+        # Test without CSV request parameter
+        response = self.client.get("/api/v1/facility/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.json()["results"], list)
+
+        # Test with CSV request parameter and FACILITY_CAPACITY_CSV_KEY
+        response = self.client.get(
+            "/api/v1/facility/",
+            {
+                settings.CSV_REQUEST_PARAMETER: "true",
+                self.FACILITY_CAPACITY_CSV_KEY: "true",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.streaming_content, collections.abc.Iterable)
+
+        # Test with CSV request parameter and FACILITY_DOCTORS_CSV_KEY
+        response = self.client.get(
+            "/api/v1/facility/",
+            {
+                settings.CSV_REQUEST_PARAMETER: "true",
+                self.FACILITY_DOCTORS_CSV_KEY: "true",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.streaming_content, collections.abc.Iterable)
+
+        # Test with CSV request parameter and FACILITY_TRIAGE_CSV_KEY
+        response = self.client.get(
+            "/api/v1/facility/",
+            {
+                settings.CSV_REQUEST_PARAMETER: "true",
+                self.FACILITY_TRIAGE_CSV_KEY: "true",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.streaming_content, collections.abc.Iterable)
+
+        response = self.client.get(
+            "/api/v1/facility/", {settings.CSV_REQUEST_PARAMETER: "true"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.streaming_content, collections.abc.Iterable)
 
     def test_retrieve_facility(self):
         response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
@@ -232,3 +282,39 @@ class FacilityTests(TestClassMixin, TestBase, APITestCase):
             FacilityViewSet,
         )
         self.assertIs(create_response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # TODO: Fix the destroy method of facility
+    # def test_destroy(self):
+    #     superuser = self.create_user(district=self.district, username ="test1", facility=self.facility)
+    #     superuser.is_superuser = True
+    #     superuser.save()
+    #     superuser.refresh_from_db()
+    #     client = APIClient()
+    #     client.credentials(
+    #         HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(superuser).access_token}"
+    #     )
+    #     facility = self.facility
+    #     url = f"/api/v1/facility/{facility.external_id}/"
+    #     response = self.client.delete(url)
+    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    #     districtlabadmin = self.create_user(facility=self.facility, type = User.TYPE_VALUE_MAP["DistrictLabAdmin"])
+    #     client = APIClient()
+    #     client.credentials(
+    #         HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(districtlabadmin).access_token}"
+    #     )
+    #     response = client.delete(url)
+    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    #     staff = self.create_user(facility=self.facility, type = User.TYPE_VALUE_MAP["Staff"])
+    #     client = APIClient()
+    #     client.credentials(
+    #         HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(staff).access_token}"
+    #     )
+    #     response = self.client.delete(url)
+    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    #     PatientRegistration.objects.create(facility=self.facility, is_active=True)
+    #     url = f"/api/v1/facility/{facility.external_id}/"
+    #     response = self.client.delete(url)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
