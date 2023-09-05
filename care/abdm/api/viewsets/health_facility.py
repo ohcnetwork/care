@@ -1,4 +1,6 @@
-from django.shortcuts import get_object_or_404
+from celery import shared_task
+from dry_rest_permissions.generics import DRYPermissions
+from rest_framework.decorators import action
 from rest_framework.mixins import (
     CreateModelMixin,
     ListModelMixin,
@@ -15,6 +17,36 @@ from care.abdm.utils.api_call import Bridge
 from care.utils.queryset.facility import get_facility_queryset
 
 
+@shared_task
+def register_health_facility_as_service(facility_external_id):
+    health_facility = HealthFacility.objects.filter(
+        facility__external_id=facility_external_id
+    ).first()
+
+    if not health_facility:
+        return False
+
+    if health_facility.registered:
+        return True
+
+    response = Bridge().add_update_service(
+        {
+            "id": health_facility.hf_id,
+            "name": health_facility.facility.name,
+            "type": "HIP",
+            "active": True,
+            "alias": ["CARE_HIP"],
+        }
+    )
+
+    if response.status_code == 200:
+        health_facility.registered = True
+        health_facility.save()
+        return True
+
+    return False
+
+
 class HealthFacilityViewSet(
     GenericViewSet,
     CreateModelMixin,
@@ -25,7 +57,7 @@ class HealthFacilityViewSet(
     serializer_class = HealthFacilitySerializer
     model = HealthFacility
     queryset = HealthFacility.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "facility__external_id"
 
     def get_queryset(self):
@@ -33,40 +65,17 @@ class HealthFacilityViewSet(
         facilities = get_facility_queryset(self.request.user)
         return queryset.filter(facility__in=facilities)
 
-    def get_facility(self, facility_external_id):
-        facilities = get_facility_queryset(self.request.user)
-        return get_object_or_404(facilities.filter(external_id=facility_external_id))
+    @action(detail=True, methods=["POST"])
+    def register_service(self, request, facility__external_id):
+        registered = register_health_facility_as_service(facility__external_id)
 
-    def link_health_facility(self, hf_id, facility_id):
-        facility = self.get_facility(facility_id)
-        return Bridge().add_update_service(
-            {
-                "id": hf_id,
-                "name": facility.name,
-                "type": "HIP",
-                "active": True,
-                "alias": ["CARE_HIP"],
-            }
-        )
+        return Response({"registered": registered})
 
-    def create(self, request, *args, **kwargs):
-        if (
-            self.link_health_facility(
-                request.data["hf_id"], request.data["facility"]
-            ).status_code
-            == 200
-        ):
-            return super().create(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        register_health_facility_as_service.delay(instance.facility.external_id)
 
-        return Response({"message": "Error linking health facility"}, status=400)
-
-    def update(self, request, *args, **kwargs):
-        if (
-            self.link_health_facility(
-                request.data["hf_id"], kwargs["facility__external_id"]
-            ).status_code
-            == 200
-        ):
-            return super().update(request, *args, **kwargs)
-
-        return Response({"message": "Error linking health facility"}, status=400)
+    def perform_update(self, serializer):
+        serializer.validated_data["registered"] = False
+        instance = serializer.save()
+        register_health_facility_as_service.delay(instance.facility.external_id)
