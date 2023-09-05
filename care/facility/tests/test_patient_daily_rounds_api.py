@@ -131,7 +131,7 @@ class ExpectedDailyRoundRetrieveData(Enum):
     CONSULTATION = "consultation"
 
 
-class ExpectedCreatedByRetrieveKeys(Enum):
+class UserBaseMinimumKeys(Enum):
     ID = "id"
     FIRST_NAME = "first_name"
     USERNAME = "username"
@@ -139,17 +139,6 @@ class ExpectedCreatedByRetrieveKeys(Enum):
     LAST_NAME = "last_name"
     USER_TYPE = "user_type"
     LAST_LOGIN = "last_login"
-
-
-class ExpectedLastEditedByRetrieveKeys(Enum):
-    ID = "id"
-    FIRST_NAME = "first_name"
-    USERNAME = "username"
-    EMAIL = "email"
-    LAST_NAME = "last_name"
-    USER_TYPE = "user_type"
-    LAST_LOGIN = "last_login"
-    HOME_FACILITY = "home_facility"
 
 
 class TestDailyRoundApi(TestBase):
@@ -198,7 +187,7 @@ class TestDailyRoundApi(TestBase):
         if created_by_content is not None:
             self.assertCountEqual(
                 created_by_content.keys(),
-                [item.value for item in ExpectedDailyRoundCreatedByKeys],
+                [item.value for item in UserBaseMinimumKeys],
             )
 
         last_edited_by = result["last_edited_by"]
@@ -206,7 +195,7 @@ class TestDailyRoundApi(TestBase):
         if last_edited_by is not None:
             self.assertCountEqual(
                 last_edited_by.keys(),
-                [item.value for item in ExpectedDailyRoundLastEditedByKeys],
+                [item.value for item in UserBaseMinimumKeys],
             )
 
     def test_daily_rounds_retrieve(self):
@@ -227,7 +216,7 @@ class TestDailyRoundApi(TestBase):
         if created_by_content is not None:
             self.assertCountEqual(
                 created_by_content.keys(),
-                [item.value for item in ExpectedCreatedByRetrieveKeys],
+                [item.value for item in UserBaseMinimumKeys],
             )
 
         last_edited_by = data["last_edited_by"]
@@ -235,5 +224,5 @@ class TestDailyRoundApi(TestBase):
         if last_edited_by is not None:
             self.assertCountEqual(
                 last_edited_by.keys(),
-                [item.value for item in ExpectedLastEditedByRetrieveKeys],
+                [item.value for item in UserBaseMinimumKeys],
             )

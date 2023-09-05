@@ -13,7 +13,6 @@ from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     PatientRegistration,
-    User,
 )
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
@@ -332,20 +331,11 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         return validated
 
 
-class UserDailyRoundsMinimumSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="external_id", read_only=True)
-    user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
-
-    class Meta:
-        model = User
-        fields = ("id", "first_name", "last_name", "user_type")
-
-
 class DailyRoundsListSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    last_edited_by = UserDailyRoundsMinimumSerializer(read_only=True)
-    created_by = UserDailyRoundsMinimumSerializer(read_only=True)
+    last_edited_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = DailyRound
