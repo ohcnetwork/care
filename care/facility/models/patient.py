@@ -681,6 +681,7 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
+    user_type = models.CharField(max_length=25, default="")
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
