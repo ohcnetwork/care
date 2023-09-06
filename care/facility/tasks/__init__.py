@@ -15,7 +15,6 @@ from care.facility.tasks.summarisation import (
 
 @current_app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    capture_goals.apply_async()
     sender.add_periodic_task(
         crontab(hour="0", minute="0"),
         delete_old_notifications.s(),
