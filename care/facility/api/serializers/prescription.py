@@ -60,6 +60,23 @@ class PrescriptionDetailSerializer(serializers.ModelSerializer):
                 MedibaseMedicine, external_id=attrs["medicine"]
             )
 
+        if not self.instance:
+            if Prescription.objects.filter(
+                consultation__external_id=self.context["request"].parser_context[
+                    "kwargs"
+                ]["consultation_external_id"],
+                medicine=attrs["medicine"],
+                discontinued=False,
+            ).exists():
+                raise serializers.ValidationError(
+                    {
+                        "medicine": (
+                            "This medicine is already prescribed to this patient. "
+                            "Please discontinue the existing prescription to prescribe again."
+                        )
+                    }
+                )
+
         if attrs.get("is_prn"):
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
