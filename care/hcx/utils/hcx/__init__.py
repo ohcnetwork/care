@@ -75,7 +75,7 @@ class Hcx:
             else str(uuid.uuid4()),
             # "x-hcx-workflow_id": str(uuid.uuid4()),
             "x-hcx-api_call_id": str(uuid.uuid4()),
-            "x-hcx-status": "response.complete",
+            # "x-hcx-status": "response.complete",
         }
         return hcx_headers
 

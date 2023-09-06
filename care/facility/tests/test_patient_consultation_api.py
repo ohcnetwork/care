@@ -5,18 +5,20 @@ from enum import Enum
 from django.test import TestCase
 from django.utils.timezone import make_aware
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIClient, APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.models import Bed, ConsultationBed
+from care.facility.models.asset import Asset, AssetClasses, AssetLocation
 from care.facility.models.facility import Facility
 from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
 )
 from care.facility.tests.mixins import TestClassMixin
-from care.users.models import Skill
+from care.users.models import Skill, User
 from care.utils.tests.test_base import TestBase
 
 
@@ -74,8 +76,6 @@ class ExpectedPatientConsultationRetrieveKeys(Enum):
     icd11_provisional_diagnoses_object = "icd11_provisional_diagnoses_object"
     created_date = "created_date"
     modified_date = "modified_date"
-    ip_no = "ip_no"
-    op_no = "op_no"
     diagnosis = "diagnosis"
     icd11_provisional_diagnoses = "icd11_provisional_diagnoses"
     icd11_diagnoses = "icd11_diagnoses"
@@ -83,7 +83,6 @@ class ExpectedPatientConsultationRetrieveKeys(Enum):
     symptoms_onset_date = "symptoms_onset_date"
     examination_details = "examination_details"
     history_of_present_illness = "history_of_present_illness"
-    prescribed_medication = "prescribed_medication"
     consultation_notes = "consultation_notes"
     course_in_facility = "course_in_facility"
     investigation = "investigation"
@@ -109,6 +108,8 @@ class ExpectedPatientConsultationRetrieveKeys(Enum):
     intubation_history = "intubation_history"
     prn_prescription = "prn_prescription"
     discharge_advice = "discharge_advice"
+    patient_no = "patient_no"
+    treatment_plan = "treatment_plan"
 
 
 class ExpectedCreatedByKeys(Enum):
@@ -215,7 +216,7 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         "category": CATEGORY_CHOICES[0][0],
         "examination_details": "examination_details",
         "history_of_present_illness": "history_of_present_illness",
-        "prescribed_medication": "prescribed_medication",
+        "treatment_plan": "treatment_plan",
         "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
     }
 
@@ -451,8 +452,25 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_list_patient_consultation(self):
-        response = self.client.get("/api/v1/consultation/")
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(self.super_user).access_token}"
+        )
+        response = client.get("/api/v1/consultation/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        district_lab_admin = self.create_user(
+            district=self.district,
+            username="district_lab_admin",
+            user_type=User.TYPE_VALUE_MAP["DistrictLabAdmin"],
+        )
+        client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {RefreshToken.for_user(district_lab_admin).access_token}"
+        )
+        response = client.get("/api/v1/consultation/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get("/api/v1/consultation/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
@@ -521,4 +539,71 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         self.assertCountEqual(
             data["referred_to_object"]["facility_type"].keys(),
             facility_object_keys,
+        )
+
+    def test_generate_discharge_summary(self):
+        url = f"/api/v1/consultation/{self.consultation.external_id}/generate_discharge_summary/"
+        res = self.client.post(url)
+        self.assertEqual(res.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(
+            res.data["detail"], "Discharge Summary will be generated shortly"
+        )
+
+    def test_patient_from_asset(self):
+        asset1_location = AssetLocation.objects.create(
+            name="asset1 location", location_type=1, facility=self.facility
+        )
+        asset = Asset.objects.create(
+            name="Test Asset",
+            current_location=asset1_location,
+            asset_type=50,
+            warranty_amc_end_of_validity=make_aware(
+                datetime.datetime(2020, 4, 1, 15, 30, 00)
+            ),
+            asset_class=AssetClasses.ONVIF.name,
+            meta={
+                "asset_type": "CAMERA",
+                "local_ip_address": "192.168.0.65",
+                "camera_access_key": "remoteuser:aeAE55L5Po*S*C5:3af9acd0-2d4a-49e4-bb72-45cf7be0ae65",
+                "middleware_hostname": "ka-kr-mysore.10bedicu.in",
+            },
+        )
+        bed = Bed.objects.create(
+            name="Fake Bed",
+            description="This is a fake Bed",
+            bed_type=5,
+            facility=self.facility,
+            location=asset1_location,
+        )
+
+        bed.assets.add(asset)
+        self.user.asset = asset
+        self.user.save()
+        self.user.refresh_from_db()
+
+        url = "/api/v1/consultation/patient_from_asset/"
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+        consultation_bed = ConsultationBed.objects.create(
+            consultation=self.consultation,
+            bed=bed,
+            start_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        self.consultation.current_bed = consultation_bed
+        self.consultation.save()
+        self.consultation.refresh_from_db()
+        consultation_bed.assets.add(asset)
+        consultation_bed.refresh_from_db()
+
+        url = "/api/v1/consultation/patient_from_asset/"
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_preview_discharge_summary(self):
+        url = f"/api/v1/consultation/{self.consultation.external_id}/preview_discharge_summary/"
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(
+            res.data["detail"], "Discharge Summary will be generated shortly"
         )

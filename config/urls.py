@@ -11,6 +11,9 @@ from drf_spectacular.views import (
 
 from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import OpenIdConfigView
+from care.facility.api.viewsets.patient_consultation import (
+    dev_preview_discharge_summary,
+)
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
     CommunicationRequestView,
@@ -118,6 +121,10 @@ if settings.DEBUG:
             kwargs={"exception": Exception("Page not Found")},
         ),
         path("500/", default_views.server_error),
+        path(
+            "preview_discharge_summary/<str:consultation_id>/",
+            dev_preview_discharge_summary,
+        ),
     ]
     if "debug_toolbar" in settings.INSTALLED_APPS:
         urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
