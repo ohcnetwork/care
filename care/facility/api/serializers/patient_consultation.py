@@ -525,6 +525,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 class PatientConsultationIDSerializer(serializers.ModelSerializer):
     consultation_id = serializers.UUIDField(source="external_id", read_only=True)
     patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
+    bed_id = serializers.UUIDField(source="current_bed.bed.external_id", read_only=True)
 
     class Meta:
         model = PatientConsultation
