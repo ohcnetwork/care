@@ -33,6 +33,7 @@ inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
+    administered_date = filters.DateFromToRangeFilter(field_name="administered_date")
 
 
 class MedicineAdministrationViewSet(
@@ -112,7 +113,14 @@ class ConsultationPrescriptionViewSet(
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        serializer = MedicineAdministrationSerializer(data=request.data)
+        if prescription_obj.discontinued:
+            return Response(
+                {"error": "Administering discontinued prescriptions is not allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = MedicineAdministrationSerializer(
+            data=request.data, context={"prescription": prescription_obj}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -177,10 +185,17 @@ class MedibaseViewSet(ViewSet):
 
         queryset = MedibaseMedicineTable
 
-        limit = request.query_params.get("limit", 30)
+        if type := request.query_params.get("type"):
+            queryset = [x for x in queryset if x[2] == type]
 
         if query := request.query_params.get("query"):
             query = query.strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
+
+        try:
+            limit = min(int(request.query_params.get("limit", 30)), 100)
+        except ValueError:
+            limit = 30
+
         return Response(self.serailize_data(queryset[:limit]))
