@@ -35,6 +35,7 @@ inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
+    administered_date = filters.DateFromToRangeFilter(field_name="administered_date")
 
 
 class MedicineAdministrationViewSet(
@@ -124,7 +125,14 @@ class ConsultationPrescriptionViewSet(
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        serializer = MedicineAdministrationDetailSerializer(data=request.data)
+        if prescription_obj.discontinued:
+            return Response(
+                {"error": "Administering discontinued prescriptions is not allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = MedicineAdministrationSerializer(
+            data=request.data, context={"prescription": prescription_obj}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -166,24 +174,40 @@ class MedibaseViewSet(ViewSet):
 
     def sort(self, query, results):
         exact_matches = []
+        word_matches = []
         partial_matches = []
 
         for x in results:
-            words = f"{x[1]} {x[3]} {x[4]}".lower().split()
-            if query in words:
+            name = x[1].lower()
+            generic = x[3].lower()
+            company = x[4].lower()
+            words = f"{name} {generic} {company}".split()
+
+            if name == query:
                 exact_matches.append(x)
+            elif query in words:
+                word_matches.append(x)
             else:
                 partial_matches.append(x)
 
-        return exact_matches + partial_matches
+        return exact_matches + word_matches + partial_matches
 
     def list(self, request):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
         queryset = MedibaseMedicineTable
 
+        if type := request.query_params.get("type"):
+            queryset = [x for x in queryset if x[2] == type]
+
         if query := request.query_params.get("query"):
             query = query.strip().lower()
             queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
-        return Response(self.serailize_data(queryset[:15]))
+
+        try:
+            limit = min(int(request.query_params.get("limit", 30)), 100)
+        except ValueError:
+            limit = 30
+
+        return Response(self.serailize_data(queryset[:limit]))

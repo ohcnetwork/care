@@ -1,6 +1,7 @@
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
@@ -259,9 +260,17 @@ class ConsultationBedSerializer(ModelSerializer):
             ).update(end_date=validated_data["start_date"])
             if assets_ids := validated_data.pop("assets", None):
                 assets = (
-                    Asset.objects.filter(
-                        Q(assigned_consultation_beds__isnull=True)
-                        | Q(assigned_consultation_beds__end_date__isnull=False),
+                    Asset.objects.annotate(
+                        is_in_use=Exists(
+                            ConsultationBedAsset.objects.filter(
+                                Q(consultation_bed__end_date__gt=timezone.now())
+                                | Q(consultation_bed__end_date__isnull=True),
+                                asset=OuterRef("pk"),
+                            )
+                        )
+                    )
+                    .filter(
+                        is_in_use=False,
                         external_id__in=assets_ids,
                         current_location__facility=consultation.facility_id,
                     )
@@ -276,7 +285,7 @@ class ConsultationBedSerializer(ModelSerializer):
                 not_found_assets = list(set(assets_ids) - set(assets))
                 if not_found_assets:
                     raise ValidationError(
-                        f"Some assets are not available - {' ,'.join(not_found_assets)}"
+                        f"Some assets are not available - {' ,'.join(map(str, not_found_assets))}"
                     )
             obj: ConsultationBed = super().create(validated_data)
             if assets_ids:
