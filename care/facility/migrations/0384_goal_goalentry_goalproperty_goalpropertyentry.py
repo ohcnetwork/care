@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0382_assetservice_remove_asset_last_serviced_on_and_more"),
+        ("facility", "0383_patientconsultation_icd11_principal_diagnosis"),
     ]
 
     operations = [
