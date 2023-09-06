@@ -8,12 +8,12 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.facility import Facility
 from care.users.api.serializers.user import UserAssignedSerializer
-from care.users.models import Skill, User
+from care.users.models import User, UserSkill
 
 
 class UserFilter(filters.FilterSet):
     user_type = filters.TypedChoiceFilter(
-        choices=[(key, key) for key in User.TYPE_VALUE_MAP.keys()],
+        choices=[(key, key) for key in User.TYPE_VALUE_MAP],
         coerce=lambda role: User.TYPE_VALUE_MAP[role],
     )
 
@@ -33,14 +33,16 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
     def get_queryset(self):
         try:
             facility = Facility.objects.get(
-                external_id=self.kwargs.get("facility_external_id")
+                external_id=self.kwargs.get("facility_external_id"),
             )
-            queryset = facility.users.filter(deleted=False).order_by("-last_login")
-            queryset = queryset.prefetch_related(
+            queryset = facility.users.filter(
+                deleted=False,
+            ).order_by("-last_login")
+            return queryset.prefetch_related(
                 Prefetch(
-                    "skills", queryset=Skill.objects.filter(userskill__deleted=False)
-                )
+                    "skills",
+                    queryset=UserSkill.objects.filter(skill__deleted=False),
+                ),
             )
-            return queryset
         except Facility.DoesNotExist:
             raise ValidationError({"Facility": "Facility not found"})
