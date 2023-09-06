@@ -2,10 +2,10 @@ import logging
 from datetime import timedelta
 from enum import Enum
 
+import requests
 from celery import shared_task
 from django.conf import settings
 from django.utils.timezone import now
-from requests import request
 
 from care.facility.models.stats import Goal, GoalEntry, GoalProperty, GoalPropertyEntry
 
@@ -30,15 +30,26 @@ class Goals(Enum):
 
 def get_goal_stats(plausible_host, site_id, date, goal_name):
     goal_filter = f"event:name=={goal_name}"
-    url = f"https://{plausible_host}/api/v1/stats/aggregate?site_id={site_id}&filters={goal_filter}&period=day&date={date}&metrics=visitors,events"
+    url = f"https://{plausible_host}/api/v1/stats/aggregate"
 
-    response = request(
-        "GET",
+    params = {
+        "site_id": site_id,
+        "filters": goal_filter,
+        "period": "day",
+        "date": date,
+        "metrics": "visitors,events",
+    }
+
+    response = requests.get(
         url,
+        params=params,
         headers={
             "Authorization": "Bearer " + settings.PLAUSIBLE_AUTH_TOKEN,
         },
+        timeout=60,
     )
+
+    response.raise_for_status()
 
     return response.json()
 
@@ -52,15 +63,27 @@ def get_goal_event_stats(plausible_host, site_id, date, goal_name, event_name):
     else:
         goal_event = f"event:props:{event_name}"
 
-    url = f"https://{plausible_host}/api/v1/stats/breakdown?site_id={site_id}&property={goal_event}&filters={goal_filter}&period=day&date={date}&metrics=visitors,events"
+    url = f"https://{plausible_host}/api/v1/stats/breakdown"
 
-    response = request(
-        "GET",
+    params = {
+        "site_id": site_id,
+        "property": goal_event,
+        "filters": goal_filter,
+        "period": "day",
+        "date": date,
+        "metrics": "visitors,events",
+    }
+
+    response = requests.get(
         url,
+        params=params,
         headers={
             "Authorization": "Bearer " + settings.PLAUSIBLE_AUTH_TOKEN,
         },
+        timeout=60,
     )
+
+    response.raise_for_status()
 
     return response.json()
 
