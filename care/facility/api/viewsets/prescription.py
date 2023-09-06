@@ -103,7 +103,7 @@ class ConsultationPrescriptionViewSet(
             "discontinued_reason", None
         )
         prescription_obj.save()
-        return Response({}, status=status.HTTP_201_CREATED)
+        return Response({}, status=status.HTTP_200_OK)
 
     @extend_schema(tags=["prescriptions"])
     @action(
