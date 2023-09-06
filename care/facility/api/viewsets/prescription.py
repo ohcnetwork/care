@@ -103,7 +103,7 @@ class ConsultationPrescriptionViewSet(
             "discontinued_reason", None
         )
         prescription_obj.save()
-        return Response({}, status=status.HTTP_201_CREATED)
+        return Response({}, status=status.HTTP_200_OK)
 
     @extend_schema(tags=["prescriptions"])
     @action(
@@ -113,7 +113,14 @@ class ConsultationPrescriptionViewSet(
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        serializer = MedicineAdministrationSerializer(data=request.data)
+        if prescription_obj.discontinued:
+            return Response(
+                {"error": "Administering discontinued prescriptions is not allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = MedicineAdministrationSerializer(
+            data=request.data, context={"prescription": prescription_obj}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
