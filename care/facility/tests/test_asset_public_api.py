@@ -70,6 +70,7 @@ class ExpectedPublicAssetRetrieveKeys(Enum):
     SUPPORT_PHONE = "support_phone"
     SUPPORT_EMAIL = "support_email"
     CURRENT_LOCATION = "current_location"
+    LAST_SERVICE = "last_service"
 
 
 class AssetPublicViewSetTestCase(TestBase, TestClassMixin, APITestCase):
