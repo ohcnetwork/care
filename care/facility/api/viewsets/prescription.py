@@ -113,7 +113,14 @@ class ConsultationPrescriptionViewSet(
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        serializer = MedicineAdministrationSerializer(data=request.data)
+        if prescription_obj.discontinued:
+            return Response(
+                {"error": "Administering discontinued prescriptions is not allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = MedicineAdministrationSerializer(
+            data=request.data, context={"prescription": prescription_obj}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
