@@ -132,21 +132,18 @@ def capture_goals():
                     property_name,
                 )
                 for property_statistic in goal_property_stats["results"]:
-                    goal_property_object, _ = GoalProperty.objects.get_or_create(
+                    property_object, _ = GoalProperty.objects.get_or_create(
                         goal=goal_object,
                         name=property_name,
                     )
-                    (
-                        goal_property_event_object,
-                        _,
-                    ) = GoalPropertyEntry.objects.get_or_create(
-                        goal_property=goal_property_object,
+                    property_entry_object, _ = GoalPropertyEntry.objects.get_or_create(
+                        goal_property=property_object,
                         goal_entry=goal_entry_object,
                         value=property_statistic[property_name],
                     )
-                    goal_property_event_object.visitors = property_statistic["visitors"]
-                    goal_property_event_object.events = property_statistic["events"]
-                    goal_property_event_object.save()
+                    property_entry_object.visitors = property_statistic["visitors"]
+                    property_entry_object.events = property_statistic["events"]
+                    property_entry_object.save()
                 logger.info(
                     f"Saved goal property entry for {goal_name} and property {property_name} on {yesterday}"
                 )
