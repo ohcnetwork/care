@@ -361,10 +361,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
+        final_diagnosis = []
+        provisional_diagnosis = []
+
         if "icd11_diagnoses" in validated:
             for diagnosis in validated["icd11_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    final_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -378,6 +382,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             for diagnosis in validated["icd11_provisional_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    provisional_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -386,6 +391,41 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
+
+        if (
+            "icd11_principal_diagnosis" in validated
+            and validated.get("suggestion") != SuggestionChoices.DD
+        ):
+            if len(final_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in final_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Final Diagnosis"
+                            ]
+                        }
+                    )
+            elif len(provisional_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in provisional_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Provisional Diagnosis"
+                            ]
+                        }
+                    )
+            else:
+                raise ValidationError(
+                    {
+                        "icd11_diagnoses": [
+                            "Atleast one diagnosis is required for final diagnosis"
+                        ],
+                        "icd11_provisional_diagnoses": [
+                            "Atleast one diagnosis is required for provisional diagnosis"
+                        ],
+                    }
+                )
+
         return validated
 
 
@@ -529,7 +569,7 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        fields = ("consultation_id", "patient_id")
+        fields = ("consultation_id", "patient_id", "bed_id")
 
 
 class EmailDischargeSummarySerializer(serializers.Serializer):
