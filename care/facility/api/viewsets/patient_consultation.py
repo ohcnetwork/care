@@ -1,5 +1,6 @@
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
+from django.shortcuts import render
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -237,3 +238,19 @@ class PatientConsultationViewSet(
         if not consultation:
             raise NotFound({"detail": "No consultation found for this asset"})
         return Response(PatientConsultationIDSerializer(consultation).data)
+
+
+def dev_preview_discharge_summary(request, consultation_id):
+    """
+    This is a dev only view to preview the discharge summary template
+    """
+    consultation = (
+        PatientConsultation.objects.select_related("patient")
+        .order_by("-id")
+        .filter(external_id=consultation_id)
+        .first()
+    )
+    if not consultation:
+        raise NotFound({"detail": "Consultation not found"})
+    data = discharge_summary.get_discharge_summary_data(consultation)
+    return render(request, "reports/patient_discharge_summary_pdf.html", data)
