@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import serializers
 
 from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
@@ -76,6 +77,17 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     administered_by = UserBaseMinimumSerializer(read_only=True)
     prescription = PrescriptionSerializer(read_only=True)
+
+    def validate_administered_date(self, value):
+        if value > timezone.now():
+            raise serializers.ValidationError(
+                "Administered Date cannot be in the future."
+            )
+        if self.context["prescription"].created_date > value:
+            raise serializers.ValidationError(
+                "Administered Date cannot be before Prescription Date."
+            )
+        return value
 
     class Meta:
         model = MedicineAdministration
