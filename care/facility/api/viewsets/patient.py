@@ -157,12 +157,9 @@ class PatientFilterSet(filters.FilterSet):
         values = value.split(",")
         filter_q = Q()
 
-        try:
-            values.remove("None")
+        if "None" in values:
             filter_q |= Q(last_consultation__current_bed__isnull=True)
-        except ValueError:
-            pass
-
+            values.remove("None")
         if values:
             filter_q |= Q(last_consultation__current_bed__bed__bed_type__in=values)
 
