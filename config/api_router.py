@@ -223,9 +223,9 @@ router.register("public/asset", AssetPublicViewSet)
 # ABDM endpoints
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
-    router.register(
-        "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
-    )
+router.register(
+    "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
+)
 
 app_name = "api"
 urlpatterns = [
