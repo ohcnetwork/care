@@ -34,6 +34,7 @@ class TestSuperUser(TestBase):
             "doctor_experience_commenced_on": obj.doctor_experience_commenced_on,
             "doctor_medical_council_registration": obj.doctor_medical_council_registration,
             "doctor_qualification": obj.doctor_qualification,
+            "weekly_working_hours": obj.weekly_working_hours,
             **self.get_local_body_district_state_representation(obj),
         }
 

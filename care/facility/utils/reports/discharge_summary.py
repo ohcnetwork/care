@@ -56,6 +56,11 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     provisional_diagnosis = get_icd11_diagnoses_objects_by_ids(
         consultation.icd11_provisional_diagnoses
     )
+    principal_diagnosis = get_icd11_diagnoses_objects_by_ids(
+        [consultation.icd11_principal_diagnosis]
+        if consultation.icd11_principal_diagnosis
+        else []
+    )
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
         & (Q(value__isnull=False) | Q(notes__isnull=False))
@@ -81,6 +86,12 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         prescription_type=PrescriptionType.DISCHARGE.value,
         is_prn=True,
     )
+    files = FileUpload.objects.filter(
+        associating_id=consultation.id,
+        file_type=FileUpload.FileType.CONSULTATION.value,
+        upload_completed=True,
+        is_archived=False,
+    )
 
     return {
         "patient": consultation.patient,
@@ -88,6 +99,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "hcx": hcx,
         "diagnosis": diagnosis,
         "provisional_diagnosis": provisional_diagnosis,
+        "principal_diagnosis": principal_diagnosis,
         "consultation": consultation,
         "prescriptions": prescriptions,
         "prn_prescriptions": prn_prescriptions,
@@ -96,6 +108,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "dailyrounds": daily_rounds,
         "medical_history": medical_history,
         "investigations": investigations,
+        "files": files,
     }
 
 
@@ -123,7 +136,7 @@ def generate_discharge_summary_pdf(data, file):
 def generate_and_upload_discharge_summary(consultation: PatientConsultation):
     logger.info(f"Generating Discharge Summary for {consultation.external_id}")
 
-    set_lock(consultation.external_id, 0)
+    set_lock(consultation.external_id, 5)
     try:
         current_date = timezone.now()
         summary_file = FileUpload(
@@ -158,7 +171,7 @@ def email_discharge_summary(summary_file: FileUpload, emails: Iterable[str]):
         "Patient Discharge Summary",
         "Please find the attached file",
         settings.DEFAULT_FROM_EMAIL,
-        (emails,),
+        emails,
     )
     msg.content_subtype = "html"
     _, data = summary_file.file_contents()

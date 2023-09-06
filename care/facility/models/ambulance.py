@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
 
-from care.facility.models.base import FacilityBaseModel, phone_number_regex
+from care.facility.models.base import FacilityBaseModel
 from care.users.models import District
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class Ambulance(FacilityBaseModel):
 
     owner_name = models.CharField(max_length=255)
     owner_phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex]
+        max_length=14, validators=[mobile_or_landline_number_validator]
     )
     owner_is_smart_phone = models.BooleanField(default=True)
 
@@ -135,7 +136,9 @@ class AmbulanceDriver(FacilityBaseModel):
     ambulance = models.ForeignKey(Ambulance, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, validators=[mobile_or_landline_number_validator]
+    )
     is_smart_phone = models.BooleanField()
 
     def __str__(self):

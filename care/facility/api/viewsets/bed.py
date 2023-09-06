@@ -3,6 +3,7 @@ from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.fields import get_error_detail
@@ -14,6 +15,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.bed import (
@@ -63,6 +65,30 @@ class BedViewSet(
         if self.action == "list":
             return BedListSerializer
         return self.serializer_class
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        number_of_beds = serializer.validated_data.pop("number_of_beds", 1)
+        # Bulk creating n number of beds
+        if number_of_beds > 1:
+            data = serializer.validated_data.copy()
+            data.pop("name")
+            beds = [
+                Bed(
+                    **data,
+                    name=f"{serializer.validated_data['name']} {i+1}",
+                )
+                for i in range(number_of_beds)
+            ]
+            Bed.objects.bulk_create(beds)
+            return Response(status=status.HTTP_201_CREATED)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def get_queryset(self):
         user = self.request.user
@@ -192,6 +218,7 @@ class ConsultationBedViewSet(
     queryset = (
         ConsultationBed.objects.all()
         .select_related("consultation", "bed")
+        .prefetch_related("assets")
         .order_by("-created_date")
     )
     serializer_class = ConsultationBedDetailSerializer

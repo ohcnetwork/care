@@ -177,6 +177,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             pincode=abha_profile["pincode"],
             email=abha_profile["email"],
             profile_photo=abha_profile["profilePhoto"],
+            new=abha_profile["new"],
             txn_id=token["txn_id"],
             access_token=token["access_token"],
             refresh_token=token["refresh_token"],
@@ -469,7 +470,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        response = AbdmGateway().patient_sms_notify({"phone": patient.phone_number})
+        response = AbdmGateway().patient_sms_notify(
+            {"phone": patient.phone_number, "healthId": patient.abha_number.health_id}
+        )
 
         return Response(response, status=status.HTTP_202_ACCEPTED)
 

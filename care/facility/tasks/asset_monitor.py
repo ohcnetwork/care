@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any
 
 from celery import shared_task
+from django.db.models import Q
 from django.utils import timezone
 
 from care.facility.models.asset import (
@@ -22,6 +23,7 @@ def check_asset_status():
 
     assets = Asset.objects.all()
     middleware_status_cache = {}
+    middleware_camera_status_cache = {}
 
     for asset in assets:
         # Skipping if asset class or local IP address is not present
@@ -36,7 +38,12 @@ def check_asset_status():
             result: Any = None
 
             # Checking if middleware status is already cached
-            if hostname in middleware_status_cache:
+            if (
+                hostname in middleware_camera_status_cache
+                and asset.asset_class == "ONVIF"
+            ):
+                result = middleware_camera_status_cache[hostname]
+            elif hostname in middleware_status_cache and asset.asset_class != "ONVIF":
                 result = middleware_status_cache[hostname]
             else:
                 try:
@@ -50,7 +57,36 @@ def check_asset_status():
                         }
                     )
                     # Fetching the status of the device
-                    result = asset_class.api_get(asset_class.get_url("devices/status"))
+                    if asset.asset_class == "ONVIF":
+                        similar_assets = Asset.objects.filter(
+                            asset_class="ONVIF"
+                        ).filter(
+                            Q(meta__middleware_hostname=hostname)
+                            | Q(current_location__facility__middleware_address=hostname)
+                        )
+                        assets_config = []
+                        for asset in similar_assets:
+                            try:
+                                asset_config = asset.meta["camera_access_key"].split(
+                                    ":"
+                                )
+                                assets_config.append(
+                                    {
+                                        "hostname": asset.meta.get("local_ip_address"),
+                                        "port": 80,
+                                        "username": asset_config[0],
+                                        "password": asset_config[1],
+                                    }
+                                )
+                            except Exception:
+                                pass
+                        result = asset_class.api_post(
+                            asset_class.get_url("cameras/status"), data=assets_config
+                        )
+                    else:
+                        result = asset_class.api_get(
+                            asset_class.get_url("devices/status")
+                        )
                 except Exception:
                     logger.warn(f"Middleware {hostname} is down", exc_info=True)
 
@@ -58,7 +94,10 @@ def check_asset_status():
             if not result:
                 result = [{"time": timezone.now().isoformat(), "status": []}]
 
-            middleware_status_cache[hostname] = result
+            if asset.asset_class == "ONVIF":
+                middleware_camera_status_cache[hostname] = result
+            else:
+                middleware_status_cache[hostname] = result
 
             # Setting new status as down by default
             new_status = AvailabilityStatus.DOWN

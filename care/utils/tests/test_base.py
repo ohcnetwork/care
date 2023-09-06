@@ -8,6 +8,7 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from pytz import unicode
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -22,7 +23,6 @@ from care.facility.models import (
     Facility,
     LocalBody,
     PatientConsultation,
-    PatientNotes,
     PatientRegistration,
     User,
 )
@@ -105,7 +105,7 @@ class TestBase(APITestCase):
         return f
 
     @classmethod
-    def create_patient(cls, **kwargs):
+    def create_patient(cls, facility=None, **kwargs):
         patient_data = cls.get_patient_data().copy()
         patient_data.update(kwargs)
 
@@ -115,7 +115,7 @@ class TestBase(APITestCase):
 
         patient_data.update(
             {
-                "facility": cls.facility,
+                "facility": facility or cls.facility,
                 "district_id": district_id,
                 "state_id": state_id,
                 "disease_status": getattr(
@@ -415,7 +415,7 @@ class TestBase(APITestCase):
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
-            "prescribed_medication": "prescribed_medication",
+            "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
             "admission_date": None,
@@ -442,15 +442,21 @@ class TestBase(APITestCase):
         return PatientConsultation.objects.create(**data)
 
     def create_patient_note(
-        self, patient=None, facility=None, note="Patient is doing find", **kwargs
+        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
     ):
         data = {
-            "patient": patient or self.patient,
-            "facility": facility or self.facility,
+            "facility": patient.facility or self.facility,
             "note": note,
         }
         data.update(kwargs)
-        return PatientNotes.objects.create(**data)
+        patientId = patient.external_id
+
+        refresh_token = RefreshToken.for_user(created_by)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
+        )
+
+        self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
 
     def create_asset_location(self):
         return AssetLocation.objects.create(

@@ -361,10 +361,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
+        final_diagnosis = []
+        provisional_diagnosis = []
+
         if "icd11_diagnoses" in validated:
             for diagnosis in validated["icd11_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    final_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -378,6 +382,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             for diagnosis in validated["icd11_provisional_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    provisional_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -386,6 +391,41 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
+
+        if (
+            "icd11_principal_diagnosis" in validated
+            and validated.get("suggestion") != SuggestionChoices.DD
+        ):
+            if len(final_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in final_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Final Diagnosis"
+                            ]
+                        }
+                    )
+            elif len(provisional_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in provisional_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Provisional Diagnosis"
+                            ]
+                        }
+                    )
+            else:
+                raise ValidationError(
+                    {
+                        "icd11_diagnoses": [
+                            "Atleast one diagnosis is required for final diagnosis"
+                        ],
+                        "icd11_provisional_diagnoses": [
+                            "Atleast one diagnosis is required for provisional diagnosis"
+                        ],
+                    }
+                )
+
         return validated
 
 
@@ -401,6 +441,15 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 
     death_datetime = serializers.DateTimeField(required=False, allow_null=True)
     death_confirmed_doctor = serializers.CharField(required=False, allow_null=True)
+
+    referred_to = ExternalIdSerializerField(
+        queryset=Facility.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    referred_to_external = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
 
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
@@ -420,6 +469,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to",
             "referred_to_external",
             "discharge_notes",
             "discharge_date",
@@ -430,6 +480,21 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        if attrs.get("referred_to") and attrs.get("referred_to_external"):
+            raise ValidationError(
+                {
+                    "referred_to": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                    "referred_to_external": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                }
+            )
+        if attrs.get("discharge_reason") != "EXP":
+            attrs.pop("death_datetime", None)
+            attrs.pop("death_confirmed_doctor", None)
+
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
@@ -500,6 +565,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 class PatientConsultationIDSerializer(serializers.ModelSerializer):
     consultation_id = serializers.UUIDField(source="external_id", read_only=True)
     patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
+    bed_id = serializers.UUIDField(source="current_bed.bed.external_id", read_only=True)
 
     class Meta:
         model = PatientConsultation
