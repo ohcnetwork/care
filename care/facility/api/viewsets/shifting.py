@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -92,36 +93,7 @@ class ShiftingViewSet(
 ):
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
-    queryset = ShiftingRequest.objects.all().select_related(
-        "origin_facility",
-        "origin_facility__ward",
-        "origin_facility__local_body",
-        "origin_facility__district",
-        "origin_facility__state",
-        "shifting_approving_facility",
-        "shifting_approving_facility__ward",
-        "shifting_approving_facility__local_body",
-        "shifting_approving_facility__district",
-        "shifting_approving_facility__state",
-        "assigned_facility",
-        "assigned_facility__ward",
-        "assigned_facility__local_body",
-        "assigned_facility__district",
-        "assigned_facility__state",
-        "patient",
-        "patient__ward",
-        "patient__local_body",
-        "patient__district",
-        "patient__state",
-        "patient__facility",
-        "patient__facility__ward",
-        "patient__facility__local_body",
-        "patient__facility__district",
-        "patient__facility__state",
-        "assigned_to",
-        "created_by",
-        "last_edited_by",
-    )
+    queryset = ShiftingRequest.objects.all()
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
     permission_classes = (IsAuthenticated, DRYPermissions)
@@ -131,6 +103,48 @@ class ShiftingViewSet(
         rest_framework_filters.OrderingFilter,
     )
     filterset_class = ShiftingFilterSet
+
+    def get_queryset(self) -> QuerySet:
+        if self.action == "list":
+            self.queryset = self.queryset.select_related(
+                "origin_facility",
+                "shifting_approving_facility",
+                "assigned_facility",
+                "patient",
+            )
+
+        else:
+            self.queryset = self.queryset.select_related(
+                "origin_facility",
+                "origin_facility__ward",
+                "origin_facility__local_body",
+                "origin_facility__district",
+                "origin_facility__state",
+                "shifting_approving_facility",
+                "shifting_approving_facility__ward",
+                "shifting_approving_facility__local_body",
+                "shifting_approving_facility__district",
+                "shifting_approving_facility__state",
+                "assigned_facility",
+                "assigned_facility__ward",
+                "assigned_facility__local_body",
+                "assigned_facility__district",
+                "assigned_facility__state",
+                "patient",
+                "patient__ward",
+                "patient__local_body",
+                "patient__district",
+                "patient__state",
+                "patient__facility",
+                "patient__facility__ward",
+                "patient__facility__local_body",
+                "patient__facility__district",
+                "patient__facility__state",
+                "assigned_to",
+                "created_by",
+                "last_edited_by",
+            )
+        return self.queryset
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
@@ -182,7 +196,8 @@ class ShiftingViewSet(
                 field_header_map=ShiftingRequest.CSV_MAPPING,
                 field_serializer_map=ShiftingRequest.CSV_MAKE_PRETTY,
             )
-        return super(ShiftingViewSet, self).list(request, *args, **kwargs)
+        response = super().list(request, *args, **kwargs)
+        return response
 
 
 class ShifitngRequestCommentViewSet(
