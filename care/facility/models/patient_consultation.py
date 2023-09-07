@@ -64,6 +64,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
     )
+    icd11_principal_diagnosis = models.CharField(
+        max_length=100, default="", blank=True, null=True
+    )
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
@@ -140,7 +143,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
-    verified_by = models.TextField(default="", null=True, blank=True)
+    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
+    verified_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=False
+    )
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"
