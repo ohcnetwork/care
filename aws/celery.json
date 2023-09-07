@@ -91,6 +91,26 @@
         {
           "name": "USE_S3",
           "value": "True"
+        },
+        {
+          "name": "ENABLE_ABDM",
+          "value": "True"
+        },
+        {
+          "name": "ABDM_URL",
+          "value": "https://dev.abdm.gov.in"
+        },
+        {
+          "name": "HEALTH_SERVICE_API_URL",
+          "value": "https://healthidsbx.abdm.gov.in/api"
+        },
+        {
+          "name": "X_CM_ID",
+          "value": "sbx"
+        },
+        {
+          "name": "FIDELIUS_URL",
+          "value": "https://fidelius.ohc.network"
         }
       ],
       "repositoryCredentials": {
@@ -227,6 +247,13 @@
         {
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
+        },
+          "valueFrom": "/care/backend/ABDM_CLIENT_ID",
+          "name": "ABDM_CLIENT_ID"
+        },
+        {
+          "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
+          "name": "ABDM_CLIENT_SECRET"
         }
       ],
       "name": "care-celery-beat"
@@ -322,6 +349,26 @@
         {
           "name": "USE_S3",
           "value": "True"
+        },
+        {
+          "name": "ENABLE_ABDM",
+          "value": "True"
+        },
+        {
+          "name": "ABDM_URL",
+          "value": "https://dev.abdm.gov.in"
+        },
+        {
+          "name": "HEALTH_SERVICE_API_URL",
+          "value": "https://healthidsbx.abdm.gov.in/api"
+        },
+        {
+          "name": "X_CM_ID",
+          "value": "sbx"
+        },
+        {
+          "name": "FIDELIUS_URL",
+          "value": "https://fidelius.ohc.network"
         }
       ],
       "repositoryCredentials": {
@@ -456,6 +503,13 @@
         {
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
+        },
+          "valueFrom": "/care/backend/ABDM_CLIENT_ID",
+          "name": "ABDM_CLIENT_ID"
+        },
+        {
+          "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
+          "name": "ABDM_CLIENT_SECRET"
         }
       ],
       "name": "care-celery-worker"
