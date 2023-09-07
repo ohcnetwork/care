@@ -569,7 +569,7 @@ class PatientConsultationIDSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientConsultation
-        fields = ("consultation_id", "patient_id")
+        fields = ("consultation_id", "patient_id", "bed_id")
 
 
 class EmailDischargeSummarySerializer(serializers.Serializer):
