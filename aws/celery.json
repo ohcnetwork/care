@@ -248,6 +248,7 @@
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
         },
+        {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
           "name": "ABDM_CLIENT_ID"
         },
@@ -504,6 +505,7 @@
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
         },
+        {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
           "name": "ABDM_CLIENT_ID"
         },
