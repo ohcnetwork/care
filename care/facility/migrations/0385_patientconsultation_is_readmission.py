@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0382_assetservice_remove_asset_last_serviced_on_and_more"),
+        ("facility", "0384_patientconsultation_verified_by"),
     ]
 
     def fill_is_readmission(apps, schema_editor):
