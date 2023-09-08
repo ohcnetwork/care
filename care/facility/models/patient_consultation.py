@@ -144,7 +144,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     deprecated_verified_by = models.TextField(default="", null=True, blank=True)
     verified_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=False
+        User, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     created_by = models.ForeignKey(
