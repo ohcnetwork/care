@@ -73,7 +73,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     verified_by_object = UserBaseMinimumSerializer(source="verified_by", read_only=True)
     verified_by = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), required=True, allow_null=False
+        queryset=User.objects.all(), required=False, allow_null=True
     )
 
     discharge_reason = serializers.ChoiceField(
@@ -318,19 +318,33 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
 
-        if not validated["verified_by"].user_type == User.TYPE_VALUE_MAP["Doctor"]:
-            raise ValidationError("Only Doctors can verify a Consultation")
-
-        facility = (
-            self.instance and self.instance.facility or validated["patient"].facility
-        )
         if (
-            validated["verified_by"].home_facility
-            and validated["verified_by"].home_facility != facility
+            "suggestion" in validated
+            and validated["suggestion"] != SuggestionChoices.DD
         ):
-            raise ValidationError(
-                "Home Facility of the Doctor must be the same as the Consultation Facility"
+            if "verified_by" not in validated:
+                raise ValidationError(
+                    {
+                        "verified_by": [
+                            "This field is required as the suggestion is not 'Declared Death'"
+                        ]
+                    }
+                )
+            if not validated["verified_by"].user_type == User.TYPE_VALUE_MAP["Doctor"]:
+                raise ValidationError("Only Doctors can verify a Consultation")
+
+            facility = (
+                self.instance
+                and self.instance.facility
+                or validated["patient"].facility
             )
+            if (
+                validated["verified_by"].home_facility
+                and validated["verified_by"].home_facility != facility
+            ):
+                raise ValidationError(
+                    "Home Facility of the Doctor must be the same as the Consultation Facility"
+                )
 
         if "suggestion" in validated:
             if validated["suggestion"] is SuggestionChoices.R:
