@@ -142,7 +142,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
-    verified_by = models.TextField(default="", null=True, blank=True)
+    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
+    verified_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=False
+    )
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"

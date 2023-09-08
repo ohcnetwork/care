@@ -199,7 +199,6 @@
       "is_telemedicine": false,
       "last_updated_by_telemedicine": false,
       "assigned_to": null,
-      "verified_by": "",
       "created_by": 2,
       "last_edited_by": 2,
       "last_daily_round": null,
