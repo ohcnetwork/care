@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -175,3 +176,48 @@ class AllFacilityViewSet(
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
+
+    def list(self, request, *args, **kwargs):
+        # Your custom logic here for handling GET request for listing facilities
+        # For example, you can apply additional filtering or sorting
+        print("List")
+        queryset = self.filter_queryset(self.get_queryset())  # Apply filters
+        serialized_data = self.get_serializer(queryset, many=True).data
+        return Response(serialized_data)
+
+    # Override the retrieve method to customize the behavior for retrieving a single facility
+    def retrieve(self, request, *args, **kwargs):
+        # Your custom logic here for handling GET request for retrieving a single facility
+        instance = self.get_object()
+        serialized_data = self.get_serializer(instance).data
+        return Response(serialized_data)
+
+    def get_queryset(self):
+        print("Request:")
+        print(self.request)
+
+        ans = Facility.objects.exclude(users__contains = self.request.user).select_related(
+            "local_body", "district", "state"
+        )
+
+        return ans
+    #     # filter out those facilities that are linked to the current user
+    #     if self.request.user.is_superuser:
+    #         #            qs = self._queryset  # type: ignore[assignment]
+    #         qs = Facility.objects.all().select_related(
+    #             "local_body", "district", "state"
+    #         )
+    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+    #         qs = Facility.objects.filter(state=self.request.user.state).select_related(
+    #             "local_body", "district", "state"
+    #         )
+    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+    #         qs = Facility.objects.filter(
+    #             district=self.request.user.district
+    #         ).select_related("local_body", "district", "state")
+    #     else:
+    #         qs = Facility.objects.filter(
+    #             users__id__exact=self.request.user.id
+    #         ).select_related("local_body", "district", "state")
+
+    #     return qs
