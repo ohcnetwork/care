@@ -4,9 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import PatientRegistration
-from care.users.models import User
 from care.utils.tests.test_utils import TestUtils
-
 
 class TestDailyRoundApi(TestUtils, APITestCase):
     @classmethod
@@ -19,6 +17,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.patient = cls.create_patient(district=cls.district, facility=cls.facility)
         cls.consultation = cls.create_consultation(facility=cls.facility, patient=cls.patient)
+
 
     def get_url(self, external_consultation_id=None):
         return f"/api/v1/consultation/{external_consultation_id}/daily_rounds/analyse/"
@@ -38,7 +37,6 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             "action": "DISCHARGE_RECOMMENDED",
             "taken_at": datetime.datetime.now().isoformat(),
         }
-        User.objects.filter(id=self.user.id).update(home_facility=self.facility)
         response = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/daily_rounds/",
             data=log_update,

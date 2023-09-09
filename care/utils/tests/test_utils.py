@@ -220,7 +220,10 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        facility = Facility.objects.create(**data)
+        user.home_facility = facility
+        user.save()
+        return facility
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:

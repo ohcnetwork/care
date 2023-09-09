@@ -31,8 +31,11 @@ class TestSuperUser(TestUtils, APITestCase):
             "alt_phone_number": obj.alt_phone_number,
             "age": obj.age,
             "gender": GENDER_CHOICES[obj.gender - 1][1],
-            "home_facility": None,
-            "home_facility_object": None,
+            "home_facility": str(obj.home_facility.external_id),
+            "home_facility_object": {
+                "id": str(obj.home_facility.external_id),
+                "name": obj.home_facility.name,
+            },
             "is_superuser": obj.is_superuser,
             "verified": obj.verified,
             "pf_endpoint": obj.pf_endpoint,
@@ -58,6 +61,7 @@ class TestSuperUser(TestUtils, APITestCase):
 
         data = self.user_data.copy()
         data.pop("password")
+        print(self.user.home_facility)
         self.assertDictEqual(
             res_data_json,
             self.get_detail_representation(self.user),
