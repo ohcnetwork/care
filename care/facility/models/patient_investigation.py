@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.db import models
 
+from care.facility.models.mixins.permissions.facility import FacilityUserPermissionMixin
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.base import BaseModel
@@ -50,7 +51,7 @@ class InvestigationSession(BaseModel):
         ]
 
 
-class InvestigationValue(BaseModel):
+class InvestigationValue(BaseModel, FacilityUserPermissionMixin):
     investigation = models.ForeignKey(
         PatientInvestigation, on_delete=models.PROTECT, blank=False, null=False
     )

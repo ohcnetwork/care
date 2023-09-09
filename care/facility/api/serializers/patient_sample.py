@@ -12,6 +12,7 @@ from care.facility.models.patient_sample import (
     PatientSampleFlow,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.models import User
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
@@ -103,7 +104,12 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
     notes = serializers.CharField(required=False)
 
     def update(self, instance, validated_data):
-        instance.last_edited_by = self.context["request"].user
+        user = self.context["request"].user
+        if user.user_type < User.TYPE_VALUE_MAP["Doctor"]:
+            raise ValidationError(
+                {"status": ["User is not allowed to update sample details"]}
+            )
+        instance.last_edited_by = user
         try:
             is_completed = validated_data.get("result") in [1, 2]
             new_status = validated_data.get(

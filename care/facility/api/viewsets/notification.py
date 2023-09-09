@@ -13,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.notification import NotificationSerializer
 from care.facility.models.notification import Notification
+from care.users.models import User
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_facility_queryset
@@ -71,6 +72,10 @@ class NotificationViewSet(
             raise ValidationError({"facility": "is required"})
         if "message" not in request.data or request.data["message"] == "":
             raise ValidationError({"message": "is required"})
+        if user.user_type < User.TYPE_VALUE_MAP["Doctor"] and request.data["facility"]:
+            raise ValidationError(
+                {"user": "You are not allowed to notify other hospitals"}
+            )
         facilities = get_facility_queryset(user)
         facility = get_object_or_404(
             facilities.filter(external_id=request.data["facility"])

@@ -122,7 +122,10 @@ class ShiftingViewSet(
     )
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
-    permission_classes = (IsAuthenticated, DRYPermissions)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filter_backends = (
         ShiftingFilterBackend,
         filters.DjangoFilterBackend,
@@ -131,10 +134,9 @@ class ShiftingViewSet(
     filterset_class = ShiftingFilterSet
 
     def get_serializer_class(self):
-        serializer_class = self.serializer_class
         if self.action == "retrieve":
-            serializer_class = ShiftingDetailSerializer
-        return serializer_class
+            return ShiftingDetailSerializer
+        return super().get_serializer_class()
 
     @extend_schema(tags=["shift"])
     @action(detail=True, methods=["POST"])

@@ -1,6 +1,8 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, reverse_choices
+from care.facility.models.base import READ_ONLY_USER_TYPES
+from care.facility.models.mixins.permissions.facility import FacilityUserPermissionMixin
 from care.users.models import User
 
 SAMPLE_TYPE_CHOICES = [
@@ -18,8 +20,13 @@ SAMPLE_TYPE_CHOICES = [
 REVERSE_SAMPLE_TYPE_CHOICES = reverse_choices(SAMPLE_TYPE_CHOICES)
 
 
-class PatientSample(FacilityBaseModel):
-    SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
+class PatientSample(FacilityBaseModel, FacilityUserPermissionMixin):
+    SAMPLE_TEST_RESULT_MAP = {
+        "POSITIVE": 1,
+        "NEGATIVE": 2,
+        "AWAITING": 3,
+        "INVALID": 4,
+    }
     SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
     REVERSE_SAMPLE_TEST_RESULT_CHOICES = reverse_choices(SAMPLE_TEST_RESULT_CHOICES)
 
@@ -151,19 +158,6 @@ class PatientSample(FacilityBaseModel):
             return self.patientsampleflow_set.order_by("-created_date")
 
     @staticmethod
-    def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
-        return (
-            request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        )
-
-    @staticmethod
     def has_read_permission(request):
         return (
             request.user.is_superuser
@@ -190,11 +184,7 @@ class PatientSample(FacilityBaseModel):
         )
 
     def has_object_update_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         if not self.has_object_read_permission(request):
             return False

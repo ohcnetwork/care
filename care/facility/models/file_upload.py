@@ -7,11 +7,12 @@ from django.conf import settings
 from django.db import models
 
 from care.facility.models import FacilityBaseModel
+from care.facility.models.mixins.permissions.facility import FacilityPermissionMixin
 from care.users.models import User
 from care.utils.csp import config as cs_provider
 
 
-class FileUpload(FacilityBaseModel):
+class FileUpload(FacilityBaseModel, FacilityPermissionMixin):
     """
     Stores data about all file uploads
     the file can belong to any type ie Patient , Consultation , Daily Round and so on ...

@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
@@ -55,7 +56,7 @@ class BedViewSet(
     serializer_class = BedSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
     search_fields = ["name"]
     filterset_class = BedFilter
 
@@ -215,6 +216,7 @@ class ConsultationBedViewSet(
         .order_by("-created_date")
     )
     serializer_class = ConsultationBedSerializer
+    permission_classes = (DRYPermissions,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"

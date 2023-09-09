@@ -1,3 +1,4 @@
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.users.models import User
 
 
@@ -8,11 +9,7 @@ class BasePermissionMixin:
 
     @staticmethod
     def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return (
             request.user.is_superuser
@@ -36,11 +33,7 @@ class BasePermissionMixin:
         )
 
     def has_object_update_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return (request.user.is_superuser) or (
             (hasattr(self, "created_by") and request.user == self.created_by)
@@ -57,11 +50,7 @@ class BasePermissionMixin:
         )
 
     def has_object_destroy_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return request.user.is_superuser or (
             hasattr(self, "created_by") and request.user == self.created_by

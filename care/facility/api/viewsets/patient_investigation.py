@@ -6,6 +6,7 @@ from django.db.models.query_utils import Q
 from django_filters import Filter
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -82,7 +83,7 @@ class PatientInvestigationViewSet(
     pagination_class = InvestigationResultsSetPagination
 
 
-class PatientInvestigationFilter(filters.FilterSet):
+class PatientInvestigationSummaryFilter(filters.FilterSet):
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
     investigation = filters.CharFilter(field_name="investigation__external_id")
@@ -102,7 +103,7 @@ class PatientInvestigationSummaryViewSet(
     queryset = InvestigationValue.objects.all()
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
-    filterset_class = PatientInvestigationFilter
+    filterset_class = PatientInvestigationSummaryFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationSummaryResultsSetPagination
     SESSION_PER_PAGE = 5
@@ -124,16 +125,19 @@ class PatientInvestigationSummaryViewSet(
                 * self.SESSION_PER_PAGE
             ]
         )
-        if not sessions.exists():
+        if (
+            not sessions.exists()
+            or self.request.user.user_type < User.TYPE_VALUE_MAP["Nurse"]
+        ):
             return self.queryset.none()
         queryset = queryset.filter(session_id__in=sessions.values("session_id"))
         if self.request.user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__district=self.request.user.district
             )
@@ -157,7 +161,10 @@ class InvestigationValueViewSet(
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationValueSetPagination
@@ -173,11 +180,11 @@ class InvestigationValueViewSet(
         )
         if self.request.user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__district=self.request.user.district
             )

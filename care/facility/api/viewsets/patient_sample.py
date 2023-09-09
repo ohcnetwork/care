@@ -88,12 +88,11 @@ class PatientSampleViewSet(
     http_method_names = ["get", "post", "patch", "delete"]
 
     def get_serializer_class(self):
-        serializer_class = self.serializer_class
         if self.action == "retrieve":
-            serializer_class = PatientSampleDetailSerializer
-        elif self.action == "partial_update":
-            serializer_class = PatientSamplePatchSerializer
-        return serializer_class
+            return PatientSampleDetailSerializer
+        if self.action == "partial_update":
+            return PatientSamplePatchSerializer
+        return super().get_serializer_class()
 
     def get_queryset(self):
         queryset = super(PatientSampleViewSet, self).get_queryset()

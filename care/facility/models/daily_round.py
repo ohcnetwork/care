@@ -12,7 +12,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.base import covert_choice_dict
+from care.facility.models.base import READ_ONLY_USER_TYPES, covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -522,11 +522,9 @@ class DailyRound(PatientBaseModel):
     @staticmethod
     def has_write_permission(request):
         if "/analyse" not in request.get_full_path():
-            if (
-                request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-            ):
+            if request.user.user_type in READ_ONLY_USER_TYPES:
+                return False
+            if request.user.user_type < User.TYPE_VALUE_MAP["Nurse"]:
                 return False
         return DailyRound.has_read_permission(request)
 
@@ -582,11 +580,9 @@ class DailyRound(PatientBaseModel):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
+            return False
+        if request.user.user_type < User.TYPE_VALUE_MAP["Nurse"]:
             return False
         return (
             request.user.is_superuser

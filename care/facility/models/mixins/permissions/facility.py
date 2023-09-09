@@ -1,3 +1,4 @@
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.mixins.permissions.base import BasePermissionMixin
 from care.users.models import User
 
@@ -65,11 +66,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         if request.user.user_type < User.TYPE_VALUE_MAP["Staff"]:  # todo Temporary
             return False
@@ -92,11 +89,7 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
     def has_write_permission(request):
         from care.facility.models.facility import Facility
 
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
 
         facility = False
@@ -129,14 +122,35 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return (
             super().has_write_permission(request)
             or request.user.is_superuser
             or request.user in self.facility.users.all()
         )
+
+
+class FacilityUserPermissionMixin:
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
+            return False
+
+        return (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"],
+        )
+
+    def has_object_read_permission(self, request):
+        return self.has_read_permission(request)
+
+    def has_object_write_permission(self, request):
+        return self.has_write_permission(request)
+
+    def has_object_update_permission(self, request):
+        return self.has_write_permission(request)

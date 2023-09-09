@@ -1,10 +1,11 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, pretty_boolean
+from care.facility.models.mixins.permissions.facility import FacilityUserPermissionMixin
 from care.users.models import District, LocalBody, Ward
 
 
-class PatientExternalTest(FacilityBaseModel):
+class PatientExternalTest(FacilityBaseModel, FacilityUserPermissionMixin):
     srf_id = models.CharField(max_length=255)
     name = models.CharField(max_length=1000)
     age = models.IntegerField()

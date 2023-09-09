@@ -10,6 +10,7 @@ from django.db.models import JSONField
 
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
+from care.facility.models.mixins.permissions.facility import FacilityUserPermissionMixin
 from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
@@ -65,7 +66,7 @@ class AssetBed(BaseModel):
         return f"{self.asset.name} - {self.bed.name}"
 
 
-class ConsultationBed(BaseModel):
+class ConsultationBed(BaseModel, FacilityUserPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation, on_delete=models.PROTECT, null=False, blank=False
     )

@@ -6,6 +6,7 @@ from django_filters import rest_framework as filters
 from django_filters.filters import DateFromToRangeFilter
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -77,7 +78,10 @@ class PatientExternalTestViewSet(
         .all()
         .order_by("-id")
     )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
     parser_classes = (MultiPartParser, FormParser, JSONParser)

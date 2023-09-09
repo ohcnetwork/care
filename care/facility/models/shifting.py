@@ -2,11 +2,11 @@ from django.db import models
 
 from care.facility.models import (
     FACILITY_TYPES,
-    READ_ONLY_USER_TYPES,
     FacilityBaseModel,
     pretty_boolean,
     reverse_choices,
 )
+from care.facility.models.mixins.permissions.facility import FacilityUserPermissionMixin
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
@@ -44,7 +44,7 @@ BREATHLESSNESS_CHOICES = [
 REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
 
 
-class ShiftingRequest(FacilityBaseModel):
+class ShiftingRequest(FacilityBaseModel, FacilityUserPermissionMixin):
     origin_facility = models.ForeignKey(
         "Facility",
         on_delete=models.PROTECT,
@@ -150,30 +150,7 @@ class ShiftingRequest(FacilityBaseModel):
             models.Index(fields=["status", "deleted"]),
         ]
 
-    @staticmethod
-    def has_write_permission(request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
-
-    @staticmethod
-    def has_read_permission(request):
-        return True
-
-    def has_object_read_permission(self, request):
-        return True
-
-    def has_object_write_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
-
     def has_object_transfer_permission(self, request):
-        return True
-
-    def has_object_update_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
         return True
 
 
