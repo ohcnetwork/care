@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.db.models import Q
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -96,6 +97,19 @@ class FacilityViewSet(
             return [MultiPartParser()]
         return super().get_parsers()
 
+    def get_queryset(self) -> QuerySet:
+        if self.request.query_params.get("username"):
+            user = self.request.query_params.get('username')
+            query = Facility.objects.all().select_related(
+                "ward", "local_body", "district", "state"
+            ).exclude(
+                Q(facilityuser__user__username=user)
+            )
+
+            return query
+
+        return super().get_queryset()
+
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
@@ -176,48 +190,3 @@ class AllFacilityViewSet(
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
-
-    def list(self, request, *args, **kwargs):
-        # Your custom logic here for handling GET request for listing facilities
-        # For example, you can apply additional filtering or sorting
-        print("List")
-        queryset = self.filter_queryset(self.get_queryset())  # Apply filters
-        serialized_data = self.get_serializer(queryset, many=True).data
-        return Response(serialized_data)
-
-    # Override the retrieve method to customize the behavior for retrieving a single facility
-    def retrieve(self, request, *args, **kwargs):
-        # Your custom logic here for handling GET request for retrieving a single facility
-        instance = self.get_object()
-        serialized_data = self.get_serializer(instance).data
-        return Response(serialized_data)
-
-    def get_queryset(self):
-        print("Request:")
-        print(self.request)
-
-        ans = Facility.objects.exclude(users__contains = self.request.user).select_related(
-            "local_body", "district", "state"
-        )
-
-        return ans
-    #     # filter out those facilities that are linked to the current user
-    #     if self.request.user.is_superuser:
-    #         #            qs = self._queryset  # type: ignore[assignment]
-    #         qs = Facility.objects.all().select_related(
-    #             "local_body", "district", "state"
-    #         )
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-    #         qs = Facility.objects.filter(state=self.request.user.state).select_related(
-    #             "local_body", "district", "state"
-    #         )
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-    #         qs = Facility.objects.filter(
-    #             district=self.request.user.district
-    #         ).select_related("local_body", "district", "state")
-    #     else:
-    #         qs = Facility.objects.filter(
-    #             users__id__exact=self.request.user.id
-    #         ).select_related("local_body", "district", "state")
-
-    #     return qs
