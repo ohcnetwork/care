@@ -186,6 +186,7 @@ class User(AbstractUser):
         "Volunteer": 5,
         "StaffReadOnly": 9,
         "Staff": 10,
+        "Nurse": 12,
         "Doctor": 15,
         "Reserved": 20,
         "WardAdmin": 21,

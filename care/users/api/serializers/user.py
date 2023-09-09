@@ -197,7 +197,8 @@ class UserCreateSerializer(SignUpSerializer):
                 )
 
         if (
-            self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
+            self.context["created_by"].user_type
+            in (User.TYPE_VALUE_MAP["Staff"], User.TYPE_VALUE_MAP["Nurse"])
             and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
         ):
             pass
