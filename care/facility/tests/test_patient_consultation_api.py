@@ -126,7 +126,7 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
 
     def test_create_consultation_verified_by_invalid_user(self):
         res = self.update_consultation(
-            self.consultation, verified_by=self.state_admin.id
+            self.consultation, verified_by=self.state_admin.id, suggestion="A"
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
