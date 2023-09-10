@@ -3,6 +3,7 @@ import enum
 from django.db import models
 
 from care.facility.models import FacilityBaseModel
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.users.models import User
 
 
@@ -59,10 +60,6 @@ class PrescriptionSupplier(FacilityBaseModel):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         return self.has_object_read_permission(request)

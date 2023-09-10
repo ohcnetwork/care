@@ -3,16 +3,6 @@
 from django.db import migrations, models
 
 
-def forwards_func(apps, schema_editor):
-    user_model = apps.get_model("users", "User")
-    user_list = []
-    for user in user_model.objects.filter(user_type=10):
-        user.user_type = 12
-        user_list.append(user)
-
-    user_model.objects.bulk_update(user_list, ["user_type"])
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ("users", "0008_rename_skill_and_add_new_20230817_1937"),
@@ -27,9 +17,10 @@ class Migration(migrations.Migration):
                     (2, "Transportation"),
                     (3, "Pharmacist"),
                     (5, "Volunteer"),
-                    (9, "StaffReadOnly"),
-                    (10, "Staff"),
-                    (12, "Nurse"),
+                    (7, "StaffReadOnly"),
+                    (8, "Staff"),
+                    (9, "NurseReadOnly"),
+                    (10, "Nurse"),
                     (15, "Doctor"),
                     (20, "Reserved"),
                     (21, "WardAdmin"),
@@ -43,5 +34,4 @@ class Migration(migrations.Migration):
                 ]
             ),
         ),
-        migrations.RunPython(forwards_func),
     ]

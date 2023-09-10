@@ -1,7 +1,7 @@
 from dry_rest_permissions.generics import DRYPermissions
 
+from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.mixins.permissions.base import BasePermissionMixin
-from care.users.models import User
 
 
 class IsAssetUser:
@@ -30,11 +30,7 @@ class AssetsPermissionMixin(BasePermissionMixin):
         return True
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
+        if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
 
         return True
