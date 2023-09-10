@@ -5,7 +5,7 @@ from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.models.facility import Facility
 from care.facility.tests.mixins import TestClassMixin
 from care.users.models import Skill
-
+from care.facility.api.viewsets import FacilityViewSet
 
 class FacilityUserTest(TestClassMixin, TestCase):
     def setUp(self):
@@ -39,6 +39,31 @@ class FacilityUserTest(TestClassMixin, TestCase):
             (f"/api/v1/facility/{self.facility.external_id}/get_users/",),
             {"get": "list"},
             FacilityUserViewSet,
+            self.users[0],
+            {"facility_external_id": self.facility.external_id},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNumQueries(2)
+
+    def test_link_new_facility(self):
+        response = self.new_request(
+            (f"/api/v1/getallfacilities",),
+            {"get": "list"},
+            FacilityViewSet,
+            self.users[0],
+            {"facility_external_id": self.facility.external_id},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNumQueries(2)
+
+    def test_link_existing_facility(self):
+        print(self.users[0])
+        response = self.new_request(
+            (f"/api/v1/getallfacilities",),
+            {"get": "list", "exclude_user": self.users[0].username},
+            FacilityViewSet,
             self.users[0],
             {"facility_external_id": self.facility.external_id},
         )
