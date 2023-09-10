@@ -98,8 +98,8 @@ class FacilityViewSet(
         return super().get_parsers()
 
     def get_queryset(self) -> QuerySet:
-        if self.request.query_params.get("username"):
-            user = self.request.query_params.get('username')
+        if self.request.query_params.get("exclude_user"):
+            user = self.request.query_params.get('exclude_user')
             query = Facility.objects.all().select_related(
                 "ward", "local_body", "district", "state"
             ).exclude(
