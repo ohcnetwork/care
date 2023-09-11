@@ -1,18 +1,31 @@
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from care.facility.models import MedibaseMedicine, Prescription
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class MedicineAdministrationsApiTestCase(TestBase):
+class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.patient = cls.create_patient(
+            cls.district, cls.facility, local_body=cls.local_body
+        )
+
     def setUp(self) -> None:
         super().setUp()
         self.normal_prescription = self.create_prescription()
 
     def create_prescription(self, **kwargs):
         data = {
-            "consultation": self.create_consultation(),
+            "consultation": self.create_consultation(self.patient, self.facility),
             "medicine": MedibaseMedicine.objects.first(),
             "prescription_type": "REGULAR",
             "dosage": "1 mg",
