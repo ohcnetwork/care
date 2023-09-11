@@ -7,7 +7,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
-from care.facility.models.facility import Facility
+from care.facility.models import Facility, User
 from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
@@ -58,17 +58,25 @@ class FacilityUserTest(TestClassMixin, TestCase):
 
 
 class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
-    default_data = {
-        "symptoms": [1],
-        "category": CATEGORY_CHOICES[0][0],
-        "examination_details": "examination_details",
-        "history_of_present_illness": "history_of_present_illness",
-        "treatment_plan": "treatment_plan",
-        "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-    }
+    def get_default_data(self):
+        return {
+            "symptoms": [1],
+            "category": CATEGORY_CHOICES[0][0],
+            "examination_details": "examination_details",
+            "history_of_present_illness": "history_of_present_illness",
+            "treatment_plan": "treatment_plan",
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "verified_by": self.doctor.id,
+        }
 
     def setUp(self):
         self.factory = APIRequestFactory()
+        self.doctor = self.create_user(
+            username="doctor1",
+            district=self.district,
+            user_type=User.TYPE_VALUE_MAP["Doctor"],
+        )
+
         self.consultation = self.create_consultation(
             suggestion="A",
             admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
@@ -76,7 +84,7 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
 
     def create_admission_consultation(self, patient=None, **kwargs):
         patient = patient or self.create_patient(facility_id=self.facility.id)
-        data = self.default_data.copy()
+        data = self.get_default_data()
         kwargs.update(
             {
                 "patient": patient.external_id,
@@ -93,6 +101,15 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
         )
         return PatientConsultation.objects.get(external_id=res.data["id"])
 
+    def update_consultation(self, consultation, **kwargs):
+        return self.new_request(
+            (self.get_url(consultation), kwargs, "json"),
+            {"patch": "partial_update"},
+            PatientConsultationViewSet,
+            self.state_admin,
+            {"external_id": consultation.external_id},
+        )
+
     def get_url(self, consultation=None):
         if consultation:
             return f"/api/v1/consultation/{consultation.external_id}"
@@ -106,6 +123,12 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
             self.state_admin,
             {"external_id": consultation.external_id},
         )
+
+    def test_create_consultation_verified_by_invalid_user(self):
+        res = self.update_consultation(
+            self.consultation, verified_by=self.state_admin.id, suggestion="A"
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_discharge_as_recovered_preadmission(self):
         consultation = self.create_admission_consultation(
