@@ -1,41 +1,39 @@
 from django.utils import timezone
+from rest_framework.test import APITestCase
 
 from care.facility.api.viewsets.patient import PatientFilterSet
-from care.facility.models import (
-    AssetLocation,
-    Bed,
-    ConsultationBed,
-    PatientRegistration,
-)
-from care.utils.tests.test_base import TestBase
+from care.facility.models import Bed, ConsultationBed, PatientRegistration
+from care.utils.tests.test_utils import TestUtils
 
 
-class PatientFilterSetTestCase(TestBase):
+class PatientFilterSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.asset_location = cls.create_asset_location(cls.facility)
 
     def test_filter_by_bed_type(self):
-        patient1 = self.create_patient(name="patient1")
-        patient2 = self.create_patient(name="patient2")
+        patient1 = self.create_patient(self.district, self.facility, name="patient1")
+        patient2 = self.create_patient(self.district, self.facility, name="patient2")
         patient3 = self.patient
-
-        # create asset
-        asset1 = AssetLocation.objects.create(
-            name="asset1", location_type=1, facility=self.facility
-        )
 
         # create beds
         bed1_data = {
             "name": "bed 1",
             "bed_type": 1,
-            "location": asset1,
+            "location": self.asset_location,
             "facility": self.facility,
         }
         bed2_data = {
             "name": "bed 2",
             "bed_type": 2,
-            "location": asset1,
+            "location": self.asset_location,
             "facility": self.facility,
         }
 
