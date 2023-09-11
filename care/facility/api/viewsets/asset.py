@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
@@ -5,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from django_filters.constants import EMPTY_VALUES
+from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
@@ -43,6 +45,7 @@ from care.facility.models import (
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
+from care.facility.models.asset import AssetTypeChoices, StatusChoices
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -51,8 +54,8 @@ from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 
-inverse_asset_type = inverse_choices(Asset.AssetTypeChoices)
-inverse_asset_status = inverse_choices(Asset.StatusChoices)
+inverse_asset_type = inverse_choices(AssetTypeChoices)
+inverse_asset_status = inverse_choices(StatusChoices)
 
 
 class AssetLocationViewSet(
@@ -219,6 +222,17 @@ class AssetViewSet(
                 current_location__facility__id__in=allowed_facilities
             )
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            mapping = Asset.CSV_MAPPING.copy()
+            queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
+            pretty_mapping = Asset.CSV_MAKE_PRETTY.copy()
+            return render_to_csv_response(
+                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+            )
+
+        return super(AssetViewSet, self).list(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
