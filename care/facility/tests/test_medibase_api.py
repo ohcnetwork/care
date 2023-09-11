@@ -1,9 +1,16 @@
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestMedibaseApi(TestBase):
+class TestMedibaseApi(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(state=cls.state)
+        cls.user = cls.create_user("staff1", cls.district)
+
     def get_url(self, query=None):
         return f"/api/v1/medibase/?query={query}"
 

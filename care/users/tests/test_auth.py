@@ -1,15 +1,24 @@
-from django.conf import settings
+from datetime import timedelta
+
+from django.test import override_settings
+from django.utils.timezone import now
 from django_rest_passwordreset.models import ResetPasswordToken
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-from care.utils.tests.test_base import TestBase
+from care.users.models import User
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestAuthTokens(TestBase):
+@override_settings(DISABLE_RATELIMIT=True)
+class TestAuthTokens(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        settings.DISABLE_RATELIMIT = True
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.user = cls.create_user("user", cls.district)
 
     def test_login_with_valid_credentials(self):
         response = self.client.post(
@@ -90,11 +99,24 @@ class TestAuthTokens(TestBase):
         self.assertEqual(response.data["detail"], "Token is invalid or expired")
 
 
-class TestPasswordReset(TestBase):
+@override_settings(DISABLE_RATELIMIT=True)
+class TestPasswordReset(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        settings.DISABLE_RATELIMIT = True
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.user = cls.create_user("user", cls.district)
+
+    def create_reset_password_token(
+        self, user: User, expired: bool = False
+    ) -> ResetPasswordToken:
+        token = ResetPasswordToken.objects.create(user=user)
+        if expired:
+            token.created_at = now() - timedelta(hours=2)
+            token.save()
+        return token
 
     def test_forgot_password_with_valid_input(self):
         response = self.client.post(
