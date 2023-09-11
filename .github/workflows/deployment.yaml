@@ -303,6 +303,15 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: staging-egov
+
 
   deploy-production-manipur:
     needs: build-production
@@ -350,6 +359,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-manipur
+
   deploy-production-karnataka:
     needs: build-production
     name: Deploy to GKE Karnataka
@@ -395,6 +413,15 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-karnataka
 
   deploy-production-assam:
     needs: build-production
@@ -442,6 +469,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-assam
+
   deploy-production-sikkim:
     needs: build-production
     name: Deploy to GKE Sikkim
@@ -488,6 +524,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-sikkim
+
   deploy-production-nagaland:
     needs: build-production
     name: Deploy to GKE Nagaland
@@ -533,3 +578,12 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-nagaland
