@@ -12,7 +12,7 @@ jobs:
     if: github.repository == 'coronasafe/care' && github.event_name == 'issues' && github.event.action == 'opened' || github.event.action == 'reopened'
     steps:
       - name: 'Move issue to "Triage"'
-        uses: leonsteinhaeuser/project-beta-automations@v1.0.1
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
         with:
           gh_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           organization: coronasafe
@@ -25,7 +25,7 @@ jobs:
     if: github.repository == 'coronasafe/care' && github.event_name == 'issues' && github.event.action == 'closed'
     steps:
       - name: 'Moved issue to "Done"'
-        uses: leonsteinhaeuser/project-beta-automations@v1.0.1
+        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
         with:
           gh_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           organization: coronasafe
