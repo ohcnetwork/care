@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Working Components" href="../working-components/configuration.html" /><link rel="prev" title="Setting up development environment" href="../local-setup/configuration.html" />
 
-    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>Debugging with Pycharm - Care documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -149,7 +149,7 @@
   <span class="sidebar-brand-text">Care  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -183,7 +183,8 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -198,12 +199,12 @@
         </div>
         <article role="main">
           <section id="debugging-with-pycharm">
-<h1>Debugging with Pycharm<a class="headerlink" href="#debugging-with-pycharm" title="Permalink to this heading">#</a></h1>
+<h1>Debugging with Pycharm<a class="headerlink" href="#debugging-with-pycharm" title="Link to this heading">#</a></h1>
 <p>To connect to python remote interpreter inside docker, you have to make sure first, that Pycharm is aware of your docker.</p>
 <p>Go to <em>Settings &gt; Build, Execution, Deployment &gt; Docker</em>. If you are on linux, you can use docker directly using its socket  <cite>unix:///var/run/docker.sock</cite>, if you are on Windows or Mac, make sure that you have docker-machine installed, then you can simply <em>Import credentials from Docker Machine</em>.</p>
 <img alt="../_images/1.png" src="../_images/1.png" />
 <section id="configure-remote-python-interpreter">
-<h2>Configure Remote Python Interpreter<a class="headerlink" href="#configure-remote-python-interpreter" title="Permalink to this heading">#</a></h2>
+<h2>Configure Remote Python Interpreter<a class="headerlink" href="#configure-remote-python-interpreter" title="Link to this heading">#</a></h2>
 <p>This repository comes with already prepared “Run/Debug Configurations” for docker.</p>
 <img alt="../_images/2.png" src="../_images/2.png" />
 <p>But as you can see, at the beginning there is something wrong with them. They have red X on django icon, and they cannot be used, without configuring remote python interpteter. To do that, you have to go to <em>Settings &gt; Build, Execution, Deployment</em> first.</p>
@@ -234,7 +235,7 @@
 </ul>
 </section>
 <section id="known-issues">
-<h2>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">#</a></h2>
+<h2>Known issues<a class="headerlink" href="#known-issues" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Pycharm hangs on “Connecting to Debugger”</p></li>
 </ul>
@@ -264,10 +265,10 @@
                 </div>
                 <div class="title">Working Components</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="../local-setup/configuration.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -281,7 +282,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, Care
+                Copyright &#169; 2023, Open Healthcare Network
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -289,9 +290,7 @@
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -303,7 +302,7 @@
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -323,11 +322,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

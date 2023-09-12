@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Debugging with Pycharm" href="../pycharm/configuration.html" /><link rel="prev" title="Welcome to Care’s documentation!" href="../index.html" />
 
-    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>Setting up development environment - Care documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -149,7 +149,7 @@
   <span class="sidebar-brand-text">Care  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -183,7 +183,8 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -198,7 +199,7 @@
         </div>
         <article role="main">
           <section id="setting-up-development-environment">
-<h1>Setting up development environment<a class="headerlink" href="#setting-up-development-environment" title="Permalink to this heading">#</a></h1>
+<h1>Setting up development environment<a class="headerlink" href="#setting-up-development-environment" title="Link to this heading">#</a></h1>
 <p>There are two ways to run the development server:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -207,7 +208,7 @@
 </ol>
 </div></blockquote>
 <section id="using-docker-compose">
-<h2>Using Docker Compose<a class="headerlink" href="#using-docker-compose" title="Permalink to this heading">#</a></h2>
+<h2>Using Docker Compose<a class="headerlink" href="#using-docker-compose" title="Link to this heading">#</a></h2>
 <blockquote>
 <div><p>This setup will run 5 Docker containers:</p>
 <ul class="simple">
@@ -254,9 +255,9 @@ first time, it might take a while depending upon your internet speed and machine
 </ul>
 </section>
 <section id="manual-setup">
-<h2>Manual setup<a class="headerlink" href="#manual-setup" title="Permalink to this heading">#</a></h2>
+<h2>Manual setup<a class="headerlink" href="#manual-setup" title="Link to this heading">#</a></h2>
 <section id="setting-up-postgres-for-the-first-time">
-<h3>Setting up postgres for the first time<a class="headerlink" href="#setting-up-postgres-for-the-first-time" title="Permalink to this heading">#</a></h3>
+<h3>Setting up postgres for the first time<a class="headerlink" href="#setting-up-postgres-for-the-first-time" title="Link to this heading">#</a></h3>
 <p>After installation of Postgresql</p>
 <p>Run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
@@ -301,13 +302,13 @@ first time, it might take a while depending upon your internet speed and machine
 <p>Then follow the steps listed <a class="reference external" href="https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html">here</a>.</p>
 </section>
 <section id="setting-up-pre-commit">
-<h3>Setting up Pre-Commit<a class="headerlink" href="#setting-up-pre-commit" title="Permalink to this heading">#</a></h3>
+<h3>Setting up Pre-Commit<a class="headerlink" href="#setting-up-pre-commit" title="Link to this heading">#</a></h3>
 <p>Git hooks is a feature which helps to fix small issues in your code before you commit the code.
 Pre-Commit is a package manager and tool for running and organising your git hooks. More here at <a class="reference external" href="https://pre-commit.com/">pre_commit_site</a>.</p>
 <ul>
 <li><dl>
 <dt>Install pre-commit</dt><dd><p>pre-commit is installed while you run</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">/</span><span class="n">local</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pipenv</span> <span class="n">install</span> <span class="o">--</span><span class="n">categories</span> <span class="s2">&quot;package dev-packages&quot;</span>
 </pre></div>
 </div>
 </dd>
@@ -340,9 +341,9 @@ If you want to run it before committing, use the following command</p>
 </ul>
 </section>
 <section id="basic-commands">
-<h3>Basic Commands<a class="headerlink" href="#basic-commands" title="Permalink to this heading">#</a></h3>
+<h3>Basic Commands<a class="headerlink" href="#basic-commands" title="Link to this heading">#</a></h3>
 <section id="setting-up-your-users">
-<h4>Setting Up Your Users<a class="headerlink" href="#setting-up-your-users" title="Permalink to this heading">#</a></h4>
+<h4>Setting Up Your Users<a class="headerlink" href="#setting-up-your-users" title="Link to this heading">#</a></h4>
 <ul>
 <li><p>To create an <strong>superuser account</strong>, run this command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py createsuperuser
@@ -382,14 +383,14 @@ do make sure that you have done the following</p>
 </div>
 </section>
 <section id="type-checks">
-<h4>Type checks<a class="headerlink" href="#type-checks" title="Permalink to this heading">#</a></h4>
+<h4>Type checks<a class="headerlink" href="#type-checks" title="Link to this heading">#</a></h4>
 <p>Running type checks with mypy:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mypy care
 </pre></div>
 </div>
 </section>
 <section id="run-tests">
-<h4>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this heading">#</a></h4>
+<h4>Run Tests<a class="headerlink" href="#run-tests" title="Link to this heading">#</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py test --settings=config.settings.test -n
 </pre></div>
 </div>
@@ -414,10 +415,10 @@ do make sure that you have done the following</p>
                 </div>
                 <div class="title">Debugging with Pycharm</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="../index.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -431,7 +432,7 @@ do make sure that you have done the following</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, Care
+                Copyright &#169; 2023, Open Healthcare Network
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -439,9 +440,7 @@ do make sure that you have done the following</p>
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -453,7 +452,7 @@ do make sure that you have done the following</p>
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -483,11 +482,9 @@ do make sure that you have done the following</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Connecting with Middleware" href="../middleware/configuration.html" /><link rel="prev" title="Other Details" href="../others/configuration.html" />
 
-    <meta name="generator" content="sphinx-5.0.1, furo 2022.06.04.1"/>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>Glossary - Care documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -149,7 +149,7 @@
   <span class="sidebar-brand-text">Care  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -183,7 +183,8 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -198,18 +199,18 @@
         </div>
         <article role="main">
           <section id="glossary">
-<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">#</a></h1>
+<h1>Glossary<a class="headerlink" href="#glossary" title="Link to this heading">#</a></h1>
 <p><strong>CARE</strong> is a comprehensive capacity and patient management tool, built specifically for the COVID Pandemic Management. It is a web-based application hosted at  <a class="reference external" href="https://care.coronasafe.network/">https://care.coronasafe.network/</a></p>
 <p>This document gives an overview of the Care System for the developers who are willing to contribute to it.</p>
 <section id="hierarchy">
-<h2>Hierarchy<a class="headerlink" href="#hierarchy" title="Permalink to this heading">#</a></h2>
+<h2>Hierarchy<a class="headerlink" href="#hierarchy" title="Link to this heading">#</a></h2>
 <p>Care Systems maintain and process data up to <strong>Ward</strong> Level right from State. This means the each record of a model will be associated up to Ward Level.</p>
 <img alt="../_images/Hierarchy.png" src="../_images/Hierarchy.png" />
 </section>
 <section id="models">
-<h2>Models<a class="headerlink" href="#models" title="Permalink to this heading">#</a></h2>
+<h2>Models<a class="headerlink" href="#models" title="Link to this heading">#</a></h2>
 <section id="facility">
-<h3>Facility<a class="headerlink" href="#facility" title="Permalink to this heading">#</a></h3>
+<h3>Facility<a class="headerlink" href="#facility" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Facilities represent <strong>Hospitals</strong> associated with the Ward.</p></li>
 <li><p>There are 15+ Facility <strong>Types</strong> in the Care System with its <a class="reference external" href="https://github.com/coronasafe/care/blob/6b39d0c8c2cd65c5f86db3fc667456f2d28db70c/care/facility/models/facility.py#L44">ID Number Conventions</a></p></li>
@@ -219,7 +220,7 @@
 <img alt="../_images/Facility.png" src="../_images/Facility.png" />
 </section>
 <section id="inventory">
-<h3>Inventory<a class="headerlink" href="#inventory" title="Permalink to this heading">#</a></h3>
+<h3>Inventory<a class="headerlink" href="#inventory" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Inventory refers to all the items, goods, merchandise, and materials held by a Facility.</p></li>
 <li><p>Inventory Management helps us keep track of stocks of the items.</p></li>
@@ -229,7 +230,7 @@
 <img alt="../_images/Inventory.png" src="../_images/Inventory.png" />
 </section>
 <section id="capacity">
-<h3>Capacity<a class="headerlink" href="#capacity" title="Permalink to this heading">#</a></h3>
+<h3>Capacity<a class="headerlink" href="#capacity" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Each facility can hold the details of <strong>Bed Capacity and Doctor Count.</strong></p></li>
 <li><p>Bed Capacity details would include Type of Beds, Occupied Beds and Total Beds.</p></li>
@@ -238,7 +239,7 @@
 <img alt="../_images/Capacity.png" src="../_images/Capacity.png" />
 </section>
 <section id="location">
-<h3>Location<a class="headerlink" href="#location" title="Permalink to this heading">#</a></h3>
+<h3>Location<a class="headerlink" href="#location" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Facilities can have multiple locations. These locations has name and description which gives flexibility to customize according to Facility’s need.</p></li>
 <li><p>Bed Details can be added to each locations if need.</p></li>
@@ -247,7 +248,7 @@
 <img alt="../_images/Location.png" src="../_images/Location.png" />
 </section>
 <section id="assets">
-<h3>Assets<a class="headerlink" href="#assets" title="Permalink to this heading">#</a></h3>
+<h3>Assets<a class="headerlink" href="#assets" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Assets refers to things such as instrument, equipment and other properties.</p></li>
 <li><p>Assets are different from Inventory. Inventories are based on the stocks and quantities.</p></li>
@@ -257,7 +258,7 @@
 <img alt="../_images/Assets.png" src="../_images/Assets.png" />
 </section>
 <section id="external-results">
-<h3>External Results<a class="headerlink" href="#external-results" title="Permalink to this heading">#</a></h3>
+<h3>External Results<a class="headerlink" href="#external-results" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>External Results hold the data of test results that comes from External Sources.</p></li>
 <li><p>Examples would include RT-PCR / ANTIGEN test from a private lab.</p></li>
@@ -266,7 +267,7 @@
 <img alt="../_images/External.png" src="../_images/External.png" />
 </section>
 <section id="patient">
-<h3>Patient<a class="headerlink" href="#patient" title="Permalink to this heading">#</a></h3>
+<h3>Patient<a class="headerlink" href="#patient" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Patients should be created under a Facility.</p></li>
 <li><p>Patients can be created manually or directly by pulling the data from a External Result.</p></li>
@@ -275,7 +276,7 @@
 </ul>
 </section>
 <section id="resources">
-<h3>Resources<a class="headerlink" href="#resources" title="Permalink to this heading">#</a></h3>
+<h3>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Overall Concept Diagram - <a class="reference download internal" download="" href="../_downloads/3427a335e95adb52c53547255dc87318/CareConceptDiagram.png"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p></li>
 <li><p>Excalidraw Diagram file - <a class="reference download internal" download="" href="../_downloads/3055e9088590a745593b28fc5c3cc04f/CareConceptDiagram.excalidraw"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a></p></li>
@@ -296,10 +297,10 @@
                 </div>
                 <div class="title">Connecting with Middleware</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="../others/configuration.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -313,7 +314,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, Care
+                Copyright &#169; 2023, Open Healthcare Network
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -321,9 +322,7 @@
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -335,7 +334,7 @@
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -365,11 +364,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>
