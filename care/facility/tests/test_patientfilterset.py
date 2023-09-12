@@ -7,14 +7,10 @@ from care.facility.models import (
     ConsultationBed,
     PatientRegistration,
 )
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class PatientFilterSetTestCase(TestBase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
+class PatientFilterSetTestCase(TestUtils):
     def test_filter_by_bed_type(self):
         patient1 = self.create_patient(name="patient1")
         patient2 = self.create_patient(name="patient2")

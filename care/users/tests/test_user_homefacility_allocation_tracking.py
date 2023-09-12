@@ -1,11 +1,10 @@
 from care.users.models import User, UserFacilityAllocation
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestUserFacilityAllocation(TestBase):
+class TestUserFacilityAllocation(TestUtils):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
         cls.new_facility = cls.create_facility(cls.district)
 
     @classmethod
