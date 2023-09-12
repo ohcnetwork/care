@@ -35,7 +35,7 @@ littletable = "==2.*"
 pillow = "*"
 psycopg = "*"
 pycryptodome = "==3.*"
-pydantic = "==1.*" # fix for fhir.resources < 7.0.2
+pydantic = "==2.*" # fix for fhir.resources < 7.0.2
 pyjwt = "==2.*"
 python-slugify = "*"
 pywebpush = "==1.14.0"
