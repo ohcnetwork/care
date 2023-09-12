@@ -44,3 +44,15 @@ test-coverage: up
 	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel"
 	docker compose exec backend bash -c "coverage combine || true; coverage xml"
 	docker compose cp backend:/app/coverage.xml coverage.xml
+
+ruff-all:
+	ruff --config pyproject.toml check .
+
+ruff:
+	ruff --config pyproject.toml --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')
+
+ruff-all-docker:
+	docker exec care bash -c "ruff --config pyproject.toml check ."
+
+ruff-docker:
+	docker exec care bash -c "ruff --config pyproject.toml --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"

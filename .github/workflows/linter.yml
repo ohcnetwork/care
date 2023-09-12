@@ -1,35 +1,30 @@
-name: Lint Code Base
+name: Lint
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
-    branches: [master]
 
 jobs:
-  build:
-    if: github.repository == 'coronasafe/care'
-    name: Lint Code Base
+  lint:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
-        uses: github/super-linter/slim@v5
-        env:
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_PYTHON_BLACK: true
-          VALIDATE_PYTHON_FLAKE8: true
-          VALIDATE_PYTHON_ISORT: true
-          LINTER_RULES_PATH: /
-          # PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
-          PYTHON_FLAKE8_CONFIG_FILE: ".flake8"
-          PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - run: pip install --upgrade pre-commit
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Lint
+        run: pre-commit run --files $(git diff --name-only --diff-filter=ACMR ${{ github.event.before }} ${{ github.event.after }})

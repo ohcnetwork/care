@@ -3,10 +3,10 @@
     "editor.formatOnSave": false
   },
   "[python]": {
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    },
-    "editor.formatOnSave": true
+      "source.fixAll": true
+    }
   },
   "files.associations": {
     "*.envrc": "shellscript",
@@ -19,10 +19,7 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "githubPullRequests.ignoredPullRequestBranches": ["master"],
+  "python.languageServer": "Pylance",
   "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
   "python.formatting.provider": "black",
-  "python.languageServer": "Pylance",
-  "python.linting.flake8Args": ["--config=.flake8"],
-  "python.linting.flake8Path": "${workspaceFolder}/.venv/bin/flake8",
-  "isort.args": ["--profile", "black"]
 }

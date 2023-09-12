@@ -16,21 +16,14 @@ repos:
       - id: check-yaml
       - id: check-toml
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        additional_dependencies: ["isort[pyproject]"]
-
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
       - id: black
         args: ["--config=pyproject.toml"]
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.285
     hooks:
-      - id: flake8
-        args: ["--config=.flake8"]
-        additional_dependencies: [flake8-isort]
+      - id: ruff
+        types: [python]

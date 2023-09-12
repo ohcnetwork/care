@@ -7,10 +7,7 @@ relative_files = true
 omit = [
   "*/tests/*",
   "*/migrations*/*",
-  "*/asgi.py",
-  "*/wsgi.py",
-  "manage.py",
-  ".venv/*"
+  ".venv/*",
 ]
 
 [tool.coverage.report]
@@ -21,37 +18,49 @@ exclude_lines = [
 ignore_errors = true
 
 
-[tool.isort]
-profile = "black"
-known_third_party = [
-  "allauth",
-  "boto3",
-  "celery",
-  "crispy_forms",
-  "dateutil",
-  "django",
-  "django_filters",
-  "django_rest_passwordreset",
-  "djangoql",
-  "djqscsv",
-  "drf_spectacular",
-  "dry_rest_permissions",
-  "environ",
-  "freezegun",
-  "hardcopy",
-  "healthy_django",
-  "jsonschema",
-  "jwt",
-  "multiselectfield",
-  "phonenumber_field",
-  "phonenumbers",
-  "pytz",
-  "pywebpush",
-  "ratelimit",
-  "requests",
-  "rest_framework",
-  "rest_framework_nested",
-  "rest_framework_simplejwt",
-  "sentry_sdk",
-  "simple_history"
+[tool.ruff]
+target-version = "py311"
+# https://beta.ruff.rs/docs/rules/
+select = [
+  "F", # pyflakes
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "I", # isort
+  "N", # pep8-naming
+  "UP", # pyupgrade
+  "S", # flake8-bandit
+  "FBT", # flake8-boolean-trap
+  "B", # flake8-bugbear
+  "A", # flake8-builtins
+  "COM", # flake8-commas
+  "DTZ", # flake8-datetimez
+  "DJ", # flake8-django
+  "ISC", # flake8-implicit-str-concat
+  "G", #  flake8-logging-format
+  "INP", # flake8-no-pep420
+  "PIE", # flake8-pie
+  "T20", # flake8-print
+  "Q", # flake8-quotes
+  "RET", # flake8-return
+  "SIM", # flake8-simplify
+  "PL", # pylint
 ]
+unfixable = [
+  "T20" # don't remove print statements
+]
+ignore = ["E203", "E501", "E231", "FBT002", "SIM105", "PLR0913"]
+extend-exclude = ["*/migrations*/*", "docs"]
+include = ["*.py", "pyproject.toml"]
+
+
+[tool.ruff.flake8-builtins]
+builtins-ignorelist = ["id", "list", "filter"]
+
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+
+[tool.ruff.per-file-ignores]
+"**/__init__.py" = ["E402", "F401"]
+"**/tests/**" = ["DTZ001"]
