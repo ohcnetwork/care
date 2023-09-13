@@ -225,9 +225,10 @@ router.register("public/asset", AssetPublicViewSet)
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
     router.register("abdm/consent", ConsentViewSet, basename="abdm-consent")
-    router.register(
-        "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
-    )
+
+router.register(
+    "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
+)
 
 
 app_name = "api"

@@ -33,6 +33,37 @@ class Command(BaseCommand):
         "category": "root_category",
     }
 
+    ICD11_GROUP_LABEL_PRETTY = {
+        "01 Certain infectious or parasitic diseases": "Infection and parasites ",
+        "02 Neoplasms": "Neoplasms",
+        "03 Diseases of the blood or blood-forming organs": "Hematology",
+        "04 Diseases of the immune system": "Immune System",
+        "05 Endocrine, nutritional or metabolic diseases": "Endocrine, nutritional or metabolism",
+        "06 Mental, behavioural or neurodevelopmental disorders": "Mental, behavioural or neurological",
+        "07 Sleep-wake disorders": "Sleep",
+        "08 Diseases of the nervous system": "Nervous System",
+        "09 Diseases of the visual system": "Ophthalmology",
+        "10 Diseases of the ear or mastoid process": "ENT",
+        "11 Diseases of the circulatory system": "Circulatory System",
+        "12 Diseases of the respiratory system": "Respiratory System",
+        "13 Diseases of the digestive system": "Digestive System",
+        "14 Diseases of the skin": "Skin",
+        "15 Diseases of the musculoskeletal system or connective tissue": "Musculoskeletal System",
+        "16 Diseases of the genitourinary system": "Genitourinary System",
+        "17 Conditions related to sexual health": "Sexual Health",
+        "18 Pregnancy, childbirth or the puerperium": "OBGYN",
+        "19 Certain conditions originating in the perinatal period": "Neonatology",
+        "20 Developmental anomalies": "Developmental Anomalies",
+        "21 Symptoms, signs or clinical findings, not elsewhere classified": "Others",
+        "22 Injury, poisoning or certain other consequences of external causes": "Injury, Poisoning ",
+        "23 External causes of morbidity or mortality": "External Causes of Injury",
+        "24 Factors influencing health status or contact with health services": None,
+        "25 Codes for special purposes": "Codes for special purposes",
+        "26 Supplementary Chapter Traditional Medicine Conditions - Module I": None,
+        "V Supplementary section for functioning assessment": "Functioning assessment ",
+        "X Extension Codes": "NOT RELEVANT",
+    }
+
     def find_roots(self, item):
         id = item["ID"]
 
@@ -72,10 +103,16 @@ class Command(BaseCommand):
             self.data = fetch_data()
 
             def roots(item):
-                return {
-                    self.CLASS_KIND_DB_KEYS.get(k, k): v
-                    for k, v in self.find_roots(item).items()
+                roots = self.find_roots(item)
+                mapped = self.ICD11_GROUP_LABEL_PRETTY.get(
+                    roots["chapter"], roots["chapter"]
+                )
+                result = {
+                    self.CLASS_KIND_DB_KEYS.get(k, k): v for k, v in roots.items()
                 }
+                result["chapter_short"] = mapped
+                result["deleted"] = mapped is None
+                return result
 
             MetaICD11Diagnosis.objects.all().delete()
             MetaICD11Diagnosis.objects.bulk_create(

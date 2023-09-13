@@ -1,19 +1,21 @@
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-from care.facility.models import AssetLocation, Bed
-from care.utils.tests.test_base import TestBase
+from care.facility.models import Bed
+from care.utils.tests.test_utils import TestUtils
 
 
-class SingleBedTest(TestBase):
-    def setUp(self) -> None:
-        super().setUp()
-        self.asset_location: AssetLocation = AssetLocation.objects.create(
-            name="asset location", location_type=1, facility=self.facility
-        )
-
-    def tearDown(self) -> None:
-        Bed._default_manager.filter(facility=self.facility).delete()
-        AssetLocation._default_manager.filter(id=self.asset_location.id).delete()
+class SingleBedTest(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location)
+        cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
     def test_create(self):
         sample_data = {
@@ -32,16 +34,19 @@ class SingleBedTest(TestBase):
         )
 
 
-class MultipleBedTest(TestBase):
-    def setUp(self) -> None:
-        super().setUp()
-        self.asset_location: AssetLocation = AssetLocation.objects.create(
-            name="asset location", location_type=1, facility=self.facility
+class MultipleBedTest(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location)
+        cls.user = cls.create_user(
+            "distadmin", cls.district, home_facility=cls.facility, user_type=30
         )
-
-    def tearDown(self) -> None:
-        Bed._default_manager.filter(facility=self.facility).delete()
-        AssetLocation._default_manager.filter(id=self.asset_location.id).delete()
 
     def test_create(self):
         sample_data = {

@@ -199,7 +199,6 @@
       "is_telemedicine": false,
       "last_updated_by_telemedicine": false,
       "assigned_to": null,
-      "verified_by": "",
       "created_by": 2,
       "last_edited_by": 2,
       "last_daily_round": null,
@@ -760,9 +759,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -790,9 +787,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -820,9 +815,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -850,9 +843,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -880,9 +871,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -910,9 +899,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -940,9 +927,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -970,9 +955,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1000,9 +983,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1030,9 +1011,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1060,9 +1039,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1090,9 +1067,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1120,9 +1095,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1150,9 +1123,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1180,9 +1151,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1210,9 +1179,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1240,9 +1207,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1270,9 +1235,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1300,9 +1263,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1330,9 +1291,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1360,9 +1319,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1390,9 +1347,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1420,9 +1375,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1450,9 +1403,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1480,9 +1431,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1510,9 +1459,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1540,9 +1487,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1570,9 +1515,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1600,9 +1543,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {
@@ -1630,9 +1571,7 @@
       "support_email": "",
       "qr_code_id": null,
       "manufacturer": null,
-      "warranty_amc_end_of_validity": null,
-      "last_serviced_on": null,
-      "notes": ""
+      "warranty_amc_end_of_validity": null
     }
   },
   {

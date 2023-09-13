@@ -1,17 +1,29 @@
 from datetime import datetime
 
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-from care.facility.models import Asset, AssetLocation, Bed, ConsultationBedAsset
-from care.utils.tests.test_base import TestBase
+from care.facility.models import Asset, Bed, ConsultationBedAsset
+from care.utils.tests.test_utils import TestUtils
 
 
-class ConsultationBedAssetApiTestCase(TestBase):
+class ConsultationBedAssetApiTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location)
+        cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.patient = cls.create_patient(
+            cls.district, cls.facility, local_body=cls.local_body
+        )
+
     def setUp(self) -> None:
         super().setUp()
-        self.asset_location: AssetLocation = AssetLocation.objects.create(
-            name="asset location", location_type=1, facility=self.facility
-        )
         self.bed1 = Bed.objects.create(
             name="bed1", location=self.asset_location, facility=self.facility
         )
@@ -29,7 +41,7 @@ class ConsultationBedAssetApiTestCase(TestBase):
         )
 
     def test_link_asset_to_consultation_bed(self):
-        consultation = self.create_consultation()
+        consultation = self.create_consultation(self.patient, self.facility)
         response = self.client.post(
             "/api/v1/consultationbed/",
             {
@@ -43,7 +55,7 @@ class ConsultationBedAssetApiTestCase(TestBase):
         self.assertEqual(ConsultationBedAsset.objects.count(), 2)
 
     def test_link_asset_to_consultation_bed_with_asset_already_in_use(self):
-        consultation = self.create_consultation()
+        consultation = self.create_consultation(self.patient, self.facility)
         self.client.post(
             "/api/v1/consultationbed/",
             {
@@ -53,7 +65,7 @@ class ConsultationBedAssetApiTestCase(TestBase):
                 "assets": [self.asset1.external_id, self.asset2.external_id],
             },
         )
-        consultation2 = self.create_consultation()
+        consultation2 = self.create_consultation(self.patient, self.facility)
         response = self.client.post(
             "/api/v1/consultationbed/",
             {

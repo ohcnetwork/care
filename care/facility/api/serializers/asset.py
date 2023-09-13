@@ -24,6 +24,8 @@ from care.facility.models.asset import (
     AssetService,
     AssetServiceEdit,
     AssetTransaction,
+    AssetTypeChoices,
+    StatusChoices,
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -113,8 +115,8 @@ class AssetServiceSerializer(ModelSerializer):
 
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
-    asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
+    status = ChoiceField(choices=StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=AssetTypeChoices)
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
     location = UUIDField(write_only=True, required=True)
     last_service = AssetServiceSerializer(read_only=True)

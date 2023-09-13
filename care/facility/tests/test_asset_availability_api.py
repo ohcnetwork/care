@@ -1,32 +1,23 @@
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.asset import AssetAvailabilityViewSet
-from care.facility.models import Asset, AssetAvailabilityRecord, AssetLocation
+from care.facility.models import AssetAvailabilityRecord
 from care.facility.models.asset import AvailabilityStatus
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class AssetAvailabilityViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class AssetAvailabilityViewSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUp(cls):
-        cls.factory = APIRequestFactory()
-        state = cls.create_state()
-        district = cls.create_district(state=state)
-        cls.user = cls.create_user(district=district, username="test user")
-        facility = cls.create_facility(district=district, user=cls.user)
-        cls.asset_from_location = AssetLocation.objects.create(
-            name="asset from location", location_type=1, facility=facility
-        )
-        cls.asset_to_location = AssetLocation.objects.create(
-            name="asset to location", location_type=1, facility=facility
-        )
-        cls.asset = Asset.objects.create(
-            name="Test Asset", current_location=cls.asset_from_location, asset_type=50
-        )
-
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location)
         cls.asset_availability = AssetAvailabilityRecord.objects.create(
             asset=cls.asset,
             status=AvailabilityStatus.OPERATIONAL.value,
@@ -34,24 +25,15 @@ class AssetAvailabilityViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         )
 
     def test_list_asset_availability(self):
-        response = self.new_request(
-            ("/api/v1/asset_availability/",),
-            {"get": "list"},
-            AssetAvailabilityViewSet,
-            True,
-        )
+        response = self.client.get("/api/v1/asset_availability/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
         )
 
     def test_retrieve_asset_availability(self):
-        response = self.new_request(
-            (f"/api/v1/asset_availability/{self.asset_availability.id}/",),
-            {"get": "retrieve"},
-            AssetAvailabilityViewSet,
-            True,
-            {"pk": self.asset_availability.id},
+        response = self.client.get(
+            f"/api/v1/asset_availability/{self.asset_availability.id}/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], AvailabilityStatus.OPERATIONAL.value)
