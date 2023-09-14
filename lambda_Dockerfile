@@ -1,0 +1,88 @@
+FROM public.ecr.aws/lambda/python:3.10 as python
+
+# Python build stage
+FROM python as python-build-stage
+
+ARG BUILD_ENVIRONMENT=lambda
+
+# Install yum packages
+#RUN yum update -y && yum install -y \
+#  # dependencies for building Python packages
+#  build-essential libjpeg-dev zlib1g-dev \
+#  # psycopg2 dependencies
+#  libpq-dev
+RUN yum update -y && \
+    yum install -y gcc python3-devel python3-pip libjpeg-devel zlib-devel postgresql-devel
+
+
+#RUN yum groupinstall -y \
+#    'Development Tools'
+
+RUN pip install --upgrade wheel
+
+
+# Requirements are installed here to ensure they will be cached.
+COPY ./requirements .
+
+# Create Python Dependency and Sub-Dependency Wheels.
+RUN pip wheel --wheel-dir /usr/src/app/wheels  \
+  -r ${BUILD_ENVIRONMENT}.txt
+
+
+
+# Python 'run' stage
+FROM python as python-run-stage
+
+ARG BUILD_ENVIRONMENT=production
+ARG APP_HOME=${LAMBDA_TASK_ROOT}
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV BUILD_ENV ${BUILD_ENVIRONMENT}
+
+WORKDIR ${APP_HOME}
+
+#RUN addgroup -S django \
+#    && adduser -S -G django django
+
+# Install required system dependencies
+RUN yum update -y && yum install -y \
+  # Amazon Linux 2 extras \
+  amazon-linux-extras \
+  # psycopg2 dependencies
+  # postgresql-devel \
+  # Translations dependencies
+  gettext \
+  # Misc
+  wget gnupg chromium
+
+RUN PYTHON=python2 amazon-linux-extras enable postgresql10  \
+  && yum install -y postgresql-devel \
+  # cleaning up unused files
+  && yum autoremove -y \
+  && rm -rf /var/cache/yum/*
+
+
+
+
+
+# All absolute dir copies ignore workdir instruction. All relative dir copies are wrt to the workdir instruction
+# copy python dependency wheels from python-build-stage
+COPY --from=python-build-stage /usr/src/app/wheels  /wheels/
+
+# use wheels to install python dependencies
+RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
+  && rm -rf /wheels/
+
+
+# copy application code to WORKDIR
+#COPY --chown=django:django . ${APP_HOME}
+COPY . ${APP_HOME}
+
+#
+## make django owner of the WORKDIR directory as well.
+#RUN chown django:django ${APP_HOME}
+#
+#USER django
+RUN python manage.py collectstatic --noinput
+CMD ["mangum_handler.handler"]

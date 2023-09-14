@@ -1,64 +1,258 @@
 name: Lambda Deployment
-
 on:
-  workflow_dispatch:
-
   pull_request:
-    branches:
-      - devops/lambda-changes
     paths-ignore:
       - "docs/**"
-
+env:
+  POSTGRES_DB: preview_${{ github.event.pull_request.number }}
 jobs:
 
   build-image:
     name: Build & Push Staging to container registries
     runs-on: ubuntu-latest
+    environment:
+      name: care-preview
     steps:
       - uses: actions/checkout@v3
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=${{ github.head_ref}}-${{ github.run_number }}
-            type=raw,value=${{ github.head_ref}}
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
 
-          flavor: |
-            latest=true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Login to GitHub Container Registry
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-south-1
+#
+      - name: Login to AWS ECR
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Build image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: lambda_Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+#      - name: Login to Amazon ECR Public
+#        id: login-ecr-public
+#        uses: aws-actions/amazon-ecr-login@v1
+#        with:
+#          registry-type: public
 
-      - name: Move cache
+#      - name: Login to Public ECR
+#        uses: docker/login-action@v2
+#        with:
+#          registry: public.ecr.aws
+#          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#        env:
+#          AWS_REGION: ap-south-1
+
+      - name: Build & Push image
+
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          docker build \
+            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+            -f lambda_Dockerfile \
+            .
+
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }}
+
+  create-function:
+    runs-on: ubuntu-latest
+    needs: build-image
+    environment:
+      name: care-preview
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Create Lambda function for migration
+        run: |
+          pip3 install --upgrade --user awscli
+          if aws lambda get-function --function-name migration_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name migration_${{ github.event.pull_request.number }} \
+              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+              --publish
+
+          else
+            aws lambda create-function \
+              --image-config Command=migrations_handler.handler \
+              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
+              --function-name migration_${{ github.event.pull_request.number }} \
+              --package-type Image \
+              --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+              --memory-size 1024 \
+              --timeout 600 \
+              --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
+              --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+                  POSTGRES_DB=${{ env.POSTGRES_DB }}, \
+                  POSTGRES_USER=${{ secrets.POSTGRES_USER }}, \
+                  POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+                  POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}, \
+                  DJANGO_SETTINGS_MODULE=config.settings.lambda, \
+                  DJANGO_SECURE_SSL_REDIRECT=False, \
+                  USE_S3=True, \
+                  CSRF_TRUSTED_ORIGINS='[\"*\"]', \
+                  DJANGO_ALLOWED_HOSTS='[\"*\"]', \
+                  RATE_LIMIT=5/10m, \
+                  MAINTANANCE_MODE=0, \
+                  DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}, \
+                  NEWRELIC_INI='', \
+                  POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}, \
+                  CELERY_BROKER_URL=redis://redis:6379/0, \
+                  REDIS_URL=redis://redis:6379/0, \
+                  DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
+                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
+                  EMAIL_USER=${{ secrets.EMAIL_USER }}, \
+                  EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
+                  SENTRY_DSN=${{ secrets.SENTRY_DSN }}, \
+                  SENTRY_ENVIRONMENT=preview, \
+                  FILE_UPLOAD_BUCKET=${{ secrets.FILE_UPLOAD_BUCKET }}, \
+                  FILE_UPLOAD_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+                  FILE_UPLOAD_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+                  AUDIT_LOG_ENABLED=1, \
+                  GOOGLE_RECAPTCHA_SITE_KEY=${{ secrets.GOOGLE_RECAPTCHA_SITE_KEY }}, \
+                  GOOGLE_RECAPTCHA_SECRET_KEY=${{ secrets.GOOGLE_RECAPTCHA_SECRET_KEY }}, \
+                  VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}, \
+                  VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}, \
+                  AWS_STORAGE_BUCKET_NAME=care-preview, \
+                  FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
+                  FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+                  FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+                  FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com, \
+                  SNS_SECRET_KEY=${{ secrets.SNS_SECRET_KEY }}, \
+                  SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }}, \
+                  SUPERUSER_USERNAME=${{ secrets.SUPERUSER_USERNAME }}, \
+                  SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }} \
+              }"
+          fi
+
+      - name: Wait for migration lambda
+        run: |
+          aws lambda wait function-active-v2 --function-name=migration_${{ github.event.pull_request.number }}
+
+      - name: Invoke migration lambda
+        run: |
+          aws lambda invoke \
+            --function-name migration_${{ github.event.pull_request.number }} \
+            --invocation-type Event \
+            response.json
+
+      - name: Create Lambda function from Docker image
+        run: |
+          pip3 install --upgrade --user awscli
+          if aws lambda get-function --function-name preview_${{ github.event.pull_request.number }} >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name preview_${{ github.event.pull_request.number }} \
+              --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+              --publish
+          else
+            aws lambda create-function \
+              --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
+              --function-name preview_${{ github.event.pull_request.number }} \
+              --package-type Image \
+              --code ImageUri=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
+              --memory-size 256 \
+              --timeout 30 \
+              --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambdaRole \
+              --environment "Variables={POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+                  POSTGRES_DB=${{ env.POSTGRES_DB }}, \
+                  POSTGRES_USER=${{ secrets.POSTGRES_USER }}, \
+                  POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}, \
+                  POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}, \
+                  DJANGO_SETTINGS_MODULE=config.settings.lambda, \
+                  DJANGO_SECURE_SSL_REDIRECT=False, \
+                  USE_S3=True, \
+                  CSRF_TRUSTED_ORIGINS='[\"*\"]', \
+                  DJANGO_ALLOWED_HOSTS='[\"*\"]', \
+                  RATE_LIMIT=5/10m, \
+                  MAINTANANCE_MODE=0, \
+                  DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}, \
+                  NEWRELIC_INI='', \
+                  POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}, \
+                  CELERY_BROKER_URL=redis://redis:6379/0, \
+                  REDIS_URL=redis://redis:6379/0, \
+                  DJANGO_ADMIN_URL=${{ secrets.DJANGO_ADMIN_URL }}, \
+                  POSTGIS_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}, \
+                  EMAIL_HOST=${{ secrets.EMAIL_HOST }}, \
+                  EMAIL_USER=${{ secrets.EMAIL_USER }}, \
+                  EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}, \
+                  SENTRY_DSN=${{ secrets.SENTRY_DSN }}, \
+                  SENTRY_ENVIRONMENT=preview, \
+                  FILE_UPLOAD_BUCKET=${{ secrets.FILE_UPLOAD_BUCKET }}, \
+                  FILE_UPLOAD_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+                  FILE_UPLOAD_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+                  AUDIT_LOG_ENABLED=1, \
+                  GOOGLE_RECAPTCHA_SITE_KEY=${{ secrets.GOOGLE_RECAPTCHA_SITE_KEY }}, \
+                  GOOGLE_RECAPTCHA_SECRET_KEY=${{ secrets.GOOGLE_RECAPTCHA_SECRET_KEY }}, \
+                  VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}, \
+                  VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}, \
+                  AWS_STORAGE_BUCKET_NAME=care-preview, \
+                  FACILITY_S3_BUCKET=${{ secrets.FACILITY_S3_BUCKET }}, \
+                  FACILITY_S3_KEY=${{ secrets.AWS_ACCESS_KEY_ID }}, \
+                  FACILITY_S3_SECRET=${{ secrets.AWS_SECRET_ACCESS_KEY }}, \
+                  FACILITY_S3_BUCKET_ENDPOINT=https://${{ secrets.FACILITY_S3_BUCKET }}.s3.amazonaws.com, \
+                  SNS_SECRET_KEY=${{ secrets.SNS_SECRET_KEY }}, \
+                  SNS_ACCESS_KEY=${{ secrets.SNS_ACCESS_KEY }} \
+              }"
+          fi
+
+      - name: Wait for Preview lambda
+        run: |
+          aws lambda wait function-active-v2 \
+            --function-name=preview_${{ github.event.pull_request.number }}
+
+
+      - name: Get Function URL for Preview lambda
+        run: |
+          if ! aws lambda get-function-url-config \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --output text \
+            --query 'FunctionUrl' >/dev/null 2>&1; then
+
+              aws lambda create-function-url-config \
+              --function-name preview_${{ github.event.pull_request.number }} \
+              --auth-type NONE \
+              && \
+              aws lambda add-permission \
+                --function-name preview_${{ github.event.pull_request.number }} \
+                --statement-id AllowPublicAccess \
+                --action "lambda:InvokeFunctionUrl" \
+                --principal "*" \
+                --function-url-auth-type NONE
+
+          fi
+
+          PREVIEW_URL=$(aws lambda get-function-url-config \
+            --function-name preview_${{ github.event.pull_request.number }} \
+            --output text \
+            --query 'FunctionUrl')
+
+          echo "PREVIEW_URL=${PREVIEW_URL}" >> $GITHUB_ENV
+
+      - name: Comment function URL on PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview URL: ${process.env.PREVIEW_URL}`
+            })
