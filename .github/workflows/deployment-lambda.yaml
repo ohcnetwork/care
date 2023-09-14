@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Build image
+      - name: Build image and push to ECR
         uses: docker/build-push-action@v3
         with:
           context: .

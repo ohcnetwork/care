@@ -1,4 +1,0 @@
--r ./production.txt
--r ./local.txt
-
-psycopg-binary==3.1.9
