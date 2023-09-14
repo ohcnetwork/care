@@ -1,34 +1,25 @@
 name: Lambda Deployment
+
 on:
   pull_request:
     paths-ignore:
       - "docs/**"
+
 env:
   POSTGRES_DB: preview_${{ github.event.pull_request.number }}
 jobs:
 
   build-image:
-    name: Build & Push Staging to container registries
+    name: Build & Push image
     runs-on: ubuntu-latest
     environment:
       name: care-preview
     steps:
       - uses: actions/checkout@v3
 
-#      - name: Login to GitHub Container Registry
-#        uses: docker/login-action@v2
-#        with:
-#          registry: ghcr.io
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ap-south-1
-#
       - name: Login to AWS ECR
         uses: docker/login-action@v2
         with:
@@ -36,32 +27,20 @@ jobs:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-#      - name: Login to Amazon ECR Public
-#        id: login-ecr-public
-#        uses: aws-actions/amazon-ecr-login@v1
-#        with:
-#          registry-type: public
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: docker/lambda.Dockerfile
+          push: true
+          cache-from: type=gha,scope=cached-stage
+          cache-to: type=gha,scope=cached-stage,mode=max
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }}
 
-#      - name: Login to Public ECR
-#        uses: docker/login-action@v2
-#        with:
-#          registry: public.ecr.aws
-#          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        env:
-#          AWS_REGION: ap-south-1
 
-      - name: Build & Push image
-
-        run: |
-          docker build \
-            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }} \
-            -f lambda_Dockerfile \
-            .
-
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/care:lambda-${{ github.event.pull_request.number }}
-
-  create-function:
+  deploy-preview:
+    name: Deploy preview
     runs-on: ubuntu-latest
     needs: build-image
     environment:
@@ -88,7 +67,7 @@ jobs:
 
           else
             aws lambda create-function \
-              --image-config Command=migrations_handler.handler \
+              --image-config Command=config.migrations_handler.handler \
               --vpc-config SubnetIds=subnet-00bcdceb879bcad70,SecurityGroupIds=sg-0299abef3b879eb07 \
               --function-name migration_${{ github.event.pull_request.number }} \
               --package-type Image \

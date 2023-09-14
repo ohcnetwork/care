@@ -45,6 +45,8 @@ whitenoise = "*"
 gunicorn = "*"
 newrelic = "*"
 sentry-sdk = "*"
+mangum = "==0.17.0"
+a2wsgi = "==1.7.0"
 
 [dev-packages]
 black = "*"
