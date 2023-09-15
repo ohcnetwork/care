@@ -81,6 +81,15 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: staging
+
   build-production:
     needs: test
     name: Build & Push Production to container registries
@@ -129,6 +138,15 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
 
   deploy-staging-egov:
     needs: build-staging
@@ -194,16 +212,6 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: staging-egov
-
-
   deploy-production-manipur:
     needs: build-production
     name: Deploy to GKE Manipur
@@ -249,15 +257,6 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-manipur
 
   deploy-production-karnataka:
     needs: build-production
@@ -305,15 +304,6 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-karnataka
-
   deploy-production-assam:
     needs: build-production
     name: Deploy to GKE Assam
@@ -359,15 +349,6 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-assam
 
   deploy-production-sikkim:
     needs: build-production
@@ -415,15 +396,6 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-sikkim
-
   deploy-production-nagaland:
     needs: build-production
     name: Deploy to GKE Nagaland
@@ -469,12 +441,3 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-nagaland
