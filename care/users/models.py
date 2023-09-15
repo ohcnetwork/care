@@ -5,6 +5,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from care.utils.models.base import BaseModel
@@ -359,3 +360,16 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
+
+
+class UserFacilityAllocation(models.Model):
+    """
+    This model tracks the allocation of a user to a facility for metabase analytics.
+    """
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, related_name="+"
+    )
+    start_date = models.DateTimeField(default=now)
+    end_date = models.DateTimeField(null=True, blank=True)

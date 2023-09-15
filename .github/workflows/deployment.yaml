@@ -9,6 +9,10 @@ on:
     paths-ignore:
       - "docs/**"
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   IMAGE_NAME: care
   AWS_DEFAULT_REGION: ap-south-1
@@ -24,97 +28,10 @@ env:
   CONTAINER_NAME_BACKEND: "care-backend"
   CONTAINER_NAME_WORKER: "care-celery-worker"
   CONTAINER_NAME_CRON: "care-celery-beat"
+
 jobs:
   test:
-    if: github.repository == 'coronasafe/care' && (github.ref == 'refs/heads/production' || github.ref == 'refs/heads/master')
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
-    name: Test
-    services:
-      db:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: care
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-      localstack:
-        image: localstack/localstack:latest
-        env:
-          AWS_DEFAULT_REGION: ap-south-1
-          EDGE_PORT: 4566
-          SERVICES: s3
-        ports:
-          - 4566:4566
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Test build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: Dockerfile
-          push: false
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install binutils libproj-dev libjpeg-dev zlib1g-dev -y
-          pip install --upgrade pip
-          pip install -r requirements/local.txt
-
-      - name: Configure environment
-        run: |
-          echo "JWKS_BASE64=$(python manage.py generate_jwks)" >> $GITHUB_ENV
-
-      - name: Run celery worker for tests
-        run: celery -A config.celery_app worker -B --loglevel=INFO --detach
-
-      - name: Run Tests with coverage
-        run: coverage run manage.py test --settings=config.settings.test
-
-      - name: Generate coverage report
-        run: |
-          coverage combine || true
-          coverage xml
-          coverage report -m
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v2
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+    uses: ./.github/workflows/test-base.yml
 
   build-staging:
     needs: test
@@ -122,7 +39,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Docker meta
         id: meta
@@ -141,14 +58,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -166,16 +75,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile
+          file: docker/prod.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          cache-from: type=gha,scope=cached-stage
+          cache-to: type=gha,scope=cached-stage,mode=max
 
   build-production:
     needs: test
@@ -183,7 +87,10 @@ jobs:
     if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Docker meta
         id: meta
@@ -200,17 +107,6 @@ jobs:
           flavor: |
             latest=false
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('r*/base.txt', 'r*/production.txt', 'Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -228,16 +124,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile
+          file: docker/prod.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          cache-from: type=gha,scope=cached-stage
+          cache-to: type=gha,scope=cached-stage,mode=max
 
   deploy-staging-egov:
     needs: build-staging
@@ -248,7 +139,7 @@ jobs:
       url: https://careapi.ohc.network
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -303,6 +194,15 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: staging-egov
+
 
   deploy-production-manipur:
     needs: build-production
@@ -350,6 +250,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-manipur
+
   deploy-production-karnataka:
     needs: build-production
     name: Deploy to GKE Karnataka
@@ -395,6 +304,15 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-karnataka
 
   deploy-production-assam:
     needs: build-production
@@ -442,6 +360,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-assam
+
   deploy-production-sikkim:
     needs: build-production
     name: Deploy to GKE Sikkim
@@ -488,6 +415,15 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-sikkim
+
   deploy-production-nagaland:
     needs: build-production
     name: Deploy to GKE Nagaland
@@ -533,3 +469,12 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: prod-nagaland
