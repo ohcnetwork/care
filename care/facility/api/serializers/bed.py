@@ -264,9 +264,11 @@ class ConsultationBedSerializer(ModelSerializer):
             and current_consultation_bed
             and ConsultationBed.objects.filter(
                 Q(bed=current_consultation_bed.bed),
-                Q(start_date__lte=current_start_date)
-                | Q(end_date__gte=current_start_date),
-            ).exists()
+                Q(start_date__gte=current_consultation_bed.start_date),
+                Q(start_date__lte=current_start_date),
+            )
+            .exclude(id=current_consultation_bed.id)
+            .exists()
         ):
             # validation for setting end date on current bed based on new bed start date
             raise ValidationError({"start_date": "Cannot create conflicting entry"})
