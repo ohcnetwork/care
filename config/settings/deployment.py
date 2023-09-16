@@ -96,6 +96,7 @@ LOGGING = {
 if SENTRY_DSN := env("SENTRY_DSN", default=""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
+        release=env("APP_VERSION", default="unknown"),
         environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0),
         profiles_sample_rate=env.float("SENTRY_PROFILES_SAMPLE_RATE", default=0),
