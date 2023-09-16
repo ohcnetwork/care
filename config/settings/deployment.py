@@ -97,14 +97,12 @@ if SENTRY_DSN := env("SENTRY_DSN", default=""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
-        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0),
+        profiles_sample_rate=env.float("SENTRY_PROFILES_SAMPLE_RATE", default=0),
         integrations=[
-            LoggingIntegration(
-                level=env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO),
-                event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
-            ),
+            LoggingIntegration(event_level=logging.WARNING),
             DjangoIntegration(),
-            CeleryIntegration(),
+            CeleryIntegration(monitor_beat_tasks=True),
             RedisIntegration(),
         ],
     )
