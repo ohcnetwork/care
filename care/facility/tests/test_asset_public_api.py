@@ -23,3 +23,14 @@ class AssetPublicViewSetTestCase(TestUtils, APITestCase):
     def test_retrieve_nonexistent_asset(self):
         response = self.client.get("/api/v1/public/asset/nonexistent/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_retrieve_asset_qr_code(self):
+        response = self.client.get(f"/api/v1/public/asset_qr/{self.asset.qr_code_id}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"/api/v1/public/asset_qr/{self.asset.id}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_nonexistent_asset_qr_code(self):
+        response = self.client.get("/api/v1/public/asset_qr/nonexistent/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -188,6 +188,8 @@ class AssetPublicQRViewSet(GenericViewSet):
         except ValueError:
             # If the qr_code_id is not a UUID, then it is the pk of the asset
             is_uuid = False
+            if not kwargs["qr_code_id"].isnumeric():
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
         key = "asset:qr:" + kwargs["qr_code_id"]
         hit = cache.get(key)
