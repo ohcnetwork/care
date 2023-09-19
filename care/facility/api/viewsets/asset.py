@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
@@ -170,6 +172,34 @@ class AssetPublicViewSet(GenericViewSet):
             cache.set(
                 key, serializer.data, 60 * 60 * 24
             )  # Cache the asset details for 24 hours
+            return Response(serializer.data)
+        return Response(hit)
+
+
+class AssetPublicQRViewSet(GenericViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+    lookup_field = "qr_code_id"
+
+    def retrieve(self, request, *args, **kwargs):
+        is_uuid = True
+        try:
+            uuid.UUID(kwargs["qr_code_id"])
+        except ValueError:
+            # If the qr_code_id is not a UUID, then it is the pk of the asset
+            is_uuid = False
+
+        key = "asset:qr:" + kwargs["qr_code_id"]
+        hit = cache.get(key)
+        if not hit:
+            if is_uuid:
+                instance = self.get_object()
+            else:
+                instance = Asset.objects.filter(pk=kwargs["qr_code_id"]).first()
+                if not instance:
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+            serializer = self.get_serializer(instance)
+            cache.set(key, serializer.data, 60 * 60 * 24)
             return Response(serializer.data)
         return Response(hit)
 
