@@ -21,7 +21,7 @@ RUN python -m venv /venv
 RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./
-RUN pipenv install --system --deploy
+RUN pipenv sync --system --categories "packages"
 
 
 # ---
