@@ -197,9 +197,9 @@ class AssetPublicQRViewSet(GenericViewSet):
             if is_uuid:
                 instance = self.get_object()
             else:
-                instance = Asset.objects.filter(pk=kwargs["qr_code_id"]).first()
-                if not instance:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
+                instance = get_object_or_404(
+                    self.get_queryset(), pk=kwargs["qr_code_id"]
+                )
             serializer = self.get_serializer(instance)
             cache.set(key, serializer.data, 60 * 60 * 24)
             return Response(serializer.data)
