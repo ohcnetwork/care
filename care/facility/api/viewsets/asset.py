@@ -3,6 +3,8 @@ import uuid
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -58,6 +60,13 @@ from care.utils.queryset.facility import get_facility_queryset
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
+
+
+@receiver(post_save, sender=Asset)
+def delete_asset_cache(sender, instance, created, **kwargs):
+    cache.delete("asset:" + str(instance.external_id))
+    cache.delete("asset:qr:" + str(instance.qr_code_id))
+    cache.delete("asset:qr:" + str(instance.id))
 
 
 class AssetLocationViewSet(

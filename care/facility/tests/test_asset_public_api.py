@@ -34,3 +34,22 @@ class AssetPublicViewSetTestCase(TestUtils, APITestCase):
     def test_retrieve_nonexistent_asset_qr_code(self):
         response = self.client.get("/api/v1/public/asset_qr/nonexistent/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_retrieve_asset_qr_cached(self):
+        response = self.client.get(f"/api/v1/public/asset_qr/{self.asset.qr_code_id}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], self.asset.name)
+
+        # Update the asset to invalidate the cache
+
+        updated_data = {
+            "name": "New Updated Test Asset",
+        }
+        response = self.client.patch(
+            f"/api/v1/asset/{self.asset.external_id}/", updated_data
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"/api/v1/public/asset_qr/{self.asset.qr_code_id}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], updated_data["name"])
