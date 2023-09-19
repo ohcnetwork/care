@@ -262,6 +262,6 @@
     "FARGATE"
   ],
   "networkMode": "awsvpc",
-  "cpu": "256",
+  "cpu": "512",
   "volumes": []
 }
