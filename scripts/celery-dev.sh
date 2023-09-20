@@ -2,4 +2,4 @@
 
 watchmedo \
     auto-restart --directory=./ --pattern=*.py --recursive -- \
-    celery -A config.celery_app worker -B --loglevel=INFO
+    celery --workdir="/app" -A config.celery_app worker -B --loglevel=INFO

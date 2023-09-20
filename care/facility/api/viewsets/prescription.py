@@ -61,6 +61,7 @@ class MedicineAdministrationViewSet(
 class ConsultationPrescriptionFilter(filters.FilterSet):
     is_prn = filters.BooleanFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
+    discontinued = filters.BooleanFilter()
 
 
 class ConsultationPrescriptionViewSet(

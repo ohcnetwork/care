@@ -6,24 +6,28 @@ services:
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
       - ./docker/.prebuilt.env
+    entrypoint: [ "bash", "start-ecs.sh" ]
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "9000:9000"
 
   celery-worker:
-    container_name: care_celery_worker
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
       - ./docker/.prebuilt.env
-    entrypoint: [ "bash", "celery_worker.sh" ]
+    entrypoint: [ "bash", "celery_worker-ecs.sh" ]
     depends_on:
       - db
       - backend
       - redis
 
   celery-beat:
-    container_name: care_celery_beat
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
       - ./docker/.prebuilt.env
-    entrypoint: [ "bash", "celery_beat.sh" ]
+    entrypoint: [ "bash", "celery_beat-ecs.sh" ]
     depends_on:
       - db
       - backend

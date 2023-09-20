@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
+    DateTimeField,
     IntegerField,
     ListField,
     ModelSerializer,
@@ -166,6 +167,7 @@ class ConsultationBedSerializer(ModelSerializer):
 
     assets = ListField(child=UUIDField(), required=False, write_only=True)
     assets_objects = AssetSerializer(source="assets", many=True, read_only=True)
+    start_date = DateTimeField(required=True)
 
     class Meta:
         model = ConsultationBed
@@ -173,92 +175,127 @@ class ConsultationBedSerializer(ModelSerializer):
         read_only_fields = TIMESTAMP_FIELDS
 
     def validate(self, attrs):
+        if "consultation" not in attrs:
+            raise ValidationError({"consultation": "This field is required."})
+        if "bed" not in attrs:
+            raise ValidationError({"bed": "This field is required."})
+        if "start_date" not in attrs:
+            raise ValidationError({"start_date": "This field is required."})
+
         user = self.context["request"].user
-        if "consultation" in attrs and "bed" in attrs and "start_date" in attrs:
-            bed = attrs["bed"]
-            facilities = get_facility_queryset(user)
-            if not facilities.filter(id=bed.facility_id).exists():
-                raise PermissionError()
+        bed = attrs["bed"]
 
-            permitted_consultations = get_consultation_queryset(user)
-            consultation: PatientConsultation = get_object_or_404(
-                permitted_consultations.filter(id=attrs["consultation"].id)
+        facilities = get_facility_queryset(user)
+        if not facilities.filter(id=bed.facility_id).exists():
+            raise ValidationError("You do not have access to this facility")
+
+        permitted_consultations = get_consultation_queryset(user).select_related(
+            "patient"
+        )
+        consultation: PatientConsultation = get_object_or_404(
+            permitted_consultations.filter(id=attrs["consultation"].id)
+        )
+        if (
+            not consultation.patient.is_active
+            or consultation.discharge_date
+            or consultation.death_datetime
+        ):
+            raise ValidationError("Patient not active")
+
+        # bed validations
+        if consultation.facility_id != bed.facility_id:
+            raise ValidationError("Consultation and bed are not in the same facility")
+        if (
+            ConsultationBed.objects.filter(bed=bed, end_date__isnull=True)
+            .exclude(consultation=consultation)
+            .exists()
+        ):
+            raise ValidationError("Bed is already in use")
+
+        # check whether the same set of bed and assets are already assigned
+        current_consultation_bed = consultation.current_bed
+        if (
+            not self.instance
+            and current_consultation_bed
+            and current_consultation_bed.bed == bed
+            and set(
+                current_consultation_bed.assets.order_by("external_id").values_list(
+                    "external_id", flat=True
+                )
             )
-            if not consultation.patient.is_active:
-                raise ValidationError(
-                    {"patient:": ["Patient is already discharged from CARE"]}
-                )
+            == set(attrs.get("assets", []))
+        ):
+            raise ValidationError("These set of bed and assets are already assigned")
 
-            if consultation.facility_id != bed.facility_id:
-                raise ValidationError(
-                    {"consultation": "Should be in the same facility as the bed"}
-                )
-
-            previous_consultation_bed = consultation.current_bed
-            if (
-                previous_consultation_bed
-                and previous_consultation_bed.bed == bed
-                and set(
-                    previous_consultation_bed.assets.order_by(
-                        "external_id"
-                    ).values_list("external_id", flat=True)
-                )
-                == set(attrs.get("assets", []))
-            ):
-                raise ValidationError(
-                    {"consultation": "These set of bed and assets are already assigned"}
-                )
-
-            start_date = attrs["start_date"]
-            end_date = attrs.get("end_date", None)
-
-            qs = ConsultationBed.objects.filter(consultation=consultation)
-            # Validations based of the latest entry
-            if qs.exists():
-                latest_qs = qs.latest("id")
-                if start_date < latest_qs.start_date:
-                    raise ValidationError(
-                        {
-                            "start_date": "Start date cannot be before the latest start date"
-                        }
-                    )
-                if end_date and end_date < latest_qs.start_date:
-                    raise ValidationError(
-                        {"end_date": "End date cannot be before the latest start date"}
-                    )
-
-            # Conflict checking logic
-            existing_qs = ConsultationBed.objects.filter(bed=bed).exclude(
-                consultation=consultation
-            )
-            if existing_qs.filter(start_date__gt=start_date).exists():
-                raise ValidationError({"start_date": "Cannot create conflicting entry"})
-            if end_date:
-                if existing_qs.filter(
-                    start_date__gt=end_date, end_date__lt=end_date
-                ).exists():
-                    raise ValidationError(
-                        {"end_date": "Cannot create conflicting entry"}
-                    )
-
-        else:
+        # date validations
+        # note: end_date is for setting end date on current instance
+        current_start_date = attrs["start_date"]
+        current_end_date = attrs.get("end_date", None)
+        if current_end_date and current_end_date < current_start_date:
             raise ValidationError(
-                {
-                    "consultation": "Field is Required",
-                    "bed": "Field is Required",
-                    "start_date": "Field is Required",
-                }
+                {"end_date": "End date cannot be before the start date"}
             )
+        if (
+            consultation.admission_date
+            and consultation.admission_date > current_start_date
+        ):
+            raise ValidationError(
+                {"start_date": "Start date cannot be before the admission date"}
+            )
+
+        # validations based on patients previous consultation bed
+        last_consultation_bed = (
+            ConsultationBed.objects.filter(consultation=consultation)
+            .exclude(id=self.instance.id if self.instance else None)
+            .order_by("id")
+            .last()
+        )
+        if (
+            last_consultation_bed
+            and current_start_date < last_consultation_bed.start_date
+        ):
+            raise ValidationError(
+                {"start_date": "Start date cannot be before previous bed start date"}
+            )
+
+        # check bed occupancy conflicts
+        if (
+            not self.instance
+            and current_consultation_bed
+            and ConsultationBed.objects.filter(
+                Q(bed=current_consultation_bed.bed),
+                Q(start_date__gte=current_consultation_bed.start_date),
+                Q(start_date__lte=current_start_date),
+            )
+            .exclude(id=current_consultation_bed.id)
+            .exists()
+        ):
+            # validation for setting end date on current bed based on new bed start date
+            raise ValidationError({"start_date": "Cannot create conflicting entry"})
+
+        conflicting_beds = ConsultationBed.objects.filter(bed=bed)
+        if conflicting_beds.filter(
+            start_date__lte=current_start_date, end_date__gte=current_start_date
+        ).exists():
+            raise ValidationError({"start_date": "Cannot create conflicting entry"})
+        if (
+            current_end_date
+            and conflicting_beds.filter(
+                start_date__lte=current_end_date, end_date__gte=current_end_date
+            ).exists()
+        ):
+            raise ValidationError({"end_date": "Cannot create conflicting entry"})
         return super().validate(attrs)
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> ConsultationBed:
         consultation = validated_data["consultation"]
-
         with transaction.atomic():
             ConsultationBed.objects.filter(
                 end_date__isnull=True, consultation=consultation
             ).update(end_date=validated_data["start_date"])
             if assets_ids := validated_data.pop("assets", None):
+                # we check assets in use here as they might have been in use in
+                # the previous bed
                 assets = (
                     Asset.objects.annotate(
                         is_in_use=Exists(
@@ -282,10 +319,11 @@ class ConsultationBedSerializer(ModelSerializer):
                     )
                     .values_list("external_id", flat=True)
                 )
-                not_found_assets = list(set(assets_ids) - set(assets))
+                not_found_assets = set(assets_ids) - set(assets)
                 if not_found_assets:
                     raise ValidationError(
-                        f"Some assets are not available - {' ,'.join(map(str, not_found_assets))}"
+                        "Some assets are not available - "
+                        f"{' ,'.join([str(x) for x in not_found_assets])}"
                     )
             obj: ConsultationBed = super().create(validated_data)
             if assets_ids:
