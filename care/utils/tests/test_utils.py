@@ -221,8 +221,6 @@ class TestUtils:
         }
         data.update(kwargs)
         facility = Facility.objects.create(**data)
-        user.home_facility = facility
-        user.save()
         return facility
 
     @classmethod

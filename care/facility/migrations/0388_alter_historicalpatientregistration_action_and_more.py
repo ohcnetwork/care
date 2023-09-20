@@ -10,7 +10,7 @@ def update_recommend_discharge(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0385_alter_patientconsultation_verified_by"),
+        ("facility", "0387_merge_20230911_2303"),
     ]
 
     operations = [
