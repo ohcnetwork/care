@@ -21,7 +21,7 @@ RUN python -m venv /venv
 RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./
-RUN pipenv install --system --deploy
+RUN pipenv sync --system --categories "packages"
 
 
 # ---
@@ -29,10 +29,12 @@ FROM base as runtime
 
 ARG BUILD_ENVIRONMENT=production
 ARG APP_HOME=/app
+ARG APP_VERSION="unknown"
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV BUILD_ENV ${BUILD_ENVIRONMENT}
+ENV APP_VERSION ${APP_VERSION}
 
 ENV PATH /venv/bin:$PATH
 
