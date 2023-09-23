@@ -9,7 +9,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import OpenIdConfigView
+from care.facility.api.viewsets.patient_consultation import (
+    dev_preview_discharge_summary,
+)
 from care.hcx.api.viewsets.listener import (
     ClaimOnSubmitView,
     CommunicationRequestView,
@@ -94,6 +98,9 @@ urlpatterns = [
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+if settings.ENABLE_ABDM:
+    urlpatterns += abdm_urlpatterns
+
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
     # these url in browser to see how these error pages look like.
@@ -114,11 +121,16 @@ if settings.DEBUG:
             kwargs={"exception": Exception("Page not Found")},
         ),
         path("500/", default_views.server_error),
+        path(
+            "preview_discharge_summary/<str:consultation_id>/",
+            dev_preview_discharge_summary,
+        ),
     ]
     if "debug_toolbar" in settings.INSTALLED_APPS:
-        import debug_toolbar
+        urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
 
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    if "silk" in settings.INSTALLED_APPS:
+        urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
 if settings.DEBUG or not settings.IS_PRODUCTION:
     urlpatterns += [

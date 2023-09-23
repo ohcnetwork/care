@@ -64,7 +64,7 @@ class MedibaseMedicine(BaseModel):
     atc_classification = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return " - ".join([self.name, self.generic, self.company])
+        return " - ".join(filter(None, [self.name, self.generic, self.company]))
 
 
 class Prescription(BaseModel):

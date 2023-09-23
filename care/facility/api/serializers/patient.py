@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
+from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -193,6 +195,11 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
+
+    abha_number = ExternalIdSerializerField(
+        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
+    )
+    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -430,7 +437,28 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"note": ["Note cannot be empty"]})
         return super().validate_empty_values(data)
 
+    def create(self, validated_data):
+        user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
+        # If the user is a doctor and the note is being created in the home facility
+        # then the user type is doctor else it is a remote specialist
+        if user_type == "Doctor":
+            if validated_data["created_by"].home_facility == validated_data["facility"]:
+                validated_data["user_type"] = "Doctor"
+            else:
+                validated_data["user_type"] = "RemoteSpecialist"
+        else:
+            # If the user is not a doctor then the user type is the same as the user type
+            validated_data["user_type"] = user_type
+
+        return super().create(validated_data)
+
     class Meta:
         model = PatientNotes
-        fields = ("note", "facility", "created_by_object", "created_date")
+        fields = (
+            "note",
+            "facility",
+            "created_by_object",
+            "user_type",
+            "created_date",
+        )
         read_only_fields = ("created_date",)

@@ -3,13 +3,18 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
+from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
+from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
+    AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicViewSet,
+    AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
 )
@@ -184,12 +189,16 @@ facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
+asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
+asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
+router.register("asset_availability", AssetAvailabilityViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 patient_nested_router.register(r"notes", PatientNotesViewSet)
+patient_nested_router.register(r"abha", AbhaViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
@@ -211,11 +220,19 @@ router.register("hcx", HcxGatewayViewSet)
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
 
+# ABDM endpoints
+if settings.ENABLE_ABDM:
+    router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
+router.register(
+    "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
+)
+
 app_name = "api"
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),

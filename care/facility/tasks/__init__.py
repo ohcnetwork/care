@@ -1,6 +1,7 @@
 from celery import current_app
 from celery.schedules import crontab
 
+from care.facility.tasks.asset_monitor import check_asset_status
 from care.facility.tasks.cleanup import delete_old_notifications
 from care.facility.tasks.summarisation import (
     summarise_district_patient,
@@ -19,12 +20,12 @@ def setup_periodic_tasks(sender, **kwargs):
         name="delete_old_notifications",
     )
     sender.add_periodic_task(
-        crontab(hour="*/4", minute=59),
+        crontab(hour="*/4", minute="59"),
         summarise_triage.s(),
         name="summarise_triage",
     )
     sender.add_periodic_task(
-        crontab(hour=23, minute=59),
+        crontab(hour="23", minute="59"),
         summarise_tests.s(),
         name="summarise_tests",
     )
@@ -34,12 +35,17 @@ def setup_periodic_tasks(sender, **kwargs):
         name="summarise_facility_capacity",
     )
     sender.add_periodic_task(
-        crontab(hour="*/1", minute=59),
+        crontab(hour="*/1", minute="59"),
         summarise_patient.s(),
         name="summarise_patient",
     )
     sender.add_periodic_task(
-        crontab(hour="*/1", minute=59),
+        crontab(hour="*/1", minute="59"),
         summarise_district_patient.s(),
         name="summarise_district_patient",
+    )
+    sender.add_periodic_task(
+        crontab(minute="*/30"),
+        check_asset_status.s(),
+        name="check_asset_status",
     )

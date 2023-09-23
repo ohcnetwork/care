@@ -1,26 +1,34 @@
-from littletable import Table
+from django.db.models import CharField, TextField, Value
+from django.db.models.functions import Coalesce
 
 from care.facility.models.prescription import MedibaseMedicine
 
-MedibaseMedicineTable = Table("MedibaseMedicine")
 
-medibase_objects = MedibaseMedicine.objects.all()
-
-for obj in medibase_objects:
-    MedibaseMedicineTable.insert(
-        {
-            "id": obj.id,
-            "external_id": obj.external_id,
-            "name": obj.name,
-            "type": obj.type,
-            "generic": obj.generic or "",
-            "company": obj.company or "",
-            "contents": obj.contents or "",
-            "cims_class": obj.cims_class or "",
-            "atc_classification": obj.atc_classification or "",
-            "searchable": f"{obj.name} {obj.generic} {obj.company}",
-        }
+def load_medibase_in_memory():
+    return (
+        MedibaseMedicine.objects.all()
+        .annotate(
+            generic_pretty=Coalesce("generic", Value(""), output_field=CharField()),
+            company_pretty=Coalesce("company", Value(""), output_field=CharField()),
+            contents_pretty=Coalesce("contents", Value(""), output_field=TextField()),
+            cims_class_pretty=Coalesce(
+                "cims_class", Value(""), output_field=CharField()
+            ),
+            atc_classification_pretty=Coalesce(
+                "atc_classification", Value(""), output_field=TextField()
+            ),
+        )
+        .values_list(
+            "external_id",
+            "name",
+            "type",
+            "generic_pretty",
+            "company_pretty",
+            "contents_pretty",
+            "cims_class_pretty",
+            "atc_classification_pretty",
+        )
     )
 
-MedibaseMedicineTable.create_index("id", unique=True)
-MedibaseMedicineTable.create_search_index("searchable")
+
+MedibaseMedicineTable = load_medibase_in_memory()

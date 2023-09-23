@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import JSONField
 from simple_history.models import HistoricalRecords
 
+from care.abdm.models import AbhaNumber
 from care.facility.models import (
     DiseaseStatusEnum,
     District,
@@ -33,13 +34,9 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import ICDDiseases
-from care.users.models import (
-    GENDER_CHOICES,
-    REVERSE_GENDER_CHOICES,
-    User,
-    phone_number_regex,
-)
+from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -103,11 +100,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default=""
+        max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
 
     emergency_phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default=""
+        max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
 
     # address_old = EncryptedTextField(default="")
@@ -403,6 +400,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         related_name="root_patient_assigned_to",
     )
 
+    # ABDM Health ID
+    abha_number = models.OneToOneField(
+        AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
     history = HistoricalRecords(excluded_fields=["meta_info"])
 
     objects = BaseManager()
@@ -631,7 +633,9 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
 
 class PatientMobileOTP(BaseModel):
     is_used = models.BooleanField(default=False)
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, validators=[mobile_or_landline_number_validator]
+    )
     otp = models.CharField(max_length=10)
 
 
@@ -642,6 +646,7 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
+    user_type = models.CharField(max_length=25, default="")
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

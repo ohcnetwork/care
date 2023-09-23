@@ -6,6 +6,7 @@ from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
@@ -70,8 +71,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     facility = ExternalIdSerializerField(read_only=True)
 
     assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
-
     assigned_to = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=False, allow_null=True
+    )
+
+    verified_by_object = UserBaseMinimumSerializer(source="verified_by", read_only=True)
+    verified_by = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
@@ -159,6 +164,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "last_edited_by",
             "created_by",
             "kasp_enabled_date",
+            "is_readmission",
+            "deprecated_verified_by",
         )
         exclude = ("deleted", "external_id")
 
@@ -315,6 +322,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation = super().create(validated_data)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
+        patient = consultation.patient
+        last_consultation = patient.last_consultation
+        if (
+            last_consultation
+            and consultation.suggestion == SuggestionChoices.A
+            and last_consultation.suggestion == SuggestionChoices.A
+            and last_consultation.discharge_date
+            and last_consultation.discharge_date + timedelta(days=30)
+            > consultation.admission_date
+        ):
+            consultation.is_readmission = True
         consultation.save()
 
         with transaction.atomic():
@@ -355,7 +373,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.current_bed = consultation_bed
             consultation.save(update_fields=["current_bed"])
 
-        patient = consultation.patient
         if consultation.suggestion == SuggestionChoices.OP:
             consultation.discharge_date = localtime(now())
             consultation.save()
@@ -398,6 +415,34 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
+
+        if (
+            "suggestion" in validated
+            and validated["suggestion"] != SuggestionChoices.DD
+        ):
+            if "verified_by" not in validated:
+                raise ValidationError(
+                    {
+                        "verified_by": [
+                            "This field is required as the suggestion is not 'Declared Death'"
+                        ]
+                    }
+                )
+            if not validated["verified_by"].user_type == User.TYPE_VALUE_MAP["Doctor"]:
+                raise ValidationError("Only Doctors can verify a Consultation")
+
+            facility = (
+                self.instance
+                and self.instance.facility
+                or validated["patient"].facility
+            )
+            if (
+                validated["verified_by"].home_facility
+                and validated["verified_by"].home_facility != facility
+            ):
+                raise ValidationError(
+                    "Home Facility of the Doctor must be the same as the Consultation Facility"
+                )
 
         if "suggestion" in validated:
             if validated["suggestion"] is SuggestionChoices.R:
@@ -447,10 +492,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
         from care.facility.static_data.icd11 import ICDDiseases
 
+        final_diagnosis = []
+        provisional_diagnosis = []
+
         if "icd11_diagnoses" in validated:
             for diagnosis in validated["icd11_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    final_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -464,6 +513,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             for diagnosis in validated["icd11_provisional_diagnoses"]:
                 try:
                     ICDDiseases.by.id[diagnosis]
+                    provisional_diagnosis.append(diagnosis)
                 except BaseException:
                     raise ValidationError(
                         {
@@ -472,6 +522,41 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
+
+        if (
+            "icd11_principal_diagnosis" in validated
+            and validated.get("suggestion") != SuggestionChoices.DD
+        ):
+            if len(final_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in final_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Final Diagnosis"
+                            ]
+                        }
+                    )
+            elif len(provisional_diagnosis):
+                if validated["icd11_principal_diagnosis"] not in provisional_diagnosis:
+                    raise ValidationError(
+                        {
+                            "icd11_principal_diagnosis": [
+                                "Principal Diagnosis must be one of the Provisional Diagnosis"
+                            ]
+                        }
+                    )
+            else:
+                raise ValidationError(
+                    {
+                        "icd11_diagnoses": [
+                            "Atleast one diagnosis is required for final diagnosis"
+                        ],
+                        "icd11_provisional_diagnoses": [
+                            "Atleast one diagnosis is required for provisional diagnosis"
+                        ],
+                    }
+                )
+
         return validated
 
 
@@ -487,6 +572,15 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 
     death_datetime = serializers.DateTimeField(required=False, allow_null=True)
     death_confirmed_doctor = serializers.CharField(required=False, allow_null=True)
+
+    referred_to = ExternalIdSerializerField(
+        queryset=Facility.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    referred_to_external = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
 
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
@@ -506,6 +600,8 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         model = PatientConsultation
         fields = (
             "discharge_reason",
+            "referred_to",
+            "referred_to_external",
             "discharge_notes",
             "discharge_date",
             "discharge_prescription",
@@ -515,6 +611,21 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        if attrs.get("referred_to") and attrs.get("referred_to_external"):
+            raise ValidationError(
+                {
+                    "referred_to": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                    "referred_to_external": [
+                        "Only one of referred_to and referred_to_external can be set"
+                    ],
+                }
+            )
+        if attrs.get("discharge_reason") != "EXP":
+            attrs.pop("death_datetime", None)
+            attrs.pop("death_confirmed_doctor", None)
+
         if attrs.get("discharge_reason") == "EXP":
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
@@ -522,7 +633,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"death_datetime": "This field value cannot be in the future."}
                 )
-            if attrs.get("death_datetime") < self.instance.admission_date:
+            if (
+                self.instance.admission_date
+                and attrs.get("death_datetime") < self.instance.admission_date
+            ):
                 raise ValidationError(
                     {
                         "death_datetime": "This field value cannot be before the admission date."
@@ -539,7 +653,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {"discharge_date": "This field value cannot be in the future."}
             )
-        elif attrs.get("discharge_date") < self.instance.admission_date:
+        elif (
+            self.instance.admission_date
+            and attrs.get("discharge_date") < self.instance.admission_date
+        ):
             raise ValidationError(
                 {
                     "discharge_date": "This field value cannot be before the admission date."
@@ -558,6 +675,18 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
+            if patient.abha_number:
+                abha_number = patient.abha_number
+                AbdmGateway().fetch_modes(
+                    {
+                        "healthId": abha_number.abha_number,
+                        "name": abha_number.name,
+                        "gender": abha_number.gender,
+                        "dateOfBirth": str(abha_number.date_of_birth),
+                        "consultationId": abha_number.external_id,
+                        "purpose": "LINK",
+                    }
+                )
             return instance
 
     def create(self, validated_data):
@@ -567,10 +696,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 class PatientConsultationIDSerializer(serializers.ModelSerializer):
     consultation_id = serializers.UUIDField(source="external_id", read_only=True)
     patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
+    bed_id = serializers.UUIDField(source="current_bed.bed.external_id", read_only=True)
 
     class Meta:
         model = PatientConsultation
-        fields = ("consultation_id", "patient_id")
+        fields = ("consultation_id", "patient_id", "bed_id")
 
 
 class EmailDischargeSummarySerializer(serializers.Serializer):

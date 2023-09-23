@@ -1,5 +1,3 @@
-from re import IGNORECASE
-
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -35,6 +33,7 @@ inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
+    administered_date = filters.DateFromToRangeFilter(field_name="administered_date")
 
 
 class MedicineAdministrationViewSet(
@@ -62,6 +61,7 @@ class MedicineAdministrationViewSet(
 class ConsultationPrescriptionFilter(filters.FilterSet):
     is_prn = filters.BooleanFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
+    discontinued = filters.BooleanFilter()
 
 
 class ConsultationPrescriptionViewSet(
@@ -104,7 +104,7 @@ class ConsultationPrescriptionViewSet(
             "discontinued_reason", None
         )
         prescription_obj.save()
-        return Response({}, status=status.HTTP_201_CREATED)
+        return Response({}, status=status.HTTP_200_OK)
 
     @extend_schema(tags=["prescriptions"])
     @action(
@@ -114,7 +114,14 @@ class ConsultationPrescriptionViewSet(
     )
     def administer(self, request, *args, **kwargs):
         prescription_obj = self.get_object()
-        serializer = MedicineAdministrationSerializer(data=request.data)
+        if prescription_obj.discontinued:
+            return Response(
+                {"error": "Administering discontinued prescriptions is not allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = MedicineAdministrationSerializer(
+            data=request.data, context={"prescription": prescription_obj}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -140,48 +147,56 @@ class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
     def serailize_data(self, objects):
-        result = []
-        for object in objects:
-            if type(object) == tuple:
-                object = object[0]
-            result.append(
-                {
-                    "id": object.external_id,
-                    "name": object.name,
-                    "type": object.type,
-                    "generic": object.generic,
-                    "company": object.company,
-                    "contents": object.contents,
-                    "cims_class": object.cims_class,
-                    "atc_classification": object.atc_classification,
-                }
-            )
-        return result
+        return [
+            {
+                "id": x[0],
+                "name": x[1],
+                "type": x[2],
+                "generic": x[3],
+                "company": x[4],
+                "contents": x[5],
+                "cims_class": x[6],
+                "atc_classification": x[7],
+            }
+            for x in objects
+        ]
 
     def sort(self, query, results):
         exact_matches = []
+        word_matches = []
         partial_matches = []
 
-        for result in results:
-            if type(result) == tuple:
-                result = result[0]
-            words = result.searchable.lower().split()
-            if query in words:
-                exact_matches.append(result)
-            else:
-                partial_matches.append(result)
+        for x in results:
+            name = x[1].lower()
+            generic = x[3].lower()
+            company = x[4].lower()
+            words = f"{name} {generic} {company}".split()
 
-        return exact_matches + partial_matches
+            if name == query:
+                exact_matches.append(x)
+            elif query in words:
+                word_matches.append(x)
+            else:
+                partial_matches.append(x)
+
+        return exact_matches + word_matches + partial_matches
 
     def list(self, request):
         from care.facility.static_data.medibase import MedibaseMedicineTable
 
         queryset = MedibaseMedicineTable
 
-        if request.GET.get("query", False):
-            query = request.GET.get("query").strip().lower()
-            queryset = queryset.where(
-                searchable=queryset.re_match(r".*" + query + r".*", IGNORECASE)
-            )
+        if type := request.query_params.get("type"):
+            queryset = [x for x in queryset if x[2] == type]
+
+        if query := request.query_params.get("query"):
+            query = query.strip().lower()
+            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
             queryset = self.sort(query, queryset)
-        return Response(self.serailize_data(queryset[:15]))
+
+        try:
+            limit = min(int(request.query_params.get("limit", 30)), 100)
+        except ValueError:
+            limit = 30
+
+        return Response(self.serailize_data(queryset[:limit]))

@@ -95,7 +95,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "storages",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -112,6 +111,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "care.facility",
+    "care.abdm",
     "care.users",
     "care.audit_log",
     "care.hcx",
@@ -539,11 +539,22 @@ JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
 
+# ABDM
+ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
+ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
+ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
+ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
+HEALTH_SERVICE_API_URL = env(
+    "HEALTH_SERVICE_API_URL", default="https://healthidsbx.abdm.gov.in/api"
+)
+ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
+X_CM_ID = env("X_CM_ID", default="sbx")
+FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
+
 
 IS_PRODUCTION = False
 
 # HCX
-
 HCX_PROTOCOL_BASE_PATH = env(
     "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
 )
