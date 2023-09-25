@@ -128,6 +128,10 @@
         {
           "name": "SENTRY_PROFILES_SAMPLE_RATE",
           "value": "1.0"
+        },
+        {
+          "name": "SENTRY_ENVIRONMENT",
+          "value": "staging"
         }
       ],
       "repositoryCredentials": {
