@@ -1,7 +1,14 @@
+import json
+
 from django.core.management import BaseCommand, CommandError
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
-from care.facility.static_data.icd11 import fetch_data
+
+
+def fetch_data():
+    with open("data/icd11.json", "r") as json_file:
+        return json.load(json_file)
+
 
 ICD11_ID_SUFFIX_TO_INT = {
     "mms": 1,

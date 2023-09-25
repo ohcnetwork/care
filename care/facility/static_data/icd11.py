@@ -1,15 +1,9 @@
 import contextlib
-import json
 
 from django.db import connection
 from littletable import Table
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
-
-
-def fetch_data():
-    with open("data/icd11.json", "r") as json_file:
-        return json.load(json_file)
 
 
 def fetch_from_db():
