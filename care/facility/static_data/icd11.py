@@ -14,11 +14,10 @@ def fetch_data():
 
 def fetch_from_db():
     # This is a hack to prevent the migration from failing when the table does not exist
-    all_tables = set(connection.introspection.table_names())
-    if set("facility_icd11diagnosis") & all_tables:
+    all_tables = connection.introspection.table_names()
+    if "facility_icd11diagnosis" in all_tables:
         return ICD11Diagnosis.objects.all().values("id", "label")
-    else:
-        return []
+    return []
 
 
 ICDDiseases = Table("ICD11")
