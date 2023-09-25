@@ -11,10 +11,12 @@ def fetch_data():
         return json.load(json_file)
 
 
-diseases = ICD11Diagnosis.objects.filter(is_leaf=True).values("id", "label")
+def fetch_from_db():
+    return ICD11Diagnosis.objects.all().values("id", "label")
+
 
 ICDDiseases = Table("ICD11")
-ICDDiseases.insert_many(diseases)
+ICDDiseases.insert_many(fetch_from_db())
 ICDDiseases.create_search_index("label")
 ICDDiseases.create_index("id", unique=True)
 
