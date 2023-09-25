@@ -1,17 +1,39 @@
 from django.core.management import BaseCommand, CommandError
 
-from care.facility.models.meta_icd11_diagnosis import MetaICD11Diagnosis
+from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 from care.facility.static_data.icd11 import fetch_data
+
+ICD11_ID_SUFFIX_TO_INT = {
+    "mms": 1,
+    "other": 2,
+    "unspecified": 3,
+}
+
+
+def icd11_id_to_int(icd11_id):
+    """
+    Maps ICD11 ID to an integer.
+
+    Eg:
+    - http://id.who.int/icd/entity/594985340 -> 594985340
+    - http://id.who.int/icd/entity/594985340/mms -> 5949853400001
+    - http://id.who.int/icd/entity/594985340/mms/unspecified -> 5949853400003
+    """
+    entity_id = icd11_id.replace("http://id.who.int/icd/entity/", "")
+    if entity_id.isnumeric():
+        return int(entity_id)
+    segments = entity_id.split("/")
+    return int(segments[0]) * 1e3 + ICD11_ID_SUFFIX_TO_INT[segments[-1]]
 
 
 class Command(BaseCommand):
     """
     Management command to load ICD11 diagnoses to database. Not for production
     use.
-    Usage: python manage.py load_meta_icd11_diagnosis
+    Usage: python manage.py load_icd11_diagnoses
     """
 
-    help = "Loads ICD11 data to a table in to database."
+    help = "Loads ICD11 diagnoses data to database"
 
     data = []
     roots_lookup = {}
@@ -29,8 +51,9 @@ class Command(BaseCommand):
     """
 
     CLASS_KIND_DB_KEYS = {
-        "block": "root_block",
-        "category": "root_category",
+        "chapter": "meta_chapter",
+        "block": "meta_root_block",
+        "category": "meta_root_category",
     }
 
     ICD11_GROUP_LABEL_PRETTY = {
@@ -55,13 +78,12 @@ class Command(BaseCommand):
         "19 Certain conditions originating in the perinatal period": "Neonatology",
         "20 Developmental anomalies": "Developmental Anomalies",
         "21 Symptoms, signs or clinical findings, not elsewhere classified": "Others",
-        "22 Injury, poisoning or certain other consequences of external causes": "Injury, Poisoning ",
+        "22 Injury, poisoning or certain other consequences of external causes": "Injury, Poisoning",
         "23 External causes of morbidity or mortality": "External Causes of Injury",
         "24 Factors influencing health status or contact with health services": None,
         "25 Codes for special purposes": "Codes for special purposes",
         "26 Supplementary Chapter Traditional Medicine Conditions - Module I": None,
-        "V Supplementary section for functioning assessment": "Functioning assessment ",
-        "X Extension Codes": "NOT RELEVANT",
+        "V Supplementary section for functioning assessment": "Functioning assessment",
     }
 
     def find_roots(self, item):
@@ -98,7 +120,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        print("Loading ICD11 data to DB Table (meta_icd11_diagnosis)...")
+        print("Loading ICD11 diagnoses data to database...")
         try:
             self.data = fetch_data()
 
@@ -110,29 +132,27 @@ class Command(BaseCommand):
                 result = {
                     self.CLASS_KIND_DB_KEYS.get(k, k): v for k, v in roots.items()
                 }
-                result["chapter_short"] = mapped
-                result["deleted"] = mapped is None
+                result["meta_chapter_short"] = mapped
+                result["meta_hidden"] = mapped is None
                 return result
 
-            MetaICD11Diagnosis.objects.all().delete()
-            MetaICD11Diagnosis.objects.bulk_create(
+            ICD11Diagnosis.objects.all().delete()
+            ICD11Diagnosis.objects.bulk_create(
                 [
-                    MetaICD11Diagnosis(
-                        id=icd11_object["ID"],
-                        _id=int(icd11_object["ID"].split("/")[-1]),
-                        average_depth=icd11_object["averageDepth"],
-                        is_adopted_child=icd11_object["isAdoptedChild"],
-                        parent_id=icd11_object["parentId"],
-                        class_kind=icd11_object["classKind"],
-                        is_leaf=icd11_object["isLeaf"],
-                        label=icd11_object["label"],
-                        breadth_value=icd11_object["breadthValue"],
-                        **roots(icd11_object),
+                    ICD11Diagnosis(
+                        id=icd11_id_to_int(obj["ID"]),
+                        icd11_id=obj["ID"],
+                        label=obj["label"],
+                        class_kind=obj["classKind"],
+                        is_leaf=obj["isLeaf"],
+                        parent_id=obj["parentId"] and icd11_id_to_int(obj["parentId"]),
+                        average_depth=obj["averageDepth"],
+                        is_adopted_child=obj["isAdoptedChild"],
+                        breadth_value=obj["breadthValue"],
+                        **roots(obj),
                     )
-                    for icd11_object in self.data
-                    if icd11_object["ID"].split("/")[-1].isnumeric()
+                    for obj in self.data
                 ]
             )
-            print("Done loading ICD11 data to database.")
         except Exception as e:
             raise CommandError(e)
