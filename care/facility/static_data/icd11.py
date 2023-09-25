@@ -1,6 +1,7 @@
 import contextlib
 import json
 
+from django.db.utils import ProgrammingError
 from littletable import Table
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
@@ -12,7 +13,11 @@ def fetch_data():
 
 
 def fetch_from_db():
-    return ICD11Diagnosis.objects.all().values("id", "label")
+    try:
+        return ICD11Diagnosis.objects.all().values("id", "label")
+    except ProgrammingError as e:
+        print(e)
+        return []
 
 
 ICDDiseases = Table("ICD11")
