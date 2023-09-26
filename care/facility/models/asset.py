@@ -46,6 +46,8 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    middleware_address = models.CharField(null=True, default=None, max_length=200)
+
 
 class AssetType(enum.Enum):
     INTERNAL = 50
