@@ -38,6 +38,11 @@ def check_asset_status():
                 )
                 or asset.current_location.facility.middleware_address
             )
+            if not hostname:
+                logger.warn(
+                    f"Asset {asset.external_id} does not have a middleware hostname"
+                )
+                continue
             result: Any = None
 
             # Checking if middleware status is already cached
