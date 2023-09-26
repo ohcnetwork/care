@@ -95,7 +95,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "storages",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",

@@ -107,6 +107,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
         related_name="referred_patients",
     )  # Deprecated
+    is_readmission = models.BooleanField(default=False)
     referred_to_external = models.TextField(default="", null=True, blank=True)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
@@ -144,7 +145,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     deprecated_verified_by = models.TextField(default="", null=True, blank=True)
     verified_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=False
+        User, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     created_by = models.ForeignKey(

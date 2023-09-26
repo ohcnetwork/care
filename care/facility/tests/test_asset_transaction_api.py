@@ -1,50 +1,42 @@
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.asset import AssetTransactionViewSet
-from care.facility.models import Asset, AssetLocation, AssetTransaction
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.facility.models import AssetTransaction
+from care.utils.tests.test_utils import TestUtils
 
 
-class AssetTransactionViewSetTestCase(TestBase, TestClassMixin, APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        self.asset_from_location = AssetLocation.objects.create(
-            name="asset from location", location_type=1, facility=facility
+class AssetTransactionViewSetTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+
+        cls.asset_from_location = cls.create_asset_location(
+            cls.facility, name="asset from location"
         )
-        self.asset_to_location = AssetLocation.objects.create(
-            name="asset to location", location_type=1, facility=facility
+        cls.asset_to_location = cls.create_asset_location(
+            cls.facility, name="asset to location"
         )
-        self.asset = Asset.objects.create(
-            name="Test Asset", current_location=self.asset_from_location, asset_type=50
+        cls.asset = cls.create_asset(
+            cls.asset_from_location, name="Test Asset", asset_type=50
         )
-        self.asset_transaction = AssetTransaction.objects.create(
-            asset=self.asset,
-            from_location=self.asset_from_location,
-            to_location=self.asset_to_location,
-            performed_by=self.user,
+        cls.asset_transaction = AssetTransaction.objects.create(
+            asset=cls.asset,
+            from_location=cls.asset_from_location,
+            to_location=cls.asset_to_location,
+            performed_by=cls.user,
         )
 
     def test_list_asset_transactions(self):
-        response = self.new_request(
-            ("/api/v1/asset_transaction/",),
-            {"get": "list"},
-            AssetTransactionViewSet,
-            self.user,
-        )
+        response = self.client.get("/api/v1/asset_transaction/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_asset_transaction(self):
-        response = self.new_request(
-            (f"/api/v1/asset_transaction/{self.asset_transaction.id}/",),
-            {"get": "retrieve"},
-            AssetTransactionViewSet,
-            self.user,
-            {"pk": self.asset_transaction.id},
+        response = self.client.get(
+            f"/api/v1/asset_transaction/{self.asset_transaction.id}/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -1,27 +1,28 @@
 version: '3.4'
 
 services:
-  db:
-    env_file:
-      - ./docker/.local.env
-
   backend:
+    image: care_local
     build:
       context: .
-      dockerfile: docker/DevDockerfile
+      dockerfile: docker/dev.Dockerfile
     env_file:
       - ./docker/.local.env
     volumes:
       - .:/app
+    entrypoint: [ "bash", "scripts/start-dev.sh" ]
+    ports:
+      - "9000:9000"
+      - "9876:9876" #debugpy
+    depends_on:
+      - db
+      - redis
 
   celery:
-    container_name: care_celery
-    build:
-      context: .
-      dockerfile: docker/DevDockerfile
+    image: care_local
     env_file:
       - ./docker/.local.env
-    entrypoint: [ "bash", "celery_dev.sh" ]
+    entrypoint: [ "bash", "scripts/celery-dev.sh" ]
     depends_on:
       - db
       - backend

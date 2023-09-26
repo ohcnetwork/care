@@ -32,4 +32,4 @@ done
 export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
 python manage.py collectstatic --noinput
 python manage.py migrate
-newrelic-admin run-program /usr/local/bin/gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
+newrelic-admin run-program gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
