@@ -122,6 +122,7 @@ class AssetFilter(filters.FilterSet):
         method="filter_in_use_by_consultation"
     )
     is_permanent = filters.BooleanFilter(method="filter_is_permanent")
+    warranty_amc_end_of_validity = filters.DateFromToRangeFilter()
 
     def filter_in_use_by_consultation(self, queryset, _, value):
         if value not in EMPTY_VALUES:
