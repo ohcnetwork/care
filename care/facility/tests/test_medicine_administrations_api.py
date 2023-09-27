@@ -36,13 +36,18 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             **{**data, **kwargs, "prescribed_by": self.user}
         )
 
-    def test_administer(self):
+    def test_administer_and_archive(self):
         prescription = self.normal_prescription
         res = self.client.post(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
             {"notes": "Test Notes"},
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/{res.data['id']}/archive/",
+            {},
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_administer_in_future(self):
         prescription = self.normal_prescription
