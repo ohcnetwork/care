@@ -45,8 +45,10 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
+        administration_id = res.data["id"]
+
         # test archive
-        archive_path = f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/{res.data['id']}/archive/"
+        archive_path = f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/{administration_id}/archive/"
         res = self.client.post(archive_path, {})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -59,7 +61,15 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/?archived=true"
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
+        # assert if the archived administration's id is present in the res.data.results
+        self.assertTrue(
+            any(
+                [
+                    administration_id == administration["id"]
+                    for administration in res.data["results"]
+                ]
+            )
+        )
 
     def test_administer_in_future(self):
         prescription = self.normal_prescription
