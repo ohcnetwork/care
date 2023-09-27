@@ -37,17 +37,22 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         )
 
     def test_administer_and_archive(self):
+        # test administer
         prescription = self.normal_prescription
         res = self.client.post(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
             {"notes": "Test Notes"},
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        res = self.client.post(
-            f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/{res.data['id']}/archive/",
-            {},
-        )
+
+        # test archive
+        archive_path = f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/{res.data['id']}/archive/"
+        res = self.client.post(archive_path, {})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        # test archive again
+        res = self.client.post(archive_path, {})
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_administer_in_future(self):
         prescription = self.normal_prescription
