@@ -55,6 +55,9 @@ class UserFilterSet(filters.FilterSet):
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
+    home_facility = filters.UUIDFilter(
+        field_name="home_facility__external_id", lookup_expr="exact"
+    )
 
     def get_user_type(
         self,

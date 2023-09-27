@@ -33,6 +33,7 @@ from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefr
 from .views import home_view
 
 urlpatterns = [
+    # path("silk/", include("silk.urls", namespace="silk")),
     path("", home_view, name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
@@ -130,7 +131,7 @@ if settings.DEBUG:
         urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
 
     if "silk" in settings.INSTALLED_APPS:
-        urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+        urlpatterns += []
 
 if settings.DEBUG or not settings.IS_PRODUCTION:
     urlpatterns += [

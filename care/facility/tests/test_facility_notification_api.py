@@ -4,8 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
 class ExpectedListNotitificationKeys(Enum):
@@ -48,7 +47,7 @@ class ExpectedRetrieveCausedByKeys(Enum):
     last_login = "last_login"
 
 
-class NotificationViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class NotificationViewSetTestCase(APITestCase, TestUtils):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

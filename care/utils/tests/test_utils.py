@@ -1,14 +1,14 @@
-import abc
-import datetime
 import random
+import uuid
 from collections import OrderedDict
+from datetime import UTC, date, datetime
+from typing import Any
 from uuid import uuid4
 
+from django.test import override_settings
 from django.utils.timezone import make_aware, now
-from django_rest_passwordreset.models import ResetPasswordToken
 from pytz import unicode
 from rest_framework import status
-from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
@@ -24,120 +24,95 @@ from care.facility.models import (
     PatientRegistration,
     User,
 )
+from care.facility.models.asset import Asset, AssetLocation
+from care.facility.models.facility import FacilityUser
 from care.facility.models.notification import Notification
 from care.users.models import District, State
-from config.tests.helper import EverythingEquals, mock_equal
 
 
-class TestBase(APITestCase):
+class override_cache(override_settings):
+    """
+    Overrides the cache settings for the test to use a
+    local memory cache instead of the redis cache
+    """
+
+    def __init__(self, decorated):
+        self.decorated = decorated
+        super().__init__(
+            CACHES={
+                "default": {
+                    "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                    "LOCATION": f"care-test-{uuid.uuid4()}",
+                }
+            },
+        )
+
+    def __call__(self) -> Any:
+        return super().__call__(self.decorated)
+
+
+class EverythingEquals:
+    def __eq__(self, other):
+        return True
+
+
+mock_equal = EverythingEquals()
+
+
+def assert_equal_dicts(d1, d2, ignore_keys=[]):
+    def check_equal():
+        ignored = set(ignore_keys)
+        for k1, v1 in d1.items():
+            if k1 not in ignored and (k1 not in d2 or d2[k1] != v1):
+                print(k1, v1, d2[k1])
+                return False
+        for k2, v2 in d2.items():
+            if k2 not in ignored and k2 not in d1:
+                print(k2, v2)
+                return False
+        return True
+
+    return check_equal()
+
+
+class TestUtils:
     """
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
     maxDiff = None
 
-    @classmethod
-    def create_user(cls, district: District, username: str = "user", **kwargs) -> User:
-        data = {
-            "email": f"{username}@somedomain.com",
-            "phone_number": "5554446667",
-            "age": 30,
-            "gender": 2,
-            "verified": True,
-            "username": username,
-            "password": "bar",
-            "district": district,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
-        }
-        data.update(kwargs)
-        return User.objects.create_user(**data)
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
 
-    @classmethod
-    def create_super_user(cls, district: District, username: str = "superuser") -> User:
-        user = cls.create_user(
-            district=district,
-            username=username,
-            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
-        )
-        user.is_superuser = True
-        user.save()
-        return user
-
-    @classmethod
-    def create_reset_password_token(
-        cls, user: User, expired: bool = False
-    ) -> ResetPasswordToken:
-        token = ResetPasswordToken.objects.create(user=user)
-        if expired:
-            token.created_at = now() - datetime.timedelta(hours=2)
-            token.save()
-        return token
-
-    @classmethod
-    def create_district(cls, state: State) -> District:
-        return District.objects.create(
-            state=state, name=f"District{datetime.datetime.now().timestamp()}"
-        )
+    def get_base_url(self) -> str:
+        """
+        Should return the base url of the testing viewset
+        eg: return "api/v1/facility/"
+        """
+        raise NotImplementedError()
 
     @classmethod
     def create_state(cls) -> State:
-        return State.objects.create(name=f"State{datetime.datetime.now().timestamp()}")
+        return State.objects.create(name=f"State{now().timestamp()}")
 
     @classmethod
-    def create_facility(
-        cls, district: District, user: User = None, **kwargs
-    ) -> Facility:
-        user = user or cls.user
+    def create_district(cls, state: State) -> District:
+        return District.objects.create(state=state, name=f"District{now().timestamp()}")
+
+    @classmethod
+    def create_local_body(cls, district: District, **kwargs) -> LocalBody:
         data = {
-            "name": "Foo",
+            "name": f"LocalBody{now().timestamp()}",
             "district": district,
-            "facility_type": 1,
-            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
-            "pincode": 123456,
-            "oxygen_capacity": 10,
-            "phone_number": "9998887776",
-            "created_by": user,
+            "body_type": 10,
+            "localbody_code": "d123456",
         }
         data.update(kwargs)
-        f = Facility(**data)
-        f.save()
-        return f
+        return LocalBody.objects.create(**data)
 
     @classmethod
-    def create_patient(cls, facility=None, **kwargs):
-        patient_data = cls.get_patient_data().copy()
-        patient_data.update(kwargs)
-
-        medical_history = patient_data.pop("medical_history", [])
-        district_id = patient_data.pop("district", None)
-        state_id = patient_data.pop("state", None)
-
-        patient_data.update(
-            {
-                "facility": facility or cls.facility,
-                "district_id": district_id,
-                "state_id": state_id,
-                "disease_status": getattr(
-                    DiseaseStatusEnum, patient_data["disease_status"]
-                ).value,
-            }
-        )
-
-        patient = PatientRegistration.objects.create(**patient_data)
-        diseases = [
-            Disease.objects.create(
-                patient=patient,
-                disease=DISEASE_CHOICES_MAP[mh["disease"]],
-                details=mh["details"],
-            )
-            for mh in medical_history
-        ]
-        patient.medical_history.set(diseases)
-
-        return patient
-
-    @classmethod
-    def get_user_data(cls, district: District = None, user_type: str = None):
+    def get_user_data(cls, district: District, user_type: str = None):
         """
         Returns the data to be used for API testing
 
@@ -146,13 +121,12 @@ class TestBase(APITestCase):
 
             Params:
                 district: District
-                user_type: str(A valid mapping for the integer types mentioned inside the models)
+                user_type: str(A valid mapping for the integer types mentioned
+                inside the models)
         """
-        district = district or cls.district
-        user_type = user_type or User.TYPE_VALUE_MAP["Staff"]
 
         return {
-            "user_type": user_type,
+            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
@@ -162,6 +136,49 @@ class TestBase(APITestCase):
             "username": "user",
             "password": "bar",
         }
+
+    @classmethod
+    def link_user_with_facility(cls, user: User, facility: Facility, created_by: User):
+        FacilityUser.objects.create(user=user, facility=facility, created_by=created_by)
+
+    @classmethod
+    def create_user(
+        cls,
+        username: str = None,
+        district: District = None,
+        local_body: LocalBody = None,
+        **kwargs,
+    ) -> User:
+        if username is None:
+            username = f"user{now().timestamp()}"
+
+        data = {
+            "email": f"{username}@somedomain.com",
+            "phone_number": "5554446667",
+            "age": 30,
+            "gender": 2,
+            "verified": True,
+            "username": username,
+            "password": "bar",
+            "state": district.state,
+            "district": district,
+            "local_body": local_body,
+            "user_type": User.TYPE_VALUE_MAP["Staff"],
+        }
+        data.update(kwargs)
+        user = User.objects.create_user(**data)
+        if home_facility := kwargs.get("home_facility"):
+            cls.link_user_with_facility(user, home_facility, user)
+        return user
+
+    @classmethod
+    def create_super_user(cls, *args, **kwargs) -> User:
+        return cls.create_user(
+            *args,
+            is_superuser=True,
+            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
+            **kwargs,
+        )
 
     @classmethod
     def get_facility_data(cls, district):
@@ -181,7 +198,7 @@ class TestBase(APITestCase):
             "name": "Foo",
             "district": (district or cls.district).id,
             "facility_type": 1,
-            "address": f"Address {datetime.datetime.now().timestamp}",
+            "address": f"Address {now().timestamp}",
             "location": {"latitude": 49.878248, "longitude": 24.452545},
             "pincode": 123456,
             "oxygen_capacity": 10,
@@ -190,11 +207,30 @@ class TestBase(APITestCase):
         }
 
     @classmethod
-    def get_patient_data(cls, district=None, state=None):
+    def create_facility(
+        cls, user: User, district: District, local_body: LocalBody, **kwargs
+    ) -> Facility:
+        data = {
+            "name": "Foo",
+            "district": district,
+            "state": district.state,
+            "local_body": local_body,
+            "facility_type": 1,
+            "address": "8/88, 1st Cross, 1st Main, Boo Layout",
+            "pincode": 123456,
+            "oxygen_capacity": 10,
+            "phone_number": "9998887776",
+            "created_by": user,
+        }
+        data.update(kwargs)
+        return Facility.objects.create(**data)
+
+    @classmethod
+    def get_patient_data(cls, district, state) -> dict:
         return {
             "name": "Foo",
             "age": 32,
-            "date_of_birth": datetime.date(1992, 4, 1),
+            "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
             "is_antenatal": False,
@@ -202,7 +238,7 @@ class TestBase(APITestCase):
             "allow_transfer": True,
             "blood_group": "O+",
             "ongoing_medication": "",
-            "date_of_return": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_return": make_aware(datetime(2020, 4, 1, 15, 30, 00)),
             "disease_status": "SUSPECTED",
             "phone_number": "+918888888888",
             "address": "Global citizen",
@@ -214,59 +250,103 @@ class TestBase(APITestCase):
             "present_health": "Fine",
             "has_SARI": False,
             "is_active": True,
-            "state": (state or cls.state).id,
-            "district": (district or cls.district).id,
+            "state_id": state.id,
+            "district_id": district.id,
             "local_body": None,
             "number_of_aged_dependents": 2,
             "number_of_chronic_diseased_dependents": 1,
             "medical_history": [{"disease": "Diabetes", "details": "150 count"}],
             "date_of_receipt_of_information": make_aware(
-                datetime.datetime(2020, 4, 1, 15, 30, 00)
+                datetime(2020, 4, 1, 15, 30, 00)
             ),
         }
 
     @classmethod
-    def setUpClass(cls) -> None:
-        super(TestBase, cls).setUpClass()
-        cls.state = cls.create_state()
-        cls.district = cls.create_district(cls.state)
-        cls.user_type = User.TYPE_VALUE_MAP["Staff"]
-        cls.user = cls.create_user(cls.district)
-        cls.super_user = cls.create_super_user(district=cls.district)
-        cls.facility = cls.create_facility(cls.district)
-        cls.patient = cls.create_patient()
-        cls.state_admin = cls.create_user(
-            cls.district,
-            username="state-admin",
-            user_type=User.TYPE_VALUE_MAP["StateAdmin"],
-            home_facility=cls.facility,
+    def create_patient(cls, district: District, facility: Facility, **kwargs):
+        patient_data = cls.get_patient_data(district, district.state).copy()
+        medical_history = patient_data.pop("medical_history", [])
+
+        patient_data.update(
+            {
+                "facility": facility,
+                "disease_status": getattr(
+                    DiseaseStatusEnum, patient_data["disease_status"]
+                ).value,
+            }
         )
 
-        cls.user_data = cls.get_user_data(cls.district, cls.user_type)
-        cls.facility_data = cls.get_facility_data(cls.district)
-        cls.patient_data = cls.get_patient_data(cls.district)
+        patient_data.update(kwargs)
+        patient = PatientRegistration.objects.create(**patient_data)
+        diseases = [
+            Disease.objects.create(
+                patient=patient,
+                disease=DISEASE_CHOICES_MAP[mh["disease"]],
+                details=mh["details"],
+            )
+            for mh in medical_history
+        ]
+        patient.medical_history.set(diseases)
 
-    def setUp(self) -> None:
-        self.client.force_login(self.user)
+        return patient
 
-    @abc.abstractmethod
-    def get_base_url(self):
-        """
-        Should return the base url of the testing viewset
-        WITHOUT trailing slash
+    @classmethod
+    def get_consultation_data(cls):
+        return {
+            "patient": cls.patient,
+            "facility": cls.facility,
+            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
+            "other_symptoms": "No other symptoms",
+            "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
+            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
+            "category": CATEGORY_CHOICES[0][0],
+            "examination_details": "examination_details",
+            "history_of_present_illness": "history_of_present_illness",
+            "treatment_plan": "treatment_plan",
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "referred_to": None,
+            "admission_date": None,
+            "discharge_date": None,
+            "consultation_notes": "",
+            "course_in_facility": "",
+            "created_date": mock_equal,
+            "modified_date": mock_equal,
+        }
 
-        eg: return "api/v1/facility"
-        :return: str
-        """
-        raise NotImplementedError()
+    @classmethod
+    def create_consultation(
+        cls,
+        patient: PatientRegistration,
+        facility: Facility,
+        referred_to=None,
+        **kwargs,
+    ) -> PatientConsultation:
+        data = cls.get_consultation_data().copy()
+        kwargs.update(
+            {
+                "patient": patient,
+                "facility": facility,
+                "referred_to": referred_to,
+            }
+        )
+        data.update(kwargs)
+        return PatientConsultation.objects.create(**data)
 
-    def get_url(self, entry_id=None, action=None, *args, **kwargs):
-        url = self.get_base_url(*args, **kwargs)
-        if entry_id is not None:
-            url = f"{url}/{entry_id}"
-        if action is not None:
-            url = f"{url}/{action}"
-        return f"{url}/"
+    @classmethod
+    def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
+        data = {"name": "asset1 location", "location_type": 1, "facility": facility}
+        data.update(kwargs)
+        return AssetLocation.objects.create(**data)
+
+    @classmethod
+    def create_asset(cls, location: AssetLocation, **kwargs) -> Asset:
+        data = {
+            "name": "Test Asset",
+            "current_location": location,
+            "asset_type": 50,
+            "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)),
+        }
+        data.update(kwargs)
+        return Asset.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):
@@ -281,7 +361,6 @@ class TestBase(APITestCase):
             new_obj.save()
         return new_obj
 
-    @abc.abstractmethod
     def get_list_representation(self, obj) -> dict:
         """
         Returns the dict representation of the obj in list API
@@ -290,7 +369,6 @@ class TestBase(APITestCase):
         """
         raise NotImplementedError()
 
-    @abc.abstractmethod
     def get_detail_representation(self, obj=None) -> dict:
         """
         Returns the dict representation of the obj in detail/retrieve API
@@ -329,6 +407,8 @@ class TestBase(APITestCase):
                     "id": local_body.id,
                     "name": local_body.name,
                     "district": local_body.district.id,
+                    "localbody_code": local_body.localbody_code,
+                    "body_type": local_body.body_type,
                 },
             }
 
@@ -369,12 +449,10 @@ class TestBase(APITestCase):
                         unicode,
                     ),
                 ):
-                    return_value = datetime.datetime.strptime(
-                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
-                    )
+                    return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
                 return (
-                    return_value.astimezone(tz=datetime.timezone.utc)
-                    if isinstance(return_value, datetime.datetime)
+                    return_value.astimezone(tz=UTC)
+                    if isinstance(return_value, datetime)
                     else return_value
                 )
             return value
@@ -401,44 +479,6 @@ class TestBase(APITestCase):
                 },
                 **self.get_local_body_district_state_representation(facility),
             }
-
-    @classmethod
-    def get_consultation_data(cls):
-        return {
-            "patient": cls.patient,
-            "facility": cls.facility,
-            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
-            "other_symptoms": "No other symptoms",
-            "symptoms_onset_date": make_aware(datetime.datetime(2020, 4, 7, 15, 30)),
-            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
-            "category": CATEGORY_CHOICES[0][0],
-            "examination_details": "examination_details",
-            "history_of_present_illness": "history_of_present_illness",
-            "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-            "referred_to": None,
-            "admission_date": None,
-            "discharge_date": None,
-            "consultation_notes": "",
-            "course_in_facility": "",
-            "created_date": mock_equal,
-            "modified_date": mock_equal,
-        }
-
-    @classmethod
-    def create_consultation(
-        cls, patient=None, facility=None, referred_to=None, **kwargs
-    ) -> PatientConsultation:
-        data = cls.get_consultation_data()
-        kwargs.update(
-            {
-                "patient": patient or cls.patient,
-                "facility": facility or cls.facility,
-                "referred_to": referred_to,
-            }
-        )
-        data.update(kwargs)
-        return PatientConsultation.objects.create(**data)
 
     def create_patient_note(
         self, patient=None, note="Patient is doing find", created_by=None, **kwargs

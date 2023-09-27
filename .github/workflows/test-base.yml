@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Bake docker images
+        uses: docker/bake-action@v3.1.0
+        with:
+          load: true
+          builder: ${{ steps.buildx.outputs.name }}
+          set: |
+              *.cache-from=type=gha,scope=cached-stage
+              *.cache-to=type=gha,scope=cached-stage,mode=max
+          files: docker-compose.yaml,docker-compose.local.yaml
+
+      - name: Start services
+        run: docker compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --no-build
+
+      - name: Check migrations
+        run: make checkmigration
+
+      - name: Run tests
+        run: make test-coverage
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
