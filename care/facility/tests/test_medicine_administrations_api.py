@@ -56,19 +56,31 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         res = self.client.post(archive_path, {})
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # test list administrations
+        res = self.client.get(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/"
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            any([administration_id == x["id"] for x in res.data["results"]])
+        )
+
         # test archived list administrations
         res = self.client.get(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/?archived=true"
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # assert if the archived administration's id is present in the res.data.results
         self.assertTrue(
-            any(
-                [
-                    administration_id == administration["id"]
-                    for administration in res.data["results"]
-                ]
-            )
+            any([administration_id == x["id"] for x in res.data["results"]])
+        )
+
+        # test archived list administrations
+        res = self.client.get(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/?archived=false"
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertFalse(
+            any([administration_id == x["id"] for x in res.data["results"]])
         )
 
     def test_administer_in_future(self):
