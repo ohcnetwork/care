@@ -1,6 +1,10 @@
+import uuid
+
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -56,6 +60,13 @@ from care.utils.queryset.facility import get_facility_queryset
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
+
+
+@receiver(post_save, sender=Asset)
+def delete_asset_cache(sender, instance, created, **kwargs):
+    cache.delete("asset:" + str(instance.external_id))
+    cache.delete("asset:qr:" + str(instance.qr_code_id))
+    cache.delete("asset:qr:" + str(instance.id))
 
 
 class AssetLocationViewSet(
@@ -122,6 +133,7 @@ class AssetFilter(filters.FilterSet):
         method="filter_in_use_by_consultation"
     )
     is_permanent = filters.BooleanFilter(method="filter_is_permanent")
+    warranty_amc_end_of_validity = filters.DateFromToRangeFilter()
 
     def filter_in_use_by_consultation(self, queryset, _, value):
         if value not in EMPTY_VALUES:
@@ -170,6 +182,36 @@ class AssetPublicViewSet(GenericViewSet):
             cache.set(
                 key, serializer.data, 60 * 60 * 24
             )  # Cache the asset details for 24 hours
+            return Response(serializer.data)
+        return Response(hit)
+
+
+class AssetPublicQRViewSet(GenericViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+    lookup_field = "qr_code_id"
+
+    def retrieve(self, request, *args, **kwargs):
+        is_uuid = True
+        try:
+            uuid.UUID(kwargs["qr_code_id"])
+        except ValueError:
+            # If the qr_code_id is not a UUID, then it is the pk of the asset
+            is_uuid = False
+            if not kwargs["qr_code_id"].isnumeric():
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        key = "asset:qr:" + kwargs["qr_code_id"]
+        hit = cache.get(key)
+        if not hit:
+            if is_uuid:
+                instance = self.get_object()
+            else:
+                instance = get_object_or_404(
+                    self.get_queryset(), pk=kwargs["qr_code_id"]
+                )
+            serializer = self.get_serializer(instance)
+            cache.set(key, serializer.data, 60 * 60 * 24)
             return Response(serializer.data)
         return Response(hit)
 

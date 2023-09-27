@@ -29,11 +29,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def get_last_administered_on(self, obj):
         last_administration = (
             MedicineAdministration.objects.filter(prescription=obj)
-            .order_by("-created_date")
+            .order_by("-administered_date")
             .first()
         )
         if last_administration:
-            return last_administration.created_date
+            return last_administration.administered_date
         return None
 
     class Meta:
