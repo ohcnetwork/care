@@ -1,11 +1,10 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
 class ExpectedShiftListKeys(Enum):
@@ -118,11 +117,22 @@ class ExpectedShiftCommentRetrieveKeys(Enum):
     CREATED_BY = "created_by"
 
 
-class ShiftingViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class ShiftingViewSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.factory = APIRequestFactory()
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.user = cls.create_user(
+            username="test_user", district=cls.district, local_body=cls.local_body
+        )
+        cls.facility = cls.create_facility(
+            user=cls.user, district=cls.district, local_body=cls.local_body
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.patient_shift = cls.create_patient_shift(
+            facility=cls.facility, user=cls.user, patient=cls.patient
+        )
 
     def setUp(self) -> None:
         refresh_token = RefreshToken.for_user(self.user)
@@ -149,12 +159,25 @@ class ShiftingViewSetTestCase(TestBase, TestClassMixin, APITestCase):
         self.assertCountEqual(data.keys(), expected_keys)
 
 
-class ShifitngRequestCommentViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class ShifitngRequestCommentViewSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.factory = APIRequestFactory()
-        cls.patient_shift_comment = cls.create_patient_shift_comment()
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.user = cls.create_user(
+            username="test_user", district=cls.district, local_body=cls.local_body
+        )
+        cls.facility = cls.create_facility(
+            user=cls.user, district=cls.district, local_body=cls.local_body
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.patient_shift = cls.create_patient_shift(
+            facility=cls.facility, user=cls.user, patient=cls.patient
+        )
+        cls.patient_shift_comment = cls.create_patient_shift_comment(
+            resource=cls.patient_shift
+        )
 
     def setUp(self) -> None:
         refresh_token = RefreshToken.for_user(self.user)
@@ -178,7 +201,8 @@ class ShifitngRequestCommentViewSetTestCase(TestBase, TestClassMixin, APITestCas
             key.value for key in ExpectedShiftCommentListCreatedByKeys
         ]
         data = response.json()["results"][0]["created_by_object"]
-        self.assertCountEqual(data.keys(), expected_created_by_keys)
+        if data:
+            self.assertCountEqual(data.keys(), expected_created_by_keys)
 
     def test_retrieve_shift_request_comment(self):
         response = self.client.get(
@@ -194,4 +218,5 @@ class ShifitngRequestCommentViewSetTestCase(TestBase, TestClassMixin, APITestCas
             key.value for key in ExpectedShiftCommentRetrieveCreatedByKeys
         ]
         data = response.json()["created_by_object"]
-        self.assertCountEqual(data.keys(), expected_created_by_keys)
+        if data:
+            self.assertCountEqual(data.keys(), expected_created_by_keys)

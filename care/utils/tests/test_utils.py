@@ -506,16 +506,24 @@ class TestUtils:
         self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
 
     @classmethod
-    def create_patient_shift(cls, **kwargs):
-        shifting_approving_facility = cls.create_facility(cls.district)
+    def create_patient_shift(
+        cls,
+        facility: Facility = None,
+        user: User = None,
+        patient: PatientRegistration = None,
+        **kwargs,
+    ) -> None:
+        shifting_approving_facility = cls.create_facility(
+            user=cls.user, district=cls.district, local_body=cls.local_body
+        )
         assigned_facility = shifting_approving_facility
         data = {
-            "origin_facility": cls.facility,
+            "origin_facility": assigned_facility,
             "shifting_approving_facility": shifting_approving_facility,
             "assigned_facility_type": fake.random_element(FACILITY_TYPES)[0],
             "assigned_facility": assigned_facility,
             "assigned_facility_external": "Assigned Facility External",
-            "patient": cls.patient,
+            "patient": patient,
             "emergency": False,
             "is_up_shift": False,
             "reason": "Reason",
@@ -528,23 +536,25 @@ class TestUtils:
             "status": fake.random_element(SHIFTING_STATUS_CHOICES)[0],
             "breathlessness_level": fake.random_element(BREATHLESSNESS_CHOICES)[0],
             "is_assigned_to_user": False,
-            "assigned_to": cls.user,
+            "assigned_to": user,
             "ambulance_driver_name": fake.name(),
             "ambulance_phone_number": "9900199001",
             "ambulance_number": fake.license_plate(),
-            "created_by": cls.user,
-            "last_edited_by": cls.user,
+            "created_by": user,
+            "last_edited_by": user,
         }
         data.update(kwargs)
         return ShiftingRequest.objects.create(**data)
 
     @classmethod
-    def create_patient_shift_comment(cls, resource=None, **kwargs):
+    def create_patient_shift_comment(
+        cls, resource: ShiftingRequest = None, user: User = None, **kwargs
+    ) -> None:
         kwargs.update(
             {
-                "request": resource or cls.patient_shift,
+                "request": resource,
                 "comment": "comment",
-                "created_by": cls.user,
+                "created_by": user,
             }
         )
         return ShiftingRequestComment.objects.create(**kwargs)
