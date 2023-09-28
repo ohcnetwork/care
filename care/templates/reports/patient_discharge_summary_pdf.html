@@ -942,10 +942,14 @@
 
   <div class="m-4 mb-12">
     <div class="text-sm leading-5 font-bold text-gray-500">
-      Verified By
+      Treating Physician
     </div>
     <div class="mt-1 text-sm leading-5 text-gray-900">
-      {{consultation.verified_by|linebreaks}}
+      {% if consultation.verified_by %}
+      {{ consultation.verified_by.first_name }} {{ consultation.verified_by.last_name }}
+      {% else %}
+      -
+      {% endif %}
     </div>
   </div>
 </body>

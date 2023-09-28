@@ -1,12 +1,22 @@
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from care.users.models import User
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestFacilityUserApi(TestBase):
+class TestFacilityUserApi(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+
     def get_base_url(self):
-        return "/api/v1/users/add_user"
+        return "/api/v1/users/add_user/"
 
     def get_list_representation(self, obj) -> dict:
         raise NotImplementedError
@@ -53,8 +63,7 @@ class TestFacilityUserApi(TestBase):
         data = self.get_new_user_data().copy()
         data.update({"user_type": "DistrictAdmin"})
 
-        response = self.client.post(self.get_url(), data=data, format="json")
-        # Test Creation
+        response = self.client.post(self.get_base_url(), data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_facility_user__should_fail__when_different_location(self):
@@ -62,6 +71,5 @@ class TestFacilityUserApi(TestBase):
         data = self.get_new_user_data().copy()
         data.update({"district": new_district.id})
 
-        response = self.client.post(self.get_url(), data=data, format="json")
-        # Test Creation
+        response = self.client.post(self.get_base_url(), data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -1,82 +1,48 @@
 import datetime
 
-from django.test import TestCase
 from django.utils.timezone import make_aware
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.facility_users import FacilityUserViewSet
-from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
-from care.facility.models.facility import Facility
 from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
 )
-from care.facility.tests.mixins import TestClassMixin
-from care.users.models import Skill
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class FacilityUserTest(TestClassMixin, TestCase):
-    def setUp(self):
-        super().setUp()
-        self.creator = self.users[0]
+class TestPatientConsultation(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.doctor = cls.create_user(
+            "doctor", cls.district, home_facility=cls.facility, user_type=15
+        )
 
-        sample_data = {
-            "name": "Hospital X",
-            "ward": self.creator.ward,
-            "local_body": self.creator.local_body,
-            "district": self.creator.district,
-            "state": self.creator.state,
-            "facility_type": 1,
-            "address": "Nearby",
-            "pincode": 390024,
-            "features": [],
+    def get_default_data(self):
+        return {
+            "symptoms": [1],
+            "category": CATEGORY_CHOICES[0][0],
+            "examination_details": "examination_details",
+            "history_of_present_illness": "history_of_present_illness",
+            "treatment_plan": "treatment_plan",
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "verified_by": self.doctor.id,
         }
-        self.facility = Facility.objects.create(
-            external_id="550e8400-e29b-41d4-a716-446655440000",
-            created_by=self.creator,
-            **sample_data,
-        )
 
-        self.skill1 = Skill.objects.create(name="Skill 1")
-        self.skill2 = Skill.objects.create(name="Skill 2")
-
-        self.users[0].skills.add(self.skill1, self.skill2)
-
-    def test_get_queryset_with_prefetching(self):
-        response = self.new_request(
-            (f"/api/v1/facility/{self.facility.external_id}/get_users/",),
-            {"get": "list"},
-            FacilityUserViewSet,
-            self.users[0],
-            {"facility_external_id": self.facility.external_id},
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNumQueries(2)
-
-
-class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
-    default_data = {
-        "symptoms": [1],
-        "category": CATEGORY_CHOICES[0][0],
-        "examination_details": "examination_details",
-        "history_of_present_illness": "history_of_present_illness",
-        "treatment_plan": "treatment_plan",
-        "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-    }
-
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.consultation = self.create_consultation(
-            suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-        )
+    def get_url(self, consultation=None):
+        if consultation:
+            return f"/api/v1/consultation/{consultation.external_id}/"
+        return "/api/v1/consultation/"
 
     def create_admission_consultation(self, patient=None, **kwargs):
-        patient = patient or self.create_patient(facility_id=self.facility.id)
-        data = self.default_data.copy()
+        patient = patient or self.create_patient(self.district, self.facility)
+        data = self.get_default_data().copy()
         kwargs.update(
             {
                 "patient": patient.external_id,
@@ -84,28 +50,26 @@ class TestPatientConsultation(TestBase, TestClassMixin, APITestCase):
             }
         )
         data.update(kwargs)
-        res = self.new_request(
-            (self.get_url(), data, "json"),
-            {"post": "create"},
-            PatientConsultationViewSet,
-            self.state_admin,
-            {},
-        )
+        res = self.client.post(self.get_url(), data)
         return PatientConsultation.objects.get(external_id=res.data["id"])
 
-    def get_url(self, consultation=None):
-        if consultation:
-            return f"/api/v1/consultation/{consultation.external_id}"
-        return "/api/v1/consultation"
+    def update_consultation(self, consultation, **kwargs):
+        return self.client.patch(self.get_url(consultation), kwargs, "json")
 
     def discharge(self, consultation, **kwargs):
-        return self.new_request(
-            (f"{self.get_url(consultation)}/discharge_patient", kwargs, "json"),
-            {"post": "discharge_patient"},
-            PatientConsultationViewSet,
-            self.state_admin,
-            {"external_id": consultation.external_id},
+        return self.client.post(
+            f"{self.get_url(consultation)}discharge_patient/", kwargs, "json"
         )
+
+    def test_create_consultation_verified_by_invalid_user(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.update_consultation(
+            consultation, verified_by=self.doctor.id, suggestion="A"
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_discharge_as_recovered_preadmission(self):
         consultation = self.create_admission_consultation(
