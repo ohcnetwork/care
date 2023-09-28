@@ -47,19 +47,13 @@ class ExpectedRetrieveCausedByKeys(Enum):
     last_login = "last_login"
 
 
-class NotificationViewSetTestCase(APITestCase, TestUtils):
+class NotificationViewSetTestCase(TestUtils, APITestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.factory = APIRequestFactory()
         cls.notification = cls.create_notification()
 
-    def setUp(self) -> None:
-        # Refresh token to header
-        refresh_token = RefreshToken.for_user(self.user)
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
 
     def test_list_notifications(self):
         response = self.client.get("/api/v1/notification/")
