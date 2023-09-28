@@ -112,7 +112,7 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 * Install pre-commit
     pre-commit is installed while you run ::
 
-     pip install -r requirements/local.txt
+     pipenv install --categories "package dev-packages"
 
 * Setup
     this installs all the git-hooks ::
