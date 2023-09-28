@@ -1,0 +1,527 @@
+[
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "Sonari Covil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "Dhemaji Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "Naharkatia SDCH"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "MCH Building SKKCH, Golaghat"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "SKMCH Bokakhat"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "Sivasagar Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Assam Medical college",
+        "spoke": "Tinsukia Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Silchar Medical College",
+        "spoke": "Karimganj Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Silchar Medical College",
+        "spoke": "SK Roy Civil Hospital, Hailakandi"
+    },
+    {
+        "state": "Assam",
+        "hub": "Silchar Medical College",
+        "spoke": "Haflong Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Dr. Ravi Boro Civil Hosital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Gohpur Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Biswanath Charali District Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "JSB Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Mangaldai Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Goalpara 200 Bedded Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Sonapur District Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Singimari Model Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Morigaon Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "BP Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "SMK Civil Hospital, Nalbari"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Kanaklata Civil Hospital"
+    },
+    {
+        "state": "Assam",
+        "hub": "Gauhati Medical College",
+        "spoke": "Udalguri Civil Hospital"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Devanahalli"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Bagepalli"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Chintamani"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Challakere"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Honnali"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Srinivasapura"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Channapatna"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Sagara"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Bangalore Medical College, Victoria Hospital",
+        "spoke": "GH Sira"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "K R Hospital"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Santemarahalli"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Virajpet"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Malavalli"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Nanjanagudu"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH HD Kote"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Kollegal"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Kadur"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Bantwal"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Holenarasipura"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Arakalagudu"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Somwarpet"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Mysore Medical College, Krishna Rajendra hospital",
+        "spoke": "GH Nagamangala"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Jamakhandi"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Bhatkal"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Yellapura"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Naragund"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Gokak"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Savadatti"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Basavana Bagewadi"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "Haveri Dist Hospital"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Shiggaon"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Karnataka institute of Medical Science",
+        "spoke": "GH Kundgol"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Shahpur"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "Yadgir Dist Hospital"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Sindhanur"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Lingasugur"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Hospet"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Aland"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Jewargi"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Yelburga"
+    },
+    {
+        "state": "Karnataka",
+        "hub": "Vijayanagar Institute of Medical Sciences",
+        "spoke": "GH Basavakalyan"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "DH,Churachandpur"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital,Tamenglong"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital,Chandel"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital,Thoubal"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital,Senapati"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Kakching"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital,Bishnupur"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Parbung"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "Sub District Hospital, Moreh"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Kamjong"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Kangpokpi"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Nungba"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital Jiribam"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "CHC Sekmai"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "District Hospital Ukhrul"
+    },
+    {
+        "state": "Manipur",
+        "hub": "JNIMS",
+        "spoke": "JNIMS"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Dimapur"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Tuensang"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "HMDH, Zunheboto"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DMMDH, Wokha"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "IMDH, Mokokchung"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Phek"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Mon"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Noklak"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Longleng"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Kiphire"
+    },
+    {
+        "state": "Nagaland",
+        "hub": "NHAK",
+        "spoke": "DH, Peren"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Resubelpara CHC"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Baghmara Civil Hospital"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Willliamnagar Civil Hospital"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Tura MCH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Phulbari CHC"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Ganesh Das Govt. MCH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Jowai MCH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Jowai DH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Khliehriat MCH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Khliehriat DH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Mawkyrwat 100 bedded/ MCH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Nongstoin DH / CH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Mairang MCH / CH"
+    },
+    {
+        "state": "Meghalaya",
+        "hub": "Jengjal Sub-divisonal Hospital",
+        "spoke": "Nongpoh Civil Hospital"
+    }
+]

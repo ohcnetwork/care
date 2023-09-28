@@ -7,6 +7,7 @@ from .bed import *  # noqa
 from .daily_round import *  # noqa
 from .facility import *  # noqa
 from .inventory import *  # noqa
+from .meta_hub_spokes import *  # noqa
 from .meta_icd11_diagnosis import *  # noqa
 from .patient import *  # noqa
 from .patient_consultation import *  # noqa
