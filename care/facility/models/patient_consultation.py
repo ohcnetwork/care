@@ -64,6 +64,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
     )
+    icd11_principal_diagnosis = models.CharField(
+        max_length=100, default="", blank=True, null=True
+    )
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
