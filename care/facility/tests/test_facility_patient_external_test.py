@@ -1,11 +1,10 @@
 from enum import Enum
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
 class ExpectedPatientExternalTestListKeys(Enum):
@@ -72,12 +71,17 @@ class DistrictKeys(Enum):
     STATE = "state"
 
 
-class PatientExternalTestViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.factory = APIRequestFactory()
-        cls.patient_external = cls.create_patient_external_test()
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.super_user = cls.create_super_user(username="su2", district=cls.district)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.ward = cls.create_ward(cls.local_body)
+        cls.patient_external = cls.create_patient_external_test(
+            district=cls.district, local_body=cls.local_body, ward=cls.ward
+        )
 
     def setUp(self) -> None:
         refresh_token = RefreshToken.for_user(self.super_user)
