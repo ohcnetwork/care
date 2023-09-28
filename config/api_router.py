@@ -13,6 +13,7 @@ from care.facility.api.viewsets.ambulance import (
 from care.facility.api.viewsets.asset import (
     AssetAvailabilityViewSet,
     AssetLocationViewSet,
+    AssetPublicQRViewSet,
     AssetPublicViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
@@ -219,6 +220,7 @@ router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
+router.register("public/asset_qr", AssetPublicQRViewSet)
 
 # ABDM endpoints
 if settings.ENABLE_ABDM:
