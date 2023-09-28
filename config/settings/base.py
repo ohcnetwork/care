@@ -95,7 +95,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "storages",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -574,3 +573,7 @@ HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
 HCX_PASSWORD = env("HCX_PASSWORD", default="")
 HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
 HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
+
+PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
+PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
+PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")

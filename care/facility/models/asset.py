@@ -4,6 +4,7 @@ import uuid
 from django.db import models
 from django.db.models import JSONField, Q
 
+from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
@@ -46,21 +47,28 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     )
 
 
+class AssetType(enum.Enum):
+    INTERNAL = 50
+    EXTERNAL = 100
+
+
+AssetTypeChoices = [(e.value, e.name) for e in AssetType]
+
+AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
+
+
+class Status(enum.Enum):
+    ACTIVE = 50
+    TRANSFER_IN_PROGRESS = 100
+
+
+StatusChoices = [(e.value, e.name) for e in Status]
+
+REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices)
+REVERSE_STATUS = reverse_choices(StatusChoices)
+
+
 class Asset(BaseModel):
-    class AssetType(enum.Enum):
-        INTERNAL = 50
-        EXTERNAL = 100
-
-    AssetTypeChoices = [(e.value, e.name) for e in AssetType]
-
-    AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
-
-    class Status(enum.Enum):
-        ACTIVE = 50
-        TRANSFER_IN_PROGRESS = 100
-
-    StatusChoices = [(e.value, e.name) for e in Status]
-
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(
@@ -92,8 +100,42 @@ class Asset(BaseModel):
     qr_code_id = models.CharField(max_length=1024, blank=True, default=None, null=True)
     manufacturer = models.CharField(max_length=1024, blank=True, null=True)
     warranty_amc_end_of_validity = models.DateField(default=None, null=True, blank=True)
-    last_serviced_on = models.DateField(default=None, null=True, blank=True)
-    notes = models.TextField(default="", null=True, blank=True)
+    last_service = models.ForeignKey(
+        "facility.AssetService",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="last_service",
+    )
+
+    CSV_MAPPING = {
+        "name": "Name",
+        "description": "Description",
+        "asset_type": "Type",
+        "asset_class": "Class",
+        "status": "Working Status",
+        "current_location": "Current Location",
+        "is_working": "Is Working",
+        "not_working_reason": "Not Working Reason",
+        "serial_number": "Serial Number",
+        "warranty_details": "Warranty Details",
+        "vendor_name": "Vendor Name",
+        "support_name": "Support Name",
+        "support_phone": "Support Phone Number",
+        "support_email": "Support Email",
+        "qr_code_id": "QR Code ID",
+        "manufacturer": "Manufacturer",
+        "warranty_amc_end_of_validity": "Warrenty End Date",
+        "last_service__serviced_on": "Last Service Date",
+        "last_service__note": "Notes",
+        "meta__local_ip_address": "Config - IP Address",
+        "meta__camera_access_key": "Config: Camera Access Key",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
+        "status": (lambda x: REVERSE_STATUS[x]),
+    }
 
     class Meta:
         constraints = [
@@ -177,3 +219,34 @@ class AssetTransaction(BaseModel):
     performed_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=False, blank=False
     )
+
+
+class AssetService(BaseModel):
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+
+    serviced_on = models.DateField(default=None, null=True, blank=False)
+    note = models.TextField(default="", null=True, blank=True)
+
+    @property
+    def edit_history(self):
+        return self.edits.order_by("-edited_on")
+
+
+class AssetServiceEdit(models.Model):
+    asset_service = models.ForeignKey(
+        AssetService,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_on = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    serviced_on = models.DateField()
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_on"]

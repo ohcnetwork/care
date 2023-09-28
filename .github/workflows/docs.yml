@@ -24,10 +24,15 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: "3.11"
+          cache: 'pipenv'
+          cache-dependency-path: |
+            Pipfile.lock
+
+      - name: Install pipenv
+        run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements/docs.txt
+        run: pipenv sync --categories "docs"
 
       - name: Build docs
         run: |
@@ -61,7 +66,7 @@ jobs:
           touch build/.nojekyll
 
       - name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
           folder: build

@@ -43,8 +43,16 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="consultations",
     )
 
-    ip_no = models.CharField(max_length=100, default="", null=True, blank=True)
-    op_no = models.CharField(max_length=100, default="", null=True, blank=True)
+    patient_no = models.CharField(
+        max_length=100,
+        default="",
+        null=True,
+        blank=True,
+        help_text=(
+            "Patient's unique number in the facility. "
+            "IP number for inpatients and OP number for outpatients."
+        ),
+    )
 
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
@@ -55,6 +63,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
+    )
+    icd11_principal_diagnosis = models.CharField(
+        max_length=100, default="", blank=True, null=True
     )
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
@@ -77,7 +88,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
-    prescribed_medication = models.TextField(null=True, blank=True)
+    treatment_plan = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
     investigation = JSONField(default=dict)
@@ -96,6 +107,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
         related_name="referred_patients",
     )  # Deprecated
+    is_readmission = models.BooleanField(default=False)
     referred_to_external = models.TextField(default="", null=True, blank=True)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
@@ -131,7 +143,10 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
-    verified_by = models.TextField(default="", null=True, blank=True)
+    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
+    verified_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"

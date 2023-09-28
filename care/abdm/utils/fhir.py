@@ -88,7 +88,11 @@ class Fhir:
 
         id = str(uuid())
         name = (
-            self.consultation.verified_by
+            (
+                self.consultation.verified_by
+                and f"{self.consultation.verified_by.first_name} {self.consultation.verified_by.last_name}"
+            )
+            or self.consultation.deprecated_verified_by
             or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"
         )
         self._practitioner_profile = Practitioner(
@@ -211,7 +215,7 @@ class Fhir:
                 else None,
             ),
             note=[
-                Annotation(text=self.consultation.prescribed_medication),
+                Annotation(text=self.consultation.treatment_plan),
                 Annotation(text=self.consultation.consultation_notes),
                 Annotation(text=self.consultation.special_instruction),
             ],
