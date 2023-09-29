@@ -42,7 +42,7 @@ class AssetLocationSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
     def validate_middleware_address(self, value):
-        value = value.strip()
+        value = (value or "").strip()
         if not value:
             return value
 

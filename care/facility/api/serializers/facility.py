@@ -138,7 +138,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         read_only_fields = ("modified_date", "created_date")
 
     def validate_middleware_address(self, value):
-        value = value.strip()
+        value = (value or "").strip()
         if not value:
             return value
 
