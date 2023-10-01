@@ -95,10 +95,6 @@ class ConsentRequest(Consent):
     def request_id(self):
         return self.consent_id
 
-    status = models.CharField(
-        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
-    )
-
 
 class ConsentArtefact(Consent):
     @property
@@ -129,6 +125,10 @@ class ConsentArtefact(Consent):
         null=True,
         blank=True,
         related_name="consent_artefacts",
+    )
+
+    status = models.CharField(
+        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
     )
 
     cm = models.CharField(max_length=50, null=True, blank=True)

@@ -22,7 +22,7 @@ class ConsentRequestFilter(filters.FilterSet):
 
     class Meta:
         model = ConsentRequest
-        fields = ["patient", "health_id", "status", "purpose"]
+        fields = ["patient", "health_id", "purpose"]
 
 
 class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
@@ -113,7 +113,6 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        consent.status = data["consentRequest"]["status"]
         consent_artefacts = data["consentRequest"]["consentArtefacts"] or []
         for artefact in consent_artefacts:
             consent_artefact = ConsentArtefact.objects.filter(
@@ -125,7 +124,9 @@ class ConsentCallbackViewSet(GenericViewSet):
                     consent_request=consent,
                     **consent.consent_details_dict(),
                 )
-                consent_artefact.save()
+
+            consent_artefact.status = data["consentRequest"]["status"]
+            consent_artefact.save()
         consent.save()
 
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -133,10 +134,15 @@ class ConsentCallbackViewSet(GenericViewSet):
     def consents__hiu__notify(self, request):
         data = request.data
 
-        # TODO: handle consent request revoke
         if not data["notification"]["consentRequestId"]:
-            # move status to consent artefact
-            pass
+            for artefact in data["notification"]["consentArtefacts"]:
+                consent_artefact = ConsentArtefact.objects.filter(
+                    external_id=artefact["id"]
+                ).first()
+
+                consent_artefact.status = "REVOKED"
+                consent_artefact.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
 
         consent = ConsentRequest.objects.filter(
             consent_id=data["notification"]["consentRequestId"]
@@ -145,7 +151,6 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        consent.status = data["notification"]["status"]
         consent_artefacts = data["notification"]["consentArtefacts"] or []
         for artefact in consent_artefacts:
             consent_artefact = ConsentArtefact.objects.filter(
@@ -157,7 +162,9 @@ class ConsentCallbackViewSet(GenericViewSet):
                     consent_request=consent,
                     **consent.consent_details_dict(),
                 )
-                consent_artefact.save()
+
+            consent_artefact.status = data["notification"]["status"]
+            consent_artefact.save()
         consent.save()
 
         ConsentViewSet().fetch(request, consent.external_id)
