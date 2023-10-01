@@ -132,6 +132,12 @@ class ConsentCallbackViewSet(GenericViewSet):
 
     def consents__hiu__notify(self, request):
         data = request.data
+
+        # TODO: handle consent request revoke
+        if not data["notification"]["consentRequestId"]:
+            # move status to consent artefact
+            pass
+
         consent = ConsentRequest.objects.filter(
             consent_id=data["notification"]["consentRequestId"]
         ).first()

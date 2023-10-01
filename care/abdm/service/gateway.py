@@ -2,7 +2,9 @@ import uuid
 from datetime import datetime, timezone
 
 from django.conf import settings
+from django.db.models import Q
 
+from care.abdm.models.abha_number import AbhaNumber
 from care.abdm.models.base import Purpose
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.request import Request
@@ -115,5 +117,38 @@ class Gateway:
             headers={"X-CM-ID": settings.X_CM_ID},
         )
 
-    def health_information__notify(self, data):
-        pass
+    def get_hf_id_by_health_id(self, health_id):
+        return (
+            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
+            .first()
+            .patientregistration.facility.healthfacility.hf_id
+        )
+
+    def health_information__notify(self, artefact: ConsentArtefact):
+        data = {
+            "requestId": str(uuid.uuid4()),
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
+            "notification": {
+                "consentId": str(artefact.artefact_id),
+                "transactionId": str(artefact.transaction_id),
+                "doneAt": datetime.now(tz=timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%S.000Z"
+                ),
+                "notifier": {
+                    "type": "HIU",
+                    "id": self.get_hf_id_by_health_id(artefact.patient_abha.health_id),
+                },
+            },
+            "statusNotification": {
+                "sessionStatus": "TRANSFERRED",
+                "hipId": artefact.hip,
+            },
+        }
+
+        return self.request.post(
+            "/v0.5/health-information/notify",
+            data,
+            headers={"X-CM-ID": settings.X_CM_ID},
+        )

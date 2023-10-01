@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +9,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.abdm.models.consent import ConsentArtefact
 from care.abdm.service.gateway import Gateway
 from care.abdm.utils.cipher import Cipher
+from care.facility.models.file_upload import FileUpload
 from config.authentication import ABDMAuthentication
 
 
@@ -80,8 +83,15 @@ class HealthInformationCallbackViewSet(GenericViewSet):
                 # TODO: handle link
                 pass
 
-        # TODO: save entries in s3 bucket
+        file = FileUpload(
+            internal_name=f"{artefact.external_id}.json",
+            file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
+            associating_id=artefact.consent_request.external_id,
+        )
+        file.put_object(json.dumps(entries), ContentType="application/json")
+        file.upload_completed = True
+        file.save()
 
-        # TODO: call notify endpoint
+        Gateway().health_information__notify(artefact)
 
         return Response(status=status.HTTP_202_ACCEPTED)
