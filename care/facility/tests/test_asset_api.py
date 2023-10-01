@@ -1,4 +1,4 @@
-from django.utils.timezone import datetime
+from django.utils.timezone import now, timedelta
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -119,7 +119,7 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
             {
                 "consultation": consultation.external_id,
                 "bed": bed.external_id,
-                "start_date": datetime.now().isoformat(),
+                "start_date": now().isoformat(),
                 "assets": [asset1.external_id, asset2.external_id],
             },
         )
@@ -131,3 +131,37 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get("/api/v1/asset/?in_use_by_consultation=false")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
+
+    def test_asset_filter_warranty_amc_end_of_validity(self):
+        asset1 = Asset.objects.create(
+            name="asset1",
+            current_location=self.asset_location,
+            warranty_amc_end_of_validity=now().date(),
+        )
+        asset2 = Asset.objects.create(
+            name="asset2",
+            current_location=self.asset_location,
+            warranty_amc_end_of_validity=now().date() + timedelta(days=1),
+        )
+
+        response = self.client.get(
+            f"/api/v1/asset/?warranty_amc_end_of_validity_before={now().date() + timedelta(days=2)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(
+            str(asset1.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+        self.assertIn(
+            str(asset2.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+
+        response = self.client.get(
+            f"/api/v1/asset/?warranty_amc_end_of_validity_after={now().date() + timedelta(days=1)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(
+            str(asset2.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+        self.assertNotIn(
+            str(asset1.external_id), [asset["id"] for asset in response.data["results"]]
+        )

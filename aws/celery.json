@@ -119,6 +119,10 @@
         {
           "name": "SENTRY_PROFILES_SAMPLE_RATE",
           "value": "1.0"
+        },
+        {
+          "name": "SENTRY_ENVIRONMENT",
+          "value": "staging"
         }
       ],
       "repositoryCredentials": {
@@ -243,6 +247,18 @@
         {
           "valueFrom": "/care/backend/HCX_IG_URL",
           "name": "HCX_IG_URL"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_HOST",
+          "name": "PLAUSIBLE_HOST"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_SITE_ID",
+          "name": "PLAUSIBLE_SITE_ID"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
+          "name": "PLAUSIBLE_AUTH_TOKEN"
         },
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
@@ -374,6 +390,10 @@
         {
           "name": "SENTRY_PROFILES_SAMPLE_RATE",
           "value": "1.0"
+        },
+        {
+          "name": "SENTRY_ENVIRONMENT",
+          "value": "staging"
         }
       ],
       "repositoryCredentials": {
@@ -496,6 +516,18 @@
         {
           "valueFrom": "/care/backend/HCX_IG_URL",
           "name": "HCX_IG_URL"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_HOST",
+          "name": "PLAUSIBLE_HOST"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_SITE_ID",
+          "name": "PLAUSIBLE_SITE_ID"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
+          "name": "PLAUSIBLE_AUTH_TOKEN"
         },
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
