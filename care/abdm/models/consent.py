@@ -11,13 +11,17 @@ from care.abdm.models.base import (
     Purpose,
     Status,
 )
-from care.abdm.models.json_schema import CARE_CONTEXTS, CONSENT_ARTEFACTS
+from care.abdm.models.json_schema import CARE_CONTEXTS
+from care.abdm.utils.cipher import Cipher
 from care.users.models import User
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class Consent(BaseModel):
+    class Meta:
+        abstract = True
+
     def default_expiry():
         return timezone.now() + timezone.timedelta(days=30)
 
@@ -27,26 +31,16 @@ class Consent(BaseModel):
     def default_to_time():
         return timezone.now()
 
-    @property
-    def request_id(self):
-        return self.consent_id
-
-    consent_id = models.UUIDField(null=True, blank=True)
+    consent_id = models.UUIDField(null=True, blank=True, unique=True)
 
     patient_abha = models.ForeignKey(
         AbhaNumber, on_delete=models.PROTECT, to_field="health_id"
     )
 
-    artefacts = models.JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(CONSENT_ARTEFACTS)]
-    )
     care_contexts = models.JSONField(
         default=list, validators=[JSONFieldSchemaValidator(CARE_CONTEXTS)]
     )
 
-    status = models.CharField(
-        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
-    )
     purpose = models.CharField(
         choices=Purpose.choices, max_length=20, default=Purpose.CARE_MANAGEMENT.value
     )
@@ -57,7 +51,6 @@ class Consent(BaseModel):
 
     hip = models.CharField(max_length=50, null=True, blank=True)
     hiu = models.CharField(max_length=50, null=True, blank=True)
-    cm = models.CharField(max_length=50, null=True, blank=True)
 
     requester = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
@@ -77,3 +70,76 @@ class Consent(BaseModel):
         default=1, validators=[MinValueValidator(1)]
     )
     frequency_repeats = models.PositiveSmallIntegerField(default=0)
+
+    def consent_details_dict(self):
+        return {
+            "patient_abha": self.patient_abha,
+            "care_contexts": self.care_contexts,
+            "purpose": self.purpose,
+            "hi_types": self.hi_types,
+            "hip": self.hip,
+            "hiu": self.hiu,
+            "requester": self.requester,
+            "access_mode": self.access_mode,
+            "from_time": self.from_time,
+            "to_time": self.to_time,
+            "expiry": self.expiry,
+            "frequency_unit": self.frequency_unit,
+            "frequency_value": self.frequency_value,
+            "frequency_repeats": self.frequency_repeats,
+        }
+
+
+class ConsentRequest(Consent):
+    @property
+    def request_id(self):
+        return self.consent_id
+
+    status = models.CharField(
+        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
+    )
+
+
+class ConsentArtefact(Consent):
+    @property
+    def artefact_id(self):
+        return self.consent_id
+
+    def save(self, *args, **kwargs):
+        if self.key_material_private_key is None:
+            cipher = Cipher("", "")
+            key_material = cipher.generate_key_pair()
+
+            self.key_material_algorithm = "ECDH"
+            self.key_material_curve = "Curve25519"
+            self.key_material_public_key = key_material["publicKey"]
+            self.key_material_private_key = key_material["privateKey"]
+            self.key_material_nonce = key_material["nonce"]
+
+        return super().save(*args, **kwargs)
+
+    consent_request = models.ForeignKey(
+        ConsentRequest,
+        on_delete=models.PROTECT,
+        to_field="consent_id",
+        null=True,
+        blank=True,
+        related_name="consent_artefacts",
+    )
+
+    cm = models.CharField(max_length=50, null=True, blank=True)
+
+    key_material_algorithm = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+        default="ECDH",
+    )
+    key_material_curve = models.CharField(
+        max_length=20, null=True, blank=True, default="Curve25519"
+    )
+    key_material_public_key = models.CharField(max_length=100, null=True, blank=True)
+    key_material_private_key = models.CharField(max_length=200, null=True, blank=True)
+    key_material_nonce = models.CharField(max_length=100, null=True, blank=True)
+
+    signature = models.TextField(null=True, blank=True)

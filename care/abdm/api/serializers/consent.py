@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from care.abdm.models.consent import Consent
+from care.abdm.models.consent import ConsentRequest
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
-class ConsentSerializer(serializers.ModelSerializer):
+class ConsentRequestSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     requester = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
-        model = Consent
+        model = ConsentRequest
         exclude = ("deleted", "external_id")

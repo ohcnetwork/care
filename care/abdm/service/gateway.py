@@ -1,9 +1,10 @@
+import uuid
 from datetime import datetime, timezone
 
 from django.conf import settings
 
 from care.abdm.models.base import Purpose
-from care.abdm.models.consent import Consent
+from care.abdm.models.consent import ConsentRequest
 from care.abdm.service.request import Request
 
 
@@ -11,7 +12,7 @@ class Gateway:
     def __init__(self):
         self.request = Request(settings.ABDM_URL + "/gateway")
 
-    def consent_requests__init(self, consent: Consent):
+    def consent_requests__init(self, consent: ConsentRequest):
         data = {
             "requestId": str(consent.external_id),
             "timestamp": datetime.now(tz=timezone.utc).strftime(
@@ -56,7 +57,7 @@ class Gateway:
 
     def consent_requests__status(self, consent_request_id: str):
         data = {
-            "requestId": "5f7a535d-a3fd-416b-b069-c97d021fbacd",
+            "requestId": str(uuid.uuid4()),
             "timestamp": datetime.now(tz=timezone.utc).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
@@ -65,4 +66,17 @@ class Gateway:
 
         return self.request.post(
             "/v0.5/consent-requests/status", data, headers={"X-CM-ID": settings.X_CM_ID}
+        )
+
+    def consents__fetch(self, consent_artefact_id: str):
+        data = {
+            "requestId": str(uuid.uuid4()),
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
+            "consentId": consent_artefact_id,
+        }
+
+        return self.request.post(
+            "/v0.5/consents/fetch", data, headers={"X-CM-ID": settings.X_CM_ID}
         )

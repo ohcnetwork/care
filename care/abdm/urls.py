@@ -48,6 +48,11 @@ abdm_urlpatterns = [
         name="abdm__consents__hiu__notify",
     ),
     path(
+        "v0.5/consents/on-fetch",
+        ConsentCallbackViewSet.as_view({"post": "consents__on_fetch"}),
+        name="abdm__consents__on_fetch",
+    ),
+    path(
         "v0.5/users/auth/on-fetch-modes",
         OnFetchView.as_view(),
         name="abdm_on_fetch_modes_view",

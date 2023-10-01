@@ -13,18 +13,3 @@ CARE_CONTEXTS = {
         }
     ],
 }
-
-CONSENT_ARTEFACTS = {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "array",
-    "content": [
-        {
-            "type": "object",
-            "properties": {
-                "id": {"type": "string"},
-            },
-            "additionalProperties": False,
-            "required": ["id"],
-        }
-    ],
-}
