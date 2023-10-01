@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.consent import ConsentRequestSerializer
+from care.abdm.api.viewsets.health_information import HealthInformationViewSet
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.gateway import Gateway
 from care.utils.queryset.facility import get_facility_queryset
@@ -75,7 +76,7 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         for artefact in consent.consent_artefacts.all():
-            response = Gateway().consents__fetch(str(artefact.consent_id))
+            response = Gateway().consents__fetch(str(artefact.artefact_id))
 
             if response.status_code != 202:
                 return Response(response.json(), status=response.status_code)
@@ -116,12 +117,13 @@ class ConsentCallbackViewSet(GenericViewSet):
         consent_artefacts = data["consentRequest"]["consentArtefacts"] or []
         for artefact in consent_artefacts:
             consent_artefact = ConsentArtefact.objects.filter(
-                consent_id=artefact["id"]
+                external_id=artefact["id"]
             ).first()
             if not consent_artefact:
                 consent_artefact = ConsentArtefact(
-                    consent_id=artefact["id"],
-                    consent_request=consent ** consent.consent_details_dict(),
+                    external_id=artefact["id"],
+                    consent_request=consent,
+                    **consent.consent_details_dict(),
                 )
                 consent_artefact.save()
         consent.save()
@@ -141,13 +143,13 @@ class ConsentCallbackViewSet(GenericViewSet):
         consent_artefacts = data["notification"]["consentArtefacts"] or []
         for artefact in consent_artefacts:
             consent_artefact = ConsentArtefact.objects.filter(
-                consent_id=artefact["id"]
+                external_id=artefact["id"]
             ).first()
             if not consent_artefact:
                 consent_artefact = ConsentArtefact(
-                    consent_id=artefact["id"],
+                    external_id=artefact["id"],
                     consent_request=consent,
-                    **consent.consent_details_dict()
+                    **consent.consent_details_dict(),
                 )
                 consent_artefact.save()
         consent.save()
@@ -159,7 +161,7 @@ class ConsentCallbackViewSet(GenericViewSet):
     def consents__on_fetch(self, request):
         data = request.data["consent"]
         artefact = ConsentArtefact.objects.filter(
-            consent_id=data["consentDetail"]["consentId"]
+            external_id=data["consentDetail"]["consentId"]
         ).first()
 
         if not artefact:
@@ -189,5 +191,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
         artefact.signature = data["signature"]
         artefact.save()
+
+        HealthInformationViewSet().request(request, artefact.external_id)
 
         return Response(status=status.HTTP_202_ACCEPTED)

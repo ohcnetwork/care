@@ -103,6 +103,10 @@ class ConsentRequest(Consent):
 class ConsentArtefact(Consent):
     @property
     def artefact_id(self):
+        return self.external_id
+
+    @property
+    def transaction_id(self):
         return self.consent_id
 
     def save(self, *args, **kwargs):

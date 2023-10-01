@@ -14,6 +14,7 @@ from care.abdm.api.viewsets.auth import (
     RequestDataView,
 )
 from care.abdm.api.viewsets.consent import ConsentCallbackViewSet
+from care.abdm.api.viewsets.health_information import HealthInformationCallbackViewSet
 from care.abdm.api.viewsets.hip import HipViewSet
 from care.abdm.api.viewsets.monitoring import HeartbeatView
 from care.abdm.api.viewsets.status import NotifyView as PatientStatusNotifyView
@@ -51,6 +52,20 @@ abdm_urlpatterns = [
         "v0.5/consents/on-fetch",
         ConsentCallbackViewSet.as_view({"post": "consents__on_fetch"}),
         name="abdm__consents__on_fetch",
+    ),
+    path(
+        "v0.5/health-information/hiu/on-request",
+        HealthInformationCallbackViewSet.as_view(
+            {"post": "health_information__hiu__on_request"}
+        ),
+        name="abdm__health_information__hiu__on_request",
+    ),
+    path(
+        "v0.5/health-information/transfer",
+        HealthInformationCallbackViewSet.as_view(
+            {"post": "health_information__transfer"}
+        ),
+        name="abdm__health_information__transfer",
     ),
     path(
         "v0.5/users/auth/on-fetch-modes",

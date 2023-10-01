@@ -676,7 +676,11 @@ class AbdmGateway:
         return response
 
     def data_transfer(self, data):
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            # TODO: seperate out the token generation
+            "Authorization": "Bearer " + cache.get(ABDM_TOKEN_CACHE_KEY),
+        }
 
         payload = {
             "pageNumber": 1,

@@ -293,11 +293,11 @@ class RequestDataView(GenericAPIView):
                                         ],
                                         "data": cipher.encrypt(
                                             Fhir(
-                                                PatientConsultation.objects.get(
+                                                PatientConsultation.objects.filter(
                                                     external_id=context[
                                                         "careContextReference"
                                                     ]
-                                                )
+                                                ).first()
                                             ).create_record(record)
                                         )["data"],
                                     },

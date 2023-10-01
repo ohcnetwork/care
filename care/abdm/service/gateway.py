@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from django.conf import settings
 
 from care.abdm.models.base import Purpose
-from care.abdm.models.consent import ConsentRequest
+from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.request import Request
 
 
@@ -80,3 +80,40 @@ class Gateway:
         return self.request.post(
             "/v0.5/consents/fetch", data, headers={"X-CM-ID": settings.X_CM_ID}
         )
+
+    def health_information__cm__request(self, artefact: ConsentArtefact):
+        request_id = str(uuid.uuid4())
+        artefact.consent_id = request_id
+        artefact.save()
+
+        data = {
+            "requestId": request_id,
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
+            "hiRequest": {
+                "consent": {"id": str(artefact.artefact_id)},
+                # TODO: get the server url from the env
+                "dataPushUrl": "https://work.khavinshankar.dev"
+                + "/v0.5/health-information/transfer",
+                "keyMaterial": {
+                    "cryptoAlg": artefact.key_material_algorithm,
+                    "curve": artefact.key_material_curve,
+                    "dhPublicKey": {
+                        "expiry": artefact.expiry.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                        "parameters": f"{artefact.key_material_curve}/{artefact.key_material_algorithm}",
+                        "keyValue": artefact.key_material_public_key,
+                    },
+                    "nonce": artefact.key_material_nonce,
+                },
+            },
+        }
+
+        return self.request.post(
+            "/v0.5/health-information/cm/request",
+            data,
+            headers={"X-CM-ID": settings.X_CM_ID},
+        )
+
+    def health_information__notify(self, data):
+        pass
