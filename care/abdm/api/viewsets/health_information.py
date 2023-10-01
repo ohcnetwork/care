@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.models.consent import ConsentArtefact
 from care.abdm.service.gateway import Gateway
+from care.abdm.utils.cipher import Cipher
 from config.authentication import ABDMAuthentication
 
 
@@ -51,12 +52,36 @@ class HealthInformationCallbackViewSet(GenericViewSet):
     def health_information__transfer(self, request):
         data = request.data
 
-        print("------------------------------------------")
-        print(data)
-        print("------------------------------------------")
+        artefact = ConsentArtefact.objects.filter(
+            consent_id=data["transactionId"]
+        ).first()
 
-        # get the consent artefact
-        # decrypt the data
-        # save the data in s3 bucket
+        if not artefact:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        cipher = Cipher(
+            data["keyMaterial"]["dhPublicKey"]["keyValue"],
+            data["keyMaterial"]["nonce"],
+            artefact.key_material_private_key,
+            artefact.key_material_public_key,
+            artefact.key_material_nonce,
+        )
+        entries = []
+        for entry in data["entries"]:
+            if "content" in entry:
+                entries.append(
+                    {
+                        "content": cipher.decrypt(entry["content"]),
+                        "care_context_reference": entry["careContextReference"],
+                    }
+                )
+
+            if "link" in entry:
+                # TODO: handle link
+                pass
+
+        # TODO: save entries in s3 bucket
+
+        # TODO: call notify endpoint
 
         return Response(status=status.HTTP_202_ACCEPTED)

@@ -319,7 +319,7 @@ class RequestDataView(GenericAPIView):
                         "parameters": "Curve25519/32byte random key",
                         "keyValue": cipher.key_to_share,
                     },
-                    "nonce": cipher.sender_nonce,
+                    "nonce": cipher.internal_nonce,
                 },
             }
         )
