@@ -28,16 +28,17 @@ from care.facility.models.asset import (
     StatusChoices,
     UserDefaultAssetLocation,
 )
-from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
-from care.utils.assetintegration.onvif import OnvifAsset
-from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
 )
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
+from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
+
 
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
@@ -71,6 +72,14 @@ class AssetLocationSerializer(ModelSerializer):
                     {
                         "name": "Asset location with this name and facility already exists."
                     }
+                )
+
+        if "duty_staff" in data:
+            duty_staffs_objects = len(data["duty_staff"])
+            print("duty: ", duty_staffs_objects)
+            if duty_staffs_objects > 3:
+                raise ValidationError(
+                    {"duty_staff": "Only 3 duty staffs can be assigned"}
                 )
 
         return data

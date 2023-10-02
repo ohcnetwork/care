@@ -50,5 +50,5 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
                     queryset=UserSkill.objects.filter(skill__deleted=False),
                 ),
             )
-        except Exception as e:
-            raise ValidationError({"Facility": "Facility not found"}) from e
+        except Facility.DoesNotExist:
+            raise ValidationError({"Facility": "Facility not found"})
