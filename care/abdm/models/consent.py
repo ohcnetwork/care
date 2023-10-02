@@ -13,6 +13,7 @@ from care.abdm.models.base import (
 )
 from care.abdm.models.json_schema import CARE_CONTEXTS
 from care.abdm.utils.cipher import Cipher
+from care.facility.models.file_upload import FileUpload
 from care.users.models import User
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -115,6 +116,18 @@ class ConsentArtefact(Consent):
             self.key_material_public_key = key_material["publicKey"]
             self.key_material_private_key = key_material["privateKey"]
             self.key_material_nonce = key_material["nonce"]
+
+        if self.status in [Status.REVOKED.value, Status.EXPIRED.value]:
+            file = FileUpload.objects.filter(
+                internal_name=f"{self.external_id}.json",
+                file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
+            ).first()
+
+            if file:
+                file.is_archived = True
+                file.archived_datetime = timezone.now()
+                file.archive_reason = self.status
+                file.save()
 
         return super().save(*args, **kwargs)
 

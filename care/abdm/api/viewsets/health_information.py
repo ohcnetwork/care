@@ -14,9 +14,40 @@ from config.authentication import ABDMAuthentication
 
 
 class HealthInformationViewSet(GenericViewSet):
-    # TODO: add a endpoint to list the patients health information
+    def retrieve(self, request, pk):
+        artefact = ConsentArtefact.objects.filter(external_id=pk).first()
 
-    @action(detail=True, methods=["GET"])
+        if not artefact:
+            return Response(
+                {"error": "No Consent artefact found with the given id"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        file = FileUpload.objects.filter(
+            internal_name=f"{artefact.external_id}.json",
+            file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
+        ).first()
+
+        if not file or not file.upload_completed:
+            return Response(
+                {"error": "No Health Information found with the given id"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if file.is_archived:
+            return Response(
+                {
+                    "is_archived": True,
+                    "archived_reason": file.archive_reason,
+                    "archived_time": file.archived_datetime,
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        content_type, content = file.file_contents()
+        return Response({"data": json.loads(content)}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["POST"])
     def request(self, request, pk):
         artefact = ConsentArtefact.objects.filter(external_id=pk).first()
 

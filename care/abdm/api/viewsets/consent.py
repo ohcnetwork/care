@@ -19,6 +19,12 @@ class ConsentRequestFilter(filters.FilterSet):
         field_name="patient_abha__patientregistration__external_id"
     )
     health_id = filters.CharFilter(field_name="patient_abha__health_id")
+    ordering = filters.OrderingFilter(
+        fields=(
+            "created_date",
+            "updated_date",
+        )
+    )
 
     class Meta:
         model = ConsentRequest
