@@ -113,19 +113,18 @@ class Asset(BaseModel):
         "description": "Description",
         "asset_type": "Type",
         "asset_class": "Class",
-        "status": "Working Status",
-        "current_location": "Current Location",
-        "is_working": "Is Working",
+        "status": "Status",
+        "current_location__name": "Current Location Name",
+        "is_working": "Working Status",
         "not_working_reason": "Not Working Reason",
         "serial_number": "Serial Number",
-        "warranty_details": "Warranty Details",
         "vendor_name": "Vendor Name",
         "support_name": "Support Name",
         "support_phone": "Support Phone Number",
         "support_email": "Support Email",
         "qr_code_id": "QR Code ID",
         "manufacturer": "Manufacturer",
-        "warranty_amc_end_of_validity": "Warrenty End Date",
+        "warranty_amc_end_of_validity": "Warranty End Date",
         "last_service__serviced_on": "Last Service Date",
         "last_service__note": "Notes",
         "meta__local_ip_address": "Config - IP Address",
@@ -135,6 +134,7 @@ class Asset(BaseModel):
     CSV_MAKE_PRETTY = {
         "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
         "status": (lambda x: REVERSE_STATUS[x]),
+        "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
 
     class Meta:
