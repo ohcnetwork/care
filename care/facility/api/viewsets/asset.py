@@ -1,5 +1,3 @@
-import uuid
-
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
@@ -192,21 +190,13 @@ class AssetPublicQRViewSet(GenericViewSet):
     lookup_field = "qr_code_id"
 
     def retrieve(self, request, *args, **kwargs):
-        is_uuid = True
-        try:
-            uuid.UUID(kwargs["qr_code_id"])
-        except ValueError:
-            # If the qr_code_id is not a UUID, then it is the pk of the asset
-            is_uuid = False
-            if not kwargs["qr_code_id"].isnumeric():
-                return Response(status=status.HTTP_404_NOT_FOUND)
-
         key = "asset:qr:" + kwargs["qr_code_id"]
         hit = cache.get(key)
         if not hit:
-            if is_uuid:
-                instance = self.get_object()
-            else:
+            instance = (
+                self.get_queryset().filter(qr_code_id=kwargs["qr_code_id"]).first()
+            )
+            if not instance:  # If the asset is not found, try to find it by pk
                 instance = get_object_or_404(
                     self.get_queryset(), pk=kwargs["qr_code_id"]
                 )
