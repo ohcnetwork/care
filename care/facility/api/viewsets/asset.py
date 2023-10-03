@@ -190,16 +190,15 @@ class AssetPublicQRViewSet(GenericViewSet):
     lookup_field = "qr_code_id"
 
     def retrieve(self, request, *args, **kwargs):
-        key = "asset:qr:" + kwargs["qr_code_id"]
+        qr_code_id = kwargs["qr_code_id"]
+        key = "asset:qr:" + qr_code_id
         hit = cache.get(key)
         if not hit:
-            instance = (
-                self.get_queryset().filter(qr_code_id=kwargs["qr_code_id"]).first()
-            )
+            instance = self.get_queryset().filter(qr_code_id=qr_code_id).first()
             if not instance:  # If the asset is not found, try to find it by pk
-                instance = get_object_or_404(
-                    self.get_queryset(), pk=kwargs["qr_code_id"]
-                )
+                if not qr_code_id.isnumeric():
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+                instance = get_object_or_404(self.get_queryset(), pk=qr_code_id)
             serializer = self.get_serializer(instance)
             cache.set(key, serializer.data, 60 * 60 * 24)
             return Response(serializer.data)
