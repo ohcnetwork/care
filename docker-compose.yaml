@@ -25,6 +25,8 @@ services:
       - AWS_DEFAULT_REGION=ap-south-1
       - EDGE_PORT=4566
       - SERVICES=s3
+    ports:
+      - "4566:4566"
     volumes:
       - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "./docker/awslocal:/docker-entrypoint-initaws.d"

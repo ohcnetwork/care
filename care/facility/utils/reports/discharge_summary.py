@@ -134,6 +134,7 @@ def generate_discharge_summary_pdf(data, file, is_ai, section_data):
     logger.info(
         f"Generating Discharge Summary html for {data['consultation'].external_id}"
     )
+    logger.info(f"AI: {is_ai}\n Section Data: {section_data}")
 
     if is_ai:
         total_progress = 40
@@ -224,7 +225,9 @@ With the above context, include the following information to the provided summar
 def generate_and_upload_discharge_summary(
     consultation: PatientConsultation, section_data, is_ai=False
 ):
-    logger.info(f"Generating Discharge Summary for {consultation.external_id}")
+    logger.info(
+        f"Generating Discharge Summary for {consultation.external_id} is_ai: {is_ai}"
+    )
 
     set_lock(consultation.external_id, 5)
     try:
