@@ -35,5 +35,21 @@
       "django": true,
       "justMyCode": false
     },
+    {
+      "name": "Python: Celery",
+      "type": "python",
+      "request": "launch",
+      "module": "celery",
+      "console": "integratedTerminal",
+      "args": [
+          "-A",
+          "config.celery_app",
+          "worker",
+          "-l",
+          "info",
+          "-P",
+          "solo",
+      ]
+  }
   ]
 }

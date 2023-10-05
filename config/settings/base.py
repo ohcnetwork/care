@@ -571,3 +571,5 @@ HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
 PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")
+
+OPENAI_KEY = env("OPENAI_KEY", default="")

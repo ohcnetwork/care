@@ -108,10 +108,16 @@ class PatientConsultationViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save(current_bed=None)
         discharge_summary.set_lock(consultation.external_id, 0)
-        generate_discharge_summary_task.delay(consultation.external_id)
+        generate_discharge_summary_task.delay(
+            consultation.external_id,
+            request.data["section_data"],
+            request.data["is_ai"],
+        )
         return Response(status=status.HTTP_200_OK)
 
-    def _generate_discharge_summary(self, consultation_ext_id: str):
+    def _generate_discharge_summary(
+        self, consultation_ext_id: str, section_data=None, is_ai=False
+    ):
         current_progress = discharge_summary.get_progress(consultation_ext_id)
         if current_progress is not None:
             return Response(
@@ -124,7 +130,7 @@ class PatientConsultationViewSet(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
         discharge_summary.set_lock(consultation_ext_id, 1)
-        generate_discharge_summary_task.delay(consultation_ext_id)
+        generate_discharge_summary_task.delay(consultation_ext_id, section_data, is_ai)
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
@@ -140,17 +146,21 @@ class PatientConsultationViewSet(
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
         consultation = self.get_object()
-        if consultation.discharge_date:
-            return Response(
-                {
-                    "detail": (
-                        "Cannot generate a new discharge summary for already "
-                        "discharged patient"
-                    )
-                },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
-            )
-        return self._generate_discharge_summary(consultation.external_id)
+        # if consultation.discharge_date:
+        #     return Response(
+        #         {
+        #             "detail": (
+        #                 "Cannot generate a new discharge summary for already "
+        #                 "discharged patient"
+        #             )
+        #         },
+        #         status=status.HTTP_406_NOT_ACCEPTABLE,
+        #     )
+        return self._generate_discharge_summary(
+            consultation.external_id,
+            request.data["section_data"],
+            request.data["is_ai"],
+        )
 
     @extend_schema(
         description="Get the discharge summary",
@@ -210,7 +220,11 @@ class PatientConsultationViewSet(
         )
         if not summary_file:
             (
-                generate_discharge_summary_task.s(consultation_ext_id)
+                generate_discharge_summary_task.s(
+                    consultation_ext_id,
+                    request.data["section_data"],
+                    request.data["is_ai"],
+                )
                 | email_discharge_summary_task.s(emails=[email])
             ).delay()
         else:

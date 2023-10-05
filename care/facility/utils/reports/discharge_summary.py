@@ -1,12 +1,17 @@
+import json
 import logging
 import tempfile
+import time
 from collections.abc import Iterable
 from uuid import uuid4
 
+import openai
 from django.conf import settings
+from django.core import serializers
 from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.template import Context, Template
 from django.template.loader import render_to_string
 from django.utils import timezone
 from hardcopy import bytestring_to_pdf
@@ -26,7 +31,7 @@ from care.hcx.models.policy import Policy
 
 logger = logging.getLogger(__name__)
 
-LOCK_DURATION = 2 * 60  # 2 minutes
+LOCK_DURATION = 10 * 60  # 10 minutes
 
 
 def lock_key(consultation_ext_id: str):
@@ -112,11 +117,94 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     }
 
 
-def generate_discharge_summary_pdf(data, file):
+def get_ai_response(prompt):
+    openai.api_key = settings.OPENAI_KEY
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=4096,
+        temperature=0.5,
+    )
+    return response.choices[0].message.content
+
+
+def generate_discharge_summary_pdf(data, file, is_ai, section_data):
     logger.info(
         f"Generating Discharge Summary html for {data['consultation'].external_id}"
     )
-    html_string = render_to_string("reports/patient_discharge_summary_pdf.html", data)
+
+    if is_ai:
+        total_progress = 40
+        current_progress = 0
+        ai_data = {}
+        data_resolved = {}
+        for key, value in data.items():
+            if isinstance(value, Iterable):
+                if hasattr(value, "all"):
+                    value = value.all()
+                try:
+                    data_resolved[key] = [
+                        serializers.serialize(
+                            "json",
+                            [
+                                x,
+                            ],
+                        )
+                        for x in value
+                    ]
+                except:
+                    try:
+                        data_resolved[key] = [json.dumps(x) for x in value]
+                    except:
+                        data_resolved[key] = value
+
+            else:
+                data_resolved[key] = value
+
+        summary_so_far = ""
+        for i, section in enumerate(section_data.keys()):
+            current_progress = (total_progress / len(section_data.keys())) * (i + 1)
+            set_lock(data["consultation"].external_id, current_progress)
+            t = Template(section_data[section])
+            c = Context(data)
+            json_data = t.render(c)
+
+            if i == 0:
+                prompt = f"""You are a healthcare AI tasked with generating a discharge summary for a patient. Given the patient details provided below, generate a summary of the data. Just output the summary directly. Strictly output just a summary and no extra data.
+{section}
+{json_data}
+"""
+            else:
+                prompt = f"""You are a healthcare AI tasked with generating a discharge summary for a patient. Given the patient details provided below, generate a summary of the data. Strictly output just a summary and no extra data.
+The following is a summary of the patient so far:
+{summary_so_far}
+With the above context, include the following information to the provided summary. Strictly output just a summary and no extra data.
+{section}
+{json_data}
+"""
+            logger.debug(prompt)
+
+            section_summary = get_ai_response(prompt)
+            ai_data[f"ai_summary_{section}"] = section_summary
+            summary_so_far = section_summary
+            time.sleep(10)
+
+        combined_data = {
+            **data,
+            "ai_data": json.dumps(ai_data, indent=4).replace("\n", "<br>"),
+        }
+
+        combined_data["ai_summary"] = summary_so_far
+
+        html_string = render_to_string(
+            "reports/patient_ai_discharge_summary_pdf.html", combined_data
+        )
+    else:
+        html_string = render_to_string(
+            "reports/patient_discharge_summary_pdf.html", data
+        )
 
     logger.info(
         f"Generating Discharge Summary pdf for {data['consultation'].external_id}"
@@ -133,7 +221,9 @@ def generate_discharge_summary_pdf(data, file):
     )
 
 
-def generate_and_upload_discharge_summary(consultation: PatientConsultation):
+def generate_and_upload_discharge_summary(
+    consultation: PatientConsultation, section_data, is_ai=False
+):
     logger.info(f"Generating Discharge Summary for {consultation.external_id}")
 
     set_lock(consultation.external_id, 5)
@@ -152,7 +242,7 @@ def generate_and_upload_discharge_summary(consultation: PatientConsultation):
 
         set_lock(consultation.external_id, 50)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as file:
-            generate_discharge_summary_pdf(data, file)
+            generate_discharge_summary_pdf(data, file, is_ai, section_data)
             logger.info(f"Uploading Discharge Summary for {consultation.external_id}")
             summary_file.put_object(file, ContentType="application/pdf")
             summary_file.upload_completed = True
@@ -188,5 +278,5 @@ def generate_discharge_report_signed_url(patient_external_id: str):
     if not consultation:
         return None
 
-    summary_file = generate_and_upload_discharge_summary(consultation)
+    summary_file = generate_and_upload_discharge_summary(consultation, {}, False)
     return summary_file.read_signed_url(duration=2 * 24 * 60 * 60)

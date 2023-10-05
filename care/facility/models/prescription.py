@@ -136,10 +136,10 @@ class Prescription(BaseModel):
 
     @property
     def medicine_name(self):
-        return str(self.medicine) if self.medicine else self.medicine_old
+        return str(self.medicine.name) if self.medicine else self.medicine_old
 
     def __str__(self):
-        return self.medicine + " - " + self.consultation.patient.name
+        return self.medicine.name + " - " + self.consultation.patient.name
 
 
 class MedicineAdministration(BaseModel):
