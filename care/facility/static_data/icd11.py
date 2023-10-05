@@ -15,7 +15,9 @@ def fetch_from_db():
                 "id": str(diagnosis["id"]),
                 "label": diagnosis["label"],
             }
-            for diagnosis in ICD11Diagnosis.objects.all().values("id", "label")
+            for diagnosis in ICD11Diagnosis.objects.filter(is_leaf=True).values(
+                "id", "label"
+            )
         ]
     return []
 
