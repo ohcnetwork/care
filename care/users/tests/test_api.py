@@ -1,15 +1,22 @@
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from care.users.models import GENDER_CHOICES, User
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestSuperUser(TestBase):
+class TestSuperUser(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district)
+        cls.user_data = cls.get_user_data(cls.district, 40)
+
     def setUp(self):
-        """
-        Run once before every test
-            - login the super user
-        """
         self.client.force_authenticate(self.super_user)
 
     def get_detail_representation(self, obj=None) -> dict:
@@ -89,7 +96,7 @@ class TestSuperUser(TestBase):
             )
 
 
-class TestUser(TestBase):
+class TestUser(TestUtils, APITestCase):
     def get_detail_representation(self, obj=None) -> dict:
         return {
             "username": obj.username,
@@ -105,25 +112,16 @@ class TestUser(TestBase):
         }
 
     @classmethod
-    def setUpClass(cls) -> None:
-        """
-        Runs once per class method
-
-        Create 3 users
-            - 2 users initialized by setUpClass of TestBase
-            - 1 will be used to check if they can tinker attributes of the other
-        """
-        super(TestUser, cls).setUpClass()
-        cls.data_2 = cls.get_user_data()
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.data_2 = cls.get_user_data(cls.district)
         cls.data_2.update({"username": "user_2", "password": "password"})
-        cls.user_2 = cls.create_user(district=cls.district, username="user_2")
-
-    def setUp(self):
-        """
-        Run once before every test
-            - login the super user
-        """
-        self.client.force_login(self.user)
+        cls.user_2 = cls.create_user(**cls.data_2)
 
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
@@ -138,7 +136,7 @@ class TestUser(TestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
         # test total user count
-        self.assertEqual(res_data_json["count"], 3)  # 3 existing, plus the new one
+        self.assertEqual(res_data_json["count"], 2)
         results = res_data_json["results"]
         # test presence of usernames
         self.assertIn(self.user.id, {r["id"] for r in results})

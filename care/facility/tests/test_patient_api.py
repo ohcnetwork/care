@@ -1,14 +1,10 @@
-from datetime import datetime
 from enum import Enum
 
-from django.utils.timezone import make_aware
+from django.utils.timezone import now
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.test import APITestCase
 
-from care.facility.models import User
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
 class ExpectedPatientNoteKeys(Enum):
@@ -77,48 +73,50 @@ class ExpectedCreatedByObjectKeys(Enum):
     LAST_LOGIN = "last_login"
 
 
-class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
-    asset_id = None
+class PatientNotesTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location)
+        cls.state_admin = cls.create_user(
+            "state-admin", cls.district, home_facility=cls.facility, user_type=40
+        )
+
+        cls.facility2 = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body
+        )
+        cls.user2 = cls.create_user(
+            "doctor2", cls.district, home_facility=cls.facility2, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
 
     def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-
-        # Create users and facility
-        self.user = self.create_user(
-            district=district,
-            username="test user",
-            user_type=User.TYPE_VALUE_MAP["Doctor"],
-        )
-        facility = self.create_facility(district=district)
-        self.user.home_facility = facility
-        self.user.save()
-
-        # Create another user from different facility
-        self.user2 = self.create_user(
-            district=district,
-            username="test user 2",
-            user_type=User.TYPE_VALUE_MAP["Doctor"],
-        )
-        facility2 = self.create_facility(district=district)
-        self.user2.home_facility = facility2
-        self.user2.save()
-
-        self.patient = self.create_patient(district=district.id, facility=facility)
-
+        super().setUp()
         self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user
+            patient=self.patient, facility=self.facility, created_by=self.user
         )
-
         self.create_patient_note(
-            patient=self.patient, facility=facility, created_by=self.user2
+            patient=self.patient, facility=self.facility, created_by=self.user2
         )
 
-        refresh_token = RefreshToken.for_user(self.user)
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
+    def create_patient_note(
+        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+    ):
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+        }
+        data.update(kwargs)
+        self.client.force_authenticate(user=created_by)
+        self.client.post(f"/api/v1/patient/{patient.external_id}/notes/", data=data)
 
     def test_patient_notes(self):
         patientId = self.patient.external_id
@@ -199,34 +197,31 @@ class PatientNotesTestCase(TestBase, TestClassMixin, APITestCase):
             )
 
 
-class PatientFilterTestCase(TestBase, TestClassMixin, APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-
-        self.user = self.create_super_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        self.user.home_facility = facility
-        self.user.save()
-
-        self.patient = self.create_patient(district=district.id, created_by=self.user)
-        self.consultation = self.create_consultation(
+class PatientFilterTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(
             patient_no="IP5678",
-            patient=self.patient,
-            facility=facility,
-            created_by=self.user,
+            patient=cls.patient,
+            facility=cls.facility,
+            created_by=cls.user,
             suggestion="A",
-            admission_date=make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+            admission_date=now(),
         )
-        self.patient.last_consultation = self.consultation
-        self.patient.save()
-        refresh_token = RefreshToken.for_user(self.user)
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
-        )
+        cls.patient.last_consultation = cls.consultation
+        cls.patient.save()
 
     def test_filter_by_patient_no(self):
+        self.client.force_authenticate(user=self.user)
         response = self.client.get("/api/v1/patient/?patient_no=IP5678")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)

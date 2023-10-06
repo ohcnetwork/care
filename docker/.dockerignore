@@ -1,8 +1,0 @@
-*Dockerfile
-*.travis.yml
-*.coverage
-*.py[cod]
-.dockerignore
-*Makefile
-*.pre-commit-config.yaml
-*.git*

@@ -35,7 +35,15 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 # ------------------------------------------------------------------------------
 
 DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
-DATABASES["default"]["ATOMIC_REQUESTS"] = True
+
+# test in peace
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
+# for testing retelimit use override_settings decorator
+SILENCED_SYSTEM_CHECKS = ["django_ratelimit.E003", "django_ratelimit.W001"]
 
 # https://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 WHITENOISE_AUTOREFRESH = True
