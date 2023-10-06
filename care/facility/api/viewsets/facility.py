@@ -105,15 +105,6 @@ class FacilityViewSet(
             return [MultiPartParser()]
         return super().get_parsers()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        exclude_user_param = self.request.query_params.get("exclude_user")
-
-        if exclude_user_param:
-            queryset = queryset.exclude(facilityuser__user__username=exclude_user_param)
-
-        return queryset
-
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
