@@ -48,6 +48,13 @@ class FacilityFilter(filters.FilterSet):
             queryset = queryset.exclude(facilityuser__user__username=value)
         return queryset
 
+    def filter_queryset(self, queryset):
+        exclude_user = self.request.query_params.get('exclude_user')
+        if exclude_user:
+            queryset = queryset.exclude(facilityuser__user__username=exclude_user)
+
+        queryset = super().filter_queryset(queryset)
+        return queryset
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):

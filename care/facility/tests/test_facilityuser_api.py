@@ -27,7 +27,7 @@ class FacilityUserTest(TestUtils, APITestCase):
         self.assertNumQueries(2)
 
     def test_link_new_facility(self):
-        response = self.new_request(
+        response = self.client.get(
             (f"/api/v1/getallfacilities",),
             {"get": "list"},
             FacilityViewSet,
@@ -39,8 +39,7 @@ class FacilityUserTest(TestUtils, APITestCase):
         self.assertNumQueries(2)
 
     def test_link_existing_facility(self):
-        print(self.users[0])
-        response = self.new_request(
+        response = self.client.get(
             (f"/api/v1/getallfacilities",),
             {"get": "list", "exclude_user": self.users[0].username},
             FacilityViewSet,
