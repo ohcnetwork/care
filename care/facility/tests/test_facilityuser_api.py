@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 
 from care.users.models import Skill
 from care.utils.tests.test_utils import TestUtils
-
+from care.facility.api.viewsets import FacilityViewSet
 
 class FacilityUserTest(TestUtils, APITestCase):
     @classmethod
