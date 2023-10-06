@@ -41,6 +41,14 @@ class FacilityFilter(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
+    exclude_user = filters.BooleanFilter(method='filter_exclude_user')
+
+    def filter_exclude_user(self, queryset, name, value):
+        if value:
+            user = self.request.query_params.get('exclude_user')
+            if user:
+                queryset = queryset.exclude(facilityuser__user__username=user)
+        return queryset
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
@@ -97,18 +105,15 @@ class FacilityViewSet(
             return [MultiPartParser()]
         return super().get_parsers()
 
-    def get_queryset(self) -> QuerySet:
-        if self.request.query_params.get("exclude_user"):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        exclude_user_param = self.request.query_params.get("exclude_user")
+
+        if exclude_user_param:
             user = self.request.query_params.get('exclude_user')
-            query = Facility.objects.all().select_related(
-                "ward", "local_body", "district", "state"
-            ).exclude(
-                Q(facilityuser__user__username=user)
-            )
+            queryset = queryset.exclude(facilityuser__user__username=user)
 
-            return query
-
-        return super().get_queryset()
+        return queryset
 
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
