@@ -110,8 +110,7 @@ class FacilityViewSet(
         exclude_user_param = self.request.query_params.get("exclude_user")
 
         if exclude_user_param:
-            user = self.request.query_params.get('exclude_user')
-            queryset = queryset.exclude(facilityuser__user__username=user)
+            queryset = queryset.exclude(facilityuser__user__username=exclude_user_param)
 
         return queryset
 
