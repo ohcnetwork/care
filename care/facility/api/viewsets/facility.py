@@ -45,9 +45,7 @@ class FacilityFilter(filters.FilterSet):
 
     def filter_exclude_user(self, queryset, name, value):
         if value:
-            user = self.request.query_params.get('exclude_user')
-            if user:
-                queryset = queryset.exclude(facilityuser__user__username=user)
+            queryset = queryset.exclude(facilityuser__user__username=value)
         return queryset
 
 
