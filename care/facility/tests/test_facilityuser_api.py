@@ -3,7 +3,6 @@ from rest_framework.test import APITestCase
 
 from care.users.models import Skill
 from care.utils.tests.test_utils import TestUtils
-from care.facility.api.viewsets import FacilityViewSet
 
 class FacilityUserTest(TestUtils, APITestCase):
     @classmethod
@@ -14,9 +13,9 @@ class FacilityUserTest(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
-        cls.skill1 = Skill.objects.create(name="Skill 1")
-        cls.skill2 = Skill.objects.create(name="Skill 2")
-        cls.user.skills.add(cls.skill1, cls.skill2)
+
+        cls.facility1 = cls.create_facility(cls.super_user,cls.district, cls.local_body)
+        cls.facility2 = cls.create_facility(cls.super_user, cls.district, cls.local_body)
 
     def test_get_queryset_with_prefetching(self):
         response = self.client.get(
@@ -28,24 +27,20 @@ class FacilityUserTest(TestUtils, APITestCase):
 
     def test_link_new_facility(self):
         response = self.client.get(
-            (f"/api/v1/getallfacilities",),
-            {"get": "list"},
-            FacilityViewSet,
-            self.users[0],
-            {"facility_external_id": self.facility.external_id},
+            "/api/v1/getallfacilities/",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNumQueries(2)
 
     def test_link_existing_facility(self):
+        sample_data = {
+            "exlude_user": self.user.username
+        }
         response = self.client.get(
-            (f"/api/v1/getallfacilities",),
-            {"get": "list", "exclude_user": self.users[0].username},
-            FacilityViewSet,
-            self.users[0],
-            {"facility_external_id": self.facility.external_id},
+            f"/api/v1/getallfacilities/",
+            sample_data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNumQueries(2)
+        self.assertNumQueries(1)
