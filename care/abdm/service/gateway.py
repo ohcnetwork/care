@@ -70,6 +70,23 @@ class Gateway:
             "/v0.5/consent-requests/status", data, headers={"X-CM-ID": settings.X_CM_ID}
         )
 
+    def consents__hiu__notify(self, consent_id: str, request_id: str):
+        data = {
+            "requestId": str(uuid.uuid4()),
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
+            "acknowledgement": {
+                "consentId": consent_id,
+                "status": "OK",
+            },
+            "resp": {"requestId": request_id},
+        }
+
+        return self.request.post(
+            "/v0.5/consents/hiu/notify", data, headers={"X-CM-ID": settings.X_CM_ID}
+        )
+
     def consents__fetch(self, consent_artefact_id: str):
         data = {
             "requestId": str(uuid.uuid4()),
