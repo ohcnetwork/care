@@ -14,6 +14,8 @@ from config.authentication import ABDMAuthentication
 
 
 class HealthInformationViewSet(GenericViewSet):
+    permission_classes = (IsAuthenticated,)
+
     def retrieve(self, request, pk):
         artefact = ConsentArtefact.objects.filter(external_id=pk).first()
 

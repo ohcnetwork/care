@@ -17,6 +17,7 @@ from care.abdm.api.viewsets.consent import ConsentCallbackViewSet
 from care.abdm.api.viewsets.health_information import HealthInformationCallbackViewSet
 from care.abdm.api.viewsets.hip import HipViewSet
 from care.abdm.api.viewsets.monitoring import HeartbeatView
+from care.abdm.api.viewsets.patients import PatientsCallbackViewSet
 from care.abdm.api.viewsets.status import NotifyView as PatientStatusNotifyView
 from care.abdm.api.viewsets.status import SMSOnNotifyView
 
@@ -66,6 +67,11 @@ abdm_urlpatterns = [
             {"post": "health_information__transfer"}
         ),
         name="abdm__health_information__transfer",
+    ),
+    path(
+        "v0.5/patients/on-find",
+        PatientsCallbackViewSet.as_view({"post": "patients__on_find"}),
+        name="abdm__patients__on_find",
     ),
     path(
         "v0.5/users/auth/on-fetch-modes",

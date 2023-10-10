@@ -8,6 +8,7 @@ from care.abdm.api.viewsets.consent import ConsentViewSet
 from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
 from care.abdm.api.viewsets.health_information import HealthInformationViewSet
 from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
+from care.abdm.api.viewsets.patients import PatientsViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
@@ -231,6 +232,7 @@ if settings.ENABLE_ABDM:
         HealthInformationViewSet,
         basename="abdm-healthinformation",
     )
+    router.register("abdm/patients", PatientsViewSet, basename="abdm-patients")
 
 router.register(
     "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"

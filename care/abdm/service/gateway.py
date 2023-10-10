@@ -152,3 +152,22 @@ class Gateway:
             data,
             headers={"X-CM-ID": settings.X_CM_ID},
         )
+
+    def patients__find(self, abha_number: AbhaNumber):
+        data = {
+            "requestId": str(uuid.uuid4()),
+            "timestamp": datetime.now(tz=timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.000Z"
+            ),
+            "query": {
+                "patient": {"id": abha_number.abha_number},
+                "requester": {
+                    "type": "HIU",
+                    "id": abha_number.patientregistration.facility.healthfacility.hf_id,
+                },
+            },
+        }
+
+        return self.request.post(
+            "/v0.5/patients/find", data, headers={"X-CM-ID": settings.X_CM_ID}
+        )
