@@ -440,7 +440,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "icd11_diagnoses": [
-                        f"A diagnosis cannot be both provisional and final"
+                        "A diagnosis cannot be both provisional and final"
                     ],
                 }
             )
