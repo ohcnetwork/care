@@ -436,6 +436,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         }
                     )
 
+        if len(set(final_diagnosis).intersection(provisional_diagnosis)):
+            raise ValidationError(
+                {
+                    "icd11_diagnoses": [
+                        f"A diagnosis cannot be both provisional and final"
+                    ],
+                }
+            )
+
         if (
             "icd11_principal_diagnosis" in validated
             and validated.get("suggestion") != SuggestionChoices.DD
