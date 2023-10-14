@@ -256,3 +256,21 @@ class TestPatientConsultation(TestUtils, APITestCase):
             referred_to_external=referred_to_external,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_icd11_diagnosis_final_and_provisional(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
+        )
+        res = self.update_consultation(
+            consultation,
+            icd11_provisional_diagnoses=["1665365733"],
+            icd11_diagnoses=["1665365733"],
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        res = self.update_consultation(
+            consultation,
+            icd11_provisional_diagnoses=["1665365733"],
+            icd11_diagnoses=["588616678"],
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
