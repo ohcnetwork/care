@@ -34,11 +34,21 @@ from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
+
+    def validate_middleware_address(self, value):
+        value = (value or "").strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
 
     def validate(self, data):
         facility = self.context["facility"]
