@@ -106,6 +106,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    medico_legal_case = serializers.BooleanField(default=False, required=False)
+
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
@@ -153,9 +155,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
-            raise ValidationError(
-                {"consultation": ["Discharged Consultation data cannot be updated"]}
-            )
+            if "medico_legal_case" not in validated_data:
+                raise ValidationError(
+                    {"consultation": ["Discharged Consultation data cannot be updated"]}
+                )
+            else:
+                instance.medico_legal_case = validated_data.pop("medico_legal_case")
+                instance.save()
+                return instance
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())
