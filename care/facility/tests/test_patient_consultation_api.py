@@ -256,3 +256,54 @@ class TestPatientConsultation(TestUtils, APITestCase):
             referred_to_external=referred_to_external,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_medico_legal_case(self):
+        consultation = self.create_admission_consultation(
+            medico_legal_case=True,
+        )
+        url = self.get_url(consultation)
+
+        data = self.client.get(url)
+        self.assertEqual(data.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.data["medico_legal_case"], True)
+
+        # Test Patch
+        response = self.update_consultation(consultation, medico_legal_case=False)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["medico_legal_case"], False)
+
+        # Test Patch after discharge
+        response = self.discharge(
+            consultation,
+            discharge_reason="REC",
+            discharge_date="2023-07-01T12:00:00Z",
+            discharge_notes="Discharged with valid referred_to_external",
+            medico_legal_case=False,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = self.client.get(url)
+        self.assertEqual(data.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.data["medico_legal_case"], False)
+
+        response = self.update_consultation(consultation, medico_legal_case=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["medico_legal_case"], True)
+
+    def test_update_consultation_after_discharge(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        res = self.discharge(
+            consultation,
+            discharge_reason="REC",
+            discharge_date="2020-04-02T15:30:00Z",
+            discharge_notes="Discharge as recovered after admission before future",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        res = self.update_consultation(
+            consultation, symptoms=[1, 2], category="MILD", suggestion="A"
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
