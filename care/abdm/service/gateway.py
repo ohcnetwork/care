@@ -177,7 +177,7 @@ class Gateway:
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
-                "patient": {"id": abha_number.abha_number},
+                "patient": {"id": abha_number.health_id},
                 "requester": {
                     "type": "HIU",
                     "id": abha_number.patientregistration.facility.healthfacility.hf_id,

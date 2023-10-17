@@ -1,3 +1,6 @@
+import json
+
+from django.core.cache import cache
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
@@ -7,6 +10,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.models.abha_number import AbhaNumber
 from care.abdm.service.gateway import Gateway
+from care.utils.notification_handler import send_webpush
 from config.authentication import ABDMAuthentication
 
 
@@ -28,8 +32,13 @@ class PatientsViewSet(GenericViewSet):
 
         response = Gateway().patients__find(abha_object)
         if response.status_code != 202:
-            return Response(response.json(), status=status.HTTP_400_BAD_REQUEST)
+            return Response(response.text, status=status.HTTP_400_BAD_REQUEST)
 
+        cache.set(
+            f"abdm__patients__find__{json.loads(response.request.body)['requestId']}",
+            request.user.username,
+            timeout=60 * 60,
+        )
         return Response(status=status.HTTP_200_OK)
 
 
@@ -38,5 +47,20 @@ class PatientsCallbackViewSet(GenericViewSet):
     authentication_classes = [ABDMAuthentication]
 
     def patients__on_find(self, request):
-        # TODO: send a push notification
+        username = cache.get(
+            f"abdm__patients__find__{request.data['resp']['requestId']}"
+        )
+
+        if username:
+            send_webpush(
+                username=username,
+                message=json.dumps(
+                    {
+                        "type": "MESSAGE",
+                        "from": "patients/on_find",
+                        "message": request.data,
+                    }
+                ),
+            )
+
         return Response(status=status.HTTP_202_ACCEPTED)

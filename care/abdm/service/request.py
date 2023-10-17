@@ -66,8 +66,8 @@ class Request:
             "Content-Type": "application/json",
             "Accept": "*/*",
             **(additional_headers or {}),
-            **self.user_header(auth),
-            **self.auth_header(),
+            **(self.user_header(auth) or {}),
+            **(self.auth_header() or {}),
         }
 
     def get(self, path, params=None, headers=None, auth=None):
