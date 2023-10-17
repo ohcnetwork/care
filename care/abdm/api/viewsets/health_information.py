@@ -80,8 +80,9 @@ class HealthInformationCallbackViewSet(GenericViewSet):
         if not artefact:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        artefact.consent_id = data["hiRequest"]["transactionId"]
-        artefact.save()
+        if "hiRequest" in data:
+            artefact.consent_id = data["hiRequest"]["transactionId"]
+            artefact.save()
 
         return Response(status=status.HTTP_202_ACCEPTED)
 

@@ -132,10 +132,10 @@ class Gateway:
                     },
                     "nonce": artefact.key_material_nonce,
                 },
-                "dateRange": {
-                    "from": artefact.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                    "to": artefact.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                },
+                # "dateRange": {
+                #     "from": artefact.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                #     "to": artefact.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                # },
             },
         }
 
