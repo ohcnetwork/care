@@ -32,7 +32,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-            "verified_by": self.doctor.id,
+            "treating_physician": self.doctor.id,
         }
 
     def get_url(self, consultation=None):
@@ -61,13 +61,13 @@ class TestPatientConsultation(TestUtils, APITestCase):
             f"{self.get_url(consultation)}discharge_patient/", kwargs, "json"
         )
 
-    def test_create_consultation_verified_by_invalid_user(self):
+    def test_create_consultation_treating_physician_invalid_user(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
             admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.update_consultation(
-            consultation, verified_by=self.doctor.id, suggestion="A"
+            consultation, treating_physician=self.doctor.id, suggestion="A"
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 

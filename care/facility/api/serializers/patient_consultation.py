@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.asset import AssetLocationSerializer
 from care.facility.api.serializers.bed import ConsultationBedSerializer
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
@@ -18,11 +19,13 @@ from care.facility.models import (
     Prescription,
     PrescriptionType,
 )
+from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
+    RouteToFacility,
     SuggestionChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -63,6 +66,29 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     referred_to_external = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
+
+    referred_from_facility_object = FacilityBasicInfoSerializer(
+        source="referred_from_facility", read_only=True
+    )
+    referred_from_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(),
+        required=False,
+    )
+    referred_from_facility_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    referred_by_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+
+    transferred_from_location_object = AssetLocationSerializer(
+        source="transferred_from_location", read_only=True
+    )
+    transferred_from_location = ExternalIdSerializerField(
+        queryset=AssetLocation.objects.all(),
+        required=False,
+    )
+
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(read_only=True)
 
@@ -71,8 +97,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
-    verified_by_object = UserBaseMinimumSerializer(source="verified_by", read_only=True)
-    verified_by = serializers.PrimaryKeyRelatedField(
+    treating_physician_object = UserBaseMinimumSerializer(
+        source="treating_physician", read_only=True
+    )
+    treating_physician = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
@@ -329,19 +357,74 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
 
+        if route_to_facility := validated.get("route_to_facility"):
+            if route_to_facility == RouteToFacility.OUTPATIENT:
+                validated["icu_admission_date"] = None
+                validated["transferred_from_location"] = None
+                validated["referred_from_facility"] = None
+                validated["referred_from_facility_external"] = ""
+                validated["referred_by_external"] = ""
+
+            if route_to_facility == RouteToFacility.INTRA_FACILITY_TRANSFER:
+                validated["referred_from_facility"] = None
+                validated["referred_from_facility_external"] = ""
+                validated["referred_by_external"] = ""
+
+                if not validated.get("transferred_from_location"):
+                    raise ValidationError(
+                        {
+                            "transferred_from_location": [
+                                "This field is required as the patient has been transferred from another location."
+                            ]
+                        }
+                    )
+
+            if route_to_facility == RouteToFacility.INTER_FACILITY_TRANSFER:
+                validated["transferred_from_location"] = None
+
+                if not validated.get("referred_from_facility") and not validated.get(
+                    "referred_from_facility_external"
+                ):
+                    raise ValidationError(
+                        {
+                            "referred_from_facility": [
+                                "This field is required as the patient has been referred from another facility."
+                            ]
+                        }
+                    )
+
+                if validated.get("referred_from_facility") and validated.get(
+                    "referred_from_facility_external"
+                ):
+                    raise ValidationError(
+                        {
+                            "referred_from_facility": [
+                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                            ],
+                            "referred_from_facility_external": [
+                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                            ],
+                        }
+                    )
+        else:
+            raise ValidationError({"route_to_facility": "This field is required"})
+
         if (
             "suggestion" in validated
             and validated["suggestion"] != SuggestionChoices.DD
         ):
-            if "verified_by" not in validated:
+            if "treating_physician" not in validated:
                 raise ValidationError(
                     {
-                        "verified_by": [
+                        "treating_physician": [
                             "This field is required as the suggestion is not 'Declared Death'"
                         ]
                     }
                 )
-            if not validated["verified_by"].user_type == User.TYPE_VALUE_MAP["Doctor"]:
+            if (
+                not validated["treating_physician"].user_type
+                == User.TYPE_VALUE_MAP["Doctor"]
+            ):
                 raise ValidationError("Only Doctors can verify a Consultation")
 
             facility = (
@@ -350,8 +433,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 or validated["patient"].facility
             )
             if (
-                validated["verified_by"].home_facility
-                and validated["verified_by"].home_facility != facility
+                validated["treating_physician"].home_facility
+                and validated["treating_physician"].home_facility != facility
             ):
                 raise ValidationError(
                     "Home Facility of the Doctor must be the same as the Consultation Facility"

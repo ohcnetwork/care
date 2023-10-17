@@ -89,8 +89,8 @@ class Fhir:
         id = str(uuid())
         name = (
             (
-                self.consultation.verified_by
-                and f"{self.consultation.verified_by.first_name} {self.consultation.verified_by.last_name}"
+                self.consultation.treating_physician
+                and f"{self.consultation.treating_physician.first_name} {self.consultation.treating_physician.last_name}"
             )
             or self.consultation.deprecated_verified_by
             or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"

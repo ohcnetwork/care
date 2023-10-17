@@ -71,8 +71,8 @@
   <div class="px-4 py-5">
     <div class="flex flex-col gap-2">
       <p>
-        <span class="text-sm leading-5 font-medium text-gray-500">Status during consultation:</span>
-        {{consultation.get_consultation_status_display|field_name_to_label}}
+        <span class="text-sm leading-5 font-medium text-gray-500">Route to Facility:</span>
+        {{consultation.get_route_to_facility_display|field_name_to_label}}
       </p>
       <p>
         <span class="text-sm leading-5 font-medium text-gray-500">Decision after consultation:</span>
@@ -85,7 +85,7 @@
       </p>
       {% elif consultation.suggestion == 'R' %}
       <p>
-        <span class="text-sm leading-5 font-medium text-gray-500">Reffered to:</span>
+        <span class="text-sm leading-5 font-medium text-gray-500">Referred to:</span>
         {{consultation.referred_to.name}}
       </p>
       {% elif consultation.suggestion == 'DD' %}
@@ -121,7 +121,7 @@
           {{consultation.height}} cm
         </p>
       </div>
-      {% if consultation.consultation_status != 1 %}
+      {% if consultation.route_to_facility %}
       <div class="flex gap-6">
         <p>
           <span class="text-sm leading-5 font-medium text-gray-500">Symptoms at admission:</span>
@@ -326,7 +326,7 @@
         <span class="text-sm leading-5 font-medium text-gray-500">Ongoing Medication:</span>
         {{patient.ongoing_medication}}
       </p>
-      {% if consultation.consultation_status != 1 %}
+      {% if consultation.route_to_facility %}
       <p>
         <span class="text-sm leading-5 font-medium text-gray-500">History of present illness:</span>
         {{consultation.history_of_present_illness}}
@@ -945,8 +945,8 @@
       Treating Physician
     </div>
     <div class="mt-1 text-sm leading-5 text-gray-900">
-      {% if consultation.verified_by %}
-      {{ consultation.verified_by.first_name }} {{ consultation.verified_by.last_name }}
+      {% if consultation.treating_physician %}
+      {{ consultation.treating_physician.first_name }} {{ consultation.treating_physician.last_name }}
       {% else %}
       -
       {% endif %}
