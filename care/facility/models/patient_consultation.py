@@ -164,13 +164,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
+    medico_legal_case = models.BooleanField(default=False)
+
     deprecated_verified_by = models.TextField(
         default="", null=True, blank=True
     )  # Deprecated
     treating_physician = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
-    medico_legal_case = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"
