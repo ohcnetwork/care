@@ -170,6 +170,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     treating_physician = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
+    medico_legal_case = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"
