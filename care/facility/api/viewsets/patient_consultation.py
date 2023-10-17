@@ -34,6 +34,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 class PatientConsultationFilter(filters.FilterSet):
     patient = filters.CharFilter(field_name="patient__external_id")
     facility = filters.NumberFilter(field_name="facility_id")
+    location = filters.CharFilter(field_name="current_bed__location_external_id")
 
 
 class PatientConsultationViewSet(
