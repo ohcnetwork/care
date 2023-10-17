@@ -70,21 +70,28 @@ class Gateway:
             "/v0.5/consent-requests/status", data, headers={"X-CM-ID": settings.X_CM_ID}
         )
 
-    def consents__hiu__notify(self, consent_id: str, request_id: str):
+    def consents__hiu__on_notify(self, consent: ConsentRequest, request_id: str):
         data = {
             "requestId": str(uuid.uuid4()),
             "timestamp": datetime.now(tz=timezone.utc).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
-            "acknowledgement": {
-                "consentId": consent_id,
-                "status": "OK",
-            },
             "resp": {"requestId": request_id},
         }
 
+        if len(consent.consent_artefacts.all()):
+            data["acknowledgement"] = []
+
+        for aretefact in consent.consent_artefacts.all():
+            data["acknowledgement"].append(
+                {
+                    "consentId": str(aretefact.artefact_id),
+                    "status": "OK",
+                }
+            )
+
         return self.request.post(
-            "/v0.5/consents/hiu/notify", data, headers={"X-CM-ID": settings.X_CM_ID}
+            "/v0.5/consents/hiu/on-notify", data, headers={"X-CM-ID": settings.X_CM_ID}
         )
 
     def consents__fetch(self, consent_artefact_id: str):
@@ -125,6 +132,10 @@ class Gateway:
                     },
                     "nonce": artefact.key_material_nonce,
                 },
+                "dateRange": {
+                    "from": artefact.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                    "to": artefact.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                },
             },
         }
 
@@ -157,10 +168,10 @@ class Gateway:
                     "type": "HIU",
                     "id": self.get_hf_id_by_health_id(artefact.patient_abha.health_id),
                 },
-            },
-            "statusNotification": {
-                "sessionStatus": "TRANSFERRED",
-                "hipId": artefact.hip,
+                "statusNotification": {
+                    "sessionStatus": "TRANSFERRED",
+                    "hipId": artefact.hip,
+                },
             },
         }
 

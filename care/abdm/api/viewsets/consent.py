@@ -173,9 +173,7 @@ class ConsentCallbackViewSet(GenericViewSet):
             consent_artefact.save()
         consent.save()
 
-        Gateway().consents__hiu__notify(
-            data["notification"]["consentRequestId"], data["requestId"]
-        )
+        Gateway().consents__hiu__on_notify(consent, data["requestId"])
 
         if data["notification"]["status"] == "GRANTED":
             ConsentViewSet().fetch(request, consent.external_id)
