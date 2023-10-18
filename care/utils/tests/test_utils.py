@@ -220,7 +220,8 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        facility = Facility.objects.create(**data)
+        return facility
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -330,7 +331,12 @@ class TestUtils:
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
-        data = {"name": "asset1 location", "location_type": 1, "facility": facility}
+        data = {
+            "name": "asset1 location",
+            "location_type": 1,
+            "facility": facility,
+            "middleware_address": "example.com",
+        }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
 
@@ -340,7 +346,8 @@ class TestUtils:
             "name": "Test Asset",
             "current_location": location,
             "asset_type": 50,
-            "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)),
+            "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)).date(),
+            "qr_code_id": "3dcee5fa-8fb8-4b07-be12-8e0d0baf6692",
         }
         data.update(kwargs)
         return Asset.objects.create(**data)

@@ -29,11 +29,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def get_last_administered_on(self, obj):
         last_administration = (
             MedicineAdministration.objects.filter(prescription=obj)
-            .order_by("-created_date")
+            .order_by("-administered_date")
             .first()
         )
         if last_administration:
-            return last_administration.created_date
+            return last_administration.administered_date
         return None
 
     class Meta:
@@ -94,6 +94,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     administered_by = UserBaseMinimumSerializer(read_only=True)
     prescription = PrescriptionSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
 
     def validate_administered_date(self, value):
         if value > timezone.now():
@@ -112,6 +113,8 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "external_id",
             "administered_by",
+            "archived_by",
+            "archived_on",
             "created_date",
             "modified_date",
             "prescription",
