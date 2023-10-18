@@ -149,6 +149,9 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
         method="filter_by_bed_type",
     )
+    last_consultation_medico_legal_case = filters.BooleanFilter(
+        field_name="last_consultation__medico_legal_case"
+    )
 
     def filter_by_bed_type(self, queryset, name, value):
         if not value:
