@@ -25,6 +25,9 @@ up:
 down:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) down
 
+load-dummy-data:
+	docker compose exec backend bash -c "python manage.py load_dummy_data"
+
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
 
