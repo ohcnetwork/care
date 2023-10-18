@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Debugging with Pycharm" href="../pycharm/configuration.html" /><link rel="prev" title="Welcome to Care’s documentation!" href="../index.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Setting up development environment - Care documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -234,6 +234,15 @@ first time, it might take a while depending upon your internet speed and machine
 </dd>
 </dl>
 </li>
+<li><dl>
+<dt>To load dummy data for testing run:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>load-dummy-data
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+<ol class="arabic simple" start="2">
 <li><p>Open a browser and go to <cite>http://localhost:9000</cite></p></li>
 </ol>
 </div></blockquote>
@@ -379,6 +388,10 @@ do make sure that you have done the following</p>
 </ul>
 <p>To copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles, you may use the command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py collectstatic
+</pre></div>
+</div>
+<p>To load dummy data for testing run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python manage.py load_dummy_data
 </pre></div>
 </div>
 </section>
