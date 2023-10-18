@@ -44,10 +44,11 @@ class DailyRound(PatientBaseModel):
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
         ALERT = 5
-        DROWSY = 10
-        STUPOROUS = 15
-        COMATOSE = 20
-        CANNOT_BE_ASSESSED = 25
+        RESPONDS_TO_VOICE = 10
+        RESPONDS_TO_PAIN = 15
+        UNRESPONSIVE = 20
+        AGITATED_OR_CONFUSED = 25
+        ONSET_OF_AGITATION_AND_CONFUSION = 30
 
     ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
 
