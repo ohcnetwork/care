@@ -21,6 +21,9 @@ class FacilityUserTest(TestUtils, APITestCase):
             cls.super_user, cls.district, cls.local_body
         )
 
+    def setUp(self) -> None:
+        self.client.force_authenticate(self.super_user)
+
     def test_get_queryset_with_prefetching(self):
         response = self.client.get(
             f"/api/v1/facility/{self.facility.external_id}/get_users/"
@@ -30,16 +33,15 @@ class FacilityUserTest(TestUtils, APITestCase):
         self.assertNumQueries(2)
 
     def test_link_new_facility(self):
+        response = self.client.get("/api/v1/facility/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 3)
+
+    def test_link_existing_facility(self):
         response = self.client.get(
-            "/api/v1/getallfacilities/",
+            f"/api/v1/facility/?exclude_user={self.user.username}"
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNumQueries(2)
-
-    def test_link_existing_facility(self):
-        sample_data = {"exlude_user": self.user.username}
-        response = self.client.get("/api/v1/getallfacilities/", sample_data)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNumQueries(1)
+        self.assertEqual(len(response.data["results"]), 2)
