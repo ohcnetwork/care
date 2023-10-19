@@ -8,6 +8,7 @@ from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
 )
+from care.facility.static_data.icd11 import ICDDiseases, fetch_from_db
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -258,6 +259,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_icd11_diagnosis_final_and_provisional(self):
+        ICDDiseases.insert_many(fetch_from_db())
         consultation = self.create_admission_consultation(
             suggestion="A",
             admission_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
