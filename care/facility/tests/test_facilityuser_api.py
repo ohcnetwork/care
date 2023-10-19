@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.users.models import Skill
 from care.utils.tests.test_utils import TestUtils
+
 
 class FacilityUserTest(TestUtils, APITestCase):
     @classmethod
@@ -14,8 +14,12 @@ class FacilityUserTest(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
-        cls.facility1 = cls.create_facility(cls.super_user,cls.district, cls.local_body)
-        cls.facility2 = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.facility1 = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body
+        )
+        cls.facility2 = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body
+        )
 
     def test_get_queryset_with_prefetching(self):
         response = self.client.get(
@@ -34,13 +38,8 @@ class FacilityUserTest(TestUtils, APITestCase):
         self.assertNumQueries(2)
 
     def test_link_existing_facility(self):
-        sample_data = {
-            "exlude_user": self.user.username
-        }
-        response = self.client.get(
-            f"/api/v1/getallfacilities/",
-            sample_data
-        )
+        sample_data = {"exlude_user": self.user.username}
+        response = self.client.get("/api/v1/getallfacilities/", sample_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNumQueries(1)

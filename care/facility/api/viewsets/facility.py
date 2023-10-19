@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -10,7 +9,6 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db.models import Q
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -41,7 +39,7 @@ class FacilityFilter(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
-    exclude_user = filters.BooleanFilter(method='filter_exclude_user')
+    exclude_user = filters.BooleanFilter(method="filter_exclude_user")
 
     def filter_exclude_user(self, queryset, name, value):
         if value:
@@ -49,12 +47,13 @@ class FacilityFilter(filters.FilterSet):
         return queryset
 
     def filter_queryset(self, queryset):
-        exclude_user = self.request.query_params.get('exclude_user')
+        exclude_user = self.request.query_params.get("exclude_user")
         if exclude_user:
             queryset = queryset.exclude(facilityuser__user__username=exclude_user)
 
         queryset = super().filter_queryset(queryset)
         return queryset
+
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
