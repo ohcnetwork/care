@@ -12,6 +12,7 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
+    CATEGORY_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
@@ -181,11 +182,11 @@ class ShiftingSerializer(serializers.ModelSerializer):
         choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
     )
 
-    orgin_facility = ExternalIdSerializerField(
+    origin_facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), allow_null=False, required=True
     )
-    orgin_facility_object = FacilityBasicInfoSerializer(
-        source="orgin_facility", read_only=True
+    origin_facility_object = FacilityBasicInfoSerializer(
+        source="origin_facility", read_only=True
     )
 
     shifting_approving_facility = ExternalIdSerializerField(
@@ -217,6 +218,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
     )
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -242,7 +244,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
-        validated_data.pop("orgin_facility")
+        validated_data.pop("origin_facility")
         validated_data.pop("patient")
 
         user = self.context["request"].user
@@ -265,13 +267,13 @@ class ShiftingSerializer(serializers.ModelSerializer):
             status = validated_data["status"]
             if status == REVERSE_SHIFTING_STATUS_CHOICES[
                 "CANCELLED"
-            ] and not has_facility_permission(user, instance.orgin_facility):
+            ] and not has_facility_permission(user, instance.origin_facility):
                 raise ValidationError({"status": ["Permission Denied"]})
 
             if settings.PEACETIME_MODE:
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
-                    and has_facility_permission(user, instance.orgin_facility)
+                    and has_facility_permission(user, instance.origin_facility)
                 ):
                     pass
                 elif (
@@ -327,8 +329,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
         new_instance = super().update(instance, validated_data)
 
         patient = new_instance.patient
-        patient.last_consultation.category = self.initial_data["patient_category"]
-        patient.last_consultation.save()
+        patient_category = validated_data.pop("patient_category", None)
+        if patient.last_consultation and patient_category is not None:
+            patient.last_consultation.category = patient_category
+            patient.last_consultation.save(update_fields=["category"])
 
         if (
             "status" in validated_data
@@ -390,11 +394,12 @@ class ShiftingSerializer(serializers.ModelSerializer):
             patient.allow_transfer = True
             patient.save()
 
-        if patient.last_consultation:
-            patient.last_consultation.category = self.initial_data["patient_category"]
-            patient.last_consultation.save()
+        patient_category = validated_data.pop("patient_category", None)
+        if patient.last_consultation and patient_category is not None:
+            patient.last_consultation.category = patient_category
+            patient.last_consultation.save(update_fields=["category"])
 
-        validated_data["orgin_facility"] = patient.facility
+        validated_data["origin_facility"] = patient.facility
 
         validated_data["created_by"] = self.context["request"].user
         validated_data["last_edited_by"] = self.context["request"].user

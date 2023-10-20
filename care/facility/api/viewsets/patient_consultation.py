@@ -1,4 +1,6 @@
+from django.db.models import Prefetch
 from django.db.models.query_utils import Q
+from django.shortcuts import render
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -20,11 +22,12 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.tasks.discharge_report import (
-    email_discharge_summary,
-    generate_and_upload_discharge_summary_task,
+from care.facility.tasks.discharge_summary import (
+    email_discharge_summary_task,
+    generate_discharge_summary_task,
 )
-from care.users.models import User
+from care.facility.utils.reports import discharge_summary
+from care.users.models import Skill, User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
@@ -69,6 +72,18 @@ class PatientConsultationViewSet(
         return super().get_permissions()
 
     def get_queryset(self):
+        if self.serializer_class == PatientConsultationSerializer:
+            self.queryset = self.queryset.prefetch_related(
+                "assigned_to",
+                Prefetch(
+                    "assigned_to__skills",
+                    queryset=Skill.objects.filter(userskill__deleted=False),
+                ),
+                "current_bed",
+                "current_bed__bed",
+                "current_bed__assets",
+                "current_bed__assets__current_location",
+            )
         if self.request.user.is_superuser:
             return self.queryset
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -92,8 +107,28 @@ class PatientConsultationViewSet(
         serializer = self.get_serializer(consultation, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(current_bed=None)
-        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
+        discharge_summary.set_lock(consultation.external_id, 0)
+        generate_discharge_summary_task.delay(consultation.external_id)
         return Response(status=status.HTTP_200_OK)
+
+    def _generate_discharge_summary(self, consultation_ext_id: str):
+        current_progress = discharge_summary.get_progress(consultation_ext_id)
+        if current_progress is not None:
+            return Response(
+                {
+                    "detail": (
+                        "Discharge Summary is already being generated, "
+                        f"current progress {current_progress}%"
+                    )
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        discharge_summary.set_lock(consultation_ext_id, 1)
+        generate_discharge_summary_task.delay(consultation_ext_id)
+        return Response(
+            {"detail": "Discharge Summary will be generated shortly"},
+            status=status.HTTP_202_ACCEPTED,
+        )
 
     @extend_schema(
         description="Generate a discharge summary",
@@ -105,9 +140,17 @@ class PatientConsultationViewSet(
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
         consultation = self.get_object()
-        #  TODO : set a max discharge summary count for a consultation for a day/hour.
-        generate_and_upload_discharge_summary_task.delay(consultation.external_id)
-        return Response({})
+        if consultation.discharge_date:
+            return Response(
+                {
+                    "detail": (
+                        "Cannot generate a new discharge summary for already "
+                        "discharged patient"
+                    )
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        return self._generate_discharge_summary(consultation.external_id)
 
     @extend_schema(
         description="Get the discharge summary",
@@ -117,19 +160,18 @@ class PatientConsultationViewSet(
     @action(detail=True, methods=["GET"])
     def preview_discharge_summary(self, request, *args, **kwargs):
         consultation = self.get_object()
-        summary = (
+        summary_file = (
             FileUpload.objects.filter(
                 file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
                 associating_id=consultation.external_id,
+                upload_completed=True,
             )
             .order_by("-created_date")
             .first()
         )
-        if summary and summary.upload_completed:
-            return Response(FileUploadRetrieveSerializer(summary).data)
-        raise NotFound(
-            "Discharge summary is not ready yet. Please wait if a request has been placed."
-        )
+        if summary_file:
+            return Response(FileUploadRetrieveSerializer(summary_file).data)
+        return self._generate_discharge_summary(consultation.external_id)
 
     @extend_schema(
         description="Email the discharge summary to the user",
@@ -139,16 +181,44 @@ class PatientConsultationViewSet(
     )
     @action(detail=True, methods=["POST"])
     def email_discharge_summary(self, request, *args, **kwargs):
-        consultation = self.get_object()
+        consultation_ext_id = kwargs["external_id"]
+        existing_progress = discharge_summary.get_progress(consultation_ext_id)
+        if existing_progress:
+            return Response(
+                {
+                    "detail": (
+                        "Discharge Summary is already being generated, "
+                        f"current progress {existing_progress}%"
+                    )
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-
         email = serializer.validated_data["email"]
-
-        email_discharge_summary.delay(consultation.external_id, email)
-        return Response(status=status.HTTP_200_OK)
+        summary_file = (
+            FileUpload.objects.filter(
+                file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
+                associating_id=consultation_ext_id,
+                upload_completed=True,
+            )
+            .order_by("-created_date")
+            .first()
+        )
+        if not summary_file:
+            (
+                generate_discharge_summary_task.s(consultation_ext_id)
+                | email_discharge_summary_task.s(emails=[email])
+            ).delay()
+        else:
+            email_discharge_summary_task.delay(summary_file.id, [email])
+        return Response(
+            {"detail": "Discharge Summary will be emailed shortly"},
+            status=status.HTTP_202_ACCEPTED,
+        )
 
     @extend_schema(
         responses={200: PatientConsultationIDSerializer}, tags=["consultation", "asset"]
@@ -168,3 +238,19 @@ class PatientConsultationViewSet(
         if not consultation:
             raise NotFound({"detail": "No consultation found for this asset"})
         return Response(PatientConsultationIDSerializer(consultation).data)
+
+
+def dev_preview_discharge_summary(request, consultation_id):
+    """
+    This is a dev only view to preview the discharge summary template
+    """
+    consultation = (
+        PatientConsultation.objects.select_related("patient")
+        .order_by("-id")
+        .filter(external_id=consultation_id)
+        .first()
+    )
+    if not consultation:
+        raise NotFound({"detail": "Consultation not found"})
+    data = discharge_summary.get_discharge_summary_data(consultation)
+    return render(request, "reports/patient_discharge_summary_pdf.html", data)

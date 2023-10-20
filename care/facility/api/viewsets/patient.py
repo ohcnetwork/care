@@ -78,8 +78,8 @@ class PatientFilterSet(filters.FilterSet):
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    ip_no = filters.CharFilter(
-        field_name="last_consultation__ip_no", lookup_expr="icontains"
+    patient_no = filters.CharFilter(
+        field_name="last_consultation__patient_no", lookup_expr="icontains"
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
@@ -147,11 +147,34 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__symptoms_onset_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
-        field_name="last_consultation__current_bed__bed__bed_type"
+        method="filter_by_bed_type",
     )
+    last_consultation_medico_legal_case = filters.BooleanFilter(
+        field_name="last_consultation__medico_legal_case"
+    )
+
+    def filter_by_bed_type(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        values = value.split(",")
+        filter_q = Q()
+
+        if "None" in values:
+            filter_q |= Q(last_consultation__current_bed__isnull=True)
+            values.remove("None")
+        if values:
+            filter_q |= Q(last_consultation__current_bed__bed__bed_type__in=values)
+
+        return queryset.filter(filter_q)
+
     last_consultation_admitted_bed_type = CareChoiceFilter(
         field_name="last_consultation__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
+    )
+    last_consultation_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__discharge_reason",
+        choices=DISCHARGE_REASON_CHOICES,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
@@ -613,6 +636,7 @@ class PatientNotesViewSet(
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
             queryset = queryset.filter(q_filters)
+
         return queryset
 
     def perform_create(self, serializer):

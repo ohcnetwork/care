@@ -225,7 +225,7 @@ class PatientConsultationICMR(PatientConsultation):
     def symptomatic_international_traveller(
         self,
     ):
-        return (
+        return bool(
             self.patient.countries_travelled
             and len(self.patient.countries_travelled) != 0
             and (

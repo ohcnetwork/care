@@ -52,7 +52,14 @@ put the required environment variables in a `.env` file and run:
 make up
 ```
 
-> ⚠️ If you are unable to compose up care in windows, ensure line endings are set to `LF` (`docker-entrypoint.sh` won't
+to load dummy data for testing run:
+
+```bash
+make load-dummy-data
+```
+
+> [!NOTE]
+> If you are unable to compose up care in windows, ensure line endings are set to `LF` (`docker-entrypoint.sh` won't
 > work with `CRLF` line endings).
 > ```
 > git config core.autocrlf false

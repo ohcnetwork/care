@@ -7,7 +7,8 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
-from care.users.models import User, phone_number_regex
+from care.users.models import User
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 SHIFTING_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -44,7 +45,7 @@ REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 class ShiftingRequest(FacilityBaseModel):
-    orgin_facility = models.ForeignKey(
+    origin_facility = models.ForeignKey(
         "Facility",
         on_delete=models.PROTECT,
         related_name="requesting_facility",
@@ -78,7 +79,10 @@ class ShiftingRequest(FacilityBaseModel):
     comments = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     is_kasp = models.BooleanField(default=False)
     status = models.IntegerField(
@@ -98,7 +102,10 @@ class ShiftingRequest(FacilityBaseModel):
     )
     ambulance_driver_name = models.TextField(default="", blank=True)
     ambulance_phone_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     ambulance_number = models.TextField(default="", blank=True)
     created_by = models.ForeignKey(
@@ -121,7 +128,7 @@ class ShiftingRequest(FacilityBaseModel):
         "patient__phone_number": "Patient Phone Number",
         "patient__age": "Patient Age",
         "patient__is_antenatal": "Patient is Antenatal",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
         "shifting_approving_facility__name": "Approving Facility",
         "status": "Current Status",

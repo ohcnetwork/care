@@ -37,6 +37,36 @@ def generate_choices(enum_class):
     return [(tag.name, tag.value) for tag in enum_class]
 
 
+class MedibaseMedicineType(enum.Enum):
+    BRAND = "brand"
+    GENERIC = "generic"
+
+
+class MedibaseMedicine(BaseModel):
+    name = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        db_index=True,
+        unique=True,
+    )
+    type = models.CharField(
+        max_length=16,
+        choices=generate_choices(MedibaseMedicineType),
+        blank=False,
+        null=False,
+        db_index=True,
+    )
+    generic = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    company = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    contents = models.TextField(blank=True, null=True)
+    cims_class = models.CharField(max_length=255, blank=True, null=True)
+    atc_classification = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return " - ".join(filter(None, [self.name, self.generic, self.company]))
+
+
 class Prescription(BaseModel):
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -49,7 +79,13 @@ class Prescription(BaseModel):
         choices=generate_choices(PrescriptionType),
     )
 
-    medicine = models.CharField(max_length=1023, blank=False, null=False)
+    medicine = models.ForeignKey(
+        MedibaseMedicine,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=False,
+    )
+    medicine_old = models.CharField(max_length=1023, blank=False, null=True)
     route = models.CharField(
         max_length=100,
         choices=[(tag.name, tag.value) for tag in Routes],
@@ -98,6 +134,10 @@ class Prescription(BaseModel):
                 self.discontinued_date = None
         return super().save(*args, **kwargs)
 
+    @property
+    def medicine_name(self):
+        return str(self.medicine) if self.medicine else self.medicine_old
+
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
 
@@ -115,6 +155,13 @@ class MedicineAdministration(BaseModel):
     )
     administered_date = models.DateTimeField(
         null=False, blank=False, default=timezone.now
+    )
+    archived_on = models.DateTimeField(null=True, blank=True)
+    archived_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="+",
     )
 
     def __str__(self):

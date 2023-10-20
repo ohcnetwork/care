@@ -69,10 +69,6 @@ class FileUpload(FacilityBaseModel):
         max_length=100,
     )
 
-    def get_content(self):
-        response = self.get_object()
-        return response["Body"].read()
-
     def get_extension(self):
         parts = self.internal_name.split(".")
         return f".{parts[-1]}" if len(parts) > 1 else ""
@@ -87,7 +83,7 @@ class FileUpload(FacilityBaseModel):
             self.internal_name = internal_name
         return super().save(*args, **kwargs)
 
-    def signed_url(self):
+    def signed_url(self, duration=60 * 60):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
         return s3Client.generate_presigned_url(
             "put_object",
@@ -95,10 +91,10 @@ class FileUpload(FacilityBaseModel):
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
                 "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,  # seconds
+            ExpiresIn=duration,  # seconds
         )
 
-    def read_signed_url(self):
+    def read_signed_url(self, duration=60 * 60):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
         return s3Client.generate_presigned_url(
             "get_object",
@@ -106,7 +102,7 @@ class FileUpload(FacilityBaseModel):
                 "Bucket": settings.FILE_UPLOAD_BUCKET,
                 "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
             },
-            ExpiresIn=60 * 60,  # seconds
+            ExpiresIn=duration,  # seconds
         )
 
     def put_object(self, file, bucket=settings.FILE_UPLOAD_BUCKET, **kwargs):
@@ -125,3 +121,9 @@ class FileUpload(FacilityBaseModel):
             Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
             **kwargs,
         )
+
+    def file_contents(self):
+        response = self.get_object()
+        content_type = response["ContentType"]
+        content = response["Body"].read()
+        return content_type, content

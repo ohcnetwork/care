@@ -2,12 +2,17 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from care.utils.models.base import BaseModel
+from care.utils.models.validators import (
+    mobile_or_landline_number_validator,
+    mobile_validator,
+)
 
 
 def reverse_choices(choices):
@@ -19,19 +24,6 @@ def reverse_choices(choices):
 
 GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
 REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
-
-phone_number_regex = RegexValidator(
-    regex=r"^(?:(?:(?:\+|0{0,2})91|0{0,2})(?:\()?\d{3}(?:\))?[\-]?\d{3}[\-]?\d{4})$",
-    message="Please Enter 10/11 digit mobile number or landline as 0<std code><phone number>",
-    code="invalid_mobile",
-)
-
-phone_number_regex_11 = RegexValidator(
-    # allow 10 to 11 digit mobile numbers if the first 4 digits are 1800
-    regex=r"^((\+91|91|0)[\- ]{0,1})?[456789]\d{9}|1800\d{6,7}$",
-    message="Please Enter 10/11 digit mobile/landline/tollfree number",
-    code="invalid_mobile",
-)
 
 DISTRICT_CHOICES = [
     (1, "Thiruvananthapuram"),
@@ -228,10 +220,12 @@ class User(AbstractUser):
     )
     state = models.ForeignKey(State, on_delete=models.PROTECT, null=True, blank=True)
 
-    phone_number = models.CharField(max_length=14, validators=[phone_number_regex])
+    phone_number = models.CharField(
+        max_length=14, validators=[mobile_or_landline_number_validator]
+    )
     alt_phone_number = models.CharField(
         max_length=14,
-        validators=[phone_number_regex],
+        validators=[mobile_validator],
         default=None,
         blank=True,
         null=True,
@@ -242,6 +236,9 @@ class User(AbstractUser):
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
+    )
+    weekly_working_hours = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
 
     doctor_qualification = models.TextField(
@@ -363,3 +360,16 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
+
+
+class UserFacilityAllocation(models.Model):
+    """
+    This model tracks the allocation of a user to a facility for metabase analytics.
+    """
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, related_name="+"
+    )
+    start_date = models.DateTimeField(default=now)
+    end_date = models.DateTimeField(null=True, blank=True)

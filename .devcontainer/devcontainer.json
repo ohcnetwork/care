@@ -1,0 +1,33 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
+{
+	"name": "Care",
+	"dockerComposeFile": [
+    "../docker-compose.yaml",
+		"../docker-compose.local.yaml"
+	],
+  "hostRequirements": {
+    "cpus": 4
+  },
+  "waitFor": "onCreateCommand",
+	"service": "backend",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py load_dummy_data",
+  "postAttachCommand": {
+    "server": "python manage.py runserver"
+  },
+	"customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  },
+  "portsAttributes": {
+    "8000": {
+      "label": "Application",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [9000]
+}

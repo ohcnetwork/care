@@ -6,7 +6,8 @@ from care.facility.models import (
     pretty_boolean,
     reverse_choices,
 )
-from care.users.models import User, phone_number_regex
+from care.users.models import User
+from care.utils.models.validators import mobile_or_landline_number_validator
 
 RESOURCE_STATUS_CHOICES = (
     (10, "PENDING"),
@@ -36,7 +37,7 @@ REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
 
 
 class ResourceRequest(FacilityBaseModel):
-    orgin_facility = models.ForeignKey(
+    origin_facility = models.ForeignKey(
         "Facility",
         on_delete=models.PROTECT,
         related_name="resource_requesting_facility",
@@ -58,7 +59,10 @@ class ResourceRequest(FacilityBaseModel):
     reason = models.TextField(default="", blank=True)
     refering_facility_contact_name = models.TextField(default="", blank=True)
     refering_facility_contact_number = models.CharField(
-        max_length=14, validators=[phone_number_regex], default="", blank=True
+        max_length=14,
+        validators=[mobile_or_landline_number_validator],
+        default="",
+        blank=True,
     )
     status = models.IntegerField(
         choices=RESOURCE_STATUS_CHOICES, default=10, null=False, blank=False
@@ -67,10 +71,7 @@ class ResourceRequest(FacilityBaseModel):
         choices=RESOURCE_CATEGORY_CHOICES, default=100, null=False, blank=False
     )
     sub_category = models.IntegerField(
-        choices=RESOURCE_SUB_CATEGORY_CHOICES,
-        default=1000,
-        null=False,
-        blank=False,
+        choices=RESOURCE_SUB_CATEGORY_CHOICES, default=1000, null=False, blank=False
     )
     priority = models.IntegerField(default=None, null=True, blank=True)
 
@@ -101,7 +102,7 @@ class ResourceRequest(FacilityBaseModel):
     CSV_MAPPING = {
         "created_date": "Created Date",
         "modified_date": "Modified Date",
-        "orgin_facility__name": "From Facility",
+        "origin_facility__name": "From Facility",
         "assigned_facility__name": "Assigned Facility",
         "approving_facility__name": "Approving Facility",
         "status": "Current Status",

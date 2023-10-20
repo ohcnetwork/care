@@ -10,6 +10,9 @@ ifndef DOCKER_VERSION
     $(error "command docker is not available, please install Docker")
 endif
 
+install:
+	pipenv install --categories "packages dev-packeges docs"
+
 re-build:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) build --no-cache
 
@@ -22,18 +25,25 @@ up:
 down:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) down
 
+load-dummy-data:
+	docker compose exec backend bash -c "python manage.py load_dummy_data"
+
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
 
 logs:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) logs
 
+checkmigration: up
+	docker compose exec backend bash -c "python manage.py makemigrations --check --dry-run"
+
 makemigrations: up
-	docker exec care bash -c "python manage.py makemigrations"
+	docker compose exec backend bash -c "python manage.py makemigrations"
 
 test: up
-	docker exec care bash -c "python manage.py test --keepdb --parallel=$(nproc)"
+	docker compose exec backend bash -c "python manage.py test --keepdb --parallel"
 
-test_coverage: up
-	docker exec care bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel=$(nproc)"
-	docker exec care bash -c "coverage combine || true; coverage report"
+test-coverage: up
+	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel"
+	docker compose exec backend bash -c "coverage combine || true; coverage xml"
+	docker compose cp backend:/app/coverage.xml coverage.xml

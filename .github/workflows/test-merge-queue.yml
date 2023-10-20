@@ -1,0 +1,8 @@
+name: Test Pull Request
+
+on:
+  merge_group:
+
+jobs:
+  test:
+    uses: ./.github/workflows/test-base.yml

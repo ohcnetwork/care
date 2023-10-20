@@ -6,6 +6,7 @@ from .asset import *  # noqa
 from .bed import *  # noqa
 from .daily_round import *  # noqa
 from .facility import *  # noqa
+from .icd11_diagnosis import *  # noqa
 from .inventory import *  # noqa
 from .meta_icd11_diagnosis import *  # noqa
 from .patient import *  # noqa
