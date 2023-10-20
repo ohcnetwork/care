@@ -9,10 +9,15 @@ An issue wih the [good first](https://github.com/coronasafe/care/issues?q=is%3Ai
 
 ### Setting up the development environment
 
+Install dependencies
+
+```bash
+pipenv sync --categories "packages dev-packages docs"
+```
+
 Install pre-commit hooks
 
 ```bash
-pip install -U pre-commit
 pre-commit install
 ```
 
@@ -52,7 +57,7 @@ python3 -m venv .venv
 # activate the virtualenv
 source .venv/bin/activate
 # install dependencies
-pip install -r requirements/local.txt
+pipenv sync --categories "packages dev-packages docs"
 # to read from .env file
 export DJANGO_READ_DOT_ENV_FILE=true
 # run migrations
@@ -66,7 +71,7 @@ If you're on Mac and you have installed Postgres.app Run:
 export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/14/bin
 ```
 
-If you're pip install is failing on Pillow Consider installing these dependencies:
+If you're pipenv install is failing on Pillow Consider installing these dependencies:
 ```bash
 brew install libjpeg libtiff little-cms2 openjpeg webp freetype harfbuzz fribidi
 ```
@@ -120,6 +125,6 @@ Local:
 python manage.py test
 ```
 
-#  
+#
 
 **Join us on Slack for more information**
