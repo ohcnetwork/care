@@ -77,6 +77,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         COMPLETE = 60
         REVIEW = 70
         NOT_REACHABLE = 80
+        DISCHARGE_RECOMMENDED = 90
 
     ActionChoices = [(e.value, e.name) for e in ActionEnum]
 
