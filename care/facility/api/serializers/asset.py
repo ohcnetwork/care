@@ -76,7 +76,6 @@ class AssetLocationSerializer(ModelSerializer):
 
         if "duty_staff" in data:
             duty_staffs_objects = len(data["duty_staff"])
-            print("duty: ", duty_staffs_objects)
             if duty_staffs_objects > 3:
                 raise ValidationError(
                     {"duty_staff": "Only 3 duty staffs can be assigned"}
