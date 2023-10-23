@@ -250,6 +250,58 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return consultation
 
     def create(self, validated_data):
+        if route_to_facility := validated_data.get("route_to_facility"):
+            if route_to_facility == RouteToFacility.OUTPATIENT:
+                validated_data["icu_admission_date"] = None
+                validated_data["transferred_from_location"] = None
+                validated_data["referred_from_facility"] = None
+                validated_data["referred_from_facility_external"] = ""
+                validated_data["referred_by_external"] = ""
+
+            if route_to_facility == RouteToFacility.INTRA_FACILITY_TRANSFER:
+                validated_data["referred_from_facility"] = None
+                validated_data["referred_from_facility_external"] = ""
+                validated_data["referred_by_external"] = ""
+
+                if not validated_data.get("transferred_from_location"):
+                    raise ValidationError(
+                        {
+                            "transferred_from_location": [
+                                "This field is required as the patient has been transferred from another location."
+                            ]
+                        }
+                    )
+
+            if route_to_facility == RouteToFacility.INTER_FACILITY_TRANSFER:
+                validated_data["transferred_from_location"] = None
+
+                if not validated_data.get(
+                    "referred_from_facility"
+                ) and not validated_data.get("referred_from_facility_external"):
+                    raise ValidationError(
+                        {
+                            "referred_from_facility": [
+                                "This field is required as the patient has been referred from another facility."
+                            ]
+                        }
+                    )
+
+                if validated_data.get("referred_from_facility") and validated_data.get(
+                    "referred_from_facility_external"
+                ):
+                    raise ValidationError(
+                        {
+                            "referred_from_facility": [
+                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                            ],
+                            "referred_from_facility_external": [
+                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                            ],
+                        }
+                    )
+        else:
+            raise ValidationError({"route_to_facility": "This field is required"})
+
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -363,58 +415,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
-
-        if route_to_facility := validated.get("route_to_facility"):
-            if route_to_facility == RouteToFacility.OUTPATIENT:
-                validated["icu_admission_date"] = None
-                validated["transferred_from_location"] = None
-                validated["referred_from_facility"] = None
-                validated["referred_from_facility_external"] = ""
-                validated["referred_by_external"] = ""
-
-            if route_to_facility == RouteToFacility.INTRA_FACILITY_TRANSFER:
-                validated["referred_from_facility"] = None
-                validated["referred_from_facility_external"] = ""
-                validated["referred_by_external"] = ""
-
-                if not validated.get("transferred_from_location"):
-                    raise ValidationError(
-                        {
-                            "transferred_from_location": [
-                                "This field is required as the patient has been transferred from another location."
-                            ]
-                        }
-                    )
-
-            if route_to_facility == RouteToFacility.INTER_FACILITY_TRANSFER:
-                validated["transferred_from_location"] = None
-
-                if not validated.get("referred_from_facility") and not validated.get(
-                    "referred_from_facility_external"
-                ):
-                    raise ValidationError(
-                        {
-                            "referred_from_facility": [
-                                "This field is required as the patient has been referred from another facility."
-                            ]
-                        }
-                    )
-
-                if validated.get("referred_from_facility") and validated.get(
-                    "referred_from_facility_external"
-                ):
-                    raise ValidationError(
-                        {
-                            "referred_from_facility": [
-                                "Only one of referred_from_facility and referred_from_facility_external can be set"
-                            ],
-                            "referred_from_facility_external": [
-                                "Only one of referred_from_facility and referred_from_facility_external can be set"
-                            ],
-                        }
-                    )
-        else:
-            raise ValidationError({"route_to_facility": "This field is required"})
 
         if (
             "suggestion" in validated

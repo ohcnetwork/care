@@ -26,6 +26,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
 
     def get_default_data(self):
         return {
+            "route_to_facility": 10,
             "symptoms": [1],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
