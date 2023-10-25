@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     dependencies = [
         (
             "facility",
-            "0392_rename_consultation_status_patientconsultation_deprecated_consultation_status_and_more",
+            "0393_rename_consultation_status_patientconsultation_deprecated_consultation_status_and_more",
         ),
     ]
 

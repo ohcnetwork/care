@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0391_merge_20231016_1845"),
+        ("facility", "0392_alter_dailyround_consciousness_level"),
     ]
 
     operations = [
