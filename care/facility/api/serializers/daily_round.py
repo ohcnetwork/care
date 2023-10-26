@@ -211,7 +211,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                             "other_symptoms",
                             "physical_examination_info",
                             "other_details",
-                            "recommend_discharge",
                             "bp",
                             "pulse",
                             "resp",
@@ -291,8 +290,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 self.update_last_daily_round(daily_round_obj)
             return daily_round_obj
 
-    def validate(self, obj):
-        validated = super().validate(obj)
+    def validate(self, attrs):
+        validated = super().validate(attrs)
 
         if validated["consultation"].discharge_date:
             raise ValidationError(

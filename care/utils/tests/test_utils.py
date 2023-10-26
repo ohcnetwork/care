@@ -238,7 +238,8 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        facility = Facility.objects.create(**data)
+        return facility
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -348,7 +349,12 @@ class TestUtils:
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
-        data = {"name": "asset1 location", "location_type": 1, "facility": facility}
+        data = {
+            "name": "asset1 location",
+            "location_type": 1,
+            "facility": facility,
+            "middleware_address": "example.com",
+        }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
 

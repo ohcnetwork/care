@@ -31,10 +31,18 @@ def check_asset_status():
             continue
         try:
             # Fetching middleware hostname
-            hostname = asset.meta.get(
-                "middleware_hostname",
-                asset.current_location.facility.middleware_address,
+            hostname = (
+                asset.meta.get(
+                    "middleware_hostname",
+                    asset.current_location.middleware_address,
+                )
+                or asset.current_location.facility.middleware_address
             )
+            if not hostname:
+                logger.warn(
+                    f"Asset {asset.external_id} does not have a middleware hostname"
+                )
+                continue
             result: Any = None
 
             # Checking if middleware status is already cached
@@ -62,6 +70,7 @@ def check_asset_status():
                             asset_class="ONVIF"
                         ).filter(
                             Q(meta__middleware_hostname=hostname)
+                            | Q(current_location__middleware_address=hostname)
                             | Q(current_location__facility__middleware_address=hostname)
                         )
                         assets_config = []

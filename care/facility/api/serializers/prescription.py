@@ -94,6 +94,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     administered_by = UserBaseMinimumSerializer(read_only=True)
     prescription = PrescriptionSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
 
     def validate_administered_date(self, value):
         if value > timezone.now():
@@ -112,6 +113,8 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "external_id",
             "administered_by",
+            "archived_by",
+            "archived_on",
             "created_date",
             "modified_date",
             "prescription",
