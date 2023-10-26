@@ -321,10 +321,17 @@ class AssetViewSet(
         try:
             action = request.data["action"]
             asset: Asset = self.get_object()
+            middleware_hostname = (
+                asset.meta.get(
+                    "middleware_hostname",
+                    asset.current_location.middleware_address,
+                )
+                or asset.current_location.facility.middleware_address
+            )
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,
-                    "middleware_hostname": asset.current_location.facility.middleware_address,
+                    "middleware_hostname": middleware_hostname,
                 }
             )
             result = asset_class.handle_action(action)

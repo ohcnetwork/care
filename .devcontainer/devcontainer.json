@@ -12,11 +12,10 @@
   "waitFor": "onCreateCommand",
 	"service": "backend",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "python manage.py migrate && python manage.py collectstatic --noinput",
+  "postCreateCommand": "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py load_dummy_data",
   "postAttachCommand": {
     "server": "python manage.py runserver"
   },
-
 	"customizations": {
     "vscode": {
       "extensions": [
