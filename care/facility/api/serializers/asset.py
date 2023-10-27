@@ -17,7 +17,9 @@ from rest_framework.serializers import (
 from rest_framework.validators import UniqueValidator
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
+from care.facility.api.serializers.facility import (
+    FacilityBareMinimumSerializer,
+)
 from care.facility.models.asset import (
     Asset,
     AssetAvailabilityRecord,
@@ -29,7 +31,10 @@ from care.facility.models.asset import (
     StatusChoices,
     UserDefaultAssetLocation,
 )
-from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.users.api.serializers.user import (
+    UserAssignedSerializer,
+    UserBaseMinimumSerializer,
+)
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
@@ -42,6 +47,11 @@ class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
     location_type = ChoiceField(choices=AssetLocation.RoomTypeChoices)
+    users = serializers.SerializerMethodField()
+
+    def get_users(self, obj):
+        users = obj.users.filter(assetlocationdutystaff__deleted=False)
+        return UserAssignedSerializer(users, many=True, read_only=True).data
 
     def validate_middleware_address(self, value):
         value = (value or "").strip()
@@ -130,7 +140,10 @@ class AssetServiceSerializer(ModelSerializer):
         "type": "object",
         "properties": {
             "hostname": {"type": "string"},
-            "source": {"type": "string", "enum": ["asset", "location", "facility"]},
+            "source": {
+                "type": "string",
+                "enum": ["asset", "location", "facility"],
+            },
         },
         "nullable": True,
     }
@@ -143,11 +156,15 @@ class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=StatusChoices, read_only=True)
     asset_type = ChoiceField(choices=AssetTypeChoices)
-    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+    location_object = AssetLocationSerializer(
+        source="current_location", read_only=True
+    )
     location = UUIDField(write_only=True, required=True)
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
-    note = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    note = serializers.CharField(
+        write_only=True, required=False, allow_blank=True
+    )
     resolved_middleware = ResolvedMiddlewareField(read_only=True)
 
     class Meta:
@@ -177,7 +194,9 @@ class AssetSerializer(ModelSerializer):
             attrs["current_location"] = location
 
         # validate that warraty date is not in the past
-        if warranty_amc_end_of_validity := attrs.get("warranty_amc_end_of_validity"):
+        if warranty_amc_end_of_validity := attrs.get(
+            "warranty_amc_end_of_validity"
+        ):
             # pop out warranty date if it is not changed
             if (
                 self.instance
@@ -194,7 +213,9 @@ class AssetSerializer(ModelSerializer):
         # validate that last serviced date is not in the future
         if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
             if attrs["last_serviced_on"] > datetime.now().date():
-                raise ValidationError("Last serviced on cannot be in the future")
+                raise ValidationError(
+                    "Last serviced on cannot be in the future"
+                )
 
         # only allow setting asset class on creation (or updation if asset class is not set)
         if (
@@ -214,7 +235,9 @@ class AssetSerializer(ModelSerializer):
             asset_instance = super().create(validated_data)
             if last_serviced_on or note:
                 asset_service = AssetService(
-                    asset=asset_instance, serviced_on=last_serviced_on, note=note
+                    asset=asset_instance,
+                    serviced_on=last_serviced_on,
+                    note=note,
                 )
                 asset_service.save()
                 asset_instance.last_service = asset_service
@@ -251,14 +274,17 @@ class AssetSerializer(ModelSerializer):
 
             if (
                 "current_location" in validated_data
-                and instance.current_location != validated_data["current_location"]
+                and instance.current_location
+                != validated_data["current_location"]
             ):
                 if (
                     instance.current_location.facility.id
                     != validated_data["current_location"].facility.id
                 ):
                     raise ValidationError(
-                        {"location": "Interfacility transfer is not allowed here"}
+                        {
+                            "location": "Interfacility transfer is not allowed here"
+                        }
                     )
                 AssetTransaction(
                     from_location=instance.current_location,
@@ -293,7 +319,9 @@ class AssetAvailabilitySerializer(ModelSerializer):
 
 
 class UserDefaultAssetLocationSerializer(ModelSerializer):
-    location_object = AssetLocationSerializer(source="location", read_only=True)
+    location_object = AssetLocationSerializer(
+        source="location", read_only=True
+    )
 
     class Meta:
         model = UserDefaultAssetLocation

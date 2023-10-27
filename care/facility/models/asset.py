@@ -47,9 +47,41 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    users = models.ManyToManyField(
+        User,
+        through="AssetLocationDutyStaff",
+        related_name="duty_staff",
+        through_fields=("asset_location", "user"),
+        blank=True,
+    )
+
     middleware_address = models.CharField(
         null=True, blank=True, default=None, max_length=200
     )
+
+
+class AssetLocationDutyStaff(BaseModel):
+    asset_location = models.ForeignKey(
+        AssetLocation, on_delete=models.CASCADE, null=False, blank=False
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
+        related_name="+",
+    )
+
+    def __str__(self):
+        return f"{self.user} under {self.asset_location.name}"
+
+    CSV_MAPPING = {
+        "asset_location__name": "Asset Location Name",
+        "user__username": "User",
+        "created_by__username": "Assigned By",
+    }
 
 
 class AssetType(enum.Enum):
@@ -80,7 +112,11 @@ class Asset(BaseModel):
         choices=AssetTypeChoices, default=AssetType.INTERNAL.value
     )
     asset_class = models.CharField(
-        choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
+        choices=AssetClassChoices,
+        default=None,
+        null=True,
+        blank=True,
+        max_length=20,
     )
     status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
     current_location = models.ForeignKey(
@@ -91,7 +127,9 @@ class Asset(BaseModel):
     serial_number = models.CharField(max_length=1024, blank=True, null=True)
     warranty_details = models.TextField(null=True, blank=True, default="")  # Deprecated
     meta = JSONField(
-        default=dict, blank=True, validators=[JSONFieldSchemaValidator(ASSET_META)]
+        default=dict,
+        blank=True,
+        validators=[JSONFieldSchemaValidator(ASSET_META)],
     )
     # Vendor Details
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)

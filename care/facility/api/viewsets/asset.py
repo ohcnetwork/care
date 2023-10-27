@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
+from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -42,6 +43,7 @@ from care.facility.models import (
     Asset,
     AssetAvailabilityRecord,
     AssetLocation,
+    AssetLocationDutyStaff,
     AssetService,
     AssetTransaction,
     ConsultationBedAsset,
@@ -117,6 +119,64 @@ class AssetLocationViewSet(
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+    @extend_schema(tags=["asset_location"])
+    @action(methods=["POST"], detail=True)
+    def duty_staff(self, request, facility_external_id, external_id):
+        """
+        Endpoint for assigning staffs to asset location
+        """
+
+        asset: AssetLocation = self.get_object()
+        duty_staff = request.data.get("duty_staff", [])
+
+        count = User.objects.filter(
+            Q(home_facility=asset.facility) & Q(id__in=duty_staff)
+        ).count()
+
+        if count != len(duty_staff):
+            raise ValidationError(
+                {"duty_staff": "Only Home Facility Doctors and Staffs are allowed"}
+            )
+
+        users = User.objects.filter(id__in=duty_staff).exclude(
+            id__in=AssetLocationDutyStaff.objects.filter(
+                asset_location=asset, user__id__in=duty_staff
+            ).values_list("user__id", flat=True)
+        )
+        with transaction.atomic():
+            duty_staff_objects = []
+            for user in users:
+                duty_staff_objects.append(
+                    AssetLocationDutyStaff(
+                        asset_location=asset,
+                        user=user,
+                        created_by=request.user,
+                    )
+                )
+
+            AssetLocationDutyStaff.objects.bulk_create(duty_staff_objects)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+    @extend_schema(tags=["asset_location"])
+    @duty_staff.mapping.delete
+    def duty_staff_delete(self, request, facility_external_id, external_id):
+        """
+        Endpoint for removing staffs from asset location
+        """
+
+        asset: AssetLocation = self.get_object()
+
+        if "duty_staff" not in request.data:
+            raise ValidationError({"duty_staff": "List of staffs is required"})
+
+        duty_staff = request.data.get("duty_staff", [])
+        AssetLocationDutyStaff.objects.filter(
+            asset_location=asset, user__id__in=duty_staff
+        ).update(deleted=True)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AssetFilter(filters.FilterSet):

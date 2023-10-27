@@ -17,6 +17,9 @@ class UserFilter(filters.FilterSet):
         choices=[(key, key) for key in User.TYPE_VALUE_MAP],
         coerce=lambda role: User.TYPE_VALUE_MAP[role],
     )
+    home_facility = filters.UUIDFilter(
+        field_name="home_facility__external_id", lookup_expr="exact"
+    )
 
     class Meta:
         model = User
