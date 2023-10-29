@@ -18,6 +18,10 @@ from care.facility.models import (
     State,
     Ward,
 )
+from care.facility.models.icd11_diagnosis import (
+    ACTIVE_CONDITION_VERIFICATION_STATUSES,
+    REVERSE_CONDITION_VERIFICATION_STATUSES,
+)
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
@@ -33,7 +37,7 @@ from care.facility.models.patient_base import (
     REVERSE_DISCHARGE_REASON_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
@@ -491,8 +495,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__consultation_status": "Status during consultation",
         "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of first consultation",
-        "last_consultation__icd11_diagnoses": "Diagnoses",
-        "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
+        "last_consultation__diagnoses": "Diagnoses",
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
         "last_consultation__discharge_date": "Date of discharge",
@@ -505,6 +508,19 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     def format_as_time(time):
         return time.strftime("%H:%M")
 
+    def format_diagnoses(consultation_diagnoses):
+        records = consultation_diagnoses.filter(
+            verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES,
+            deleted=False,
+        ).values_list("diagnosis_id", "verification_status")
+        diagnoses = get_icd11_diagnoses_objects_by_ids([obj[0] for obj in records])
+        return ", ".join(
+            [
+                f"{diagnosis['label']} ({REVERSE_CONDITION_VERIFICATION_STATUSES[record[1]]})"
+                for diagnosis, record in zip(diagnoses, records)
+            ]
+        )
+
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
         "created_date": format_as_date,
@@ -514,12 +530,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
-        "last_consultation__icd11_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
-        "last_consultation__icd11_provisional_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
+        "last_consultation__diagnoses": format_diagnoses,
         "last_consultation__consultation_status": (
             lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
         ),

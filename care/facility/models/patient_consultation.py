@@ -57,16 +57,18 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
-    icd11_provisional_diagnoses = ArrayField(
+    deprecated_diagnosis = models.TextField(
+        default="", null=True, blank=True
+    )  # Deprecated
+    deprecated_icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
-    icd11_diagnoses = ArrayField(
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
-    icd11_principal_diagnosis = models.CharField(
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_principal_diagnosis = models.CharField(
         max_length=100, default="", blank=True, null=True
-    )
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
