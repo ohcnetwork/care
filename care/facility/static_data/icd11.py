@@ -29,6 +29,11 @@ ICDDiseases.create_search_index("label")
 ICDDiseases.create_index("id", unique=True)
 
 
+def get_icd11_diagnosis_object_by_id(diagnosis_id, as_dict=False):
+    obj = ICDDiseases.by.id[diagnosis_id]
+    return obj.__dict__ if as_dict else obj
+
+
 def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
     diagnosis_objects = []
     for diagnosis in diagnoses_ids:
