@@ -12,8 +12,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import ACTIVE_CONDITION_VERIFICATION_STATUSES
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.facility.utils.reports.discharge_summary import (
     generate_discharge_report_signed_url,
 )
@@ -138,42 +139,21 @@ class HcxGatewayViewSet(GenericViewSet):
                 )
             )
 
-        diagnoses = []
-        if len(consultation.icd11_diagnoses):
-            diagnoses = list(
-                map(
-                    lambda diagnosis: {
-                        "id": str(uuid()),
-                        "label": diagnosis.label.split(" ", 1)[1],
-                        "code": diagnosis.label.split(" ", 1)[0] or "00",
-                        "type": "clinical",
-                    },
-                    list(
-                        map(
-                            lambda icd_id: ICDDiseases.by.id[icd_id],
-                            consultation.icd11_diagnoses,
-                        )
-                    ),
-                )
+        diagnoses = list(
+            map(
+                lambda diagnosis: {
+                    "id": str(uuid()),
+                    "label": diagnosis.label.split(" ", 1)[1],
+                    "code": diagnosis.label.split(" ", 1)[0] or "00",
+                    "type": "clinical",
+                },
+                get_icd11_diagnoses_objects_by_ids(
+                    consultation.diagnoses.filter(
+                        verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES
+                    ).values_list("diagnosis_id", flat=True)
+                ),
             )
-
-        if len(consultation.icd11_provisional_diagnoses):
-            diagnoses = list(
-                map(
-                    lambda diagnosis: {
-                        "id": str(uuid()),
-                        "label": diagnosis.label.split(" ", 1)[1],
-                        "code": diagnosis.label.split(" ", 1)[0] or "00",
-                        "type": "admitting",
-                    },
-                    list(
-                        map(
-                            lambda icd_id: ICDDiseases.by.id[icd_id],
-                            consultation.icd11_provisional_diagnoses,
-                        )
-                    ),
-                )
-            )
+        )
 
         previous_claim = (
             Claim.objects.filter(
