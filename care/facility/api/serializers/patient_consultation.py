@@ -8,6 +8,10 @@ from rest_framework.exceptions import ValidationError
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.bed import ConsultationBedSerializer
+from care.facility.api.serializers.consultation_diagnosis import (
+    ConsultationCreateDiagnosisSerializer,
+    ConsultationDiagnosisSerializer,
+)
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import (
@@ -19,6 +23,7 @@ from care.facility.models import (
     PrescriptionType,
 )
 from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
@@ -26,7 +31,6 @@ from care.facility.models.patient_base import (
     SuggestionChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -100,11 +104,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
 
-    icd11_diagnoses_object = serializers.SerializerMethodField(read_only=True)
-
-    icd11_provisional_diagnoses_object = serializers.SerializerMethodField(
-        read_only=True
+    create_diagnoses = serializers.ListField(
+        child=ConsultationCreateDiagnosisSerializer(),
+        required=False,
+        allow_empty=False,
+        write_only=True,
+        help_text="Bulk create diagnoses for the consultation upon creation",
     )
+    diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
 
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
@@ -122,14 +129,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             is_prn=True,
         ).values()
 
-    def get_icd11_diagnoses_object(self, consultation):
-        return get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
-
-    def get_icd11_provisional_diagnoses_object(self, consultation):
-        return get_icd11_diagnoses_objects_by_ids(
-            consultation.icd11_provisional_diagnoses
-        )
-
     class Meta:
         model = PatientConsultation
         read_only_fields = TIMESTAMP_FIELDS + (
@@ -139,9 +138,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "created_by",
             "kasp_enabled_date",
             "is_readmission",
+            "deprecated_diagnosis",
             "deprecated_verified_by",
         )
-        exclude = ("deleted", "external_id")
+        exclude = (
+            "deleted",
+            "external_id",
+            "deprecated_icd11_provisional_diagnoses",
+            "deprecated_icd11_diagnoses",
+            "deprecated_icd11_principal_diagnosis",
+        )
 
     def validate_bed_number(self, bed_number):
         try:
@@ -283,6 +289,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.is_readmission = True
         consultation.save()
 
+        consultation_diagnosis_serializer = ConsultationCreateDiagnosisSerializer(
+            data=validated_data["create_diagnoses"], many=True
+        )
+        consultation_diagnosis_serializer.is_valid(raise_exception=True)
+        consultation_diagnosis_serializer.save(
+            consultation=consultation, created_by=self.context["request"].user
+        )
+
         if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
                 bed=bed,
@@ -331,6 +345,65 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ).generate()
 
         return consultation
+
+    def validate_create_diagnoses(self, value):
+        # Reject if create_diagnoses is present for edits
+        if self.instance and value:
+            raise ValidationError("Bulk create diagnoses is not allowed on update")
+
+        # Reject if no diagnoses are provided
+        if len(value) == 0:
+            raise ValidationError("Atleast one diagnosis is required")
+
+        # Reject if duplicate diagnoses are provided
+        diagnosis_ids = [obj["diagnosis"] for obj in value]
+        if len(value) != len(set(diagnosis_ids)):
+            raise ValidationError(
+                {"create_diagnoses": ["Duplicate diagnoses are not allowed"]}
+            )
+
+        # Reject if any of the diagnoses are not valid
+        from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
+
+        diagnosis_objects = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+        if len(diagnosis_objects) != len(value):
+            raise ValidationError(
+                {"create_diagnoses": ["Some of the diagnoses are not valid"]}
+            )
+
+        principal_diagnosis, confirmed_diagnoses = None, []
+        for obj in value:
+            if obj["verification_status"] == ConditionVerificationStatus.CONFIRMED:
+                confirmed_diagnoses.append(obj)
+
+            # Reject if there are more than one principal diagnosis
+            if obj["is_principal"]:
+                if principal_diagnosis:
+                    raise ValidationError(
+                        {
+                            "create_diagnoses": [
+                                "Only one diagnosis can be set as principal diagnosis"
+                            ]
+                        }
+                    )
+                principal_diagnosis = obj
+
+        # Reject if principal diagnosis is not one of confirmed diagnosis (if it is present)
+        if (
+            principal_diagnosis
+            and len(confirmed_diagnoses)
+            and principal_diagnosis["verification_status"]
+            != ConditionVerificationStatus.CONFIRMED
+        ):
+            raise ValidationError(
+                {
+                    "create_diagnoses": [
+                        "Only confirmed diagnosis can be set as principal diagnosis"
+                    ]
+                }
+            )
+
+        return value
 
     def validate(self, attrs):
         validated = super().validate(attrs)
@@ -410,72 +483,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                             ]
                         }
                     )
-        from care.facility.static_data.icd11 import ICDDiseases
 
-        final_diagnosis = []
-        provisional_diagnosis = []
-
-        if "icd11_diagnoses" in validated:
-            for diagnosis in validated["icd11_diagnoses"]:
-                try:
-                    ICDDiseases.by.id[diagnosis]
-                    final_diagnosis.append(diagnosis)
-                except BaseException:
-                    raise ValidationError(
-                        {
-                            "icd11_diagnoses": [
-                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
-                            ]
-                        }
-                    )
-
-        if "icd11_provisional_diagnoses" in validated:
-            for diagnosis in validated["icd11_provisional_diagnoses"]:
-                try:
-                    ICDDiseases.by.id[diagnosis]
-                    provisional_diagnosis.append(diagnosis)
-                except BaseException:
-                    raise ValidationError(
-                        {
-                            "icd11_provisional_diagnoses": [
-                                f"{diagnosis} is not a valid ICD 11 Diagnosis ID"
-                            ]
-                        }
-                    )
-
-        if (
-            "icd11_principal_diagnosis" in validated
-            and validated.get("suggestion") != SuggestionChoices.DD
-        ):
-            if len(final_diagnosis):
-                if validated["icd11_principal_diagnosis"] not in final_diagnosis:
-                    raise ValidationError(
-                        {
-                            "icd11_principal_diagnosis": [
-                                "Principal Diagnosis must be one of the Final Diagnosis"
-                            ]
-                        }
-                    )
-            elif len(provisional_diagnosis):
-                if validated["icd11_principal_diagnosis"] not in provisional_diagnosis:
-                    raise ValidationError(
-                        {
-                            "icd11_principal_diagnosis": [
-                                "Principal Diagnosis must be one of the Provisional Diagnosis"
-                            ]
-                        }
-                    )
-            else:
-                raise ValidationError(
-                    {
-                        "icd11_diagnoses": [
-                            "Atleast one diagnosis is required for final diagnosis"
-                        ],
-                        "icd11_provisional_diagnoses": [
-                            "Atleast one diagnosis is required for provisional diagnosis"
-                        ],
-                    }
-                )
+        if not self.instance and "create_diagnoses" not in validated:
+            raise ValidationError({"create_diagnoses": ["This field is required."]})
 
         return validated
 
