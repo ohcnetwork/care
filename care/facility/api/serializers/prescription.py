@@ -22,18 +22,18 @@ class MedibaseMedicineSerializer(serializers.ModelSerializer):
 class PrescriptionSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
-    last_administered_on = serializers.SerializerMethodField()
+    last_administration = serializers.SerializerMethodField()
     medicine_object = MedibaseMedicineSerializer(read_only=True, source="medicine")
     medicine = serializers.UUIDField(write_only=True)
 
-    def get_last_administered_on(self, obj):
+    def get_last_administration(self, obj):
         last_administration = (
             MedicineAdministration.objects.filter(prescription=obj)
             .order_by("-administered_date")
             .first()
         )
         if last_administration:
-            return last_administration.administered_date
+            return LastAdministrationSerializer(last_administration).data
         return None
 
     class Meta:
@@ -75,7 +75,17 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                     }
                 )
 
-        if attrs.get("is_prn"):
+        if attrs.get("dosage_type") == "TITRATED":
+            if not attrs.get("base_dosage"):
+                raise serializers.ValidationError(
+                    {"base_dosage": "Base dosage should be set for titrated prescriptions."}
+                )
+            if not attrs.get("target_dosage"):
+                raise serializers.ValidationError(
+                    {"target_dosage": "Target dosage should be set for titrated prescriptions."}
+                )
+
+        if attrs.get("dosage_type") == "PRN":
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
@@ -106,6 +116,24 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
                 "Administered Date cannot be before Prescription Date."
             )
         return value
+
+    class Meta:
+        model = MedicineAdministration
+        exclude = ("deleted",)
+        read_only_fields = (
+            "external_id",
+            "administered_by",
+            "archived_by",
+            "archived_on",
+            "created_date",
+            "modified_date",
+            "prescription",
+        )
+
+
+class LastAdministrationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    administered_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = MedicineAdministration

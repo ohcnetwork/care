@@ -24,9 +24,9 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         self.normal_prescription_data = {
             "medicine": self.medicine.external_id,
             "prescription_type": "REGULAR",
-            "dosage": "1 mg",
+            "base_dosage": "1 mg",
             "frequency": "OD",
-            "is_prn": False,
+            "dosage_type": "REGULAR",
         }
 
     def test_create_normal_prescription(self):

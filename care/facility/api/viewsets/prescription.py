@@ -15,6 +15,7 @@ from care.facility.api.serializers.prescription import (
 from care.facility.models import (
     MedicineAdministration,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
     generate_choices,
 )
@@ -30,6 +31,9 @@ def inverse_choices(choices):
 
 
 inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
+inverse_prescription_dosage_type = inverse_choices(
+    generate_choices(PrescriptionDosageType)
+)
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
@@ -79,7 +83,8 @@ class MedicineAdministrationViewSet(
 
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
-    is_prn = filters.BooleanFilter()
+    # is_prn = filters.BooleanFilter()
+    dosage_type = CareChoiceFilter(choice_dict=inverse_prescription_dosage_type)
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
 

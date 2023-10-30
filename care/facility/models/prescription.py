@@ -33,6 +33,12 @@ class PrescriptionType(enum.Enum):
     REGULAR = "REGULAR"
 
 
+class PrescriptionDosageType(enum.Enum):
+    REGULAR = "REGULAR"
+    TITRATED = "TITRATED"
+    PRN = "PRN"
+
+
 def generate_choices(enum_class):
     return [(tag.name, tag.value) for tag in enum_class]
 
@@ -92,9 +98,16 @@ class Prescription(BaseModel):
         blank=True,
         null=True,
     )
-    dosage = models.CharField(max_length=100, blank=True, null=True)
+    base_dosage = models.CharField(max_length=100, blank=True, null=True)
+    dosage_type = models.CharField(
+        max_length=100,
+        choices=generate_choices(PrescriptionDosageType),
+        default=PrescriptionDosageType.REGULAR.value,
+    )
 
-    is_prn = models.BooleanField(default=False)
+    # titrated fields
+    target_dosage = models.CharField(max_length=100, blank=True, null=True)
+    instruction_on_titration = models.TextField(blank=True, null=True)
 
     # non prn fields
     frequency = models.CharField(
@@ -148,6 +161,7 @@ class MedicineAdministration(BaseModel):
         on_delete=models.PROTECT,
         related_name="administrations",
     )
+    dosage = models.CharField(max_length=100, blank=True, null=True)
     notes = models.TextField(default="", blank=True)
     administered_by = models.ForeignKey(
         "users.User",

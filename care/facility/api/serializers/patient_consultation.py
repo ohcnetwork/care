@@ -16,6 +16,7 @@ from care.facility.models import (
     Facility,
     PatientRegistration,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
 )
 from care.facility.models.bed import Bed, ConsultationBed
@@ -109,17 +110,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
-        return Prescription.objects.filter(
-            consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=False,
-        ).values()
+        return (
+            Prescription.objects.filter(
+                consultation=consultation,
+                prescription_type=PrescriptionType.DISCHARGE.value,
+            )
+            .exclude(dosage_type=PrescriptionDosageType.PRN.value)
+            .values()
+        )
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
             prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=True,
+            dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
 
     def get_icd11_diagnoses_object(self, consultation):
@@ -503,17 +507,20 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     )
 
     def get_discharge_prescription(self, consultation):
-        return Prescription.objects.filter(
-            consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=False,
-        ).values()
+        return (
+            Prescription.objects.filter(
+                consultation=consultation,
+                prescription_type=PrescriptionType.DISCHARGE.value,
+            )
+            .exclude(dosage_type=PrescriptionDosageType.PRN.value)
+            .values()
+        )
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
             prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=True,
+            dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
 
     class Meta:

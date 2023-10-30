@@ -28,9 +28,9 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             "consultation": self.create_consultation(self.patient, self.facility),
             "medicine": MedibaseMedicine.objects.first(),
             "prescription_type": "REGULAR",
-            "dosage": "1 mg",
+            "base_dosage": "1 mg",
             "frequency": "OD",
-            "is_prn": False,
+            "dosage_type": "REGULAR",
         }
         return Prescription.objects.create(
             **{**data, **kwargs, "prescribed_by": self.user}
