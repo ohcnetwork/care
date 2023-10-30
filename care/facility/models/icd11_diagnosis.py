@@ -42,9 +42,9 @@ class ConditionVerificationStatus(models.TextChoices):
     See: https://www.hl7.org/fhir/valueset-condition-ver-status.html
     """
 
-    # UNCONFIRMED = "unconfirmed", _("Unconfirmed")
+    UNCONFIRMED = "unconfirmed", _("Unconfirmed")
     PROVISIONAL = "provisional", _("Provisional")
-    # DIFFERENTIAL = "differential", _("Differential")
+    DIFFERENTIAL = "differential", _("Differential")
     CONFIRMED = "confirmed", _("Confirmed")
     REFUTED = "refuted", _("Refuted")
     ENTERED_IN_ERROR = "entered-in-error", _("Entered in Error")
