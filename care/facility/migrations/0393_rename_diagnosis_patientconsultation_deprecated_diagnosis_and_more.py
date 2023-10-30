@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
                 (
                     "diagnosis",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.PROTECT,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
                         to="facility.icd11diagnosis",
                     ),
                 ),

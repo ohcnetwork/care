@@ -47,7 +47,7 @@ class ConsultationDiagnosisViewSet(
 
     def get_queryset(self):
         consultation = self.get_consultation_obj()
-        return self.queryset.filter(prescription__consultation_id=consultation.id)
+        return self.queryset.filter(consultation_id=consultation.id)
 
     def perform_create(self, serializer):
         consultation = self.get_consultation_obj()

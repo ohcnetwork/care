@@ -68,7 +68,7 @@ class ConsultationDiagnosis(BaseModel):
     consultation = models.ForeignKey(
         "PatientConsultation", on_delete=models.CASCADE, related_name="diagnoses"
     )
-    diagnosis = models.ForeignKey(ICD11Diagnosis, on_delete=models.PROTECT)
+    diagnosis = models.ForeignKey(ICD11Diagnosis, on_delete=models.DO_NOTHING)
     verification_status = models.CharField(
         max_length=255, choices=ConditionVerificationStatus.choices
     )
