@@ -30,7 +30,7 @@ ICDDiseases.create_index("id", unique=True)
 
 
 def get_icd11_diagnosis_object_by_id(diagnosis_id, as_dict=False):
-    obj = ICDDiseases.by.id[diagnosis_id]
+    obj = ICDDiseases.by.id[str(diagnosis_id)]
     return obj.__dict__ if as_dict else obj
 
 

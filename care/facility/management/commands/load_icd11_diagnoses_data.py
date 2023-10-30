@@ -37,7 +37,7 @@ class Command(BaseCommand):
     """
     Management command to load ICD11 diagnoses to database. Not for production
     use.
-    Usage: python manage.py load_icd11_diagnoses
+    Usage: python manage.py load_icd11_diagnoses_data
     """
 
     help = "Loads ICD11 diagnoses data to database"
