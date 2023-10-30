@@ -205,6 +205,7 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user(
             "doctor1", cls.district, home_facility=cls.facility, user_type=15
         )
@@ -217,13 +218,28 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             suggestion="A",
             admission_date=now(),
         )
+        cls.bed = cls.create_bed(cls.facility, cls.location)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
+        cls.consultation.current_bed = cls.consultation_bed
+        cls.consultation.save()
         cls.patient.last_consultation = cls.consultation
         cls.patient.save()
 
     def test_filter_by_patient_no(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get("/api/v1/patient/?patient_no=IP5678")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.patient.external_id)
+        )
+
+    def test_filter_by_location(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            f"/api/v1/patient/?facility={self.facility.external_id}&location={self.location.external_id}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
             response.data["results"][0]["id"], str(self.patient.external_id)
