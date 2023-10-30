@@ -30,8 +30,10 @@ ICDDiseases.create_index("id", unique=True)
 
 
 def get_icd11_diagnosis_object_by_id(diagnosis_id, as_dict=False):
-    obj = ICDDiseases.by.id[str(diagnosis_id)]
-    return obj.__dict__ if as_dict else obj
+    obj = None
+    with contextlib.suppress(BaseException):
+        obj = ICDDiseases.by.id[str(diagnosis_id)]
+    return obj and (obj.__dict__ if as_dict else obj)
 
 
 def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
