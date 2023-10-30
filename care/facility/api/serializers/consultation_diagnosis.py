@@ -38,7 +38,6 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
             "deleted",
         )
         read_only_fields = (
-            "is_principal",
             "created_by",
             "created_date",
             "modified_date",
@@ -67,6 +66,25 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
     def validate_verification_status(self, value):
         if not self.instance and value in INACTIVE_CONDITION_VERIFICATION_STATUSES:
             raise serializers.ValidationError("Verification status not allowed")
+        return value
+
+    def validate_is_principal(self, value):
+        if not value:
+            return value
+
+        qs = ConsultationDiagnosis.objects.filter(
+            consultation__external_id=self.get_consultation_external_id(),
+            is_principal=True,
+        )
+
+        if self.instance:
+            qs = qs.exclude(id=self.instance.id)
+
+        if qs.exists():
+            raise serializers.ValidationError(
+                "Consultation already has a principal diagnosis. Unset the existing principal diagnosis first."
+            )
+
         return value
 
     def update(self, instance, validated_data):
