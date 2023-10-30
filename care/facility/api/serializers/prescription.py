@@ -78,11 +78,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         if attrs.get("dosage_type") == "TITRATED":
             if not attrs.get("base_dosage"):
                 raise serializers.ValidationError(
-                    {"base_dosage": "Base dosage should be set for titrated prescriptions."}
+                    {
+                        "base_dosage": "Base dosage should be set for titrated prescriptions."
+                    }
                 )
             if not attrs.get("target_dosage"):
                 raise serializers.ValidationError(
-                    {"target_dosage": "Target dosage should be set for titrated prescriptions."}
+                    {
+                        "target_dosage": "Target dosage should be set for titrated prescriptions."
+                    }
                 )
 
         if attrs.get("dosage_type") == "PRN":
