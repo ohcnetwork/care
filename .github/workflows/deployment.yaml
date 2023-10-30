@@ -252,7 +252,7 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-  deploy-gcp-staging:
+  deploy-staging-gcp:
     needs: build-production
     name: Deploy to staging GCP cluster
     runs-on: ubuntu-latest
