@@ -10,21 +10,11 @@ class Migration(migrations.Migration):
 
     def copy_prn_to_dosage_type(apps, schema_editor):
         Prescription = apps.get_model("facility", "Prescription")
-        for prescription in Prescription.objects.all():
-            if prescription.is_prn:
-                prescription.dosage_type = "PRN"
-            else:
-                prescription.dosage_type = "REGULAR"
-            prescription.save()
+        Prescription.objects.filter(is_prn=True).update(dosage_type="PRN")
 
     def reverse_copy_prn_to_dosage_type(apps, schema_editor):
         Prescription = apps.get_model("facility", "Prescription")
-        for prescription in Prescription.objects.all():
-            if prescription.dosage_type == "PRN":
-                prescription.is_prn = True
-            else:
-                prescription.is_prn = False
-            prescription.save()
+        Prescription.objects.filter(is_prn=False).update(dosage_type="REGULAR")
 
     operations = [
         migrations.RenameField(
