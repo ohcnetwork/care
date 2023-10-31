@@ -40,6 +40,6 @@ def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
     diagnosis_objects = []
     for diagnosis in diagnoses_ids:
         with contextlib.suppress(BaseException):
-            diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
+            diagnosis_object = ICDDiseases.by.id[str(diagnosis)].__dict__
             diagnosis_objects.append(diagnosis_object)
     return diagnosis_objects

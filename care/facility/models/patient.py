@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
@@ -18,10 +19,7 @@ from care.facility.models import (
     State,
     Ward,
 )
-from care.facility.models.icd11_diagnosis import (
-    ACTIVE_CONDITION_VERIFICATION_STATUSES,
-    REVERSE_CONDITION_VERIFICATION_STATUSES,
-)
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
@@ -483,6 +481,31 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
 
+    def annotate_diagnosis_ids(*args, **kwargs):
+        return ArrayAgg(
+            "last_consultation__diagnoses__diagnosis_id",
+            filter=models.Q(*args, **kwargs),
+        )
+
+    CSV_ANNOTATE_FIELDS = {
+        # Principal Diagnoses
+        "principal_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__is_principal=True
+        ),
+        "unconfirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.UNCONFIRMED
+        ),
+        "provisional_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.PROVISIONAL
+        ),
+        "differential_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.DIFFERENTIAL
+        ),
+        "confirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.CONFIRMED
+        ),
+    }
+
     CSV_MAPPING = {
         # Patient Details
         "external_id": "Patient ID",
@@ -495,7 +518,13 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__consultation_status": "Status during consultation",
         "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of first consultation",
-        "last_consultation__diagnoses": "Diagnoses",
+        # Diagnosis Details
+        "principal_diagnoses": "Principal Diagnosis",
+        "unconfirmed_diagnoses": "Unconfirmed Diagnoses",
+        "provisional_diagnoses": "Provisional Diagnoses",
+        "differential_diagnoses": "Differential Diagnoses",
+        "confirmed_diagnoses": "Confirmed Diagnoses",
+        # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
         "last_consultation__discharge_date": "Date of discharge",
@@ -508,18 +537,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     def format_as_time(time):
         return time.strftime("%H:%M")
 
-    def format_diagnoses(consultation_diagnoses):
-        records = consultation_diagnoses.filter(
-            verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES,
-            deleted=False,
-        ).values_list("diagnosis_id", "verification_status")
-        diagnoses = get_icd11_diagnoses_objects_by_ids([obj[0] for obj in records])
-        return ", ".join(
-            [
-                f"{diagnosis['label']} ({REVERSE_CONDITION_VERIFICATION_STATUSES[record[1]]})"
-                for diagnosis, record in zip(diagnoses, records)
-            ]
-        )
+    def format_diagnoses(diagnosis_ids):
+        diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+        return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
 
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
@@ -530,7 +550,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
-        "last_consultation__diagnoses": format_diagnoses,
+        "principal_diagnoses": format_diagnoses,
+        "unconfirmed_diagnoses": format_diagnoses,
+        "provisional_diagnoses": format_diagnoses,
+        "differential_diagnoses": format_diagnoses,
+        "confirmed_diagnoses": format_diagnoses,
         "last_consultation__consultation_status": (
             lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
         ),
