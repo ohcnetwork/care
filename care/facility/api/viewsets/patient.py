@@ -665,7 +665,7 @@ class PatientNotesViewSet(
         }
 
         NotificationGenerator(
-            event=Notification.Event.MESSAGE,
+            event=Notification.Event.PUSH_MESSAGE,
             caused_by=self.request.user,
             caused_object=instance,
             message=message,
