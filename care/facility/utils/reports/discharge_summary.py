@@ -21,7 +21,10 @@ from care.facility.models import (
     PrescriptionType,
 )
 from care.facility.models.file_upload import FileUpload
-from care.facility.models.icd11_diagnosis import REVERSE_CONDITION_VERIFICATION_STATUSES
+from care.facility.models.icd11_diagnosis import (
+    ACTIVE_CONDITION_VERIFICATION_STATUSES,
+    ConditionVerificationStatus,
+)
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.hcx.models.policy import Policy
 
@@ -47,21 +50,43 @@ def clear_lock(consultation_ext_id: str):
 
 
 def get_diagnoses_data(consultation: PatientConsultation):
-    records = consultation.diagnoses.order_by("-is_principal").values_list(
-        "diagnosis_id",
-        "verification_status",
-        "is_principal",
+    entries = (
+        consultation.diagnoses.filter(
+            verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES
+        )
+        .order_by("-created_date")
+        .values_list(
+            "diagnosis_id",
+            "verification_status",
+            "is_principal",
+        )
     )
-    # reaplce diagnosis_id with diagnosis objects by reading from in-memory cache
-    diagnoses = get_icd11_diagnoses_objects_by_ids([record[0] for record in records])
-    return [
-        {
-            **diagnosis,
-            "verification_status": REVERSE_CONDITION_VERIFICATION_STATUSES[record[1]],
-            "is_principal": record[2],
-        }
-        for diagnosis, record in zip(diagnoses, records)
-    ]
+
+    # retrieve diagnosis objects from in-memory table
+    diagnoses = get_icd11_diagnoses_objects_by_ids([entry[0] for entry in entries])
+
+    principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
+
+    for diagnosis, record in zip(diagnoses, entries):
+        _, verification_status, is_principal = record
+        if is_principal:
+            principal.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.UNCONFIRMED:
+            unconfirmed.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.PROVISIONAL:
+            provisional.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.DIFFERENTIAL:
+            differential.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.CONFIRMED:
+            confirmed.append(diagnosis)
+
+    return {
+        "principal": principal,
+        "unconfirmed": unconfirmed,
+        "provisional": provisional,
+        "differential": differential,
+        "confirmed": confirmed,
+    }
 
 
 def get_discharge_summary_data(consultation: PatientConsultation):
@@ -108,7 +133,11 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
-        "diagnoses": diagnoses,
+        "principal_diagnoses": diagnoses["principal"],
+        "unconfirmed_diagnoses": diagnoses["unconfirmed"],
+        "provisional_diagnoses": diagnoses["provisional"],
+        "differential_diagnoses": diagnoses["differential"],
+        "confirmed_diagnoses": diagnoses["confirmed"],
         "consultation": consultation,
         "prescriptions": prescriptions,
         "prn_prescriptions": prn_prescriptions,
