@@ -367,7 +367,33 @@ class TestPatientConsultation(TestUtils, APITestCase):
             consultation,
             diagnosis=diagnosis,
             is_principal=True,
-            verification_status=ConditionVerificationStatus.ENTERED_IN_ERROR,
+            verification_status=ConditionVerificationStatus.REFUTED,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def mark_inactive_diagnosis_as_principal(self):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        diagnosis = ICD11Diagnosis.objects.first().id
+        res = self.add_diagnosis(
+            consultation,
+            diagnosis=diagnosis,
+            is_principal=False,
+            verification_status=ConditionVerificationStatus.CONFIRMED,
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        res = self.edit_diagnosis(
+            consultation,
+            res.data["id"],
+            verification_status=ConditionVerificationStatus.REFUTED,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res = self.edit_diagnosis(
+            consultation,
+            res.data["id"],
+            is_principal=True,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
