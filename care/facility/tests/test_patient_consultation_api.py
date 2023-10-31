@@ -4,6 +4,10 @@ from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ICD11Diagnosis,
+)
 from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
@@ -47,10 +51,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
             {
                 "patient": patient.external_id,
                 "facility": self.facility.external_id,
+                "create_diagnoses": [
+                    {
+                        "diagnosis": ICD11Diagnosis.objects.first().id,
+                        "is_principal": False,
+                        "verification_status": ConditionVerificationStatus.CONFIRMED,
+                    }
+                ],
             }
         )
         data.update(kwargs)
-        res = self.client.post(self.get_url(), data)
+        res = self.client.post(self.get_url(), data, format="json")
         return PatientConsultation.objects.get(external_id=res.data["id"])
 
     def update_consultation(self, consultation, **kwargs):
