@@ -21,6 +21,7 @@ from care.facility.models import (
     PrescriptionType,
 )
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import REVERSE_CONDITION_VERIFICATION_STATUSES
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.hcx.models.policy import Policy
 
@@ -45,6 +46,24 @@ def clear_lock(consultation_ext_id: str):
     cache.delete(lock_key(consultation_ext_id))
 
 
+def get_diagnoses_data(consultation: PatientConsultation):
+    records = consultation.diagnoses.order_by("-is_principal").values_list(
+        "diagnosis_id",
+        "verification_status",
+        "is_principal",
+    )
+    # reaplce diagnosis_id with diagnosis objects by reading from in-memory cache
+    diagnoses = get_icd11_diagnoses_objects_by_ids([record[0] for record in records])
+    return [
+        {
+            **diagnosis,
+            "verification_status": REVERSE_CONDITION_VERIFICATION_STATUSES[record[1]],
+            "is_principal": record[2],
+        }
+        for diagnosis, record in zip(diagnoses, records)
+    ]
+
+
 def get_discharge_summary_data(consultation: PatientConsultation):
     logger.info(f"fetching discharge summary data for {consultation.external_id}")
     samples = PatientSample.objects.filter(
@@ -52,15 +71,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
-    diagnosis = get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
-    provisional_diagnosis = get_icd11_diagnoses_objects_by_ids(
-        consultation.icd11_provisional_diagnoses
-    )
-    principal_diagnosis = get_icd11_diagnoses_objects_by_ids(
-        [consultation.icd11_principal_diagnosis]
-        if consultation.icd11_principal_diagnosis
-        else []
-    )
+    diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
         & (Q(value__isnull=False) | Q(notes__isnull=False))
@@ -97,9 +108,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
-        "diagnosis": diagnosis,
-        "provisional_diagnosis": provisional_diagnosis,
-        "principal_diagnosis": principal_diagnosis,
+        "diagnoses": diagnoses,
         "consultation": consultation,
         "prescriptions": prescriptions,
         "prn_prescriptions": prn_prescriptions,
