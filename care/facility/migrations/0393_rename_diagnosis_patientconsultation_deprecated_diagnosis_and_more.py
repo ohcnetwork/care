@@ -13,6 +13,48 @@ class Migration(migrations.Migration):
         ("facility", "0392_alter_dailyround_consciousness_level"),
     ]
 
+    def populate_consultation_diagnosis(apps, schema_editor):
+        PatientConsultation = apps.get_model("facility", "PatientConsultation")
+        ConsultationDiagnosis = apps.get_model("facility", "ConsultationDiagnosis")
+
+        objects = []
+
+        for consultation in PatientConsultation.objects.all():
+            processed_diagnosis_ids = []  # to skip duplicates if any
+            principal_diagnosis_id = consultation.deprecated_icd11_principal_diagnosis
+
+            # confirmed diagnoses
+            for diagnosis_id in consultation.deprecated_icd11_diagnoses:
+                if diagnosis_id in processed_diagnosis_ids:
+                    continue
+                processed_diagnosis_ids.append(diagnosis_id)
+                objects.append(
+                    ConsultationDiagnosis(
+                        is_migrated=True,
+                        consultation=consultation,
+                        diagnosis_id=diagnosis_id,
+                        verification_status="confirmed",
+                        is_principal=diagnosis_id == principal_diagnosis_id,
+                    )
+                )
+
+            # provisional diagnoses
+            for diagnosis_id in consultation.deprecated_icd11_provisional_diagnoses:
+                if diagnosis_id in processed_diagnosis_ids:
+                    continue
+                processed_diagnosis_ids.append(diagnosis_id)
+                objects.append(
+                    ConsultationDiagnosis(
+                        is_migrated=True,
+                        consultation=consultation,
+                        diagnosis_id=diagnosis_id,
+                        verification_status="provisional",
+                        is_principal=diagnosis_id == principal_diagnosis_id,
+                    )
+                )
+
+        ConsultationDiagnosis.objects.bulk_create(objects, batch_size=2000)
+
     operations = [
         migrations.RenameField(
             model_name="patientconsultation",
@@ -136,5 +178,8 @@ class Migration(migrations.Migration):
                 ),
                 name="refuted_or_entered_in_error_diagnosis_cannot_be_principal",
             ),
+        ),
+        migrations.RunPython(
+            populate_consultation_diagnosis, reverse_code=migrations.RunPython.noop
         ),
     ]
