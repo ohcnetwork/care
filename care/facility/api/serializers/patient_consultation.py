@@ -23,7 +23,10 @@ from care.facility.models import (
     PrescriptionType,
 )
 from care.facility.models.bed import Bed, ConsultationBed
-from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ConsultationDiagnosis,
+)
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
@@ -104,10 +107,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     bed = ExternalIdSerializerField(queryset=Bed.objects.all(), required=False)
 
-    create_diagnoses = serializers.ListField(
-        child=ConsultationCreateDiagnosisSerializer(),
-        required=False,
-        allow_empty=False,
+    create_diagnoses = ConsultationCreateDiagnosisSerializer(
+        many=True,
         write_only=True,
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
@@ -228,6 +229,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return consultation
 
     def create(self, validated_data):
+        create_diagnosis = validated_data.pop("create_diagnoses")
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -289,12 +291,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.is_readmission = True
         consultation.save()
 
-        consultation_diagnosis_serializer = ConsultationCreateDiagnosisSerializer(
-            data=validated_data["create_diagnoses"], many=True
-        )
-        consultation_diagnosis_serializer.is_valid(raise_exception=True)
-        consultation_diagnosis_serializer.save(
-            consultation=consultation, created_by=self.context["request"].user
+        ConsultationDiagnosis.objects.bulk_create(
+            [
+                ConsultationDiagnosis(
+                    consultation=consultation,
+                    diagnosis_id=obj["diagnosis"].id,
+                    is_principal=obj["is_principal"],
+                    verification_status=obj["verification_status"],
+                    created_by=self.context["request"].user,
+                )
+                for obj in create_diagnosis
+            ]
         )
 
         if bed and consultation.suggestion == SuggestionChoices.A:
@@ -356,19 +363,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError("Atleast one diagnosis is required")
 
         # Reject if duplicate diagnoses are provided
-        diagnosis_ids = [obj["diagnosis"] for obj in value]
-        if len(value) != len(set(diagnosis_ids)):
+        if len(value) != len(set([obj["diagnosis"].id for obj in value])):
             raise ValidationError(
                 {"create_diagnoses": ["Duplicate diagnoses are not allowed"]}
-            )
-
-        # Reject if any of the diagnoses are not valid
-        from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
-
-        diagnosis_objects = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
-        if len(diagnosis_objects) != len(value):
-            raise ValidationError(
-                {"create_diagnoses": ["Some of the diagnoses are not valid"]}
             )
 
         principal_diagnosis, confirmed_diagnoses = None, []
