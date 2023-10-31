@@ -110,6 +110,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     create_diagnoses = ConsultationCreateDiagnosisSerializer(
         many=True,
         write_only=True,
+        required=False,
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
