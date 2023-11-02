@@ -11,7 +11,9 @@ from rest_framework.viewsets import GenericViewSet
 from care.abdm.models.abha_number import AbhaNumber
 from care.abdm.service.gateway import Gateway
 from care.utils.notification_handler import send_webpush
+from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
+from config.ratelimit import ratelimit
 
 
 class PatientsViewSet(GenericViewSet):
@@ -20,6 +22,13 @@ class PatientsViewSet(GenericViewSet):
     @action(detail=False, methods=["POST"])
     def find(self, request):
         identifier = request.data["id"]
+
+        if ratelimit(request, "patients__find", [identifier]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         abha_object = AbhaNumber.objects.filter(
             Q(abha_number=identifier) | Q(health_id=identifier)
         ).first()

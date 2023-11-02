@@ -10,13 +10,21 @@ from care.abdm.models.consent import ConsentArtefact
 from care.abdm.service.gateway import Gateway
 from care.abdm.utils.cipher import Cipher
 from care.facility.models.file_upload import FileUpload
+from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
+from config.ratelimit import ratelimit
 
 
 class HealthInformationViewSet(GenericViewSet):
     permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, pk):
+        if ratelimit(request, "health_information__retrieve", [pk]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         artefact = ConsentArtefact.objects.filter(external_id=pk).first()
 
         if not artefact:
@@ -51,6 +59,12 @@ class HealthInformationViewSet(GenericViewSet):
 
     @action(detail=True, methods=["POST"])
     def request(self, request, pk):
+        if ratelimit(request, "health_information__request", [pk]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         artefact = ConsentArtefact.objects.filter(external_id=pk).first()
 
         if not artefact:

@@ -11,7 +11,9 @@ from care.abdm.api.viewsets.health_information import HealthInformationViewSet
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.gateway import Gateway
 from care.utils.queryset.facility import get_facility_queryset
+from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
+from config.ratelimit import ratelimit
 
 
 class ConsentRequestFilter(filters.FilterSet):
@@ -48,6 +50,14 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        if ratelimit(
+            request, "consent__create", [serializer.validated_data["patient_abha"]]
+        ):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         consent = ConsentRequest(**serializer.validated_data, requester=request.user)
 
         response = Gateway().consent_requests__init(consent)
@@ -61,6 +71,12 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
 
     @action(detail=True, methods=["GET"])
     def status(self, request, pk):
+        if ratelimit(request, "consent__status", [pk]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         consent = self.queryset.filter(external_id=pk).first()
 
         if not consent:
@@ -76,6 +92,12 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
 
     @action(detail=True, methods=["GET"])
     def fetch(self, request, pk):
+        if ratelimit(request, "consent__fetch", [pk]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         consent = self.queryset.filter(external_id=pk).first()
 
         if not consent:
@@ -90,6 +112,24 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
         return Response(
             ConsentRequestSerializer(consent).data, status=status.HTTP_200_OK
         )
+
+    def list(self, request, *args, **kwargs):
+        if ratelimit(request, "consent__list", [request.user.username]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        if ratelimit(request, "consent__retrieve", [kwargs["pk"]]):
+            raise CaptchaRequiredException(
+                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                code=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        return super().retrieve(request, *args, **kwargs)
 
 
 class ConsentCallbackViewSet(GenericViewSet):
