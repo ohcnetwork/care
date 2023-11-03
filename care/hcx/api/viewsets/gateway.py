@@ -12,9 +12,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.file_upload import FileUpload
-from care.facility.models.icd11_diagnosis import ACTIVE_CONDITION_VERIFICATION_STATUSES
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 from care.facility.utils.reports.discharge_summary import (
     generate_discharge_report_signed_url,
 )
@@ -139,21 +139,19 @@ class HcxGatewayViewSet(GenericViewSet):
                 )
             )
 
-        diagnoses = list(
-            map(
-                lambda diagnosis: {
+        diagnoses = []
+        for diagnosis_id, is_principal in consultation.diagnoses.filter(
+            verification_status=ConditionVerificationStatus.CONFIRMED
+        ).values_list("diagnosis_id", "is_principal"):
+            diagnosis = get_icd11_diagnosis_object_by_id(diagnosis_id)
+            diagnoses.append(
+                {
                     "id": str(uuid()),
                     "label": diagnosis.label.split(" ", 1)[1],
                     "code": diagnosis.label.split(" ", 1)[0] or "00",
-                    "type": "clinical",
-                },
-                get_icd11_diagnoses_objects_by_ids(
-                    consultation.diagnoses.filter(
-                        verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES
-                    ).values_list("diagnosis_id", flat=True)
-                ),
+                    "type": "principal" if is_principal else "clinical",
+                }
             )
-        )
 
         previous_claim = (
             Claim.objects.filter(
