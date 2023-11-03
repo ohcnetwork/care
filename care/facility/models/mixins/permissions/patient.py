@@ -152,7 +152,7 @@ class PatientPermissionMixin(BasePermissionMixin):
 
 class ConsultationRelatedPermissionMixin(BasePermissionMixin):
     def get_related_consultation(self):
-        return self.consulation
+        return self.consultation
 
     @staticmethod
     def has_write_permission(request):
