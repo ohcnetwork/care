@@ -365,9 +365,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         # Reject if duplicate diagnoses are provided
         if len(value) != len(set([obj["diagnosis"].id for obj in value])):
-            raise ValidationError(
-                {"create_diagnoses": ["Duplicate diagnoses are not allowed"]}
-            )
+            raise ValidationError("Duplicate diagnoses are not allowed")
 
         principal_diagnosis, confirmed_diagnoses = None, []
         for obj in value:
@@ -378,11 +376,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if obj["is_principal"]:
                 if principal_diagnosis:
                     raise ValidationError(
-                        {
-                            "create_diagnoses": [
-                                "Only one diagnosis can be set as principal diagnosis"
-                            ]
-                        }
+                        "Only one diagnosis can be set as principal diagnosis"
                     )
                 principal_diagnosis = obj
 
@@ -394,11 +388,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             != ConditionVerificationStatus.CONFIRMED
         ):
             raise ValidationError(
-                {
-                    "create_diagnoses": [
-                        "Only confirmed diagnosis can be set as principal diagnosis if it is present"
-                    ]
-                }
+                "Only confirmed diagnosis can be set as principal diagnosis if it is present"
             )
 
         return value
