@@ -286,7 +286,6 @@ class UserViewSet(
             )
         if user.home_facility == facility:
             raise ValidationError({"facility": "Cannot Delete User's Home Facility"})
-
         FacilityUser.objects.filter(facility=facility, user=user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
