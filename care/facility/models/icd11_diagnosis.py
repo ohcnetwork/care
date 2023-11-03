@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.mixins.permissions.patient import (
-    PatientRelatedPermissionMixin,
+    ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import reverse_choices
 from care.utils.models.base import BaseModel
@@ -67,7 +67,7 @@ ACTIVE_CONDITION_VERIFICATION_STATUSES = [
 REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices(ConditionVerificationStatus)
 
 
-class ConsultationDiagnosis(BaseModel, PatientRelatedPermissionMixin):
+class ConsultationDiagnosis(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(
         "PatientConsultation", on_delete=models.CASCADE, related_name="diagnoses"
     )

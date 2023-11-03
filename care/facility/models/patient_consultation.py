@@ -11,7 +11,7 @@ from care.facility.models import (
     PatientBaseModel,
 )
 from care.facility.models.mixins.permissions.patient import (
-    PatientRelatedPermissionMixin,
+    ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
@@ -26,7 +26,7 @@ from care.facility.models.patient_base import (
 from care.users.models import User
 
 
-class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
+class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),
@@ -206,6 +206,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
+
+    def get_related_consultation(self):
+        return self
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",

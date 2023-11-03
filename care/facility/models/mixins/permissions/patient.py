@@ -150,7 +150,10 @@ class PatientPermissionMixin(BasePermissionMixin):
         )
 
 
-class PatientRelatedPermissionMixin(BasePermissionMixin):
+class ConsultationRelatedPermissionMixin(BasePermissionMixin):
+    def get_related_consultation(self):
+        return self.consulation
+
     @staticmethod
     def has_write_permission(request):
         if (
@@ -166,33 +169,35 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_read_permission(self, request):
+        instance = self.get_related_consultation()
         return (
             request.user.is_superuser
             or (
-                self.patient.facility
-                and request.user in self.patient.facility.users.all()
+                instance.patient.facility
+                and request.user in instance.patient.facility.users.all()
             )
             or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
+                instance.assigned_to == request.user
+                or request.user == instance.patient.assigned_to
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
+                    instance.patient.facility
+                    and request.user.district == instance.patient.facility.district
                 )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
+                    instance.patient.facility
+                    and request.user.state == instance.patient.facility.state
                 )
             )
         )
 
     def has_object_update_permission(self, request):
+        instance = self.get_related_consultation()
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
@@ -202,25 +207,25 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
         return (
             request.user.is_superuser
             or (
-                self.patient.facility
-                and self.patient.facility == request.user.home_facility
+                instance.patient.facility
+                and instance.patient.facility == request.user.home_facility
             )
             or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
+                instance.assigned_to == request.user
+                or request.user == instance.patient.assigned_to
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
+                    instance.patient.facility
+                    and request.user.district == instance.patient.facility.district
                 )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
+                    instance.patient.facility
+                    and request.user.state == instance.patient.facility.state
                 )
             )
         )
