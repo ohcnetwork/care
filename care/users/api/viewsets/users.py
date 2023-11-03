@@ -253,6 +253,12 @@ class UserViewSet(
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
 
+        # ensure that district admin only able to delete in the same district
+        if user.district_id != requesting_user.district_id:
+            raise ValidationError(
+                {"facility": "Cannot delete User's Facility from other district"}
+            )
+
         user.home_facility = None
         user.save(update_fields=["home_facility"])
         return Response(status=status.HTTP_204_NO_CONTENT)
