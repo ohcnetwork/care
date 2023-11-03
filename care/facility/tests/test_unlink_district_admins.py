@@ -33,7 +33,7 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
             "staff1235", self.district2, home_facility=self.facility2
         )
 
-    def test_unlink_district_admins_same_district(self):
+    def test_unlink_home_facility_admin_same_district(self):
         self.client.force_login(self.admin1)
 
         username = self.staff1.username
@@ -42,11 +42,38 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_unlink_district_admins_different_district(self):
+    def test_unlink_home_facility_admin_different_district(self):
         self.client.force_login(self.admin1)
 
         username = self.staff2.username
         response = self.client.delete(
             "/api/v1/users/" + username + "/clear_home_facility/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unlink_faciltity_admin_same_district(self):
+        self.client.force_login(self.admin1)
+
+        username = self.staff1.username
+
+        # clear from home facility to linked facility
+        response = self.client.delete(
+            "/api/v1/users/" + username + "/clear_home_facility/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.delete(
+            "/api/v1/users/" + username + "/delete_facility/",
+            {"facility": self.facility1.external_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_unlink_faciltity_admin_different_district(self):
+        self.client.force_login(self.admin1)
+
+        username = self.staff2.username
+        response = self.client.delete(
+            "/api/v1/users/" + username + "/delete_facility/",
+            {"facility": self.facility2.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
