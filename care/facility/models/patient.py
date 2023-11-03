@@ -724,3 +724,9 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+    def get_related_consultation(self):
+        # This is a temporary hack! this model does not have `assigned_to` field
+        # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
+        # Remove once patient notes is made consultation specific.
+        return self
