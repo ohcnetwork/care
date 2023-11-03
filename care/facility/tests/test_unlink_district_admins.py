@@ -50,6 +50,10 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
             "/api/v1/users/" + username + "/clear_home_facility/"
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["facility"],
+            "Cannot unlink User's Home Facility from other district",
+        )
 
     def test_unlink_faciltity_admin_same_district(self):
         self.client.force_login(self.admin1)
@@ -77,3 +81,4 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
             {"facility": self.facility2.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()["facility"], "Facility Access not Present")
