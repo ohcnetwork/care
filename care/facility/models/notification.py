@@ -23,7 +23,6 @@ class Notification(FacilityBaseModel):
 
     class Event(enum.Enum):
         MESSAGE = 0
-        PUSH_MESSAGE = 220
         PATIENT_CREATED = 20
         PATIENT_UPDATED = 30
         PATIENT_DELETED = 40
@@ -39,6 +38,7 @@ class Notification(FacilityBaseModel):
         PATIENT_CONSULTATION_ASSIGNMENT = 140
         SHIFTING_UPDATED = 200
         PATIENT_NOTE_ADDED = 210
+        PUSH_MESSAGE = 220
 
     EventChoices = [(e.value, e.name) for e in Event]
 
