@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -30,7 +31,7 @@ class ConsultationDiagnosisViewSet(
     GenericViewSet,
 ):
     serializer_class = ConsultationDiagnosisSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = (
         ConsultationDiagnosis.objects.all()
         .select_related("created_by")

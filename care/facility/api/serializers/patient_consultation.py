@@ -396,7 +396,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "create_diagnoses": [
-                        "Only confirmed diagnosis can be set as principal diagnosis"
+                        "Only confirmed diagnosis can be set as principal diagnosis if it is present"
                     ]
                 }
             )

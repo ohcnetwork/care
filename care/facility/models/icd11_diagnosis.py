@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from care.facility.models.mixins.permissions.patient import (
+    PatientRelatedPermissionMixin,
+)
 from care.facility.models.patient_base import reverse_choices
 from care.utils.models.base import BaseModel
 
@@ -64,13 +67,13 @@ ACTIVE_CONDITION_VERIFICATION_STATUSES = [
 REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices(ConditionVerificationStatus)
 
 
-class ConsultationDiagnosis(BaseModel):
+class ConsultationDiagnosis(BaseModel, PatientRelatedPermissionMixin):
     consultation = models.ForeignKey(
         "PatientConsultation", on_delete=models.CASCADE, related_name="diagnoses"
     )
     diagnosis = models.ForeignKey(ICD11Diagnosis, on_delete=models.PROTECT)
     verification_status = models.CharField(
-        max_length=255, choices=ConditionVerificationStatus.choices
+        max_length=20, choices=ConditionVerificationStatus.choices
     )
     is_principal = models.BooleanField(default=False)
 
@@ -98,7 +101,7 @@ class ConsultationDiagnosis(BaseModel):
             # Diagnosis cannot be principal if verification status is one of refuted/entered-in-error.
             models.CheckConstraint(
                 check=(
-                    ~models.Q(is_principal=True)
+                    models.Q(is_principal=False)
                     | ~models.Q(
                         verification_status__in=INACTIVE_CONDITION_VERIFICATION_STATUSES
                     )
