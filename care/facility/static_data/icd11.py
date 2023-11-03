@@ -15,9 +15,10 @@ def fetch_from_db():
                 "id": str(diagnosis["id"]),
                 "label": diagnosis["label"],
                 "is_leaf": diagnosis["is_leaf"],
+                "chapter": diagnosis["meta_chapter_short"],
             }
             for diagnosis in ICD11Diagnosis.objects.filter().values(
-                "id", "label", "is_leaf"
+                "id", "label", "is_leaf", "meta_chapter_short"
             )
         ]
     return []
