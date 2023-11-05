@@ -152,6 +152,9 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_medico_legal_case = filters.BooleanFilter(
         field_name="last_consultation__medico_legal_case"
     )
+    last_consultation_current_bed__location = filters.UUIDFilter(
+        field_name="last_consultation__current_bed__bed__location__external_id"
+    )
 
     def filter_by_bed_type(self, queryset, name, value):
         if not value:
