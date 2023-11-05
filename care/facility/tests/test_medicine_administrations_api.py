@@ -30,7 +30,7 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             "prescription_type": "REGULAR",
             "base_dosage": "1 mg",
             "frequency": "OD",
-            "dosage_type": "REGULAR",
+            "dosage_type": kwargs.get("dosage_type", "REGULAR"),
         }
         return Prescription.objects.create(
             **{**data, **kwargs, "prescribed_by": self.user}
@@ -108,3 +108,18 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             {"notes": "Test Notes"},
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_administer_titrated_dosage(self):
+        prescription = self.create_prescription(dosage_type="TITRATED", target_dosage="10 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+            {"notes": "Test Notes"},
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+            {"notes": "Test Notes", "dosage": "1 mg"},
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)

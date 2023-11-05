@@ -20,6 +20,7 @@ from care.facility.models import (
     generate_choices,
 )
 from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -83,8 +84,7 @@ class MedicineAdministrationViewSet(
 
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
-    # is_prn = filters.BooleanFilter()
-    dosage_type = CareChoiceFilter(choice_dict=inverse_prescription_dosage_type)
+    dosage_type = MultiSelectFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
 

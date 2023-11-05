@@ -151,6 +151,10 @@ class Prescription(BaseModel):
     def medicine_name(self):
         return str(self.medicine) if self.medicine else self.medicine_old
 
+    @property
+    def last_administration(self):
+        return self.administrations.order_by("-administered_date").first()
+
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
 
