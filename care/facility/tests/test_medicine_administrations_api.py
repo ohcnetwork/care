@@ -110,7 +110,9 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_administer_titrated_dosage(self):
-        prescription = self.create_prescription(dosage_type="TITRATED", target_dosage="10 mg")
+        prescription = self.create_prescription(
+            dosage_type="TITRATED", target_dosage="10 mg"
+        )
         res = self.client.post(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
             {"notes": "Test Notes"},

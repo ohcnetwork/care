@@ -37,12 +37,14 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        if not attrs.get('dosage') and self.context['prescription'].dosage_type == 'TITRATED':
+        if (
+            not attrs.get("dosage")
+            and self.context["prescription"].dosage_type == "TITRATED"
+        ):
             raise serializers.ValidationError(
                 {"dosage": "Dosage is required for titrated prescriptions."}
             )
         return super().validate(attrs)
-
 
     class Meta:
         model = MedicineAdministration
