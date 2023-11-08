@@ -5,6 +5,9 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
 
+from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 
@@ -67,7 +70,7 @@ class MedibaseMedicine(BaseModel):
         return " - ".join(filter(None, [self.name, self.generic, self.company]))
 
 
-class Prescription(BaseModel):
+class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,
@@ -142,7 +145,7 @@ class Prescription(BaseModel):
         return self.medicine + " - " + self.consultation.patient.name
 
 
-class MedicineAdministration(BaseModel):
+class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.PROTECT,
@@ -170,6 +173,9 @@ class MedicineAdministration(BaseModel):
             + " - "
             + self.prescription.consultation.patient.name
         )
+
+    def get_related_consultation(self):
+        return self.prescription.consultation
 
     def validate(self) -> None:
         if self.prescription.discontinued:
