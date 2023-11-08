@@ -409,8 +409,10 @@ class PatientViewSet(
                     }
                 )
             # End Date Limiting Validation
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *PatientRegistration.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
+                .values(*PatientRegistration.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,
