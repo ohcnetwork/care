@@ -162,70 +162,17 @@ class ConsultationRelatedPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return (
-            request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        )
+        return True
 
-    def has_object_read_permission(self, request):
-        instance = self.get_related_consultation()
-        return (
-            request.user.is_superuser
-            or (
-                instance.patient.facility
-                and request.user in instance.patient.facility.users.all()
-            )
-            or (
-                instance.assigned_to == request.user
-                or request.user == instance.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    instance.patient.facility
-                    and request.user.district == instance.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    instance.patient.facility
-                    and request.user.state == instance.patient.facility.state
-                )
-            )
-        )
+    def has_object_read_permission(self):
+        # This is because, `get_queryset` for related models already filters by consultation.
+        return True
 
     def has_object_update_permission(self, request):
-        instance = self.get_related_consultation()
         if (
             request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return (
-            request.user.is_superuser
-            or (
-                instance.patient.facility
-                and instance.patient.facility == request.user.home_facility
-            )
-            or (
-                instance.assigned_to == request.user
-                or request.user == instance.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    instance.patient.facility
-                    and request.user.district == instance.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    instance.patient.facility
-                    and request.user.state == instance.patient.facility.state
-                )
-            )
-        )
+        return True
