@@ -45,7 +45,11 @@ class DailyRoundsViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = DailyRound.objects.all().order_by("-id")
+    queryset = (
+        DailyRound.objects.all()
+        .order_by("-id")
+        .select_related("created_by", "last_edited_by")
+    )
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
 
