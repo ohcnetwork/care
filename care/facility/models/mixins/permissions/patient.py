@@ -164,7 +164,7 @@ class ConsultationRelatedPermissionMixin(BasePermissionMixin):
             return False
         return True
 
-    def has_object_read_permission(self):
+    def has_object_read_permission(self, request):
         # This is because, `get_queryset` for related models already filters by consultation.
         return True
 

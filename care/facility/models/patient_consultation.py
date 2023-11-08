@@ -279,7 +279,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         )
 
     def has_object_read_permission(self, request):
-        if not super().has_object_read_permission():
+        if not super().has_object_read_permission(request):
             return False
         return (
             request.user.is_superuser
