@@ -270,7 +270,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     @staticmethod
     def has_write_permission(request):
-        has_permission = super().has_write_permission(request)
+        has_permission = ConsultationRelatedPermissionMixin.has_write_permission(
+            request
+        )
         if not has_permission:
             return False
         return (
@@ -280,7 +282,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         )
 
     def has_object_read_permission(self, request):
-        has_permission = super().has_object_read_permission(request)
+        has_permission = super().has_object_read_permission()
         if not has_permission:
             return False
         return (
