@@ -254,7 +254,10 @@ class UserViewSet(
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
 
         # ensure that district admin only able to delete in the same district
-        if user.district_id != requesting_user.district_id:
+        if (
+            requesting_user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and user.district_id != requesting_user.district_id
+        ):
             raise ValidationError(
                 {"facility": "Cannot unlink User's Home Facility from other district"}
             )
