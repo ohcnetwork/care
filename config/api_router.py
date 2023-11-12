@@ -25,6 +25,9 @@ from care.facility.api.viewsets.bed import (
     ConsultationBedViewSet,
     PatientAssetBedViewSet,
 )
+from care.facility.api.viewsets.consultation_diagnosis import (
+    ConsultationDiagnosisViewSet,
+)
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
@@ -205,6 +208,7 @@ consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+consultation_nested_router.register(r"diagnoses", ConsultationDiagnosisViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
 consultation_nested_router.register(
