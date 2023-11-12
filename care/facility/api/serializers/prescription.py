@@ -44,6 +44,9 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"dosage": "Dosage is required for titrated prescriptions."}
             )
+        else:
+            attrs.pop("dosage", None)
+
         return super().validate(attrs)
 
     class Meta:
@@ -111,23 +114,31 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 {"base_dosage": "Base dosage is required."}
             )
 
-        if attrs.get("dosage_type") == "TITRATED":
-            if not attrs.get("target_dosage"):
-                raise serializers.ValidationError(
-                    {
-                        "target_dosage": "Target dosage should be set for titrated prescriptions."
-                    }
-                )
-
         if attrs.get("dosage_type") == "PRN":
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
                 )
+            attrs.pop("frequency", None)
+            attrs.pop("days", None)
         else:
             if not attrs.get("frequency"):
                 raise serializers.ValidationError(
                     {"frequency": "Frequency should be set for prescriptions."}
                 )
+            attrs.pop("indicator", None)
+            attrs.pop("max_dosage", None)
+            attrs.pop("min_hours_between_doses", None)
+
+            if attrs.get("dosage_type") == "TITRATED":
+                if not attrs.get("target_dosage"):
+                    raise serializers.ValidationError(
+                        {
+                            "target_dosage": "Target dosage should be set for titrated prescriptions."
+                        }
+                    )
+            else:
+                attrs.pop("target_dosage", None)
+
         return super().validate(attrs)
         # TODO: Ensure that this medicine is not already prescribed to the same patient and is currently active.
