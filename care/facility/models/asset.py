@@ -34,6 +34,7 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     class RoomType(enum.Enum):
         OTHER = 1
         ICU = 10
+        WARD = 20
 
     RoomTypeChoices = [(e.value, e.name) for e in RoomType]
 
