@@ -181,72 +181,6 @@
     </div>
     {% endif %}
 
-    {% if provisional_diagnosis %}
-    <h4 class="mt-6 font-medium text-gray-500">
-      Provisional Diagnosis (as per ICD-11 recommended by WHO):
-    </h4>
-    <div class="">
-      <table class="min-w-full">
-        <thead>
-          <tr
-            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-            <th class="p-2">
-              ID
-            </th>
-            <th class="p-2">
-              Name
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for disease in provisional_diagnosis %}
-          <tr class="bg-white border-b">
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {{disease.id}}
-            </td>
-            <td class="p-1 whitespace-normal text-sm">
-              {{disease.label}}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-
-    {% if diagnosis %}
-    <h4 class="mt-6 font-medium text-gray-500">
-      Diagnosis (as per ICD-11 recommended by WHO):
-    </h4>
-    <div class="">
-      <table class="min-w-full">
-        <thead>
-          <tr
-            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-            <th class="p-2">
-              ID
-            </th>
-            <th class="p-2">
-              Name
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for disease in diagnosis %}
-          <tr class="bg-white border-b">
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {{disease.id}}
-            </td>
-            <td class="p-1 whitespace-normal text-sm">
-              {{disease.label}}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-
     {% if principal_diagnosis %}
     <h4 class="mt-6 font-medium text-gray-500">
       Principal Diagnosis (as per ICD-11 recommended by WHO):
@@ -266,6 +200,138 @@
         </thead>
         <tbody>
           {% for disease in principal_diagnosis %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{disease.id}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{disease.label}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if unconfirmed_diagnoses %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Unconfirmed Diagnoses (as per ICD-11 recommended by WHO):
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              ID
+            </th>
+            <th class="p-2">
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disease in unconfirmed_diagnoses %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{disease.id}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{disease.label}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if provisional_diagnoses %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Provisional Diagnosis (as per ICD-11 recommended by WHO):
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              ID
+            </th>
+            <th class="p-2">
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disease in provisional_diagnoses %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{disease.id}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{disease.label}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if differential_diagnoses %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Differential Diagnoses (as per ICD-11 recommended by WHO):
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              ID
+            </th>
+            <th class="p-2">
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disease in differential_diagnoses %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {{disease.id}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{disease.label}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if confirmed_diagnoses %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Confirmed Diagnoses (as per ICD-11 recommended by WHO):
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              ID
+            </th>
+            <th class="p-2">
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disease in confirmed_diagnoses %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-no-wrap text-sm">
               {{disease.id}}

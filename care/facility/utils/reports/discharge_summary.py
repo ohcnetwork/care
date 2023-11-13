@@ -22,6 +22,10 @@ from care.facility.models import (
     PrescriptionType,
 )
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import (
+    ACTIVE_CONDITION_VERIFICATION_STATUSES,
+    ConditionVerificationStatus,
+)
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.hcx.models.policy import Policy
 
@@ -46,6 +50,46 @@ def clear_lock(consultation_ext_id: str):
     cache.delete(lock_key(consultation_ext_id))
 
 
+def get_diagnoses_data(consultation: PatientConsultation):
+    entries = (
+        consultation.diagnoses.filter(
+            verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES
+        )
+        .order_by("-created_date")
+        .values_list(
+            "diagnosis_id",
+            "verification_status",
+            "is_principal",
+        )
+    )
+
+    # retrieve diagnosis objects from in-memory table
+    diagnoses = get_icd11_diagnoses_objects_by_ids([entry[0] for entry in entries])
+
+    principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
+
+    for diagnosis, record in zip(diagnoses, entries):
+        _, verification_status, is_principal = record
+        if is_principal:
+            principal.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.UNCONFIRMED:
+            unconfirmed.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.PROVISIONAL:
+            provisional.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.DIFFERENTIAL:
+            differential.append(diagnosis)
+        if verification_status == ConditionVerificationStatus.CONFIRMED:
+            confirmed.append(diagnosis)
+
+    return {
+        "principal": principal,
+        "unconfirmed": unconfirmed,
+        "provisional": provisional,
+        "differential": differential,
+        "confirmed": confirmed,
+    }
+
+
 def get_discharge_summary_data(consultation: PatientConsultation):
     logger.info(f"fetching discharge summary data for {consultation.external_id}")
     samples = PatientSample.objects.filter(
@@ -53,15 +97,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
-    diagnosis = get_icd11_diagnoses_objects_by_ids(consultation.icd11_diagnoses)
-    provisional_diagnosis = get_icd11_diagnoses_objects_by_ids(
-        consultation.icd11_provisional_diagnoses
-    )
-    principal_diagnosis = get_icd11_diagnoses_objects_by_ids(
-        [consultation.icd11_principal_diagnosis]
-        if consultation.icd11_principal_diagnosis
-        else []
-    )
+    diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
         & (Q(value__isnull=False) | Q(notes__isnull=False))
@@ -97,9 +133,11 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
-        "diagnosis": diagnosis,
-        "provisional_diagnosis": provisional_diagnosis,
-        "principal_diagnosis": principal_diagnosis,
+        "principal_diagnoses": diagnoses["principal"],
+        "unconfirmed_diagnoses": diagnoses["unconfirmed"],
+        "provisional_diagnoses": diagnoses["provisional"],
+        "differential_diagnoses": diagnoses["differential"],
+        "confirmed_diagnoses": diagnoses["confirmed"],
         "consultation": consultation,
         "prescriptions": prescriptions,
         "prn_prescriptions": prn_prescriptions,
