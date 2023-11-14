@@ -1,67 +1,50 @@
-from django.test import TestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
-from care.facility.tests.mixins import TestClassMixin
+from care.utils.tests.test_utils import TestUtils
 
 
-class FacilityTests(TestClassMixin, TestCase):
+class FacilityTests(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.user = cls.create_user("staff", cls.district)
+
     def test_all_listing(self):
-        response = self.new_request(
-            ("/api/v1/getallfacilitiess/",), {"get": "list"}, AllFacilityViewSet
-        )
+        response = self.client.get("/api/v1/getallfacilities/")
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
     def test_listing(self):
-        response = self.new_request(
-            ("/api/v1/facility/",), {"get": "list"}, FacilityViewSet, self.users[0]
-        )
+        response = self.client.get("/api/v1/facility/")
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
-        user = self.users[0]
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
         sample_data = {
             "name": "Hospital X",
-            "ward": user.ward.pk,
-            "local_body": user.local_body.pk,
-            "district": user.district.pk,
-            "state": user.state.pk,
+            "district": self.district.pk,
+            "state": self.state.pk,
+            "local_body": self.local_body.pk,
             "facility_type": "Educational Inst",
             "address": "Nearby",
             "pincode": 390024,
             "features": [],
         }
-        response = self.new_request(
-            ("/api/v1/facility/", sample_data, "json"),
-            {"post": "create"},
-            FacilityViewSet,
-            user,
-        )
-        fac_id = response.data["id"]
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/facility/", sample_data)
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
-
-        retrieve_response = self.new_request(
-            (f"/api/v1/facility/{fac_id}",),
-            {"get": "retrieve"},
-            FacilityViewSet,
-            user,
-            {"external_id": fac_id},
-        )
-
+        fac_id = response.data["id"]
+        retrieve_response = self.client.get(f"/api/v1/facility/{fac_id}/")
         self.assertIs(retrieve_response.status_code, status.HTTP_200_OK)
 
     def test_no_auth(self):
-        response = self.new_request(
-            ("/api/v1/facility/",),
-            {"get": "list"},
-            FacilityViewSet,
-        )
+        self.client.force_authenticate(user=None)
+        response = self.client.get("/api/v1/facility/")
         self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
 
         sample_data = {}
-        create_response = self.new_request(
-            ("/api/v1/facility/", sample_data, "json"),
-            {"post": "create"},
-            FacilityViewSet,
-        )
+        create_response = self.client.post("/api/v1/facility/", sample_data)
         self.assertIs(create_response.status_code, status.HTTP_403_FORBIDDEN)

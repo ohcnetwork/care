@@ -11,7 +11,7 @@ from care.facility.models import (
     PatientBaseModel,
 )
 from care.facility.models.mixins.permissions.patient import (
-    PatientRelatedPermissionMixin,
+    ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
@@ -26,7 +26,7 @@ from care.facility.models.patient_base import (
 from care.users.models import User
 
 
-class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
+class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),
@@ -57,13 +57,18 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
-    icd11_provisional_diagnoses = ArrayField(
+    deprecated_diagnosis = models.TextField(
+        default="", null=True, blank=True
+    )  # Deprecated
+    deprecated_icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
-    icd11_diagnoses = ArrayField(
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_principal_diagnosis = models.CharField(
+        max_length=100, default="", blank=True, null=True
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
@@ -104,6 +109,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         on_delete=models.PROTECT,
         related_name="referred_patients",
     )  # Deprecated
+    is_readmission = models.BooleanField(default=False)
     referred_to_external = models.TextField(default="", null=True, blank=True)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
@@ -139,7 +145,12 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
-    verified_by = models.TextField(default="", null=True, blank=True)
+    medico_legal_case = models.BooleanField(default=False)
+
+    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
+    verified_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_user"
@@ -195,6 +206,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
+
+    def get_related_consultation(self):
+        return self
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
@@ -253,6 +267,74 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
+
+    @staticmethod
+    def has_write_permission(request):
+        if not ConsultationRelatedPermissionMixin.has_write_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or request.user.verified
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    def has_object_read_permission(self, request):
+        if not super().has_object_read_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or (
+                self.patient.facility
+                and request.user in self.patient.facility.users.all()
+            )
+            or (
+                self.assigned_to == request.user
+                or request.user == self.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.district == self.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.state == self.patient.facility.state
+                )
+            )
+        )
+
+    def has_object_update_permission(self, request):
+        if not super().has_object_update_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or (
+                self.patient.facility
+                and request.user in self.patient.facility.users.all()
+            )
+            or (
+                self.assigned_to == request.user
+                or request.user == self.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.district == self.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.state == self.patient.facility.state
+                )
+            )
+        )
 
     def has_object_discharge_patient_permission(self, request):
         return self.has_object_update_permission(request)

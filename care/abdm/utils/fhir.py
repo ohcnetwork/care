@@ -32,8 +32,9 @@ from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import REVERSE_CONDITION_VERIFICATION_STATUSES
 from care.facility.models.patient_investigation import InvestigationValue
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 
 
 class Fhir:
@@ -88,7 +89,11 @@ class Fhir:
 
         id = str(uuid())
         name = (
-            self.consultation.verified_by
+            (
+                self.consultation.verified_by
+                and f"{self.consultation.verified_by.first_name} {self.consultation.verified_by.last_name}"
+            )
+            or self.consultation.deprecated_verified_by
             or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"
         )
         self._practitioner_profile = Practitioner(
@@ -132,8 +137,8 @@ class Fhir:
 
         return self._organization_profile
 
-    def _condition(self, diagnosis_id, provisional=False):
-        diagnosis = ICDDiseases.by.id[diagnosis_id]
+    def _condition(self, diagnosis_id, verification_status):
+        diagnosis = get_icd11_diagnosis_object_by_id(diagnosis_id)
         [code, label] = diagnosis.label.split(" ", 1)
         condition_profile = Condition(
             id=diagnosis_id,
@@ -154,8 +159,10 @@ class Fhir:
                 coding=[
                     Coding(
                         system="http://terminology.hl7.org/CodeSystem/condition-ver-status",
-                        code="provisional" if provisional else "confirmed",
-                        display="Provisional" if provisional else "Confirmed",
+                        code=verification_status,
+                        display=REVERSE_CONDITION_VERIFICATION_STATUSES[
+                            verification_status
+                        ],
                     )
                 ]
             ),
@@ -364,20 +371,15 @@ class Fhir:
                 "period": Period(start=period_start, end=period_end),
                 "diagnosis": list(
                     map(
-                        lambda diagnosis: EncounterDiagnosis(
+                        lambda consultation_diagnosis: EncounterDiagnosis(
                             condition=self._reference(
-                                self._condition(diagnosis),
+                                self._condition(
+                                    consultation_diagnosis.diagnosis_id,
+                                    consultation_diagnosis.verification_status,
+                                ),
                             )
                         ),
-                        self.consultation.icd11_diagnoses,
-                    )
-                )
-                + list(
-                    map(
-                        lambda diagnosis: EncounterDiagnosis(
-                            condition=self._reference(self._condition(diagnosis))
-                        ),
-                        self.consultation.icd11_provisional_diagnoses,
+                        self.consultation.diagnoses.all(),
                     )
                 )
                 if include_diagnosis

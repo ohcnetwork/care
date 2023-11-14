@@ -1,5 +1,0 @@
--r ./base.txt
-
-gunicorn==20.1.0  # https://github.com/benoitc/gunicorn
-sentry-sdk==1.25.1  # https://github.com/getsentry/sentry-python
-newrelic
