@@ -455,7 +455,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
         self.instance.facility = self.validated_data["facility"]
         PatientConsultation.objects.filter(
             patient=self.instance, discharge_date__isnull=True
-        ).update(discharge_date=localtime(now()))
+        ).update(discharge_date=localtime(now()), discharge_reason="REF")
         self.instance.save()
 
 
