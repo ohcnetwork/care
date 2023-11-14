@@ -458,15 +458,16 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             patient=self.instance, discharge_date__isnull=True
         ).first()
 
-        consultation.discharge_date = now()
-        consultation.discharge_reason = "REF"
-        consultation.current_bed = None
-        consultation.save()
-
-        ConsultationBed.objects.filter(
-            consultation=consultation, end_date__isnull=True
-        ).update(end_date=now())
-        self.instance.save()
+        if consultation:
+            consultation.discharge_date = now()
+            consultation.discharge_reason = "REF"
+            consultation.current_bed = None
+            consultation.save()
+    
+            ConsultationBed.objects.filter(
+                consultation=consultation, end_date__isnull=True
+            ).update(end_date=now())
+            self.instance.save()
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
