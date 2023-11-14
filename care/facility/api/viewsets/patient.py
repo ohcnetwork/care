@@ -152,6 +152,9 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_medico_legal_case = filters.BooleanFilter(
         field_name="last_consultation__medico_legal_case"
     )
+    last_consultation_current_bed__location = filters.UUIDFilter(
+        field_name="last_consultation__current_bed__bed__location__external_id"
+    )
 
     def filter_by_bed_type(self, queryset, name, value):
         if not value:
@@ -406,8 +409,10 @@ class PatientViewSet(
                     }
                 )
             # End Date Limiting Validation
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *PatientRegistration.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
+                .values(*PatientRegistration.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,

@@ -1,6 +1,7 @@
 import datetime
 import enum
 
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
@@ -18,12 +19,13 @@ from care.facility.models import (
     State,
     Ward,
 )
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
     PatientPermissionMixin,
-    PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
@@ -33,7 +35,7 @@ from care.facility.models.patient_base import (
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
@@ -479,6 +481,31 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
 
+    def annotate_diagnosis_ids(*args, **kwargs):
+        return ArrayAgg(
+            "last_consultation__diagnoses__diagnosis_id",
+            filter=models.Q(*args, **kwargs),
+        )
+
+    CSV_ANNOTATE_FIELDS = {
+        # Principal Diagnoses
+        "principal_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__is_principal=True
+        ),
+        "unconfirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.UNCONFIRMED
+        ),
+        "provisional_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.PROVISIONAL
+        ),
+        "differential_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.DIFFERENTIAL
+        ),
+        "confirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.CONFIRMED
+        ),
+    }
+
     CSV_MAPPING = {
         # Patient Details
         "external_id": "Patient ID",
@@ -491,8 +518,13 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__route_to_facility": "Route to Facility",
         "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of first consultation",
-        "last_consultation__icd11_diagnoses": "Diagnoses",
-        "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
+        # Diagnosis Details
+        "principal_diagnoses": "Principal Diagnosis",
+        "unconfirmed_diagnoses": "Unconfirmed Diagnoses",
+        "provisional_diagnoses": "Provisional Diagnoses",
+        "differential_diagnoses": "Differential Diagnoses",
+        "confirmed_diagnoses": "Confirmed Diagnoses",
+        # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
         "last_consultation__discharge_date": "Date of discharge",
@@ -505,6 +537,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     def format_as_time(time):
         return time.strftime("%H:%M")
 
+    def format_diagnoses(diagnosis_ids):
+        diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+        return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
+
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
         "created_date": format_as_date,
@@ -514,12 +550,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
-        "last_consultation__icd11_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
-        "last_consultation__icd11_provisional_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
+        "principal_diagnoses": format_diagnoses,
+        "unconfirmed_diagnoses": format_diagnoses,
+        "provisional_diagnoses": format_diagnoses,
+        "differential_diagnoses": format_diagnoses,
+        "confirmed_diagnoses": format_diagnoses,
         "last_consultation__route_to_facility": (
             lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
@@ -675,7 +710,7 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
-class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
+class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -689,3 +724,9 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+    def get_related_consultation(self):
+        # This is a temporary hack! this model does not have `assigned_to` field
+        # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
+        # Remove once patient notes is made consultation specific.
+        return self
