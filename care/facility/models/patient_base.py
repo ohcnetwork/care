@@ -109,20 +109,6 @@ BLOOD_GROUP_CHOICES = [
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
-class DeprecatedConsultationStatusEnum(enum.Enum):
-    UNKNOWN = 0
-    BROUGHT_DEAD = 1
-    TRANSFERRED_FROM_WARD = 2
-    TRANSFERRED_FROM_ICU = 3
-    REFERRED_FROM_OTHER_HOSPITAL = 4
-    OUT_PATIENT = 5
-
-
-DeprecatedConsultationStatusChoices = [
-    (e.value, e.name) for e in DeprecatedConsultationStatusEnum
-]
-
-
 class RouteToFacility(IntegerChoices):
     OUTPATIENT = 10, _("Outpatient/Emergency Room")
     INTER_FACILITY_TRANSFER = 20, _("Referred from another facility")

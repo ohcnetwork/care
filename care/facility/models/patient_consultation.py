@@ -18,8 +18,6 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
-    DeprecatedConsultationStatusChoices,
-    DeprecatedConsultationStatusEnum,
     RouteToFacility,
     SuggestionChoices,
     reverse_choices,
@@ -98,10 +96,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
-    deprecated_consultation_status = models.IntegerField(
-        default=DeprecatedConsultationStatusEnum.UNKNOWN.value,
-        choices=DeprecatedConsultationStatusChoices,
-    )  # Deprecated in favour of `route_to_facility`
     route_to_facility = models.SmallIntegerField(
         choices=RouteToFacility.choices, blank=True, null=True
     )
