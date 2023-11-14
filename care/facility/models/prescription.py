@@ -141,6 +141,9 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     def medicine_name(self):
         return str(self.medicine) if self.medicine else self.medicine_old
 
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
+
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
 
@@ -176,6 +179,9 @@ class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
 
     def get_related_consultation(self):
         return self.prescription.consultation
+
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
     def validate(self) -> None:
         if self.prescription.discontinued:
