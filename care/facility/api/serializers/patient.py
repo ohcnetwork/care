@@ -458,7 +458,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             patient=self.instance, discharge_date__isnull=True
         ).first()
 
-        consultation.discharge_date = localtime(now())
+        consultation.discharge_date = now()
         consultation.discharge_reason = "REF"
         consultation.current_bed = None
         consultation.save()

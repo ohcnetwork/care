@@ -24,5 +24,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(free_discharged_beds),
+        migrations.RunPython(free_discharged_beds, migrations.RunPython.noop),
     ]
