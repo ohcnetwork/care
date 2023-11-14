@@ -3,7 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.utils.timezone import localtime, make_aware, now
+from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
@@ -463,7 +463,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             consultation.discharge_reason = "REF"
             consultation.current_bed = None
             consultation.save()
-    
+
             ConsultationBed.objects.filter(
                 consultation=consultation, end_date__isnull=True
             ).update(end_date=now())
