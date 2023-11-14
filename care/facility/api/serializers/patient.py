@@ -27,6 +27,7 @@ from care.facility.models import (
     PatientNotes,
     PatientRegistration,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
@@ -453,9 +454,18 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
-        PatientConsultation.objects.filter(
+        consultation = PatientConsultation.objects.filter(
             patient=self.instance, discharge_date__isnull=True
-        ).update(discharge_date=localtime(now()), discharge_reason="REF")
+        ).first()
+
+        consultation.discharge_date = localtime(now())
+        consultation.discharge_reason = "REF"
+        consultation.current_bed = None
+        consultation.save()
+
+        ConsultationBed.objects.filter(
+            consultation=consultation, end_date__isnull=True
+        ).update(end_date=now())
         self.instance.save()
 
 
