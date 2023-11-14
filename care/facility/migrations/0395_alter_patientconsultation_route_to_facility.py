@@ -60,11 +60,13 @@ class Migration(migrations.Migration):
         # Unknown -> None
         qs.filter(route_to_facility=0).update(route_to_facility=None)
         # Brought Dead/Outpatient -> Outpatient/Emergency Room
-        qs.filter(route_to_facility=1).update(route_to_facility=10)
-        qs.filter(route_to_facility=5).update(route_to_facility=10)
+        qs.filter(models.Q(route_to_facility=1) | models.Q(route_to_facility=5)).update(
+            route_to_facility=10
+        )
         # Transferred from Ward/ICU -> Internal Transfer within facility
-        qs.filter(route_to_facility=2).update(route_to_facility=30)
-        qs.filter(route_to_facility=3).update(route_to_facility=30)
+        qs.filter(models.Q(route_to_facility=2) | models.Q(route_to_facility=3)).update(
+            route_to_facility=30
+        )
         # Referred from other hospital -> Referred from another facility
         qs.filter(route_to_facility=4).update(route_to_facility=20)
 

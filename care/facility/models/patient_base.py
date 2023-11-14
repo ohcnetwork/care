@@ -113,7 +113,6 @@ class RouteToFacility(IntegerChoices):
     OUTPATIENT = 10, _("Outpatient/Emergency Room")
     INTER_FACILITY_TRANSFER = 20, _("Referred from another facility")
     INTRA_FACILITY_TRANSFER = 30, _("Internal Transfer within the facility")
-
     __empty__ = _("(Unknown)")
 
 
