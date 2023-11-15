@@ -37,6 +37,44 @@ def generate_choices(enum_class):
     return [(tag.name, tag.value) for tag in enum_class]
 
 
+class DosageValidator:
+    min_dosage = 0.0001
+    max_dosage = 5000
+    allowed_units = {"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp"}
+
+    def __call__(self, value: str):
+        if not value:
+            return
+        try:
+            value, unit = value.split(" ", maxsplit=1)
+            if unit not in self.allowed_units:
+                raise ValidationError(
+                    f"Unit must be one of {', '.join(self.allowed_units)}"
+                )
+
+            value_num: int | float = float(value)
+            if value_num.is_integer():
+                value_num = int(value_num)
+            elif len(str(value_num).split(".")[1]) > 4:
+                raise ValidationError(
+                    "Dosage amount must have at most 4 decimal places"
+                )
+
+            if len(value) != len(str(value_num)):
+                raise ValidationError("Dosage amount must be a valid number")
+
+            if self.min_dosage > value_num or value_num > self.max_dosage:
+                raise ValidationError(
+                    f"Dosage amount must be between {self.min_dosage} and {self.max_dosage}"
+                )
+        except ValueError:
+            raise ValidationError("Invalid dosage")
+
+    def deconstruct(self):
+        path = "%s.%s" % (self.__class__.__module__, self.__class__.__name__)
+        return (path, [], {})
+
+
 class MedibaseMedicineType(enum.Enum):
     BRAND = "brand"
     GENERIC = "generic"
@@ -92,7 +130,9 @@ class Prescription(BaseModel):
         blank=True,
         null=True,
     )
-    dosage = models.CharField(max_length=100, blank=True, null=True)
+    dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[DosageValidator()]
+    )
 
     is_prn = models.BooleanField(default=False)
 
@@ -107,7 +147,9 @@ class Prescription(BaseModel):
 
     # prn fields
     indicator = models.TextField(blank=True, null=True)
-    max_dosage = models.CharField(max_length=100, blank=True, null=True)
+    max_dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[DosageValidator()]
+    )
     min_hours_between_doses = models.IntegerField(blank=True, null=True)
 
     notes = models.TextField(default="", blank=True)
