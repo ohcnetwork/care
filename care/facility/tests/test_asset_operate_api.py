@@ -3,11 +3,10 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from care.facility.api.viewsets.asset import AssetViewSet
 from care.facility.models import Asset, AssetBed, AssetLocation, Bed
-from care.facility.tests.mixins import TestClassMixin
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class AssetViewSetTestCase(TestBase, TestClassMixin, APITestCase):
+class AssetViewSetTestCase(TestUtils, APITestCase):
     asset_id = None
 
     def setUp(self):
