@@ -454,20 +454,22 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
-        consultation = PatientConsultation.objects.filter(
-            patient=self.instance, discharge_date__isnull=True
-        ).first()
 
-        if consultation:
-            consultation.discharge_date = now()
-            consultation.discharge_reason = "REF"
-            consultation.current_bed = None
-            consultation.save()
+        with transaction.atomic():
+            consultation = PatientConsultation.objects.filter(
+                patient=self.instance, discharge_date__isnull=True
+            ).first()
 
-            ConsultationBed.objects.filter(
-                consultation=consultation, end_date__isnull=True
-            ).update(end_date=now())
-            self.instance.save()
+            if consultation:
+                consultation.discharge_date = now()
+                consultation.discharge_reason = "REF"
+                consultation.current_bed = None
+                consultation.save()
+
+                ConsultationBed.objects.filter(
+                    consultation=consultation, end_date__isnull=True
+                ).update(end_date=now())
+                self.instance.save()
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
