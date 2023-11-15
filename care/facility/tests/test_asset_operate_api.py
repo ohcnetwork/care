@@ -1,20 +1,18 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import Asset, AssetBed, AssetLocation, Bed
+from care.facility.models import AssetBed
 from care.utils.tests.test_utils import TestUtils
 
 
 class AssetViewSetTestCase(TestUtils, APITestCase):
     @classmethod
     def setUpTestData(cls):
-        state = cls.create_state()
-        district = cls.create_district(state=state)
-        cls.user = cls.create_user(district=district, username="test user")
-        facility = cls.create_facility(district=district, user=cls.user)
-        cls.asset1_location = AssetLocation.objects.create(
-            name="asset1 location", location_type=1, facility=facility
-        )
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(state=cls.state)
+        cls.user = cls.create_user(district=cls.district, username="test user")
+        cls.facility = cls.create_facility(district=cls.district, user=cls.user)
+        cls.asset1_location = cls.create_asset_location(facility=cls.facility)
 
         # depends upon the operational dev camera config
         cls.onvif_meta = {
@@ -25,18 +23,10 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         }
         cls.hl7monitor_meta = {}
         cls.ventilator_meta = {}
-        cls.bed = Bed.objects.create(
-            name="Test Bed",
-            facility=facility,
-            location=cls.asset1_location,
-            meta={},
-            bed_type=1,
+        cls.bed = cls.create_bed(
+            facility=cls.facility, location=cls.asset1_location, meta={}
         )
-        cls.asset: Asset = Asset.objects.create(
-            name="Test Asset",
-            current_location=cls.asset1_location,
-            asset_type=50,
-        )
+        cls.asset = cls.create_asset(location=cls.asset1_location)
 
     def test_onvif_relative_move(self):
         self.asset.asset_class = "ONVIF"
