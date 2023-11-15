@@ -1,43 +1,40 @@
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.asset import AssetViewSet
 from care.facility.models import Asset, AssetBed, AssetLocation, Bed
 from care.utils.tests.test_utils import TestUtils
 
 
 class AssetViewSetTestCase(TestUtils, APITestCase):
-    asset_id = None
-
-    def setUpTestData(self):
-        self.factory = APIRequestFactory()
-        state = self.create_state()
-        district = self.create_district(state=state)
-        self.user = self.create_user(district=district, username="test user")
-        facility = self.create_facility(district=district, user=self.user)
-        self.asset1_location = AssetLocation.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        state = cls.create_state()
+        district = cls.create_district(state=state)
+        cls.user = cls.create_user(district=district, username="test user")
+        facility = cls.create_facility(district=district, user=cls.user)
+        cls.asset1_location = AssetLocation.objects.create(
             name="asset1 location", location_type=1, facility=facility
         )
 
         # depends upon the operational dev camera config
-        self.onvif_meta = {
+        cls.onvif_meta = {
             "asset_type": "CAMERA",
             "local_ip_address": "192.168.1.64",
             "camera_access_key": "remote_user:2jCkrCRSeahzKEU:d5694af2-21e2-4a39-9bad-2fb98d9818bd",
             "middleware_hostname": "dev_middleware.coronasafe.live",
         }
-        self.hl7monitor_meta = {}
-        self.ventilator_meta = {}
-        self.bed = Bed.objects.create(
+        cls.hl7monitor_meta = {}
+        cls.ventilator_meta = {}
+        cls.bed = Bed.objects.create(
             name="Test Bed",
             facility=facility,
-            location=self.asset1_location,
+            location=cls.asset1_location,
             meta={},
             bed_type=1,
         )
-        self.asset: Asset = Asset.objects.create(
+        cls.asset: Asset = Asset.objects.create(
             name="Test Asset",
-            current_location=self.asset1_location,
+            current_location=cls.asset1_location,
             asset_type=50,
         )
 
@@ -69,16 +66,10 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
                 },
             }
         }
-        response = self.new_request(
-            (
-                f"/api/v1/asset/{self.asset.external_id}/operate_assets/",
-                sample_data,
-                "json",
-            ),
-            {"post": "operate_assets"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response = self.client.post(
+            f"/api/v1/asset/{self.asset.external_id}/operate_assets/",
+            sample_data,
+            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -95,16 +86,10 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
                 },
             }
         }
-        response_invalid = self.new_request(
-            (
-                f"/api/v1/asset/{self.asset.external_id}/operate_assets/",
-                sample_data_invald,
-                "json",
-            ),
-            {"post": "operate_assets"},
-            AssetViewSet,
-            self.user,
-            {"external_id": self.asset.external_id},
+        response_invalid = self.client.post(
+            f"/api/v1/asset/{self.asset.external_id}/operate_assets/",
+            sample_data_invald,
+            "json",
         )
 
         self.assertEqual(response_invalid.status_code, status.HTTP_400_BAD_REQUEST)
