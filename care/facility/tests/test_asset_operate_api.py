@@ -9,7 +9,7 @@ from care.utils.tests.test_utils import TestUtils
 class AssetViewSetTestCase(TestUtils, APITestCase):
     asset_id = None
 
-    def setUp(self):
+    def setUpTestData(self):
         self.factory = APIRequestFactory()
         state = self.create_state()
         district = self.create_district(state=state)
