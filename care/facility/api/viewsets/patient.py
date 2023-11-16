@@ -426,10 +426,21 @@ class PatientViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
+        facility = Facility.objects.get(external_id=request.data["facility"])
+
+        if patient.is_active and facility == patient.facility:
+            return Response(
+                {
+                    "Patient": "Patient transfer cannot be completed because the patient has an active consultation in the same facility"
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
 
         if patient.allow_transfer is False:
             return Response(
-                {"Patient": "Cannot Transfer Patient , Source Facility Does Not Allow"},
+                {
+                    "Patient": "Patient transfer cannot be completed because the source facility does not permit it"
+                },
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
         patient.allow_transfer = False
