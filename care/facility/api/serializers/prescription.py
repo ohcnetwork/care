@@ -44,7 +44,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"dosage": "Dosage is required for titrated prescriptions."}
             )
-        else:
+        elif self.context["prescription"].dosage_type != "TITRATED":
             attrs.pop("dosage", None)
 
         return super().validate(attrs)
