@@ -357,6 +357,12 @@ class AssetViewSet(
             )
 
     # lock asset
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
+        responses={200: DummyAssetOperateResponseSerializer},
+        tags=["asset"],
+    )
+    @action(detail=True, methods=["POST"])
     def lock_asset(self, request, *args, **kwargs):
         asset = self.get_object()
         # also check if asset type is camera
@@ -365,6 +371,12 @@ class AssetViewSet(
         asset.save()
         return Response({"message": "Asset locked successfully"})
 
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
+        responses={200: DummyAssetOperateResponseSerializer},
+        tags=["asset"],
+    )
+    @action(detail=True, methods=["POST"])
     def unlock_asset(self, request, *args, **kwargs):
         asset = self.get_object()
         asset.is_locked = False
@@ -372,12 +384,24 @@ class AssetViewSet(
         asset.save()
         return Response({"message": "Asset unlocked successfully"})
 
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
+        responses={200: DummyAssetOperateResponseSerializer},
+        tags=["asset"],
+    )
+    @action(detail=True, methods=["POST"])
     def add_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
         asset.waitingUsers.add(request.user)
         asset.save()
         return Response({"message": "User added to waiting list"})
 
+    @extend_schema(
+        request=DummyAssetOperateSerializer,
+        responses={200: DummyAssetOperateResponseSerializer},
+        tags=["asset"],
+    )
+    @action(detail=True, methods=["POST"])
     def remove_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
         asset.waitingUsers.remove(request.user)
