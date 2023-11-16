@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status
@@ -34,6 +35,12 @@ inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
     administered_date = filters.DateFromToRangeFilter(field_name="administered_date")
+    archived = filters.BooleanFilter(method="archived_filter")
+
+    def archived_filter(self, queryset, name, value):
+        if value is None:
+            return queryset
+        return queryset.exclude(archived_on__isnull=value)
 
 
 class MedicineAdministrationViewSet(
@@ -57,10 +64,24 @@ class MedicineAdministrationViewSet(
         consultation_obj = self.get_consultation_obj()
         return self.queryset.filter(prescription__consultation_id=consultation_obj.id)
 
+    @extend_schema(tags=["prescription_administration"])
+    @action(methods=["POST"], detail=True)
+    def archive(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.archived_on:
+            return Response(
+                {"error": "Already Archived"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        instance.archived_by = request.user
+        instance.archived_on = timezone.now()
+        instance.save()
+        return Response({}, status=status.HTTP_200_OK)
+
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
     is_prn = filters.BooleanFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
+    discontinued = filters.BooleanFilter()
 
 
 class ConsultationPrescriptionViewSet(
@@ -124,22 +145,6 @@ class ConsultationPrescriptionViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    # @action(methods=["GET"], detail=True)
-    # def get_administrations(self, request, *args, **kwargs):
-    #     prescription_obj = self.get_object()
-    #     serializer = MedicineAdministrationSerializer(
-    #         MedicineAdministration.objects.filter(prescription_id=prescription_obj.id),
-    #         many=True)
-    #     return Response(serializer.data)
-
-    # @action(methods=["DELETE"], detail=True)
-    # def delete_administered(self, request, *args, **kwargs):
-    #     if not request.query_params.get("id", None):
-    #         return Response({"success": False, "error": "id is required"}, status=status.HTTP_400_BAD_REQUEST)
-    #     administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
-    #     administered_obj.delete()
-    #     return Response({"success": True}, status=status.HTTP_200_OK)
 
 
 class MedibaseViewSet(ViewSet):

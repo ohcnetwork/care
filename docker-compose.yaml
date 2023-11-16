@@ -6,27 +6,18 @@ networks:
 
 services:
   db:
-    container_name: care_db
-    image: postgres:latest
+    image: postgres:alpine
     restart: always
     env_file:
-      - ./docker/.local.env
+      - ./docker/.prebuilt.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
   redis:
-    container_name: care_redis
     image: redis:alpine
     restart: always
-
-  backend:
-    container_name: care
-    entrypoint: ["bash", "docker/docker-entrypoint.sh"]
-    ports:
-      - "9000:9000"
-      - "9876:9876" #debugpy
-    depends_on:
-      - db
+    volumes:
+      - redis-data:/data
 
   localstack:
     image: localstack/localstack:latest
@@ -39,9 +30,9 @@ services:
       - "./docker/awslocal:/docker-entrypoint-initaws.d"
 
   fidelius:
-    container_name: care_fidelius
     image: khavinshankar/fidelius:v1.0
     restart: always
 
 volumes:
   postgres-data:
+  redis-data:

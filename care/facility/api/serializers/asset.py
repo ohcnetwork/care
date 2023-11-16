@@ -24,6 +24,8 @@ from care.facility.models.asset import (
     AssetService,
     AssetServiceEdit,
     AssetTransaction,
+    AssetTypeChoices,
+    StatusChoices,
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -32,11 +34,21 @@ from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
+
+    def validate_middleware_address(self, value):
+        value = (value or "").strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
 
     def validate(self, data):
         facility = self.context["facility"]
@@ -113,8 +125,8 @@ class AssetServiceSerializer(ModelSerializer):
 
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    status = ChoiceField(choices=Asset.StatusChoices, read_only=True)
-    asset_type = ChoiceField(choices=Asset.AssetTypeChoices)
+    status = ChoiceField(choices=StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=AssetTypeChoices)
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
     location = UUIDField(write_only=True, required=True)
     last_service = AssetServiceSerializer(read_only=True)

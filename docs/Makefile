@@ -10,7 +10,7 @@
 # This will build the documentation and put it in the _build/html
 
 SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
+SPHINXBUILD   ?= pipenv run sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
