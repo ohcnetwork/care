@@ -304,6 +304,34 @@ class AssetViewSet(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+    # lock asset
+    def lock_asset(self, request, *args, **kwargs):
+        asset = self.get_object()
+        # also check if asset type is camera
+        asset.is_locked = True
+        asset.lockedBy = request.user
+        asset.save()
+        return Response({"message": "Asset locked successfully"})
+
+    def unlock_asset(self, request, *args, **kwargs):
+        asset = self.get_object()
+        asset.is_locked = False
+        asset.lockedBy = None
+        asset.save()
+        return Response({"message": "Asset unlocked successfully"})
+
+    def add_waiting_user(self, request, *args, **kwargs):
+        asset = self.get_object()
+        asset.waitingUsers.add(request.user)
+        asset.save()
+        return Response({"message": "User added to waiting list"})
+
+    def remove_waiting_user(self, request, *args, **kwargs):
+        asset = self.get_object()
+        asset.waitingUsers.remove(request.user)
+        asset.save()
+        return Response({"message": "User removed from waiting list"})
+
 
 class AssetTransactionFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")

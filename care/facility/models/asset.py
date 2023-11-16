@@ -100,6 +100,19 @@ class Asset(BaseModel):
         related_name="last_service",
     )
 
+    # lock camera feature
+    is_locked = models.BooleanField(default=False, null=True, blank=True)
+    locked_by = models.ForeignKey(
+        User,
+        related_name="locked_by",
+        on_delete=models.PROTECT,
+        default=None,
+        null=True,
+    )
+
+    # list of Foreign keys of users waiting for the asset
+    waiting_users = models.ManyToManyField(User, related_name="waitingUsers")
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
