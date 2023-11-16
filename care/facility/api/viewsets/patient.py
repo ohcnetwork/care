@@ -339,12 +339,24 @@ class PatientViewSet(
     def get_queryset(self):
         # filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
+        queryset = queryset.annotate(
+            is_last_consultation_null=Case(
+                When(last_consultation__isnull=True, then=True),
+                default=False,
+                output_field=models.BooleanField(),
+            )
+        )
         # if filter_query:
         #     disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
         #     return queryset.filter(disease_status=disease_status)
 
         # if self.action == "list":
         #     queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
+        queryset = queryset.order_by(
+            "-is_last_consultation_null",
+            "last_consultation",
+            "modified_date",
+        )
         return queryset
 
     def get_serializer_class(self):
