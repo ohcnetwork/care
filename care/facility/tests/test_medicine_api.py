@@ -42,7 +42,10 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(res.json()["dosage"][0], "Invalid dosage")
+        self.assertEqual(
+            res.json()["dosage"][0],
+            "Invalid Input, must be in the format: <amount> <unit>",
+        )
 
     def test_dosage_out_of_range(self):
         data = self.prescription_data(dosage="10000 mg")
@@ -53,7 +56,7 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             res.json()["dosage"][0],
-            "Dosage amount must be between 0.0001 and 5000",
+            "Input amount must be between 0.0001 and 5000",
         )
 
         data = self.prescription_data(dosage="-1 mg")
@@ -64,7 +67,7 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             res.json()["dosage"][0],
-            "Dosage amount must be between 0.0001 and 5000",
+            "Input amount must be between 0.0001 and 5000",
         )
 
     def test_dosage_precision(self):
@@ -76,7 +79,7 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             res.json()["dosage"][0],
-            "Dosage amount must have at most 4 decimal places",
+            "Input amount must have at most 4 decimal places",
         )
 
     def test_dosage_unit_invalid(self):
@@ -96,7 +99,8 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0], "Dosage amount must be a valid number"
+            res.json()["dosage"][0],
+            "Input amount must be a valid number without leading or trailing zeroes",
         )
 
     def test_dosage_trailing_zero(self):
@@ -107,8 +111,17 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0], "Dosage amount must be a valid number"
+            res.json()["dosage"][0],
+            "Input amount must be a valid number without leading or trailing zeroes",
         )
+
+    def test_dosage_validator_clean(self):
+        data = self.prescription_data(dosage=" 1 mg ")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_valid_dosage(self):
         data = self.prescription_data(dosage="1 mg")
