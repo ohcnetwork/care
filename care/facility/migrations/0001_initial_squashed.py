@@ -2664,7 +2664,7 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.PatientRelatedPermissionMixin,
+                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -4550,7 +4550,7 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.PatientRelatedPermissionMixin,
+                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(

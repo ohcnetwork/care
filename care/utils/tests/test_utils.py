@@ -24,6 +24,7 @@ from care.facility.models import (
 )
 from care.facility.models.ambulance import Ambulance
 from care.facility.models.asset import Asset, AssetLocation
+from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
 from care.users.models import District, State
 
@@ -77,8 +78,6 @@ class TestUtils:
     """
     Base class for tests, handles most of the test setup and tools for setting up data
     """
-
-    maxDiff = None
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -369,6 +368,33 @@ class TestUtils:
         }
         data.update(kwargs)
         return Asset.objects.create(**data)
+
+    @classmethod
+    def create_bed(cls, facility: Facility, location: AssetLocation, **kwargs):
+        data = {
+            "bed_type": 1,
+            "description": "Sample bed",
+            "facility": facility,
+            "location": location,
+            "name": "Test Bed",
+        }
+        data.update(kwargs)
+        return Bed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_bed(
+        cls,
+        consultation: PatientConsultation,
+        bed: Bed,
+        **kwargs,
+    ):
+        data = {
+            "bed": bed,
+            "consultation": consultation,
+            "start_date": make_aware(datetime(2020, 4, 1, 15, 30)),
+        }
+        data.update(kwargs)
+        return ConsultationBed.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):
