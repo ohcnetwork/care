@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2418161c41fa4f575c5549b0ea3f3d2501c80869bbf8eee8eed381b07b908451"
+            "sha256": "d091c185be68264550ec77fbc373a708956a5fd6f0068a7f373369d6bbffa8f8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -801,11 +801,12 @@
         },
         "psycopg": {
             "hashes": [
-                "sha256:15b25741494344c24066dc2479b0f383dd1b82fa5e75612fa4fa5bb30726e9b6",
-                "sha256:8bbeddae5075c7890b2fa3e3553440376d3c5e28418335dee3c3656b06fa2b52"
+                "sha256:1253010894cfb64e2da4556d4eff5f05e45cafee641f64e02453be849c8f7687",
+                "sha256:e6d047ce16950651d6e26c7c19ca57cc42e1d4841b58729f691244baeee46e30"
             ],
             "index": "pypi",
-            "version": "==3.1.10"
+            "markers": "python_version >= '3.7'",
+            "version": "==3.1.13"
         },
         "py-vapid": {
             "hashes": [
