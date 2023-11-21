@@ -12,8 +12,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 from care.facility.utils.reports.discharge_summary import (
     generate_discharge_report_signed_url,
 )
@@ -139,40 +140,17 @@ class HcxGatewayViewSet(GenericViewSet):
             )
 
         diagnoses = []
-        if len(consultation.icd11_diagnoses):
-            diagnoses = list(
-                map(
-                    lambda diagnosis: {
-                        "id": str(uuid()),
-                        "label": diagnosis.label.split(" ", 1)[1],
-                        "code": diagnosis.label.split(" ", 1)[0] or "00",
-                        "type": "clinical",
-                    },
-                    list(
-                        map(
-                            lambda icd_id: ICDDiseases.by.id[icd_id],
-                            consultation.icd11_diagnoses,
-                        )
-                    ),
-                )
-            )
-
-        if len(consultation.icd11_provisional_diagnoses):
-            diagnoses = list(
-                map(
-                    lambda diagnosis: {
-                        "id": str(uuid()),
-                        "label": diagnosis.label.split(" ", 1)[1],
-                        "code": diagnosis.label.split(" ", 1)[0] or "00",
-                        "type": "admitting",
-                    },
-                    list(
-                        map(
-                            lambda icd_id: ICDDiseases.by.id[icd_id],
-                            consultation.icd11_provisional_diagnoses,
-                        )
-                    ),
-                )
+        for diagnosis_id, is_principal in consultation.diagnoses.filter(
+            verification_status=ConditionVerificationStatus.CONFIRMED
+        ).values_list("diagnosis_id", "is_principal"):
+            diagnosis = get_icd11_diagnosis_object_by_id(diagnosis_id)
+            diagnoses.append(
+                {
+                    "id": str(uuid()),
+                    "label": diagnosis.label.split(" ", 1)[1],
+                    "code": diagnosis.label.split(" ", 1)[0] or "00",
+                    "type": "principal" if is_principal else "clinical",
+                }
             )
 
         previous_claim = (

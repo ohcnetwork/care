@@ -150,7 +150,10 @@ class PatientPermissionMixin(BasePermissionMixin):
         )
 
 
-class PatientRelatedPermissionMixin(BasePermissionMixin):
+class ConsultationRelatedPermissionMixin(BasePermissionMixin):
+    def get_related_consultation(self):
+        return self.consultation
+
     @staticmethod
     def has_write_permission(request):
         if (
@@ -159,38 +162,11 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return (
-            request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        )
+        return True
 
     def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and request.user in self.patient.facility.users.all()
-            )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        # This is because, `get_queryset` for related models already filters by consultation.
+        return True
 
     def has_object_update_permission(self, request):
         if (
@@ -199,28 +175,4 @@ class PatientRelatedPermissionMixin(BasePermissionMixin):
             or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
         ):
             return False
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and self.patient.facility == request.user.home_facility
-            )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        return True
