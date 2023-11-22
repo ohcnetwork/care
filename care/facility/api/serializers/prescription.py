@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import serializers
 
 from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
@@ -28,11 +29,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def get_last_administered_on(self, obj):
         last_administration = (
             MedicineAdministration.objects.filter(prescription=obj)
-            .order_by("-created_date")
+            .order_by("-administered_date")
             .first()
         )
         if last_administration:
-            return last_administration.created_date
+            return last_administration.administered_date
         return None
 
     class Meta:
@@ -57,6 +58,23 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 MedibaseMedicine, external_id=attrs["medicine"]
             )
 
+        if not self.instance:
+            if Prescription.objects.filter(
+                consultation__external_id=self.context["request"].parser_context[
+                    "kwargs"
+                ]["consultation_external_id"],
+                medicine=attrs["medicine"],
+                discontinued=False,
+            ).exists():
+                raise serializers.ValidationError(
+                    {
+                        "medicine": (
+                            "This medicine is already prescribed to this patient. "
+                            "Please discontinue the existing prescription to prescribe again."
+                        )
+                    }
+                )
+
         if attrs.get("is_prn"):
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
@@ -76,6 +94,18 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     administered_by = UserBaseMinimumSerializer(read_only=True)
     prescription = PrescriptionSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
+
+    def validate_administered_date(self, value):
+        if value > timezone.now():
+            raise serializers.ValidationError(
+                "Administered Date cannot be in the future."
+            )
+        if self.context["prescription"].created_date > value:
+            raise serializers.ValidationError(
+                "Administered Date cannot be before Prescription Date."
+            )
+        return value
 
     class Meta:
         model = MedicineAdministration
@@ -83,6 +113,8 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "external_id",
             "administered_by",
+            "archived_by",
+            "archived_on",
             "created_date",
             "modified_date",
             "prescription",

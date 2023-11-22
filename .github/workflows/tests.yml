@@ -1,77 +1,12 @@
-name: Test
+name: Test Pull Request
 
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    if: github.repository == 'coronasafe/care'
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/care
-    services:
-      db:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: care
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-      localstack:
-        image: localstack/localstack:latest
-        env:
-          AWS_DEFAULT_REGION: ap-south-1
-          EDGE_PORT: 4566
-          SERVICES: s3
-        ports:
-          - 4566:4566
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
-
-      - name: Install system packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install binutils libproj-dev libjpeg-dev zlib1g-dev -y
-
-      - name: Install CI dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements/local.txt
-
-      - name: Check for missing migrations
-        run: |
-          python manage.py makemigrations --check --dry-run --noinput
-
-      - name: Configure environment
-        run: |
-          echo "JWKS_BASE64=$(python manage.py generate_jwks)" >> $GITHUB_ENV
-
-      - name: Run Tests with coverage
-        run: coverage run manage.py test --settings=config.settings.test --parallel=$(nproc)
-
-      - name: Generate coverage report
-        run: |
-          coverage combine || true
-          coverage xml
-          coverage report -m
+    uses: ./.github/workflows/test-base.yml

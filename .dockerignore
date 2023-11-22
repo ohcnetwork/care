@@ -1,2 +1,5 @@
 .venv
 .git
+htmlcov
+staticfiles
+.coverage

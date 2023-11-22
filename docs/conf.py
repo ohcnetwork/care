@@ -22,7 +22,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "Care"
-copyright = """2022, Care"""
+copyright = """2023, Open Healthcare Network"""
 author = "coronasafe"
 
 

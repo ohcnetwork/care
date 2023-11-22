@@ -118,14 +118,3 @@ class UserModelTest(TestCase):
         user = self.user
         max_length = user._meta.get_field("phone_number").max_length
         self.assertEqual(max_length, 14)
-
-    def test_get_absolute_url(self):
-        """Test whether model returns correct url for detail view of a user"""
-        # This is part of django-cookie cutter and isn't used right now
-        # Reference link for the slack thread:
-        # https://rebuildearth.slack.com/archives/C010GQBMFJ9/p1585218577029200?thread_ts=1585218248.028800&cid=C010GQBMFJ9
-        pass
-        # user = self.user
-        # url_absolute = reverse('users:detail', kwargs={'username': user.username})
-        # response = self.client.get(url_absolute)
-        # self.assertEqual(response.status_code, 200)

@@ -44,10 +44,11 @@ class DailyRound(PatientBaseModel):
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
         ALERT = 5
-        DROWSY = 10
-        STUPOROUS = 15
-        COMATOSE = 20
-        CANNOT_BE_ASSESSED = 25
+        RESPONDS_TO_VOICE = 10
+        RESPONDS_TO_PAIN = 15
+        UNRESPONSIVE = 20
+        AGITATED_OR_CONFUSED = 25
+        ONSET_OF_AGITATION_AND_CONFUSION = 30
 
     ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
 
@@ -122,7 +123,9 @@ class DailyRound(PatientBaseModel):
     ]
 
     consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds"
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        related_name="daily_rounds",
     )
     temperature = models.DecimalField(
         decimal_places=2,
@@ -158,9 +161,6 @@ class DailyRound(PatientBaseModel):
     current_health = models.IntegerField(
         default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
     )
-    recommend_discharge = models.BooleanField(
-        default=False, verbose_name="Recommend Discharging Patient"
-    )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
 
@@ -168,7 +168,10 @@ class DailyRound(PatientBaseModel):
     created_by_telemedicine = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="update_created_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="update_created_user",
     )
 
     last_edited_by = models.ForeignKey(
@@ -265,7 +268,8 @@ class DailyRound(PatientBaseModel):
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
-        choices=VentilatorInterfaceChoice, default=VentilatorInterfaceType.UNKNOWN.value
+        choices=VentilatorInterfaceChoice,
+        default=VentilatorInterfaceType.UNKNOWN.value,
     )
     ventilator_mode = models.IntegerField(
         choices=VentilatorModeChoice, default=VentilatorModeType.UNKNOWN.value
@@ -339,7 +343,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
     pain_scale_enhanced = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)],
     )
     ph = models.DecimalField(
         decimal_places=2,
@@ -457,9 +462,26 @@ class DailyRound(PatientBaseModel):
         return value
 
     def update_pressure_sore(self):
-        area_interval_points = [0.1, 0.3, 0.7, 1.1, 2.1, 3.1, 4.1, 8.1, 12.1, 25]
+        area_interval_points = [
+            0.1,
+            0.3,
+            0.7,
+            1.1,
+            2.1,
+            3.1,
+            4.1,
+            8.1,
+            12.1,
+            25,
+        ]
         exudate_amounts = ["None", "Light", "Moderate", "Heavy"]
-        tissue_types = ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]
+        tissue_types = [
+            "Closed",
+            "Epithelial",
+            "Granulation",
+            "Slough",
+            "Necrotic",
+        ]
 
         def cal_push_score(item):
             push_score = item.get("base_score", 0.0)

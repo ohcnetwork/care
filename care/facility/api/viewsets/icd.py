@@ -10,7 +10,9 @@ def serailize_data(icd11_object):
     for object in icd11_object:
         if type(object) == tuple:
             object = object[0]
-        result.append({"id": object.id, "label": object.label})
+        result.append(
+            {"id": object.id, "label": object.label, "chapter": object.chapter}
+        )
     return result
 
 
@@ -24,6 +26,7 @@ class ICDViewSet(ViewSet):
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
-                label=queryset.re_match(r".*" + query + r".*", IGNORECASE)
+                label=queryset.re_match(r".*" + query + r".*", IGNORECASE),
+                is_leaf=True,
             )  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))
