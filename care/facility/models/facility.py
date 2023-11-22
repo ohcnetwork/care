@@ -318,7 +318,10 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "facilitycapacity__modified_date": "Updated Date",
     }
 
-    CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
+    CSV_MAKE_PRETTY = {
+        "facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x]),
+        "facilitycapacity__modified_date": (lambda x: x.strftime("%d-%m-%Y")),
+    }
 
     def __str__(self):
         return (

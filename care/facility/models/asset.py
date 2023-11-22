@@ -4,6 +4,7 @@ import uuid
 from django.db import models
 from django.db.models import JSONField, Q
 
+from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
@@ -45,22 +46,33 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    middleware_address = models.CharField(
+        null=True, blank=True, default=None, max_length=200
+    )
+
+
+class AssetType(enum.Enum):
+    INTERNAL = 50
+    EXTERNAL = 100
+
+
+AssetTypeChoices = [(e.value, e.name) for e in AssetType]
+
+AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
+
+
+class Status(enum.Enum):
+    ACTIVE = 50
+    TRANSFER_IN_PROGRESS = 100
+
+
+StatusChoices = [(e.value, e.name) for e in Status]
+
+REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices)
+REVERSE_STATUS = reverse_choices(StatusChoices)
+
 
 class Asset(BaseModel):
-    class AssetType(enum.Enum):
-        INTERNAL = 50
-        EXTERNAL = 100
-
-    AssetTypeChoices = [(e.value, e.name) for e in AssetType]
-
-    AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
-
-    class Status(enum.Enum):
-        ACTIVE = 50
-        TRANSFER_IN_PROGRESS = 100
-
-    StatusChoices = [(e.value, e.name) for e in Status]
-
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(
@@ -99,6 +111,35 @@ class Asset(BaseModel):
         default=None,
         related_name="last_service",
     )
+
+    CSV_MAPPING = {
+        "name": "Name",
+        "description": "Description",
+        "asset_type": "Type",
+        "asset_class": "Class",
+        "status": "Status",
+        "current_location__name": "Current Location Name",
+        "is_working": "Working Status",
+        "not_working_reason": "Not Working Reason",
+        "serial_number": "Serial Number",
+        "vendor_name": "Vendor Name",
+        "support_name": "Support Name",
+        "support_phone": "Support Phone Number",
+        "support_email": "Support Email",
+        "qr_code_id": "QR Code ID",
+        "manufacturer": "Manufacturer",
+        "warranty_amc_end_of_validity": "Warranty End Date",
+        "last_service__serviced_on": "Last Service Date",
+        "last_service__note": "Notes",
+        "meta__local_ip_address": "Config - IP Address",
+        "meta__camera_access_key": "Config: Camera Access Key",
+    }
+
+    CSV_MAKE_PRETTY = {
+        "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
+        "status": (lambda x: REVERSE_STATUS[x]),
+        "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
+    }
 
     class Meta:
         constraints = [
