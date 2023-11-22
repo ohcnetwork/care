@@ -241,10 +241,14 @@ class ConsultationBedViewSet(
         tags=["consultationbed"],
     )
     @action(detail=True, methods=["PATCH"])
-    def toggle_patient_privacy(self, request, *args, **kwargs):
+    def toggle_patient_privacy(self, request, external_id):
         try:
             user: User = request.user
-            if (
+            consultation_bed: ConsultationBed = (
+                self.get_queryset().filter(external_id=external_id).first()
+            )
+
+            if consultation_bed and (
                 user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
                 or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
                 or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
@@ -252,15 +256,14 @@ class ConsultationBedViewSet(
                 or (
                     user.user_type == User.TYPE_VALUE_MAP["Doctor"]
                     and user.home_facility.external_id
-                    == self.get_object().bed.facility.external_id
+                    == consultation_bed.bed.facility.external_id
                 )
                 or (
                     user.user_type == User.TYPE_VALUE_MAP["Staff"]
                     and user.home_facility.external_id
-                    == self.get_object().bed.facility.external_id
+                    == consultation_bed.bed.facility.external_id
                 )
             ):
-                consultation_bed: ConsultationBed = self.get_object()
                 consultation_bed.privacy = not consultation_bed.privacy
                 consultation_bed.save()
                 return Response({"status": "success"}, status=status.HTTP_200_OK)
@@ -270,4 +273,4 @@ class ConsultationBedViewSet(
         except PermissionDenied as e:
             return Response({"message": e.detail}, status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            return Response({"message": e}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

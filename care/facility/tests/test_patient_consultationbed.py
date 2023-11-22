@@ -2,29 +2,32 @@ import datetime
 
 from django.utils.timezone import make_aware
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.api.viewsets.bed import ConsultationBedViewSet
-from care.facility.models import FacilityUser
-from care.facility.models.asset import AssetLocation
-from care.facility.models.bed import Bed, ConsultationBed
-from care.facility.tests.mixins import TestClassMixin
 from care.users.models import User
-from care.utils.tests.test_base import TestBase
+from care.utils.tests.test_utils import TestUtils
 
 
-class TestPatientConsultationbed(TestBase, TestClassMixin, APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.location = AssetLocation.objects.create(
-            name="asset location", location_type=1, facility=self.facility
+class TestPatientConsultationbed(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(state=cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.user = cls.create_user(district=cls.district, username="test user")
+        cls.facility = cls.create_facility(
+            district=cls.district, local_body=cls.local_body, user=cls.user
         )
-        self.bed: Bed = Bed.objects.create(
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.location = cls.create_asset_location(facility=cls.facility)
+        cls.bed = cls.create_bed(
             name="Test Bed",
-            facility=self.facility,
-            location=self.location,
+            facility=cls.facility,
+            location=cls.location,
         )
-        self.consultation = self.create_consultation()
+        cls.consultation = cls.create_consultation(
+            facility=cls.facility, patient=cls.patient
+        )
 
     def test_patient_privacy_toggle_success(self):
         allowed_user_types = [
@@ -42,10 +45,7 @@ class TestPatientConsultationbed(TestBase, TestClassMixin, APITestCase):
                 district=self.district,
                 home_facility=self.facility,
             )
-            self.facility_user = FacilityUser.objects.create(
-                created_by=self.user, facility=self.facility, user=self.user
-            )
-            consultation_bed: ConsultationBed = ConsultationBed.objects.create(
+            consultation_bed = self.create_consultation_bed(
                 consultation=self.consultation,
                 bed=self.bed,
                 start_date=make_aware(datetime.datetime.now()),
@@ -53,23 +53,13 @@ class TestPatientConsultationbed(TestBase, TestClassMixin, APITestCase):
                 privacy=True,
             )
 
-            response = self.new_request(
-                (
-                    f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
-                    {},
-                    "json",
-                ),
-                {"patch": "toggle_patient_privacy"},
-                ConsultationBedViewSet,
-                self.user,
+            self.client.force_authenticate(user=self.user)
+            response = self.client.patch(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
                 {"external_id": consultation_bed.external_id},
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             consultation_bed.delete()
-            self.consultation.delete()
-            self.bed.delete()
-            self.location.delete()
-            self.facility.delete()
             self.user.delete()
 
     def test_patient_privacy_toggle_failure(self):
@@ -87,18 +77,17 @@ class TestPatientConsultationbed(TestBase, TestClassMixin, APITestCase):
             "Staff",
         ]
         for user_type in non_allowed_user_types:
-            self.facility2 = self.create_facility(self.district, name="Test Facility 2")
+            facility2 = self.create_facility(
+                district=self.district, local_body=self.local_body, user=self.user
+            )
             self.user = self.create_user(
                 username=f"{user_type} test user",
                 user_type=User.TYPE_VALUE_MAP[user_type],
                 district=self.district,
-                home_facility=self.facility2,
-            )
-            self.facility_user = FacilityUser.objects.create(
-                created_by=self.user, facility=self.facility, user=self.user
+                home_facility=facility2,
             )
 
-            consultation_bed: ConsultationBed = ConsultationBed.objects.create(
+            consultation_bed = self.create_consultation_bed(
                 consultation=self.consultation,
                 bed=self.bed,
                 start_date=make_aware(datetime.datetime.now()),
@@ -106,21 +95,11 @@ class TestPatientConsultationbed(TestBase, TestClassMixin, APITestCase):
                 privacy=True,
             )
 
-            response = self.new_request(
-                (
-                    f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
-                    {},
-                    "json",
-                ),
-                {"patch": "toggle_patient_privacy"},
-                ConsultationBedViewSet,
-                self.user,
+            self.client.force_authenticate(user=self.user)
+            response = self.client.patch(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
                 {"external_id": consultation_bed.external_id},
             )
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
             consultation_bed.delete()
-            self.consultation.delete()
-            self.bed.delete()
-            self.location.delete()
-            self.facility.delete()
             self.user.delete()
