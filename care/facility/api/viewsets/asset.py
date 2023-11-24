@@ -367,7 +367,7 @@ class AssetViewSet(
         asset = self.get_object()
         # also check if asset type is camera
         asset.is_locked = True
-        asset.lockedBy = request.user
+        asset.locked_by = request.user
         asset.save()
         return Response({"message": "Asset locked successfully"})
 
@@ -380,7 +380,7 @@ class AssetViewSet(
     def unlock_asset(self, request, *args, **kwargs):
         asset = self.get_object()
         asset.is_locked = False
-        asset.lockedBy = None
+        asset.locked_by = None
         asset.save()
         return Response({"message": "Asset unlocked successfully"})
 
