@@ -393,7 +393,8 @@ class AssetViewSet(
     @action(detail=True, methods=["POST"])
     def add_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
-        asset.waitingUsers.add(request.user)
+        user = User.objects.filter(username=request.user).first()
+        asset.waiting_users.add(user)
         asset.save()
         return Response({"message": "User added to waiting list"})
 
@@ -405,7 +406,8 @@ class AssetViewSet(
     @action(detail=True, methods=["POST"])
     def remove_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
-        asset.waitingUsers.remove(request.user)
+        user = User.objects.filter(username=request.user).first()
+        asset.waiting_users.remove(user)
         asset.save()
         return Response({"message": "User removed from waiting list"})
 
