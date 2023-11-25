@@ -367,7 +367,8 @@ class AssetViewSet(
         asset = self.get_object()
         # also check if asset type is camera
         asset.is_locked = True
-        asset.locked_by = request.user
+        user = User.objects.filter(username=request.user).first()
+        asset.locked_by = user
         asset.save()
         return Response({"message": "Asset locked successfully"})
 
