@@ -120,6 +120,7 @@ class Asset(BaseModel):
         on_delete=models.PROTECT,
         default=None,
         null=True,
+        to_field="username"
     )
 
     # list of Foreign keys of users waiting for the asset
