@@ -382,6 +382,10 @@ class AssetViewSet(
         asset = self.get_object()
         asset.is_locked = False
         asset.locked_by = None
+
+        # clear waiting users list
+        asset.waiting_users.clear()
+
         asset.save()
         return Response({"message": "Asset unlocked successfully"})
 
@@ -410,7 +414,6 @@ class AssetViewSet(
         asset.waiting_users.remove(user)
         asset.save()
         return Response({"message": "User removed from waiting list"})
-
 
 class AssetTransactionFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
