@@ -473,6 +473,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_encounter_date(self, value):
+        if value > now():
+            raise ValidationError(
+                {"encounter_date": "This field value cannot be in the future."}
+            )
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
@@ -524,11 +531,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to"] = None
                 elif validated.get("referred_to"):
                     validated["referred_to_external"] = None
-
-        if "encounter_date" in validated and validated["encounter_date"] > now():
-            raise ValidationError(
-                {"encounter_date": "This field value cannot be in the future."}
-            )
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
