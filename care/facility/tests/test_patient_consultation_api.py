@@ -100,12 +100,9 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
 
     def test_create_consultation_treating_physician_invalid_user(self):
-        consultation = self.create_admission_consultation(
-            suggestion="A",
-            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-        )
+        consultation = self.create_admission_consultation(suggestion="A")
         res = self.update_consultation(
-            consultation, treating_physician=self.doctor.id, suggestion="A"
+            consultation, treating_physician=self.user.id, suggestion="A"
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -332,6 +329,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_medico_legal_case(self):
         consultation = self.create_admission_consultation(
             medico_legal_case=True,
+            encounter_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
         )
         url = self.get_url(consultation)
 

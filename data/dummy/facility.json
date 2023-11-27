@@ -1288,7 +1288,7 @@
           "is_readmission": false,
           "referred_to_external": "",
           "admitted": false,
-          "encounter_date": null,
+          "encounter_date": "2022-09-27T07:20:40.117Z",
           "discharge_date": null,
           "discharge_reason": null,
           "discharge_notes": "",
