@@ -402,6 +402,7 @@ class AssetViewSet(
         request=DummyAssetOperateSerializer,
         responses={
             200: DummyAssetOperateResponseSerializer,
+            403: "Asset is not locked",
             409: "User who locked the asset can't be added to waiting list",
         },
         tags=["asset"],
@@ -409,6 +410,13 @@ class AssetViewSet(
     @action(detail=True, methods=["POST"])
     def add_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
+        # check if asset is not locked
+        if not asset.is_locked:
+            return Response(
+                {"message": "Asset is not locked"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         user = User.objects.filter(username=request.user).first()
         # check if asset is locked by this user itself
         if asset.locked_by == user:
