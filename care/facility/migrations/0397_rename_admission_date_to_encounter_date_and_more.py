@@ -13,16 +13,18 @@ class Migration(migrations.Migration):
     def clean_encounter_date(apps, schema_editor):
         PatientConsultation = apps.get_model("facility", "PatientConsultation")
 
-        # Set `encounter_date` to `null`` for all consultations with suggestions
-        # that are not Admission, Domiciliary Care.
+        # Set `encounter_date` to `created_date` for all consultations with
+        # suggestions that are not Admission, Domiciliary Care.
         #
         # Reason:
-        # We were not capturing `encounter_date` for these consultations
-        # earlier, but could still be set by mistake (eg. Edit Consultation
-        # allowed changing suggestion to non Admission/Domiciliary Care without
-        # clearing `encounter_date`)
+        # We were not capturing `admission_date` (now `encounter_date`) for
+        # these consultations earlier, but could still be set by mistake.
+        #
+        # Example:
+        # Edit Consultation allowed changing suggestion to non Admission/Domiciliary Care
+        # without clearing `admission_date` (now `encounter_date`).
         PatientConsultation.objects.exclude(suggestion__in=["A", "DC"]).update(
-            encounter_date=None
+            encounter_date=F("created_date")
         )
 
         # Set `encounter_date` to `created_date` for all consultations with
@@ -30,7 +32,7 @@ class Migration(migrations.Migration):
         #
         # Reason:
         # We were not capturing `encounter_date` for these consultations as
-        # it was earlier `adminssion_date` and was not set for these.
+        # it was not set for these.
         PatientConsultation.objects.filter(encounter_date=None).update(
             encounter_date=F("created_date")
         )
