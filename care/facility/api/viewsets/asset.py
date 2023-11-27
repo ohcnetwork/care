@@ -359,12 +359,21 @@ class AssetViewSet(
     # lock asset
     @extend_schema(
         request=DummyAssetOperateSerializer,
-        responses={200: DummyAssetOperateResponseSerializer},
+        responses={
+            200: DummyAssetOperateResponseSerializer,
+            403: "Asset is already locked",
+        },
         tags=["asset"],
     )
     @action(detail=True, methods=["POST"])
     def lock_asset(self, request, *args, **kwargs):
         asset = self.get_object()
+        # check if already locked
+        if asset.is_locked:
+            return Response(
+                {"message": "Asset is already locked"}, status=status.HTTP_403_FORBIDDEN
+            )
+
         # also check if asset type is camera
         asset.is_locked = True
         user = User.objects.filter(username=request.user).first()
@@ -391,13 +400,23 @@ class AssetViewSet(
 
     @extend_schema(
         request=DummyAssetOperateSerializer,
-        responses={200: DummyAssetOperateResponseSerializer},
+        responses={
+            200: DummyAssetOperateResponseSerializer,
+            403: "User who locked the asset can't be added to waiting list",
+        },
         tags=["asset"],
     )
     @action(detail=True, methods=["POST"])
     def add_waiting_user(self, request, *args, **kwargs):
         asset = self.get_object()
         user = User.objects.filter(username=request.user).first()
+        # check if asset is locked by this user itself
+        if asset.locked_by == user:
+            return Response(
+                {"message": "User who locked the asset can't be added to waiting list"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         asset.waiting_users.add(user)
         asset.save()
         return Response({"message": "User added to waiting list"})
@@ -414,6 +433,7 @@ class AssetViewSet(
         asset.waiting_users.remove(user)
         asset.save()
         return Response({"message": "User removed from waiting list"})
+
 
 class AssetTransactionFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
