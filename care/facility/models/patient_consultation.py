@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
@@ -126,7 +127,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     referred_by_external = models.TextField(default="", null=True, blank=True)
     is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
-    encounter_date = models.DateTimeField(null=True, blank=True)  # Deprecated
+    encounter_date = models.DateTimeField(default=timezone.now)
     icu_admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     discharge_reason = models.CharField(
