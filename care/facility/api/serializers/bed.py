@@ -236,8 +236,8 @@ class ConsultationBedSerializer(ModelSerializer):
                 {"end_date": "End date cannot be before the start date"}
             )
         if (
-            consultation.admission_date
-            and consultation.admission_date > current_start_date
+            consultation.encounter_date
+            and consultation.encounter_date > current_start_date
         ):
             raise ValidationError(
                 {"start_date": "Start date cannot be before the admission date"}

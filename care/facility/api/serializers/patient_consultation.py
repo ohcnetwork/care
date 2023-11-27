@@ -367,7 +367,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             and last_consultation.suggestion == SuggestionChoices.A
             and last_consultation.discharge_date
             and last_consultation.discharge_date + timedelta(days=30)
-            > consultation.admission_date
+            > consultation.encounter_date
         ):
             consultation.is_readmission = True
         consultation.save()
@@ -525,15 +525,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 elif validated.get("referred_to"):
                     validated["referred_to_external"] = None
             if validated["suggestion"] is SuggestionChoices.A:
-                if not validated.get("admission_date"):
+                if not validated.get("encounter_date"):
                     raise ValidationError(
                         {
-                            "admission_date": "This field is required as the patient has been admitted."
+                            "encounter_date": "This field is required as the patient has been admitted."
                         }
                     )
-                if validated["admission_date"] > now():
+                if validated["encounter_date"] > now():
                     raise ValidationError(
-                        {"admission_date": "This field value cannot be in the future."}
+                        {"encounter_date": "This field value cannot be in the future."}
                     )
 
         if "action" in validated:
@@ -635,8 +635,8 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     {"death_datetime": "This field value cannot be in the future."}
                 )
             if (
-                self.instance.admission_date
-                and attrs.get("death_datetime") < self.instance.admission_date
+                self.instance.encounter_date
+                and attrs.get("death_datetime") < self.instance.encounter_date
             ):
                 raise ValidationError(
                     {
@@ -655,8 +655,8 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 {"discharge_date": "This field value cannot be in the future."}
             )
         elif (
-            self.instance.admission_date
-            and attrs.get("discharge_date") < self.instance.admission_date
+            self.instance.encounter_date
+            and attrs.get("discharge_date") < self.instance.encounter_date
         ):
             raise ValidationError(
                 {
