@@ -361,7 +361,7 @@ class AssetViewSet(
         request=DummyAssetOperateSerializer,
         responses={
             200: DummyAssetOperateResponseSerializer,
-            403: "Asset is already locked",
+            409: "Asset is already locked",
         },
         tags=["asset"],
     )
@@ -371,7 +371,7 @@ class AssetViewSet(
         # check if already locked
         if asset.is_locked:
             return Response(
-                {"message": "Asset is already locked"}, status=status.HTTP_403_FORBIDDEN
+                {"message": "Asset is already locked"}, status=status.HTTP_409_CONFLICT
             )
 
         # also check if asset type is camera
@@ -402,7 +402,7 @@ class AssetViewSet(
         request=DummyAssetOperateSerializer,
         responses={
             200: DummyAssetOperateResponseSerializer,
-            403: "User who locked the asset can't be added to waiting list",
+            409: "User who locked the asset can't be added to waiting list",
         },
         tags=["asset"],
     )
@@ -414,7 +414,7 @@ class AssetViewSet(
         if asset.locked_by == user:
             return Response(
                 {"message": "User who locked the asset can't be added to waiting list"},
-                status=status.HTTP_403_FORBIDDEN,
+                status=status.HTTP_409_CONFLICT,
             )
 
         asset.waiting_users.add(user)
