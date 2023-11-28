@@ -1,6 +1,9 @@
 import enum
 from types import SimpleNamespace
 
+from django.db.models import IntegerChoices
+from django.utils.translation import gettext_lazy as _
+
 
 def reverse_choices(choices):
     output = {}
@@ -106,16 +109,11 @@ BLOOD_GROUP_CHOICES = [
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
-class ConsultationStatusEnum(enum.Enum):
-    UNKNOWN = 0
-    BROUGHT_DEAD = 1
-    TRANSFERRED_FROM_WARD = 2
-    TRANSFERRED_FROM_ICU = 3
-    REFERRED_FROM_OTHER_HOSPITAL = 4
-    OUT_PATIENT = 5
-
-
-ConsultationStatusChoices = [(e.value, e.name) for e in ConsultationStatusEnum]
+class RouteToFacility(IntegerChoices):
+    OUTPATIENT = 10, _("Outpatient/Emergency Room")
+    INTER_FACILITY_TRANSFER = 20, _("Referred from another facility")
+    INTRA_FACILITY_TRANSFER = 30, _("Internal Transfer within the facility")
+    __empty__ = _("(Unknown)")
 
 
 class BedType(enum.Enum):
@@ -134,7 +132,6 @@ REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-# REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
-REVERSE_CONSULTATION_STATUS_CHOICES = reverse_choices(ConsultationStatusChoices)
+REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
 REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
