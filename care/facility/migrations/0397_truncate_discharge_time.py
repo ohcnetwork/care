@@ -40,7 +40,9 @@ class Migration(migrations.Migration):
         )
 
         PatientConsultation = apps.get_model("facility", "PatientConsultation")
-        PatientConsultation.objects.filter(discharge_date__isnull=False).update(
+        PatientConsultation.objects.filter(discharge_date__isnull=False).exclude(
+            admission_date__isnull=False, discharge_date__lt=F("admission_date")
+        ).update(
             discharge_date=ExpressionWrapper(
                 # Convert the discharge_date to UTC by subtracting the current offset
                 F("discharge_date") - tz_offset +
