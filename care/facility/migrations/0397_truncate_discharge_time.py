@@ -3,7 +3,7 @@
 import datetime
 
 from django.db import migrations
-from django.db.models import DurationField, ExpressionWrapper, F
+from django.db.models import DateTimeField, ExpressionWrapper, F
 from django.db.models.functions import TruncDay
 from django.utils import timezone
 
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 F("discharge_date") - tz_offset +
                 # Get the day part of the discharge_date and subtract the actual discharge_date from it
                 (TruncDay(F("discharge_date")) - F("discharge_date")),
-                output_field=DurationField(),
+                output_field=DateTimeField(),
             )
         )
 
