@@ -14,6 +14,11 @@ class DistrictSerializer(serializers.ModelSerializer):
         model = District
         fields = "__all__"
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["name"] = f"{instance.name}, {instance.state}"
+        return representation
+
 
 class LocalBodySerializer(serializers.ModelSerializer):
     class Meta:
