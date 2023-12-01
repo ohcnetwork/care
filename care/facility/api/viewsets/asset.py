@@ -324,8 +324,8 @@ class AssetViewSet(
             middleware_hostname = (
                 asset.meta.get(
                     "middleware_hostname",
-                    asset.current_location.middleware_address,
                 )
+                or asset.current_location.middleware_address
                 or asset.current_location.facility.middleware_address
             )
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(

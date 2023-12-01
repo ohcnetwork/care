@@ -18,8 +18,7 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
-    ConsultationStatusChoices,
-    ConsultationStatusEnum,
+    RouteToFacility,
     SuggestionChoices,
     reverse_choices,
 )
@@ -97,9 +96,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
-    consultation_status = models.IntegerField(
-        default=ConsultationStatusEnum.UNKNOWN.value,
-        choices=ConsultationStatusChoices,
+    route_to_facility = models.SmallIntegerField(
+        choices=RouteToFacility.choices, blank=True, null=True
     )
     review_interval = models.IntegerField(default=-1)
     referred_to = models.ForeignKey(
@@ -108,11 +106,28 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         blank=True,
         on_delete=models.PROTECT,
         related_name="referred_patients",
-    )  # Deprecated
-    is_readmission = models.BooleanField(default=False)
+    )
     referred_to_external = models.TextField(default="", null=True, blank=True)
+    transferred_from_location = models.ForeignKey(
+        "AssetLocation",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
+    referred_from_facility = models.ForeignKey(
+        "Facility",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
+    referred_from_facility_external = models.TextField(
+        default="", null=True, blank=True
+    )
+    referred_by_external = models.TextField(default="", null=True, blank=True)
+    is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
     admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
+    icu_admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     discharge_reason = models.CharField(
         choices=DISCHARGE_REASON_CHOICES,
@@ -147,8 +162,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     medico_legal_case = models.BooleanField(default=False)
 
-    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
-    verified_by = models.ForeignKey(
+    deprecated_verified_by = models.TextField(
+        default="", null=True, blank=True
+    )  # Deprecated
+    treating_physician = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
 
