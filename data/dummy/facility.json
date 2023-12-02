@@ -1303,7 +1303,7 @@
           "last_updated_by_telemedicine": false,
           "assigned_to": null,
           "deprecated_verified_by": "",
-          "verified_by": null,
+          "treating_physician": null,
           "created_by": 2,
           "last_edited_by": 2,
           "last_daily_round": null,
