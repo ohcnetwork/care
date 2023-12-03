@@ -151,6 +151,12 @@ class UserViewSet(
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
                 is_superuser=False,
             )
+        elif request.user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            queryset = queryset.filter(
+                district=request.user.district,
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                is_superuser=False,
+            )
         else:
             return Response(
                 status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"}
