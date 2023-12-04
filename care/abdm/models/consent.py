@@ -42,6 +42,9 @@ class Consent(BaseModel):
         default=list, validators=[JSONFieldSchemaValidator(CARE_CONTEXTS)]
     )
 
+    status = models.CharField(
+        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
+    )
     purpose = models.CharField(
         choices=Purpose.choices, max_length=20, default=Purpose.CARE_MANAGEMENT.value
     )
@@ -76,6 +79,7 @@ class Consent(BaseModel):
         return {
             "patient_abha": self.patient_abha,
             "care_contexts": self.care_contexts,
+            "status": self.status,
             "purpose": self.purpose,
             "hi_types": self.hi_types,
             "hip": self.hip,
@@ -138,10 +142,6 @@ class ConsentArtefact(Consent):
         null=True,
         blank=True,
         related_name="consent_artefacts",
-    )
-
-    status = models.CharField(
-        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
     )
 
     cm = models.CharField(max_length=50, null=True, blank=True)

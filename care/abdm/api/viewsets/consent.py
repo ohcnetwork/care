@@ -159,20 +159,23 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        consent_artefacts = data["consentRequest"]["consentArtefacts"] or []
-        for artefact in consent_artefacts:
-            consent_artefact = ConsentArtefact.objects.filter(
-                external_id=artefact["id"]
-            ).first()
-            if not consent_artefact:
-                consent_artefact = ConsentArtefact(
-                    external_id=artefact["id"],
-                    consent_request=consent,
-                    **consent.consent_details_dict(),
-                )
+        if data["notification"]["status"] == "REVOKED":
+            consent.status = "REVOKED"
+        else:
+            consent_artefacts = data["notification"]["consentArtefacts"] or []
+            for artefact in consent_artefacts:
+                consent_artefact = ConsentArtefact.objects.filter(
+                    external_id=artefact["id"]
+                ).first()
+                if not consent_artefact:
+                    consent_artefact = ConsentArtefact(
+                        external_id=artefact["id"],
+                        consent_request=consent,
+                        **consent.consent_details_dict(),
+                    )
 
-            consent_artefact.status = data["consentRequest"]["status"]
-            consent_artefact.save()
+                consent_artefact.status = data["notification"]["status"]
+                consent_artefact.save()
         consent.save()
 
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -197,20 +200,23 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        consent_artefacts = data["notification"]["consentArtefacts"] or []
-        for artefact in consent_artefacts:
-            consent_artefact = ConsentArtefact.objects.filter(
-                external_id=artefact["id"]
-            ).first()
-            if not consent_artefact:
-                consent_artefact = ConsentArtefact(
-                    external_id=artefact["id"],
-                    consent_request=consent,
-                    **consent.consent_details_dict(),
-                )
+        if data["notification"]["status"] == "REVOKED":
+            consent.status = "REVOKED"
+        else:
+            consent_artefacts = data["notification"]["consentArtefacts"] or []
+            for artefact in consent_artefacts:
+                consent_artefact = ConsentArtefact.objects.filter(
+                    external_id=artefact["id"]
+                ).first()
+                if not consent_artefact:
+                    consent_artefact = ConsentArtefact(
+                        external_id=artefact["id"],
+                        consent_request=consent,
+                        **consent.consent_details_dict(),
+                    )
 
-            consent_artefact.status = data["notification"]["status"]
-            consent_artefact.save()
+                consent_artefact.status = data["notification"]["status"]
+                consent_artefact.save()
         consent.save()
 
         Gateway().consents__hiu__on_notify(consent, data["requestId"])
