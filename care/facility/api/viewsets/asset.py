@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -50,6 +49,7 @@ from care.facility.models import (
     UserDefaultAssetLocation,
 )
 from care.facility.models.asset import AssetTypeChoices, StatusChoices
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -128,36 +128,51 @@ class AssetLocationViewSet(
         """
 
         asset: AssetLocation = self.get_object()
-        duty_staff = request.data.get("duty_staff", [])
+        duty_staff = request.data.get("duty_staff")
 
-        count = User.objects.filter(
-            Q(home_facility=asset.facility) & Q(id__in=duty_staff)
-        ).count()
+        if not duty_staff:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        if count != len(duty_staff):
+        query = AssetLocationDutyStaff.objects.filter(
+            asset_location=asset, user__id=duty_staff, deleted=False
+        )
+
+        if query.exists():
             raise ValidationError(
-                {"duty_staff": "Only Home Facility Doctors and Staffs are allowed"}
+                {"duty_staff": "Staff already assigned to the location"}
             )
 
-        users = User.objects.filter(id__in=duty_staff).exclude(
-            id__in=AssetLocationDutyStaff.objects.filter(
-                asset_location=asset, user__id__in=duty_staff
-            ).values_list("user__id", flat=True)
-        )
-        with transaction.atomic():
-            duty_staff_objects = []
-            for user in users:
-                duty_staff_objects.append(
-                    AssetLocationDutyStaff(
-                        asset_location=asset,
-                        user=user,
-                        created_by=request.user,
-                    )
-                )
+        user = User.objects.filter(id=duty_staff, home_facility=asset.facility)
+        if not user.exists():
+            raise ValidationError(
+                {"duty_staff": "Staff does not belong to the facility"}
+            )
 
-            AssetLocationDutyStaff.objects.bulk_create(duty_staff_objects)
+        AssetLocationDutyStaff.objects.create(
+            asset_location=asset, user=user.first(), created_by=request.user
+        )
 
         return Response(status=status.HTTP_201_CREATED)
+
+    @extend_schema(tags=["asset_location"])
+    @duty_staff.mapping.get
+    def duty_staff_get(self, request, facility_external_id, external_id):
+        """
+        Endpoint for getting staffs from asset location
+        """
+
+        asset: AssetLocation = self.get_object()
+
+        duty_staff = User.objects.filter(
+            id__in=AssetLocationDutyStaff.objects.filter(
+                asset_location=asset, deleted=False
+            ).values_list("user__id", flat=True)
+        )
+
+        return Response(
+            UserBaseMinimumSerializer(duty_staff, many=True).data,
+            status=status.HTTP_200_OK,
+        )
 
     @extend_schema(tags=["asset_location"])
     @duty_staff.mapping.delete
@@ -169,11 +184,14 @@ class AssetLocationViewSet(
         asset: AssetLocation = self.get_object()
 
         if "duty_staff" not in request.data:
-            raise ValidationError({"duty_staff": "List of staffs is required"})
+            raise ValidationError({"duty_staff": "Staff is required"})
 
-        duty_staff = request.data.get("duty_staff", [])
+        duty_staff = request.data.get("duty_staff")
+        if not duty_staff:
+            raise ValidationError({"duty_staff": "Staff is required"})
+
         AssetLocationDutyStaff.objects.filter(
-            asset_location=asset, user__id__in=duty_staff
+            asset_location=asset, user__id=duty_staff
         ).update(deleted=True)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -320,7 +338,9 @@ class AssetViewSet(
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             pretty_mapping = Asset.CSV_MAKE_PRETTY.copy()
             return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+                queryset,
+                field_header_map=mapping,
+                field_serializer_map=pretty_mapping,
             )
 
         return super(AssetViewSet, self).list(request, *args, **kwargs)

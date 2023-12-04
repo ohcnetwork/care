@@ -85,22 +85,14 @@ class AssetLocationViewsetTestcase(TestUtils, APITestCase):
     def test_assign_duty_staff(self):
         # creating sample doctor and staff
 
-        created_users = []
-        user_data = [
-            ("doctor1", 15),
-            ("staff1", 10),
-        ]
+        created_user = self.create_user(
+            "doctor1",
+            self.district,
+            home_facility=self.facility,
+            user_type=15,
+        )
 
-        for user_name, user_type in user_data:
-            created_user = self.create_user(
-                user_name,
-                self.district,
-                home_facility=self.facility,
-                user_type=user_type,
-            )
-            created_users.append(created_user)
-
-        data = {"duty_staff": [user.id for user in created_users]}
+        data = {"duty_staff": created_user.id}
 
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/duty_staff/",
@@ -112,22 +104,14 @@ class AssetLocationViewsetTestcase(TestUtils, APITestCase):
     def test_remove_duty_staff(self):
         # creating sample doctor and staff
 
-        created_users = []
-        user_data = [
-            ("doctor1", 15),
-            ("staff1", 10),
-        ]
+        created_user = self.create_user(
+            "doctor1",
+            self.district,
+            home_facility=self.facility,
+            user_type=15,
+        )
 
-        for user_name, user_type in user_data:
-            created_user = self.create_user(
-                user_name,
-                self.district,
-                home_facility=self.facility,
-                user_type=user_type,
-            )
-            created_users.append(created_user)
-
-        data = {"duty_staff": [user.id for user in created_users]}
+        data = {"duty_staff": created_user.id}
 
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/duty_staff/",
