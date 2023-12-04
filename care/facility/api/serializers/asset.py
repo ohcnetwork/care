@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
@@ -132,6 +133,34 @@ class AssetSerializer(ModelSerializer):
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
+    resolved_middleware = serializers.SerializerMethodField()
+
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "hostname": {"type": "string"},
+                "source": {"type": "string", "enum": ["asset", "location", "facility"]},
+            },
+        }
+    )
+    def get_resolved_middleware(self, instance):
+        if hostname := instance.meta.get("middleware_hostname"):
+            return {
+                "hostname": hostname,
+                "source": "asset",
+            }
+        if hostname := instance.current_location.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "location",
+            }
+        if hostname := instance.current_location.facility.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "facility",
+            }
 
     class Meta:
         model = Asset
