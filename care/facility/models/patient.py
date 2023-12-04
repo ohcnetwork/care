@@ -714,6 +714,9 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
     )
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=True, blank=True
+    )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
