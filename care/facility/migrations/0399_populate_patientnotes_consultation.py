@@ -26,7 +26,7 @@ def link_patient_notes_to_consultation(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0397_patientnotes_consultation"),
+        ("facility", "0398_patientnotes_consultation"),
     ]
 
     operations = [

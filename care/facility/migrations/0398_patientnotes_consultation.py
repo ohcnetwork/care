@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0396_merge_20231122_0240"),
+        ("facility", "0397_truncate_discharge_time"),
     ]
 
     operations = [
