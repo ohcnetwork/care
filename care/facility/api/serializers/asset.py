@@ -134,7 +134,7 @@ class AssetSerializer(ModelSerializer):
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
-    resolved_middleware = serializers.SerializerMethodField()
+    resolved_middleware = serializers.SerializerMethodField(required=False)
 
     @extend_schema_field(
         {
@@ -143,6 +143,7 @@ class AssetSerializer(ModelSerializer):
                 "hostname": {"type": "string"},
                 "source": {"type": "string", "enum": ["asset", "location", "facility"]},
             },
+            "nullable": True,
         }
     )
     def get_resolved_middleware(self, instance):
