@@ -98,6 +98,14 @@ class PatientNotesTestCase(TestUtils, APITestCase):
             "doctor2", cls.district, home_facility=cls.facility2, user_type=15
         )
         cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(
+            patient_no="IP5678",
+            patient=cls.patient,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            admission_date=now(),
+        )
 
     def setUp(self):
         super().setUp()
