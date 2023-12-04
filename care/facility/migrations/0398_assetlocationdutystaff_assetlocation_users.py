@@ -10,7 +10,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0394_auto_20231114_2219"),
+        ("facility", "0397_truncate_discharge_time"),
     ]
 
     operations = [
