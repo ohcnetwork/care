@@ -139,7 +139,6 @@ class PatientExternalTestViewSet(
         # csv_file = request.FILES[list(request.FILES.keys())[0]]
         # csv_file.seek(0)
         # reader = csv.DictReader(io.StringIO(csv_file.read().decode("utf-8-sig")))
-
         if "sample_tests" not in request.data:
             raise ValidationError({"sample_tests": "No Data was provided"})
         if not isinstance(request.data["sample_tests"], list):
