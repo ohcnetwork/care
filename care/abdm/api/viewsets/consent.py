@@ -159,8 +159,8 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] == "REVOKED":
-            consent.status = "REVOKED"
+        if data["notification"]["status"] == "DENIED":
+            consent.status = "DENIED"
         else:
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
@@ -200,8 +200,8 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] == "REVOKED":
-            consent.status = "REVOKED"
+        if data["notification"]["status"] == "DENIED":
+            consent.status = "DENIED"
         else:
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
