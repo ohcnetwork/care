@@ -140,16 +140,17 @@ class PatientExternalTestViewSet(
         # csv_file.seek(0)
         # reader = csv.DictReader(io.StringIO(csv_file.read().decode("utf-8-sig")))
 
+        if "sample_tests" not in request.data:
+            raise ValidationError({"sample_tests": "No Data was provided"})
+        if not isinstance(request.data["sample_tests"], list):
+            raise ValidationError({"sample_tests": "Data should be provided as a list"})
+
         # check if the user is from same district
         user = User.objects.filter(username=request.user).first()
         for data in request.data["sample_tests"]:
             if user.district != data["district"]:
                 raise ValidationError({"Error": "User must belong to same district"})
 
-        if "sample_tests" not in request.data:
-            raise ValidationError({"sample_tests": "No Data was provided"})
-        if not isinstance(request.data["sample_tests"], list):
-            raise ValidationError({"sample_tests": "Data should be provided as a list"})
         errors = []
         counter = 0
         ser_objects = []
