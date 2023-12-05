@@ -20,6 +20,7 @@ DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 class DailyRoundFilterSet(filters.FilterSet):
     rounds_type = filters.CharFilter(method="filter_rounds_type")
+    taken_at = filters.DateTimeFromToRangeFilter()
 
     def filter_rounds_type(self, queryset, name, value):
         rounds_type = set()
