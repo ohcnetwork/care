@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -44,6 +44,7 @@ from care.facility.models import (
     AssetLocation,
     AssetService,
     AssetTransaction,
+    ConsultationBed,
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
@@ -130,6 +131,7 @@ class AssetFilter(filters.FilterSet):
     in_use_by_consultation = filters.BooleanFilter(
         method="filter_in_use_by_consultation"
     )
+    in_use_by_bed = filters.BooleanFilter(method="filter_in_use_by_bed")
     is_permanent = filters.BooleanFilter(method="filter_is_permanent")
     warranty_amc_end_of_validity = filters.DateFromToRangeFilter()
 
@@ -146,6 +148,17 @@ class AssetFilter(filters.FilterSet):
             )
             queryset = queryset.filter(is_in_use=value)
         return queryset.distinct()
+
+    def filter_in_use_by_bed(self, queryset, _, value):
+        if value not in EMPTY_VALUES:
+            queryset = queryset.filter(
+                bed__id__in=Subquery(
+                    ConsultationBed.objects.filter(
+                        bed__id=OuterRef("bed__id"), end_date__isnull=value
+                    ).values("bed__id")
+                )
+            )
+        return queryset
 
     def filter_is_permanent(self, queryset, _, value):
         if value not in EMPTY_VALUES:
