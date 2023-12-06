@@ -39,6 +39,12 @@ class FacilityFilter(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
+    exclude_user = filters.CharFilter(method="filter_exclude_user")
+
+    def filter_exclude_user(self, queryset, name, value):
+        if value:
+            queryset = queryset.exclude(facilityuser__user__username=value)
+        return queryset
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):

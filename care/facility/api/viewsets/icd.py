@@ -10,7 +10,9 @@ def serailize_data(icd11_object):
     for object in icd11_object:
         if type(object) == tuple:
             object = object[0]
-        result.append({"id": object.id, "label": object.label})
+        result.append(
+            {"id": object.id, "label": object.label, "chapter": object.chapter}
+        )
     return result
 
 

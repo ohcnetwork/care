@@ -37,7 +37,7 @@ class Command(BaseCommand):
     """
     Management command to load ICD11 diagnoses to database. Not for production
     use.
-    Usage: python manage.py load_icd11_diagnoses
+    Usage: python manage.py load_icd11_diagnoses_data
     """
 
     help = "Loads ICD11 diagnoses data to database"
@@ -143,7 +143,6 @@ class Command(BaseCommand):
                 result["meta_hidden"] = mapped is None
                 return result
 
-            ICD11Diagnosis.objects.all().delete()
             ICD11Diagnosis.objects.bulk_create(
                 [
                     ICD11Diagnosis(
@@ -159,7 +158,8 @@ class Command(BaseCommand):
                         **roots(obj),
                     )
                     for obj in self.data
-                ]
+                ],
+                ignore_conflicts=True,  # Voluntarily set to skip duplicates, so that we can run this command multiple times + existing relations are not affected
             )
         except Exception as e:
             raise CommandError(e)

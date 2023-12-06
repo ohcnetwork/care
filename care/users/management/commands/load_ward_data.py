@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 ),
             ).first()
 
-        for f in glob.glob(f"{folder}/*.json"):
+        for f in sorted(glob.glob(f"{folder}/*.json")):
             with open(f"{f}", "r") as data_f:
                 data = json.load(data_f)
                 wards = data.pop("wards", None)
@@ -69,6 +69,7 @@ class Command(BaseCommand):
                     local_body = get_local_body(data)
                     if not local_body:
                         continue
+                    wards.sort(key=lambda x: get_ward_name(x) + str(get_ward_number(x)))
                     for ward in wards:
                         counter += 1
                         try:
