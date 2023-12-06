@@ -65,6 +65,12 @@ class Command(BaseCommand):
                 type of the local body will be match based on this.
                 if not found, it will be matched against the last item in the choices - "Others"
             """
+            local_body_list.sort(
+                key=lambda lb: (
+                    lb["name"],
+                    lb.get("localbody_code", ""),
+                )
+            )
             local_body_objs = []
             for lb in local_body_list:
                 dist_obj = get_district_obj(lb["district"], lb["state"])
@@ -87,7 +93,7 @@ class Command(BaseCommand):
             # Hence, those records can be ignored using the `ignore_conflicts` flag
             LocalBody.objects.bulk_create(local_body_objs, ignore_conflicts=True)
 
-        for f in glob.glob(f"{folder}/*.json"):
+        for f in sorted(glob.glob(f"{folder}/*.json")):
             counter += 1
             with open(f"{f}", "r") as data_f:
                 data = json.load(data_f)
