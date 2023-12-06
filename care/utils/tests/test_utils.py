@@ -23,6 +23,7 @@ from care.facility.models import (
     User,
 )
 from care.facility.models.asset import Asset, AssetLocation
+from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
 from care.users.models import District, State
 
@@ -76,8 +77,6 @@ class TestUtils:
     """
     Base class for tests, handles most of the test setup and tools for setting up data
     """
-
-    maxDiff = None
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
@@ -220,7 +219,8 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        facility = Facility.objects.create(**data)
+        return facility
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -330,7 +330,12 @@ class TestUtils:
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
-        data = {"name": "asset1 location", "location_type": 1, "facility": facility}
+        data = {
+            "name": "asset1 location",
+            "location_type": 1,
+            "facility": facility,
+            "middleware_address": "example.com",
+        }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
 
@@ -345,6 +350,33 @@ class TestUtils:
         }
         data.update(kwargs)
         return Asset.objects.create(**data)
+
+    @classmethod
+    def create_bed(cls, facility: Facility, location: AssetLocation, **kwargs):
+        data = {
+            "bed_type": 1,
+            "description": "Sample bed",
+            "facility": facility,
+            "location": location,
+            "name": "Test Bed",
+        }
+        data.update(kwargs)
+        return Bed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_bed(
+        cls,
+        consultation: PatientConsultation,
+        bed: Bed,
+        **kwargs,
+    ):
+        data = {
+            "bed": bed,
+            "consultation": consultation,
+            "start_date": make_aware(datetime(2020, 4, 1, 15, 30)),
+        }
+        data.update(kwargs)
+        return ConsultationBed.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):

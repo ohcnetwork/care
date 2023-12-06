@@ -205,6 +205,7 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user(
             "doctor1", cls.district, home_facility=cls.facility, user_type=15
         )
@@ -217,14 +218,124 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             suggestion="A",
             admission_date=now(),
         )
+        cls.bed = cls.create_bed(cls.facility, cls.location)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
+        cls.consultation.current_bed = cls.consultation_bed
+        cls.consultation.save()
         cls.patient.last_consultation = cls.consultation
         cls.patient.save()
 
     def test_filter_by_patient_no(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get("/api/v1/patient/?patient_no=IP5678")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
             response.data["results"][0]["id"], str(self.patient.external_id)
+        )
+
+    def test_filter_by_location(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            f"/api/v1/patient/?facility={self.facility.external_id}&location={self.location.external_id}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.patient.external_id)
+        )
+
+
+class PatientTransferTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.destination_facility = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body, name="Facility 2"
+        )
+        cls.location = cls.create_asset_location(cls.facility)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(
+            patient_no="IP5678",
+            patient=cls.patient,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            admission_date=now(),
+            discharge_date=None,  # Patient is currently admitted
+            discharge_reason=None,
+        )
+        cls.bed = cls.create_bed(cls.facility, cls.location)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
+        cls.consultation.current_bed = cls.consultation_bed
+        cls.consultation.save()
+        cls.patient.last_consultation = cls.consultation
+        cls.patient.save()
+
+    def test_patient_transfer(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "date_of_birth": "1992-04-01",
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Refresh patient data
+        self.patient.refresh_from_db()
+        self.consultation.refresh_from_db()
+
+        # Assert the patient's facility has been updated
+        self.assertEqual(self.patient.facility, self.destination_facility)
+
+        # Assert the consultation discharge reason and date are set correctly
+        self.assertEqual(self.consultation.discharge_reason, "REF")
+        self.assertIsNotNone(self.consultation.discharge_date)
+
+    def test_transfer_with_active_consultation_same_facility(self):
+        # Set the patient's facility to allow transfers
+        self.patient.allow_transfer = True
+        self.patient.save()
+
+        # Ensure transfer fails if the patient has an active consultation
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "date_of_birth": "1992-04-01",
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
+        )
+
+    def test_transfer_disallowed_by_facility(self):
+        # Set the patient's facility to disallow transfers
+        self.patient.allow_transfer = False
+        self.patient.save()
+
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "date_of_birth": "1992-04-01",
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the source facility does not permit it",
         )

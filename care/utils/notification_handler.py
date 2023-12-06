@@ -8,7 +8,7 @@ from pywebpush import WebPushException, webpush
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientRegistration
+from care.facility.models.patient import PatientNotes, PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_investigation import (
     InvestigationSession,
@@ -230,6 +230,13 @@ class NotificationGenerator:
                     self.caused_object.patient.name,
                     self.caused_by.get_full_name(),
                 )
+        elif isinstance(self.caused_object, PatientNotes):
+            if self.event == Notification.Event.PATIENT_NOTE_ADDED.value:
+                message = "Notes for Patient {} was added by {}".format(
+                    self.caused_object.patient.name,
+                    self.caused_by.get_full_name(),
+                )
+
         return message
 
     def generate_sms_message(self):
@@ -308,6 +315,12 @@ class NotificationGenerator:
                 )
         if isinstance(self.caused_object, ShiftingRequest):
             self.caused_objects["shifting"] = str(self.caused_object.external_id)
+
+        if isinstance(self.caused_object, PatientNotes):
+            self.caused_objects["patient"] = str(self.caused_object.patient.external_id)
+            self.caused_objects["facility"] = str(
+                self.caused_object.facility.external_id
+            )
 
         return True
 
@@ -390,7 +403,10 @@ class NotificationGenerator:
                             json.dumps(
                                 {
                                     "external_id": str(notification_obj.external_id),
-                                    "title": self.message,
+                                    "message": self.message,
+                                    "type": Notification.Event(
+                                        notification_obj.event
+                                    ).name,
                                 }
                             ),
                         )
