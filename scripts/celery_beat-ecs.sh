@@ -12,7 +12,8 @@ import psycopg
 
 try:
     psycopg.connect(conninfo="${DATABASE_URL}")
-except psycopg.OperationalError:
+except psycopg.OperationalError as e:
+    print(e)
     sys.exit(-1)
 sys.exit(0)
 
