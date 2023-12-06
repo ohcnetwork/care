@@ -34,8 +34,8 @@ def check_asset_status():
             hostname = (
                 asset.meta.get(
                     "middleware_hostname",
-                    asset.current_location.middleware_address,
                 )
+                or asset.current_location.middleware_address
                 or asset.current_location.facility.middleware_address
             )
             if not hostname:
