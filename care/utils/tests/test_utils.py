@@ -326,7 +326,10 @@ class TestUtils:
             }
         )
         data.update(kwargs)
-        return PatientConsultation.objects.create(**data)
+        consultation = PatientConsultation.objects.create(**data)
+        patient.last_consultation = consultation
+        patient.save()
+        return consultation
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:

@@ -10,6 +10,7 @@ from care.utils.tests.test_utils import TestUtils
 class ExpectedPatientNoteKeys(Enum):
     NOTE = "note"
     FACILITY = "facility"
+    CONSULTATION = "consultation"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
     USER_TYPE = "user_type"
@@ -97,6 +98,14 @@ class PatientNotesTestCase(TestUtils, APITestCase):
             "doctor2", cls.district, home_facility=cls.facility2, user_type=15
         )
         cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(
+            patient_no="IP5678",
+            patient=cls.patient,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            admission_date=now(),
+        )
 
     def setUp(self):
         super().setUp()
@@ -120,18 +129,28 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
     def test_patient_notes(self):
         patientId = self.patient.external_id
-        response = self.client.get(f"/api/v1/patient/{patientId}/notes/")
+        response = self.client.get(
+            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
 
-        # Test user_type field if user is not from same facility as patient
+        results = response.json()["results"]
+
+        # Test if all notes are from same consultation as requested
+        self.assertEqual(
+            str(self.consultation.external_id),
+            [note["consultation"] for note in results][0],
+        )
+
+        # Test created_by_local_user field if user is not from same facility as patient
         data2 = response.json()["results"][0]
 
         user_type_content2 = data2["user_type"]
         self.assertEqual(user_type_content2, "RemoteSpecialist")
 
         # Ensure only necessary data is being sent and no extra data
-        data = response.json()["results"][1]
+        data = results[1]
 
         self.assertCountEqual(
             data.keys(), [item.value for item in ExpectedPatientNoteKeys]
