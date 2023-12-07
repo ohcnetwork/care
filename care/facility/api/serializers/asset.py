@@ -135,7 +135,7 @@ class AssetServiceSerializer(ModelSerializer):
         "nullable": True,
     }
 )
-class ResolvedMiddlewareField(serializers.Field):
+class ResolvedMiddlewareField(serializers.JSONField):
     pass
 
 

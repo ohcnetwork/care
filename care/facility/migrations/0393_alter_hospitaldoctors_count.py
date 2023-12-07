@@ -5,7 +5,7 @@ from django.db.models import F
 
 
 def convert_negative_to_positive(apps, schema_editor):
-    HospitalDoctors = apps.get_model("care", "HospitalDoctors")
+    HospitalDoctors = apps.get_model("facility", "HospitalDoctors")
     HospitalDoctors.objects.filter(count__lt=0).update(count=F("count") * -1)
 
 
