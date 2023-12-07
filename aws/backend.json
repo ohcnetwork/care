@@ -34,6 +34,10 @@
           "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
+          "name": "CORS_ALLOWED_ORIGINS",
+          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\"]"
+        },
+        {
           "name": "CURRENT_DOMAIN",
           "value": "https://care.ohc.network"
         },
