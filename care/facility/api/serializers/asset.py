@@ -124,6 +124,20 @@ class AssetServiceSerializer(ModelSerializer):
         return updated_instance
 
 
+@extend_schema_field(
+    {
+        "type": "object",
+        "properties": {
+            "hostname": {"type": "string"},
+            "source": {"type": "string", "enum": ["asset", "location", "facility"]},
+        },
+        "nullable": True,
+    }
+)
+class ResolvedMiddlewareField(serializers.Field):
+    pass
+
+
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=StatusChoices, read_only=True)
@@ -133,26 +147,12 @@ class AssetSerializer(ModelSerializer):
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
-
-    resolved_middleware = serializers.SerializerMethodField(required=False)
-
-    @extend_schema_field(
-        {
-            "type": "object",
-            "properties": {
-                "hostname": {"type": "string"},
-                "source": {"type": "string", "enum": ["asset", "location", "facility"]},
-            },
-            "nullable": True,
-        }
-    )
-    def get_resolved_middleware(self, instance):
-        return instance.resolved_middleware
+    resolved_middleware = ResolvedMiddlewareField(read_only=True)
 
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
-        read_only_fields = TIMESTAMP_FIELDS
+        read_only_fields = TIMESTAMP_FIELDS + ("resolved_middleware",)
 
     def validate_qr_code_id(self, value):
         value = value or None  # treat empty string as null
