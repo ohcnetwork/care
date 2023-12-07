@@ -240,7 +240,13 @@
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">seed_data</span></code></p>
 </td>
 </tr>
-<tr class="row-odd"><td><p>summarize</p></td>
+<tr class="row-odd"><td><p>load_skill_data</p></td>
+<td><p>None</p></td>
+<td><p>This command loads default skills</p>
+<p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">load_skill_data</span></code></p>
+</td>
+</tr>
+<tr class="row-even"><td><p>summarize</p></td>
 <td><p>None</p></td>
 <td><p>The summary jobs are run by Celery every 10 mins, but we can force Django to summarize the current data and update the summary table with this command</p>
 <p>Example Invocation: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">summarize</span></code></p>
