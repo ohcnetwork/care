@@ -626,6 +626,10 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
         return super(PatientSearchViewSet, self).list(request, *args, **kwargs)
 
 
+class PatientNotesFilterSet(filters.FilterSet):
+    consultation = filters.CharFilter(field_name="consultation__external_id")
+
+
 class PatientNotesViewSet(
     ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
 ):
@@ -636,6 +640,8 @@ class PatientNotesViewSet(
     )
     serializer_class = PatientNotesSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PatientNotesFilterSet
 
     def get_queryset(self):
         user = self.request.user
@@ -671,6 +677,7 @@ class PatientNotesViewSet(
         instance = serializer.save(
             facility=patient.facility,
             patient=patient,
+            consultation=patient.last_consultation,
             created_by=self.request.user,
         )
 

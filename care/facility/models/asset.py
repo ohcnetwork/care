@@ -34,6 +34,7 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     class RoomType(enum.Enum):
         OTHER = 1
         ICU = 10
+        WARD = 20
 
     RoomTypeChoices = [(e.value, e.name) for e in RoomType]
 
@@ -140,6 +141,24 @@ class Asset(BaseModel):
         "status": (lambda x: REVERSE_STATUS[x]),
         "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
+
+    @property
+    def resolved_middleware(self):
+        if hostname := self.meta.get("middleware_hostname"):
+            return {
+                "hostname": hostname,
+                "source": "asset",
+            }
+        if hostname := self.current_location.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "location",
+            }
+        if hostname := self.current_location.facility.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "facility",
+            }
 
     class Meta:
         constraints = [

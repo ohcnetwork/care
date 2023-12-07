@@ -475,6 +475,12 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(),
+        required=False,
+        allow_null=True,
+        read_only=True,
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -501,6 +507,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         fields = (
             "note",
             "facility",
+            "consultation",
             "created_by_object",
             "user_type",
             "created_date",

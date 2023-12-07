@@ -9,6 +9,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      boto:
+        patterns:
+          - "boto*"
 
   - package-ecosystem: "docker"
     directory: "/docker"

@@ -253,8 +253,6 @@ X_FRAME_OPTIONS = "DENY"
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-trusted-origins
 CSRF_TRUSTED_ORIGINS = env.json("CSRF_TRUSTED_ORIGINS", default=[])
 
-# https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
-CORS_ORIGIN_ALLOW_ALL = True  # WARNING: This is not secure
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origin_regexes-sequencestr--patternstr
 # CORS_URLS_REGEX = r"^/api/.*$"
 
