@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db.models import F, Subquery
+from django.db.models import F
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -22,6 +22,7 @@ from care.users.api.serializers.user import (
     UserListSerializer,
     UserSerializer,
 )
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 User = get_user_model()
 
@@ -146,10 +147,8 @@ class UserViewSet(
             )
         else:
             return self.queryset.filter(
-                facilityuser__facility_id__in=Subquery(
-                    FacilityUser.objects.filter(user=self.request.user.id).values(
-                        "facility_id"
-                    )
+                facilityuser__facility_id__in=get_accessible_facilities(
+                    self.request.user
                 ),
                 user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
