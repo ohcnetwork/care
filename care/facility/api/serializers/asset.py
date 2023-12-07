@@ -147,21 +147,7 @@ class AssetSerializer(ModelSerializer):
         }
     )
     def get_resolved_middleware(self, instance):
-        if hostname := instance.meta.get("middleware_hostname"):
-            return {
-                "hostname": hostname,
-                "source": "asset",
-            }
-        if hostname := instance.current_location.middleware_address:
-            return {
-                "hostname": hostname,
-                "source": "location",
-            }
-        if hostname := instance.current_location.facility.middleware_address:
-            return {
-                "hostname": hostname,
-                "source": "facility",
-            }
+        return instance.resolved_middleware
 
     class Meta:
         model = Asset
