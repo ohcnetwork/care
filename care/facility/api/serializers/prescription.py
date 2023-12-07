@@ -2,7 +2,12 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
 
-from care.facility.models import MedibaseMedicine, MedicineAdministration, Prescription
+from care.facility.models import (
+    MedibaseMedicine,
+    MedicineAdministration,
+    Prescription,
+    PrescriptionDosageType,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
@@ -39,12 +44,15 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if (
             not attrs.get("dosage")
-            and self.context["prescription"].dosage_type == "TITRATED"
+            and self.context["prescription"].dosage_type
+            == PrescriptionDosageType.TITRATED
         ):
             raise serializers.ValidationError(
                 {"dosage": "Dosage is required for titrated prescriptions."}
             )
-        elif self.context["prescription"].dosage_type != "TITRATED":
+        elif (
+            self.context["prescription"].dosage_type != PrescriptionDosageType.TITRATED
+        ):
             attrs.pop("dosage", None)
 
         return super().validate(attrs)
@@ -114,7 +122,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 {"base_dosage": "Base dosage is required."}
             )
 
-        if attrs.get("dosage_type") == "PRN":
+        if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
@@ -130,7 +138,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             attrs.pop("max_dosage", None)
             attrs.pop("min_hours_between_doses", None)
 
-            if attrs.get("dosage_type") == "TITRATED":
+            if attrs.get("dosage_type") == PrescriptionDosageType.TITRATED:
                 if not attrs.get("target_dosage"):
                     raise serializers.ValidationError(
                         {

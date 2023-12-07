@@ -33,10 +33,10 @@ class PrescriptionType(enum.Enum):
     REGULAR = "REGULAR"
 
 
-class PrescriptionDosageType(enum.Enum):
-    REGULAR = "REGULAR"
-    TITRATED = "TITRATED"
-    PRN = "PRN"
+class PrescriptionDosageType(models.TextChoices):
+    REGULAR = "REGULAR", "REGULAR"
+    TITRATED = "TITRATED", "TITRATED"
+    PRN = "PRN", "PRN"
 
 
 def generate_choices(enum_class):
@@ -101,7 +101,7 @@ class Prescription(BaseModel):
     base_dosage = models.CharField(max_length=100, blank=True, null=True)
     dosage_type = models.CharField(
         max_length=100,
-        choices=generate_choices(PrescriptionDosageType),
+        choices=PrescriptionDosageType.choices,
         default=PrescriptionDosageType.REGULAR.value,
     )
 
