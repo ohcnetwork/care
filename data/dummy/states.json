@@ -64,15 +64,6 @@
   },
   {
     "model": "users.ward",
-    "pk": 218,
-    "fields": {
-      "local_body": 902,
-      "name": "KAPPUMALA",
-      "number": 5
-    }
-  },
-  {
-    "model": "users.ward",
     "pk": 5896,
     "fields": {
       "local_body": 95,
