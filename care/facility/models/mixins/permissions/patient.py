@@ -124,53 +124,11 @@ class ConsultationRelatedPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_read_permission(self, request):
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and request.user in self.patient.facility.users.all()
-            )
-            or request.user in (self.assigned_to, self.patient.assigned_to)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        return True
 
     def has_object_update_permission(self, request):
         if request.user.user_type in READ_ONLY_USER_TYPES:
             return False
         if request.user.user_type < User.TYPE_VALUE_MAP["Nurse"]:
             return False
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and self.patient.facility == request.user.home_facility
-            )
-            or request.user in (self.assigned_to, self.patient.assigned_to)
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        return True
