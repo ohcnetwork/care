@@ -15,7 +15,7 @@ from rest_framework import exceptions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -334,10 +334,28 @@ class AssetViewSet(
                     "middleware_hostname": middleware_hostname,
                 }
             )
-
             asset_class.validate_action(action)
-            result = asset_class.handle_action(action)
+            result = asset_class.handle_action(
+                action,
+                {
+                    "username": request.user.username,
+                    "asset_id": asset.external_id,
+                },
+            )
             return Response({"result": result}, status=status.HTTP_200_OK)
+
+        except PermissionDenied as e:
+            return Response(
+                {
+                    "message": e.detail.get("message", None),
+                    "username": e.detail.get("username", None),
+                    "firstName": e.detail.get("firstName", None),
+                    "lastName": e.detail.get("lastName", None),
+                    "role": e.detail.get("role", None),
+                    "homeFacility": e.detail.get("homeFacility", None),
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 

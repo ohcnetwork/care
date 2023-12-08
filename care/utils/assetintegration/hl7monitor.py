@@ -19,7 +19,7 @@ class HL7MonitorAsset(BaseAssetIntegration):
                 dict((key, f"{key} not found in asset metadata") for key in e.args)
             )
 
-    def handle_action(self, action):
+    def handle_action(self, action, verifcation_data: dict = None):
         action_type = action["type"]
 
         if action_type == self.HL7MonitorActions.GET_VITALS.value:
