@@ -29,7 +29,10 @@ class OnvifAsset(BaseAssetIntegration):
     def handle_action(self, action):
         action_type = action["type"]
         action_data = action.get("data", {})
-
+        allowed_action_data = ["x", "y", "zoom"]
+        action_data = {
+            key: action_data[key] for key in action_data if key in allowed_action_data
+        }
         request_body = {
             "hostname": self.host,
             "port": 80,
@@ -55,3 +58,41 @@ class OnvifAsset(BaseAssetIntegration):
             return self.api_post(self.get_url("relativeMove"), request_body)
 
         raise ValidationError({"action": "invalid action type"})
+
+    def validate_action(self, action):
+        from care.facility.models.bed import AssetBed
+
+        action_type = action["type"]
+        action_data = action.get("data", {})
+        boundary_preset_id = action_data.get("id", None)
+
+        if (
+            not boundary_preset_id
+            or action_type != self.OnvifActions.RELATIVE_MOVE.value
+        ):
+            return
+
+        boundary_preset = AssetBed.objects.filter(
+            external_id=boundary_preset_id
+        ).first()
+
+        if (
+            not boundary_preset
+            or not action_data.get("camera_state", None)
+            or not action_data["camera_state"].get("x", None)
+            or not action_data["camera_state"].get("y", None)
+        ):
+            raise ValidationError({"action": "invalid action type"})
+
+        boundary_range = boundary_preset.meta.get("range", None)
+        camera_state = action_data["camera_state"]
+
+        if (
+            (camera_state["x"] + action_data["x"] < boundary_range["min_x"])
+            or (camera_state["x"] + action_data["x"] > boundary_range["max_x"])
+            or (camera_state["y"] + action_data["y"] < boundary_range["min_y"])
+            or (camera_state["y"] + action_data["y"] > boundary_range["max_y"])
+        ):
+            raise ValidationError({"action": "invalid action type"})
+
+        return
