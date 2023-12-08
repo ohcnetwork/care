@@ -104,7 +104,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
             facility=cls.facility,
             created_by=cls.user,
             suggestion="A",
-            admission_date=now(),
+            encounter_date=now(),
         )
 
     def setUp(self):
