@@ -31,8 +31,8 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_CONSULTATION_STATUS_CHOICES,
     REVERSE_DISCHARGE_REASON_CHOICES,
+    REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
@@ -515,7 +515,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "created_date": "Date of Registration",
         "created_date__time": "Time of Registration",
         # Last Consultation Details
-        "last_consultation__consultation_status": "Status during consultation",
+        "last_consultation__route_to_facility": "Route to Facility",
         "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of first consultation",
         # Diagnosis Details
@@ -555,8 +555,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "provisional_diagnoses": format_diagnoses,
         "differential_diagnoses": format_diagnoses,
         "confirmed_diagnoses": format_diagnoses,
-        "last_consultation__consultation_status": (
-            lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
+        "last_consultation__route_to_facility": (
+            lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
         "last_consultation__discharge_reason": (
@@ -689,7 +689,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
         "facilitypatientstatshistory__num_patients_visited": "Vistited Patients",
         "facilitypatientstatshistory__num_patients_home_quarantine": "Home Quarantined Patients",
         "facilitypatientstatshistory__num_patients_isolation": "Patients Isolated",
-        "facilitypatientstatshistory__num_patient_referred": "Patients Reffered",
+        "facilitypatientstatshistory__num_patient_referred": "Patients Referred",
         "facilitypatientstatshistory__num_patient_confirmed_positive": "Patients Confirmed Positive",
     }
 
@@ -713,6 +713,9 @@ class PatientMobileOTP(BaseModel):
 class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
+    )
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=True, blank=True
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False

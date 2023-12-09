@@ -23,6 +23,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.doctor = cls.create_user(
             "doctor", cls.district, home_facility=cls.facility, user_type=15
@@ -30,19 +31,42 @@ class TestPatientConsultation(TestUtils, APITestCase):
 
     def get_default_data(self):
         return {
+            "route_to_facility": 10,
             "symptoms": [1],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-            "verified_by": self.doctor.id,
+            "treating_physician": self.doctor.id,
+            "create_diagnoses": [
+                {
+                    "diagnosis": ICD11Diagnosis.objects.first().id,
+                    "is_principal": False,
+                    "verification_status": ConditionVerificationStatus.CONFIRMED,
+                }
+            ],
         }
 
     def get_url(self, consultation=None):
         if consultation:
             return f"/api/v1/consultation/{consultation.external_id}/"
         return "/api/v1/consultation/"
+
+    def create_route_to_facility_consultation(
+        self, patient=None, route_to_facility=10, **kwargs
+    ):
+        patient = patient or self.create_patient(self.district, self.facility)
+        data = self.get_default_data().copy()
+        kwargs.update(
+            {
+                "patient": patient.external_id,
+                "facility": self.facility.external_id,
+                "route_to_facility": route_to_facility,
+            }
+        )
+        data.update(kwargs)
+        return self.client.post(self.get_url(), data, format="json")
 
     def create_admission_consultation(self, patient=None, **kwargs):
         patient = patient or self.create_patient(self.district, self.facility)
@@ -51,13 +75,6 @@ class TestPatientConsultation(TestUtils, APITestCase):
             {
                 "patient": patient.external_id,
                 "facility": self.facility.external_id,
-                "create_diagnoses": [
-                    {
-                        "diagnosis": ICD11Diagnosis.objects.first().id,
-                        "is_principal": False,
-                        "verification_status": ConditionVerificationStatus.CONFIRMED,
-                    }
-                ],
             }
         )
         data.update(kwargs)
@@ -82,13 +99,13 @@ class TestPatientConsultation(TestUtils, APITestCase):
             f"{self.get_url(consultation)}discharge_patient/", kwargs, "json"
         )
 
-    def test_create_consultation_verified_by_invalid_user(self):
+    def test_create_consultation_treating_physician_invalid_user(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
             admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.update_consultation(
-            consultation, verified_by=self.doctor.id, suggestion="A"
+            consultation, treating_physician=self.doctor.id, suggestion="A"
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -277,6 +294,40 @@ class TestPatientConsultation(TestUtils, APITestCase):
             referred_to_external=referred_to_external,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_route_to_facility_referred_from_facility_empty(self):
+        res = self.create_route_to_facility_consultation(route_to_facility=20)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_route_to_facility_referred_from_facility_external(self):
+        res = self.create_route_to_facility_consultation(
+            route_to_facility=20, referred_from_facility_external="Test"
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_route_to_facility_referred_from_facility(self):
+        res = self.create_route_to_facility_consultation(
+            route_to_facility=20, referred_from_facility=self.facility.external_id
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_route_to_facility_referred_from_facility_and_external_together(self):
+        res = self.create_route_to_facility_consultation(
+            route_to_facility=20,
+            referred_from_facility="123",
+            referred_from_facility_external="Test",
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_route_to_facility_transfer_within_facility_empty(self):
+        res = self.create_route_to_facility_consultation(route_to_facility=30)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_route_to_facility_transfer_within_facility(self):
+        res = self.create_route_to_facility_consultation(
+            route_to_facility=30, transferred_from_location=self.location.external_id
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_medico_legal_case(self):
         consultation = self.create_admission_consultation(

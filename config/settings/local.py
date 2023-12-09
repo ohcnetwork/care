@@ -1,5 +1,8 @@
 from .base import *  # noqa
 
+# https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
+CORS_ORIGIN_ALLOW_ALL = True
+
 # WhiteNoise
 # ------------------------------------------------------------------------------
 # http://whitenoise.evans.io/en/latest/django.html#using-whitenoise-in-development

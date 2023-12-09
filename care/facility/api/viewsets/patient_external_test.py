@@ -143,6 +143,12 @@ class PatientExternalTestViewSet(
             raise ValidationError({"sample_tests": "No Data was provided"})
         if not isinstance(request.data["sample_tests"], list):
             raise ValidationError({"sample_tests": "Data should be provided as a list"})
+
+        # check if the user is from same district
+        for data in request.data["sample_tests"]:
+            if request.user.district != data["district"]:
+                raise ValidationError({"Error": "User must belong to same district"})
+
         errors = []
         counter = 0
         ser_objects = []

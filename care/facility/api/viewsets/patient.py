@@ -48,11 +48,13 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
+from care.facility.models.notification import Notification
 from care.facility.models.patient_base import DISEASE_STATUS_DICT
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
@@ -624,6 +626,10 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
         return super(PatientSearchViewSet, self).list(request, *args, **kwargs)
 
 
+class PatientNotesFilterSet(filters.FilterSet):
+    consultation = filters.CharFilter(field_name="consultation__external_id")
+
+
 class PatientNotesViewSet(
     ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
 ):
@@ -634,6 +640,8 @@ class PatientNotesViewSet(
     )
     serializer_class = PatientNotesSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PatientNotesFilterSet
 
     def get_queryset(self):
         user = self.request.user
@@ -665,8 +673,35 @@ class PatientNotesViewSet(
             raise ValidationError(
                 {"patient": "Only active patients data can be updated"}
             )
-        return serializer.save(
+
+        instance = serializer.save(
             facility=patient.facility,
             patient=patient,
+            consultation=patient.last_consultation,
             created_by=self.request.user,
         )
+
+        message = {
+            "facility_id": str(patient.facility.external_id),
+            "patient_id": str(patient.external_id),
+            "from": "patient/doctor_notes/create",
+        }
+
+        NotificationGenerator(
+            event=Notification.Event.PUSH_MESSAGE,
+            caused_by=self.request.user,
+            caused_object=instance,
+            message=message,
+            facility=patient.facility,
+            generate_for_facility=True,
+        ).generate()
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_NOTE_ADDED,
+            caused_by=self.request.user,
+            caused_object=instance,
+            facility=patient.facility,
+            generate_for_facility=True,
+        ).generate()
+
+        return instance
