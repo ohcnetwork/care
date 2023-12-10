@@ -123,6 +123,7 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
         summary_obj.is_low = current_quantity < current_min_quantity
 
+        summary_obj.min_quantity = current_quantity if current_quantity < current_min_quantity else current_min_quantity
         validated_data["current_stock"] = current_quantity
 
         instance = super().create(validated_data)
@@ -207,6 +208,7 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
                 facility=validated_data["facility"], item=item
             )
             summary_obj.is_low = summary_obj.quantity < validated_data["min_quantity"]
+            summary_obj.min_quantity = summary_obj.quantity if summary_obj.quantity < validated_data["min_quantity"] else validated_data["min_quantity"]
             summary_obj.save()
         except FacilityInventorySummary.DoesNotExist:
             pass
@@ -225,6 +227,7 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
                 facility=instance.facility, item=item
             )
             summary_obj.is_low = summary_obj.quantity < validated_data["min_quantity"]
+            summary_obj.min_quantity = summary_obj.quantity if summary_obj.quantity < validated_data["min_quantity"] else validated_data["min_quantity"]
             summary_obj.save()
         except FacilityInventorySummary.DoesNotExist:
             pass

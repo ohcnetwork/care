@@ -135,6 +135,9 @@ class FacilityInventorySummary(FacilityBaseModel, FacilityRelatedPermissionMixin
         default=0
     )  # Automatically Set // NOT EDITABLE BY ADMIN
     is_low = models.BooleanField(default=False)
+    min_quantity = models.FloatField(
+        default=0
+    )
 
     class Meta:
         constraints = [
