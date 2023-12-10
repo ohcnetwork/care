@@ -11,7 +11,6 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         cls.district = cls.create_district(cls.state)
         cls.local_body = cls.create_local_body(cls.district)
         cls.ward = cls.create_ward(cls.local_body)
-        cls.ward1 = cls.create_ward(cls.local_body)
         cls.user = cls.create_super_user("su", cls.district)
 
     def test_no_data_upload(self):
@@ -33,9 +32,9 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
                     "gender": "m",
                     "mobile_number": 8888888888,
                     "address": "Upload test address",
-                    "ward": 7,
-                    "local_body": "Poothrikka",
-                    "local_body_type": "grama panchayath",
+                    "ward": self.ward.id,
+                    "local_body": str(self.local_body.name),
+                    "local_body_type": "municipality",
                     "source": "Secondary contact aparna",
                     "sample_collection_date": "2020-10-14",
                     "result_date": "2020-10-14",
