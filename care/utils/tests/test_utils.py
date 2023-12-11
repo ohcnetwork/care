@@ -21,6 +21,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -166,6 +167,13 @@ class TestUtils:
         if home_facility := kwargs.get("home_facility"):
             cls.link_user_with_facility(user, home_facility, user)
         return user
+
+    @classmethod
+    def create_ward(cls, local_body) -> Ward:
+        ward = Ward.objects.create(
+            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
+        )
+        return ward
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:

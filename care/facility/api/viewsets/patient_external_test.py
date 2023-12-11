@@ -146,7 +146,7 @@ class PatientExternalTestViewSet(
 
         # check if the user is from same district
         for data in request.data["sample_tests"]:
-            if request.user.district != data["district"]:
+            if str(request.user.district) != data["district"]:
                 raise ValidationError({"Error": "User must belong to same district"})
 
         errors = []

@@ -1,0 +1,92 @@
+[
+  {
+    "model": "users.state",
+    "pk": 1,
+    "fields": {
+      "name": "Kerala"
+    }
+  },
+  {
+    "model": "users.district",
+    "pk": 5,
+    "fields": {
+      "state": 1,
+      "name": "Kottayam"
+    }
+  },
+  {
+    "model": "users.district",
+    "pk": 7,
+    "fields": {
+      "state": 1,
+      "name": "Ernakulam"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 6,
+    "fields": {
+      "district": 7,
+      "name": "Aikaranad Grama Panchayat, Ernakulam District",
+      "body_type": 1,
+      "localbody_code": "G071005"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 12,
+    "fields": {
+      "district": 7,
+      "name": "Alangad Block Panchayat, Ernakulam District",
+      "body_type": 2,
+      "localbody_code": "B070200"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 20,
+    "fields": {
+      "district": 7,
+      "name": "Aluva Municipality, Ernakulam District",
+      "body_type": 10,
+      "localbody_code": "M070800"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 95,
+    "fields": {
+      "district": 5,
+      "name": "Changanassery Municipality, Kottayam District",
+      "body_type": 10,
+      "localbody_code": "M050300"
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 5896,
+    "fields": {
+      "local_body": 95,
+      "name": "ANNAPOORNESWARI TEMPLE",
+      "number": 2
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 6276,
+    "fields": {
+      "local_body": 20,
+      "name": "MANA",
+      "number": 4
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 15162,
+    "fields": {
+      "local_body": 6,
+      "name": "PAZHAMTHOTTAM",
+      "number": 1
+    }
+  }
+]
