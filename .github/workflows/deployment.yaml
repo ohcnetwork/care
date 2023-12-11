@@ -261,7 +261,7 @@ jobs:
       url: https://care-staging-api.ohc.network/
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/care-staging-gcp
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -307,7 +307,7 @@ jobs:
       url: https://careapi.mn.gov.in
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/mn-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -353,7 +353,7 @@ jobs:
       url: https://careapi.karnataka.care
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/ka-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -399,7 +399,7 @@ jobs:
       url: https://careapi.assam.gov.in
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/as-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -445,7 +445,7 @@ jobs:
       url: https://careapi.sikkim.gov.in
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/sk-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -491,7 +491,7 @@ jobs:
       url: https://careapi.nagaland.gov.in
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/nl-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -537,7 +537,7 @@ jobs:
       url: https://careapi.meghealth.gov.in
     steps:
       - name: Checkout Kube Config
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: coronasafe/ml-care-infra
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
