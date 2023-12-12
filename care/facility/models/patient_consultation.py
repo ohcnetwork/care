@@ -16,6 +16,7 @@ from care.facility.models.mixins.permissions.patient import (
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
+    NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
@@ -133,6 +134,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     discharge_reason = models.CharField(
         choices=DISCHARGE_REASON_CHOICES,
         max_length=4,
+        default=None,
+        blank=True,
+        null=True,
+    )
+    new_discharge_reason = models.SmallIntegerField(
+        choices=NEW_DISCHARGE_REASON_CHOICES,
         default=None,
         blank=True,
         null=True,
