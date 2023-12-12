@@ -33,6 +33,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
+    NewDiseaseReasonEnum,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
@@ -462,7 +463,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
             if consultation:
                 consultation.discharge_date = now()
-                consultation.discharge_reason = "REF"
+                consultation.new_discharge_reason = NewDiseaseReasonEnum.REFERRED
                 consultation.current_bed = None
                 consultation.save()
 

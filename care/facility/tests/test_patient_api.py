@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models.patient_base import NewDiseaseReasonEnum
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -289,7 +290,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             suggestion="A",
             admission_date=now(),
             discharge_date=None,  # Patient is currently admitted
-            discharge_reason=None,
+            new_discharge_reason=None,
         )
         cls.bed = cls.create_bed(cls.facility, cls.location)
         cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
@@ -317,7 +318,9 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         self.assertEqual(self.patient.facility, self.destination_facility)
 
         # Assert the consultation discharge reason and date are set correctly
-        self.assertEqual(self.consultation.discharge_reason, "REF")
+        self.assertEqual(
+            self.consultation.new_discharge_reason, NewDiseaseReasonEnum.REFERRED
+        )
         self.assertIsNotNone(self.consultation.discharge_date)
 
     def test_transfer_with_active_consultation_same_facility(self):
