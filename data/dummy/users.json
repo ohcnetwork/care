@@ -1,124 +1,5 @@
 [
     {
-        "model": "users.state",
-        "pk": 1,
-        "fields": {
-            "name": "Kerala"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 1,
-        "fields": {
-            "state": 1,
-            "name": "Thiruvananthapuram"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 2,
-        "fields": {
-            "state": 1,
-            "name": "Kollam"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 3,
-        "fields": {
-            "state": 1,
-            "name": "Pathanamthitta"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 4,
-        "fields": {
-            "state": 1,
-            "name": "Alappuzha"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 5,
-        "fields": {
-            "state": 1,
-            "name": "Kottayam"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 6,
-        "fields": {
-            "state": 1,
-            "name": "Idukki"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 7,
-        "fields": {
-            "state": 1,
-            "name": "Ernakulam"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 8,
-        "fields": {
-            "state": 1,
-            "name": "Thrissur"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 9,
-        "fields": {
-            "state": 1,
-            "name": "Palakkad"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 10,
-        "fields": {
-            "state": 1,
-            "name": "Malappuram"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 11,
-        "fields": {
-            "state": 1,
-            "name": "Kozhikode"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 12,
-        "fields": {
-            "state": 1,
-            "name": "Wayanad"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 13,
-        "fields": {
-            "state": 1,
-            "name": "Kannur"
-        }
-    },
-    {
-        "model": "users.district",
-        "pk": 14,
-        "fields": {
-            "state": 1,
-            "name": "Kasargode"
-        }
-    },
-    {
         "model": "users.user",
         "pk": 1,
         "fields": {
@@ -136,7 +17,7 @@
             "created_by": null,
             "ward": null,
             "local_body": null,
-            "district": 1,
+            "district": 5,
             "state": 1,
             "phone_number": "+919696969696",
             "alt_phone_number": null,
