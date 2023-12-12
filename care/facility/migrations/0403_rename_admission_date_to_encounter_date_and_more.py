@@ -7,7 +7,7 @@ from django.db.models import F
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0401_merge_20231208_0054"),
+        ("facility", "0402_patientconsultation_new_discharge_reason"),
     ]
 
     def clean_encounter_date(apps, schema_editor):
