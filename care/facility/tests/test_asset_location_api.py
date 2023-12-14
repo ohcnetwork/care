@@ -36,6 +36,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Test Asset Location",
             "middleware_address": "example.com",
+            "location_type": "ICU",
         }
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/",
@@ -51,6 +52,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Updated Test Asset Location",
             "middleware_address": "updated.example.com",
+            "location_type": "WARD",
         }
         response = self.client.patch(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
@@ -66,6 +68,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Test Asset Location",
             "middleware_address": "https://invalid.middleware.///",
+            "location_type": "OTHER",
         }
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/",
