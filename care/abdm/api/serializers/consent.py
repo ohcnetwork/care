@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
@@ -23,6 +24,7 @@ class ConsentArtefactSerializer(serializers.ModelSerializer):
 
 class ConsentRequestSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
+    patient_abha_object = AbhaNumberSerializer(source="patient_abha", read_only=True)
     requester = UserBaseMinimumSerializer(read_only=True)
     consent_artefacts = ConsentArtefactSerializer(many=True, read_only=True)
 
