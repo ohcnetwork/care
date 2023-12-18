@@ -27,6 +27,9 @@ class ConsentRequestFilter(filters.FilterSet):
             "updated_date",
         )
     )
+    facility = filters.UUIDFilter(
+        field_name="patient_abha.patientregistration.facility__external_id"
+    )
 
     class Meta:
         model = ConsentRequest
@@ -158,6 +161,9 @@ class ConsentCallbackViewSet(GenericViewSet):
 
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if "notification" not in data:
+            return Response(status=status.HTTP_202_ACCEPTED)
 
         if data["notification"]["status"] == "DENIED":
             consent.status = "DENIED"
