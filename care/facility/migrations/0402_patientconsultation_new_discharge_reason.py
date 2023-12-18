@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0402_alter_dailyround_rounds_type"),
+        ("facility", "0401_merge_20231208_0054"),
     ]
 
     operations = [
