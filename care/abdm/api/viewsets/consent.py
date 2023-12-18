@@ -165,9 +165,7 @@ class ConsentCallbackViewSet(GenericViewSet):
         if "notification" not in data:
             return Response(status=status.HTTP_202_ACCEPTED)
 
-        if data["notification"]["status"] == "DENIED":
-            consent.status = "DENIED"
-        else:
+        if data["notification"]["status"] != "DENIED":
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -182,6 +180,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
                 consent_artefact.status = data["notification"]["status"]
                 consent_artefact.save()
+        consent.status = data["notification"]["status"]
         consent.save()
 
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -206,9 +205,7 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] == "DENIED":
-            consent.status = "DENIED"
-        else:
+        if data["notification"]["status"] != "DENIED":
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -223,6 +220,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
                 consent_artefact.status = data["notification"]["status"]
                 consent_artefact.save()
+        consent.status = data["notification"]["status"]
         consent.save()
 
         Gateway().consents__hiu__on_notify(consent, data["requestId"])
