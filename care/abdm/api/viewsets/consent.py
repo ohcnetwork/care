@@ -28,7 +28,7 @@ class ConsentRequestFilter(filters.FilterSet):
         )
     )
     facility = filters.UUIDFilter(
-        field_name="patient_abha.patientregistration.facility__external_id"
+        field_name="patient_abha__patientregistration__facility__external_id"
     )
 
     class Meta:
