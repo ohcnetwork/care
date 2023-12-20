@@ -64,10 +64,6 @@ from care.facility.api.viewsets.prescription import (
     MedibaseViewSet,
     MedicineAdministrationViewSet,
 )
-from care.facility.api.viewsets.prescription_supplier import (
-    PrescriptionSupplierConsultationViewSet,
-    PrescriptionSupplierViewSet,
-)
 from care.facility.api.viewsets.resources import (
     ResourceRequestCommentViewSet,
     ResourceRequestViewSet,
@@ -134,9 +130,6 @@ router.register("external_result", PatientExternalTestViewSet)
 router.register("bed", BedViewSet)
 router.register("assetbed", AssetBedViewSet)
 router.register("consultationbed", ConsultationBedViewSet)
-
-router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
-router.register("pharmacy/prescription", PrescriptionSupplierViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
