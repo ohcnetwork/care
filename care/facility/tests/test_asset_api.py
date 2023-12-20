@@ -1,31 +1,28 @@
-from django.utils.timezone import datetime, make_aware
+from django.utils.timezone import now, timedelta
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
-from care.facility.models import Asset, AssetLocation, Bed, User
-from care.utils.tests.test_base import TestBase
+from care.facility.models import Asset, Bed
+from care.utils.tests.test_utils import TestUtils
 
 
-class AssetViewSetTestCase(TestBase, APITestCase):
-    asset_id = None
-
+class AssetViewSetTestCase(TestUtils, APITestCase):
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.factory = APIRequestFactory()
-        state = cls.create_state()
-        district = cls.create_district(state=state)
-        cls.user = cls.create_user(district=district, username="test user")
-        cls.facility = cls.create_facility(district=district, user=cls.user)
-        cls.asset1_location = AssetLocation.objects.create(
-            name="asset1 location", location_type=1, facility=cls.facility
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.patient = cls.create_patient(
+            cls.district, cls.facility, local_body=cls.local_body
         )
-        cls.asset = Asset.objects.create(
-            name="Test Asset",
-            current_location=cls.asset1_location,
-            asset_type=50,
-            warranty_amc_end_of_validity=make_aware(datetime(2021, 4, 1)),
-        )
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.asset = self.create_asset(self.asset_location)
 
     def test_list_assets(self):
         response = self.client.get("/api/v1/asset/")
@@ -34,9 +31,9 @@ class AssetViewSetTestCase(TestBase, APITestCase):
     def test_create_asset(self):
         sample_data = {
             "name": "Test Asset",
-            "current_location": self.asset1_location.pk,
+            "current_location": self.asset_location.pk,
             "asset_type": 50,
-            "location": self.asset1_location.external_id,
+            "location": self.asset_location.external_id,
         }
         response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -44,9 +41,9 @@ class AssetViewSetTestCase(TestBase, APITestCase):
     def test_create_asset_with_warranty_past(self):
         sample_data = {
             "name": "Test Asset",
-            "current_location": self.asset1_location.pk,
+            "current_location": self.asset_location.pk,
             "asset_type": 50,
-            "location": self.asset1_location.external_id,
+            "location": self.asset_location.external_id,
             "warranty_amc_end_of_validity": "2000-04-01",
         }
         response = self.client.post("/api/v1/asset/", sample_data)
@@ -59,9 +56,9 @@ class AssetViewSetTestCase(TestBase, APITestCase):
     def test_update_asset(self):
         sample_data = {
             "name": "Updated Test Asset",
-            "current_location": self.asset1_location.pk,
+            "current_location": self.asset_location.pk,
             "asset_type": 50,
-            "location": self.asset1_location.external_id,
+            "location": self.asset_location.external_id,
         }
         response = self.client.patch(
             f"/api/v1/asset/{self.asset.external_id}/", sample_data
@@ -95,8 +92,10 @@ class AssetViewSetTestCase(TestBase, APITestCase):
         self.assertEqual(Asset.objects.filter(pk=self.asset.pk).exists(), True)
 
     def test_delete_asset(self):
-        self.user.user_type = User.TYPE_VALUE_MAP["DistrictAdmin"]
-        self.user.save()
+        user = self.create_user(
+            "distadmin", self.district, home_facility=self.facility, user_type=30
+        )
+        self.client.force_authenticate(user=user)
         response = self.client.delete(
             f"/api/v1/asset/{self.asset.external_id}/",
         )
@@ -105,22 +104,22 @@ class AssetViewSetTestCase(TestBase, APITestCase):
 
     def test_asset_filter_in_use_by_consultation(self):
         asset1 = Asset.objects.create(
-            name="asset1", current_location=self.asset1_location
+            name="asset1", current_location=self.asset_location
         )
         asset2 = Asset.objects.create(
-            name="asset2", current_location=self.asset1_location
+            name="asset2", current_location=self.asset_location
         )
 
-        consultation = self.create_consultation()
+        consultation = self.create_consultation(self.patient, self.facility)
         bed = Bed.objects.create(
-            name="bed1", location=self.asset1_location, facility=self.facility
+            name="bed1", location=self.asset_location, facility=self.facility
         )
         self.client.post(
             "/api/v1/consultationbed/",
             {
                 "consultation": consultation.external_id,
                 "bed": bed.external_id,
-                "start_date": datetime.now().isoformat(),
+                "start_date": now().isoformat(),
                 "assets": [asset1.external_id, asset2.external_id],
             },
         )
@@ -132,3 +131,37 @@ class AssetViewSetTestCase(TestBase, APITestCase):
         response = self.client.get("/api/v1/asset/?in_use_by_consultation=false")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
+
+    def test_asset_filter_warranty_amc_end_of_validity(self):
+        asset1 = Asset.objects.create(
+            name="asset1",
+            current_location=self.asset_location,
+            warranty_amc_end_of_validity=now().date(),
+        )
+        asset2 = Asset.objects.create(
+            name="asset2",
+            current_location=self.asset_location,
+            warranty_amc_end_of_validity=now().date() + timedelta(days=1),
+        )
+
+        response = self.client.get(
+            f"/api/v1/asset/?warranty_amc_end_of_validity_before={now().date() + timedelta(days=2)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(
+            str(asset1.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+        self.assertIn(
+            str(asset2.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+
+        response = self.client.get(
+            f"/api/v1/asset/?warranty_amc_end_of_validity_after={now().date() + timedelta(days=1)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(
+            str(asset2.external_id), [asset["id"] for asset in response.data["results"]]
+        )
+        self.assertNotIn(
+            str(asset1.external_id), [asset["id"] for asset in response.data["results"]]
+        )

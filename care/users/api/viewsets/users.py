@@ -55,6 +55,9 @@ class UserFilterSet(filters.FilterSet):
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
+    home_facility = filters.UUIDFilter(
+        field_name="home_facility__external_id", lookup_expr="exact"
+    )
 
     def get_user_type(
         self,
@@ -146,6 +149,12 @@ class UserViewSet(
             queryset = queryset.filter(
                 state=request.user.state,
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
+                is_superuser=False,
+            )
+        elif request.user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            queryset = queryset.filter(
+                district=request.user.district,
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
@@ -249,6 +258,15 @@ class UserViewSet(
 
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        # ensure that district admin only able to delete in the same district
+        if (
+            requesting_user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and user.district_id != requesting_user.district_id
+        ):
+            raise ValidationError(
+                {"facility": "Cannot unlink User's Home Facility from other district"}
+            )
 
         user.home_facility = None
         user.save(update_fields=["home_facility"])

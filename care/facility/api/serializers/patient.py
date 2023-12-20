@@ -3,7 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.utils.timezone import localtime, make_aware, now
+from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
@@ -27,6 +27,7 @@ from care.facility.models import (
     PatientNotes,
     PatientRegistration,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
@@ -454,10 +455,22 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         self.instance.facility = self.validated_data["facility"]
-        PatientConsultation.objects.filter(
-            patient=self.instance, discharge_date__isnull=True
-        ).update(discharge_date=localtime(now()))
-        self.instance.save()
+
+        with transaction.atomic():
+            consultation = PatientConsultation.objects.filter(
+                patient=self.instance, discharge_date__isnull=True
+            ).first()
+
+            if consultation:
+                consultation.discharge_date = now()
+                consultation.discharge_reason = "REF"
+                consultation.current_bed = None
+                consultation.save()
+
+                ConsultationBed.objects.filter(
+                    consultation=consultation, end_date__isnull=True
+                ).update(end_date=now())
+                self.instance.save()
 
 
 class PatientNotesEditSerializer(serializers.ModelSerializer):
@@ -474,6 +487,12 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
     edits = PatientNotesEditSerializer(many=True, read_only=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(),
+        required=False,
+        allow_null=True,
+        read_only=True,
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -531,6 +550,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "id",
             "note",
             "facility",
+            "consultation",
             "created_by_object",
             "user_type",
             "created_date",

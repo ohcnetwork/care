@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
+from care.utils.models.validators import dosage_validator
 
 
 class FrequencyEnum(enum.Enum):
@@ -92,7 +93,9 @@ class Prescription(BaseModel):
         blank=True,
         null=True,
     )
-    dosage = models.CharField(max_length=100, blank=True, null=True)
+    dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
+    )
 
     is_prn = models.BooleanField(default=False)
 
@@ -107,7 +110,9 @@ class Prescription(BaseModel):
 
     # prn fields
     indicator = models.TextField(blank=True, null=True)
-    max_dosage = models.CharField(max_length=100, blank=True, null=True)
+    max_dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
+    )
     min_hours_between_doses = models.IntegerField(blank=True, null=True)
 
     notes = models.TextField(default="", blank=True)
@@ -155,6 +160,13 @@ class MedicineAdministration(BaseModel):
     )
     administered_date = models.DateTimeField(
         null=False, blank=False, default=timezone.now
+    )
+    archived_on = models.DateTimeField(null=True, blank=True)
+    archived_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="+",
     )
 
     def __str__(self):

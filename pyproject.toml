@@ -1,19 +1,19 @@
 [tool.coverage.run]
 branch = true
-source = ["care", "config"]
+source = ["care"]
 parallel = true
 concurrency = ["multiprocessing"]
-
-
-[tool.coverage.report]
+relative_files = true
 omit = [
   "*/tests/*",
-  "*/migrations/*",
+  "*/migrations*/*",
   "*/asgi.py",
   "*/wsgi.py",
   "manage.py",
   ".venv/*"
 ]
+
+[tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",
   "raise NotImplementedError"

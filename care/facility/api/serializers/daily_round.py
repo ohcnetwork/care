@@ -17,7 +17,11 @@ from care.facility.models import (
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import (
+    CURRENT_HEALTH_CHOICES,
+    SYMPTOM_CHOICES,
+    SuggestionChoices,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -180,14 +184,24 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         # Authorisation Checks End
 
         with transaction.atomic():
+            consultation = get_object_or_404(
+                get_consultation_queryset(self.context["request"].user).filter(
+                    id=validated_data["consultation"].id
+                )
+            )
+            if (
+                validated_data.get("rounds_type")
+                == DailyRound.RoundsType.TELEMEDICINE.value
+                and consultation.suggestion != SuggestionChoices.DC
+            ):
+                raise ValidationError(
+                    {
+                        "rounds_type": "Telemedicine Rounds are only allowed for Domiciliary Care patients"
+                    }
+                )
             if "clone_last" in validated_data:
                 should_clone = validated_data.pop("clone_last")
                 if should_clone:
-                    consultation = get_object_or_404(
-                        get_consultation_queryset(self.context["request"].user).filter(
-                            id=validated_data["consultation"].id
-                        )
-                    )
                     last_objects = DailyRound.objects.filter(
                         consultation=consultation
                     ).order_by("-created_date")
@@ -211,7 +225,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                             "other_symptoms",
                             "physical_examination_info",
                             "other_details",
-                            "recommend_discharge",
                             "bp",
                             "pulse",
                             "resp",
@@ -291,8 +304,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 self.update_last_daily_round(daily_round_obj)
             return daily_round_obj
 
-    def validate(self, obj):
-        validated = super().validate(obj)
+    def validate(self, attrs):
+        validated = super().validate(attrs)
 
         if validated["consultation"].discharge_date:
             raise ValidationError(

@@ -39,6 +39,8 @@ SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
 )
+# https://github.com/adamchainz/django-cors-headers#cors_allowed_origins-sequencestr
+CORS_ALLOWED_ORIGINS = env.json("CORS_ALLOWED_ORIGINS", default=[])
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -96,15 +98,14 @@ LOGGING = {
 if SENTRY_DSN := env("SENTRY_DSN", default=""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
+        release=env("APP_VERSION", default="unknown"),
         environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
-        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=1.0),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0),
+        profiles_sample_rate=env.float("SENTRY_PROFILES_SAMPLE_RATE", default=0),
         integrations=[
-            LoggingIntegration(
-                level=env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO),
-                event_level=logging.ERROR,  # Capture info and above as breadcrumbs  # Send errors as events
-            ),
+            LoggingIntegration(event_level=logging.WARNING),
             DjangoIntegration(),
-            CeleryIntegration(),
+            CeleryIntegration(monitor_beat_tasks=True),
             RedisIntegration(),
         ],
     )

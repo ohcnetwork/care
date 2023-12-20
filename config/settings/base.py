@@ -95,7 +95,6 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "storages",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -254,8 +253,6 @@ X_FRAME_OPTIONS = "DENY"
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-trusted-origins
 CSRF_TRUSTED_ORIGINS = env.json("CSRF_TRUSTED_ORIGINS", default=[])
 
-# https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
-CORS_ORIGIN_ALLOW_ALL = True  # WARNING: This is not secure
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origin_regexes-sequencestr--patternstr
 # CORS_URLS_REGEX = r"^/api/.*$"
 
@@ -568,3 +565,7 @@ HCX_USERNAME = env("HCX_USERNAME", default="")
 HCX_PASSWORD = env("HCX_PASSWORD", default="")
 HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
 HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
+
+PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
+PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
+PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")

@@ -30,8 +30,12 @@ first time, it might take a while depending upon your internet speed and machine
 
             $ make up
 
-    2. Open a browser and go to `http://localhost:9000`
+    2. To load dummy data for testing run:
+        .. code-block:: bash
 
+            $ make load-dummy-data
+
+    2. Open a browser and go to `http://localhost:9000`
 
 - To stop the development environment:
     .. code-block:: bash
@@ -112,7 +116,7 @@ Pre-Commit is a package manager and tool for running and organising your git hoo
 * Install pre-commit
     pre-commit is installed while you run ::
 
-     pip install -r requirements/local.txt
+     pipenv install --categories "packages dev-packages"
 
 * Setup
     this installs all the git-hooks ::
@@ -177,6 +181,10 @@ To copy static files (css, js, images) into the care/care/media directory so tha
 ::
 
 $ python manage.py collectstatic
+
+To load dummy data for testing run::
+
+    $ python manage.py load_dummy_data
 
 
 Type checks
