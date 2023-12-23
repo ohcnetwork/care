@@ -110,9 +110,7 @@ class Prescription(BaseModel):
 
     # prn fields
     indicator = models.TextField(blank=True, null=True)
-    max_dosage = models.CharField(
-        max_length=100, blank=True, null=True, validators=[dosage_validator]
-    )
+    max_dosage = models.CharField(max_length=100, blank=True, null=True)
     min_hours_between_doses = models.IntegerField(blank=True, null=True)
 
     notes = models.TextField(default="", blank=True)
