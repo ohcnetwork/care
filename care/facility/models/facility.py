@@ -208,11 +208,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
-        "oxygen_capacity": "Oxygen Capacity",
         "phone_number": "Phone Number",
-        "type_b_cylinders": "B Type Oxygen Cylinder",
-        "type_c_cylinders": "C Type Oxygen Cylinder",
-        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
@@ -269,7 +265,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     area = models.IntegerField(choices=DOCTOR_TYPES)
-    count = models.IntegerField()
+    count = models.PositiveIntegerField()
 
     def __str__(self):
         return str(self.facility) + str(self.count)
@@ -316,6 +312,10 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "facilitycapacity__total_capacity": "Total Capacity",
         "facilitycapacity__current_capacity": "Current Capacity",
         "facilitycapacity__modified_date": "Updated Date",
+        "oxygen_capacity": "Oxygen Capacity",
+        "type_b_cylinders": "B Type Oxygen Cylinder",
+        "type_c_cylinders": "C Type Oxygen Cylinder",
+        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
     CSV_MAKE_PRETTY = {

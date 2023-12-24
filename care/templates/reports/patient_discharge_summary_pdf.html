@@ -78,10 +78,16 @@
         <span class="text-sm leading-5 font-medium text-gray-500">Decision after consultation:</span>
         {{consultation.get_suggestion_display|field_name_to_label}}
       </p>
+      {% if consultation.icu_admission_date %}
+        <p>
+          <span class="text-sm leading-5 font-medium text-gray-500">ICU Admission Date & Time:</span>
+          {{consultation.icu_admission_date}}
+        </p>
+      {% endif %}
       {% if consultation.suggestion == 'A' %}
       <p>
         <span class="text-sm leading-5 font-medium text-gray-500">Date of addmission:</span>
-        {{consultation.admission_date.date}}
+        {{consultation.encounter_date}}
       </p>
       {% elif consultation.suggestion == 'R' %}
       <p>

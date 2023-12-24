@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
@@ -15,6 +16,7 @@ from care.facility.models.mixins.permissions.patient import (
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
+    NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
@@ -126,12 +128,18 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     referred_by_external = models.TextField(default="", null=True, blank=True)
     is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
-    admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
+    encounter_date = models.DateTimeField(default=timezone.now, db_index=True)
     icu_admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     discharge_reason = models.CharField(
         choices=DISCHARGE_REASON_CHOICES,
         max_length=4,
+        default=None,
+        blank=True,
+        null=True,
+    )
+    new_discharge_reason = models.SmallIntegerField(
+        choices=NEW_DISCHARGE_REASON_CHOICES,
         default=None,
         blank=True,
         null=True,
@@ -229,7 +237,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
-        "admission_date": "Date of Admission",
+        "encounter_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
@@ -249,7 +257,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     }
 
     # CSV_DATATYPE_DEFAULT_MAPPING = {
-    #     "admission_date": (None, models.DateTimeField(),),
+    #     "encounter_date": (None, models.DateTimeField(),),
     #     "symptoms_onset_date": (None, models.DateTimeField(),),
     #     "symptoms": ("-", models.CharField(),),
     #     "category": ("-", models.CharField(),),
@@ -278,10 +286,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 check=~models.Q(suggestion=SuggestionChoices.R)
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
-            ),
-            models.CheckConstraint(
-                name="if_admitted",
-                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
             ),
         ]
 
