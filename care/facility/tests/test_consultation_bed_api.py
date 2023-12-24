@@ -242,8 +242,8 @@ class ConsultationBedApiTestCase(TestUtils, APITestCase):
             {"end_date": ["End date cannot be before the start date"]},
         )
 
-    def test_start_date_before_consultation_admission_date(self):
-        self.consultation.admission_date = timezone.now()
+    def test_start_date_before_consultation_encounter_date(self):
+        self.consultation.encounter_date = timezone.now()
         self.consultation.save()
         response = self.client.post(
             "/api/v1/consultationbed/",
