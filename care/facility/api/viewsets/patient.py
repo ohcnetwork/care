@@ -33,6 +33,7 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
+from care.facility.events.handler import create_consultation_event
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -674,11 +675,18 @@ class PatientNotesViewSet(
                 {"patient": "Only active patients data can be updated"}
             )
 
-        instance = serializer.save(
+        instance: PatientNotes = serializer.save(
             facility=patient.facility,
             patient=patient,
             consultation=patient.last_consultation,
             created_by=self.request.user,
+        )
+
+        create_consultation_event(
+            instance.consultation_id,
+            instance,
+            self.request.user.id,
+            instance.created_date,
         )
 
         message = {
