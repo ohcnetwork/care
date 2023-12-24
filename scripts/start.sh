@@ -28,8 +28,7 @@ until postgres_ready; do
 done
 >&2 echo 'PostgreSQL is available'
 
+python manage.py collectstatic --noinput
 
 export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
-python manage.py collectstatic --noinput
-python manage.py migrate
 newrelic-admin run-program gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
