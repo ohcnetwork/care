@@ -37,6 +37,7 @@ class DailyRound(PatientBaseModel):
         VENTILATOR = 100
         ICU = 200
         AUTOMATED = 300
+        TELEMEDICINE = 400
 
     RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
     RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
