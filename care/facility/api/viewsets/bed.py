@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -60,6 +60,7 @@ class BedViewSet(
     search_fields = ["name"]
     filterset_class = BedFilter
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -77,10 +78,11 @@ class BedViewSet(
             ]
             try:
                 Bed.objects.bulk_create(beds)
-            except IntegrityError as e:
-                raise DRFValidationError(
-                    detail="Bed with same name already exists in this location."
-                ) from e
+            except IntegrityError:
+                return Response(
+                    {"detail": "Bed with same name already exists in this location."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             return Response(status=status.HTTP_201_CREATED)
 
         self.perform_create(serializer)
