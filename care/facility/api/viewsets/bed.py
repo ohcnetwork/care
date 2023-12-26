@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import IntegrityError
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -74,7 +75,12 @@ class BedViewSet(
                 )
                 for i in range(number_of_beds)
             ]
-            Bed.objects.bulk_create(beds)
+            try:
+                Bed.objects.bulk_create(beds)
+            except IntegrityError as e:
+                raise DRFValidationError(
+                    detail="Bed with same name already exists in this location."
+                ) from e
             return Response(status=status.HTTP_201_CREATED)
 
         self.perform_create(serializer)
