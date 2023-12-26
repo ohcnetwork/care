@@ -21,6 +21,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -168,6 +169,13 @@ class TestUtils:
         return user
 
     @classmethod
+    def create_ward(cls, local_body) -> Ward:
+        ward = Ward.objects.create(
+            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
+        )
+        return ward
+
+    @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
         return cls.create_user(
             *args,
@@ -301,7 +309,7 @@ class TestUtils:
             "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
-            "admission_date": None,
+            "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
