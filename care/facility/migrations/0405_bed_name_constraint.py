@@ -27,7 +27,7 @@ def fix_duplicate_bed_names(apps, schema_editor):
             location=duplicate["location"], name=duplicate["name"]
         ).order_by("pk")
         for i, bed in enumerate(beds[1:], start=1):
-            bed.name = f"{bed.name} {i}"
+            bed.name = f"{bed.name} ({i})"
             batch.append(bed)
 
     Bed.objects.bulk_update(batch, ["name"])
