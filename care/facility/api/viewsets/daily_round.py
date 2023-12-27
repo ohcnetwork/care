@@ -46,11 +46,7 @@ class DailyRoundsViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = (
-        DailyRound.objects.all()
-        .order_by("-id")
-        .select_related("created_by", "last_edited_by")
-    )
+    queryset = DailyRound.objects.all().select_related("created_by", "last_edited_by")
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
 
@@ -63,7 +59,7 @@ class DailyRoundsViewSet(
     def get_queryset(self):
         return self.queryset.filter(
             consultation__external_id=self.kwargs["consultation_external_id"]
-        )
+        ).order_by("-taken_at")
 
     def get_serializer(self, *args, **kwargs):
         if "data" in kwargs:
