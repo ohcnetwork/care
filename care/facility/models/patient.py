@@ -751,4 +751,4 @@ class PatientNotesEdit(models.Model):
     note = models.TextField()
 
     class Meta:
-        ordering = ["-edited_on"]
+        ordering = ["-edited_date"]
