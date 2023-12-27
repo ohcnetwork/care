@@ -186,7 +186,7 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_discharge_reason = filters.ChoiceFilter(
         field_name="last_consultation__discharge_reason",
-        choices=NEW_DISCHARGE_REASON_CHOICES,
+        choices=NewDischargeReasonEnum.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
