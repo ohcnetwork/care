@@ -1,32 +1,22 @@
-from re import IGNORECASE
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-
-def serailize_data(icd11_object):
-    result = []
-    for object in icd11_object:
-        if type(object) == tuple:
-            object = object[0]
-        result.append(
-            {"id": object.id, "label": object.label, "chapter": object.chapter}
-        )
-    return result
+from care.facility.static_data.icd11 import ICD11
 
 
 class ICDViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
-    def list(self, request):
-        from care.facility.static_data.icd11 import ICDDiseases
+    def serialize_data(self, objects: list[ICD11]):
+        return [diagnosis.get_representation() for diagnosis in objects]
 
-        queryset = ICDDiseases
-        if request.GET.get("query", False):
-            query = request.GET.get("query")
-            queryset = queryset.where(
-                label=queryset.re_match(r".*" + query + r".*", IGNORECASE),
-                is_leaf=True,
-            )  # can accept regex from FE if needed.
-        return Response(serailize_data(queryset[0:100]))
+    def list(self, request):
+        queryset = ICD11
+        if query := request.query_params.get("query"):
+            queryset = queryset.find(ICD11.label % query.lower()).page(0, 100)
+            # todo: add partial word search
+        else:
+            queryset = queryset.find().sort_by("label").page(0, 100)
+
+        return Response(self.serialize_data(list(queryset)))

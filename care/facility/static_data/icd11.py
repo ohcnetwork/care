@@ -1,45 +1,73 @@
-import contextlib
+from typing import TypedDict
 
-from django.db import connection
-from littletable import Table
+from django.core.paginator import Paginator
+from redis_om import Field, Migrator
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
+from care.utils.static_data.models.base import BaseRedisModel
 
 
-def fetch_from_db():
-    # This is a hack to prevent the migration from failing when the table does not exist
-    all_tables = connection.introspection.table_names()
-    if "facility_icd11diagnosis" in all_tables:
-        return [
-            {
-                "id": str(diagnosis["id"]),
-                "label": diagnosis["label"],
-                "is_leaf": diagnosis["is_leaf"],
-                "chapter": diagnosis["meta_chapter_short"],
-            }
-            for diagnosis in ICD11Diagnosis.objects.filter().values(
-                "id", "label", "is_leaf", "meta_chapter_short"
-            )
-        ]
-    return []
+class ICD11Object(TypedDict):
+    id: int
+    label: str
+    is_leaf: bool
+    chapter: str
 
 
-ICDDiseases = Table("ICD11")
-ICDDiseases.insert_many(fetch_from_db())
-ICDDiseases.create_search_index("label")
-ICDDiseases.create_index("id", unique=True)
+class ICD11(BaseRedisModel):
+    id: int = Field(primary_key=True)
+    label: str = Field(index=True, full_text_search=True)
+    is_leaf: int = Field(index=True)
+    chapter: str
+
+    def get_representation(self) -> ICD11Object:
+        return {
+            "id": self.id,
+            "label": self.label,
+            "is_leaf": bool(self.is_leaf),
+            "chapter": self.chapter,
+        }
 
 
-def get_icd11_diagnosis_object_by_id(diagnosis_id, as_dict=False):
-    obj = None
-    with contextlib.suppress(BaseException):
-        obj = ICDDiseases.by.id[str(diagnosis_id)]
-    return obj and (obj.__dict__ if as_dict else obj)
+def load_icd11_diagnosis():
+    print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
+
+    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
+        "id", "label", "is_leaf", "meta_chapter_short"
+    )
+    paginator = Paginator(icd_objs, 5000)
+    for page_number in paginator.page_range:
+        for diagnosis in paginator.page(page_number).object_list:
+            ICD11(
+                id=diagnosis[0],
+                label=diagnosis[1],
+                is_leaf=int(diagnosis[2] or 0),
+                chapter=diagnosis[3] or "",
+            ).save()
+    Migrator().run()
+    print("Done")
 
 
-def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
-    diagnosis_objects = []
-    for diagnosis in diagnoses_ids:
-        with contextlib.suppress(BaseException):
-            diagnosis_objects.append(ICDDiseases.by.id[str(diagnosis)].__dict__)
-    return diagnosis_objects
+def get_icd11_diagnosis_object_by_id(
+    diagnosis_id: int, as_dict=False
+) -> ICD11 | ICD11Object | None:
+    try:
+        diagnosis = ICD11.get(diagnosis_id)
+        return diagnosis.get_representation() if as_dict else diagnosis
+    except KeyError:
+        return None
+
+
+def get_icd11_diagnoses_objects_by_ids(diagnoses_ids: list[int]) -> list[ICD11Object]:
+    if not diagnoses_ids:
+        return []
+
+    query = None
+    for diagnosis_id in diagnoses_ids:
+        if query is None:
+            query = ICD11.id == diagnosis_id
+        else:
+            query |= ICD11.id == diagnosis_id
+
+    diagnosis_objects: list[ICD11] = list(ICD11.find(query))
+    return [diagnosis.get_representation() for diagnosis in diagnosis_objects]

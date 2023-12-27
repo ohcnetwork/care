@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-from re import IGNORECASE, search
 from uuid import uuid4 as uuid
 
 from django.db.models import Q
@@ -36,6 +35,7 @@ from care.hcx.models.base import (
 from care.hcx.models.claim import Claim
 from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
+from care.hcx.static_data.pmjy_packages import PMJYPackage
 from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx
 from care.hcx.utils.hcx.operations import HcxOperations
@@ -318,34 +318,22 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(response, status=status.HTTP_200_OK)
 
+    def serialize_data(self, objects: list[PMJYPackage]):
+        return [package.get_representation() for package in objects]
+
     @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def pmjy_packages(self, request):
-        from care.hcx.static_data.pmjy_packages import PMJYPackages
+        try:
+            limit = min(int(request.query_params.get("limit")), 20)
+        except ValueError:
+            limit = 20
 
-        def serailize_data(pmjy_packages):
-            result = []
-            for pmjy_package in pmjy_packages:
-                if type(pmjy_package) == tuple:
-                    pmjy_package = pmjy_package[0]
-                result.append(
-                    {
-                        "code": pmjy_package.code,
-                        "name": pmjy_package.name,
-                        "price": pmjy_package.price,
-                        "package_name": pmjy_package.package_name,
-                    }
-                )
-            return result
+        queryset = PMJYPackage
+        if search_query := request.query_params.get("query"):
+            queryset = queryset.find(PMJYPackage.vec % search_query.lower())
+            # todo: add partial word search
+        else:
+            queryset = queryset.find()
 
-        queryset = PMJYPackages
-        limit = request.GET.get("limit", 20)
-        if request.GET.get("query", False):
-            query = request.GET.get("query")
-            queryset = queryset.where(
-                lambda row: search(r".*" + query + r".*", row.name, IGNORECASE)
-                is not None
-                or search(r".*" + query + r".*", row.package_name, IGNORECASE)
-                is not None
-            )
-        return Response(serailize_data(queryset[:limit]))
+        return Response(self.serialize_data(list(queryset.page(0, limit))))

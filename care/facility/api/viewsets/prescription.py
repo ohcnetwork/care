@@ -18,6 +18,7 @@ from care.facility.models import (
     PrescriptionType,
     generate_choices,
 )
+from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
 
@@ -150,57 +151,29 @@ class ConsultationPrescriptionViewSet(
 class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
-    def serailize_data(self, objects):
-        return [
-            {
-                "id": x[0],
-                "name": x[1],
-                "type": x[2],
-                "generic": x[3],
-                "company": x[4],
-                "contents": x[5],
-                "cims_class": x[6],
-                "atc_classification": x[7],
-            }
-            for x in objects
-        ]
-
-    def sort(self, query, results):
-        exact_matches = []
-        word_matches = []
-        partial_matches = []
-
-        for x in results:
-            name = x[1].lower()
-            generic = x[3].lower()
-            company = x[4].lower()
-            words = f"{name} {generic} {company}".split()
-
-            if name == query:
-                exact_matches.append(x)
-            elif query in words:
-                word_matches.append(x)
-            else:
-                partial_matches.append(x)
-
-        return exact_matches + word_matches + partial_matches
+    def serialize_data(self, objects: list[MedibaseMedicine]):
+        return [medicine.get_representation() for medicine in objects]
 
     def list(self, request):
-        from care.facility.static_data.medibase import MedibaseMedicineTable
-
-        queryset = MedibaseMedicineTable
-
+        query = None
         if type := request.query_params.get("type"):
-            queryset = [x for x in queryset if x[2] == type]
+            query = MedibaseMedicine.type == type
 
-        if query := request.query_params.get("query"):
-            query = query.strip().lower()
-            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
-            queryset = self.sort(query, queryset)
+        if search_query := request.query_params.get("query"):
+            q = (MedibaseMedicine.name == search_query) | (
+                MedibaseMedicine.vec % search_query
+            )
+            # todo: add partial word search
+            query = query & q if query else q
 
         try:
-            limit = min(int(request.query_params.get("limit", 30)), 100)
+            limit = min(int(request.query_params.get("limit")), 100)
         except ValueError:
             limit = 30
 
-        return Response(self.serailize_data(queryset[:limit]))
+        if not query:
+            return Response([])
+        else:
+            queryset = MedibaseMedicine.find(query).page(0, limit)
+
+        return Response(self.serialize_data(list(queryset)))
