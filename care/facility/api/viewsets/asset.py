@@ -351,7 +351,7 @@ class AssetViewSet(
                 {
                     "detail": f"Communication with the middleware failed.\nReceived status code: {e.status_code}"
                 },
-                status=status.HTTP_424_FAILED_DEPENDENCY,
+                status=status.HTTP_502_BAD_GATEWAY,
             )
 
         except Exception as e:
