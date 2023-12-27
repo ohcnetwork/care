@@ -534,15 +534,15 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             return instance
 
         with transaction.atomic():
+            instance = super().update(instance, validated_data)
             edit = PatientNotesEdit(
                 patient_note=instance,
-                edited_date=now(),
+                edited_date=instance.modified_date,
                 edited_by=user,
                 note=note,
             )
             edit.save()
-
-        return super().update(instance, validated_data)
+        return instance
 
     class Meta:
         model = PatientNotes
