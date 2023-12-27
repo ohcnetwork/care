@@ -39,7 +39,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0403_alter_dailyround_rounds_type"),
+        ("facility", "0404_merge_20231220_2227"),
     ]
 
     operations = [
