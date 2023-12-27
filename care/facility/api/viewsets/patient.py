@@ -144,8 +144,8 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__kasp_enabled_date"
     )
-    last_consultation_admission_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__admission_date"
+    last_consultation_encounter_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__encounter_date"
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__discharge_date"
@@ -337,7 +337,7 @@ class PatientViewSet(
         "date_declared_positive",
         "date_of_result",
         "last_vaccinated_date",
-        "last_consultation_admission_date",
+        "last_consultation_encounter_date",
         "last_consultation_discharge_date",
         "last_consultation_symptoms_onset_date",
     ]
