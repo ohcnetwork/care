@@ -518,7 +518,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             instance = super().create(validated_data)
             initial_edit = PatientNotesEdit(
                 patient_note=instance,
-                edited_on=instance.modified_date,
+                edited_date=instance.modified_date,
                 edited_by=user,
                 note=note,
             )
@@ -536,7 +536,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             edit = PatientNotesEdit(
                 patient_note=instance,
-                edited_on=now(),
+                edited_date=now(),
                 edited_by=user,
                 note=note,
             )

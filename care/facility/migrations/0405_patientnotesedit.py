@@ -26,7 +26,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
         for patient_note in paginator.page(page_number).object_list:
             edit_record = PatientNotesEdit(
                 patient_note=patient_note,
-                edited_on=patient_note.created_date,
+                edited_date=patient_note.created_date,
                 edited_by=patient_note.created_by,
                 note=patient_note.note,
             )
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("edited_on", models.DateTimeField(auto_now_add=True)),
+                ("edited_date", models.DateTimeField(auto_now_add=True)),
                 ("note", models.TextField()),
                 (
                     "edited_by",
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ["-edited_on"],
+                "ordering": ["-edited_date"],
             },
         ),
         migrations.RunPython(
