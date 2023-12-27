@@ -326,13 +326,14 @@ class HcxGatewayViewSet(GenericViewSet):
     def pmjy_packages(self, request):
         try:
             limit = min(int(request.query_params.get("limit")), 20)
-        except ValueError:
+        except (ValueError, TypeError):
             limit = 20
 
         queryset = PMJYPackage
-        if search_query := request.query_params.get("query"):
-            queryset = queryset.find(PMJYPackage.vec % search_query.lower())
-            # todo: add partial word search
+        if query := request.query_params.get("query"):
+            queryset = queryset.find(
+                PMJYPackage.vec % f"{'* '.join(query.strip().split())}*"
+            )
         else:
             queryset = queryset.find()
 

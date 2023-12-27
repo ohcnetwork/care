@@ -155,25 +155,24 @@ class MedibaseViewSet(ViewSet):
         return [medicine.get_representation() for medicine in objects]
 
     def list(self, request):
+        try:
+            limit = min(int(request.query_params.get("limit")), 30)
+        except (ValueError, TypeError):
+            limit = 30
+
         query = None
         if type := request.query_params.get("type"):
             query = MedibaseMedicine.type == type
 
         if search_query := request.query_params.get("query"):
             q = (MedibaseMedicine.name == search_query) | (
-                MedibaseMedicine.vec % search_query
+                MedibaseMedicine.vec % f"{'* '.join(search_query.strip().split())}*"
             )
-            # todo: add partial word search
             query = query & q if query else q
 
-        try:
-            limit = min(int(request.query_params.get("limit")), 100)
-        except ValueError:
-            limit = 30
-
-        if not query:
-            return Response([])
+        if query:
+            queryset = MedibaseMedicine.find(query)
         else:
-            queryset = MedibaseMedicine.find(query).page(0, limit)
+            queryset = MedibaseMedicine.find()
 
-        return Response(self.serialize_data(list(queryset)))
+        return Response(self.serialize_data(list(queryset.page(0, limit))))
