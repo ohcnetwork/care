@@ -81,6 +81,17 @@ DISCHARGE_REASON_CHOICES = [
 ]
 
 
+class NewDiseaseReasonEnum(IntegerChoices):
+    UNKNOWN = -1, _("Unknown")
+    RECOVERED = 1, _("Recovered")
+    REFERRED = 2, _("Referred")
+    EXPIRED = 3, _("Expired")
+    LAMA = 4, _("LAMA")
+
+
+NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDiseaseReasonEnum]
+
+
 class DiseaseStatusEnum(enum.IntEnum):
     SUSPECTED = 1
     POSITIVE = 2

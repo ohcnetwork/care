@@ -30,5 +30,4 @@ done
 >&2 echo 'PostgreSQL is available'
 
 python manage.py collectstatic --noinput
-python manage.py migrate --noinput
 gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers 2
