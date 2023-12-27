@@ -34,7 +34,7 @@ def reverse_migration(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0402_patientconsultation_new_discharge_reason"),
+        ("facility", "0404_merge_20231220_2227"),
     ]
 
     operations = [

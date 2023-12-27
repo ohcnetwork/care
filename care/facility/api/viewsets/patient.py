@@ -51,7 +51,7 @@ from care.facility.models.bed import AssetBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
-    NEW_DISCHARGE_REASON_CHOICES,
+    NewDischargeReasonEnum,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
