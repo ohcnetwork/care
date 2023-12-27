@@ -31,7 +31,6 @@ from care.facility.models.icd11_diagnosis import (
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    NEW_DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
     NewDischargeReasonEnum,
     RouteToFacility,
