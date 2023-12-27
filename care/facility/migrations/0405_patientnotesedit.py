@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("edited_on", models.DateTimeField(auto_now_add=True)),
+                ("edited_date", models.DateTimeField(auto_now_add=True)),
                 ("note", models.TextField()),
                 (
                     "edited_by",
