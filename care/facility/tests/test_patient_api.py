@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models.patient_base import NewDiseaseReasonEnum
+from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -319,7 +319,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
 
         # Assert the consultation discharge reason and date are set correctly
         self.assertEqual(
-            self.consultation.new_discharge_reason, NewDiseaseReasonEnum.REFERRED
+            self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
         )
         self.assertIsNotNone(self.consultation.discharge_date)
 

@@ -33,7 +33,7 @@ from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     NEW_DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
-    NewDiseaseReasonEnum,
+    NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
 )
@@ -624,11 +624,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     ],
                 }
             )
-        if attrs.get("new_discharge_reason") != NewDiseaseReasonEnum.EXPIRED:
+        if attrs.get("new_discharge_reason") != NewDischargeReasonEnum.EXPIRED:
             attrs.pop("death_datetime", None)
             attrs.pop("death_confirmed_doctor", None)
 
-        if attrs.get("new_discharge_reason") == NewDiseaseReasonEnum.EXPIRED:
+        if attrs.get("new_discharge_reason") == NewDischargeReasonEnum.EXPIRED:
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
             if attrs.get("death_datetime") > now():

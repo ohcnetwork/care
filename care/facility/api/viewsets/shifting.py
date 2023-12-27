@@ -28,7 +28,10 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
-from care.facility.models.patient_base import DISEASE_STATUS_DICT, NewDiseaseReasonEnum
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_DICT,
+    NewDischargeReasonEnum,
+)
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.shifting import get_shifting_queryset
@@ -157,7 +160,7 @@ class ShiftingViewSet(
                         patient=patient, discharge_date__isnull=True
                     ).update(
                         discharge_date=localtime(now()),
-                        new_discharge_reason=NewDiseaseReasonEnum.REFERRED,
+                        new_discharge_reason=NewDischargeReasonEnum.REFERRED,
                     )
                     ConsultationBed.objects.filter(
                         consultation=patient.last_consultation,

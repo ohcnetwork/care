@@ -24,7 +24,7 @@ from care.facility.models import (
 )
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import NewDiseaseReasonEnum
+from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
@@ -71,7 +71,7 @@ def discharge_patient(patient: PatientRegistration):
         PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
     )
     if last_consultation:
-        reason = NewDiseaseReasonEnum.REFERRED
+        reason = NewDischargeReasonEnum.REFERRED
         notes = "Patient Shifted to another facility"
         last_consultation.new_discharge_reason = reason
         last_consultation.discharge_notes = notes
