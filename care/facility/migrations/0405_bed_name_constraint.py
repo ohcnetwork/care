@@ -15,17 +15,18 @@ def reverse_copy_bed_name(apps, schema_editor):
 
 def fix_duplicate_bed_names(apps, schema_editor):
     Bed = apps.get_model("facility", "Bed")
+    queryset = Bed.objects.annotate(lname=models.functions.Lower("name")).order_by(
+        "location", "lname"
+    )
     duplicates = (
-        Bed.objects.values("location", "name")
+        queryset.values("location", "lname")
         .annotate(count=models.Count("pk"))
         .filter(count__gt=1)
     )
     batch = []
     # suffix beds with duplicate names with a number
     for duplicate in duplicates:
-        beds = Bed.objects.filter(
-            location=duplicate["location"], name=duplicate["name"]
-        ).order_by("pk")
+        beds = queryset.filter(location=duplicate["location"], lname=duplicate["lname"])
         for i, bed in enumerate(beds[1:], start=1):
             bed.name = f"{bed.name} ({i})"
             batch.append(bed)

@@ -34,7 +34,9 @@ class Bed(BaseModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "location"], name="unique_bed_name_in_location"
+                models.functions.Lower("name"),
+                "location",
+                name="unique_bed_name_per_location",
             )
         ]
 
