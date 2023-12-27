@@ -113,7 +113,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     new_discharge_reason = serializers.ChoiceField(
-        choices=NEW_DISCHARGE_REASON_CHOICES, read_only=True, required=False
+        choices=NewDischargeReasonEnum.choices, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
 
