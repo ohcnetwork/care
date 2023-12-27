@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ["-edited_on"],
+                "ordering": ["-edited_date"],
             },
         ),
         migrations.RunPython(
