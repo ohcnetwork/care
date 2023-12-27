@@ -87,7 +87,7 @@
       {% if consultation.suggestion == 'A' %}
       <p>
         <span class="text-sm leading-5 font-medium text-gray-500">Date of addmission:</span>
-        {{consultation.admission_date.date}}
+        {{consultation.encounter_date}}
       </p>
       {% elif consultation.suggestion == 'R' %}
       <p>

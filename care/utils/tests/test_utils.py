@@ -309,7 +309,7 @@ class TestUtils:
             "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
-            "admission_date": None,
+            "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
