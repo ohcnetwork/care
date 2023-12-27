@@ -743,7 +743,7 @@ class PatientNotesEdit(models.Model):
         blank=False,
         related_name="edits",
     )
-    edited_on = models.DateTimeField(auto_now_add=True)
+    edited_date = models.DateTimeField(auto_now_add=True)
     edited_by = models.ForeignKey(
         User, on_delete=models.PROTECT, null=False, blank=False
     )
