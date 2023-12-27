@@ -83,12 +83,21 @@ class MultipleBedTest(TestUtils, APITestCase):
             "description": "Testing creation of beds.",
             "facility": self.facility.external_id,
             "location": self.asset_location.external_id,
-            "name": "Test 3 Bed",
+            "name": "Test",
             "number_of_beds": 5,
         }
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
 
+        response = self.client.post("/api/v1/bed/", sample_data, format="json")
+        self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["detail"],
+            "Bed with same name already exists in this location.",
+        )
+
+        # validate case insensitive
+        sample_data["name"] = "test"
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
