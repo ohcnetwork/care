@@ -68,13 +68,13 @@ class BedViewSet(
         # Bulk creating n number of beds
         if number_of_beds > 1:
             data = serializer.validated_data.copy()
-            data.pop("name")
+            name = data.pop("name")
             beds = [
                 Bed(
                     **data,
-                    name=f"{serializer.validated_data['name']} {i+1}",
+                    name=f"{name} {i}",
                 )
-                for i in range(number_of_beds)
+                for i in range(1, number_of_beds + 1)
             ]
             try:
                 Bed.objects.bulk_create(beds)
