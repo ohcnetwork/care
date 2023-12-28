@@ -26,8 +26,8 @@ services:
       - EDGE_PORT=4566
       - SERVICES=s3
     volumes:
-      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
-      - "./docker/awslocal:/docker-entrypoint-initaws.d"
+      - "${TEMPDIR:-./care/media/localstack}:/var/lib/localstack"
+      - "./docker/awslocal:/etc/localstack/init/ready.d/"
 
   fidelius:
     image: khavinshankar/fidelius:v1.0

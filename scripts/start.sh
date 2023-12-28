@@ -4,6 +4,8 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+printf "api" >> /tmp/container-role
+
 if [ -z "${DATABASE_URL}" ]; then
     export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
 fi
