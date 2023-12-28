@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
+from django.db.models import Case, F, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -342,8 +342,16 @@ class PatientViewSet(
         # filter_query = self.request.query_params.get("disease_status")
         queryset = super().get_queryset()
         queryset = queryset.annotate(
-            is_last_consultation_null=Case(
-                When(last_consultation__isnull=True, then=True),
+            no_consultation_filed=Case(
+                When(
+                    Q(last_consultation__isnull=True)
+                    | ~Q(last_consultation__facility__id=F("facility__id"))
+                    | (
+                        Q(last_consultation__discharge_date__isnull=False)
+                        & Q(is_active=True)
+                    ),
+                    then=True,
+                ),
                 default=False,
                 output_field=models.BooleanField(),
             )
@@ -355,8 +363,7 @@ class PatientViewSet(
         # if self.action == "list":
         #     queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
         queryset = queryset.order_by(
-            "-is_last_consultation_null",
-            "last_consultation",
+            "-no_consultation_filed",
             "modified_date",
         )
         return queryset
