@@ -264,6 +264,18 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             response.data["results"][0]["id"], str(self.patient.external_id)
         )
 
+    def test_filter_by_consultation_filed(self):
+        self.client.force_authenticate(user=self.user)
+        response_truthy = self.client.get("/api/v1/patient/?consultation_filed=true")
+        self.assertEqual(response_truthy.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_truthy.data["count"], 1)
+        self.assertEqual(
+            response_truthy.data["results"][0]["id"], str(self.patient.external_id)
+        )
+        response_falsy = self.client.get("/api/v1/patient/?consultation_filed=false")
+        self.assertEqual(response_falsy.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_falsy.data["count"], 0)
+
 
 class PatientTransferTestCase(TestUtils, APITestCase):
     @classmethod
