@@ -41,6 +41,7 @@ from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx
 from care.hcx.utils.hcx.operations import HcxOperations
 from care.utils.queryset.communications import get_communications
+from care.utils.static_data.helpers import query_builder
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -332,7 +333,7 @@ class HcxGatewayViewSet(GenericViewSet):
 
         query = []
         if q := request.query_params.get("query"):
-            query = [PMJYPackage.vec % f"{'* '.join(q.strip().rsplit(maxsplit=3))}*"]
+            query.append(PMJYPackage.vec % query_builder(q))
 
         results = FindQuery(expressions=query, model=PMJYPackage, limit=limit).execute(
             exhaust_results=False

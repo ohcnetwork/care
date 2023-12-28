@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from care.facility.static_data.icd11 import ICD11
+from care.utils.static_data.helpers import query_builder
 
 
 class ICDViewSet(ViewSet):
@@ -17,9 +18,10 @@ class ICDViewSet(ViewSet):
             limit = min(int(request.query_params.get("limit")), 20)
         except (ValueError, TypeError):
             limit = 20
+
         query = []
         if q := request.query_params.get("query"):
-            query = [ICD11.label % f"{'* '.join(q.strip().rsplit(maxsplit=3))}*"]
+            query.append(ICD11.label % query_builder(q))
 
         result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
             exhaust_results=False

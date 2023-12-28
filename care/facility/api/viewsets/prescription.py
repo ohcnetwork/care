@@ -22,6 +22,7 @@ from care.facility.models import (
 from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.consultation import get_consultation_queryset
+from care.utils.static_data.helpers import query_builder, token_escaper
 
 
 def inverse_choices(choices):
@@ -163,14 +164,13 @@ class MedibaseViewSet(ViewSet):
 
         query = []
         if type := request.query_params.get("type"):
-            query = MedibaseMedicine.type == type
+            query.append(MedibaseMedicine.type == type)
 
-        if search_query := request.query_params.get("query"):
-            q = (MedibaseMedicine.name == search_query) | (
-                MedibaseMedicine.vec
-                % f"{'* '.join(search_query.strip().rsplit(maxsplit=3))}*"
+        if q := request.query_params.get("query"):
+            query.append(
+                (MedibaseMedicine.name == token_escaper.escape(q))
+                | (MedibaseMedicine.vec % query_builder(q))
             )
-            query = [query & q if query else q]
 
         result = FindQuery(
             expressions=query, model=MedibaseMedicine, limit=limit
