@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.management import BaseCommand
 
 from care.facility.static_data.icd11 import load_icd11_diagnosis
@@ -14,6 +15,14 @@ class Command(BaseCommand):
     help = "Loads static data to redis"
 
     def handle(self, *args, **options):
+        if cache.get("redis_index_loading"):
+            print("Redis Index already loading, skipping")
+            return
+
+        cache.set("redis_index_loading", True, timeout=60 * 5)
+
         load_icd11_diagnosis()
         load_medibase_medicines()
         load_pmjy_packages()
+
+        cache.delete("redis_index_loading")

@@ -4,6 +4,7 @@ from celery.schedules import crontab
 from care.facility.tasks.asset_monitor import check_asset_status
 from care.facility.tasks.cleanup import delete_old_notifications
 from care.facility.tasks.plausible_stats import capture_goals
+from care.facility.tasks.redis_index import load_redis_index
 from care.facility.tasks.summarisation import (
     summarise_district_patient,
     summarise_facility_capacity,
@@ -54,4 +55,9 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(hour="0", minute="0"),
         capture_goals.s(),
         name="capture_goals",
+    )
+    sender.add_periodic_task(
+        crontab(hour="*", minute="0"),
+        load_redis_index.s(),
+        name="load_redis_index",
     )

@@ -332,6 +332,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
 # drf-spectacular (schema generation)
