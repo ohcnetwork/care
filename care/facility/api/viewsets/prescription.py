@@ -170,10 +170,10 @@ class MedibaseViewSet(ViewSet):
                 MedibaseMedicine.vec
                 % f"{'* '.join(search_query.strip().rsplit(maxsplit=3))}*"
             )
-            query = query & q if query else q
+            query = [query & q if query else q]
 
         result = FindQuery(
-            expressions=query or [], model=MedibaseMedicine, limit=limit
+            expressions=query, model=MedibaseMedicine, limit=limit
         ).execute(exhaust_results=False)
 
         return Response(self.serialize_data(result))
