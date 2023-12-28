@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
+from django.db.models import Case, F, When
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -95,6 +95,21 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+    consultation_filed = filters.BooleanFilter(method="filter_consultation_filed")
+
+    def filter_consultation_filed(self, queryset, name, value):
+        consultation_condition = Q(last_consultation__isnull=True) | (
+            Q(last_consultation__discharge_date__isnull=False) & Q(is_active=True)
+        )
+
+        if value:
+            return queryset.filter(
+                last_consultation__facility__id=F("facility__id")
+            ).exclude(consultation_condition)
+        else:
+            return queryset.exclude(
+                last_consultation__facility__id=F("facility__id")
+            ).filter(consultation_condition)
 
     def filter_by_category(self, queryset, name, value):
         if value:
