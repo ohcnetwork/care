@@ -4,6 +4,7 @@ from uuid import uuid4 as uuid
 
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
+from redis_om import FindQuery
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -329,12 +330,12 @@ class HcxGatewayViewSet(GenericViewSet):
         except (ValueError, TypeError):
             limit = 20
 
-        queryset = PMJYPackage
-        if query := request.query_params.get("query"):
-            queryset = queryset.find(
-                PMJYPackage.vec % f"{'* '.join(query.strip().rsplit(maxsplit=3))}*"
-            )
-        else:
-            queryset = queryset.find()
+        query = []
+        if q := request.query_params.get("query"):
+            query = [PMJYPackage.vec % f"{'* '.join(q.strip().rsplit(maxsplit=3))}*"]
 
-        return Response(self.serialize_data(list(queryset.page(0, limit))))
+        results = FindQuery(expressions=query, model=PMJYPackage, limit=limit).execute(
+            exhaust_results=False
+        )
+
+        return Response(self.serialize_data(results))

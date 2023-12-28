@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from redis_om import FindQuery
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -160,7 +161,7 @@ class MedibaseViewSet(ViewSet):
         except (ValueError, TypeError):
             limit = 30
 
-        query = None
+        query = []
         if type := request.query_params.get("type"):
             query = MedibaseMedicine.type == type
 
@@ -171,9 +172,8 @@ class MedibaseViewSet(ViewSet):
             )
             query = query & q if query else q
 
-        if query:
-            queryset = MedibaseMedicine.find(query)
-        else:
-            queryset = MedibaseMedicine.find()
+        result = FindQuery(
+            expressions=query or [], model=MedibaseMedicine, limit=limit
+        ).execute(exhaust_results=False)
 
-        return Response(self.serialize_data(list(queryset.page(0, limit))))
+        return Response(self.serialize_data(result))

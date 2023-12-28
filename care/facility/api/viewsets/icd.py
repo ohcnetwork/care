@@ -1,3 +1,4 @@
+from redis_om import FindQuery
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -16,13 +17,11 @@ class ICDViewSet(ViewSet):
             limit = min(int(request.query_params.get("limit")), 20)
         except (ValueError, TypeError):
             limit = 20
+        query = []
+        if q := request.query_params.get("query"):
+            query = [ICD11.label % f"{'* '.join(q.strip().rsplit(maxsplit=3))}*"]
 
-        queryset = ICD11
-        if query := request.query_params.get("query"):
-            queryset = queryset.find(
-                ICD11.label % f"{'* '.join(query.strip().rsplit(maxsplit=3))}*"
-            )
-        else:
-            queryset = queryset.find().sort_by("label")
-
-        return Response(self.serialize_data(list(queryset.page(0, limit))))
+        result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
+            exhaust_results=False
+        )
+        return Response(self.serialize_data(result))
