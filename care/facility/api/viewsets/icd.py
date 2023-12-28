@@ -20,7 +20,7 @@ class ICDViewSet(ViewSet):
         queryset = ICD11
         if query := request.query_params.get("query"):
             queryset = queryset.find(
-                ICD11.label % f"{'* '.join(query.strip().split())}*"
+                ICD11.label % f"{'* '.join(query.strip().rsplit(maxsplit=3))}*"
             )
         else:
             queryset = queryset.find().sort_by("label")

@@ -332,7 +332,7 @@ class HcxGatewayViewSet(GenericViewSet):
         queryset = PMJYPackage
         if query := request.query_params.get("query"):
             queryset = queryset.find(
-                PMJYPackage.vec % f"{'* '.join(query.strip().split())}*"
+                PMJYPackage.vec % f"{'* '.join(query.strip().rsplit(maxsplit=3))}*"
             )
         else:
             queryset = queryset.find()

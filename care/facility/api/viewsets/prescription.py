@@ -166,7 +166,8 @@ class MedibaseViewSet(ViewSet):
 
         if search_query := request.query_params.get("query"):
             q = (MedibaseMedicine.name == search_query) | (
-                MedibaseMedicine.vec % f"{'* '.join(search_query.strip().split())}*"
+                MedibaseMedicine.vec
+                % f"{'* '.join(search_query.strip().rsplit(maxsplit=3))}*"
             )
             query = query & q if query else q
 
