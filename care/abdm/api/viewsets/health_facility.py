@@ -25,10 +25,10 @@ def register_health_facility_as_service(facility_external_id):
     ).first()
 
     if not health_facility:
-        return False
+        return [False, "Health Facility Not Found"]
 
     if health_facility.registered:
-        return True
+        return [True, None]
 
     response = Facility().add_update_service(
         {
@@ -47,11 +47,17 @@ def register_health_facility_as_service(facility_external_id):
     )
 
     if response.status_code == 200:
-        health_facility.registered = True
-        health_facility.save()
-        return True
+        data = response.json()[0]
 
-    return False
+        if "error" in data:
+            return [False, data["error"]["message"]]
+
+        if "servicesLinked" in data:
+            health_facility.registered = True
+            health_facility.save()
+            return [True, None]
+
+    return [False, None]
 
 
 class HealthFacilityViewSet(
@@ -74,7 +80,10 @@ class HealthFacilityViewSet(
 
     @action(detail=True, methods=["POST"])
     def register_service(self, request, facility__external_id):
-        registered = register_health_facility_as_service(facility__external_id)
+        [registered, error] = register_health_facility_as_service(facility__external_id)
+
+        if error:
+            return Response({"error": error}, status=400)
 
         return Response({"registered": registered})
 
