@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.conf import settings
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -13,7 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.health_facility import HealthFacilitySerializer
 from care.abdm.models import HealthFacility
-from care.abdm.utils.api_call import Bridge
+from care.abdm.utils.api_call import Facility
 from care.utils.queryset.facility import get_facility_queryset
 
 
@@ -29,13 +30,19 @@ def register_health_facility_as_service(facility_external_id):
     if health_facility.registered:
         return True
 
-    response = Bridge().add_update_service(
+    response = Facility().add_update_service(
         {
-            "id": health_facility.hf_id,
-            "name": health_facility.facility.name,
-            "type": "HIP",
-            "active": True,
-            "alias": ["CARE_HIP"],
+            "facilityId": health_facility.hf_id,
+            "facilityName": health_facility.facility.name,
+            "HRP": [
+                {
+                    "bridgeId": settings.ABDM_CLIENT_ID,
+                    "hipName": health_facility.facility.name,
+                    "type": "HIP",
+                    "active": True,
+                    "alias": ["CARE_HIP"],
+                }
+            ],
         }
     )
 
