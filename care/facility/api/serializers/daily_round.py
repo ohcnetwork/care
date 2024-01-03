@@ -234,6 +234,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                             "rhythm",
                             "rhythm_detail",
                             "ventilator_spo2",
+                            "consciousness_level",
                         ]
                         cloned_daily_round_obj = DailyRound()
                         for field in fields_to_clone:
