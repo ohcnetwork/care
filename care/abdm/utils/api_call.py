@@ -20,6 +20,7 @@ ABDM_DEVSERVICE_URL = GATEWAY_API_URL + "/devservice"
 ABDM_GATEWAY_URL = GATEWAY_API_URL + "/gateway"
 ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
+ABDM_FACILITY_URL = settings.ABDM_FACILITY_URL
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
@@ -45,6 +46,8 @@ class APIGateway:
             self.url = ABDM_GATEWAY_URL
         elif gateway == "abdm_devservice":
             self.url = ABDM_DEVSERVICE_URL
+        elif gateway == "facility":
+            self.url = ABDM_FACILITY_URL
         else:
             self.url = GATEWAY_API_URL
         self.token = token
@@ -789,4 +792,14 @@ class Bridge:
     def add_update_service(self, data):
         path = "/v1/bridges/addUpdateServices"
         response = self.api.post(path, data, method="PUT")
+        return response
+
+
+class Facility:
+    def __init__(self) -> None:
+        self.api = APIGateway("facility", None)
+
+    def add_update_service(self, data):
+        path = "/v1/bridges/MutipleHRPAddUpdateServices"
+        response = self.api.post(path, data, method="POST")
         return response
