@@ -1,12 +1,17 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from care.facility.api.serializers.events import (
     EventTypeSerializer,
+    NestedEventTypeSerializer,
     PatientConsultationEventDetailSerializer,
 )
 from care.facility.models.events import EventType, PatientConsultationEvent
@@ -18,10 +23,25 @@ class EventTypeViewSet(ReadOnlyModelViewSet):
     queryset = EventType.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    def get_serializer_class(self) -> type[BaseSerializer]:
+        if self.action == "roots":
+            return NestedEventTypeSerializer
+        return super().get_serializer_class()
+
+    @extend_schema(tags=("event_types",))
+    @method_decorator(cache_page(86400))
     @action(detail=True, methods=["GET"])
     def descendants(self, request, pk=None):
         event_type: EventType = get_object_or_404(self.queryset, pk=pk)
         queryset = self.get_queryset().filter(pk__in=event_type.get_descendants())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(tags=("event_types",))
+    @method_decorator(cache_page(86400))
+    @action(detail=False, methods=["GET"])
+    def roots(self, request):
+        queryset = self.get_queryset().filter(parent__isnull=True)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 

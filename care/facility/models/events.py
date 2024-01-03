@@ -7,6 +7,12 @@ from care.utils.event_utils import CustomJSONEncoder
 User = get_user_model()
 
 
+class ChangeType(models.TextChoices):
+    CREATED = "CREATED"
+    UPDATED = "UPDATED"
+    DELETED = "DELETED"
+
+
 class EventType(models.Model):
     parent = models.ForeignKey(
         "self",
@@ -55,9 +61,12 @@ class PatientConsultationEvent(models.Model):
     is_latest = models.BooleanField(default=True)
     meta = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     value = models.JSONField(default=dict, encoder=CustomJSONEncoder)
+    change_type = models.CharField(
+        max_length=10, choices=ChangeType.choices, default=ChangeType.CREATED
+    )
 
     def __str__(self) -> str:
-        return f"{self.consultation_id} - {self.event_type} - {self.created_date}"
+        return f"{self.id} - {self.consultation_id} - {self.event_type} - {self.change_type}"
 
     class Meta:
         ordering = ["-created_date"]

@@ -1,8 +1,10 @@
 from datetime import datetime
 from json import JSONEncoder
+from logging import getLogger
 
-from django.db import models
 from multiselectfield.db.fields import MSFList, MultiSelectField
+
+logger = getLogger(__name__)
 
 
 def is_null(data):
@@ -27,12 +29,11 @@ def model_diff(old, new):
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, o):
-        if isinstance(o, models.Model):
-            return o.pk
         if isinstance(o, MSFList):
             return list(map(str, o))
         if isinstance(o, set):
             return list(o)
         if isinstance(o, datetime):
             return o.isoformat()
-        return super().default(o)
+        logger.warning(f"Serializing Unknown Type {type(o)}, {o}")
+        return str(o)

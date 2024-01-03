@@ -67,6 +67,7 @@ pre-commit = "==3.4.0"
 tblib = "==2.0.0"
 watchdog = "==3.0.0"
 werkzeug = "==2.3.8"
+flower = "*"
 
 [docs]
 furo = "==2023.9.10"

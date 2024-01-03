@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from care.facility.models.events import EventType, PatientConsultationEvent
 
@@ -6,10 +6,23 @@ from care.facility.models.events import EventType, PatientConsultationEvent
 class EventTypeSerializer(ModelSerializer):
     class Meta:
         model = EventType
-        fields = "__all__"
+        fields = ("id", "parent", "name", "description", "model", "fields")
+
+
+class NestedEventTypeSerializer(ModelSerializer):
+    children = SerializerMethodField()
+
+    class Meta:
+        model = EventType
+        fields = ("id", "parent", "name", "description", "model", "fields", "children")
+
+    def get_children(self, obj: EventType) -> list[EventType] | None:
+        return NestedEventTypeSerializer(obj.children.all(), many=True).data or None
 
 
 class PatientConsultationEventDetailSerializer(ModelSerializer):
+    event_type = EventTypeSerializer()
+
     class Meta:
         model = PatientConsultationEvent
         fields = "__all__"
