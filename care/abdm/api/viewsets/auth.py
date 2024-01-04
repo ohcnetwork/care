@@ -348,7 +348,7 @@ class RequestDataView(GenericAPIView):
         except Exception as e:
             return Response(
                 {
-                    "message": "Failed to notify (health-information/notify)",
+                    "detail": "Failed to notify (health-information/notify)",
                     "error": str(e),
                 },
                 status=status.HTTP_400_BAD_REQUEST,

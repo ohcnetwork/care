@@ -364,7 +364,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 )
             except Exception as e:
                 return Response(
-                    {"message": "Failed to fetch modes", "reason": str(e)},
+                    {"detail": "Failed to fetch modes", "error": str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -420,7 +420,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             )
         except Exception as e:
             return Response(
-                {"message": "Failed to fetch modes", "reason": str(e)},
+                {"detail": "Failed to fetch modes", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -464,7 +464,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             )
         except Exception as e:
             return Response(
-                {"message": "Failed to add care context", "reason": str(e)},
+                {"detail": "Failed to add care context", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -497,7 +497,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             )
         except Exception as e:
             return Response(
-                {"message": "Failed to send SMS", "reason": str(e)},
+                {"detail": "Failed to send SMS", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
