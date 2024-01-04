@@ -349,11 +349,16 @@ class AbdmGateway:
         self.api = APIGateway("abdm_gateway", None)
 
     def get_hip_id_by_health_id(self, health_id):
-        return (
-            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
-            .first()
-            .patientregistration.facility.healthfacility.hf_id
-        )
+        try:
+            return (
+                AbhaNumber.objects.filter(
+                    Q(abha_number=health_id) | Q(health_id=health_id)
+                )
+                .first()
+                .patientregistration.facility.healthfacility.hf_id
+            )
+        except Exception:
+            return None
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
@@ -404,16 +409,11 @@ class AbdmGateway:
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
         request_id = str(uuid.uuid4())
 
-        """
-        data = {
-            healthId,
-            name,
-            gender,
-            dateOfBirth,
-        }
-        """
-        self.temp_memory[request_id] = data
+        health_facility_id = self.get_hip_id_by_health_id(data["healthId"])
+        if not health_facility_id:
+            return
 
+        self.temp_memory[request_id] = data
         if "authMode" in data and data["authMode"] == "DIRECT":
             self.init(request_id)
             return
@@ -428,7 +428,7 @@ class AbdmGateway:
                 "purpose": data["purpose"] if "purpose" in data else "KYC_AND_LINK",
                 "requester": {
                     "type": "HIP",
-                    "id": self.get_hip_id_by_health_id(data["healthId"]),
+                    "id": health_facility_id,
                 },
             },
         }
@@ -448,6 +448,10 @@ class AbdmGateway:
         data = self.temp_memory[prev_request_id]
         self.temp_memory[request_id] = data
 
+        health_facility_id = self.get_hip_id_by_health_id(data["healthId"])
+        if not health_facility_id:
+            return
+
         payload = {
             "requestId": request_id,
             "timestamp": datetime.now(tz=timezone.utc).strftime(
@@ -459,7 +463,7 @@ class AbdmGateway:
                 "authMode": data["authMode"] if "authMode" in data else "DEMOGRAPHICS",
                 "requester": {
                     "type": "HIP",
-                    "id": self.get_hip_id_by_health_id(data["healthId"]),
+                    "id": health_facility_id,
                 },
             },
         }
@@ -708,6 +712,10 @@ class AbdmGateway:
         path = "/v0.5/health-information/notify"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
+        health_facility_id = self.get_hip_id_by_health_id(data["health_id"])
+        if not health_facility_id:
+            return
+
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
@@ -722,7 +730,7 @@ class AbdmGateway:
                 ),
                 "statusNotification": {
                     "sessionStatus": "TRANSFERRED",
-                    "hipId": self.get_hip_id_by_health_id(data["health_id"]),
+                    "hipId": health_facility_id,
                     "statusResponses": list(
                         map(
                             lambda context: {
@@ -762,6 +770,10 @@ class AbdmGateway:
         path = "/v0.5/patients/sms/notify2"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
 
+        health_facility_id = self.get_hip_id_by_health_id(data["healthId"])
+        if not health_facility_id:
+            return
+
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
@@ -770,7 +782,7 @@ class AbdmGateway:
             ),
             "notification": {
                 "phoneNo": f"+91-{data['phone']}",
-                "hip": {"id": self.get_hip_id_by_health_id(data["healthId"])},
+                "hip": {"id": health_facility_id},
             },
         }
 
