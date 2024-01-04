@@ -474,6 +474,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             {"phone": patient.phone_number, "healthId": patient.abha_number.health_id}
         )
 
+        if not response:
+            return Response(
+                {"message": "Failed to send SMS"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         return Response(response, status=status.HTTP_202_ACCEPTED)
 
     # auth/init
