@@ -150,10 +150,15 @@ class AssetSerializer(ModelSerializer):
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
     resolved_middleware = ResolvedMiddlewareField(read_only=True)
 
+    down = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
-        read_only_fields = TIMESTAMP_FIELDS + ("resolved_middleware",)
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "resolved_middleware",
+            "down",
+        )
 
     def validate_qr_code_id(self, value):
         value = value or None  # treat empty string as null
