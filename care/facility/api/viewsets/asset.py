@@ -215,17 +215,6 @@ class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetAvailabilityFilter
 
-    # filter queryset to get all assets accessible by a user
-    def get_queryset(self):
-        queryset = AssetAvailabilityRecord.objects.all().select_related("asset")
-
-        # Check if the requesting user belongs to the related Facility
-        queryset = queryset.filter(
-            Q(asset__current_location__facility__users=self.request.user)
-            | Q(asset__current_location__facility__users__isnull=True)
-        )
-        return queryset
-
 
 class AssetViewSet(
     ListModelMixin,
