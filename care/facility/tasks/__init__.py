@@ -21,31 +21,31 @@ def setup_periodic_tasks(sender, **kwargs):
         delete_old_notifications.s(),
         name="delete_old_notifications",
     )
-    if not settings.TASK_SUMMARIZE_TRIAGE_DISABLED:
+    if settings.TASK_SUMMARIZE_TRIAGE:
         sender.add_periodic_task(
             crontab(hour="*/4", minute="59"),
             summarise_triage.s(),
             name="summarise_triage",
         )
-    if not settings.TASK_SUMMARIZE_TESTS_DISABLED:
+    if settings.TASK_SUMMARIZE_TESTS:
         sender.add_periodic_task(
             crontab(hour="23", minute="59"),
             summarise_tests.s(),
             name="summarise_tests",
         )
-    if not settings.TASK_SUMMARIZE_FACILITY_CAPACITY_DISABLED:
+    if settings.TASK_SUMMARIZE_FACILITY_CAPACITY:
         sender.add_periodic_task(
             crontab(minute="*/5"),
             summarise_facility_capacity.s(),
             name="summarise_facility_capacity",
         )
-    if not settings.TASK_SUMMARIZE_PATIENT_DISABLED:
+    if settings.TASK_SUMMARIZE_PATIENT:
         sender.add_periodic_task(
             crontab(hour="*/1", minute="59"),
             summarise_patient.s(),
             name="summarise_patient",
         )
-    if not settings.TASK_SUMMARIZE_DISTRICT_PATIENT_DISABLED:
+    if settings.TASK_SUMMARIZE_DISTRICT_PATIENT:
         sender.add_periodic_task(
             crontab(hour="*/1", minute="59"),
             summarise_district_patient.s(),
