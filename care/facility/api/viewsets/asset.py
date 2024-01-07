@@ -1,6 +1,17 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Exists, OuterRef, Q, Subquery
+from django.db.models import (
+    BooleanField,
+    Case,
+    Exists,
+    F,
+    Max,
+    OuterRef,
+    Q,
+    Value,
+    When,
+)
+from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -253,16 +264,25 @@ class AssetViewSet(
                 current_location__facility__id__in=allowed_facilities
             )
 
-        subquery = (
-            AssetAvailabilityRecord.objects.filter(
-                asset=OuterRef("id"),
+        return queryset
+
+    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
+        queryset = super().filter_queryset(queryset)
+        queryset = queryset.annotate(
+            latest_status=Max(
+                Case(
+                    When(
+                        assetavailabilityrecord__status="Down",
+                        then=F("assetavailabilityrecord__timestamp"),
+                    ),
+                    default=Value(None),
+                    output_field=BooleanField(),
+                )
             )
-            .order_by("-timestamp")
-            .values("status")[:1]
         )
 
-        # Annotate each queryset with the latest availability status using the subquery result
-        queryset = queryset.annotate(down=Subquery(subquery))
+        for asset in queryset:
+            setattr(asset, "down", bool(asset.latest_status))
 
         return queryset
 

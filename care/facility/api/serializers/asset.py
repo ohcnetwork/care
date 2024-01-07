@@ -149,7 +149,6 @@ class AssetSerializer(ModelSerializer):
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
     resolved_middleware = ResolvedMiddlewareField(read_only=True)
-
     down = serializers.BooleanField(read_only=True)
 
     class Meta:
