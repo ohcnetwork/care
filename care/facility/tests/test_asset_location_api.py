@@ -78,3 +78,9 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(
             response.data["middleware_address"][0].code, "invalid_domain_name"
         )
+
+    def test_delete_asset_location(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
