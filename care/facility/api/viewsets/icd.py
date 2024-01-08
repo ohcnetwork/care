@@ -23,6 +23,10 @@ class ICDViewSet(ViewSet):
         if q := request.query_params.get("query"):
             query.append(ICD11.label % query_builder(q))
 
+        if _is_leaf := request.query_params.get("is_leaf"):
+            is_leaf: bool = _is_leaf.lower() == "true"
+            query.append(ICD11.is_leaf == int(is_leaf))
+
         result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
             exhaust_results=False
         )
