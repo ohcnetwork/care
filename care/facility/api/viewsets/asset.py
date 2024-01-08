@@ -73,6 +73,7 @@ class AssetLocationViewSet(
     CreateModelMixin,
     UpdateModelMixin,
     GenericViewSet,
+    DestroyModelMixin,
 ):
     queryset = (
         AssetLocation.objects.all().select_related("facility").order_by("-created_date")
