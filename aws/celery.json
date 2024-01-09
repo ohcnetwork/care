@@ -105,6 +105,10 @@
           "value": "https://healthidsbx.abdm.gov.in/api"
         },
         {
+          "name": "ABDM_FACILITY_URL",
+          "value": "https://facilitysbx.abdm.gov.in"
+        },
+        {
           "name": "X_CM_ID",
           "value": "sbx"
         },
