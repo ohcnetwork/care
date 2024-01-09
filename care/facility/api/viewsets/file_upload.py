@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -18,6 +18,7 @@ from care.facility.api.serializers.file_upload import (
     check_permissions,
 )
 from care.facility.models.file_upload import FileUpload
+from care.users.models import User
 
 
 class FileUploadFilter(filters.FilterSet):
@@ -54,6 +55,16 @@ class FileUploadViewSet(
     def get_queryset(self):
         if "file_type" not in self.request.GET:
             raise ValidationError({"file_type": "file_type missing in request params"})
+
+        if self.request.user.user_type in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+        ) and self.request.query_params.get("file_type") in (
+            "PATIENT",
+            "CONSULTATION",
+        ):
+            raise PermissionDenied()
+
         if "associating_id" not in self.request.GET:
             raise ValidationError(
                 {"associating_id": "associating_id missing in request params"}

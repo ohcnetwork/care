@@ -200,6 +200,13 @@ class User(AbstractUser):
         "StateAdmin": 40,
     }
 
+    READ_ONLY_TYPES = (
+        TYPE_VALUE_MAP["StaffReadOnly"],
+        TYPE_VALUE_MAP["NurseReadOnly"],
+        TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+        TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+    )
+
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
     REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)

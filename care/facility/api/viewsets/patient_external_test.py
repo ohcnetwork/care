@@ -83,6 +83,12 @@ class PatientExternalTestViewSet(
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get_queryset(self):
+        if self.request.user.user_type in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+        ):
+            return PermissionDenied()
+
         queryset = self.queryset
         if not self.request.user.is_superuser:
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:

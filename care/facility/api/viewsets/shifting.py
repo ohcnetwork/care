@@ -191,7 +191,7 @@ class ShifitngRequestCommentViewSet(
     lookup_field = "external_id"
     queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         queryset = self.queryset.filter(

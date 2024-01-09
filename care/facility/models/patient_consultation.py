@@ -291,12 +291,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     @staticmethod
     def has_write_permission(request):
-        if not ConsultationRelatedPermissionMixin.has_write_permission(request):
-            return False
-        return (
-            request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
         )
 
     def has_object_read_permission(self, request):
@@ -329,33 +326,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         )
 
     def has_object_update_permission(self, request):
-        if not super().has_object_update_permission(request):
-            return False
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and request.user in self.patient.facility.users.all()
-            )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        return super().has_object_update_permission(
+            request
+        ) and self.has_object_read_permission(request)
 
     def has_object_discharge_patient_permission(self, request):
         return self.has_object_update_permission(request)

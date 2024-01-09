@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -13,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.notification import NotificationSerializer
 from care.facility.models.notification import Notification
+from care.users.models import User
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_facility_queryset
@@ -67,6 +68,8 @@ class NotificationViewSet(
     @action(detail=False, methods=["POST"])
     def notify(self, request, *args, **kwargs):
         user = request.user
+        if user.user_type < User.TYPE_VALUE_MAP["Doctor"]:
+            raise PermissionDenied()
         if "facility" not in request.data or request.data["facility"] == "":
             raise ValidationError({"facility": "is required"})
         if "message" not in request.data or request.data["message"] == "":
