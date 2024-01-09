@@ -36,7 +36,7 @@ littletable = "==2.2.3"
 newrelic = "==9.3.0"
 pillow = "==10.1.0"
 psycopg = "==3.1.14"
-pycryptodome = "==3.19.0"
+pycryptodome = "==3.19.1"
 pydantic = "==1.10.12" # fix for fhir.resources < 7.0.2
 pyjwt = "==2.8.0"
 python-slugify = "==8.0.1"
