@@ -81,7 +81,7 @@ DISCHARGE_REASON_CHOICES = [
 ]
 
 
-class NewDiseaseReasonEnum(IntegerChoices):
+class NewDischargeReasonEnum(IntegerChoices):
     UNKNOWN = -1, _("Unknown")
     RECOVERED = 1, _("Recovered")
     REFERRED = 2, _("Referred")
@@ -89,7 +89,7 @@ class NewDiseaseReasonEnum(IntegerChoices):
     LAMA = 4, _("LAMA")
 
 
-NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDiseaseReasonEnum]
+NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
 
 
 class DiseaseStatusEnum(enum.IntEnum):
