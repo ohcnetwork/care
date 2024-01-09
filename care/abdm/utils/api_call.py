@@ -349,11 +349,17 @@ class AbdmGateway:
         self.api = APIGateway("abdm_gateway", None)
 
     def get_hip_id_by_health_id(self, health_id):
-        return (
-            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
-            .first()
-            .patientregistration.facility.healthfacility.hf_id
-        )
+        abha_number = AbhaNumber.objects.filter(
+            Q(abha_number=health_id) | Q(health_id=health_id)
+        ).first()
+        if not abha_number:
+            raise Exception("No ABHA Number found")
+
+        patient_facility = abha_number.patientregistration.last_consultation.facility
+        if not hasattr(patient_facility, "healthfacility"):
+            raise Exception("Health Facility not linked")
+
+        return patient_facility.healthfacility.hf_id
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
@@ -404,16 +410,7 @@ class AbdmGateway:
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
         request_id = str(uuid.uuid4())
 
-        """
-        data = {
-            healthId,
-            name,
-            gender,
-            dateOfBirth,
-        }
-        """
         self.temp_memory[request_id] = data
-
         if "authMode" in data and data["authMode"] == "DIRECT":
             self.init(request_id)
             return
@@ -722,7 +719,7 @@ class AbdmGateway:
                 ),
                 "statusNotification": {
                     "sessionStatus": "TRANSFERRED",
-                    "hipId": self.get_hip_id_by_health_id(data["health_id"]),
+                    "hipId": self.get_hip_id_by_health_id(data["healthId"]),
                     "statusResponses": list(
                         map(
                             lambda context: {
