@@ -87,24 +87,34 @@ class HipViewSet(GenericViewSet):
                     pincode=patient_data["address"]["pincode"],
                 )
 
+                try:
+                    self.get_linking_token(
+                        {
+                            "healthId": patient_data["healthId"]
+                            or patient_data["healthIdNumber"],
+                            "name": patient_data["name"],
+                            "gender": patient_data["gender"],
+                            "dateOfBirth": str(
+                                datetime.strptime(
+                                    f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
+                                    "%Y-%m-%d",
+                                )
+                            )[0:10],
+                        }
+                    )
+                except Exception:
+                    return Response(
+                        {
+                            "status": "FAILED",
+                            "healthId": patient_data["healthId"]
+                            or patient_data["healthIdNumber"],
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
                 abha_number.save()
                 patient.abha_number = abha_number
                 patient.save()
-
-                self.get_linking_token(
-                    {
-                        "healthId": patient_data["healthId"]
-                        or patient_data["healthIdNumber"],
-                        "name": patient_data["name"],
-                        "gender": patient_data["gender"],
-                        "dateOfBirth": str(
-                            datetime.strptime(
-                                f"{patient_data['yearOfBirth']}-{patient_data['monthOfBirth']}-{patient_data['dayOfBirth']}",
-                                "%Y-%m-%d",
-                            )
-                        )[0:10],
-                    }
-                )
 
             payload = {
                 "requestId": str(uuid.uuid4()),
