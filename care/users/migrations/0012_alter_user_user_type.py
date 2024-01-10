@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("users", "0010_rename_skills"),
+        ("users", "0011_user_video_connect_link"),
     ]
 
     operations = [

@@ -25,7 +25,7 @@ def migrate_nurse_to_staff(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("users", "0011_alter_user_user_type"),
+        ("users", "0012_alter_user_user_type"),
     ]
 
     operations = [
