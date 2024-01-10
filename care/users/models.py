@@ -239,6 +239,7 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
+    video_connect_link = models.URLField(blank=True, null=True)
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])

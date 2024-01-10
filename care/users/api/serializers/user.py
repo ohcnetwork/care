@@ -283,6 +283,7 @@ class UserSerializer(SignUpSerializer):
             "first_name",
             "last_name",
             "email",
+            "video_connect_link",
             "user_type",
             "doctor_qualification",
             "doctor_experience_commenced_on",
@@ -375,6 +376,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "home_facility_object",
             "doctor_qualification",
             "doctor_experience_commenced_on",
+            "video_connect_link",
             "doctor_medical_council_registration",
             "skills",
         )
@@ -411,4 +413,5 @@ class UserListSerializer(serializers.ModelSerializer):
             "last_login",
             "home_facility_object",
             "home_facility",
+            "video_connect_link",
         )
