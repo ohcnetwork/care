@@ -166,6 +166,13 @@ class PatientSample(FacilityBaseModel):
             or request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
         )
 
+    @staticmethod
+    def has_update_permission(request):
+        return (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["Doctor"]
+        )
+
     def has_object_read_permission(self, request):
         if request.user.user_type < User.TYPE_VALUE_MAP["NurseReadOnly"]:
             return False

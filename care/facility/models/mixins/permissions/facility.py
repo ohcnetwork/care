@@ -39,14 +39,16 @@ class FacilityPermissionMixin(BasePermissionMixin):
             return False
 
     @staticmethod
+    def has_update_permission(request):
+        return request.user.is_authenticated
+
+    @staticmethod
     def has_cover_image_permission(request):
-        # Returning true here as the permission is validated at object level for this action
-        return True
+        return request.user.is_authenticated
 
     @staticmethod
     def has_cover_image_delete_permission(request):
-        # Returning true here as the permission is validated at object level for this action
-        return True
+        return request.user.is_authenticated
 
     def has_object_read_permission(self, request):
         return (
@@ -65,19 +67,22 @@ class FacilityPermissionMixin(BasePermissionMixin):
         )
 
     def has_object_write_permission(self, request):
-        if request.user.user_type in User.READ_ONLY_TYPES:
-            return False
-        if request.user.user_type < User.TYPE_VALUE_MAP["Staff"]:  # todo Temporary
-            return False
-        return self.has_object_read_permission(request)
+        print(
+            request.user.user_type not in User.READ_ONLY_TYPES,
+            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"],
+            self.has_object_read_permission(request),
+        )
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            and self.has_object_read_permission(request)
+        )
 
     def has_object_update_permission(self, request):
-        return super().has_object_update_permission(
-            request
-        ) or self.has_object_write_permission(request)
+        return self.has_object_write_permission(request)
 
     def has_object_destroy_permission(self, request):
-        return self.has_object_read_permission(request)
+        return self.has_object_update_permission(request)
 
     def has_object_cover_image_permission(self, request):
         return self.has_object_update_permission(request)
@@ -128,3 +133,6 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
             or request.user.is_superuser
             or request.user in self.facility.users.all()
         )
+
+    def has_object_update_permission(self, request):
+        return self.has_object_write_permission(request)
