@@ -16,7 +16,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -64,6 +64,17 @@ class PatientExternalTestFilter(filters.FilterSet):
     created_date = DateFromToRangeFilter(field_name="created_date")
 
 
+class PatientExternalTestPermission(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.user_type not in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+        )
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
 class PatientExternalTestViewSet(
     RetrieveModelMixin,
     ListModelMixin,
@@ -77,18 +88,12 @@ class PatientExternalTestViewSet(
         .all()
         .order_by("-id")
     )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, PatientExternalTestPermission)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get_queryset(self):
-        if self.request.user.user_type in (
-            User.TYPE_VALUE_MAP["StaffReadOnly"],
-            User.TYPE_VALUE_MAP["Staff"],
-        ):
-            return PermissionDenied()
-
         queryset = self.queryset
         if not self.request.user.is_superuser:
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:

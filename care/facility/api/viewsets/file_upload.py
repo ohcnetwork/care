@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -7,7 +7,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.file_upload import (
@@ -26,6 +26,25 @@ class FileUploadFilter(filters.FilterSet):
     is_archived = filters.BooleanFilter(field_name="is_archived")
 
 
+class FileUploadPermission(BasePermission):
+    def has_permission(self, request, view) -> bool:
+        return not (
+            request.user.user_type
+            in (
+                User.TYPE_VALUE_MAP["StaffReadOnly"],
+                User.TYPE_VALUE_MAP["Staff"],
+            )
+            and request.query_params.get("file_type")
+            in (
+                "PATIENT",
+                "CONSULTATION",
+            )
+        )
+
+    def has_object_permission(self, request, view, obj) -> bool:
+        return self.has_permission(request, view)
+
+
 class FileUploadViewSet(
     CreateModelMixin,
     RetrieveModelMixin,
@@ -37,7 +56,7 @@ class FileUploadViewSet(
     queryset = (
         FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
     )
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FileUploadPermission]
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FileUploadFilter
@@ -55,15 +74,6 @@ class FileUploadViewSet(
     def get_queryset(self):
         if "file_type" not in self.request.GET:
             raise ValidationError({"file_type": "file_type missing in request params"})
-
-        if self.request.user.user_type in (
-            User.TYPE_VALUE_MAP["StaffReadOnly"],
-            User.TYPE_VALUE_MAP["Staff"],
-        ) and self.request.query_params.get("file_type") in (
-            "PATIENT",
-            "CONSULTATION",
-        ):
-            raise PermissionDenied()
 
         if "associating_id" not in self.request.GET:
             raise ValidationError(
