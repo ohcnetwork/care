@@ -28,18 +28,21 @@ class FileUploadFilter(filters.FilterSet):
 
 class FileUploadPermission(BasePermission):
     def has_permission(self, request, view) -> bool:
-        return not (
-            request.user.user_type
-            in (
-                User.TYPE_VALUE_MAP["StaffReadOnly"],
-                User.TYPE_VALUE_MAP["Staff"],
-            )
-            and request.query_params.get("file_type")
-            in (
-                "PATIENT",
-                "CONSULTATION",
-            )
-        )
+        if request.user.user_type in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+        ):
+            if request.method == "GET":
+                return request.query_params.get("file_type") not in (
+                    "PATIENT",
+                    "CONSULTATION",
+                )
+            else:
+                return request.data.get("file_type") not in (
+                    "PATIENT",
+                    "CONSULTATION",
+                )
+        return True
 
     def has_object_permission(self, request, view, obj) -> bool:
         return self.has_permission(request, view)
