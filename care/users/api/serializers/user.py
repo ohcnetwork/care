@@ -1,24 +1,21 @@
 from datetime import date
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
 
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
-from care.facility.models import READ_ONLY_USER_TYPES, Facility, FacilityUser
+from care.facility.models import Facility, FacilityUser
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
     StateSerializer,
 )
 from care.users.api.serializers.skill import UserSkillSerializer
-from care.users.models import GENDER_CHOICES
+from care.users.models import GENDER_CHOICES, User
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-
-User = get_user_model()
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -186,8 +183,8 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
-            if validated["user_type"] not in READ_ONLY_USER_TYPES:
+        if self.context["created_by"].user_type in User.READ_ONLY_TYPES:
+            if validated["user_type"] not in User.READ_ONLY_TYPES:
                 raise exceptions.ValidationError(
                     {
                         "user_type": [
@@ -197,7 +194,8 @@ class UserCreateSerializer(SignUpSerializer):
                 )
 
         if (
-            self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
+            self.context["created_by"].user_type
+            in (User.TYPE_VALUE_MAP["Staff"], User.TYPE_VALUE_MAP["Nurse"])
             and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
         ):
             pass
