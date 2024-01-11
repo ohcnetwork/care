@@ -69,6 +69,8 @@ class PatientExternalTestPermission(BasePermission):
         return request.user.user_type not in (
             User.TYPE_VALUE_MAP["StaffReadOnly"],
             User.TYPE_VALUE_MAP["Staff"],
+            User.TYPE_VALUE_MAP["NurseReadOnly"],
+            User.TYPE_VALUE_MAP["Nurse"],
         )
 
     def has_object_permission(self, request, view, obj):
