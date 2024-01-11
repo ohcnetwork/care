@@ -13,6 +13,10 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.bed = cls.create_bed(cls.facility, cls.asset_location)
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
     def test_list_asset_locations(self):
