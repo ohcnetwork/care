@@ -49,7 +49,10 @@ from care.facility.models import (
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import DISEASE_STATUS_DICT
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_DICT,
+    NewDischargeReasonEnum,
+)
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -139,8 +142,8 @@ class PatientFilterSet(filters.FilterSet):
     last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__kasp_enabled_date"
     )
-    last_consultation_admission_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__admission_date"
+    last_consultation_encounter_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__encounter_date"
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__discharge_date"
@@ -177,9 +180,9 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
     )
-    last_consultation_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__discharge_reason",
-        choices=DISCHARGE_REASON_CHOICES,
+    last_consultation__new_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__new_discharge_reason",
+        choices=NewDischargeReasonEnum.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"
@@ -332,7 +335,7 @@ class PatientViewSet(
         "date_declared_positive",
         "date_of_result",
         "last_vaccinated_date",
-        "last_consultation_admission_date",
+        "last_consultation_encounter_date",
         "last_consultation_discharge_date",
         "last_consultation_symptoms_onset_date",
     ]

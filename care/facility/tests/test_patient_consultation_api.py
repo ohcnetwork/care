@@ -8,6 +8,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
 )
+from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.facility.models.patient_consultation import (
     CATEGORY_CHOICES,
     PatientConsultation,
@@ -100,23 +101,20 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
 
     def test_create_consultation_treating_physician_invalid_user(self):
-        consultation = self.create_admission_consultation(
-            suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-        )
+        consultation = self.create_admission_consultation(suggestion="A")
         res = self.update_consultation(
-            consultation, treating_physician=self.doctor.id, suggestion="A"
+            consultation, treating_physician=self.user.id, suggestion="A"
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_discharge_as_recovered_preadmission(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2002-04-01T16:30:00Z",
             discharge_notes="Discharge as recovered before admission",
         )
@@ -125,11 +123,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_recovered_future(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2319-04-01T15:30:00Z",
             discharge_notes="Discharge as recovered in the future",
         )
@@ -138,11 +136,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_recovered_after_admission(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2020-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered after admission before future",
         )
@@ -151,11 +149,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_expired_pre_admission(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="EXP",
+            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
             death_datetime="2002-04-01T16:30:00Z",
             discharge_notes="Death before admission",
             death_confirmed_doctor="Dr. Test",
@@ -165,11 +163,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_expired_future(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="EXP",
+            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
             death_datetime="2319-04-01T15:30:00Z",
             discharge_notes="Death in the future",
             death_confirmed_doctor="Dr. Test",
@@ -179,11 +177,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_expired_after_admission(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="EXP",
+            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
             death_datetime="2020-04-02T15:30:00Z",
             discharge_notes="Death after admission before future",
             death_confirmed_doctor="Dr. Test",
@@ -194,11 +192,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_discharge_as_recovered_with_expired_fields(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2023-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered with expired fields",
             death_datetime="2023-04-02T15:30:00Z",
@@ -212,11 +210,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_external_null(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with null referred_to_external",
             referred_to_external=None,
@@ -226,11 +224,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_external_empty_string(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with empty referred_to_external",
             referred_to_external="",
@@ -240,11 +238,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_empty_facility(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with empty referred_to_external",
             referred_to=None,
@@ -254,11 +252,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_and_external_together(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with null referred_to_external",
             referred_to_external="External Facility",
@@ -269,12 +267,12 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_valid_value(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         referred_to_external = "Test Hospital"
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             referred_to_external=referred_to_external,
         )
@@ -283,12 +281,12 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_referred_to_external_valid_value(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         referred_to_external = "Test Hospital"
         res = self.discharge(
             consultation,
-            discharge_reason="REF",
+            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with valid referred_to_external",
             referred_to_external=referred_to_external,
@@ -332,6 +330,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_medico_legal_case(self):
         consultation = self.create_admission_consultation(
             medico_legal_case=True,
+            encounter_date=make_aware(datetime.datetime(2023, 4, 1, 15, 30, 00)),
         )
         url = self.get_url(consultation)
 
@@ -347,7 +346,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         # Test Patch after discharge
         response = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with valid referred_to_external",
             medico_legal_case=False,
@@ -365,11 +364,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_update_consultation_after_discharge(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.discharge(
             consultation,
-            discharge_reason="REC",
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
             discharge_date="2020-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered after admission before future",
         )
@@ -383,7 +382,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_add_diagnoses_and_duplicate_diagnoses(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         diagnosis = ICD11Diagnosis.objects.all()[0].id
         res = self.add_diagnosis(
@@ -404,7 +403,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_add_diagnosis_inactive(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         diagnosis = ICD11Diagnosis.objects.first().id
         res = self.add_diagnosis(
@@ -425,7 +424,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def mark_inactive_diagnosis_as_principal(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         diagnosis = ICD11Diagnosis.objects.first().id
         res = self.add_diagnosis(
@@ -451,7 +450,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_change_diagnosis(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.add_diagnosis(
             consultation,
@@ -472,7 +471,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_add_multiple_principal_diagnosis(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.add_diagnosis(
             consultation,
@@ -492,7 +491,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def test_add_principal_edit_as_inactive_add_principal(self):
         consultation = self.create_admission_consultation(
             suggestion="A",
-            admission_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
         )
         res = self.add_diagnosis(
             consultation,

@@ -31,8 +31,8 @@ from care.facility.models.icd11_diagnosis import (
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
+    NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
 )
@@ -111,8 +111,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
-    discharge_reason = serializers.ChoiceField(
-        choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
+    new_discharge_reason = serializers.ChoiceField(
+        choices=NewDischargeReasonEnum.choices, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
 
@@ -367,7 +367,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             and last_consultation.suggestion == SuggestionChoices.A
             and last_consultation.discharge_date
             and last_consultation.discharge_date + timedelta(days=30)
-            > consultation.admission_date
+            > consultation.encounter_date
         ):
             consultation.is_readmission = True
         consultation.save()
@@ -473,6 +473,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_encounter_date(self, value):
+        if value > now():
+            raise ValidationError(
+                {"encounter_date": "This field value cannot be in the future."}
+            )
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
@@ -524,17 +531,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to"] = None
                 elif validated.get("referred_to"):
                     validated["referred_to_external"] = None
-            if validated["suggestion"] is SuggestionChoices.A:
-                if not validated.get("admission_date"):
-                    raise ValidationError(
-                        {
-                            "admission_date": "This field is required as the patient has been admitted."
-                        }
-                    )
-                if validated["admission_date"] > now():
-                    raise ValidationError(
-                        {"admission_date": "This field value cannot be in the future."}
-                    )
 
         if "action" in validated:
             if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
@@ -562,8 +558,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
 
 class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
-    discharge_reason = serializers.ChoiceField(
-        choices=DISCHARGE_REASON_CHOICES, required=True
+    new_discharge_reason = serializers.ChoiceField(
+        choices=NewDischargeReasonEnum.choices, required=True
     )
     discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
@@ -600,7 +596,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = (
-            "discharge_reason",
+            "new_discharge_reason",
             "referred_to",
             "referred_to_external",
             "discharge_notes",
@@ -623,24 +619,21 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     ],
                 }
             )
-        if attrs.get("discharge_reason") != "EXP":
+        if attrs.get("new_discharge_reason") != NewDischargeReasonEnum.EXPIRED:
             attrs.pop("death_datetime", None)
             attrs.pop("death_confirmed_doctor", None)
 
-        if attrs.get("discharge_reason") == "EXP":
+        if attrs.get("new_discharge_reason") == NewDischargeReasonEnum.EXPIRED:
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
             if attrs.get("death_datetime") > now():
                 raise ValidationError(
                     {"death_datetime": "This field value cannot be in the future."}
                 )
-            if (
-                self.instance.admission_date
-                and attrs.get("death_datetime") < self.instance.admission_date
-            ):
+            if attrs.get("death_datetime") < self.instance.encounter_date:
                 raise ValidationError(
                     {
-                        "death_datetime": "This field value cannot be before the admission date."
+                        "death_datetime": "This field value cannot be before the encounter date."
                     }
                 )
             if not attrs.get("death_confirmed_doctor"):
@@ -654,13 +647,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {"discharge_date": "This field value cannot be in the future."}
             )
-        elif (
-            self.instance.admission_date
-            and attrs.get("discharge_date") < self.instance.admission_date
-        ):
+        elif attrs.get("discharge_date") < self.instance.encounter_date:
             raise ValidationError(
                 {
-                    "discharge_date": "This field value cannot be before the admission date."
+                    "discharge_date": "This field value cannot be before the encounter date."
                 }
             )
         return attrs
@@ -678,16 +668,19 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ).update(end_date=now())
             if patient.abha_number:
                 abha_number = patient.abha_number
-                AbdmGateway().fetch_modes(
-                    {
-                        "healthId": abha_number.abha_number,
-                        "name": abha_number.name,
-                        "gender": abha_number.gender,
-                        "dateOfBirth": str(abha_number.date_of_birth),
-                        "consultationId": abha_number.external_id,
-                        "purpose": "LINK",
-                    }
-                )
+                try:
+                    AbdmGateway().fetch_modes(
+                        {
+                            "healthId": abha_number.abha_number,
+                            "name": abha_number.name,
+                            "gender": abha_number.gender,
+                            "dateOfBirth": str(abha_number.date_of_birth),
+                            "consultationId": abha_number.external_id,
+                            "purpose": "LINK",
+                        }
+                    )
+                except Exception:
+                    pass
             return instance
 
     def create(self, validated_data):
