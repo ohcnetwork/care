@@ -186,6 +186,8 @@ class User(AbstractUser):
         "Volunteer": 5,
         "StaffReadOnly": 9,
         "Staff": 10,
+        "NurseReadOnly": 13,
+        "Nurse": 14,
         "Doctor": 15,
         "Reserved": 20,
         "WardAdmin": 21,
@@ -197,6 +199,13 @@ class User(AbstractUser):
         "StateReadOnlyAdmin": 39,
         "StateAdmin": 40,
     }
+
+    READ_ONLY_TYPES = (
+        TYPE_VALUE_MAP["StaffReadOnly"],
+        TYPE_VALUE_MAP["NurseReadOnly"],
+        TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+        TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+    )
 
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 

@@ -180,12 +180,8 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
     )
-    last_consultation_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__discharge_reason",
-        choices=DISCHARGE_REASON_CHOICES,
-    )
-    last_consultation_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__discharge_reason",
+    last_consultation__new_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__new_discharge_reason",
         choices=NewDischargeReasonEnum.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
