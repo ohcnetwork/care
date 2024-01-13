@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+import logging
 
 from django.core.cache import cache
 from rest_framework import status
@@ -14,6 +15,8 @@ from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from config.authentication import ABDMAuthentication
 
+logger = logging.getLogger(__name__)
+
 
 class OnFetchView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
@@ -25,7 +28,14 @@ class OnFetchView(GenericAPIView):
         try:
             AbdmGateway().init(data["resp"]["requestId"])
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            logger.warning(
+                f"Error: OnFetchView::post failed while initialising ABDM Gateway, Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {"error": "Error: Initialising ABDM Gateway failed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -346,10 +356,14 @@ class RequestDataView(GenericAPIView):
                 }
             )
         except Exception as e:
+            logger.warning(
+                f"Error: RequestDataView::post failed to notify (health-information/notify). Reason: {e}",
+                exc_info=True,
+            )
             return Response(
                 {
                     "detail": "Failed to notify (health-information/notify)",
-                    "error": str(e),
+                    "error": "Error: Failed to notify",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

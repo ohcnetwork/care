@@ -1,6 +1,7 @@
 # ABDM HealthID APIs
 
 from datetime import datetime
+import logging
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -30,6 +31,9 @@ from care.facility.models.patient import PatientConsultation, PatientRegistratio
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
 from config.ratelimit import ratelimit
+
+
+logger = logging.getLogger(__name__)
 
 
 # API for Generating OTP for HealthID
@@ -363,8 +367,15 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     }
                 )
             except Exception as e:
+                logger.warning(
+                    f"Error: ABDMHealthIDViewSet::link_via_qr failed to fetch nodes. Reason: {e}",
+                    exc_info=True,
+                )
                 return Response(
-                    {"detail": "Failed to fetch modes", "error": str(e)},
+                    {
+                        "detail": "Failed to fetch modes",
+                        "error": "Error: ABDM Gateway node fetch failed",
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -419,8 +430,16 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 }
             )
         except Exception as e:
+            logger.warning(
+                f"Error: ABDMHealthIDViewSet::get_new_linking_token failed to fetch nodes. Reason: {e}",
+                exc_info=True,
+            )
+
             return Response(
-                {"detail": "Failed to fetch modes", "error": str(e)},
+                {
+                    "detail": "Failed to fetch modes",
+                    "error": "Error: failed to fetch nodes.",
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -463,8 +482,16 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 }
             )
         except Exception as e:
+            logger.warning(
+                f"Error: ABDMHealthIDViewSet::add_care_context failed. Reason: {e}",
+                exc_info=True,
+            )
+
             return Response(
-                {"detail": "Failed to add care context", "error": str(e)},
+                {
+                    "detail": "Failed to add care context",
+                    "error": "Error: Failed to integrate care.",
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -496,8 +523,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 }
             )
         except Exception as e:
+            logger.warning(
+                f"Error: ABDMHealthIDViewSet::patient_sms_notify failed to send SMS. Reason: {e}",
+                exc_info=True,
+            )
+
             return Response(
-                {"detail": "Failed to send SMS", "error": str(e)},
+                {"detail": "Failed to send SMS", "error": "Error: SMS not sent."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
