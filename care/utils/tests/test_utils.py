@@ -123,7 +123,7 @@ class TestUtils:
         """
 
         return {
-            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
+            "user_type": user_type or User.TYPE_VALUE_MAP["Nurse"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
@@ -160,7 +160,7 @@ class TestUtils:
             "state": district.state,
             "district": district,
             "local_body": local_body,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE_MAP["Nurse"],
         }
         data.update(kwargs)
         user = User.objects.create_user(**data)

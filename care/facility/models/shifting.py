@@ -2,7 +2,6 @@ from django.db import models
 
 from care.facility.models import (
     FACILITY_TYPES,
-    READ_ONLY_USER_TYPES,
     FacilityBaseModel,
     pretty_boolean,
     reverse_choices,
@@ -152,29 +151,29 @@ class ShiftingRequest(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+        )
 
     @staticmethod
     def has_read_permission(request):
-        return True
+        return request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
 
     def has_object_read_permission(self, request):
-        return True
+        return request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
 
     def has_object_write_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+        )
 
     def has_object_transfer_permission(self, request):
-        return True
+        return self.has_object_write_permission(request)
 
     def has_object_update_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return self.has_object_write_permission(request)
 
 
 class ShiftingRequestComment(FacilityBaseModel):
@@ -187,3 +186,26 @@ class ShiftingRequestComment(FacilityBaseModel):
         null=True,
     )
     comment = models.TextField(default="", blank=True)
+
+    @staticmethod
+    def has_write_permission(request):
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+        )
+
+    @staticmethod
+    def has_read_permission(request):
+        return request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+
+    def has_object_read_permission(self, request):
+        return request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+
+    def has_object_write_permission(self, request):
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+        )
+
+    def has_object_update_permission(self, request):
+        return self.has_object_write_permission(request)
