@@ -1,7 +1,7 @@
 # ABDM HealthID APIs
 
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -31,7 +31,6 @@ from care.facility.models.patient import PatientConsultation, PatientRegistratio
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
 from config.ratelimit import ratelimit
-
 
 logger = logging.getLogger(__name__)
 
