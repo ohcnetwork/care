@@ -55,3 +55,11 @@ known_third_party = [
   "sentry_sdk",
   "simple_history"
 ]
+
+[tool.black]
+extend-exclude = '''
+/(
+  | migrations
+)/
+
+'''
