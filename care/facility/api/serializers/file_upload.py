@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.timezone import localtime, now
-from jsonschema import ValidationError
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers.shifting import has_facility_permission
 from care.facility.models.facility import Facility
@@ -124,14 +124,14 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
             "original_name",
             "mime_type",
         )
-        write_only_fields = ("associating_id", "mime_type")
+        write_only_fields = ("associating_id",)
 
     def create(self, validated_data):
         user = self.context["request"].user
-        mime_type = validated_data["mime_type"]
+        mime_type = validated_data.pop("mime_type")
 
         if mime_type not in settings.ALLOWED_MIME_TYPES:
-            raise ValidationError("Invalid File Type")
+            raise ValidationError({"detail": "Invalid FIle Type"})
 
         internal_id = check_permissions(
             validated_data["file_type"], validated_data["associating_id"], user
@@ -140,7 +140,6 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
         del validated_data["original_name"]
-        del validated_data["mime_type"]
         file_upload = super().create(validated_data)
         file_upload.signed_url = file_upload.signed_url(mime_type=mime_type)
         return file_upload

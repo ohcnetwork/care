@@ -509,7 +509,7 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
 )
 
-ALLOWED_MIME_TYPES = env.json(
+ALLOWED_MIME_TYPES = env.list(
     "ALLOWED_MIME_TYPES",
     default=[
         # Images
