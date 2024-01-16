@@ -18,13 +18,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="historicalpatientregistration",
-            name="is_postpartum",
-            field=models.BooleanField(
-                default=False, verbose_name="Is the patient post partum (<6 weeks)?"
-            ),
-        ),
-        migrations.AddField(
-            model_name="historicalpatientregistration",
             name="last_menstruation_start_date",
             field=models.DateField(
                 default=None, null=True, verbose_name="Last Menstruation Start Date"
@@ -35,13 +28,6 @@ class Migration(migrations.Migration):
             name="date_of_delivery",
             field=models.DateField(
                 default=None, null=True, verbose_name="Date of Delivery"
-            ),
-        ),
-        migrations.AddField(
-            model_name="patientregistration",
-            name="is_postpartum",
-            field=models.BooleanField(
-                default=False, verbose_name="Is the patient post partum (<6 weeks)?"
             ),
         ),
         migrations.AddField(

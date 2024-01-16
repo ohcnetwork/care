@@ -122,7 +122,6 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_vaccinated_date"
     )
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
-    is_postpartum = filters.BooleanFilter(field_name="is_postpartum")
     last_menstruation_start_date = filters.DateFromToRangeFilter(
         field_name="last_menstruation_start_date"
     )
