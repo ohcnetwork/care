@@ -93,20 +93,3 @@ class FileUploadViewSet(
         return self.queryset.filter(
             file_type=file_type, associating_id=associating_internal_id
         )
-
-    def is_file_type_allowed(self, file_name):
-        file_extension = file_name.split(".")[-1].lower()
-        return file_extension in [
-            "jpg",
-            "jpeg",
-            "png",
-            "pdf",
-            "doc",
-            "docx",
-        ]
-
-    def perform_create(self, serializer):
-        file = serializer.validated_data.get("original_name")
-        if not self.is_file_type_allowed(file):
-            raise ValidationError({"detail": "This file type is not allowed."})
-        super().perform_create(serializer)

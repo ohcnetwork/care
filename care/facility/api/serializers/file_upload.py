@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.timezone import localtime, now
 from jsonschema import ValidationError
 from rest_framework import serializers
@@ -108,6 +109,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
     associating_id = serializers.CharField(write_only=True)
     internal_name = serializers.CharField(read_only=True)
     original_name = serializers.CharField(write_only=True)
+    mime_type = serializers.CharField(write_only=True)
 
     class Meta:
         model = FileUpload
@@ -120,11 +122,17 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
             "signed_url",
             "internal_name",
             "original_name",
+            "mime_type",
         )
-        write_only_fields = ("associating_id",)
+        write_only_fields = ("associating_id", "mime_type")
 
     def create(self, validated_data):
         user = self.context["request"].user
+        mime_type = validated_data["mime_type"]
+
+        if mime_type not in settings.ALLOWED_MIME_TYPES:
+            raise ValidationError("Invalid File Type")
+
         internal_id = check_permissions(
             validated_data["file_type"], validated_data["associating_id"], user
         )
@@ -132,7 +140,10 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
         del validated_data["original_name"]
-        return super().create(validated_data)
+        del validated_data["mime_type"]
+        file_upload = super().create(validated_data)
+        file_upload.signed_url = file_upload.signed_url(mime_type=mime_type)
+        return file_upload
 
 
 class FileUploadListSerializer(serializers.ModelSerializer):

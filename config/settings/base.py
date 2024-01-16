@@ -509,6 +509,10 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
 )
 
+ALLOWED_MIME_TYPES = env.json(
+    "ALLOWED_MIME_TYPES", default=["image/png", "image/jpeg", "application/pdf"]
+)
+
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")

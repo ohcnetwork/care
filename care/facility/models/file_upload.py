@@ -83,14 +83,17 @@ class FileUpload(FacilityBaseModel):
             self.internal_name = internal_name
         return super().save(*args, **kwargs)
 
-    def signed_url(self, duration=60 * 60):
+    def signed_url(self, duration=60 * 60, mime_type=None):
         s3Client = boto3.client("s3", **cs_provider.get_client_config())
+        params = {
+            "Bucket": settings.FILE_UPLOAD_BUCKET,
+            "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
+        }
+        if mime_type:
+            params["ContentType"] = mime_type
         return s3Client.generate_presigned_url(
             "put_object",
-            Params={
-                "Bucket": settings.FILE_UPLOAD_BUCKET,
-                "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
-            },
+            Params=params,
             ExpiresIn=duration,  # seconds
         )
 
