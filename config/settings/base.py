@@ -510,7 +510,8 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 
 ALLOWED_MIME_TYPES = env.json(
-    "ALLOWED_MIME_TYPES", default=["image/png", "image/jpeg", "application/pdf"]
+    "ALLOWED_MIME_TYPES",
+    default=["image/png", "image/jpeg", "application/pdf", "audio/mpeg"],
 )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
