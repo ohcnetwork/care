@@ -1,4 +1,5 @@
 import contextlib
+import re
 
 from django.db import connection
 from littletable import Table
@@ -14,11 +15,11 @@ def fetch_from_db():
             {
                 "id": str(diagnosis["id"]),
                 "label": diagnosis["label"],
-                "is_leaf": diagnosis["is_leaf"],
+                "has_code": bool(re.match(r"^[A-Z][A-Z0-9.]+\s", diagnosis["label"])),
                 "chapter": diagnosis["meta_chapter_short"],
             }
-            for diagnosis in ICD11Diagnosis.objects.filter().values(
-                "id", "label", "is_leaf", "meta_chapter_short"
+            for diagnosis in ICD11Diagnosis.objects.values(
+                "id", "label", "meta_chapter_short"
             )
         ]
     return []
