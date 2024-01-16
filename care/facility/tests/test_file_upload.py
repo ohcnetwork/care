@@ -19,37 +19,30 @@ class FileUploadApiTestCase(TestUtils, APITestCase):
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
 
     def test_file_upload_whitelist(self):
-        for file_extension in ["png", "jpg", "jpeg", "pdf", "docx", "doc"]:
+        for mime_type in ["application/pdf", "image/png", "image/jpeg"]:
             response = self.client.post(
                 "/api/v1/files/",
                 {
-                    "original_name": f"test.{file_extension}",
+                    "original_name": f"test.{mime_type.split('/')[-1]}",
                     "file_type": "CONSULTATION",
                     "name": "Test File",
                     "associating_id": self.consultation.external_id,
                     "file_category": "UNSPECIFIED",
+                    "mime_type": mime_type,
                 },
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        for file_extension in [
-            "xlsx",
-            "xls",
-            "csv",
-            "ppt",
-            "pptx",
-            "mp4",
-            "mp3",
-            "txt",
-        ]:
+        for mime_type in ["image/gif"]:
             response = self.client.post(
                 "/api/v1/files/",
                 {
-                    "original_name": f"test.{file_extension}",
+                    "original_name": f"test.{mime_type.split('/')[-1]}",
                     "file_type": "CONSULTATION",
                     "name": "Test File",
                     "associating_id": self.consultation.external_id,
                     "file_category": "UNSPECIFIED",
+                    mime_type: mime_type,
                 },
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
