@@ -44,6 +44,7 @@ from care.facility.models import (
     AssetLocation,
     AssetService,
     AssetTransaction,
+    Bed,
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
@@ -118,6 +119,15 @@ class AssetLocationViewSet(
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+    def destroy(self, request, *args, **kwargs):
+        location = self.get_object()
+
+        linked_beds = Bed.objects.filter(location__external_id=location.external_id)
+        if linked_beds.exists():
+            raise ValidationError("Cannot delete a Location with associated Beds")
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class AssetFilter(filters.FilterSet):
