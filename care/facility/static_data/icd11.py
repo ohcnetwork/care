@@ -6,6 +6,8 @@ from littletable import Table
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 
+DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
+
 
 def fetch_from_db():
     # This is a hack to prevent the migration from failing when the table does not exist
@@ -15,7 +17,7 @@ def fetch_from_db():
             {
                 "id": str(diagnosis["id"]),
                 "label": diagnosis["label"],
-                "has_code": bool(re.match(r"^[A-Z][A-Z0-9.]+\s", diagnosis["label"])),
+                "has_code": bool(re.match(DISEASE_CODE_PATTERN, diagnosis["label"])),
                 "chapter": diagnosis["meta_chapter_short"],
             }
             for diagnosis in ICD11Diagnosis.objects.values(
