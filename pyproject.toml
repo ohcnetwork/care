@@ -55,14 +55,12 @@ known_third_party = [
   "sentry_sdk",
   "simple_history"
 ]
-extend_skip_glob='''
-**/migrations/**
-'''
+extend_skip_glob=["**/migrations/**"]
 
 [tool.black]
-extend-exclude = '''
+extend-exclude = """
 /(
   | migrations
 )/
 
-'''
+"""
