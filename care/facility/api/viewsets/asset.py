@@ -127,6 +127,12 @@ class AssetLocationViewSet(
         if linked_beds.exists():
             raise ValidationError("Cannot delete a Location with associated Beds")
 
+        linked_assets = Asset.objects.filter(
+            current_location__external_id=location.external_id
+        )
+        if linked_assets.exists():
+            raise ValidationError("Cannot delete a Location with associated Assets")
+
         return super().destroy(request, *args, **kwargs)
 
 
