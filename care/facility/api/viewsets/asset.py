@@ -88,6 +88,11 @@ class AssetLocationViewSet(
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
 
+    def get_permissions(self):
+        if self.action == "destroy":
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
     def get_serializer_context(self):
         facility = self.get_facility()
         context = super().get_serializer_context()
@@ -121,14 +126,13 @@ class AssetLocationViewSet(
         serializer.save(facility=self.get_facility())
 
     def destroy(self, request, *args, **kwargs):
-        location = self.get_object()
-
-        linked_beds = Bed.objects.filter(location__external_id=location.external_id)
+        instance = self.get_object()
+        linked_beds = Bed.objects.filter(location__external_id=instance.external_id)
         if linked_beds.exists():
             raise ValidationError("Cannot delete a Location with associated Beds")
 
         linked_assets = Asset.objects.filter(
-            current_location__external_id=location.external_id
+            current_location__external_id=instance.external_id
         )
         if linked_assets.exists():
             raise ValidationError("Cannot delete a Location with associated Assets")
