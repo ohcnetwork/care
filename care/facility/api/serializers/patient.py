@@ -33,6 +33,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
+    NewDischargeReasonEnum,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
@@ -452,24 +453,26 @@ class PatientTransferSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         raise NotImplementedError
 
-    def save(self, **kwargs):
-        self.instance.facility = self.validated_data["facility"]
+    def update(self, instance, validated_data):
+        instance.facility = validated_data["facility"]
 
         with transaction.atomic():
             consultation = PatientConsultation.objects.filter(
-                patient=self.instance, discharge_date__isnull=True
+                patient=instance, discharge_date__isnull=True
             ).first()
 
             if consultation:
                 consultation.discharge_date = now()
-                consultation.discharge_reason = "REF"
+                consultation.new_discharge_reason = NewDischargeReasonEnum.REFERRED
                 consultation.current_bed = None
                 consultation.save()
 
                 ConsultationBed.objects.filter(
                     consultation=consultation, end_date__isnull=True
                 ).update(end_date=now())
-                self.instance.save()
+
+            instance.save()
+            return instance
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):

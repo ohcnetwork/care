@@ -91,7 +91,7 @@ DISCHARGE_REASON_CHOICES = [
 ]
 
 
-class NewDiseaseReasonEnum(IntegerChoices):
+class NewDischargeReasonEnum(IntegerChoices):
     UNKNOWN = -1, _("Unknown")
     RECOVERED = 1, _("Recovered")
     REFERRED = 2, _("Referred")
@@ -99,7 +99,7 @@ class NewDiseaseReasonEnum(IntegerChoices):
     LAMA = 4, _("LAMA")
 
 
-NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDiseaseReasonEnum]
+NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
 
 
 class DiseaseStatusEnum(enum.IntEnum):
@@ -156,3 +156,4 @@ REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
 REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
 REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
+REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)
