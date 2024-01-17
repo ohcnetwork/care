@@ -3,7 +3,6 @@ version: '3.4'
 networks:
   default:
     name: care
-    driver: bridge
 
 services:
   db:
