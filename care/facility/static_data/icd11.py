@@ -1,9 +1,12 @@
 import contextlib
+import re
 
 from django.db import connection
 from littletable import Table
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
+
+DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
 
 
 def fetch_from_db():
@@ -14,11 +17,11 @@ def fetch_from_db():
             {
                 "id": str(diagnosis["id"]),
                 "label": diagnosis["label"],
-                "is_leaf": diagnosis["is_leaf"],
+                "has_code": bool(re.match(DISEASE_CODE_PATTERN, diagnosis["label"])),
                 "chapter": diagnosis["meta_chapter_short"],
             }
-            for diagnosis in ICD11Diagnosis.objects.filter().values(
-                "id", "label", "is_leaf", "meta_chapter_short"
+            for diagnosis in ICD11Diagnosis.objects.values(
+                "id", "label", "meta_chapter_short"
             )
         ]
     return []
