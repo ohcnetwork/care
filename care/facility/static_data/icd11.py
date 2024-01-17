@@ -42,7 +42,7 @@ def load_icd11_diagnosis():
                 ICD11(
                     id=diagnosis[0],
                     label=diagnosis[1],
-                    chapter=diagnosis[3] or "",
+                    chapter=diagnosis[2] or "",
                 ).save()
     Migrator().run()
     print("Done")
