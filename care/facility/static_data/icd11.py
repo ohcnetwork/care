@@ -1,3 +1,4 @@
+import re
 from typing import TypedDict
 
 from django.core.paginator import Paginator
@@ -6,25 +7,24 @@ from redis_om import Field, Migrator
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 from care.utils.static_data.models.base import BaseRedisModel
 
+DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
+
 
 class ICD11Object(TypedDict):
     id: int
     label: str
-    is_leaf: bool
     chapter: str
 
 
 class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
     label: str = Field(index=True, full_text_search=True)
-    is_leaf: int = Field(index=True)
     chapter: str
 
     def get_representation(self) -> ICD11Object:
         return {
             "id": self.id,
             "label": self.label,
-            "is_leaf": bool(self.is_leaf),
             "chapter": self.chapter,
         }
 
@@ -33,17 +33,17 @@ def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
     icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
-        "id", "label", "is_leaf", "meta_chapter_short"
+        "id", "label", "meta_chapter_short"
     )
     paginator = Paginator(icd_objs, 5000)
     for page_number in paginator.page_range:
         for diagnosis in paginator.page(page_number).object_list:
-            ICD11(
-                id=diagnosis[0],
-                label=diagnosis[1],
-                is_leaf=int(diagnosis[2] or 0),
-                chapter=diagnosis[3] or "",
-            ).save()
+            if re.match(DISEASE_CODE_PATTERN, diagnosis[1]):
+                ICD11(
+                    id=diagnosis[0],
+                    label=diagnosis[1],
+                    chapter=diagnosis[3] or "",
+                ).save()
     Migrator().run()
     print("Done")
 
