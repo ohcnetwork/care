@@ -28,7 +28,10 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
-from care.facility.models.patient_base import DISEASE_STATUS_DICT
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_DICT,
+    NewDischargeReasonEnum,
+)
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.shifting import get_shifting_queryset
@@ -155,7 +158,10 @@ class ShiftingViewSet(
                     # Discharge from all other active consultations
                     PatientConsultation.objects.filter(
                         patient=patient, discharge_date__isnull=True
-                    ).update(discharge_date=localtime(now()), discharge_reason="REF")
+                    ).update(
+                        discharge_date=localtime(now()),
+                        new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+                    )
                     ConsultationBed.objects.filter(
                         consultation=patient.last_consultation,
                         end_date__isnull=True,
@@ -191,7 +197,7 @@ class ShifitngRequestCommentViewSet(
     lookup_field = "external_id"
     queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         queryset = self.queryset.filter(

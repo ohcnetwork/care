@@ -54,7 +54,10 @@ from care.facility.models import (
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import DISEASE_STATUS_DICT
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_DICT,
+    NewDischargeReasonEnum,
+)
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -182,9 +185,9 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
     )
-    last_consultation_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__discharge_reason",
-        choices=DISCHARGE_REASON_CHOICES,
+    last_consultation__new_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__new_discharge_reason",
+        choices=NewDischargeReasonEnum.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name="last_consultation__assigned_to"

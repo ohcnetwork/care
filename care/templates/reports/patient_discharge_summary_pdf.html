@@ -848,7 +848,7 @@
         <span class="text-sm text-gray-500">Discharge Reason:</span> {{consultation.get_discharge_reason_display}}
       </p>
     </div>
-    {% if consultation.discharge_reason == 'REC' %}
+    {% if consultation.new_discharge_reason == 1 %}
     {% if discharge_prescriptions %}
     <h4 class="mt-6 font-medium text-gray-500">
       Discharge Prescription Medication:
@@ -962,9 +962,9 @@
       </table>
     </div>
     {% endif %}
-    {% elif consultation.discharge_reason == 'REF' %}
-    {% elif consultation.discharge_reason == 'EXP' %}
-    {% elif consultation.discharge_reason == 'LAMA' %}
+    {% elif consultation.new_discharge_reason == 2 %}
+    {% elif consultation.new_discharge_reason == 3 %}
+    {% elif consultation.new_discharge_reason == 4 %}
     {% endif %}
 
     <p class="mt-6">
