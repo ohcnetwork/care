@@ -131,7 +131,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         mime_type = validated_data.pop("mime_type")
 
         if mime_type not in settings.ALLOWED_MIME_TYPES:
-            raise ValidationError({"detail": "Invalid FIle Type"})
+            raise ValidationError({"detail": "Invalid File Type"})
 
         internal_id = check_permissions(
             validated_data["file_type"], validated_data["associating_id"], user
