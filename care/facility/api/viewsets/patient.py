@@ -224,26 +224,22 @@ class PatientFilterSet(filters.FilterSet):
     def filter_by_diagnoses(self, queryset, name, value):
         if not value:
             return queryset
-
-        diagnosis_ids = value.split(",")
-        queryset = queryset.filter(
-            last_consultation__diagnoses__diagnosis_id__in=diagnosis_ids
-        )
-
+        filter_q = Q(last_consultation__diagnoses__diagnosis_id__in=value.split(","))
         if name == "diagnoses":
-            return queryset.exclude(
+            filter_q &= ~Q(
                 last_consultation__diagnoses__verification_status__in=INACTIVE_CONDITION_VERIFICATION_STATUSES
             )
-
-        verification_status = {
-            "diagnoses_unconfirmed": ConditionVerificationStatus.UNCONFIRMED,
-            "diagnoses_provisional": ConditionVerificationStatus.PROVISIONAL,
-            "diagnoses_differential": ConditionVerificationStatus.DIFFERENTIAL,
-            "diagnoses_confirmed": ConditionVerificationStatus.CONFIRMED,
-        }[name]
-        return queryset.filter(
-            last_consultation__diagnoses__verification_status=verification_status
-        )
+        else:
+            verification_status = {
+                "diagnoses_unconfirmed": ConditionVerificationStatus.UNCONFIRMED,
+                "diagnoses_provisional": ConditionVerificationStatus.PROVISIONAL,
+                "diagnoses_differential": ConditionVerificationStatus.DIFFERENTIAL,
+                "diagnoses_confirmed": ConditionVerificationStatus.CONFIRMED,
+            }[name]
+            filter_q &= Q(
+                last_consultation__diagnoses__verification_status=verification_status
+            )
+        return queryset.filter(filter_q)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

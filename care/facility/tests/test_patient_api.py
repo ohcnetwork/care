@@ -4,6 +4,10 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ICD11Diagnosis,
+)
 from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.utils.tests.test_utils import TestUtils
 
@@ -244,6 +248,27 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.consultation.save()
         cls.patient.last_consultation = cls.consultation
         cls.patient.save()
+        cls.diagnoses = ICD11Diagnosis.objects.filter(is_leaf=True)[10:15]
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[0],
+            verification_status=ConditionVerificationStatus.CONFIRMED,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[1],
+            verification_status=ConditionVerificationStatus.DIFFERENTIAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[2],
+            verification_status=ConditionVerificationStatus.PROVISIONAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[3],
+            verification_status=ConditionVerificationStatus.UNCONFIRMED,
+        )
 
     def get_base_url(self) -> str:
         return "/api/v1/patient/"
@@ -271,6 +296,64 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         self.assertEqual(
             response.data["results"][0]["id"], str(self.patient.external_id)
         )
+
+    def test_filter_by_diagnoses(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses": ",".join([str(x.id) for x in self.diagnoses])},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(self.get_base_url(), {"diagnoses": self.diagnoses[4].id})
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_unconfirmed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_unconfirmed": self.diagnoses[3].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_unconfirmed": self.diagnoses[2].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_provisional(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_provisional": self.diagnoses[2].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_provisional": self.diagnoses[3].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_differential(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_differential": self.diagnoses[1].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_differential": self.diagnoses[0].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_confirmed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_confirmed": self.diagnoses[0].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_confirmed": self.diagnoses[2].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):
