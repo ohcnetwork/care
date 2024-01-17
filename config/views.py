@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.response import Response
 
 
@@ -7,4 +8,4 @@ def home_view(request):
 
 
 def ping(request):
-    return Response({"status": "OK"})
+    return Response(status=status.HTTP_200_OK)
