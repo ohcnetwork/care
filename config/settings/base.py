@@ -509,6 +509,45 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
     default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
 )
 
+ALLOWED_MIME_TYPES = env.list(
+    "ALLOWED_MIME_TYPES",
+    default=[
+        # Images
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/bmp",
+        "image/webp",
+        "image/svg+xml",
+        # Videos
+        "video/mp4",
+        "video/mpeg",
+        "video/x-msvideo",
+        "video/quicktime",
+        "video/x-ms-wmv",
+        "video/x-flv",
+        "video/webm",
+        # Audio
+        "audio/mpeg",
+        "audio/wav",
+        "audio/aac",
+        "audio/ogg",
+        "audio/midi",
+        "audio/x-midi",
+        "audio/webm",
+        # Documents
+        "text/plain",
+        "text/csv",
+        "application/rtf",
+        "application/msword",
+        "application/vnd.oasis.opendocument.text",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.oasis.opendocument.spreadsheet",
+    ],
+)
+
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
