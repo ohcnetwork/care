@@ -140,7 +140,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
         del validated_data["original_name"]
-        file_upload = super().create(validated_data)
+        file_upload: FileUpload = super().create(validated_data)
         file_upload.signed_url = file_upload.signed_url(mime_type=mime_type)
         return file_upload
 
