@@ -24,7 +24,6 @@ from .models import (
     Inventory,
     InventoryItem,
     InventoryLog,
-    MetaICD11Diagnosis,
     PatientExternalTest,
     PatientInvestigation,
     PatientInvestigationGroup,
@@ -212,4 +211,3 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
-admin.site.register(MetaICD11Diagnosis)
