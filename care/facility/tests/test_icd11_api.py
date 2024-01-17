@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.utils.tests.test_utils import TestUtils
@@ -40,3 +41,13 @@ class TestICD11Api(TestUtils, APITestCase):
 
         res = self.search_icd11("1A00 Cholera")
         self.assertContains(res, "1A00 Cholera")
+
+    def test_get_icd11_by_valid_id(self):
+        res = self.client.get("/api/v1/icd/133207228/")
+        self.assertEqual(
+            res.data["label"], "CA22 Chronic obstructive pulmonary disease"
+        )
+
+    def test_get_icd11_by_invalid_id(self):
+        res = self.client.get("/api/v1/icd/invalid/")
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
