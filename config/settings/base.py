@@ -488,42 +488,83 @@ SEND_SMS_NOTIFICATION = False
 
 # Cloud and Buckets
 # ------------------------------------------------------------------------------
-CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
 
-CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
 
-if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
-    print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")
+BUCKET_PROVIDER = env("BUCKET_PROVIDER", default="aws").upper()
+BUCKET_REGION = env("BUCKET_REGION", default="ap-south-1")
+BUCKET_KEY = env("BUCKET_KEY", default="")
+BUCKET_SECRET = env("BUCKET_SECRET", default="")
+BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
+BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
 
-if USE_S3 := env.bool("USE_S3", default=False):
-    # aws settings
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_DEFAULT_ACL = "public-read"
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
+    print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
-# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
-FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
-FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default=BUCKET_KEY)
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default=BUCKET_SECRET)
 FILE_UPLOAD_BUCKET_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_ENDPOINT",
-    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+    "FILE_UPLOAD_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
+)
+FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
+    "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
+    default=BUCKET_EXTERNAL_ENDPOINT
+    if BUCKET_ENDPOINT
+    else FILE_UPLOAD_BUCKET_ENDPOINT,
+)
+
+ALLOWED_MIME_TYPES = env.list(
+    "ALLOWED_MIME_TYPES",
+    default=[
+        # Images
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/bmp",
+        "image/webp",
+        "image/svg+xml",
+        # Videos
+        "video/mp4",
+        "video/mpeg",
+        "video/x-msvideo",
+        "video/quicktime",
+        "video/x-ms-wmv",
+        "video/x-flv",
+        "video/webm",
+        # Audio
+        "audio/mpeg",
+        "audio/wav",
+        "audio/aac",
+        "audio/ogg",
+        "audio/midi",
+        "audio/x-midi",
+        "audio/webm",
+        # Documents
+        "text/plain",
+        "text/csv",
+        "application/rtf",
+        "application/msword",
+        "application/vnd.oasis.opendocument.text",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.oasis.opendocument.spreadsheet",
+    ],
 )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
-FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
-FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
-FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default=BUCKET_REGION)
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default=BUCKET_KEY)
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default=BUCKET_SECRET)
 FACILITY_S3_BUCKET_ENDPOINT = env(
-    "FACILITY_S3_BUCKET_ENDPOINT",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+    "FACILITY_S3_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
 )
-FACILITY_S3_STATIC_PREFIX = env(
-    "FACILITY_S3_STATIC_PREFIX",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
+    "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
+    default=BUCKET_EXTERNAL_ENDPOINT
+    if BUCKET_ENDPOINT
+    else FACILITY_S3_BUCKET_ENDPOINT,
 )
 
 

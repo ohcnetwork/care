@@ -7,7 +7,6 @@ from care.facility.models import (
     ConsultationDiagnosis,
 )
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
-from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
@@ -31,6 +30,8 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
     created_by = UserBaseMinimumSerializer(read_only=True)
 
     def get_diagnosis_object(self, obj):
+        from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
+
         return get_icd11_diagnosis_object_by_id(obj.diagnosis_id, as_dict=True)
 
     class Meta:

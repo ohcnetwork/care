@@ -14,7 +14,6 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 from care.facility.utils.reports.discharge_summary import (
     generate_discharge_report_signed_url,
 )
@@ -108,6 +107,8 @@ class HcxGatewayViewSet(GenericViewSet):
     @extend_schema(tags=["hcx"], request=MakeClaimSerializer())
     @action(detail=False, methods=["post"])
     def make_claim(self, request):
+        from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
+
         data = request.data
 
         serializer = MakeClaimSerializer(data=data)
