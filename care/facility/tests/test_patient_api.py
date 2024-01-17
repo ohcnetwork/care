@@ -245,9 +245,12 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.patient.last_consultation = cls.consultation
         cls.patient.save()
 
+    def get_base_url(self) -> str:
+        return "/api/v1/patient/"
+
     def test_filter_by_patient_no(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get("/api/v1/patient/?patient_no=IP5678")
+        response = self.client.get(self.get_base_url(), {"patient_no": "IP5678"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
@@ -257,7 +260,11 @@ class PatientFilterTestCase(TestUtils, APITestCase):
     def test_filter_by_location(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(
-            f"/api/v1/patient/?facility={self.facility.external_id}&location={self.location.external_id}"
+            self.get_base_url(),
+            {
+                "facility": self.facility.external_id,
+                "location": self.location.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
