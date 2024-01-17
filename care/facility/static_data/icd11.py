@@ -3,6 +3,7 @@ from typing import TypedDict
 
 from django.core.paginator import Paginator
 from redis_om import Field, Migrator
+from redis_om.model.model import NotFoundError as RedisModelNotFoundError
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 from care.utils.static_data.models.base import BaseRedisModel
@@ -54,7 +55,7 @@ def get_icd11_diagnosis_object_by_id(
     try:
         diagnosis = ICD11.get(diagnosis_id)
         return diagnosis.get_representation() if as_dict else diagnosis
-    except KeyError:
+    except RedisModelNotFoundError:
         return None
 
 
