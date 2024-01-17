@@ -22,11 +22,10 @@ class ICDViewSet(ViewSet):
     def list(self, request):
         from care.facility.static_data.icd11 import ICDDiseases
 
-        queryset = ICDDiseases
+        queryset = ICDDiseases.where(has_code=True)
         if request.GET.get("query", False):
             query = request.GET.get("query")
             queryset = queryset.where(
-                label=queryset.re_match(r".*" + query + r".*", IGNORECASE),
-                is_leaf=True,
+                label=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))
