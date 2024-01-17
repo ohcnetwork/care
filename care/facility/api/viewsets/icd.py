@@ -1,5 +1,6 @@
 from re import IGNORECASE
 
+from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -29,3 +30,11 @@ class ICDViewSet(ViewSet):
                 label=queryset.re_match(r".*" + query + r".*", IGNORECASE)
             )  # can accept regex from FE if needed.
         return Response(serailize_data(queryset[0:100]))
+
+    def retrieve(self, request, pk):
+        from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
+
+        obj = get_icd11_diagnosis_object_by_id(pk, as_dict=True)
+        if not obj:
+            raise Http404
+        return Response(obj)
