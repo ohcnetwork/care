@@ -33,7 +33,7 @@ class OnFetchView(GenericAPIView):
                 exc_info=True,
             )
             return Response(
-                {"error": "Error: Initialising ABDM Gateway failed."},
+                {"detail": "Error: Initialising ABDM Gateway failed."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

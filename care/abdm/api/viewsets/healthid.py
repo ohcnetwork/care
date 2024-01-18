@@ -487,7 +487,6 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             return Response(
                 {
                     "detail": "Failed to add care context",
-                    "error": "Error: Failed to integrate care.",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
