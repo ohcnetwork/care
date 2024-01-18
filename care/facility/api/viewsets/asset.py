@@ -44,7 +44,6 @@ from care.facility.models import (
     AssetLocation,
     AssetService,
     AssetTransaction,
-    Bed,
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
@@ -122,14 +121,9 @@ class AssetLocationViewSet(
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        linked_beds = Bed.objects.filter(location__external_id=instance.external_id)
-        if linked_beds.exists():
+        if instance.bed_set.count():
             raise ValidationError("Cannot delete a Location with associated Beds")
-
-        linked_assets = Asset.objects.filter(
-            current_location__external_id=instance.external_id
-        )
-        if linked_assets.exists():
+        if instance.asset_set.count():
             raise ValidationError("Cannot delete a Location with associated Assets")
 
         return super().destroy(request, *args, **kwargs)
