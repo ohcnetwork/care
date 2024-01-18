@@ -30,5 +30,6 @@ done
 python manage.py migrate --noinput
 python manage.py load_redis_index
 
+touch /tmp/healthy
 
 celery --app=config.celery_app beat --loglevel=info

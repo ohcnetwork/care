@@ -29,4 +29,3 @@ services:
     depends_on:
       - db
       - redis
-      - celery-beat
