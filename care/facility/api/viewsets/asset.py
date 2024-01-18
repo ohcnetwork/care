@@ -88,11 +88,6 @@ class AssetLocationViewSet(
     filter_backends = (drf_filters.SearchFilter,)
     search_fields = ["name"]
 
-    def get_permissions(self):
-        if self.action == "destroy":
-            return [IsAuthenticated()]
-        return super().get_permissions()
-
     def get_serializer_context(self):
         facility = self.get_facility()
         context = super().get_serializer_context()
