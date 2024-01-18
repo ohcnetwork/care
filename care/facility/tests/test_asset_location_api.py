@@ -21,6 +21,9 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
         cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.deleted_asset = cls.create_asset(cls.asset_location)
+        cls.deleted_asset.deleted = True
+        cls.deleted_asset.save()
 
     def test_list_asset_locations(self):
         response = self.client.get(
