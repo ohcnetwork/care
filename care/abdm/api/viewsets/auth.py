@@ -363,7 +363,6 @@ class RequestDataView(GenericAPIView):
             return Response(
                 {
                     "detail": "Failed to notify (health-information/notify)",
-                    "error": "Error: Failed to notify",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

@@ -367,13 +367,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 )
             except Exception as e:
                 logger.warning(
-                    f"Error: ABDMHealthIDViewSet::link_via_qr failed to fetch nodes. Reason: {e}",
+                    f"Error: ABDMHealthIDViewSet::link_via_qr failed to fetch modes. Reason: {e}",
                     exc_info=True,
                 )
                 return Response(
                     {
                         "detail": "Failed to fetch modes",
-                        "error": "Error: ABDM Gateway node fetch failed",
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -430,14 +429,13 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             )
         except Exception as e:
             logger.warning(
-                f"Error: ABDMHealthIDViewSet::get_new_linking_token failed to fetch nodes. Reason: {e}",
+                f"Error: ABDMHealthIDViewSet::get_new_linking_token failed to fetch modes. Reason: {e}",
                 exc_info=True,
             )
 
             return Response(
                 {
                     "detail": "Failed to fetch modes",
-                    "error": "Error: failed to fetch nodes.",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -528,7 +526,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             )
 
             return Response(
-                {"detail": "Failed to send SMS", "error": "Error: SMS not sent."},
+                {"detail": "Failed to send SMS"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
