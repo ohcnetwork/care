@@ -35,6 +35,7 @@ from care.facility.models.patient_base import (
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
@@ -538,8 +539,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         return time.strftime("%H:%M")
 
     def format_diagnoses(diagnosis_ids):
-        from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
-
         diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
         return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
 
