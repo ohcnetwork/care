@@ -615,3 +615,14 @@ HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
 PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")
+
+# Disable summarization tasks
+TASK_SUMMARIZE_TRIAGE = env.bool("TASK_SUMMARIZE_TRIAGE", default=True)
+TASK_SUMMARIZE_TESTS = env.bool("TASK_SUMMARIZE_TESTS", default=True)
+TASK_SUMMARIZE_FACILITY_CAPACITY = env.bool(
+    "TASK_SUMMARIZE_FACILITY_CAPACITY", default=True
+)
+TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
+TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
+    "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
+)
