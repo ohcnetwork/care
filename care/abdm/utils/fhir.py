@@ -34,6 +34,7 @@ from fhir.resources.reference import Reference
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import REVERSE_CONDITION_VERIFICATION_STATUSES
 from care.facility.models.patient_investigation import InvestigationValue
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 
 
 class Fhir:
@@ -137,8 +138,6 @@ class Fhir:
         return self._organization_profile
 
     def _condition(self, diagnosis_id, verification_status):
-        from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
-
         diagnosis = get_icd11_diagnosis_object_by_id(diagnosis_id)
         [code, label] = diagnosis.label.split(" ", 1)
         condition_profile = Condition(

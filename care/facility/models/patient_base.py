@@ -44,6 +44,16 @@ SYMPTOM_CHOICES = [
     (22, "HEAD ACHE"),
     (23, "BLEEDING"),
     (24, "DIZZINESS"),
+    (25, "CHILLS"),
+    (26, "GENERAL WEAKNESS"),
+    (27, "IRRITABILITY"),
+    (28, "CONFUSION"),
+    (29, "ABDOMINAL PAIN"),
+    (30, "JOINT PAIN"),
+    (31, "REDNESS OF EYES"),
+    (32, "ANOREXIA"),
+    (33, "NEW LOSS OF TASTE"),
+    (34, "NEW LOSS OF SMELL"),
 ]
 
 DISEASE_CHOICES_MAP = {

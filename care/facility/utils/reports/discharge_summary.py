@@ -25,6 +25,7 @@ from care.facility.models.icd11_diagnosis import (
     ACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
 )
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.hcx.models.policy import Policy
 
 logger = logging.getLogger(__name__)
@@ -49,8 +50,6 @@ def clear_lock(consultation_ext_id: str):
 
 
 def get_diagnoses_data(consultation: PatientConsultation):
-    from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
-
     entries = (
         consultation.diagnoses.filter(
             verification_status__in=ACTIVE_CONDITION_VERIFICATION_STATUSES

@@ -58,13 +58,16 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
+
 # CACHES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_URL", default="redis://localhost:6379"),
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # Mimicing memcache behavior.
@@ -329,6 +332,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
 # drf-spectacular (schema generation)
@@ -611,3 +615,14 @@ HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
 PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")
+
+# Disable summarization tasks
+TASK_SUMMARIZE_TRIAGE = env.bool("TASK_SUMMARIZE_TRIAGE", default=True)
+TASK_SUMMARIZE_TESTS = env.bool("TASK_SUMMARIZE_TESTS", default=True)
+TASK_SUMMARIZE_FACILITY_CAPACITY = env.bool(
+    "TASK_SUMMARIZE_FACILITY_CAPACITY", default=True
+)
+TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
+TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
+    "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
+)
