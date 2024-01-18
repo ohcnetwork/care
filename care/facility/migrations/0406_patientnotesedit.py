@@ -10,15 +10,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
     PatientNotes = apps.get_model("facility", "PatientNotes")
     PatientNotesEdit = apps.get_model("facility", "PatientNotesEdit")
 
-    notes_without_edits = (
-        PatientNotes.objects.annotate(
-            has_edits=models.Exists(
-                PatientNotesEdit.objects.filter(patient_note=models.OuterRef("pk"))
-            )
-        )
-        .filter(has_edits=False)
-        .order_by("id")
-    )
+    notes_without_edits = PatientNotes.objects.all()
 
     paginator = Paginator(notes_without_edits, 1000)
     for page_number in paginator.page_range:
@@ -39,7 +31,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0404_merge_20231220_2227"),
+        ("facility", "0405_auto_20231211_1930"),
     ]
 
     operations = [

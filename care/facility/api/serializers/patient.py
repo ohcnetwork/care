@@ -475,7 +475,6 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
 
 class PatientNotesEditSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="patient_note.external_id", read_only=True)
     edited_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
@@ -487,7 +486,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    edits = PatientNotesEditSerializer(many=True, read_only=True)
+    last_edited_by = serializers.CharField(read_only=True)
+    last_edited_date = serializers.DateTimeField(read_only=True)
     consultation = ExternalIdSerializerField(
         queryset=PatientConsultation.objects.all(),
         required=False,
@@ -556,11 +556,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "user_type",
             "created_date",
             "modified_date",
-            "edits",
+            "last_edited_by",
+            "last_edited_date",
         )
         read_only_fields = (
             "id",
             "created_date",
             "modified_date",
-            "edits",
+            "last_edited_by",
+            "last_edited_date",
         )
