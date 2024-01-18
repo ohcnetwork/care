@@ -121,9 +121,9 @@ class AssetLocationViewSet(
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance.bed_set.count():
+        if instance.bed_set.filter(deleted=False).count():
             raise ValidationError("Cannot delete a Location with associated Beds")
-        if instance.asset_set.count():
+        if instance.asset_set.filter(deleted=False).count():
             raise ValidationError("Cannot delete a Location with associated Assets")
 
         return super().destroy(request, *args, **kwargs)
