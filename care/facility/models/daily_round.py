@@ -37,6 +37,7 @@ class DailyRound(PatientBaseModel):
         VENTILATOR = 100
         ICU = 200
         AUTOMATED = 300
+        TELEMEDICINE = 400
 
     RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
     RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
@@ -44,10 +45,11 @@ class DailyRound(PatientBaseModel):
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
         ALERT = 5
-        DROWSY = 10
-        STUPOROUS = 15
-        COMATOSE = 20
-        CANNOT_BE_ASSESSED = 25
+        RESPONDS_TO_VOICE = 10
+        RESPONDS_TO_PAIN = 15
+        UNRESPONSIVE = 20
+        AGITATED_OR_CONFUSED = 25
+        ONSET_OF_AGITATION_AND_CONFUSION = 30
 
     ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
 
@@ -122,7 +124,9 @@ class DailyRound(PatientBaseModel):
     ]
 
     consultation = models.ForeignKey(
-        PatientConsultation, on_delete=models.PROTECT, related_name="daily_rounds"
+        PatientConsultation,
+        on_delete=models.PROTECT,
+        related_name="daily_rounds",
     )
     temperature = models.DecimalField(
         decimal_places=2,
@@ -158,9 +162,6 @@ class DailyRound(PatientBaseModel):
     current_health = models.IntegerField(
         default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
     )
-    recommend_discharge = models.BooleanField(
-        default=False, verbose_name="Recommend Discharging Patient"
-    )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
 
@@ -168,7 +169,10 @@ class DailyRound(PatientBaseModel):
     created_by_telemedicine = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="update_created_user"
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="update_created_user",
     )
 
     last_edited_by = models.ForeignKey(
@@ -265,7 +269,8 @@ class DailyRound(PatientBaseModel):
     rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
-        choices=VentilatorInterfaceChoice, default=VentilatorInterfaceType.UNKNOWN.value
+        choices=VentilatorInterfaceChoice,
+        default=VentilatorInterfaceType.UNKNOWN.value,
     )
     ventilator_mode = models.IntegerField(
         choices=VentilatorModeChoice, default=VentilatorModeType.UNKNOWN.value
@@ -339,7 +344,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
     pain_scale_enhanced = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)]
+        default=list,
+        validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)],
     )
     ph = models.DecimalField(
         decimal_places=2,
@@ -457,9 +463,26 @@ class DailyRound(PatientBaseModel):
         return value
 
     def update_pressure_sore(self):
-        area_interval_points = [0.1, 0.3, 0.7, 1.1, 2.1, 3.1, 4.1, 8.1, 12.1, 25]
+        area_interval_points = [
+            0.1,
+            0.3,
+            0.7,
+            1.1,
+            2.1,
+            3.1,
+            4.1,
+            8.1,
+            12.1,
+            25,
+        ]
         exudate_amounts = ["None", "Light", "Moderate", "Heavy"]
-        tissue_types = ["Closed", "Epithelial", "Granulation", "Slough", "Necrotic"]
+        tissue_types = [
+            "Closed",
+            "Epithelial",
+            "Granulation",
+            "Slough",
+            "Necrotic",
+        ]
 
         def cal_push_score(item):
             push_score = item.get("base_score", 0.0)
@@ -497,18 +520,10 @@ class DailyRound(PatientBaseModel):
         super(DailyRound, self).save(*args, **kwargs)
 
     @staticmethod
-    def has_write_permission(request):
-        if "/analyse" not in request.get_full_path():
-            if (
-                request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-                or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-            ):
-                return False
-        return DailyRound.has_read_permission(request)
-
-    @staticmethod
     def has_read_permission(request):
+        if request.user.user_type < User.TYPE_VALUE_MAP["NurseReadOnly"]:
+            return False
+
         consultation = get_object_or_404(
             PatientConsultation,
             external_id=request.parser_context["kwargs"]["consultation_external_id"],
@@ -529,7 +544,21 @@ class DailyRound(PatientBaseModel):
             )
         )
 
+    @staticmethod
+    def has_write_permission(request):
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and DailyRound.has_read_permission(request)
+        )
+
+    @staticmethod
+    def has_analyse_permission(request):
+        return DailyRound.has_read_permission(request)
+
     def has_object_read_permission(self, request):
+        if request.user.user_type < User.TYPE_VALUE_MAP["NurseReadOnly"]:
+            return False
+
         return (
             request.user.is_superuser
             or (
@@ -559,38 +588,9 @@ class DailyRound(PatientBaseModel):
         )
 
     def has_object_write_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
         return (
-            request.user.is_superuser
-            or (
-                self.consultation.patient.facility
-                and self.consultation.patient.facility == request.user.home_facility
-            )
-            or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.consultation.patient.facility
-                    and request.user.district
-                    == self.consultation.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.consultation.patient.facility
-                    and request.user.state
-                    == self.consultation.patient.facility.district
-                )
-            )
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and self.has_object_read_permission(request)
         )
 
     def has_object_asset_read_permission(self, request):

@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
@@ -34,11 +35,22 @@ from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
+from config.validators import MiddlewareDomainAddressValidator
 
 
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
+    location_type = ChoiceField(choices=AssetLocation.RoomTypeChoices)
+
+    def validate_middleware_address(self, value):
+        value = (value or "").strip()
+        if not value:
+            return value
+
+        # Check if the address is valid
+        MiddlewareDomainAddressValidator()(value)
+        return value
 
     def validate(self, data):
         facility = self.context["facility"]
@@ -113,6 +125,20 @@ class AssetServiceSerializer(ModelSerializer):
         return updated_instance
 
 
+@extend_schema_field(
+    {
+        "type": "object",
+        "properties": {
+            "hostname": {"type": "string"},
+            "source": {"type": "string", "enum": ["asset", "location", "facility"]},
+        },
+        "nullable": True,
+    }
+)
+class ResolvedMiddlewareField(serializers.JSONField):
+    pass
+
+
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     status = ChoiceField(choices=StatusChoices, read_only=True)
@@ -122,11 +148,12 @@ class AssetSerializer(ModelSerializer):
     last_service = AssetServiceSerializer(read_only=True)
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    resolved_middleware = ResolvedMiddlewareField(read_only=True)
 
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
-        read_only_fields = TIMESTAMP_FIELDS
+        read_only_fields = TIMESTAMP_FIELDS + ("resolved_middleware",)
 
     def validate_qr_code_id(self, value):
         value = value or None  # treat empty string as null

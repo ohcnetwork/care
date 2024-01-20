@@ -34,6 +34,10 @@
           "value": "[\"http://care-django-staging\", \"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\"]"
         },
         {
+          "name": "CORS_ALLOWED_ORIGINS",
+          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\"]"
+        },
+        {
           "name": "CURRENT_DOMAIN",
           "value": "https://care.ohc.network"
         },
@@ -114,12 +118,28 @@
           "value": "https://healthidsbx.abdm.gov.in/api"
         },
         {
+          "name": "ABDM_FACILITY_URL",
+          "value": "https://facilitysbx.abdm.gov.in"
+        },
+        {
           "name": "X_CM_ID",
           "value": "sbx"
         },
         {
           "name": "FIDELIUS_URL",
           "value": "https://fidelius.ohc.network"
+        },
+        {
+          "name": "SENTRY_TRACES_SAMPLE_RATE",
+          "value": "1.0"
+        },
+        {
+          "name": "SENTRY_PROFILES_SAMPLE_RATE",
+          "value": "1.0"
+        },
+        {
+          "name": "SENTRY_ENVIRONMENT",
+          "value": "staging"
         }
       ],
       "repositoryCredentials": {
@@ -250,6 +270,18 @@
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
           "name": "ABDM_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_HOST",
+          "name": "PLAUSIBLE_HOST"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_SITE_ID",
+          "name": "PLAUSIBLE_SITE_ID"
+        },
+        {
+          "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
+          "name": "PLAUSIBLE_AUTH_TOKEN"
         }
       ],
       "name": "care-backend"
@@ -262,6 +294,6 @@
     "FARGATE"
   ],
   "networkMode": "awsvpc",
-  "cpu": "256",
+  "cpu": "512",
   "volumes": []
 }

@@ -7,7 +7,9 @@ from django.db.models import JSONField, Q
 from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
-from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
+from care.facility.models.mixins.permissions.facility import (
+    FacilityRelatedPermissionMixin,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
@@ -25,7 +27,7 @@ class AvailabilityStatus(models.TextChoices):
     UNDER_MAINTENANCE = "Under Maintenance"
 
 
-class AssetLocation(BaseModel, AssetsPermissionMixin):
+class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     """
     This model is also used to store rooms that the assets are in, Since these rooms are mapped to
     actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts
@@ -34,6 +36,7 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     class RoomType(enum.Enum):
         OTHER = 1
         ICU = 10
+        WARD = 20
 
     RoomTypeChoices = [(e.value, e.name) for e in RoomType]
 
@@ -44,6 +47,10 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    middleware_address = models.CharField(
+        null=True, blank=True, default=None, max_length=200
     )
 
 
@@ -113,19 +120,18 @@ class Asset(BaseModel):
         "description": "Description",
         "asset_type": "Type",
         "asset_class": "Class",
-        "status": "Working Status",
-        "current_location": "Current Location",
-        "is_working": "Is Working",
+        "status": "Status",
+        "current_location__name": "Current Location Name",
+        "is_working": "Working Status",
         "not_working_reason": "Not Working Reason",
         "serial_number": "Serial Number",
-        "warranty_details": "Warranty Details",
         "vendor_name": "Vendor Name",
         "support_name": "Support Name",
         "support_phone": "Support Phone Number",
         "support_email": "Support Email",
         "qr_code_id": "QR Code ID",
         "manufacturer": "Manufacturer",
-        "warranty_amc_end_of_validity": "Warrenty End Date",
+        "warranty_amc_end_of_validity": "Warranty End Date",
         "last_service__serviced_on": "Last Service Date",
         "last_service__note": "Notes",
         "meta__local_ip_address": "Config - IP Address",
@@ -135,7 +141,26 @@ class Asset(BaseModel):
     CSV_MAKE_PRETTY = {
         "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
         "status": (lambda x: REVERSE_STATUS[x]),
+        "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
+
+    @property
+    def resolved_middleware(self):
+        if hostname := self.meta.get("middleware_hostname"):
+            return {
+                "hostname": hostname,
+                "source": "asset",
+            }
+        if hostname := self.current_location.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "location",
+            }
+        if hostname := self.current_location.facility.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "facility",
+            }
 
     class Meta:
         constraints = [

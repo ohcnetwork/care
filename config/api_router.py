@@ -16,6 +16,7 @@ from care.facility.api.viewsets.ambulance import (
 from care.facility.api.viewsets.asset import (
     AssetAvailabilityViewSet,
     AssetLocationViewSet,
+    AssetPublicQRViewSet,
     AssetPublicViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
@@ -26,6 +27,9 @@ from care.facility.api.viewsets.bed import (
     BedViewSet,
     ConsultationBedViewSet,
     PatientAssetBedViewSet,
+)
+from care.facility.api.viewsets.consultation_diagnosis import (
+    ConsultationDiagnosisViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
@@ -62,10 +66,6 @@ from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
     MedibaseViewSet,
     MedicineAdministrationViewSet,
-)
-from care.facility.api.viewsets.prescription_supplier import (
-    PrescriptionSupplierConsultationViewSet,
-    PrescriptionSupplierViewSet,
 )
 from care.facility.api.viewsets.resources import (
     ResourceRequestCommentViewSet,
@@ -133,9 +133,6 @@ router.register("external_result", PatientExternalTestViewSet)
 router.register("bed", BedViewSet)
 router.register("assetbed", AssetBedViewSet)
 router.register("consultationbed", ConsultationBedViewSet)
-
-router.register("pharmacy/consultation", PrescriptionSupplierConsultationViewSet)
-router.register("pharmacy/prescription", PrescriptionSupplierViewSet)
 
 # Local Body / LSG Viewsets
 router.register("state", StateViewSet)
@@ -207,6 +204,7 @@ consultation_nested_router = NestedSimpleRouter(
     router, r"consultation", lookup="consultation"
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
+consultation_nested_router.register(r"diagnoses", ConsultationDiagnosisViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
 consultation_nested_router.register(
@@ -222,6 +220,7 @@ router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet)
+router.register("public/asset_qr", AssetPublicQRViewSet)
 
 # ABDM endpoints
 if settings.ENABLE_ABDM:

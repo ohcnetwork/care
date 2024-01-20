@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Exists, OuterRef, Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -56,6 +58,13 @@ from care.utils.queryset.facility import get_facility_queryset
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
+
+
+@receiver(post_save, sender=Asset)
+def delete_asset_cache(sender, instance, created, **kwargs):
+    cache.delete("asset:" + str(instance.external_id))
+    cache.delete("asset:qr:" + str(instance.qr_code_id))
+    cache.delete("asset:qr:" + str(instance.id))
 
 
 class AssetLocationViewSet(
@@ -122,6 +131,7 @@ class AssetFilter(filters.FilterSet):
         method="filter_in_use_by_consultation"
     )
     is_permanent = filters.BooleanFilter(method="filter_is_permanent")
+    warranty_amc_end_of_validity = filters.DateFromToRangeFilter()
 
     def filter_in_use_by_consultation(self, queryset, _, value):
         if value not in EMPTY_VALUES:
@@ -170,6 +180,27 @@ class AssetPublicViewSet(GenericViewSet):
             cache.set(
                 key, serializer.data, 60 * 60 * 24
             )  # Cache the asset details for 24 hours
+            return Response(serializer.data)
+        return Response(hit)
+
+
+class AssetPublicQRViewSet(GenericViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+    lookup_field = "qr_code_id"
+
+    def retrieve(self, request, *args, **kwargs):
+        qr_code_id = kwargs["qr_code_id"]
+        key = "asset:qr:" + qr_code_id
+        hit = cache.get(key)
+        if not hit:
+            instance = self.get_queryset().filter(qr_code_id=qr_code_id).first()
+            if not instance:  # If the asset is not found, try to find it by pk
+                if not qr_code_id.isnumeric():
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+                instance = get_object_or_404(self.get_queryset(), pk=qr_code_id)
+            serializer = self.get_serializer(instance)
+            cache.set(key, serializer.data, 60 * 60 * 24)
             return Response(serializer.data)
         return Response(hit)
 
@@ -290,17 +321,24 @@ class AssetViewSet(
         try:
             action = request.data["action"]
             asset: Asset = self.get_object()
+            middleware_hostname = (
+                asset.meta.get(
+                    "middleware_hostname",
+                )
+                or asset.current_location.middleware_address
+                or asset.current_location.facility.middleware_address
+            )
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,
-                    "middleware_hostname": asset.current_location.facility.middleware_address,
+                    "middleware_hostname": middleware_hostname,
                 }
             )
             result = asset_class.handle_action(action)
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except ValidationError as e:
-            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         except KeyError as e:
             return Response(
@@ -309,7 +347,12 @@ class AssetViewSet(
             )
 
         except APIException as e:
-            return Response(e.detail, e.status_code)
+            return Response(
+                {
+                    "detail": f"Communication with the middleware failed.\nReceived status code: {e.status_code}"
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         except Exception as e:
             print(f"error: {e}")

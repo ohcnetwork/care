@@ -10,7 +10,7 @@ on:
       - "docs/**"
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -55,31 +55,60 @@ jobs:
           flavor: |
             latest=true
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/prod.Dockerfile
           push: true
+          provenance: false
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
+          build-args: |
+            APP_VERSION=${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          version: ${{ github.sha }}
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   build-production:
     needs: test
@@ -88,9 +117,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
       - name: Docker meta
         id: meta
@@ -107,28 +133,60 @@ jobs:
           flavor: |
             latest=false
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/prod.Dockerfile
           push: true
+          provenance: false
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
+          build-args: |
+            APP_VERSION=${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          version: ${{ github.sha }}
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy-staging-egov:
     needs: build-staging
@@ -194,15 +252,51 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+  deploy-staging-gcp:
+    needs: build-staging
+    name: Deploy to staging GCP cluster
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging-GCP
+      url: https://care-staging-api.ohc.network/
+    steps:
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
         with:
-          environment: staging-egov
+          repository: coronasafe/care-staging-gcp
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
 
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3.0
+        with:
+          version: "v1.23.6"
+        id: install
+
+      - name: Deploy Care Production Manipur
+        run: |
+          mkdir -p $HOME/.kube/
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml
 
   deploy-production-manipur:
     needs: build-production
@@ -250,15 +344,6 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-manipur
-
   deploy-production-karnataka:
     needs: build-production
     name: Deploy to GKE Karnataka
@@ -304,15 +389,6 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-karnataka
 
   deploy-production-assam:
     needs: build-production
@@ -360,15 +436,6 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-assam
-
   deploy-production-sikkim:
     needs: build-production
     name: Deploy to GKE Sikkim
@@ -414,15 +481,6 @@ jobs:
           kubectl apply -f care-backend.yaml
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
-
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: prod-sikkim
 
   deploy-production-nagaland:
     needs: build-production
@@ -470,11 +528,48 @@ jobs:
           kubectl apply -f care-celery-beat.yaml
           kubectl apply -f care-celery-worker.yaml
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+  deploy-production-meghalaya:
+    needs: build-production
+    name: Deploy to GKE Meghalaya
+    runs-on: ubuntu-latest
+    environment:
+      name: Production-Meghalaya
+      url: https://careapi.meghealth.gov.in
+    steps:
+      - name: Checkout Kube Config
+        uses: actions/checkout@v3
         with:
-          environment: prod-nagaland
+          repository: coronasafe/ml-care-infra
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          path: kube
+          ref: main
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Get the GKE credentials, so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3.0
+        with:
+          version: "v1.23.6"
+        id: install
+
+      - name: Deploy Care Production Nagaland
+        run: |
+          mkdir -p $HOME/.kube/
+          cd kube/deployments/
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-backend.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-beat.yaml
+          sed -i -e "s/_BUILD_NUMBER_/${GITHUB_RUN_NUMBER}/g" care-celery-worker.yaml
+          kubectl apply -f care-backend.yaml
+          kubectl apply -f care-celery-beat.yaml
+          kubectl apply -f care-celery-worker.yaml

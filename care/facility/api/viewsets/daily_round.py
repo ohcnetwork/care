@@ -20,6 +20,7 @@ DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 class DailyRoundFilterSet(filters.FilterSet):
     rounds_type = filters.CharFilter(method="filter_rounds_type")
+    taken_at = filters.DateTimeFromToRangeFilter()
 
     def filter_rounds_type(self, queryset, name, value):
         rounds_type = set()
@@ -45,7 +46,7 @@ class DailyRoundsViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = DailyRound.objects.all().order_by("-id")
+    queryset = DailyRound.objects.all().select_related("created_by", "last_edited_by")
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
 
@@ -58,7 +59,7 @@ class DailyRoundsViewSet(
     def get_queryset(self):
         return self.queryset.filter(
             consultation__external_id=self.kwargs["consultation_external_id"]
-        )
+        ).order_by("-taken_at")
 
     def get_serializer(self, *args, **kwargs):
         if "data" in kwargs:

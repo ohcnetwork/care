@@ -4,6 +4,8 @@ from django.db import models
 class MetaICD11Diagnosis(models.Model):
     """
     Not for production use. For Metabase purposes only. Do not build relations to this model.
+
+    Deprecated in favor of ICD11Diagnosis. This table will be removed in the future.
     """
 
     id = models.CharField(max_length=255, primary_key=True)
