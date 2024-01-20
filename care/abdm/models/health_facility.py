@@ -12,4 +12,4 @@ class HealthFacility(BaseModel, HealthFacilityPermissions):
     )
 
     def __str__(self):
-        return self.hf_id + " " + self.facility.name
+        return f"{self.hf_id} {self.facility}"

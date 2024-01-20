@@ -280,7 +280,7 @@ class RequestDataView(GenericAPIView):
             data["hiRequest"]["keyMaterial"]["nonce"],
         )
 
-        AbdmGateway().data_transfer(
+        data_transfer_response = AbdmGateway().data_transfer(
             {
                 "transaction_id": data["transactionId"],
                 "data_push_url": data["hiRequest"]["dataPushUrl"],
@@ -335,6 +335,10 @@ class RequestDataView(GenericAPIView):
                     ],
                     "consent_id": data["hiRequest"]["consent"]["id"],
                     "transaction_id": data["transactionId"],
+                    "session_status": "TRANSFERRED"
+                    if data_transfer_response
+                    and data_transfer_response.status_code == 202
+                    else "FAILED",
                     "care_contexts": list(
                         map(
                             lambda context: {"id": context["careContextReference"]},

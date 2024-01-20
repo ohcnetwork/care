@@ -48,7 +48,9 @@ class PatientsViewSet(GenericViewSet):
             request.user.username,
             timeout=60 * 60,
         )
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Requested ABDM for patient details"}, status=status.HTTP_200_OK
+        )
 
 
 class PatientsCallbackViewSet(GenericViewSet):

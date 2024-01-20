@@ -27,8 +27,8 @@ class Gateway:
                 },
                 "patient": {"id": consent.patient_abha.health_id},
                 "hiu": {
-                    "id": "IN3210000017"
-                },  # TODO: get the HIU ID associated with the patient's facility
+                    "id": self.get_hf_id_by_health_id(consent.patient_abha.health_id)
+                },
                 "requester": {
                     "name": f"{consent.requester.REVERSE_TYPE_MAP[consent.requester.user_type]}, {consent.requester.first_name} {consent.requester.last_name}",
                     "identifier": {
@@ -41,10 +41,16 @@ class Gateway:
                 "permission": {
                     "accessMode": consent.access_mode,
                     "dateRange": {
-                        "from": consent.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                        "to": consent.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                        "from": consent.from_time.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
+                        "to": consent.to_time.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
                     },
-                    "dataEraseAt": consent.expiry.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                    "dataEraseAt": consent.expiry.astimezone(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.000Z"
+                    ),
                     "frequency": {
                         "unit": consent.frequency_unit,
                         "value": consent.frequency_value,
@@ -119,14 +125,15 @@ class Gateway:
             ),
             "hiRequest": {
                 "consent": {"id": str(artefact.artefact_id)},
-                # TODO: get the server url from the env
-                "dataPushUrl": "https://work.khavinshankar.dev"
+                "dataPushUrl": f"https://{settings.CURRENT_DOMAIN}"
                 + "/v0.5/health-information/transfer",
                 "keyMaterial": {
                     "cryptoAlg": artefact.key_material_algorithm,
                     "curve": artefact.key_material_curve,
                     "dhPublicKey": {
-                        "expiry": artefact.expiry.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                        "expiry": artefact.expiry.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
                         "parameters": f"{artefact.key_material_curve}/{artefact.key_material_algorithm}",
                         "keyValue": artefact.key_material_public_key,
                     },
@@ -146,11 +153,17 @@ class Gateway:
         )
 
     def get_hf_id_by_health_id(self, health_id):
-        return (
-            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
-            .first()
-            .patientregistration.facility.healthfacility.hf_id
-        )
+        abha_number = AbhaNumber.objects.filter(
+            Q(abha_number=health_id) | Q(health_id=health_id)
+        ).first()
+        if not abha_number:
+            raise Exception("No ABHA Number found")
+
+        patient_facility = abha_number.patientregistration.last_consultation.facility
+        if not hasattr(patient_facility, "healthfacility"):
+            raise Exception("Health Facility not linked")
+
+        return patient_facility.healthfacility.hf_id
 
     def health_information__notify(self, artefact: ConsentArtefact):
         data = {

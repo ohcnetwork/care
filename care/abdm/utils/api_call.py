@@ -12,6 +12,7 @@ from django.core.cache import cache
 from django.db.models import Q
 
 from care.abdm.models import AbhaNumber
+from care.abdm.service.request import Request
 from care.facility.models.patient_consultation import PatientConsultation
 
 GATEWAY_API_URL = settings.ABDM_URL
@@ -676,9 +677,16 @@ class AbdmGateway:
         return response
 
     def data_transfer(self, data):
+        token = cache.get(ABDM_TOKEN_CACHE_KEY)
+
+        if not token:
+            Request("").auth_header()
+            token = cache.get(ABDM_TOKEN_CACHE_KEY)
+            if not token:
+                return None
+
         headers = {
             "Content-Type": "application/json",
-            # TODO: seperate out the token generation
             "Authorization": "Bearer " + cache.get(ABDM_TOKEN_CACHE_KEY),
         }
 
@@ -722,7 +730,7 @@ class AbdmGateway:
                     datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
                 ),
                 "statusNotification": {
-                    "sessionStatus": "TRANSFERRED",
+                    "sessionStatus": data["session_status"],
                     "hipId": self.get_hip_id_by_health_id(data["healthId"]),
                     "statusResponses": list(
                         map(

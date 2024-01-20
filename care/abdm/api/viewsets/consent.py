@@ -1,3 +1,5 @@
+import logging
+
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -8,12 +10,15 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.consent import ConsentRequestSerializer
 from care.abdm.api.viewsets.health_information import HealthInformationViewSet
+from care.abdm.models.base import Status
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.gateway import Gateway
 from care.utils.queryset.facility import get_facility_queryset
 from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
 from config.ratelimit import ratelimit
+
+logger = logging.getLogger(__name__)
 
 
 class ConsentRequestFilter(filters.FilterSet):
@@ -63,9 +68,19 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
 
         consent = ConsentRequest(**serializer.validated_data, requester=request.user)
 
-        response = Gateway().consent_requests__init(consent)
-        if response.status_code != 202:
-            return Response(response.json(), status=response.status_code)
+        try:
+            response = Gateway().consent_requests__init(consent)
+            if response.status_code != 202:
+                return Response(response.json(), status=response.status_code)
+        except Exception as e:
+            logger.warning(
+                f"Error: ConsentViewSet::create failed to notify (consent_requests__init). Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {"detail": "Failed to initialize consent request"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         consent.save()
         return Response(
@@ -165,7 +180,7 @@ class ConsentCallbackViewSet(GenericViewSet):
         if "notification" not in data:
             return Response(status=status.HTTP_202_ACCEPTED)
 
-        if data["notification"]["status"] != "DENIED":
+        if data["notification"]["status"] != Status.DENIED:
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -194,7 +209,7 @@ class ConsentCallbackViewSet(GenericViewSet):
                     external_id=artefact["id"]
                 ).first()
 
-                consent_artefact.status = "REVOKED"
+                consent_artefact.status = Status.REVOKED
                 consent_artefact.save()
             return Response(status=status.HTTP_202_ACCEPTED)
 
@@ -205,7 +220,7 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] != "DENIED":
+        if data["notification"]["status"] != Status.DENIED:
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -225,7 +240,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
         Gateway().consents__hiu__on_notify(consent, data["requestId"])
 
-        if data["notification"]["status"] == "GRANTED":
+        if data["notification"]["status"] == Status.GRANTED:
             ConsentViewSet().fetch(request, consent.external_id)
 
         return Response(status=status.HTTP_202_ACCEPTED)

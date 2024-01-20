@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.db.models import Q
 from rest_framework import status
@@ -14,6 +15,8 @@ from care.facility.models.file_upload import FileUpload
 from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
 from config.ratelimit import ratelimit
+
+logger = logging.getLogger(__name__)
 
 
 class HealthInformationViewSet(GenericViewSet):
@@ -33,7 +36,7 @@ class HealthInformationViewSet(GenericViewSet):
 
         if files.count() == 0 or all([not file.upload_completed for file in files]):
             return Response(
-                {"error": "No Health Information found with the given id"},
+                {"detail": "No Health Information found with the given id"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -46,6 +49,7 @@ class HealthInformationViewSet(GenericViewSet):
                         "is_archived": True,
                         "archived_reason": file.archive_reason,
                         "archived_time": file.archived_datetime,
+                        "detail": f"This file has been archived as {file.archive_reason} at {file.archived_datetime}",
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
@@ -70,7 +74,7 @@ class HealthInformationViewSet(GenericViewSet):
 
         if not artefact:
             return Response(
-                {"error": "No Consent artefact found with the given id"},
+                {"detail": "No Consent artefact found with the given id"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -141,6 +145,16 @@ class HealthInformationCallbackViewSet(GenericViewSet):
         file.upload_completed = True
         file.save()
 
-        Gateway().health_information__notify(artefact)
+        try:
+            Gateway().health_information__notify(artefact)
+        except Exception as e:
+            logger.warning(
+                f"Error: health_information__transfer::post failed to notify (health-information/notify). Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {"detail": "Failed to notify (health-information/notify)"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response(status=status.HTTP_202_ACCEPTED)
