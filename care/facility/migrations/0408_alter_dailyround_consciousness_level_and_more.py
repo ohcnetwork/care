@@ -32,7 +32,14 @@ def forwards_func(apps, schema_editor):
             obj.ventilator_oxygen_modality = None
         if obj.insulin_intake_frequency == 0:
             obj.insulin_intake_frequency = None
-
+        if obj.bp and obj.bp.get("systolic") and obj.bp.get("diastolic"):
+            if obj.bp.get("systolic") < 0 and obj.bp.get("diastolic") < 0:
+                obj.bp = {}
+            else:
+                if obj.bp.get("systolic") < 0:
+                    obj.bp.update({"systolic": None})
+                if obj.bp.get("diastolic") < 0:
+                    obj.bp.update({"diastolic": None})
         objects.append(obj)
 
     DailyRound.objects.bulk_update(
@@ -50,6 +57,7 @@ def forwards_func(apps, schema_editor):
             "ventilator_interface",
             "ventilator_oxygen_modality",
             "insulin_intake_frequency",
+            "bp",
         ],
     )
 
