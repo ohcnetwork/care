@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -25,36 +26,36 @@ class HealthInformationViewSet(GenericViewSet):
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
-        artefact = ConsentArtefact.objects.filter(external_id=pk).first()
-
-        if not artefact:
-            return Response(
-                {"error": "No Consent artefact found with the given id"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        file = FileUpload.objects.filter(
-            internal_name=f"{artefact.external_id}.json",
+        files = FileUpload.objects.filter(
+            Q(internal_name=f"{pk}.json") | Q(associating_id=pk),
             file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
-        ).first()
+        )
 
-        if not file or not file.upload_completed:
+        if files.count() == 0 or all([not file.upload_completed for file in files]):
             return Response(
                 {"error": "No Health Information found with the given id"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if file.is_archived:
-            return Response(
-                {
-                    "is_archived": True,
-                    "archived_reason": file.archive_reason,
-                    "archived_time": file.archived_datetime,
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        if files.count() == 1:
+            file = files.first()
 
-        content_type, content = file.file_contents()
+            if file.is_archived:
+                return Response(
+                    {
+                        "is_archived": True,
+                        "archived_reason": file.archive_reason,
+                        "archived_time": file.archived_datetime,
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+        contents = []
+        for file in files:
+            if file.upload_completed:
+                content_type, content = file.file_contents()
+                contents.extend(content)
+
         return Response({"data": json.loads(content)}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["POST"])

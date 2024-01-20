@@ -27,6 +27,9 @@ class ConsentRequestFilter(filters.FilterSet):
             "updated_date",
         )
     )
+    facility = filters.UUIDFilter(
+        field_name="patient_abha__patientregistration__facility__external_id"
+    )
 
     class Meta:
         model = ConsentRequest
@@ -159,9 +162,10 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] == "REVOKED":
-            consent.status = "REVOKED"
-        else:
+        if "notification" not in data:
+            return Response(status=status.HTTP_202_ACCEPTED)
+
+        if data["notification"]["status"] != "DENIED":
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -176,6 +180,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
                 consent_artefact.status = data["notification"]["status"]
                 consent_artefact.save()
+        consent.status = data["notification"]["status"]
         consent.save()
 
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -200,9 +205,7 @@ class ConsentCallbackViewSet(GenericViewSet):
         if not consent:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if data["notification"]["status"] == "REVOKED":
-            consent.status = "REVOKED"
-        else:
+        if data["notification"]["status"] != "DENIED":
             consent_artefacts = data["notification"]["consentArtefacts"] or []
             for artefact in consent_artefacts:
                 consent_artefact = ConsentArtefact.objects.filter(
@@ -217,6 +220,7 @@ class ConsentCallbackViewSet(GenericViewSet):
 
                 consent_artefact.status = data["notification"]["status"]
                 consent_artefact.save()
+        consent.status = data["notification"]["status"]
         consent.save()
 
         Gateway().consents__hiu__on_notify(consent, data["requestId"])
