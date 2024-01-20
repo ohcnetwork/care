@@ -149,14 +149,14 @@ class AssetSerializer(ModelSerializer):
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
     resolved_middleware = ResolvedMiddlewareField(read_only=True)
-    down = serializers.BooleanField(read_only=True)
+    latest_status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
         read_only_fields = TIMESTAMP_FIELDS + (
             "resolved_middleware",
-            "down",
+            "latest_status",
         )
 
     def validate_qr_code_id(self, value):

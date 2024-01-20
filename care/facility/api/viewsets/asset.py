@@ -1,16 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import (
-    BooleanField,
-    Case,
-    Exists,
-    F,
-    Max,
-    OuterRef,
-    Q,
-    Value,
-    When,
-)
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -269,21 +259,12 @@ class AssetViewSet(
     def filter_queryset(self, queryset: QuerySet) -> QuerySet:
         queryset = super().filter_queryset(queryset)
         queryset = queryset.annotate(
-            latest_status=Max(
-                Case(
-                    When(
-                        assetavailabilityrecord__status="Down",
-                        then=F("assetavailabilityrecord__timestamp"),
-                    ),
-                    default=Value(None),
-                    output_field=BooleanField(),
-                )
+            latest_status=Subquery(
+                AssetAvailabilityRecord.objects.filter(asset=OuterRef("pk"))
+                .order_by("-created_date")
+                .values("status")[:1]
             )
         )
-
-        for asset in queryset:
-            setattr(asset, "down", bool(asset.latest_status))
-
         return queryset
 
     def list(self, request, *args, **kwargs):
