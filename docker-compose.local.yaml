@@ -25,7 +25,6 @@ services:
     entrypoint: [ "bash", "scripts/celery-dev.sh" ]
     depends_on:
       - db
-      - backend
       - redis
     volumes:
       - .:/app

@@ -41,7 +41,7 @@ ENV PATH /venv/bin:$PATH
 WORKDIR ${APP_HOME}
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  libpq-dev gettext wget gnupg chromium \
+  libpq-dev gettext wget curl gnupg chromium \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -49,6 +49,13 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 COPY --from=builder /venv /venv
 
 COPY --chmod=0755 ./scripts/*.sh ./
+
+HEALTHCHECK \
+  --interval=30s \
+  --timeout=5s \
+  --start-period=10s \
+  --retries=6 \
+  CMD ["/app/healthcheck.sh"]
 
 COPY . ${APP_HOME}
 

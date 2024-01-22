@@ -29,10 +29,10 @@ class TestICD11Api(TestUtils, APITestCase):
         res = self.search_icd11("aCuTe radiodermatitis following radiotherapy")
         self.assertContains(res, "EL60 Acute radiodermatitis following radiotherapy")
 
-        res = self.search_icd11("cutaneous insect bite reactions")
+        res = self.search_icd11("cutaneous reactions")
         self.assertContains(res, "EK50.0 Cutaneous insect bite reactions")
 
-        res = self.search_icd11("Haemorrhage of anus and rectum")
+        res = self.search_icd11("Haemorrhage rectum")
         self.assertContains(res, "ME24.A1 Haemorrhage of anus and rectum")
 
         res = self.search_icd11("ME24.A1")
