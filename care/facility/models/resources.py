@@ -1,11 +1,6 @@
 from django.db import models
 
-from care.facility.models import (
-    READ_ONLY_USER_TYPES,
-    FacilityBaseModel,
-    pretty_boolean,
-    reverse_choices,
-)
+from care.facility.models import FacilityBaseModel, pretty_boolean, reverse_choices
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
@@ -130,9 +125,7 @@ class ResourceRequest(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return request.user.user_type not in User.READ_ONLY_TYPES
 
     @staticmethod
     def has_read_permission(request):
@@ -142,17 +135,13 @@ class ResourceRequest(FacilityBaseModel):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return request.user.user_type not in User.READ_ONLY_TYPES
 
     def has_object_transfer_permission(self, request):
         return True
 
     def has_object_update_permission(self, request):
-        if request.user.user_type in READ_ONLY_USER_TYPES:
-            return False
-        return True
+        return self.has_object_write_permission(request)
 
 
 class ResourceRequestComment(FacilityBaseModel):
