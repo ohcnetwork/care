@@ -8,7 +8,7 @@ ENV PATH /venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev \
-  libpq-dev gettext wget gnupg chromium \
+  libpq-dev gettext wget curl gnupg chromium \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -20,5 +20,12 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"
 
 COPY . /app
+
+HEALTHCHECK \
+  --interval=10s \
+  --timeout=5s \
+  --start-period=10s \
+  --retries=12 \
+  CMD ["/app/scripts/healthcheck.sh"]
 
 WORKDIR /app

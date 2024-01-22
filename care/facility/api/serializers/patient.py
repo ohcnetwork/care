@@ -454,12 +454,12 @@ class PatientTransferSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         raise NotImplementedError
 
-    def save(self, **kwargs):
-        self.instance.facility = self.validated_data["facility"]
+    def update(self, instance, validated_data):
+        instance.facility = validated_data["facility"]
 
         with transaction.atomic():
             consultation = PatientConsultation.objects.filter(
-                patient=self.instance, discharge_date__isnull=True
+                patient=instance, discharge_date__isnull=True
             ).first()
 
             if consultation:
@@ -471,7 +471,9 @@ class PatientTransferSerializer(serializers.ModelSerializer):
                 ConsultationBed.objects.filter(
                     consultation=consultation, end_date__isnull=True
                 ).update(end_date=now())
-                self.instance.save()
+
+            instance.save()
+            return instance
 
 
 class PatientNotesEditSerializer(serializers.ModelSerializer):
