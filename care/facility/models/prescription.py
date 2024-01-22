@@ -27,6 +27,11 @@ class Routes(enum.Enum):
     IV = "IV"
     IM = "IM"
     SC = "S/C"
+    INHALATION = "Inhalation"
+    NASOGASTRIC = "Nasogastric/Gastrostomy tube"
+    INTRATHECAL = "intrathecal injection"
+    TRANSDERMAL = "Transdermal"
+    RECTAL = "Rectal"
 
 
 class PrescriptionType(enum.Enum):

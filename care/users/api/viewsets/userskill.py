@@ -4,7 +4,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.users.api.serializers.userskill import UserSkillSerializer
 from care.users.models import User, UserSkill
 from care.utils.queryset.user import get_users
@@ -22,7 +21,7 @@ class UserSkillPermission(BasePermission):
 
             if (
                 requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-                or requesting_user.user_type in READ_ONLY_USER_TYPES
+                or requesting_user.user_type in User.READ_ONLY_TYPES
             ):
                 return False
 
