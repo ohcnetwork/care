@@ -11,13 +11,13 @@ from care.facility.api.viewsets.ambulance import (
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
-    AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicQRViewSet,
     AssetPublicViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
+    AvailabilityViewSet,
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
@@ -107,6 +107,8 @@ router.register("skill", SkillViewSet)
 router.register("facility", FacilityViewSet)
 router.register("getallfacilities", AllFacilityViewSet)
 
+router.register("availability", AvailabilityViewSet)
+
 router.register("files", FileUploadViewSet)
 
 router.register("ambulance/create", AmbulanceCreateViewSet)
@@ -189,7 +191,6 @@ router.register("asset", AssetViewSet)
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
 asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
-router.register("asset_availability", AssetAvailabilityViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)

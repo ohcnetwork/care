@@ -3,13 +3,10 @@ from datetime import datetime
 from typing import Any
 
 from celery import shared_task
+from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 
-from care.facility.models.asset import (
-    Asset,
-    AssetAvailabilityRecord,
-    AvailabilityStatus,
-)
+from care.facility.models.asset import Asset, AvailabilityRecord, AvailabilityStatus
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
 
@@ -21,6 +18,7 @@ def check_asset_status():
     logger.info(f"Checking Asset Status: {timezone.now()}")
 
     assets = Asset.objects.all()
+    asset_content_type = ContentType.objects.get_for_model(Asset)
 
     for asset in assets:
         # Skipping if asset class or local IP address is not present
@@ -92,7 +90,10 @@ def check_asset_status():
 
                 # Fetching the last record of the asset
                 last_record = (
-                    AssetAvailabilityRecord.objects.filter(asset=asset)
+                    AvailabilityRecord.objects.filter(
+                        content_type=asset_content_type,
+                        object_external_id=asset.external_id,
+                    )
                     .order_by("-timestamp")
                     .first()
                 )
@@ -109,8 +110,9 @@ def check_asset_status():
                     > last_record.timestamp
                     and last_record.status != new_status.value
                 ):
-                    AssetAvailabilityRecord.objects.create(
-                        asset=asset,
+                    AvailabilityRecord.objects.create(
+                        content_type=asset_content_type,
+                        object_external_id=asset.external_id,
                         status=new_status.value,
                         timestamp=status_record.get("time", timezone.now()),
                     )

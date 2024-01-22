@@ -29,25 +29,28 @@ from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
-    AssetAvailabilitySerializer,
     AssetLocationSerializer,
     AssetSerializer,
     AssetServiceSerializer,
     AssetTransactionSerializer,
+    AvailabilityRecordSerializer,
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
 from care.facility.models import (
     Asset,
-    AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetTransaction,
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
-from care.facility.models.asset import AssetTypeChoices, StatusChoices
+from care.facility.models.asset import (
+    AssetTypeChoices,
+    AvailabilityRecord,
+    StatusChoices,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -205,15 +208,16 @@ class AssetPublicQRViewSet(GenericViewSet):
         return Response(hit)
 
 
-class AssetAvailabilityFilter(filters.FilterSet):
-    external_id = filters.CharFilter(field_name="asset__external_id")
+class AvailabilityFilter(filters.FilterSet):
+    linked_model = filters.CharFilter(field_name="content_type__model")
+    linked_id = filters.UUIDFilter(field_name="object_external_id")
 
 
-class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = AssetAvailabilityRecord.objects.all().select_related("asset")
-    serializer_class = AssetAvailabilitySerializer
+class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = AvailabilityRecord.objects.all()
+    serializer_class = AvailabilityRecordSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AssetAvailabilityFilter
+    filterset_class = AvailabilityFilter
 
 
 class AssetViewSet(
