@@ -23,13 +23,13 @@ class AvailabilityViewSetTestCase(TestUtils, APITestCase):
         cls.asset = cls.create_asset(cls.asset_location)
         cls.asset_availability = AvailabilityRecord.objects.create(
             content_type=asset_content_type,
-            object=cls.asset,
+            object_external_id=cls.asset.external_id,
             status=AvailabilityStatus.OPERATIONAL.value,
             timestamp=timezone.now(),
         )
         cls.location_availability = AvailabilityRecord.objects.create(
             content_type=location_content_type,
-            object=cls.asset_location,
+            object_external_id=cls.asset_location.external_id,
             status=AvailabilityStatus.OPERATIONAL.value,
             timestamp=timezone.now(),
         )
@@ -43,6 +43,12 @@ class AvailabilityViewSetTestCase(TestUtils, APITestCase):
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
         )
 
+        response = self.client.get("/api/v1/availability/?linked_model=asset")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["results"][0]["linked_id"], self.asset.external_id
+        )
+
     def test_list_location_availability(self):
         response = self.client.get(
             f"/api/v1/availability/?linked_id={self.asset_location.external_id}"
@@ -50,4 +56,10 @@ class AvailabilityViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
+        )
+
+        response = self.client.get("/api/v1/availability/?linked_model=assetlocation")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["results"][0]["linked_id"], self.asset_location.external_id
         )
