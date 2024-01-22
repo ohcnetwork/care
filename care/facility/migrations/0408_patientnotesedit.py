@@ -31,7 +31,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0405_auto_20231211_1930"),
+        ("facility", "0407_alter_dailyround_additional_symptoms_and_more"),
     ]
 
     operations = [
