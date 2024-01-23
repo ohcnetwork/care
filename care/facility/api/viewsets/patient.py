@@ -668,9 +668,10 @@ class PatientNotesEditViewSet(
             )
         else:
             allowed_facilities = get_accessible_facilities(user)
-            q_filters = Q(
-                patient_note__patient__facility__id__in=allowed_facilities
-            ) | Q(patient_note__patient__assigned_to=user)
+            q_filters = Q(patient_note__patient__facility__id__in=allowed_facilities)
+            q_filters |= Q(patient_note__patient__last_consultation__assigned_to=user)
+            q_filters |= Q(patient_note__patient__assigned_to=user)
+            q_filters |= Q(patient_note__created_by=user)
             queryset = queryset.filter(q_filters)
 
         return queryset
@@ -721,6 +722,7 @@ class PatientNotesViewSet(
             q_filters = Q(patient__facility__id__in=allowed_facilities)
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
+            q_filters |= Q(created_by=user)
             queryset = queryset.filter(q_filters)
 
         return queryset
