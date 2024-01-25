@@ -21,6 +21,7 @@ class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
     label: str = Field(index=True, full_text_search=True)
     chapter: str
+    has_code: int = Field(index=True)
 
     def get_representation(self) -> ICD11Object:
         return {
@@ -39,12 +40,12 @@ def load_icd11_diagnosis():
     paginator = Paginator(icd_objs, 5000)
     for page_number in paginator.page_range:
         for diagnosis in paginator.page(page_number).object_list:
-            if re.match(DISEASE_CODE_PATTERN, diagnosis[1]):
-                ICD11(
-                    id=diagnosis[0],
-                    label=diagnosis[1],
-                    chapter=diagnosis[2] or "",
-                ).save()
+            ICD11(
+                id=diagnosis[0],
+                label=diagnosis[1],
+                chapter=diagnosis[2] or "",
+                has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
+            ).save()
     Migrator().run()
     print("Done")
 
