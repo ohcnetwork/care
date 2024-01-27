@@ -1,3 +1,5 @@
+import re
+
 from celery import shared_task
 from django.conf import settings
 from dry_rest_permissions.generics import DRYPermissions
@@ -30,14 +32,19 @@ def register_health_facility_as_service(facility_external_id):
     if health_facility.registered:
         return [True, None]
 
+    clean_facility_name = re.sub(r"[^A-Za-z0-9 ]+", " ", health_facility.facility.name)
+    clean_facility_name = re.sub(r"\s+", " ", clean_facility_name).strip()
+    hip_name = (
+        settings.HIP_NAME_PREFIX + clean_facility_name + settings.HIP_NAME_POSTFIX
+    )
     response = Facility().add_update_service(
         {
             "facilityId": health_facility.hf_id,
-            "facilityName": health_facility.facility.name,
+            "facilityName": hip_name,
             "HRP": [
                 {
                     "bridgeId": settings.ABDM_CLIENT_ID,
-                    "hipName": health_facility.facility.name,
+                    "hipName": hip_name,
                     "type": "HIP",
                     "active": True,
                     "alias": ["CARE_HIP"],
@@ -83,7 +90,7 @@ class HealthFacilityViewSet(
         [registered, error] = register_health_facility_as_service(facility__external_id)
 
         if error:
-            return Response({"error": error}, status=400)
+            return Response({"detail": error}, status=400)
 
         return Response({"registered": registered})
 
