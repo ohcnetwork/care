@@ -16,7 +16,7 @@ from care.facility.api.serializers.consultation_diagnosis import (
 )
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.events.handler import create_consultation_event
+from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -238,7 +238,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         consultation = super().update(instance, validated_data)
 
-        create_consultation_event(
+        create_consultation_events(
             consultation.id,
             consultation,
             self.context["request"].user.id,
@@ -431,7 +431,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             facility=patient.facility,
         ).generate()
 
-        create_consultation_event(
+        create_consultation_events(
             consultation.id,
             (consultation, *diagnosis),
             consultation.created_by.id,
@@ -700,7 +700,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     )
                 except Exception:
                     pass
-            create_consultation_event(
+            create_consultation_events(
                 instance.id,
                 instance,
                 self.context["request"].user.id,

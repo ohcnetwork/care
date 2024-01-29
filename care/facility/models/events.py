@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django_ulid.models import ULIDField, default
 
 from care.utils.event_utils import CustomJSONEncoder
 
@@ -45,7 +46,7 @@ class EventType(models.Model):
 
 
 class PatientConsultationEvent(models.Model):
-    # external_id = use ulid
+    external_id = ULIDField(default=default, editable=False, unique=True)
     consultation = models.ForeignKey(
         "PatientConsultation",
         on_delete=models.PROTECT,

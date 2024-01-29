@@ -1,3 +1,4 @@
+from django_ulid.serializers import ULIDField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from care.facility.models.events import EventType, PatientConsultationEvent
@@ -21,6 +22,7 @@ class NestedEventTypeSerializer(ModelSerializer):
 
 
 class PatientConsultationEventDetailSerializer(ModelSerializer):
+    id = ULIDField(source="external_id", read_only=True)
     event_type = EventTypeSerializer()
 
     class Meta:

@@ -33,7 +33,7 @@ def transform(obj, diff):
 
 
 @shared_task
-def create_consultation_event_task(
+def create_consultation_event_entry(
     consultation_id: int,
     object_model: str,
     object_id: int,
@@ -43,15 +43,12 @@ def create_consultation_event_task(
 ):
     Model = apps.get_model("facility", object_model)
 
-    print(f"Creating Event for {object_model} {object_id}")
-
     instance = Model.objects.get(id=object_id)
 
     diff = json.loads(diff) if diff else None
     change_type = ChangeType.UPDATED if diff else ChangeType.CREATED
 
     data = transform(instance, diff)
-    print(data)
 
     object_fields = set(data.keys())
 
@@ -60,7 +57,6 @@ def create_consultation_event_task(
         groups = EventType.objects.filter(
             model=object_model, fields__len__gt=0
         ).values_list("id", "fields")
-        print(groups)
         for group_id, group_fields in groups:
             if set(group_fields) & object_fields:
                 # PatientConsultationEvent.objects.select_for_update().filter(
@@ -93,13 +89,11 @@ def create_consultation_event_task(
                     )
                 )
 
-        # print([x.__dict__ for x in batch])
-
         PatientConsultationEvent.objects.bulk_create(batch)
         return len(batch)
 
 
-def create_consultation_event(
+def create_consultation_events(
     consultation_id: int,
     objects: list | QuerySet | Model,
     caused_by: int,
@@ -114,16 +108,14 @@ def create_consultation_event(
             raise ValueError("diff is not available when objects is a list or queryset")
         for obj in objects:
             object_model = obj.__class__.__name__
-            create_consultation_event_task.apply_async(
-                (consultation_id, object_model, obj.id, caused_by, created_date),
-                countdown=1,
+            create_consultation_event_entry(
+                consultation_id, object_model, obj.id, caused_by, created_date
             )
     else:
         diff = (
             json.dumps(model_diff(old, objects), cls=CustomJSONEncoder) if old else None
         )
         object_model = objects.__class__.__name__
-        create_consultation_event_task.apply_async(
-            (consultation_id, object_model, objects.id, caused_by, created_date, diff),
-            countdown=1,  # delay to avoid accessing db too early
+        create_consultation_event_entry(
+            consultation_id, object_model, objects.id, caused_by, created_date, diff
         )

@@ -33,7 +33,7 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
-from care.facility.events.handler import create_consultation_event
+from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -716,7 +716,7 @@ class PatientNotesViewSet(
             created_by=self.request.user,
         )
 
-        create_consultation_event(
+        create_consultation_events(
             instance.consultation_id,
             instance,
             self.request.user.id,
