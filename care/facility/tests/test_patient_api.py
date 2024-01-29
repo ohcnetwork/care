@@ -4,6 +4,11 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ICD11Diagnosis,
+)
+from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -243,10 +248,34 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         cls.consultation.save()
         cls.patient.last_consultation = cls.consultation
         cls.patient.save()
+        cls.diagnoses = ICD11Diagnosis.objects.filter(is_leaf=True)[10:15]
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[0],
+            verification_status=ConditionVerificationStatus.CONFIRMED,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[1],
+            verification_status=ConditionVerificationStatus.DIFFERENTIAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[2],
+            verification_status=ConditionVerificationStatus.PROVISIONAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[3],
+            verification_status=ConditionVerificationStatus.UNCONFIRMED,
+        )
+
+    def get_base_url(self) -> str:
+        return "/api/v1/patient/"
 
     def test_filter_by_patient_no(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get("/api/v1/patient/?patient_no=IP5678")
+        response = self.client.get(self.get_base_url(), {"patient_no": "IP5678"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
@@ -256,13 +285,75 @@ class PatientFilterTestCase(TestUtils, APITestCase):
     def test_filter_by_location(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(
-            f"/api/v1/patient/?facility={self.facility.external_id}&location={self.location.external_id}"
+            self.get_base_url(),
+            {
+                "facility": self.facility.external_id,
+                "location": self.location.external_id,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(
             response.data["results"][0]["id"], str(self.patient.external_id)
         )
+
+    def test_filter_by_diagnoses(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses": ",".join([str(x.id) for x in self.diagnoses])},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(self.get_base_url(), {"diagnoses": self.diagnoses[4].id})
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_unconfirmed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_unconfirmed": self.diagnoses[3].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_unconfirmed": self.diagnoses[2].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_provisional(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_provisional": self.diagnoses[2].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_provisional": self.diagnoses[3].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_differential(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_differential": self.diagnoses[1].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_differential": self.diagnoses[0].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_diagnoses_confirmed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(),
+            {"diagnoses_confirmed": self.diagnoses[0].id},
+        )
+        self.assertContains(res, self.patient.external_id)
+        res = self.client.get(
+            self.get_base_url(), {"diagnoses_confirmed": self.diagnoses[2].id}
+        )
+        self.assertNotContains(res, self.patient.external_id)
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):
@@ -289,7 +380,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             suggestion="A",
             encounter_date=now(),
             discharge_date=None,  # Patient is currently admitted
-            discharge_reason=None,
+            new_discharge_reason=None,
         )
         cls.bed = cls.create_bed(cls.facility, cls.location)
         cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
@@ -317,7 +408,9 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         self.assertEqual(self.patient.facility, self.destination_facility)
 
         # Assert the consultation discharge reason and date are set correctly
-        self.assertEqual(self.consultation.discharge_reason, "REF")
+        self.assertEqual(
+            self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
+        )
         self.assertIsNotNone(self.consultation.discharge_date)
 
     def test_transfer_with_active_consultation_same_facility(self):

@@ -33,8 +33,8 @@ from care.facility.models.icd11_diagnosis import (
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    DISCHARGE_REASON_CHOICES,
     SYMPTOM_CHOICES,
+    NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
 )
@@ -113,8 +113,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), required=False, allow_null=True
     )
 
-    discharge_reason = serializers.ChoiceField(
-        choices=DISCHARGE_REASON_CHOICES, read_only=True, required=False
+    new_discharge_reason = serializers.ChoiceField(
+        choices=NewDischargeReasonEnum.choices, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
 
@@ -576,8 +576,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
 
 class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
-    discharge_reason = serializers.ChoiceField(
-        choices=DISCHARGE_REASON_CHOICES, required=True
+    new_discharge_reason = serializers.ChoiceField(
+        choices=NewDischargeReasonEnum.choices, required=True
     )
     discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
@@ -614,7 +614,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientConsultation
         fields = (
-            "discharge_reason",
+            "new_discharge_reason",
             "referred_to",
             "referred_to_external",
             "discharge_notes",
@@ -637,11 +637,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     ],
                 }
             )
-        if attrs.get("discharge_reason") != "EXP":
+        if attrs.get("new_discharge_reason") != NewDischargeReasonEnum.EXPIRED:
             attrs.pop("death_datetime", None)
             attrs.pop("death_confirmed_doctor", None)
 
-        if attrs.get("discharge_reason") == "EXP":
+        if attrs.get("new_discharge_reason") == NewDischargeReasonEnum.EXPIRED:
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
             if attrs.get("death_datetime") > now():
@@ -687,16 +687,19 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ).update(end_date=now())
             if patient.abha_number:
                 abha_number = patient.abha_number
-                AbdmGateway().fetch_modes(
-                    {
-                        "healthId": abha_number.abha_number,
-                        "name": abha_number.name,
-                        "gender": abha_number.gender,
-                        "dateOfBirth": str(abha_number.date_of_birth),
-                        "consultationId": abha_number.external_id,
-                        "purpose": "LINK",
-                    }
-                )
+                try:
+                    AbdmGateway().fetch_modes(
+                        {
+                            "healthId": abha_number.abha_number,
+                            "name": abha_number.name,
+                            "gender": abha_number.gender,
+                            "dateOfBirth": str(abha_number.date_of_birth),
+                            "consultationId": abha_number.external_id,
+                            "purpose": "LINK",
+                        }
+                    )
+                except Exception:
+                    pass
             create_consultation_event(
                 instance.id,
                 instance,

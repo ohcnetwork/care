@@ -1,7 +1,6 @@
 version: '3.4'
 
 services:
-
   backend:
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
@@ -20,7 +19,6 @@ services:
     entrypoint: [ "bash", "celery_worker-ecs.sh" ]
     depends_on:
       - db
-      - backend
       - redis
 
   celery-beat:
@@ -30,5 +28,4 @@ services:
     entrypoint: [ "bash", "celery_beat-ecs.sh" ]
     depends_on:
       - db
-      - backend
       - redis
