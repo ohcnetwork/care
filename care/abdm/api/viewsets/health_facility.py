@@ -57,7 +57,19 @@ def register_health_facility_as_service(facility_external_id):
         data = response.json()[0]
 
         if "error" in data:
-            return [False, data["error"]["message"]]
+            if (
+                data["error"].get("code") == "2500"
+                and settings.ABDM_CLIENT_ID in data["error"].get("message")
+                and "already associated" in data["error"].get("message")
+            ):
+                health_facility.registered = True
+                health_facility.save()
+                return [True, None]
+
+            return [
+                False,
+                data["error"].get("message", "Error while registering HIP as service"),
+            ]
 
         if "servicesLinked" in data:
             health_facility.registered = True
