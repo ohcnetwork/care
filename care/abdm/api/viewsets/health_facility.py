@@ -34,9 +34,7 @@ def register_health_facility_as_service(facility_external_id):
 
     clean_facility_name = re.sub(r"[^A-Za-z0-9 ]+", " ", health_facility.facility.name)
     clean_facility_name = re.sub(r"\s+", " ", clean_facility_name).strip()
-    hip_name = (
-        settings.HIP_NAME_PREFIX + clean_facility_name + settings.HIP_NAME_POSTFIX
-    )
+    hip_name = settings.HIP_NAME_PREFIX + clean_facility_name + settings.HIP_NAME_SUFFIX
     response = Facility().add_update_service(
         {
             "facilityId": health_facility.hf_id,
