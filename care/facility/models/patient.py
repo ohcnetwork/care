@@ -31,7 +31,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_DISCHARGE_REASON_CHOICES,
+    REVERSE_NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -533,6 +533,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
+        "last_consultation__new_discharge_reason": "Reason for discharge",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
@@ -565,8 +566,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
-        "last_consultation__discharge_reason": (
-            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
+        "last_consultation__new_discharge_reason": (
+            lambda x: REVERSE_NEW_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,
