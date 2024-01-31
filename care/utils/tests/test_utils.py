@@ -26,6 +26,11 @@ from care.facility.models import (
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ConsultationDiagnosis,
+    ICD11Diagnosis,
+)
 from care.users.models import District, State
 
 
@@ -123,7 +128,7 @@ class TestUtils:
         """
 
         return {
-            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
+            "user_type": user_type or User.TYPE_VALUE_MAP["Nurse"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
@@ -160,7 +165,7 @@ class TestUtils:
             "state": district.state,
             "district": district,
             "local_body": local_body,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE_MAP["Nurse"],
         }
         data.update(kwargs)
         user = User.objects.create_user(**data)
@@ -388,6 +393,22 @@ class TestUtils:
         }
         data.update(kwargs)
         return ConsultationBed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_diagnosis(
+        cls,
+        consultation: PatientConsultation,
+        diagnosis: ICD11Diagnosis,
+        verification_status: ConditionVerificationStatus,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "diagnosis": diagnosis,
+            "verification_status": verification_status,
+        }
+        data.update(kwargs)
+        return ConsultationDiagnosis.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):

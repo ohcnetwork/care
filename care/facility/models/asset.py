@@ -7,7 +7,9 @@ from django.db.models import JSONField, Q
 from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
-from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
+from care.facility.models.mixins.permissions.facility import (
+    FacilityRelatedPermissionMixin,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
@@ -25,7 +27,7 @@ class AvailabilityStatus(models.TextChoices):
     UNDER_MAINTENANCE = "Under Maintenance"
 
 
-class AssetLocation(BaseModel, AssetsPermissionMixin):
+class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     """
     This model is also used to store rooms that the assets are in, Since these rooms are mapped to
     actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts

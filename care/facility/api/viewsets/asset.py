@@ -357,7 +357,7 @@ class AssetViewSet(
                 status=status.HTTP_409_CONFLICT,
             )
         except ValidationError as e:
-            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         except KeyError as e:
             return Response(
@@ -366,7 +366,12 @@ class AssetViewSet(
             )
 
         except APIException as e:
-            return Response(e.detail, e.status_code)
+            return Response(
+                {
+                    "detail": f"Communication with the middleware failed.\nReceived status code: {e.status_code}"
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         except Exception as e:
             print(f"error: {e}")

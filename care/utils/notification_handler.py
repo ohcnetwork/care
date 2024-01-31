@@ -335,6 +335,13 @@ class NotificationGenerator:
         extra_users = self.extra_users
         caused_user = self.caused_by
         facility_users = FacilityUser.objects.filter(facility_id=self.facility.id)
+        if self.event != Notification.Event.MESSAGE:
+            facility_users.exclude(
+                user__user_type__in=(
+                    User.TYPE_VALUE_MAP["Staff"],
+                    User.TYPE_VALUE_MAP["StaffReadOnly"],
+                )
+            )
         for facility_user in facility_users:
             if facility_user.user.id != caused_user.id:
                 users.append(facility_user.user)
