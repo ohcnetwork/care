@@ -4,7 +4,7 @@
   },
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports": true
     },
     "editor.formatOnSave": true
   },
