@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import Case, When
+from django.db.models.query import QuerySet
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -496,6 +497,42 @@ class PatientViewSet(
             shifting_request.comments = f"{shifting_request.comments}\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
             shifting_request.save(update_fields=["status", "comments"])
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+
+
+class FacilityDischargedPatientFilterSet(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
+
+@extend_schema_view(tags=["patient"])
+class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
+    serializer_class = PatientListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityDischargedPatientFilterSet
+    queryset = PatientRegistration.objects.select_related(
+        "local_body",
+        "district",
+        "state",
+        "ward",
+        "assigned_to",
+        "facility",
+        "facility__ward",
+        "facility__local_body",
+        "facility__district",
+        "facility__state",
+        "last_consultation",
+        "last_consultation__assigned_to",
+        "last_edited",
+        "created_by",
+    )
+
+    def get_queryset(self) -> QuerySet:
+        qs = super().get_queryset()
+        return qs.filter(
+            Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
+            & Q(consultations__discharge_date__isnull=False)
+        )
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):

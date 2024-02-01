@@ -43,6 +43,7 @@ from care.facility.api.viewsets.inventory import (
 )
 from care.facility.api.viewsets.notification import NotificationViewSet
 from care.facility.api.viewsets.patient import (
+    FacilityDischargedPatientViewSet,
     FacilityPatientStatsHistoryViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
@@ -183,6 +184,9 @@ facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryVie
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 facility_nested_router.register(r"asset_location", AssetLocationViewSet)
 facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
+facility_nested_router.register(
+    r"discharged_patients", FacilityDischargedPatientViewSet
+)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
