@@ -532,7 +532,7 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         return qs.filter(
             Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
             & Q(consultations__discharge_date__isnull=False)
-        )
+        ).distinct()
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
