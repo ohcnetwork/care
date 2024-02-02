@@ -530,6 +530,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__new_discharge_reason": "Reason for discharge",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
+        
+        # insurance details
+         "policy__insurer_name": "Insurer Name",
     }
 
     def format_as_date(date):
