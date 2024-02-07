@@ -208,16 +208,28 @@ class AssetPublicQRViewSet(GenericViewSet):
         return Response(hit)
 
 
-class AvailabilityFilter(filters.FilterSet):
-    linked_model = filters.CharFilter(field_name="content_type__model")
-    linked_id = filters.UUIDFilter(field_name="object_external_id")
-
-
-class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AvailabilityRecord.objects.all()
     serializer_class = AvailabilityRecordSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AvailabilityFilter
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            object_external_id=self.kwargs["asset_external_id"],
+            content_type__model="asset",
+        )
+
+
+class AssetLocationAvailabilityViewSet(
+    ListModelMixin, RetrieveModelMixin, GenericViewSet
+):
+    queryset = AvailabilityRecord.objects.all()
+    serializer_class = AvailabilityRecordSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            object_external_id=self.kwargs["asset_location_external_id"],
+            content_type__model="assetlocation",
+        )
 
 
 class AssetViewSet(

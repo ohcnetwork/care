@@ -11,13 +11,14 @@ from care.facility.api.viewsets.ambulance import (
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
+    AssetAvailabilityViewSet,
+    AssetLocationAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicQRViewSet,
     AssetPublicViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
-    AvailabilityViewSet,
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
@@ -107,8 +108,6 @@ router.register("skill", SkillViewSet)
 router.register("facility", FacilityViewSet)
 router.register("getallfacilities", AllFacilityViewSet)
 
-router.register("availability", AvailabilityViewSet)
-
 router.register("files", FileUploadViewSet)
 
 router.register("ambulance/create", AmbulanceCreateViewSet)
@@ -184,11 +183,20 @@ facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 facility_nested_router.register(r"asset_location", AssetLocationViewSet)
+
+facility_location_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"asset_location", lookup="asset_location"
+)
+facility_location_nested_router.register(
+    r"availability", AssetLocationAvailabilityViewSet
+)
+
 facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
+asset_nested_router.register(r"availability", AssetAvailabilityViewSet)
 asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
 
@@ -232,6 +240,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(facility_location_nested_router.urls)),
     path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),

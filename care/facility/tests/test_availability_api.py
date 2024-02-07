@@ -36,30 +36,18 @@ class AvailabilityViewSetTestCase(TestUtils, APITestCase):
 
     def test_list_asset_availability(self):
         response = self.client.get(
-            f"/api/v1/availability/?linked_id={self.asset.external_id}"
+            f"/api/v1/asset/{self.asset.external_id}/availability/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
-        )
-
-        response = self.client.get("/api/v1/availability/?linked_model=asset")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["results"][0]["linked_id"], self.asset.external_id
         )
 
     def test_list_location_availability(self):
         response = self.client.get(
-            f"/api/v1/availability/?linked_id={self.asset_location.external_id}"
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/availability/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
-        )
-
-        response = self.client.get("/api/v1/availability/?linked_model=assetlocation")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["results"][0]["linked_id"], self.asset_location.external_id
         )
