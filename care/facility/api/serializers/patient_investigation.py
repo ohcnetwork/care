@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
+from care.facility.api.serializers.patient_consultation import (
+    PatientConsultationSerializer,
+)
 from care.facility.models.patient_investigation import (
     InvestigationSession,
     InvestigationValue,
@@ -40,6 +43,10 @@ class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
 
 class InvestigationValueSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
+
+    consultation_object = PatientConsultationSerializer(
+        source="consultation", read_only=True
+    )
 
     group_object = PatientInvestigationGroupSerializer(source="group", read_only=True)
     investigation_object = MinimalPatientInvestigationSerializer(
