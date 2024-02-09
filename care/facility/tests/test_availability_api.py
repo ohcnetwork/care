@@ -51,3 +51,23 @@ class AvailabilityViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(
             response.data["results"][0]["status"], AvailabilityStatus.OPERATIONAL.value
         )
+
+    def test_no_access_to_availability_record(self):
+        user2 = self.create_user(username="user2", district=self.district)
+        self.client.force_authenticate(user2)
+        response = self.client.get(
+            f"/api/v1/asset/{self.asset.external_id}/availability/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have access to this asset's availability records",
+        )
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/availability/"
+        )
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have access to this asset location's availability records",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
