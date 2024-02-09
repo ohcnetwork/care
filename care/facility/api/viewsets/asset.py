@@ -208,28 +208,43 @@ class AssetPublicQRViewSet(GenericViewSet):
         return Response(hit)
 
 
-class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AvailabilityRecord.objects.all()
     serializer_class = AvailabilityRecordSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return self.queryset.filter(
-            object_external_id=self.kwargs["asset_external_id"],
-            content_type__model="asset",
-        )
-
-
-class AssetLocationAvailabilityViewSet(
-    ListModelMixin, RetrieveModelMixin, GenericViewSet
-):
-    queryset = AvailabilityRecord.objects.all()
-    serializer_class = AvailabilityRecordSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(
-            object_external_id=self.kwargs["asset_location_external_id"],
-            content_type__model="assetlocation",
-        )
+        facility_queryset = get_facility_queryset(self.request.user)
+        if "asset_external_id" in self.kwargs:
+            asset = get_object_or_404(
+                Asset, external_id=self.kwargs["asset_external_id"]
+            )
+            if asset.current_location.facility in facility_queryset:
+                return self.queryset.filter(
+                    content_type__model="asset",
+                    object_external_id=self.kwargs["asset_external_id"],
+                )
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset's availability records"
+                )
+        elif "asset_location_external_id" in self.kwargs:
+            asset_location = get_object_or_404(
+                AssetLocation, external_id=self.kwargs["asset_location_external_id"]
+            )
+            if asset_location.facility in facility_queryset:
+                return self.queryset.filter(
+                    content_type__model="assetlocation",
+                    object_external_id=self.kwargs["asset_location_external_id"],
+                )
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset location's availability records"
+                )
+        else:
+            raise exceptions.ValidationError(
+                "Either asset_external_id or asset_location_external_id is required"
+            )
 
 
 class AssetViewSet(
