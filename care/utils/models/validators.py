@@ -1,9 +1,12 @@
+import re
 from typing import Iterable, List
 
 import jsonschema
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
 
 
 @deconstructible
@@ -42,6 +45,18 @@ class JSONFieldSchemaValidator:
 
             message = str(error).replace("\n\n", ": ").replace("\n", "")
             container.append(ValidationError(message))
+
+
+@deconstructible
+class UsernameValidator(validators.RegexValidator):
+    regex = r"^(?!.*[._-]{2})[a-z0-9](?:[a-z0-9._-]{2,14}[a-z0-9])$"
+    message = _(
+        "Username must be 4 to 16 characters long. "
+        "It may only contain lowercase alphabets, numbers, underscores, hyphens and dots. "
+        "It shouldn't start or end with underscores, hyphens or dots. "
+        "It shouldn't contain consecutive underscores, hyphens or dots."
+    )
+    flags = re.ASCII
 
 
 @deconstructible
