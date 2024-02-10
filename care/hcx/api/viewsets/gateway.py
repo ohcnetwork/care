@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
-from re import IGNORECASE, search
 from uuid import uuid4 as uuid
 
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
+from redis_om import FindQuery
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -36,10 +36,12 @@ from care.hcx.models.base import (
 from care.hcx.models.claim import Claim
 from care.hcx.models.communication import Communication
 from care.hcx.models.policy import Policy
+from care.hcx.static_data.pmjy_packages import PMJYPackage
 from care.hcx.utils.fhir import Fhir
 from care.hcx.utils.hcx import Hcx
 from care.hcx.utils.hcx.operations import HcxOperations
 from care.utils.queryset.communications import get_communications
+from care.utils.static_data.helpers import query_builder
 
 
 class HcxGatewayViewSet(GenericViewSet):
@@ -318,34 +320,23 @@ class HcxGatewayViewSet(GenericViewSet):
 
         return Response(response, status=status.HTTP_200_OK)
 
+    def serialize_data(self, objects: list[PMJYPackage]):
+        return [package.get_representation() for package in objects]
+
     @extend_schema(tags=["hcx"])
     @action(detail=False, methods=["get"])
     def pmjy_packages(self, request):
-        from care.hcx.static_data.pmjy_packages import PMJYPackages
+        try:
+            limit = min(int(request.query_params.get("limit")), 20)
+        except (ValueError, TypeError):
+            limit = 20
 
-        def serailize_data(pmjy_packages):
-            result = []
-            for pmjy_package in pmjy_packages:
-                if type(pmjy_package) == tuple:
-                    pmjy_package = pmjy_package[0]
-                result.append(
-                    {
-                        "code": pmjy_package.code,
-                        "name": pmjy_package.name,
-                        "price": pmjy_package.price,
-                        "package_name": pmjy_package.package_name,
-                    }
-                )
-            return result
+        query = []
+        if q := request.query_params.get("query"):
+            query.append(PMJYPackage.vec % query_builder(q))
 
-        queryset = PMJYPackages
-        limit = request.GET.get("limit", 20)
-        if request.GET.get("query", False):
-            query = request.GET.get("query")
-            queryset = queryset.where(
-                lambda row: search(r".*" + query + r".*", row.name, IGNORECASE)
-                is not None
-                or search(r".*" + query + r".*", row.package_name, IGNORECASE)
-                is not None
-            )
-        return Response(serailize_data(queryset[:limit]))
+        results = FindQuery(expressions=query, model=PMJYPackage, limit=limit).execute(
+            exhaust_results=False
+        )
+
+        return Response(self.serialize_data(results))

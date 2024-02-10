@@ -48,6 +48,3 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
 
 DISABLE_RATELIMIT = True
-
-FILE_UPLOAD_BUCKET_ENDPOINT = "http://localstack:4566"
-FACILITY_S3_BUCKET_ENDPOINT = "http://localstack:4566"

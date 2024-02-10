@@ -30,10 +30,11 @@ from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
 
 from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
-from .views import home_view
+from .views import home_view, ping
 
 urlpatterns = [
     path("", home_view, name="home"),
+    path("ping/", ping, name="ping"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Rest API

@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
@@ -15,15 +14,13 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
     UserListSerializer,
     UserSerializer,
 )
-
-User = get_user_model()
+from care.users.models import User
 
 
 def remove_facility_user_cache(user_id):
@@ -86,7 +83,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
@@ -252,7 +249,7 @@ class UserViewSet(
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or requesting_user.user_type in READ_ONLY_USER_TYPES
+            or requesting_user.user_type in User.READ_ONLY_TYPES
         ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 

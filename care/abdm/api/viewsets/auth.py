@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timedelta
 
 from django.core.cache import cache
@@ -14,6 +15,8 @@ from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from config.authentication import ABDMAuthentication
 
+logger = logging.getLogger(__name__)
+
 
 class OnFetchView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
@@ -22,7 +25,17 @@ class OnFetchView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        AbdmGateway().init(data["resp"]["requestId"])
+        try:
+            AbdmGateway().init(data["resp"]["requestId"])
+        except Exception as e:
+            logger.warning(
+                f"Error: OnFetchView::post failed while initialising ABDM Gateway, Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {"detail": "Error: Initialising ABDM Gateway failed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -324,20 +337,34 @@ class RequestDataView(GenericAPIView):
             }
         )
 
-        AbdmGateway().data_notify(
-            {
-                "health_id": consent["notification"]["consentDetail"]["patient"]["id"],
-                "consent_id": data["hiRequest"]["consent"]["id"],
-                "transaction_id": data["transactionId"],
-                "care_contexts": list(
-                    map(
-                        lambda context: {"id": context["careContextReference"]},
-                        consent["notification"]["consentDetail"]["careContexts"][
-                            :-2:-1
-                        ],
-                    )
-                ),
-            }
-        )
+        try:
+            AbdmGateway().data_notify(
+                {
+                    "health_id": consent["notification"]["consentDetail"]["patient"][
+                        "id"
+                    ],
+                    "consent_id": data["hiRequest"]["consent"]["id"],
+                    "transaction_id": data["transactionId"],
+                    "care_contexts": list(
+                        map(
+                            lambda context: {"id": context["careContextReference"]},
+                            consent["notification"]["consentDetail"]["careContexts"][
+                                :-2:-1
+                            ],
+                        )
+                    ),
+                }
+            )
+        except Exception as e:
+            logger.warning(
+                f"Error: RequestDataView::post failed to notify (health-information/notify). Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {
+                    "detail": "Failed to notify (health-information/notify)",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
