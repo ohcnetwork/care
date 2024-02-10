@@ -67,7 +67,7 @@ def backwards_func(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
-        ("facility", "0407_alter_dailyround_additional_symptoms_and_more"),
+        ("facility", "0409_merge_20240210_1510"),
     ]
 
     operations = [
