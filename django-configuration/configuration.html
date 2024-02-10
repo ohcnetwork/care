@@ -201,6 +201,11 @@
         <article role="main">
           <section id="environment-variables">
 <h1>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">#</a></h1>
+<section id="min-encounter-date">
+<h2><code class="docutils literal notranslate"><span class="pre">MIN_ENCOUNTER_DATE</span></code><a class="headerlink" href="#min-encounter-date" title="Link to this heading">#</a></h2>
+<p>Default value is <cite>2020-01-01</cite>. This is the minimum date for a possible consultation encounter.
+Example: <cite>MIN_ENCOUNTER_DATE=2000-01-01</cite></p>
+</section>
 <section id="task-summarize-triage">
 <h2><code class="docutils literal notranslate"><span class="pre">TASK_SUMMARIZE_TRIAGE</span></code><a class="headerlink" href="#task-summarize-triage" title="Link to this heading">#</a></h2>
 <p>Default value is <cite>True</cite>. If set to <cite>False</cite>, the celery task to summarize triage data will not be executed.
@@ -284,6 +289,7 @@ Example: <cite>TASK_SUMMARIZE_DISTRICT_PATIENT=False</cite></p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Environment Variables</a><ul>
+<li><a class="reference internal" href="#min-encounter-date"><code class="docutils literal notranslate"><span class="pre">MIN_ENCOUNTER_DATE</span></code></a></li>
 <li><a class="reference internal" href="#task-summarize-triage"><code class="docutils literal notranslate"><span class="pre">TASK_SUMMARIZE_TRIAGE</span></code></a></li>
 <li><a class="reference internal" href="#task-summarize-tests"><code class="docutils literal notranslate"><span class="pre">TASK_SUMMARIZE_TESTS</span></code></a></li>
 <li><a class="reference internal" href="#task-summarize-facility-capacity"><code class="docutils literal notranslate"><span class="pre">TASK_SUMMARIZE_FACILITY_CAPACITY</span></code></a></li>
