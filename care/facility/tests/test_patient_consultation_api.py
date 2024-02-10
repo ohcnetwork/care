@@ -4,6 +4,7 @@ from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
@@ -99,6 +100,20 @@ class TestPatientConsultation(TestUtils, APITestCase):
         return self.client.post(
             f"{self.get_url(consultation)}discharge_patient/", kwargs, "json"
         )
+
+    def test_encounter_date_less_than_minimum(self):
+        date = MIN_ENCOUNTER_DATE - datetime.timedelta(days=1)
+        patient = self.create_patient(self.district, self.facility)
+        data = self.get_default_data().copy()
+        data.update(
+            {
+                "patient": patient.external_id,
+                "facility": self.facility.external_id,
+                "encounter_date": date,
+            }
+        )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_consultation_treating_physician_invalid_user(self):
         consultation = self.create_admission_consultation(suggestion="A")

@@ -4,7 +4,7 @@ Base settings to build other settings files upon.
 
 import base64
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import environ
@@ -570,6 +570,12 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
 
 # for setting the shifting mode
 PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
+
+MIN_ENCOUNTER_DATE = env(
+    "MIN_ENCOUNTER_DATE",
+    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),
+    default=datetime(2020, 1, 1),
+)
 
 # for exporting csv
 CSV_REQUEST_PARAMETER = "csv"
