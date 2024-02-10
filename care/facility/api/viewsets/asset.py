@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -262,6 +262,13 @@ class AssetViewSet(
             queryset = queryset.filter(
                 current_location__facility__id__in=allowed_facilities
             )
+        queryset = queryset.annotate(
+            latest_status=Subquery(
+                AssetAvailabilityRecord.objects.filter(asset=OuterRef("pk"))
+                .order_by("-created_date")
+                .values("status")[:1]
+            )
+        )
         return queryset
 
     def list(self, request, *args, **kwargs):
