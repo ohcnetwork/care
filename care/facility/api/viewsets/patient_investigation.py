@@ -74,7 +74,7 @@ class PatientInvestigationViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = PatientInvestigationSerializer
-    queryset = PatientInvestigation.objects.all()
+    queryset = PatientInvestigation.objects.all().select_related("groups")
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
