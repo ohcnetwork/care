@@ -3,3 +3,4 @@
 htmlcov
 staticfiles
 .coverage
+care/media/

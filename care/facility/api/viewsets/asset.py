@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -73,6 +73,7 @@ class AssetLocationViewSet(
     CreateModelMixin,
     UpdateModelMixin,
     GenericViewSet,
+    DestroyModelMixin,
 ):
     queryset = (
         AssetLocation.objects.all().select_related("facility").order_by("-created_date")
@@ -117,6 +118,15 @@ class AssetLocationViewSet(
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.bed_set.filter(deleted=False).count():
+            raise ValidationError("Cannot delete a Location with associated Beds")
+        if instance.asset_set.filter(deleted=False).count():
+            raise ValidationError("Cannot delete a Location with associated Assets")
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class AssetFilter(filters.FilterSet):
@@ -252,6 +262,13 @@ class AssetViewSet(
             queryset = queryset.filter(
                 current_location__facility__id__in=allowed_facilities
             )
+        queryset = queryset.annotate(
+            latest_status=Subquery(
+                AssetAvailabilityRecord.objects.filter(asset=OuterRef("pk"))
+                .order_by("-created_date")
+                .values("status")[:1]
+            )
+        )
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -324,8 +341,8 @@ class AssetViewSet(
             middleware_hostname = (
                 asset.meta.get(
                     "middleware_hostname",
-                    asset.current_location.middleware_address,
                 )
+                or asset.current_location.middleware_address
                 or asset.current_location.facility.middleware_address
             )
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
@@ -338,7 +355,7 @@ class AssetViewSet(
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except ValidationError as e:
-            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
         except KeyError as e:
             return Response(
@@ -347,7 +364,12 @@ class AssetViewSet(
             )
 
         except APIException as e:
-            return Response(e.detail, e.status_code)
+            return Response(
+                {
+                    "detail": f"Communication with the middleware failed.\nReceived status code: {e.status_code}"
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         except Exception as e:
             print(f"error: {e}")

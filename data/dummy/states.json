@@ -1,0 +1,361 @@
+[
+  {
+    "model": "users.state",
+    "pk": 1,
+    "fields": {
+      "name": "Kerala"
+    }
+  },
+  {
+    "model": "users.district",
+    "pk": 5,
+    "fields": {
+      "state": 1,
+      "name": "Kottayam"
+    }
+  },
+  {
+    "model": "users.district",
+    "pk": 7,
+    "fields": {
+      "state": 1,
+      "name": "Ernakulam"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 6,
+    "fields": {
+      "district": 7,
+      "name": "Aikaranad Grama Panchayat, Ernakulam District",
+      "body_type": 1,
+      "localbody_code": "G071005"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 12,
+    "fields": {
+      "district": 7,
+      "name": "Alangad Block Panchayat, Ernakulam District",
+      "body_type": 2,
+      "localbody_code": "B070200"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 20,
+    "fields": {
+      "district": 7,
+      "name": "Aluva Municipality, Ernakulam District",
+      "body_type": 10,
+      "localbody_code": "M070800"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 704,
+    "fields": {
+      "district": 7,
+      "name": "Poothrikka Grama Panchayat, Ernakulam District",
+      "body_type": 1,
+      "localbody_code": "G071001"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 25,
+    "fields": {
+      "district": 7,
+      "name": "Amballoor Grama Panchayat, Ernakulam District",
+      "body_type": 1,
+      "localbody_code": "G070905"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 32,
+    "fields": {
+      "district": 7,
+      "name": "Angamaly Block Panchayat, Ernakulam District",
+      "body_type": 2,
+      "localbody_code": "B070300"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 95,
+    "fields": {
+      "district": 5,
+      "name": "Changanassery Municipality, Kottayam District",
+      "body_type": 10,
+      "localbody_code": "M050300"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 8,
+    "fields": {
+      "district": 5,
+      "name": "Akalakunnam Grama Panchayat, Kottayam District",
+      "body_type": 1,
+      "localbody_code": "G050701"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 47,
+    "fields": {
+      "district": 5,
+      "name": "Arpookara Grama Panchayat, Kottayam District",
+      "body_type": 1,
+      "localbody_code": "G050304"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 56,
+    "fields": {
+      "district": 5,
+      "name": "Athirampuzha Grama Panchayat, Kottayam District",
+      "body_type": 1,
+      "localbody_code": "G050303"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 66,
+    "fields": {
+      "district": 5,
+      "name": "Ayarkunnam Grama Panchayat, Kottayam District",
+      "body_type": 1,
+      "localbody_code": "G050801"
+    }
+  },
+  {
+    "model": "users.localbody",
+    "pk": 68,
+    "fields": {
+      "district": 5,
+      "name": "Aymanam Grama Panchayat, Kottayam District",
+      "body_type": 1,
+      "localbody_code": "G050302"
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 5896,
+    "fields": {
+      "local_body": 95,
+      "name": "ANNAPOORNESWARI TEMPLE",
+      "number": 2
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 6276,
+    "fields": {
+      "local_body": 20,
+      "name": "MANA",
+      "number": 4
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 15162,
+    "fields": {
+      "local_body": 6,
+      "name": "PAZHAMTHOTTAM",
+      "number": 1
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 15100,
+    "fields": {
+      "local_body": 704,
+      "name": "THAMMANIMATTOM",
+      "number": 7
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 6054,
+    "fields": {
+      "local_body": 95,
+      "name": "PULIYAMPURAM",
+      "number": 17
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 5341,
+    "fields": {
+      "local_body": 20,
+      "name": "KURAKKANNI",
+      "number": 33
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 8279,
+    "fields": {
+      "local_body": 6,
+      "name": "ALAKUNNAM",
+      "number": 14
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 17847,
+    "fields": {
+      "local_body": 704,
+      "name": "KALLAMKUZHI",
+      "number": 15
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 20600,
+    "fields": {
+      "local_body": 25,
+      "name": "PURAMUNDEKKADU",
+      "number": 9
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 6713,
+    "fields": {
+      "local_body": 25,
+      "name": "KALATHILAKKARA",
+      "number": 22
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 9648,
+    "fields": {
+      "local_body": 32,
+      "name": "THEKKECHERRY",
+      "number": 14
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 10117,
+    "fields": {
+      "local_body": 32,
+      "name": "ELAKUTTOOR",
+      "number": 5
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 2100,
+    "fields": {
+      "local_body": 95,
+      "name": "VENKUNNU",
+      "number": 11
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 18268,
+    "fields": {
+      "local_body": 95,
+      "name": "PARAKKAL",
+      "number": 7
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 7661,
+    "fields": {
+      "local_body": 8,
+      "name": "PAUTHI",
+      "number": 20
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 4363,
+    "fields": {
+      "local_body": 8,
+      "name": "PERUMANNA",
+      "number": 15
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 17098,
+    "fields": {
+      "local_body": 47,
+      "name": "THEKKUMCHERRY",
+      "number": 5
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 16347,
+    "fields": {
+      "local_body": 47,
+      "name": "KANNANTHRIKKOVIL",
+      "number": 6
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 11330,
+    "fields": {
+      "local_body": 56,
+      "name": "M C H WARD",
+      "number": 17
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 6665,
+    "fields": {
+      "local_body": 56,
+      "name": "KOPPAM",
+      "number": 18
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 15052,
+    "fields": {
+      "local_body": 66,
+      "name": "MANJAKKAD",
+      "number": 11
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 19236,
+    "fields": {
+      "local_body": 66,
+      "name": "POTTIPPARA",
+      "number": 22
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 2203,
+    "fields": {
+      "local_body": 68,
+      "name": "PAYYAVOOR",
+      "number": 12
+    }
+  },
+  {
+    "model": "users.ward",
+    "pk": 1911,
+    "fields": {
+      "local_body": 68,
+      "name": "MURIYATHODE",
+      "number": 5
+    }
+  }
+]

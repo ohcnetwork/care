@@ -29,7 +29,9 @@ class ClaimViewSet(
     UpdateModelMixin,
     GenericViewSet,
 ):
-    queryset = Claim.objects.all()
+    queryset = Claim.objects.all().select_related(
+        "policy", "created_by", "last_modified_by"
+    )
     permission_classes = (IsAuthenticated,)
     serializer_class = ClaimSerializer
     lookup_field = "external_id"

@@ -21,10 +21,16 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ConsultationDiagnosis,
+    ICD11Diagnosis,
+)
 from care.users.models import District, State
 
 
@@ -78,8 +84,6 @@ class TestUtils:
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
-    maxDiff = None
-
     def setUp(self) -> None:
         self.client.force_login(self.user)
 
@@ -124,7 +128,7 @@ class TestUtils:
         """
 
         return {
-            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
+            "user_type": user_type or User.TYPE_VALUE_MAP["Nurse"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
@@ -161,13 +165,20 @@ class TestUtils:
             "state": district.state,
             "district": district,
             "local_body": local_body,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE_MAP["Nurse"],
         }
         data.update(kwargs)
         user = User.objects.create_user(**data)
         if home_facility := kwargs.get("home_facility"):
             cls.link_user_with_facility(user, home_facility, user)
         return user
+
+    @classmethod
+    def create_ward(cls, local_body) -> Ward:
+        ward = Ward.objects.create(
+            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
+        )
+        return ward
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
@@ -303,7 +314,7 @@ class TestUtils:
             "treatment_plan": "treatment_plan",
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
             "referred_to": None,
-            "admission_date": None,
+            "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
@@ -328,7 +339,10 @@ class TestUtils:
             }
         )
         data.update(kwargs)
-        return PatientConsultation.objects.create(**data)
+        consultation = PatientConsultation.objects.create(**data)
+        patient.last_consultation = consultation
+        patient.save()
+        return consultation
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
@@ -348,7 +362,7 @@ class TestUtils:
             "current_location": location,
             "asset_type": 50,
             "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)).date(),
-            "qr_code_id": "3dcee5fa-8fb8-4b07-be12-8e0d0baf6692",
+            "qr_code_id": uuid.uuid4(),
         }
         data.update(kwargs)
         return Asset.objects.create(**data)
@@ -379,6 +393,22 @@ class TestUtils:
         }
         data.update(kwargs)
         return ConsultationBed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_diagnosis(
+        cls,
+        consultation: PatientConsultation,
+        diagnosis: ICD11Diagnosis,
+        verification_status: ConditionVerificationStatus,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "diagnosis": diagnosis,
+            "verification_status": verification_status,
+        }
+        data.update(kwargs)
+        return ConsultationDiagnosis.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):

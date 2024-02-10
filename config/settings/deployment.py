@@ -39,6 +39,8 @@ SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
 )
+# https://github.com/adamchainz/django-cors-headers#cors_allowed_origins-sequencestr
+CORS_ALLOWED_ORIGINS = env.json("CORS_ALLOWED_ORIGINS", default=[])
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
