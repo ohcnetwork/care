@@ -48,6 +48,10 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
+from care.facility.models.icd11_diagnosis import (
+    INACTIVE_CONDITION_VERIFICATION_STATUSES,
+    ConditionVerificationStatus,
+)
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
@@ -125,6 +129,10 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_vaccinated_date"
     )
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    last_menstruation_start_date = filters.DateFromToRangeFilter(
+        field_name="last_menstruation_start_date"
+    )
+    date_of_delivery = filters.DateFromToRangeFilter(field_name="date_of_delivery")
     is_active = filters.BooleanFilter(field_name="is_active")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
@@ -209,6 +217,33 @@ class PatientFilterSet(filters.FilterSet):
             last_consultation__bed_number__isnull=value,
             last_consultation__discharge_date__isnull=True,
         )
+
+    # Filter consultations by ICD-11 Diagnoses
+    diagnoses = MultiSelectFilter(method="filter_by_diagnoses")
+    diagnoses_unconfirmed = MultiSelectFilter(method="filter_by_diagnoses")
+    diagnoses_provisional = MultiSelectFilter(method="filter_by_diagnoses")
+    diagnoses_differential = MultiSelectFilter(method="filter_by_diagnoses")
+    diagnoses_confirmed = MultiSelectFilter(method="filter_by_diagnoses")
+
+    def filter_by_diagnoses(self, queryset, name, value):
+        if not value:
+            return queryset
+        filter_q = Q(last_consultation__diagnoses__diagnosis_id__in=value.split(","))
+        if name == "diagnoses":
+            filter_q &= ~Q(
+                last_consultation__diagnoses__verification_status__in=INACTIVE_CONDITION_VERIFICATION_STATUSES
+            )
+        else:
+            verification_status = {
+                "diagnoses_unconfirmed": ConditionVerificationStatus.UNCONFIRMED,
+                "diagnoses_provisional": ConditionVerificationStatus.PROVISIONAL,
+                "diagnoses_differential": ConditionVerificationStatus.DIFFERENTIAL,
+                "diagnoses_confirmed": ConditionVerificationStatus.CONFIRMED,
+            }[name]
+            filter_q &= Q(
+                last_consultation__diagnoses__verification_status=verification_status
+            )
+        return queryset.filter(filter_q)
 
 
 class PatientDRYFilter(DRYPermissionFiltersBase):

@@ -1,7 +1,8 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.db import transaction
-from django.utils.timezone import localtime, now
+from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -47,6 +48,8 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+
+MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
@@ -478,6 +481,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_encounter_date(self, value):
+        if value < MIN_ENCOUNTER_DATE:
+            raise ValidationError(
+                {
+                    "encounter_date": [
+                        f"This field value must be greater than {MIN_ENCOUNTER_DATE.strftime('%Y-%m-%d')}"
+                    ]
+                }
+            )
         if value > now():
             raise ValidationError(
                 {"encounter_date": "This field value cannot be in the future."}

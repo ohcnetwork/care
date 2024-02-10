@@ -200,6 +200,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     is_antenatal = models.BooleanField(
         default=None, verbose_name="Does the patient require Prenatal Care ?"
     )
+    last_menstruation_start_date = models.DateField(
+        default=None, null=True, verbose_name="Last Menstruation Start Date"
+    )
+    date_of_delivery = models.DateField(
+        default=None, null=True, verbose_name="Date of Delivery"
+    )
 
     ward_old = models.CharField(
         max_length=255, default="", verbose_name="Ward of Patient", blank=False

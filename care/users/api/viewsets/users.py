@@ -83,7 +83,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
