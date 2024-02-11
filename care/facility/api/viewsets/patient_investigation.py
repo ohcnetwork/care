@@ -74,7 +74,7 @@ class PatientInvestigationViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = PatientInvestigationSerializer
-    queryset = PatientInvestigation.objects.all()
+    queryset = PatientInvestigation.objects.all().prefetch_related("groups")
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
@@ -99,7 +99,7 @@ class PatientInvestigationSummaryViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = InvestigationValueSerializer
-    queryset = InvestigationValue.objects.all()
+    queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
@@ -155,7 +155,7 @@ class InvestigationValueViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = InvestigationValueSerializer
-    queryset = InvestigationValue.objects.all()
+    queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter

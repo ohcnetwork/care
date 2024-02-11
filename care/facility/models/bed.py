@@ -17,6 +17,7 @@ from care.utils.models.base import BaseModel
 
 class Bed(BaseModel):
     name = models.CharField(max_length=1024)
+    old_name = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(
         choices=BedTypeChoices, default=BedType.REGULAR.value
@@ -29,6 +30,15 @@ class Bed(BaseModel):
     location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                models.functions.Lower("name"),
+                "location",
+                name="unique_bed_name_per_location",
+            )
+        ]
 
     @property
     def is_occupied(self) -> bool:
