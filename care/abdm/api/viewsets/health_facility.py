@@ -1,3 +1,5 @@
+import re
+
 from celery import shared_task
 from django.conf import settings
 from dry_rest_permissions.generics import DRYPermissions
@@ -30,14 +32,17 @@ def register_health_facility_as_service(facility_external_id):
     if health_facility.registered:
         return [True, None]
 
+    clean_facility_name = re.sub(r"[^A-Za-z0-9 ]+", " ", health_facility.facility.name)
+    clean_facility_name = re.sub(r"\s+", " ", clean_facility_name).strip()
+    hip_name = settings.HIP_NAME_PREFIX + clean_facility_name + settings.HIP_NAME_SUFFIX
     response = Facility().add_update_service(
         {
             "facilityId": health_facility.hf_id,
-            "facilityName": health_facility.facility.name,
+            "facilityName": hip_name,
             "HRP": [
                 {
                     "bridgeId": settings.ABDM_CLIENT_ID,
-                    "hipName": health_facility.facility.name,
+                    "hipName": hip_name,
                     "type": "HIP",
                     "active": True,
                     "alias": ["CARE_HIP"],
@@ -50,7 +55,19 @@ def register_health_facility_as_service(facility_external_id):
         data = response.json()[0]
 
         if "error" in data:
-            return [False, data["error"]["message"]]
+            if (
+                data["error"].get("code") == "2500"
+                and settings.ABDM_CLIENT_ID in data["error"].get("message")
+                and "already associated" in data["error"].get("message")
+            ):
+                health_facility.registered = True
+                health_facility.save()
+                return [True, None]
+
+            return [
+                False,
+                data["error"].get("message", "Error while registering HIP as service"),
+            ]
 
         if "servicesLinked" in data:
             health_facility.registered = True
@@ -83,7 +100,7 @@ class HealthFacilityViewSet(
         [registered, error] = register_health_facility_as_service(facility__external_id)
 
         if error:
-            return Response({"error": error}, status=400)
+            return Response({"detail": error}, status=400)
 
         return Response({"registered": registered})
 
