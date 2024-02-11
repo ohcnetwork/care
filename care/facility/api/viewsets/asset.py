@@ -295,7 +295,10 @@ class AssetViewSet(
             )
         queryset = queryset.annotate(
             latest_status=Subquery(
-                AssetAvailabilityRecord.objects.filter(asset=OuterRef("pk"))
+                AvailabilityRecord.objects.filter(
+                    content_type__model="asset",
+                    object_external_id=OuterRef("external_id"),
+                )
                 .order_by("-created_date")
                 .values("status")[:1]
             )
