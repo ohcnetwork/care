@@ -3,6 +3,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -227,6 +228,10 @@ class ConsultationBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
 
     def get_queryset(self):
         user = self.request.user
@@ -244,41 +249,36 @@ class ConsultationBedViewSet(
 
     @extend_schema(
         description="Toggle patient privacy",
-        responses={status.HTTP_200_OK: None},
+        responses={status.HTTP_200_OK: "{'privacy': 'boolean'}"},
         request=None,
         tags=["consultationbed"],
     )
     @action(detail=True, methods=["PATCH"])
     def toggle_patient_privacy(self, request, external_id):
-        try:
-            user: User = request.user
-            consultation_bed: ConsultationBed = (
-                self.get_queryset().filter(external_id=external_id).first()
-            )
+        user: User = request.user
+        consultation_bed: ConsultationBed = (
+            self.get_queryset().filter(external_id=external_id).first()
+        )
 
-            if consultation_bed and (
-                user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-                or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-                or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-                or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-                or (
-                    user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                    and user.home_facility.external_id
-                    == consultation_bed.bed.facility.external_id
-                )
-                or (
-                    user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                    and user.home_facility.external_id
-                    == consultation_bed.bed.facility.external_id
-                )
-            ):
-                consultation_bed.privacy = not consultation_bed.privacy
-                consultation_bed.save()
-                return Response({"status": "success"}, status=status.HTTP_200_OK)
-            raise PermissionDenied(
-                detail="You do not have permission to perform this action"
+        if consultation_bed and (
+            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                and user.home_facility.external_id
+                == consultation_bed.bed.facility.external_id
             )
-        except PermissionDenied as e:
-            return Response({"message": e.detail}, status=status.HTTP_403_FORBIDDEN)
-        except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Staff"]
+                and user.home_facility.external_id
+                == consultation_bed.bed.facility.external_id
+            )
+        ):
+            consultation_bed.privacy = not consultation_bed.privacy
+            consultation_bed.save()
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        raise PermissionDenied(
+            detail="You do not have permission to perform this action"
+        )
