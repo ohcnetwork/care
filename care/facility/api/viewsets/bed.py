@@ -256,8 +256,8 @@ class ConsultationBedViewSet(
     @action(detail=True, methods=["PATCH"])
     def toggle_patient_privacy(self, request, external_id):
         user: User = request.user
-        consultation_bed: ConsultationBed = (
-            self.get_queryset().filter(external_id=external_id).first()
+        consultation_bed: ConsultationBed = self.get_queryset().get(
+            external_id=external_id
         )
 
         if consultation_bed and (
