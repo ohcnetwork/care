@@ -29,25 +29,28 @@ from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
-    AssetAvailabilitySerializer,
     AssetLocationSerializer,
     AssetSerializer,
     AssetServiceSerializer,
     AssetTransactionSerializer,
+    AvailabilityRecordSerializer,
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
 from care.facility.models import (
     Asset,
-    AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetTransaction,
     ConsultationBedAsset,
     UserDefaultAssetLocation,
 )
-from care.facility.models.asset import AssetTypeChoices, StatusChoices
+from care.facility.models.asset import (
+    AssetTypeChoices,
+    AvailabilityRecord,
+    StatusChoices,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -215,15 +218,43 @@ class AssetPublicQRViewSet(GenericViewSet):
         return Response(hit)
 
 
-class AssetAvailabilityFilter(filters.FilterSet):
-    external_id = filters.CharFilter(field_name="asset__external_id")
+class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = AvailabilityRecord.objects.all()
+    serializer_class = AvailabilityRecordSerializer
+    permission_classes = (IsAuthenticated,)
 
-
-class AssetAvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = AssetAvailabilityRecord.objects.all().select_related("asset")
-    serializer_class = AssetAvailabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AssetAvailabilityFilter
+    def get_queryset(self):
+        facility_queryset = get_facility_queryset(self.request.user)
+        if "asset_external_id" in self.kwargs:
+            asset = get_object_or_404(
+                Asset, external_id=self.kwargs["asset_external_id"]
+            )
+            if asset.current_location.facility in facility_queryset:
+                return self.queryset.filter(
+                    content_type__model="asset",
+                    object_external_id=self.kwargs["asset_external_id"],
+                )
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset's availability records"
+                )
+        elif "asset_location_external_id" in self.kwargs:
+            asset_location = get_object_or_404(
+                AssetLocation, external_id=self.kwargs["asset_location_external_id"]
+            )
+            if asset_location.facility in facility_queryset:
+                return self.queryset.filter(
+                    content_type__model="assetlocation",
+                    object_external_id=self.kwargs["asset_location_external_id"],
+                )
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset location's availability records"
+                )
+        else:
+            raise exceptions.ValidationError(
+                "Either asset_external_id or asset_location_external_id is required"
+            )
 
 
 class AssetViewSet(
@@ -264,7 +295,10 @@ class AssetViewSet(
             )
         queryset = queryset.annotate(
             latest_status=Subquery(
-                AssetAvailabilityRecord.objects.filter(asset=OuterRef("pk"))
+                AvailabilityRecord.objects.filter(
+                    content_type__model="asset",
+                    object_external_id=OuterRef("external_id"),
+                )
                 .order_by("-created_date")
                 .values("status")[:1]
             )
