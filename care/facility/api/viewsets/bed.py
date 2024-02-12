@@ -278,7 +278,10 @@ class ConsultationBedViewSet(
         ):
             consultation_bed.privacy = not consultation_bed.privacy
             consultation_bed.save()
-            return Response({"status": "success"}, status=status.HTTP_200_OK)
+            return Response(
+                {"status": "success", "privacy": consultation_bed.privacy},
+                status=status.HTTP_200_OK,
+            )
         raise PermissionDenied(
             detail="You do not have permission to perform this action"
         )
