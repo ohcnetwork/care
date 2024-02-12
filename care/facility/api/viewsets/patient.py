@@ -5,8 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
-from django.db.models.query_utils import Q
+from django.db.models import Case, OuterRef, Q, Subquery, When
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -17,7 +16,12 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,6 +31,7 @@ from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
+    PatientNotesEditSerializer,
     PatientNotesSerializer,
     PatientSearchSerializer,
     PatientTransferSerializer,
@@ -53,6 +58,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
@@ -668,14 +674,57 @@ class PatientNotesFilterSet(filters.FilterSet):
     consultation = filters.CharFilter(field_name="consultation__external_id")
 
 
+class PatientNotesEditViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    GenericViewSet,
+):
+    queryset = PatientNotesEdit.objects.all().order_by("-edited_date")
+    lookup_field = "external_id"
+    serializer_class = PatientNotesEditSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        queryset = self.queryset.filter(
+            patient_note__external_id=self.kwargs.get("notes_external_id")
+        )
+
+        if user.is_superuser:
+            return queryset
+        if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                patient_note__patient__facility__state=user.state
+            )
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                patient_note__patient__facility__district=user.district
+            )
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            q_filters = Q(patient_note__patient__facility__id__in=allowed_facilities)
+            q_filters |= Q(patient_note__patient__last_consultation__assigned_to=user)
+            q_filters |= Q(patient_note__patient__assigned_to=user)
+            q_filters |= Q(patient_note__created_by=user)
+            queryset = queryset.filter(q_filters)
+
+        return queryset
+
+
 class PatientNotesViewSet(
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
 ):
     queryset = (
         PatientNotes.objects.all()
         .select_related("facility", "patient", "created_by")
         .order_by("-created_date")
     )
+    lookup_field = "external_id"
     serializer_class = PatientNotesSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (filters.DjangoFilterBackend,)
@@ -683,10 +732,21 @@ class PatientNotesViewSet(
 
     def get_queryset(self):
         user = self.request.user
+
+        last_edit_subquery = PatientNotesEdit.objects.filter(
+            patient_note=OuterRef("pk")
+        ).order_by("-edited_date")
+
         queryset = self.queryset.filter(
             patient__external_id=self.kwargs.get("patient_external_id")
+        ).annotate(
+            last_edited_by=Subquery(
+                last_edit_subquery.values("edited_by__username")[:1]
+            ),
+            last_edited_date=Subquery(last_edit_subquery.values("edited_date")[:1]),
         )
-        if not user.is_superuser:
+
+        if user.is_superuser:
             return queryset
         if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(patient__facility__state=user.state)
@@ -697,6 +757,7 @@ class PatientNotesViewSet(
             q_filters = Q(patient__facility__id__in=allowed_facilities)
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
+            q_filters |= Q(created_by=user)
             queryset = queryset.filter(q_filters)
 
         return queryset
@@ -709,7 +770,7 @@ class PatientNotesViewSet(
         )
         if not patient.is_active:
             raise ValidationError(
-                {"patient": "Only active patients data can be updated"}
+                {"patient": "Updating patient data is only allowed for active patients"}
             )
 
         instance = serializer.save(
@@ -743,3 +804,23 @@ class PatientNotesViewSet(
         ).generate()
 
         return instance
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        patient = get_object_or_404(
+            get_patient_notes_queryset(self.request.user).filter(
+                external_id=self.kwargs.get("patient_external_id")
+            )
+        )
+
+        if not patient.is_active:
+            raise ValidationError(
+                {"patient": "Updating patient data is only allowed for active patients"}
+            )
+
+        if serializer.instance.created_by != user:
+            raise ValidationError(
+                {"Note": "Only the user who created the note can edit it"}
+            )
+
+        return super().perform_update(serializer)

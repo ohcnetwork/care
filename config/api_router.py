@@ -44,6 +44,7 @@ from care.facility.api.viewsets.inventory import (
 from care.facility.api.viewsets.notification import NotificationViewSet
 from care.facility.api.viewsets.patient import (
     FacilityPatientStatsHistoryViewSet,
+    PatientNotesEditViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
     PatientViewSet,
@@ -201,6 +202,10 @@ patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 patient_nested_router.register(r"notes", PatientNotesViewSet)
+patient_notes_nested_router = NestedSimpleRouter(
+    patient_nested_router, r"notes", lookup="notes"
+)
+patient_notes_nested_router.register(r"edits", PatientNotesEditViewSet)
 patient_nested_router.register(r"abha", AbhaViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
@@ -240,6 +245,7 @@ urlpatterns = [
     path("", include(facility_location_nested_router.urls)),
     path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
+    path("", include(patient_notes_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
     path("", include(shifting_nested_router.urls)),
