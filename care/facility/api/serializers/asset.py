@@ -12,6 +12,7 @@ from rest_framework.serializers import (
     JSONField,
     ModelSerializer,
     Serializer,
+    SerializerMethodField,
     UUIDField,
 )
 from rest_framework.validators import UniqueValidator
@@ -20,12 +21,12 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
-    AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetServiceEdit,
     AssetTransaction,
     AssetTypeChoices,
+    AvailabilityRecord,
     StatusChoices,
     UserDefaultAssetLocation,
 )
@@ -287,13 +288,19 @@ class AssetTransactionSerializer(ModelSerializer):
         exclude = ("deleted", "external_id")
 
 
-class AssetAvailabilitySerializer(ModelSerializer):
-    id = UUIDField(source="external_id", read_only=True)
-    asset = AssetBareMinimumSerializer(read_only=True)
+class AvailabilityRecordSerializer(ModelSerializer):
+    linked_id = SerializerMethodField()
+    linked_model = SerializerMethodField()
 
     class Meta:
-        model = AssetAvailabilityRecord
-        exclude = ("deleted", "external_id")
+        model = AvailabilityRecord
+        fields = ("status", "timestamp", "linked_id", "linked_model")
+
+    def get_linked_id(self, obj):
+        return obj.object_external_id
+
+    def get_linked_model(self, obj):
+        return obj.content_type.model
 
 
 class UserDefaultAssetLocationSerializer(ModelSerializer):
