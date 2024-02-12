@@ -7,6 +7,8 @@ from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from care.facility.events.handler import create_consultation_events
+
 # from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -292,6 +294,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
             if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
                 self.update_last_daily_round(daily_round_obj)
+
+            create_consultation_events(
+                daily_round_obj.consultation_id,
+                daily_round_obj,
+                daily_round_obj.created_by_id,
+                daily_round_obj.created_date,
+            )
             return daily_round_obj
 
     def validate(self, attrs):

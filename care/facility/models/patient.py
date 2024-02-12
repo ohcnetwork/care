@@ -740,3 +740,22 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
         return self
+
+
+class PatientNotesEdit(models.Model):
+    patient_note = models.ForeignKey(
+        PatientNotes,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_date = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_date"]

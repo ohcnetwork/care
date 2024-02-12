@@ -1,6 +1,7 @@
 import enum
 import uuid
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import JSONField, Q
 
@@ -181,19 +182,22 @@ class Asset(BaseModel):
         return self.name
 
 
-class AssetAvailabilityRecord(BaseModel):
+class AvailabilityRecord(BaseModel):
     """
-    Model to store the availability status of an asset at a particular timestamp.
+    Model to store the availability status of an object (Asset/AssetLocation for now) at a particular timestamp.
 
     Fields:
-    - asset: ForeignKey to Asset model
+    - content_type: ContentType of the related model
+    - object_external_id: UUIDField to store the external_id of the related model
+    - content_object: To get the linked object
     - status: CharField with choices from AvailabilityStatus
     - timestamp: DateTimeField to store the timestamp of the availability record
 
-    Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
+    Note: A pair of (object_external_id, timestamp) is unique
     """
 
-    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_external_id = models.UUIDField()
     status = models.CharField(
         choices=AvailabilityStatus.choices,
         default=AvailabilityStatus.NOT_MONITORED,
@@ -202,11 +206,19 @@ class AssetAvailabilityRecord(BaseModel):
     timestamp = models.DateTimeField(null=False, blank=False)
 
     class Meta:
-        unique_together = (("asset", "timestamp"),)
+        indexes = [
+            models.Index(fields=["content_type", "object_external_id"]),
+        ]
+        unique_together = (("object_external_id", "timestamp"),)
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.asset.name} - {self.status} - {self.timestamp}"
+        return f"{self.content_type} ({self.object_external_id}) - {self.status} - {self.timestamp}"
+
+    @property
+    def content_object(self):
+        model = self.content_type.model_class()
+        return model.objects.get(external_id=self.object_external_id)
 
 
 class UserDefaultAssetLocation(BaseModel):
