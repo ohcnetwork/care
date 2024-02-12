@@ -359,6 +359,15 @@ class AssetViewSet(
                     "asset_id": asset.external_id,
                 },
             )
+
+            # cache previous requests
+            cacheId = f"asset_move: {str(asset.external_id)}"
+            if cache.get(cacheId, None) is not None and cache.get(cacheId) == "True":
+                return Response(
+                    {"result": "Camera is still moving"}, status=status.HTTP_200_OK
+                )
+            cache.set(cacheId, "True", 5)  # set cache with expiry of 5 seconds
+
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except PermissionDenied as e:
