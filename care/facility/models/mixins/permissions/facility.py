@@ -136,3 +136,6 @@ class FacilityRelatedPermissionMixin(BasePermissionMixin):
 
     def has_object_update_permission(self, request):
         return self.has_object_write_permission(request)
+
+    def has_object_destroy_permission(self, request):
+        return self.has_object_write_permission(request)
