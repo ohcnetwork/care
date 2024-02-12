@@ -11,13 +11,13 @@ from care.facility.api.viewsets.ambulance import (
     AmbulanceViewSet,
 )
 from care.facility.api.viewsets.asset import (
-    AssetAvailabilityViewSet,
     AssetLocationViewSet,
     AssetPublicQRViewSet,
     AssetPublicViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
+    AvailabilityViewSet,
 )
 from care.facility.api.viewsets.bed import (
     AssetBedViewSet,
@@ -44,6 +44,7 @@ from care.facility.api.viewsets.inventory import (
 from care.facility.api.viewsets.notification import NotificationViewSet
 from care.facility.api.viewsets.patient import (
     FacilityPatientStatsHistoryViewSet,
+    PatientNotesEditViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
     PatientViewSet,
@@ -182,19 +183,29 @@ facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 facility_nested_router.register(r"asset_location", AssetLocationViewSet)
+
+facility_location_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"asset_location", lookup="asset_location"
+)
+facility_location_nested_router.register(r"availability", AvailabilityViewSet)
+
 facility_nested_router.register(r"patient_asset_beds", PatientAssetBedViewSet)
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
+asset_nested_router.register(r"availability", AvailabilityViewSet)
 asset_nested_router.register(r"service_records", AssetServiceViewSet)
 router.register("asset_transaction", AssetTransactionViewSet)
-router.register("asset_availability", AssetAvailabilityViewSet)
 
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(r"test_sample", PatientSampleViewSet)
 patient_nested_router.register(r"investigation", PatientInvestigationSummaryViewSet)
 patient_nested_router.register(r"notes", PatientNotesViewSet)
+patient_notes_nested_router = NestedSimpleRouter(
+    patient_nested_router, r"notes", lookup="notes"
+)
+patient_notes_nested_router.register(r"edits", PatientNotesEditViewSet)
 patient_nested_router.register(r"abha", AbhaViewSet)
 
 consultation_nested_router = NestedSimpleRouter(
@@ -231,8 +242,10 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(facility_location_nested_router.urls)),
     path("", include(asset_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
+    path("", include(patient_notes_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
     path("", include(shifting_nested_router.urls)),
