@@ -17,7 +17,7 @@ def forwards_func(apps, schema_editor):
 
     asset_content_type = ContentType.objects.get_for_model(Asset)
 
-    aar_records = AssetAvailabilityRecord.objects.all()
+    aar_records = AssetAvailabilityRecord.objects.all().order_by("pk")
 
     paginator = Paginator(aar_records, 1000)
     for page_number in paginator.page_range:
@@ -41,7 +41,9 @@ def backwards_func(apps, schema_editor):
 
     asset_content_type = ContentType.objects.get_for_model(Asset)
 
-    ar_records = AvailabilityRecord.objects.filter(content_type=asset_content_type)
+    ar_records = AvailabilityRecord.objects.filter(
+        content_type=asset_content_type
+    ).order_by("pk")
 
     paginator = Paginator(ar_records, 1000)
     for page_number in paginator.page_range:
@@ -121,7 +123,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["-timestamp"],
-                "unique_together": {("object_external_id", "timestamp")},
             },
         ),
         migrations.AddIndex(
@@ -130,10 +131,6 @@ class Migration(migrations.Migration):
                 fields=["content_type", "object_external_id"],
                 name="facility_av_content_ad9eff_idx",
             ),
-        ),
-        migrations.AlterUniqueTogether(
-            name="availabilityrecord",
-            unique_together={("object_external_id", "timestamp")},
         ),
         migrations.RunPython(forwards_func, backwards_func),
         migrations.DeleteModel(
