@@ -29,6 +29,10 @@ from care.facility.api.viewsets.consultation_diagnosis import (
     ConsultationDiagnosisViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
+from care.facility.api.viewsets.events import (
+    EventTypeViewSet,
+    PatientConsultationEventViewSet,
+)
 from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
@@ -218,6 +222,10 @@ consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionVi
 consultation_nested_router.register(
     r"prescription_administration", MedicineAdministrationViewSet
 )
+consultation_nested_router.register(r"events", PatientConsultationEventViewSet)
+
+router.register("event_types", EventTypeViewSet)
+
 router.register("medibase", MedibaseViewSet, basename="medibase")
 
 # HCX
