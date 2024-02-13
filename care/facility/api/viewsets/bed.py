@@ -3,7 +3,6 @@ from django.db import IntegrityError, transaction
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -17,7 +16,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -211,6 +210,32 @@ class ConsultationBedFilter(filters.FilterSet):
     bed = filters.UUIDFilter(field_name="bed__external_id")
 
 
+class TogglePatientPrivacyPermission(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        instance = view.get_object()
+
+        if (
+            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                and user.home_facility.external_id == instance.bed.facility.external_id
+            )
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Staff"]
+                and user.home_facility.external_id == instance.bed.facility.external_id
+            )
+        ):
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj) -> bool:
+        return self.has_permission(request, view)
+
+
 class ConsultationBedViewSet(
     ListModelMixin,
     RetrieveModelMixin,
@@ -228,10 +253,7 @@ class ConsultationBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = [TogglePatientPrivacyPermission]
 
     def get_queryset(self):
         user = self.request.user
@@ -254,34 +276,11 @@ class ConsultationBedViewSet(
         tags=["consultationbed"],
     )
     @action(detail=True, methods=["PATCH"])
-    def toggle_patient_privacy(self, request, external_id):
-        user: User = request.user
-        consultation_bed: ConsultationBed = self.get_queryset().get(
-            external_id=external_id
-        )
-
-        if consultation_bed and (
-            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                and user.home_facility.external_id
-                == consultation_bed.bed.facility.external_id
-            )
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                and user.home_facility.external_id
-                == consultation_bed.bed.facility.external_id
-            )
-        ):
-            consultation_bed.privacy = not consultation_bed.privacy
-            consultation_bed.save()
-            return Response(
-                {"status": "success", "privacy": consultation_bed.privacy},
-                status=status.HTTP_200_OK,
-            )
-        raise PermissionDenied(
-            detail="You do not have permission to perform this action"
+    def toggle_patient_privacy(self, request):
+        instance = self.get_object()
+        instance.privacy = not instance.privacy
+        instance.save()
+        return Response(
+            {"status": "success", "privacy": instance.privacy},
+            status=status.HTTP_200_OK,
         )
