@@ -209,7 +209,12 @@ class AvailabilityRecord(BaseModel):
         indexes = [
             models.Index(fields=["content_type", "object_external_id"]),
         ]
-        unique_together = (("object_external_id", "timestamp"),)
+        constraints = [
+            models.UniqueConstraint(
+                name="object_external_id_timestamp",
+                fields=["object_external_id", "timestamp"],
+            )
+        ]
         ordering = ["-timestamp"]
 
     def __str__(self):

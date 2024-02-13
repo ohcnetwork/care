@@ -1,7 +1,7 @@
-from django_ulid.serializers import ULIDField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from care.facility.models.events import EventType, PatientConsultationEvent
+from care.utils.ulid.serializers import ULIDField
 
 
 class EventTypeSerializer(ModelSerializer):

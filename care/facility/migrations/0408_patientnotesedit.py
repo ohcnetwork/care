@@ -10,7 +10,7 @@ def create_initial_patient_notes_edit_record(apps, schema_editor):
     PatientNotes = apps.get_model("facility", "PatientNotes")
     PatientNotesEdit = apps.get_model("facility", "PatientNotesEdit")
 
-    notes_without_edits = PatientNotes.objects.all()
+    notes_without_edits = PatientNotes.objects.all().order_by("pk")
 
     paginator = Paginator(notes_without_edits, 1000)
     for page_number in paginator.page_range:
