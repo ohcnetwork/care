@@ -17,7 +17,6 @@ from care.utils.models.base import BaseModel
 
 class Bed(BaseModel):
     name = models.CharField(max_length=1024)
-    old_name = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(
         choices=BedTypeChoices, default=BedType.REGULAR.value
