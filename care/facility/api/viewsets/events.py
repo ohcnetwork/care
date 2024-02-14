@@ -56,7 +56,9 @@ class PatientConsultationEventFilterSet(filters.FilterSet):
 
 class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
     serializer_class = PatientConsultationEventDetailSerializer
-    queryset = PatientConsultationEvent.objects.all()
+    queryset = PatientConsultationEvent.objects.all().select_related(
+        "event_type", "caused_by"
+    )
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationEventFilterSet

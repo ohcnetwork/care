@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from care.facility.models.events import EventType, PatientConsultationEvent
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.ulid.serializers import ULIDField
 
 
@@ -24,6 +25,7 @@ class NestedEventTypeSerializer(ModelSerializer):
 class PatientConsultationEventDetailSerializer(ModelSerializer):
     id = ULIDField(source="external_id", read_only=True)
     event_type = EventTypeSerializer()
+    caused_by = UserBaseMinimumSerializer()
 
     class Meta:
         model = PatientConsultationEvent
