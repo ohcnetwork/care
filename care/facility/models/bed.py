@@ -4,7 +4,6 @@ Bed Models are connected from the patient model and is intended to efficiently m
 However this is an addon feature and is not required for the regular patient flow,
 Leaving scope to build rooms and wards to being even more organization.
 """
-from typing import Collection
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -31,9 +30,6 @@ class Bed(BaseModel):
     location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
-
-    def validate_unique(self, exclude: Collection[str] | None = ...) -> None:
-        return super().validate_unique(exclude)
 
     class Meta:
         constraints = [
