@@ -4,6 +4,7 @@ Bed Models are connected from the patient model and is intended to efficiently m
 However this is an addon feature and is not required for the regular patient flow,
 Leaving scope to build rooms and wards to being even more organization.
 """
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import JSONField
@@ -17,7 +18,6 @@ from care.utils.models.base import BaseModel
 
 class Bed(BaseModel):
     name = models.CharField(max_length=1024)
-    old_name = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(
         choices=BedTypeChoices, default=BedType.REGULAR.value
@@ -49,7 +49,7 @@ class Bed(BaseModel):
 
     def validate(self) -> None:
         if (
-            Bed.objects.filter(location=self.location, name=self.name)
+            Bed.objects.filter(location=self.location, name__iexact=self.name)
             .exclude(pk=self.pk)
             .exists()
         ):
