@@ -3,6 +3,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -251,7 +252,11 @@ class ConsultationBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"
-    permission_classes = [TogglePatientPrivacyPermission]
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+        TogglePatientPrivacyPermission,
+    )
 
     def get_queryset(self):
         user = self.request.user
