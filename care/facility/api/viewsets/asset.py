@@ -392,15 +392,9 @@ class AssetViewSet(
                     "username": request.user.username,
                     "asset_id": asset.external_id,
                 },
+                method_name="operate_assets",
+                cache=cache,
             )
-
-            # cache previous requests
-            cacheId = f"asset_move: {str(asset.external_id)}"
-            if cache.get(cacheId, None) is not None and cache.get(cacheId) == "True":
-                return Response(
-                    {"result": "Camera is still moving"}, status=status.HTTP_200_OK
-                )
-            cache.set(cacheId, "True", 5)  # set cache with expiry of 5 seconds
 
             return Response({"result": result}, status=status.HTTP_200_OK)
 
