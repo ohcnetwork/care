@@ -399,7 +399,7 @@ class AssetViewSet(
         except PermissionDenied as e:
             return Response(
                 {
-                    "message": e.detail.get("message", None),
+                    "detail": e.detail.get("message", None),
                 },
                 status=status.HTTP_409_CONFLICT,
             )
