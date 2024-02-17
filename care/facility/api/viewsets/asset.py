@@ -391,7 +391,6 @@ class AssetViewSet(
                 username=request.user.username,
                 asset_id=asset.external_id,
                 method_name="operate_assets",
-                cache=cache,
             )
 
             return Response({"result": result}, status=status.HTTP_200_OK)

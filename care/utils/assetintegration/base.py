@@ -24,7 +24,7 @@ class BaseAssetIntegration:
         self.middleware_hostname = self.meta["middleware_hostname"]
         self.insecure_connection = self.meta.get("insecure_connection", False)
 
-    def handle_action(action, params, method_name, cache=None):
+    def handle_action(action, params, method_name):
         # Perform caching only for the operate_assets method
         if method_name == "operate_assets":
             cacheId = f"asset_move: {str(params['asset_id'])}"
