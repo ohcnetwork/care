@@ -122,4 +122,3 @@ class OnvifAsset(BaseAssetIntegration):
         ):
             raise ValidationError({"action": "invalid action type"})
 
-        return
