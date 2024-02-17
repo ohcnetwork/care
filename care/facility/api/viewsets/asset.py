@@ -400,11 +400,6 @@ class AssetViewSet(
             return Response(
                 {
                     "message": e.detail.get("message", None),
-                    "username": e.detail.get("username", None),
-                    "firstName": e.detail.get("firstName", None),
-                    "lastName": e.detail.get("lastName", None),
-                    "role": e.detail.get("role", None),
-                    "homeFacility": e.detail.get("homeFacility", None),
                 },
                 status=status.HTTP_409_CONFLICT,
             )
