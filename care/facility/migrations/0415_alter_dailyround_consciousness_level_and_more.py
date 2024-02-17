@@ -35,7 +35,7 @@ def forwards_func(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0413_eventtype_patientconsultationevent_and_more"),
+        ("facility", "0414_remove_bed_old_name"),
     ]
 
     operations = [
