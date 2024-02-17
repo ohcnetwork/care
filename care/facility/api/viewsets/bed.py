@@ -215,7 +215,7 @@ class TogglePatientPrivacyPermission(BasePermission):
         user = request.user
         instance = view.get_object()
 
-        if (
+        return (
             user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
@@ -228,9 +228,7 @@ class TogglePatientPrivacyPermission(BasePermission):
                 user.user_type == User.TYPE_VALUE_MAP["Staff"]
                 and user.home_facility.external_id == instance.bed.facility.external_id
             )
-        ):
-            return True
-        return False
+        )
 
     def has_object_permission(self, request, view, obj) -> bool:
         return self.has_permission(request, view)

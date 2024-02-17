@@ -19,7 +19,7 @@ class VentilatorAsset(BaseAssetIntegration):
                 dict((key, f"{key} not found in asset metadata") for key in e.args)
             )
 
-    def handle_action(self, action, verifcation_data: dict = None):
+    def handle_action(self, action, **kwargs):
         action_type = action["type"]
 
         if action_type == self.VentilatorActions.GET_VITALS.value:

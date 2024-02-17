@@ -26,7 +26,7 @@ class OnvifAsset(BaseAssetIntegration):
                 dict((key, f"{key} not found in asset metadata") for key in e.args)
             )
 
-    def handle_action(self, action, verifcation_data: dict = None):
+    def handle_action(self, action, **kwargs):
         action_type = action["type"]
         action_data = action.get("data", {})
         allowed_action_data = ["x", "y", "zoom"]
@@ -34,8 +34,8 @@ class OnvifAsset(BaseAssetIntegration):
             key: action_data[key] for key in action_data if key in allowed_action_data
         }
 
-        username = verifcation_data.get("username", None)
-        asset_id = verifcation_data.get("asset_id", None)
+        username = kwargs.get("username", None)
+        asset_id = kwargs.get("asset_id", None)
         request_body = {
             "hostname": self.host,
             "port": 80,

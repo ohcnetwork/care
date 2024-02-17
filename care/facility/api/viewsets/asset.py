@@ -388,10 +388,8 @@ class AssetViewSet(
             asset_class.validate_action(action)
             result = asset_class.handle_action(
                 action,
-                {
-                    "username": request.user.username,
-                    "asset_id": asset.external_id,
-                },
+                username=request.user.username,
+                asset_id=asset.external_id,
                 method_name="operate_assets",
                 cache=cache,
             )
