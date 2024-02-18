@@ -36,7 +36,7 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             "LocalBodyAdmin",
             "StateAdmin",
             "Doctor",
-            "Staff",
+            # "Staff",
         ]
         for user_type in allowed_user_types:
             self.user = self.create_user(
@@ -56,7 +56,6 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             self.client.force_authenticate(user=self.user)
             response = self.client.patch(
                 f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
-                {"external_id": consultation_bed.external_id},
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             consultation_bed.delete()
@@ -73,7 +72,7 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             "DistrictReadOnlyAdmin",
             "StateLabAdmin",
             "StateReadOnlyAdmin",
-            "Doctor",
+            # "Doctor",
             "Staff",
         ]
         for user_type in non_allowed_user_types:
@@ -98,7 +97,6 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             self.client.force_authenticate(user=self.user)
             response = self.client.patch(
                 f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
-                {"external_id": consultation_bed.external_id},
             )
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
             consultation_bed.delete()

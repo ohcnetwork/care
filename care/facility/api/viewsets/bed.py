@@ -214,6 +214,18 @@ class ConsultationBedFilter(filters.FilterSet):
 class TogglePatientPrivacyPermission(BasePermission):
     def has_permission(self, request, view):
         user = request.user
+
+        return (
+            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    def has_toggle_patient_privacy_permission(self, request, view, obj) -> bool:
+        user = request.user
         instance = view.get_object()
 
         return (
@@ -279,8 +291,9 @@ class ConsultationBedViewSet(
         tags=["consultationbed"],
     )
     @action(detail=True, methods=["PATCH"])
-    def toggle_patient_privacy(self, request):
+    def toggle_patient_privacy(self, request, **kwargs):
         instance = self.get_object()
+
         instance.privacy = not instance.privacy
         instance.save()
         return Response(

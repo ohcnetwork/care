@@ -11,6 +11,9 @@ from django.db.models import JSONField
 
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
+from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
+)
 from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
@@ -87,6 +90,26 @@ class ConsultationBed(BaseModel):
     assets = models.ManyToManyField(
         Asset, through="ConsultationBedAsset", related_name="assigned_consultation_beds"
     )
+
+    @staticmethod
+    def has_write_permission(request):
+        return (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
+        )
+
+    def has_object_update_permission(request):
+        return (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_object_update_permission(request)
+        )
+
+    def has_object_toggle_patient_privacy_permission(self, request):
+        permission_mixin = ConsultationRelatedPermissionMixin()
+        external_id = self.external_id
+        return permission_mixin.has_object_toggle_patient_privacy_permission(
+            request, external_id
+        )
 
 
 class ConsultationBedAsset(BaseModel):

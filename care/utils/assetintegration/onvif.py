@@ -121,4 +121,3 @@ class OnvifAsset(BaseAssetIntegration):
             or (camera_state["y"] + action_data["y"] > boundary_range["max_y"])
         ):
             raise ValidationError({"action": "invalid action type"})
-
