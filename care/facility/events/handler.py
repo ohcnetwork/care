@@ -82,8 +82,8 @@ def create_consultation_event_entry(
                 )
             )
 
-        PatientConsultationEvent.objects.bulk_create(batch)
-        return len(batch)
+    PatientConsultationEvent.objects.bulk_create(batch)
+    return len(batch)
 
 
 def create_consultation_events(
