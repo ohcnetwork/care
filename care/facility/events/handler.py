@@ -8,23 +8,31 @@ from django.db.models.query import QuerySet
 from django.utils.timezone import now
 
 from care.facility.models.events import ChangeType, EventType, PatientConsultationEvent
-from care.utils.event_utils import model_diff
+from care.utils.event_utils import get_changed_fields
 
 
-def transform(obj, diff):
-    # todo transform data, eg. fetching the fields from the models, joins, etc.
-    if diff:
-        return diff
-    # data = {
-    #     field.name: getattr(obj, field.name)
-    #     for field in obj._meta.fields
-    #     # if not is_null(getattr(obj, field.name))
-    # }
+def transform(object_instance: Model, old_instance: Model):
+    fields = []
+    if old_instance:
+        changed_fields = get_changed_fields(old_instance, object_instance)
+        fields = [
+            field
+            for field in object_instance._meta.fields
+            if field.name in changed_fields
+        ]
+    else:
+        fields = object_instance._meta.fields
+
     data = {}
-    for field in obj._meta.fields:
-        value = getattr(obj, field.name)
+    for field in fields:
+        value = getattr(object_instance, field.name)
         if isinstance(value, models.Model):
             data[field.name] = serializers.serialize("python", [value])[0]["fields"]
+        elif issubclass(field.__class__, models.Field) and field.choices:
+            # serialize choice fields with display value
+            data[field.name] = getattr(
+                object_instance, f"get_{field.name}_display", lambda: value
+            )()
         else:
             data[field.name] = value
     return data
@@ -36,20 +44,20 @@ def create_consultation_event_entry(
     object_instance: Model,
     caused_by: int,
     created_date: datetime,
-    diff: dict | None = None,
+    old_instance: Model = None,
 ):
-    change_type = ChangeType.UPDATED if diff else ChangeType.CREATED
+    change_type = ChangeType.UPDATED if old_instance else ChangeType.CREATED
 
-    data = transform(object_instance, diff)
+    data = transform(object_instance, old_instance)
 
-    changed_fields = set(data.keys())
+    fields_to_store = set(data.keys())
 
     batch = []
     groups = EventType.objects.filter(
         model=object_instance.__class__.__name__, fields__len__gt=0
     ).values_list("id", "fields")
     for group_id, group_fields in groups:
-        if set(group_fields) & changed_fields:
+        if set(group_fields) & fields_to_store:
             PatientConsultationEvent.objects.select_for_update().filter(
                 consultation_id=consultation_id,
                 event_type=group_id,
@@ -82,8 +90,8 @@ def create_consultation_event_entry(
                 )
             )
 
-        PatientConsultationEvent.objects.bulk_create(batch)
-        return len(batch)
+    PatientConsultationEvent.objects.bulk_create(batch)
+    return len(batch)
 
 
 def create_consultation_events(
@@ -107,7 +115,6 @@ def create_consultation_events(
                     consultation_id, obj, caused_by, created_date
                 )
         else:
-            diff = model_diff(old, objects) if old else None
             create_consultation_event_entry(
-                consultation_id, objects, caused_by, created_date, diff
+                consultation_id, objects, caused_by, created_date, old
             )
