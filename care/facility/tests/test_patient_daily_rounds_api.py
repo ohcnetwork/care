@@ -44,6 +44,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             "rounds_type": "NORMAL",
             "patient_category": "Comfort",
             "action": "DISCHARGE_RECOMMENDED",
+            "temperature": "98.6",
             "taken_at": datetime.datetime.now().isoformat(),
         }
 
@@ -70,7 +71,8 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             id=self.consultation_with_bed.patient_id
         )
         self.assertEqual(
-            patient.action, PatientRegistration.ActionEnum.DISCHARGE_RECOMMENDED.value
+            patient.action,
+            PatientRegistration.ActionEnum.DISCHARGE_RECOMMENDED.value,
         )
 
     def test_log_update_without_bed_for_admission(

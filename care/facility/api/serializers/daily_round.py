@@ -15,6 +15,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientRegistration,
 )
+from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
@@ -29,6 +30,9 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from config.serializers import ChoiceField
 
+SymptomChoiceDict = covert_choice_dict(SYMPTOM_CHOICES)
+VentilatorInterfaceChoiceDict = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
+
 
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
@@ -38,11 +42,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices,
+        write_only=True,
+        required=False,
     )
     review_interval = serializers.IntegerField(
         source="consultation__review_interval", required=False
@@ -294,7 +300,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 "last_updated_by_telemedicine"
             ]
             daily_round_obj.consultation.save(
-                update_fields=["last_updated_by_telemedicine", "review_interval"]
+                update_fields=[
+                    "last_updated_by_telemedicine",
+                    "review_interval",
+                ]
             )
             daily_round_obj.save(
                 update_fields=[
@@ -313,6 +322,48 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 daily_round_obj.created_date,
             )
             return daily_round_obj
+
+    def validate_bp(self, bp):
+        if not bp:
+            return bp
+
+        systolic = bp.get("systolic")
+        diastolic = bp.get("diastolic")
+        mean = bp.get("mean")
+
+        if not all(key in bp for key in ["systolic", "diastolic", "mean"]):
+            raise ValidationError(
+                "This field must contain systolic, diastolic, and mean"
+            )
+
+        if (
+            systolic not in range(0, 251)
+            or diastolic not in range(0, 181)
+            or mean not in range(0, (systolic + 2 * diastolic) // 3 + 1)
+        ):
+            raise ValidationError("Invalid BP values")
+
+        return bp
+
+    def validate_ventilator_interface(self, ventilator_interface):
+        if (
+            not ventilator_interface
+            or ventilator_interface == VentilatorInterfaceChoiceDict["UNKNOWN"]
+        ):
+            return ventilator_interface
+
+        if "ventilator_mode" not in self.initial_data:
+            raise ValidationError(
+                "Ventilator Mode is required when Ventilator Interface is selected."
+            )
+
+        if ventilator_interface == VentilatorInterfaceChoiceDict["OXYGEN_SUPPORT"]:
+            if "ventilator_oxygen_modality" not in self.initial_data:
+                raise ValidationError(
+                    "Ventilator Oxygen Modality field is required when Ventilator Interface is set to Oxygen support."
+                )
+
+        return ventilator_interface
 
     def validate(self, attrs):
         validated = super().validate(attrs)
@@ -338,6 +389,41 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                         {
                             "review_interval": [
                                 "This field value is must be greater than 0."
+                            ]
+                        }
+                    )
+
+        if (
+            "rounds_type" in validated
+            and validated["rounds_type"] == DailyRound.RoundsType.NORMAL.value
+            and "temperature" not in validated
+        ):
+            raise ValidationError(
+                {"temperature": ["This field is required for Ventilator Rounds."]}
+            )
+
+        if "in_prone_position" in validated and validated["in_prone_position"]:
+            if (
+                "left_pupil_size" in validated
+                or "right_pupil_size" in validated
+                or "left_pupil_size_detail" in validated
+                or "right_pupil_size_detail" in validated
+            ):
+                raise ValidationError(
+                    {
+                        "pupil_size": [
+                            "Pupil size cannot be recorded when patient is in prone position."
+                        ]
+                    }
+                )
+
+        if "additional_symptoms" in validated:
+            if SymptomChoiceDict["OTHERS"] in validated["additional_symptoms"]:
+                if "other_symptoms" not in validated:
+                    raise ValidationError(
+                        {
+                            "other_symptoms": [
+                                "This field is required if OTHERS is selected in Additional Symptoms."
                             ]
                         }
                     )
