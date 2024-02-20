@@ -267,7 +267,6 @@ class ConsultationBedViewSet(
             )
 
         instance.privacy = True
-        print(request.user)
         instance.meta["locked_by"] = request.user.username
         instance.save()
         return Response(
