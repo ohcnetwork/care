@@ -35,7 +35,7 @@ class AbhaNumber(BaseModel):
     refresh_token = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.abha_number
+        return f"{self.pk} {self.abha_number}"
 
 
 class HealthFacility(BaseModel, HealthFacilityPermissions):

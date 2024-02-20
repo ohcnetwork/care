@@ -52,6 +52,7 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
     def test_retrieve_asset(self):
         response = self.client.get(f"/api/v1/asset/{self.asset.external_id}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("latest_status", response.data)
 
     def test_update_asset(self):
         sample_data = {

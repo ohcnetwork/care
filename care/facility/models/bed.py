@@ -4,6 +4,7 @@ Bed Models are connected from the patient model and is intended to efficiently m
 However this is an addon feature and is not required for the regular patient flow,
 Leaving scope to build rooms and wards to being even more organization.
 """
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import JSONField
@@ -30,6 +31,15 @@ class Bed(BaseModel):
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                models.functions.Lower("name"),
+                "location",
+                name="unique_bed_name_per_location",
+            )
+        ]
+
     @property
     def is_occupied(self) -> bool:
         return ConsultationBed.objects.filter(bed=self, end_date__isnull=True).exists()
@@ -39,7 +49,7 @@ class Bed(BaseModel):
 
     def validate(self) -> None:
         if (
-            Bed.objects.filter(location=self.location, name=self.name)
+            Bed.objects.filter(location=self.location, name__iexact=self.name)
             .exclude(pk=self.pk)
             .exists()
         ):
