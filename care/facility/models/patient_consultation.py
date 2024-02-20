@@ -169,7 +169,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     )
 
     assigned_clinicians = models.ManyToManyField(
-        User, related_name="patient_assigned_clinician"
+        User, related_name="assigned_patients"
     )
 
     medico_legal_case = models.BooleanField(default=False)
