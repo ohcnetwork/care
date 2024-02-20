@@ -17,7 +17,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -211,42 +211,6 @@ class ConsultationBedFilter(filters.FilterSet):
     bed = filters.UUIDFilter(field_name="bed__external_id")
 
 
-class TogglePatientPrivacyPermission(BasePermission):
-    def has_permission(self, request, view):
-        user = request.user
-
-        return (
-            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
-        )
-
-    def has_toggle_patient_privacy_permission(self, request, view, obj) -> bool:
-        user = request.user
-        instance = view.get_object()
-
-        return (
-            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                and user.home_facility.external_id == instance.bed.facility.external_id
-            )
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                and user.home_facility.external_id == instance.bed.facility.external_id
-            )
-        )
-
-    def has_object_permission(self, request, view, obj) -> bool:
-        return self.has_permission(request, view)
-
-
 class ConsultationBedViewSet(
     ListModelMixin,
     RetrieveModelMixin,
@@ -267,7 +231,6 @@ class ConsultationBedViewSet(
     permission_classes = (
         IsAuthenticated,
         DRYPermissions,
-        TogglePatientPrivacyPermission,
     )
 
     def get_queryset(self):
@@ -286,15 +249,35 @@ class ConsultationBedViewSet(
 
     @extend_schema(
         description="Toggle patient privacy",
-        responses={status.HTTP_200_OK: "{'privacy': 'boolean'}"},
+        responses={status.HTTP_200_OK: None},
         request=None,
         tags=["consultationbed"],
     )
-    @action(detail=True, methods=["PATCH"])
-    def toggle_patient_privacy(self, request, **kwargs):
+    @action(detail=True, methods=["POST"])
+    def patient_privacy(self, request, **kwargs):
         instance = self.get_object()
+        if instance.privacy:
+            return Response(
+                {"status": "failed", "message": "Asset already locked"},
+                status=status.HTTP_409_CONFLICT,
+            )
 
-        instance.privacy = not instance.privacy
+        instance.privacy = True
+        instance.save()
+        return Response(
+            {"status": "success"},
+            status=status.HTTP_200_OK,
+        )
+
+    @patient_privacy.mapping.delete
+    def disable_patient_privacy(self, request, **kwargs):
+        instance = self.get_object()
+        if not instance.privacy:
+            return Response(
+                {"status": "Asset not locked"}, status=status.HTTP_409_CONFLICT
+            )
+
+        instance.privacy = False
         instance.save()
         return Response(
             {"status": "success", "privacy": instance.privacy},

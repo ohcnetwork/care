@@ -159,12 +159,3 @@ class ConsultationRelatedPermissionMixin(BasePermissionMixin):
             request.user.user_type not in User.READ_ONLY_TYPES
             and request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"]
         )
-
-    def has_object_write_permission(self, request):
-        return (
-            request.user.user_type not in User.READ_ONLY_TYPES
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"]
-        )
-
-    def has_object_toggle_patient_privacy_permission(self, request, external_id):
-        return self.has_object_write_permission(request)

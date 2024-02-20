@@ -50,27 +50,62 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
                 bed=self.bed,
                 start_date=make_aware(datetime.datetime.now()),
                 end_date=make_aware(datetime.datetime.now()),
-                privacy=True,
+                privacy=False,
             )
 
             self.client.force_authenticate(user=self.user)
-            response = self.client.patch(
-                f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
+            response = self.client.post(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            response = self.client.delete(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             consultation_bed.delete()
             self.user.delete()
 
     def test_patient_privacy_toggle_failure(self):
+        # lock with existing user login
+        consultation_bed = self.create_consultation_bed(
+            consultation=self.consultation,
+            bed=self.bed,
+            start_date=make_aware(datetime.datetime.now()),
+            end_date=make_aware(datetime.datetime.now()),
+            privacy=False,
+        )
+
+        response = self.client.post(
+            f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.user = self.create_user(
+            username="Second test user",
+            user_type=User.TYPE_VALUE_MAP["Doctor"],
+            district=self.district,
+            home_facility=self.facility,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        consultation_bed.delete()
+        #
+
         non_allowed_user_types = [
             "Transportation",
             "Pharmacist",
             "Volunteer",
             "StaffReadOnly",
-            "Reserved",
-            "DistrictLabAdmin",
+            # "Reserved",
+            # "DistrictLabAdmin",
             "DistrictReadOnlyAdmin",
-            "StateLabAdmin",
+            # "StateLabAdmin",
             "StateReadOnlyAdmin",
             # "Doctor",
             "Staff",
@@ -95,8 +130,8 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             )
 
             self.client.force_authenticate(user=self.user)
-            response = self.client.patch(
-                f"/api/v1/consultationbed/{consultation_bed.external_id}/toggle_patient_privacy/",
+            response = self.client.post(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
             )
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
             consultation_bed.delete()

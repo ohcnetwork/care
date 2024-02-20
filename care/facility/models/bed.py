@@ -78,7 +78,7 @@ class AssetBed(BaseModel):
         return f"{self.asset.name} - {self.bed.name}"
 
 
-class ConsultationBed(BaseModel):
+class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -92,24 +92,22 @@ class ConsultationBed(BaseModel):
     )
 
     @staticmethod
-    def has_write_permission(request):
-        return (
-            request.user.verified
-            and ConsultationRelatedPermissionMixin.has_write_permission(request)
-        )
-
-    def has_object_update_permission(request):
-        return (
-            request.user.verified
-            and ConsultationRelatedPermissionMixin.has_object_update_permission(request)
-        )
-
-    def has_object_toggle_patient_privacy_permission(self, request):
+    def has_patient_privacy_permission(request, **kwargs):
         permission_mixin = ConsultationRelatedPermissionMixin()
-        external_id = self.external_id
-        return permission_mixin.has_object_toggle_patient_privacy_permission(
-            request, external_id
-        )
+        return permission_mixin.has_object_update_permission(request)
+
+    def has_object_patient_privacy_permission(self, request, **kwargs):
+        permission_mixin = ConsultationRelatedPermissionMixin()
+        return permission_mixin.has_object_update_permission(request)
+
+    @staticmethod
+    def has_disable_patient_privacy_permission(request, **kwargs):
+        permission_mixin = ConsultationRelatedPermissionMixin()
+        return permission_mixin.has_object_update_permission(request)
+
+    def has_object_disable_patient_privacy_permission(self, request, **kwargs):
+        permission_mixin = ConsultationRelatedPermissionMixin()
+        return permission_mixin.has_object_update_permission(request)
 
 
 class ConsultationBedAsset(BaseModel):
