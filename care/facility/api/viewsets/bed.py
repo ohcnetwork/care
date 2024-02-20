@@ -274,7 +274,8 @@ class ConsultationBedViewSet(
         instance = self.get_object()
         if not instance.privacy:
             return Response(
-                {"status": "Asset not locked"}, status=status.HTTP_409_CONFLICT
+                {"status": "failure", "message": "Asset not locked"},
+                status=status.HTTP_409_CONFLICT,
             )
 
         instance.privacy = False

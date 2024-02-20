@@ -14,7 +14,7 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
         cls.state = cls.create_state()
         cls.district = cls.create_district(state=cls.state)
         cls.local_body = cls.create_local_body(cls.district)
-        cls.user = cls.create_user(district=cls.district, username="test user")
+        cls.user = cls.create_super_user(district=cls.district, username="test user")
         cls.facility = cls.create_facility(
             district=cls.district, local_body=cls.local_body, user=cls.user
         )
@@ -63,6 +63,13 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
                 f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # unlock a already unlocked bed
+            response = self.client.delete(
+                f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
+            )
+            self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+            self.assertEqual(response.json()["message"], "Asset not locked")
             consultation_bed.delete()
             self.user.delete()
 
@@ -75,7 +82,6 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             end_date=make_aware(datetime.datetime.now()),
             privacy=False,
         )
-
         response = self.client.post(
             f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
         )
@@ -93,9 +99,8 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
         )
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-
+        self.assertEqual(response.json()["message"], "Asset already locked")
         consultation_bed.delete()
-        #
 
         non_allowed_user_types = [
             "Transportation",

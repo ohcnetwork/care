@@ -16,6 +16,7 @@ from care.facility.models.mixins.permissions.patient import (
 )
 from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
+from care.users.models import User
 from care.utils.models.base import BaseModel
 
 
@@ -97,8 +98,15 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
         return permission_mixin.has_object_update_permission(request)
 
     def has_object_patient_privacy_permission(self, request, **kwargs):
-        permission_mixin = ConsultationRelatedPermissionMixin()
-        return permission_mixin.has_object_update_permission(request)
+        user = request.user
+        return (
+            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
+        )
 
     @staticmethod
     def has_disable_patient_privacy_permission(request, **kwargs):
@@ -106,8 +114,15 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
         return permission_mixin.has_object_update_permission(request)
 
     def has_object_disable_patient_privacy_permission(self, request, **kwargs):
-        permission_mixin = ConsultationRelatedPermissionMixin()
-        return permission_mixin.has_object_update_permission(request)
+        user = request.user
+        return (
+            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
+            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
+        )
 
 
 class ConsultationBedAsset(BaseModel):
