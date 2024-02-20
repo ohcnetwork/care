@@ -258,11 +258,17 @@ class ConsultationBedViewSet(
         instance = self.get_object()
         if instance.privacy:
             return Response(
-                {"status": "failed", "message": "Asset already locked"},
+                {
+                    "status": "failed",
+                    "message": "Asset already locked",
+                    "locked_by": instance.meta["locked_by"],
+                },
                 status=status.HTTP_409_CONFLICT,
             )
 
         instance.privacy = True
+        print(request.user)
+        instance.meta["locked_by"] = request.user.username
         instance.save()
         return Response(
             {"status": "success"},
@@ -279,6 +285,7 @@ class ConsultationBedViewSet(
             )
 
         instance.privacy = False
+        del instance.meta["locked_by"]
         instance.save()
         return Response(
             {"status": "success", "privacy": instance.privacy},

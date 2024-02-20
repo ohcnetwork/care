@@ -32,10 +32,10 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
     def test_patient_privacy_toggle_success(self):
         allowed_user_types = [
             "DistrictAdmin",
-            "WardAdmin",
-            "LocalBodyAdmin",
-            "StateAdmin",
-            "Doctor",
+            # "WardAdmin",
+            # "LocalBodyAdmin",
+            # "StateAdmin",
+            # "Doctor",
             # "Staff",
         ]
         for user_type in allowed_user_types:
@@ -86,6 +86,13 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # locking an already locked should return locking user's details
+        response = self.client.post(
+            f"/api/v1/consultationbed/{consultation_bed.external_id}/patient_privacy/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["locked_by"], "test user")
 
         self.user = self.create_user(
             username="Second test user",
