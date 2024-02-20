@@ -13,11 +13,15 @@ from care.utils.tests.test_utils import TestUtils
 
 
 class ExpectedPatientNoteKeys(Enum):
+    ID = "id"
     NOTE = "note"
     FACILITY = "facility"
     CONSULTATION = "consultation"
     CREATED_BY_OBJECT = "created_by_object"
     CREATED_DATE = "created_date"
+    MODIFIED_DATE = "modified_date"
+    LAST_EDITED_BY = "last_edited_by"
+    LAST_EDITED_DATE = "last_edited_date"
     USER_TYPE = "user_type"
 
 
@@ -122,7 +126,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         )
 
     def create_patient_note(
-        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+        self, patient=None, note="Patient is doing fine", created_by=None, **kwargs
     ):
         data = {
             "facility": patient.facility or self.facility,
@@ -133,6 +137,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         self.client.post(f"/api/v1/patient/{patient.external_id}/notes/", data=data)
 
     def test_patient_notes(self):
+        self.client.force_authenticate(user=self.state_admin)
         patientId = self.patient.external_id
         response = self.client.get(
             f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
@@ -219,6 +224,55 @@ class PatientNotesTestCase(TestUtils, APITestCase):
                 created_by_object_content.keys(),
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
+
+    def test_patient_note_edit(self):
+        patientId = self.patient.external_id
+        notes_list_response = self.client.get(
+            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+        )
+        note_data = notes_list_response.json()["results"][0]
+        response = self.client.get(
+            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+        )
+
+        data = response.json()["results"]
+        self.assertEqual(len(data), 1)
+
+        note_content = note_data["note"]
+        new_note_content = note_content + " edited"
+
+        # Test with a different user editing the note than the one who created it
+        self.client.force_authenticate(user=self.state_admin)
+        response = self.client.put(
+            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            {"note": new_note_content},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["Note"], "Only the user who created the note can edit it"
+        )
+
+        # Test with the same user editing the note
+        self.client.force_authenticate(user=self.user2)
+        response = self.client.put(
+            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            {"note": new_note_content},
+        )
+
+        updated_data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(updated_data["note"], new_note_content)
+
+        # Ensure the original note is still present in the edits
+        response = self.client.get(
+            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+        )
+
+        data = response.json()["results"]
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]["note"], new_note_content)
+        self.assertEqual(data[1]["note"], note_content)
 
 
 class PatientFilterTestCase(TestUtils, APITestCase):

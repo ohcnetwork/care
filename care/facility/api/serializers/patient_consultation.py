@@ -1,7 +1,9 @@
+from copy import copy
 from datetime import timedelta
 
+from django.conf import settings
 from django.db import transaction
-from django.utils.timezone import localtime, now
+from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -15,6 +17,7 @@ from care.facility.api.serializers.consultation_diagnosis import (
 )
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
+from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -46,6 +49,8 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+
+MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
@@ -188,6 +193,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
+        old_instance = copy(instance)
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -234,6 +240,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         _temp = instance.assigned_to
 
         consultation = super().update(instance, validated_data)
+
+        create_consultation_events(
+            consultation.id,
+            consultation,
+            self.context["request"].user.id,
+            consultation.modified_date,
+            old_instance,
+        )
 
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
@@ -372,7 +386,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.is_readmission = True
         consultation.save()
 
-        ConsultationDiagnosis.objects.bulk_create(
+        diagnosis = ConsultationDiagnosis.objects.bulk_create(
             [
                 ConsultationDiagnosis(
                     consultation=consultation,
@@ -419,6 +433,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             caused_object=consultation,
             facility=patient.facility,
         ).generate()
+
+        create_consultation_events(
+            consultation.id,
+            (consultation, *diagnosis),
+            consultation.created_by.id,
+            consultation.created_date,
+        )
 
         if consultation.assigned_to:
             NotificationGenerator(
@@ -474,6 +495,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_encounter_date(self, value):
+        if value < MIN_ENCOUNTER_DATE:
+            raise ValidationError(
+                {
+                    "encounter_date": [
+                        f"This field value must be greater than {MIN_ENCOUNTER_DATE.strftime('%Y-%m-%d')}"
+                    ]
+                }
+            )
         if value > now():
             raise ValidationError(
                 {"encounter_date": "This field value cannot be in the future."}
@@ -655,9 +684,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             )
         return attrs
 
-    def save(self, **kwargs):
+    def update(self, instance: PatientConsultation, validated_data):
+        old_instance = copy(instance)
         with transaction.atomic():
-            instance = super().save(**kwargs)
+            instance = super().update(instance, validated_data)
             patient: PatientRegistration = instance.patient
             patient.is_active = False
             patient.allow_transfer = True
@@ -681,6 +711,14 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     )
                 except Exception:
                     pass
+            create_consultation_events(
+                instance.id,
+                instance,
+                self.context["request"].user.id,
+                instance.modified_date,
+                old_instance,
+            )
+
             return instance
 
     def create(self, validated_data):
