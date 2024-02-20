@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             model_name="patientconsultation",
             name="assigned_clinicians",
             field=models.ManyToManyField(
-                related_name="patient_assigned_clinician", to=settings.AUTH_USER_MODEL
+                related_name="assigned_patients", to=settings.AUTH_USER_MODEL
             ),
         ),
     ]
