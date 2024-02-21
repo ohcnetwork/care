@@ -283,6 +283,9 @@ class ConsultationBedViewSet(
                 status=status.HTTP_409_CONFLICT,
             )
 
+        if instance.meta["locked_by"] != request.user.username:
+            raise PermissionDenied("You do not have permission to unlock this asset")
+
         instance.privacy = False
         del instance.meta["locked_by"]
         instance.save()
