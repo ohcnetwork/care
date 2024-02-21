@@ -99,9 +99,7 @@ class OnvifAsset(BaseAssetIntegration):
         ):
             return
 
-        boundary_preset = AssetBed.objects.filter(
-            external_id=boundary_preset_id
-        ).first()
+        boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
 
         if (
             not boundary_preset
