@@ -104,8 +104,16 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
             or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                and user.home_facility.external_id
+                == self.consultation.facility.external_id
+            )
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Staff"]
+                and user.home_facility.external_id
+                == self.consultation.facility.external_id
+            )
         )
 
     @staticmethod
@@ -120,8 +128,16 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
             or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
             or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-            or user.user_type == User.TYPE_VALUE_MAP["Staff"]
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
+                and user.home_facility.external_id
+                == self.consultation.facility.external_id
+            )
+            or (
+                user.user_type == User.TYPE_VALUE_MAP["Staff"]
+                and user.home_facility.external_id
+                == self.consultation.facility.external_id
+            )
         )
 
 
