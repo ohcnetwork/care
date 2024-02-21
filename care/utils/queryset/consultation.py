@@ -23,7 +23,7 @@ def get_consultation_queryset(user):
         allowed_facilities = get_accessible_facilities(user)
         q_filters = Q(facility__id__in=allowed_facilities)
         q_filters |= Q(patient__facility__id__in=allowed_facilities)
-        q_filters |= Q(assigned_to=user)
+        q_filters |= Q(assigned_clinicians=user)
         q_filters |= Q(patient__assigned_to=user)
         queryset = queryset.filter(q_filters)
     return queryset

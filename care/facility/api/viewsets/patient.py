@@ -5,7 +5,7 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, OuterRef, Q, Subquery, When
+from django.db.models import Case, OuterRef, Prefetch, Q, Subquery, When
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -199,8 +199,8 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__new_discharge_reason",
         choices=NewDischargeReasonEnum.choices,
     )
-    last_consultation_assigned_to = filters.NumberFilter(
-        field_name="last_consultation__assigned_to"
+    last_consultation_assigned_clinician = filters.NumberFilter(
+        field_name="last_consultation__assigned_clinicians__id"
     )
     last_consultation_is_telemedicine = filters.BooleanFilter(
         field_name="last_consultation__is_telemedicine"
@@ -272,7 +272,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
-                q_filters |= Q(last_consultation__assigned_to=request.user)
+                q_filters |= Q(last_consultation__assigned_clinicians=request.user)
                 q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
 
@@ -331,25 +331,28 @@ class PatientViewSet(
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
-    queryset = PatientRegistration.objects.all().select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        # "nearest_facility",
-        # "nearest_facility__local_body",
-        # "nearest_facility__district",
-        # "nearest_facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    queryset = (
+        PatientRegistration.objects.all()
+        .select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            # "nearest_facility",
+            # "nearest_facility__local_body",
+            # "nearest_facility__district",
+            # "nearest_facility__state",
+            "last_consultation",
+            "last_edited",
+            "created_by",
+        )
+        .prefetch_related(Prefetch("last_consultation__assigned_clinicians"))
     )
     ordering_fields = [
         "facility__name",
@@ -705,7 +708,9 @@ class PatientNotesEditViewSet(
         else:
             allowed_facilities = get_accessible_facilities(user)
             q_filters = Q(patient_note__patient__facility__id__in=allowed_facilities)
-            q_filters |= Q(patient_note__patient__last_consultation__assigned_to=user)
+            q_filters |= Q(
+                patient_note__patient__last_consultation__assigned_clinicians=user
+            )
             q_filters |= Q(patient_note__patient__assigned_to=user)
             q_filters |= Q(patient_note__created_by=user)
             queryset = queryset.filter(q_filters)
@@ -756,7 +761,7 @@ class PatientNotesViewSet(
         else:
             allowed_facilities = get_accessible_facilities(user)
             q_filters = Q(patient__facility__id__in=allowed_facilities)
-            q_filters |= Q(patient__last_consultation__assigned_to=user)
+            q_filters |= Q(patient__last_consultation__assigned_clinicians=user)
             q_filters |= Q(patient__assigned_to=user)
             q_filters |= Q(created_by=user)
             queryset = queryset.filter(q_filters)

@@ -166,7 +166,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         on_delete=models.SET_NULL,
         null=True,
         related_name="patient_assigned_to",
-    )
+    )  # Deprecated
 
     assigned_clinicians = models.ManyToManyField(
         User, related_name="patient_assigned_clinician"
@@ -303,16 +303,21 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     def has_object_read_permission(self, request):
         if not super().has_object_read_permission(request):
             return False
+
+        is_assigned_clinician = self.assigned_clinicians.filter(
+            id=request.user.id
+        ).exists()
+        is_patient_assigned_to = (
+            request.user == self.patient.assigned_to
+        )  # patient.assigned_to is for assigning volunteer to patient
+
         return (
             request.user.is_superuser
             or (
                 self.patient.facility
                 and request.user in self.patient.facility.users.all()
             )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
+            or (is_assigned_clinician or is_patient_assigned_to)
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (

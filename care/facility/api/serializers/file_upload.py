@@ -26,9 +26,10 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 if user == patient.assigned_to:
                     return patient.id
             if patient.last_consultation:
-                if patient.last_consultation.assigned_to:
-                    if user == patient.last_consultation.assigned_to:
-                        return patient.id
+                if patient.last_consultation.assigned_clinicians.filter(
+                    id=user.id
+                ).exists():
+                    return patient.id
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
@@ -44,9 +45,8 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if consultation.patient.assigned_to:
                 if user == consultation.patient.assigned_to:
                     return consultation.id
-            if consultation.assigned_to:
-                if user == consultation.assigned_to:
-                    return consultation.id
+            if consultation.assigned_clinicians.filter(id=user.id).exists():
+                return consultation.id
             if not (
                 has_facility_permission(user, consultation.patient.facility)
                 or has_facility_permission(user, consultation.facility)
@@ -60,7 +60,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 and user == consultation.patient.assigned_to
             ):
                 return consultation.external_id
-            if consultation.assigned_to and user == consultation.assigned_to:
+            if consultation.assigned_clinicians.filter(id=user.id).exists():
                 return consultation.external_id
             if not (
                 has_facility_permission(user, consultation.patient.facility)
@@ -74,10 +74,11 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if patient.assigned_to:
                 if user == patient.assigned_to:
                     return sample.id
-            if sample.consultation:
-                if sample.consultation.assigned_to:
-                    if user == sample.consultation.assigned_to:
-                        return sample.id
+            if (
+                sample.consultation
+                and sample.consultation.assigned_clinicians.filter(id=user.id).exists()
+            ):
+                return sample.id
             if sample.testing_facility:
                 if has_facility_permission(
                     user,

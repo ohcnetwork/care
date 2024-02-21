@@ -104,9 +104,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     patient = ExternalIdSerializerField(queryset=PatientRegistration.objects.all())
     facility = ExternalIdSerializerField(read_only=True)
 
-    assigned_to_object = UserAssignedSerializer(source="assigned_to", read_only=True)
+    assigned_to_object = UserAssignedSerializer(
+        source="assigned_to", read_only=True
+    )  # deprecated
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=False, allow_null=True
+    )  # deprecated
+
+    assigned_clinicians_object = UserBaseMinimumSerializer(
+        many=True, read_only=True, source="assigned_clinicians"
+    )
+    assigned_clinicians = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        many=True,
+        required=False,
     )
 
     treating_physician_object = UserBaseMinimumSerializer(
@@ -229,15 +240,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     patient.review_time = None
             patient.save()
 
-        validated_data["last_updated_by_telemedicine"] = (
-            self.context["request"].user == instance.assigned_to
-        )
+        validated_data[
+            "last_updated_by_telemedicine"
+        ] = instance.assigned_clinicians.filter(
+            id=self.context["request"].user.id
+        ).exists()
 
         if "is_kasp" in validated_data:
             if validated_data["is_kasp"] and (not instance.is_kasp):
                 validated_data["kasp_enabled_date"] = localtime(now())
 
-        _temp = instance.assigned_to
+        _old_clinicians = list(
+            instance.assigned_clinicians.values_list("id", flat=True)
+        )
 
         consultation = super().update(instance, validated_data)
 
@@ -249,8 +264,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             old_instance,
         )
 
-        if "assigned_to" in validated_data:
-            if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
+        if "assigned_clinicians" in validated_data:
+            _new_clinicians = list(
+                instance.assigned_clinicians.values_list("id", flat=True)
+            )
+            if (
+                set(_old_clinicians) != set(_new_clinicians)
+                and validated_data["assigned_clinicians"]
+            ):
                 NotificationGenerator(
                     event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
                     caused_by=self.context["request"].user,
@@ -346,8 +367,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if validated_data["patient"].last_consultation:
             if (
-                self.context["request"].user
-                == validated_data["patient"].last_consultation.assigned_to
+                validated_data["patient"]
+                .last_consultation.assigned_clinicians.filter(
+                    id=self.context["request"].user.id
+                )
+                .exists()
             ):
                 raise ValidationError(
                     {
@@ -370,7 +394,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated_data["facility_id"] = validated_data[
             "patient"
         ].facility_id  # Coercing facility as the patient's facility
+        assigned_clinicians = validated_data.pop("assigned_clinicians", [])
         consultation = super().create(validated_data)
+        consultation.assigned_clinicians.set(assigned_clinicians)
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
         patient = consultation.patient
@@ -441,7 +467,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.created_date,
         )
 
-        if consultation.assigned_to:
+        if consultation.assigned_clinicians.exists():
             NotificationGenerator(
                 event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
                 caused_by=self.context["request"].user,
@@ -686,7 +712,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 
     def update(self, instance: PatientConsultation, validated_data):
         old_instance = copy(instance)
+        assigned_clinicians = validated_data.pop("assigned_clinicians", None)
         with transaction.atomic():
+            if assigned_clinicians is not None:
+                instance.assigned_clinicians.set(assigned_clinicians)
             instance = super().update(instance, validated_data)
             patient: PatientRegistration = instance.patient
             patient.is_active = False

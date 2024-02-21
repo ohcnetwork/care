@@ -74,10 +74,14 @@ class PatientConsultationViewSet(
     def get_queryset(self):
         if self.serializer_class == PatientConsultationSerializer:
             self.queryset = self.queryset.prefetch_related(
-                "assigned_to",
                 Prefetch(
-                    "assigned_to__skills",
-                    queryset=Skill.objects.filter(userskill__deleted=False),
+                    "assigned_clinicians",
+                    queryset=User.objects.prefetch_related(
+                        Prefetch(
+                            "skills",
+                            queryset=Skill.objects.filter(userskill__deleted=False),
+                        )
+                    ),
                 ),
                 "current_bed",
                 "current_bed__bed",
@@ -96,7 +100,7 @@ class PatientConsultationViewSet(
             )
         allowed_facilities = get_accessible_facilities(self.request.user)
         applied_filters = Q(patient__facility__id__in=allowed_facilities)
-        applied_filters |= Q(assigned_to=self.request.user)
+        applied_filters |= Q(assigned_clinicians=self.request.user)
         applied_filters |= Q(patient__assigned_to=self.request.user)
         return self.queryset.filter(applied_filters)
 

@@ -63,8 +63,13 @@ class UserFilterSet(filters.FilterSet):
         value,
     ):
         if value:
-            if value in INVERSE_USER_TYPE:
-                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+            user_types = value.split(",")
+            filtered_query = queryset.filter(
+                user_type__in=[
+                    INVERSE_USER_TYPE.get(user_type) for user_type in user_types
+                ]
+            )
+            return filtered_query
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")

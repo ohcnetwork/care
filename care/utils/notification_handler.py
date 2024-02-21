@@ -144,23 +144,23 @@ class NotificationGenerator:
 
     def generate_extra_users(self):
         if isinstance(self.caused_object, PatientConsultation):
-            if self.caused_object.assigned_to:
-                self.extra_users.append(self.caused_object.assigned_to.id)
+            for clinician in self.caused_object.assigned_clinicians.all():
+                self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, PatientRegistration):
             if self.caused_object.last_consultation:
-                if self.caused_object.last_consultation.assigned_to:
-                    self.extra_users.append(
-                        self.caused_object.last_consultation.assigned_to.id
-                    )
+                for (
+                    clinician
+                ) in self.caused_object.last_consultation.assigned_clinicians.all():
+                    self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, InvestigationSession):
-            if self.extra_data["consultation"].assigned_to:
-                self.extra_users.append(self.extra_data["consultation"].assigned_to.id)
+            for clinician in self.extra_data["consultation"].assigned_clinicians.all():
+                self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, InvestigationValue):
-            if self.caused_object.consultation.assigned_to:
-                self.extra_users.append(self.caused_object.consultation.assigned_to.id)
+            for clinician in self.caused_object.consultation.assigned_clinicians.all():
+                self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, DailyRound):
-            if self.caused_object.consultation.assigned_to:
-                self.extra_users.append(self.caused_object.consultation.assigned_to.id)
+            for clinician in self.caused_object.consultation.assigned_clinicians.all():
+                self.extra_users.append(clinician.id)
 
     def generate_system_message(self):
         message = ""

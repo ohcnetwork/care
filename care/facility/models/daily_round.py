@@ -531,7 +531,7 @@ class DailyRound(PatientBaseModel):
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
-                request.user == consultation.assigned_to
+                consultation.assigned_clinicians.filter(id=request.user.id).exists()
                 or request.user == consultation.patient.assigned_to
             )
             or (
@@ -566,7 +566,7 @@ class DailyRound(PatientBaseModel):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.consultation.assigned_to == request.user
+                self.assigned_clinicians.filter(id=request.user.id).exists()
                 or request.user == self.consultation.patient.assigned_to
             )
             or (
