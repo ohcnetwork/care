@@ -566,7 +566,9 @@ class DailyRound(PatientBaseModel):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.assigned_clinicians.filter(id=request.user.id).exists()
+                self.consultation.assigned_clinicians.filter(
+                    id=request.user.id
+                ).exists()
                 or request.user == self.consultation.patient.assigned_to
             )
             or (

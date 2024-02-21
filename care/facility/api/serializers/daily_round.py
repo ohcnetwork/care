@@ -141,9 +141,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             patient.save()
 
         validated_data["last_updated_by_telemedicine"] = False
-        if (
+        if instance.consultation.assigned_clinicians.contains(
             self.context["request"].user
-            in instance.consultation.assigned_clinicians.all()
         ):
             validated_data["last_updated_by_telemedicine"] = True
         instance.consultation.save(update_fields=["last_updated_by_telemedicine"])
@@ -272,9 +271,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             validated_data["created_by_telemedicine"] = False
             validated_data["last_updated_by_telemedicine"] = False
 
-            if (
+            if validated_data["consultation"].assigned_clinicians.contains(
                 self.context["request"].user
-                in validated_data["consultation"].assigned_clinicians.all()
             ):
                 validated_data["created_by_telemedicine"] = True
                 validated_data["last_updated_by_telemedicine"] = True
