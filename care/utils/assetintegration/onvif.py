@@ -1,6 +1,5 @@
 import enum
 
-from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -45,52 +44,43 @@ class OnvifAsset(BaseAssetIntegration):
             "accessKey": self.access_key,
             **action_data,
         }
-        cacheId = f"asset_move: {str(asset_id)}"
-        if (
-            cache
-            and cache.get(cacheId, None) is not None
-            and cache.get(cacheId) == "True"
-        ):
-            return "Camera is still moving"
-        if cache:
-            cache.set(cacheId, "True", 3)  # set cache with expiry of 3 seconds
 
         if action_type == BaseAssetIntegration.BaseAssetActions.REQUEST_ACCESS.value:
             return self.request_access(username, asset_id)
 
         if action_type == BaseAssetIntegration.BaseAssetActions.UNLOCK_ASSET.value:
-            if self.unlock_asset(username, asset_id):
+            if self.unlock_camera(username, asset_id):
                 return {"message": "Asset Unlocked"}
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == BaseAssetIntegration.BaseAssetActions.LOCK_ASSET.value:
-            if self.lock_asset(username, asset_id):
+            if self.lock_camera(username, asset_id):
                 return {"message": "Asset Locked"}
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.GET_CAMERA_STATUS.value:
-            self.lock_asset(username, asset_id)
+            self.lock_camera(username, asset_id)
             return self.api_get(self.get_url("status"), request_body)
 
         if action_type == self.OnvifActions.GET_PRESETS.value:
-            self.lock_asset(username, asset_id)
+            self.lock_camera(username, asset_id)
             return self.api_get(self.get_url("presets"), request_body)
 
         if action_type == self.OnvifActions.GOTO_PRESET.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
+                self.lock_camera(username, asset_id)
                 return self.api_post(self.get_url("gotoPreset"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.ABSOLUTE_MOVE.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
+                self.lock_camera(username, asset_id)
                 return self.api_post(self.get_url("absoluteMove"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             if self.verify_access(username, asset_id):
-                self.lock_asset(username, asset_id)
+                self.lock_camera(username, asset_id)
                 return self.api_post(self.get_url("relativeMove"), request_body)
             self.raise_conflict(asset_id=asset_id)
 
@@ -110,6 +100,8 @@ class OnvifAsset(BaseAssetIntegration):
             return
 
         boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
+
+        # check if asset feed is not locked
 
         if (
             not boundary_preset

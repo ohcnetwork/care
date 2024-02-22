@@ -14,8 +14,8 @@ class BaseAssetIntegration:
     auth_header_type = "Care_Bearer "
 
     class BaseAssetActions(enum.Enum):
-        UNLOCK_ASSET = "unlock_asset"
-        LOCK_ASSET = "lock_asset"
+        UNLOCK_ASSET = "unlock_camera"
+        LOCK_ASSET = "lock_camera"
         REQUEST_ACCESS = "request_access"
 
     def __init__(self, meta):
@@ -23,19 +23,6 @@ class BaseAssetIntegration:
         self.host = self.meta["local_ip_address"]
         self.middleware_hostname = self.meta["middleware_hostname"]
         self.insecure_connection = self.meta.get("insecure_connection", False)
-
-    def handle_action(action, params, method_name):
-        # Perform caching only for the operate_assets method
-        if method_name == "operate_assets":
-            cacheId = f"asset_move: {str(params['asset_id'])}"
-            if (
-                cache
-                and cache.get(cacheId, None) is not None
-                and cache.get(cacheId) == "True"
-            ):
-                return "Camera is still moving"
-            if cache:
-                cache.set(cacheId, "True", 5)  # set cache with expiry of 5 seconds
 
     def get_url(self, endpoint):
         protocol = "http"
@@ -80,9 +67,7 @@ class BaseAssetIntegration:
             return []
         else:
             queue = cache.get(asset_queue_key)
-            users_array = []
-            for user in queue:
-                users_array.append(User.objects.get(username=user))
+            users_array = list(User.objects.filter(username__in=queue))
             return users_array
 
     def generate_notification(self, asset_id):
@@ -117,7 +102,7 @@ class BaseAssetIntegration:
                 queue = [x for x in queue if x != username]
             cache.set(asset_queue_key, queue, timeout=None)
 
-    def unlock_asset(self, username, asset_id):
+    def unlock_camera(self, username, asset_id):
         if cache.get(asset_id) is None:
             self.remove_from_waiting_queue(username, asset_id)
             self.generate_notification(asset_id)
@@ -132,7 +117,7 @@ class BaseAssetIntegration:
             return False
         return True
 
-    def lock_asset(self, username, asset_id):
+    def lock_camera(self, username, asset_id):
         if cache.get(asset_id) is None or not cache.get(asset_id):
             cache.set(asset_id, username, timeout=None)
             self.remove_from_waiting_queue(username, asset_id)

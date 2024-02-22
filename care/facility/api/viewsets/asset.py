@@ -386,6 +386,20 @@ class AssetViewSet(
                 }
             )
             asset_class.validate_action(action)
+
+            cacheId = f"asset_move: {str(asset.external_id)}"
+            if (
+                cache
+                and cache.get(cacheId, None) is not None
+                and cache.get(cacheId) == "True"
+            ):
+                return Response(
+                    {"status": "failure", "message": "Camera is still moving"},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            if cache:
+                cache.set(cacheId, "True", 3)  # set cache with expiry of 3 seconds
+
             result = asset_class.handle_action(
                 action,
                 username=request.user.username,
@@ -398,7 +412,7 @@ class AssetViewSet(
         except PermissionDenied as e:
             return Response(
                 {
-                    "detail": e.detail.get("message", None),
+                    "message": e.detail.get("message", None),
                 },
                 status=status.HTTP_409_CONFLICT,
             )

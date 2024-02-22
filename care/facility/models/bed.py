@@ -95,7 +95,7 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
     @staticmethod
     def has_patient_privacy_permission(request, **kwargs):
         permission_mixin = ConsultationRelatedPermissionMixin()
-        return permission_mixin.has_object_update_permission(request)
+        return permission_mixin.has_write_permission(request)
 
     def has_object_patient_privacy_permission(self, request, **kwargs):
         user = request.user
@@ -119,7 +119,7 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
     @staticmethod
     def has_disable_patient_privacy_permission(request, **kwargs):
         permission_mixin = ConsultationRelatedPermissionMixin()
-        return permission_mixin.has_object_update_permission(request)
+        return permission_mixin.has_write_permission(request)
 
     def has_object_disable_patient_privacy_permission(self, request, **kwargs):
         user = request.user
