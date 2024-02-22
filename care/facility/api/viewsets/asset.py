@@ -371,6 +371,7 @@ class AssetViewSet(
         """
         try:
             action = request.data["action"]
+            action["user"] = request.user.username
             asset: Asset = self.get_object()
             middleware_hostname = (
                 asset.meta.get(
@@ -404,7 +405,6 @@ class AssetViewSet(
                 action,
                 username=request.user.username,
                 asset_id=asset.external_id,
-                method_name="operate_assets",
             )
 
             return Response({"result": result}, status=status.HTTP_200_OK)
@@ -421,7 +421,9 @@ class AssetViewSet(
 
         except KeyError as e:
             return Response(
-                {"message": {key: "is required" for key in e.args}},
+                {
+                    "message": {key: "is required" for key in e.args},
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

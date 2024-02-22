@@ -1,5 +1,6 @@
 import enum
 
+from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -87,7 +88,7 @@ class OnvifAsset(BaseAssetIntegration):
         raise ValidationError({"action": "invalid action type"})
 
     def validate_action(self, action):
-        from care.facility.models.bed import AssetBed
+        from care.facility.models.bed import AssetBed, ConsultationBed
 
         action_type = action["type"]
         action_data = action.get("data", {})
@@ -101,7 +102,15 @@ class OnvifAsset(BaseAssetIntegration):
 
         boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
 
-        # check if asset feed is not locked
+        # check if asset feed is not locked by calling the consultationbed object
+        consultation_bed = ConsultationBed.objects.get(
+            Q(assets__id=boundary_preset.asset.external_id) & Q(privacy=True)
+        )
+        if (
+            consultation_bed.privacy
+            and consultation_bed.meta["locked_by"] != action["user"]
+        ):
+            raise ValidationError({"action": "asset is locked, permission denies"})
 
         if (
             not boundary_preset
