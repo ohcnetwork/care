@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     def fill_previous_consultation(apps, schema_editor):
         PatientConsultation = apps.get_model("facility", "PatientConsultation")
         bulk_update_list = []
-        qs = PatientConsultation.objects.all()
+        qs = PatientConsultation.objects.all().order_by("-created_date")
 
         def get_previous_consultation(consultation):
             previous_consultation =  qs.filter(
