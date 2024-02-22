@@ -1,5 +1,6 @@
 import enum
 
+from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -44,6 +45,15 @@ class OnvifAsset(BaseAssetIntegration):
             "accessKey": self.access_key,
             **action_data,
         }
+        cacheId = f"asset_move: {str(asset_id)}"
+        if (
+            cache
+            and cache.get(cacheId, None) is not None
+            and cache.get(cacheId) == "True"
+        ):
+            return "Camera is still moving"
+        if cache:
+            cache.set(cacheId, "True", 3)  # set cache with expiry of 3 seconds
 
         if action_type == BaseAssetIntegration.BaseAssetActions.REQUEST_ACCESS.value:
             return self.request_access(username, asset_id)
