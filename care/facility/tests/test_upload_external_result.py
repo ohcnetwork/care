@@ -67,7 +67,7 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
                     "gender": "m",
                     "mobile_number": 8888888888,
                     "address": "Upload test address",
-                    "ward": self.ward.id,
+                    "ward": self.ward.number,
                     "local_body": str(self.local_body.name),
                     "local_body_type": "municipality",
                     "source": "Secondary contact aparna",
@@ -87,4 +87,5 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         response = self.client.post(
             "/api/v1/external_result/bulk_upsert/", sample_data, format="json"
         )
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
