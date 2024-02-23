@@ -266,7 +266,8 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
-                q_filters |= Q(consultations__facility__users=request.user)
+                if view.action == "retrieve":
+                    q_filters |= Q(consultations__facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters).distinct()
