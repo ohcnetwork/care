@@ -102,10 +102,14 @@ class OnvifAsset(BaseAssetIntegration):
 
         boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
 
-        # check if asset feed is not locked by calling the consultationbed object
-        consultation_bed = ConsultationBed.objects.get(
-            Q(assets__id=boundary_preset.asset.external_id) & Q(privacy=True)
-        )
+        # check if privacy mode is on
+        try:
+            consultation_bed = ConsultationBed.objects.get(
+                Q(assets__id=boundary_preset.asset.external_id) & Q(privacy=True)
+            )
+        except ConsultationBed.DoesNotExist:
+            consultation_bed = None
+
         if (
             consultation_bed
             and consultation_bed.privacy
