@@ -107,7 +107,8 @@ class OnvifAsset(BaseAssetIntegration):
             Q(assets__id=boundary_preset.asset.external_id) & Q(privacy=True)
         )
         if (
-            consultation_bed.privacy
+            consultation_bed
+            and consultation_bed.privacy
             and consultation_bed.meta["locked_by"] != action["user"]
         ):
             raise ValidationError({"action": "asset is locked, permission denies"})
