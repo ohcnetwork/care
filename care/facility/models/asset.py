@@ -75,7 +75,7 @@ REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices)
 REVERSE_STATUS = reverse_choices(StatusChoices)
 
 
-class Asset(BaseModel):
+class Asset(BaseModel, FacilityRelatedPermissionMixin):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(

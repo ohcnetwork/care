@@ -210,8 +210,6 @@ class AssetSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        if user.user_type in User.READ_ONLY_TYPES:
-            raise PermissionError()
         last_serviced_on = validated_data.pop("last_serviced_on", None)
         note = validated_data.pop("note", None)
         with transaction.atomic():
