@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
-    BooleanField,
     CharField,
     DateTimeField,
     IntegerField,
@@ -40,7 +39,7 @@ class BedSerializer(ModelSerializer):
     bed_type = ChoiceField(choices=BedTypeChoices)
 
     location_object = AssetLocationSerializer(source="location", read_only=True)
-    is_occupied = BooleanField(default=False, read_only=True)
+    is_occupied = SerializerMethodField()
 
     location = UUIDField(write_only=True, required=True)
     facility = UUIDField(write_only=True, required=True)
@@ -54,6 +53,11 @@ class BedSerializer(ModelSerializer):
         if value > 100:
             raise ValidationError("Cannot create more than 100 beds at once.")
         return value
+
+    def get_is_occupied(self, instance):
+        if hasattr(instance, "_is_occupied"):
+            return instance._is_occupied
+        return instance.is_occupied
 
     class Meta:
         model = Bed
@@ -348,3 +352,11 @@ class ConsultationBedSerializer(ModelSerializer):
         validated_data.pop("assets", None)
 
         return super().update(instance, validated_data)
+
+    def to_representation(self, instance: ConsultationBed):
+        if hasattr(instance, "bed"):
+            if instance.end_date is None:
+                instance.bed._is_occupied = True
+            else:
+                instance.bed._is_occupied = False
+        return super().to_representation(instance)

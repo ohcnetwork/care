@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Prefetch, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
@@ -25,6 +25,7 @@ from care.facility.api.serializers.bed import (
     ConsultationBedSerializer,
     PatientAssetBedSerializer,
 )
+from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
@@ -218,8 +219,21 @@ class ConsultationBedViewSet(
 ):
     queryset = (
         ConsultationBed.objects.all()
-        .select_related("consultation", "bed")
-        .prefetch_related("assets")
+        .select_related(
+            "consultation",
+            "bed",
+            "bed__facility",
+            "bed__location",
+            "bed__location__facility",
+        )
+        .prefetch_related(
+            Prefetch(
+                "assets",
+                queryset=Asset.objects.select_related(
+                    "current_location", "last_service", "current_location__facility"
+                ),
+            ),
+        )
         .order_by("-created_date")
     )
     serializer_class = ConsultationBedSerializer
