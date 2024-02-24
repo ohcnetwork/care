@@ -388,31 +388,34 @@ class AssetViewSet(
             )
             asset_class.validate_action(action)
 
-            cacheId = f"asset_move: {str(asset.external_id)}"
-            if (
-                cache
-                and cache.get(cacheId, None) is not None
-                and cache.get(cacheId) == "True"
-            ):
-                return Response(
-                    {"status": "failure", "message": "Camera is still moving"},
-                    status=status.HTTP_409_CONFLICT,
-                )
-            if cache:
-                cache.set(cacheId, "True", 3)  # set cache with expiry of 3 seconds
+            # cache the move camera actions for 3 seconds
+            if action["type"] == "relative_move" or action["type"] == "absolute_move":
+                cacheId = f"asset_move: {str(asset.external_id)}"
+                if cache and cache.get(cacheId) and cache.get(cacheId) == "True":
+                    return Response(
+                        {"status": "failure", "message": "Camera is still moving"},
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
+                if cache:
+                    cache.set(cacheId, "True", 3)
 
             result = asset_class.handle_action(
                 action,
                 username=request.user.username,
                 asset_id=asset.external_id,
             )
-
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except PermissionDenied as e:
+            user: User = User.objects.get(username=cache.get(asset.external_id))
             return Response(
                 {
                     "message": e.detail.get("message", None),
+                    "username": user.username,
+                    "firstName": user.first_name,
+                    "lastName": user.last_name,
+                    "role": User.REVERSE_TYPE_MAP[user.user_type],
+                    "homeFacility": user.home_facility,
                 },
                 status=status.HTTP_409_CONFLICT,
             )
@@ -423,6 +426,11 @@ class AssetViewSet(
             return Response(
                 {
                     "message": {key: "is required" for key in e.args},
+                    "username": e.detail.get("username", None),
+                    "firstName": e.detail.get("firstName", None),
+                    "lastName": e.detail.get("lastName", None),
+                    "role": e.detail.get("role", None),
+                    "homeFacility": e.detail.get("homeFacility", None),
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
