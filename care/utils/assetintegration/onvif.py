@@ -1,6 +1,5 @@
 import enum
 
-from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -103,12 +102,9 @@ class OnvifAsset(BaseAssetIntegration):
         boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
 
         # check if privacy mode is on
-        try:
-            consultation_bed = ConsultationBed.objects.get(
-                Q(assets__id=boundary_preset.asset.external_id) & Q(privacy=True)
-            )
-        except ConsultationBed.DoesNotExist:
-            consultation_bed = None
+        consultation_bed = ConsultationBed.objects.filter(
+            bed=boundary_preset.bed, privacy=True
+        ).first()
 
         if (
             consultation_bed
