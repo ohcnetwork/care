@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
+    BooleanField,
     CharField,
     DateTimeField,
     IntegerField,
@@ -39,7 +40,7 @@ class BedSerializer(ModelSerializer):
     bed_type = ChoiceField(choices=BedTypeChoices)
 
     location_object = AssetLocationSerializer(source="location", read_only=True)
-    is_occupied = SerializerMethodField()
+    is_occupied = BooleanField(default=False, read_only=True)
 
     location = UUIDField(write_only=True, required=True)
     facility = UUIDField(write_only=True, required=True)
@@ -81,9 +82,6 @@ class BedSerializer(ModelSerializer):
                 {"location": "Field is Required", "facility": "Field is Required"}
             )
         return super().validate(attrs)
-
-    def get_is_occupied(self, instance):
-        return instance.is_occupied
 
 
 class AssetBedSerializer(ModelSerializer):
