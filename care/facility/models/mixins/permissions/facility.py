@@ -40,38 +40,38 @@ class FacilityPermissionMixin(BasePermissionMixin):
 
     @staticmethod
     def has_update_permission(request):
-        return request.user.is_authenticated
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    @staticmethod
+    def has_destroy_permission(request):
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+        )
 
     @staticmethod
     def has_cover_image_permission(request):
-        return request.user.is_authenticated
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
 
     @staticmethod
     def has_cover_image_delete_permission(request):
-        return request.user.is_authenticated
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
 
     def has_object_read_permission(self, request):
-        return (
-            (request.user.is_superuser)
-            or (
-                hasattr(self, "district")
-                and request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and request.user.district == self.district
-            )
-            or (
-                hasattr(self, "state")
-                and request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and request.user.state == self.state
-            )
-            or (request.user in self.users.all())
+        return super().has_object_read_permission(request) or self.users.contains(
+            request.user
         )
 
     def has_object_write_permission(self, request):
-        print(
-            request.user.user_type not in User.READ_ONLY_TYPES,
-            request.user.user_type >= User.TYPE_VALUE_MAP["Staff"],
-            self.has_object_read_permission(request),
-        )
         return (
             request.user.user_type not in User.READ_ONLY_TYPES
             and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
@@ -82,7 +82,9 @@ class FacilityPermissionMixin(BasePermissionMixin):
         return self.has_object_write_permission(request)
 
     def has_object_destroy_permission(self, request):
-        return self.has_object_update_permission(request)
+        return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"] and (
+            self.has_object_update_permission(request)
+        )
 
     def has_object_cover_image_permission(self, request):
         return self.has_object_update_permission(request)
