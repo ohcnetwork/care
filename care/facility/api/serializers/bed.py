@@ -83,8 +83,6 @@ class BedSerializer(ModelSerializer):
         return super().validate(attrs)
 
     def get_is_occupied(self, instance):
-        if hasattr(instance, "_is_occupied"):
-            return instance._is_occupied
         return instance.is_occupied
 
 

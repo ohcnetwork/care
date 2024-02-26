@@ -66,7 +66,7 @@ class BedViewSet(
 
         if self.action == "list":
             queryset = queryset.annotate(
-                _is_occupied=Exists(
+                is_occupied=Exists(
                     ConsultationBed.objects.filter(
                         bed__id=OuterRef("id"), end_date__isnull=True
                     )
