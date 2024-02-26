@@ -128,8 +128,6 @@ class FacilityViewSet(
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
-
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
             mapping = Facility.CSV_MAPPING.copy()
