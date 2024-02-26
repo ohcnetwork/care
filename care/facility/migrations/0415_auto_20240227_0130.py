@@ -34,5 +34,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(fix_duplicate_patient_numbers),
+        migrations.RunPython(fix_duplicate_patient_numbers, migrations.RunPython.noop),
     ]
