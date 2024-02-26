@@ -7,14 +7,38 @@ import care.utils.models.validators
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0409_merge_20240210_1510"),
+        ("facility", "0414_remove_bed_old_name"),
     ]
+
+    def set_prn_prescriptions_dosage_type(apps, schema_editor):
+        Prescription = apps.get_model("facility", "Prescription")
+        Prescription.objects.filter(is_prn=True).update(dosage_type="PRN")
+
+    def reverse_set_prn_prescriptions_dosage_type(apps, schema_editor):
+        Prescription = apps.get_model("facility", "Prescription")
+        Prescription.objects.filter(dosage_type="PRN").update(is_prn=True)
 
     operations = [
         migrations.RenameField(
             model_name="prescription",
             old_name="dosage",
             new_name="base_dosage",
+        ),
+        migrations.AddField(
+            model_name="prescription",
+            name="dosage_type",
+            field=models.CharField(
+                choices=[
+                    ("REGULAR", "REGULAR"),
+                    ("TITRATED", "TITRATED"),
+                    ("PRN", "PRN"),
+                ],
+                default="REGULAR",
+                max_length=100,
+            ),
+        ),
+        migrations.RunPython(
+            set_prn_prescriptions_dosage_type, reverse_set_prn_prescriptions_dosage_type
         ),
         migrations.RemoveField(
             model_name="prescription",
@@ -36,19 +60,6 @@ class Migration(migrations.Migration):
                         units={"mg", "ml", "drop(s)", "ampule(s)", "g", "tsp"},
                     )
                 ],
-            ),
-        ),
-        migrations.AddField(
-            model_name="prescription",
-            name="dosage_type",
-            field=models.CharField(
-                choices=[
-                    ("REGULAR", "REGULAR"),
-                    ("TITRATED", "TITRATED"),
-                    ("PRN", "PRN"),
-                ],
-                default="REGULAR",
-                max_length=100,
             ),
         ),
         migrations.AddField(
