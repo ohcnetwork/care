@@ -64,14 +64,13 @@ class BedViewSet(
         user = self.request.user
         queryset = self.queryset
 
-        if self.action == "list":
-            queryset = queryset.annotate(
-                is_occupied=Exists(
-                    ConsultationBed.objects.filter(
-                        bed__id=OuterRef("id"), end_date__isnull=True
-                    )
+        queryset = queryset.annotate(
+            is_occupied=Exists(
+                ConsultationBed.objects.filter(
+                    bed__id=OuterRef("id"), end_date__isnull=True
                 )
             )
+        )
 
         if user.is_superuser:
             pass
