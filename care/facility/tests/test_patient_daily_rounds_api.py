@@ -17,9 +17,27 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.patient = cls.create_patient(district=cls.district, facility=cls.facility)
-        cls.consultation = cls.create_consultation(
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.bed = cls.create_bed(facility=cls.facility, location=cls.asset_location)
+        cls.consultation_without_bed = cls.create_consultation(
             facility=cls.facility, patient=cls.patient
         )
+        cls.consultation_with_bed = cls.create_consultation(
+            facility=cls.facility, patient=cls.patient
+        )
+        cls.consultation_bed = cls.create_consultation_bed(
+            cls.consultation_with_bed, cls.bed
+        )
+        cls.consultation_with_bed.current_bed = cls.consultation_bed
+        cls.consultation_with_bed.save()
+
+        cls.log_update = {
+            "clone_last": False,
+            "rounds_type": "NORMAL",
+            "patient_category": "Comfort",
+            "action": "DISCHARGE_RECOMMENDED",
+            "taken_at": datetime.datetime.now().isoformat(),
+        }
 
     def get_url(self, external_consultation_id=None):
         return f"/api/v1/consultation/{external_consultation_id}/daily_rounds/analyse/"
@@ -32,22 +50,31 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_action_in_log_update(
         self,
     ):
-        log_update = {
-            "clone_last": False,
-            "rounds_type": "NORMAL",
-            "patient_category": "Comfort",
-            "action": "DISCHARGE_RECOMMENDED",
-            "taken_at": datetime.datetime.now().isoformat(),
-        }
         response = self.client.post(
-            f"/api/v1/consultation/{self.consultation.external_id}/daily_rounds/",
-            data=log_update,
+            f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
+            data=self.log_update,
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["patient_category"], "Comfort Care")
         self.assertEqual(response.data["rounds_type"], "NORMAL")
-        patient = PatientRegistration.objects.get(id=self.consultation.patient_id)
+        patient = PatientRegistration.objects.get(
+            id=self.consultation_with_bed.patient_id
+        )
         self.assertEqual(
             patient.action, PatientRegistration.ActionEnum.DISCHARGE_RECOMMENDED.value
+        )
+
+    def test_log_update_without_bed(
+        self,
+    ):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation_without_bed.external_id}/daily_rounds/",
+            data=self.log_update,
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["bed"],
+            "Patient does not have a bed assigned. Please assign a bed first",
         )
