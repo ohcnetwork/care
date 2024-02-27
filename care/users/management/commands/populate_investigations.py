@@ -23,6 +23,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         investigation_group_dict = {}
+
+        # Assuming investigations is a list of dictionaries where each dictionary represents an investigation
         for investigation_group in investigation_groups:
             current_obj = PatientInvestigationGroup.objects.filter(
                 name=investigation_group.get("name")
@@ -45,7 +47,7 @@ class Command(BaseCommand):
                 "max_value": None
                 if investigation.get("max_value") is None
                 else float(investigation.get("max_value")),
-                "investigation_type": investigation["investigation_type"],
+                "investigation_type": investigation["type"],
                 "choices": investigation.get("choices", ""),
             }
 
@@ -53,7 +55,8 @@ class Command(BaseCommand):
             if not current_obj:
                 current_obj = PatientInvestigation(**data)
                 current_obj.save()
-            current_obj.groups.add(
-                investigation_group_dict[investigation.get("category_id")]
-            )
+
+            for category_id in investigation.get("category_ids", []):
+                current_obj.groups.add(investigation_group_dict[category_id])
+
             current_obj.save()
