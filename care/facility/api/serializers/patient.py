@@ -303,7 +303,10 @@ class PatientDetailSerializer(PatientListSerializer):
                     self.check_external_entry(validated_data["srf_id"])
 
             validated_data["created_by"] = self.context["request"].user
-            patient = super().create(validated_data)
+            try:
+                patient = super().create(validated_data)
+            except Exception as e:
+                raise serializers.ValidationError({"Error": [str(e)]})
             diseases = []
 
             for disease in medical_history:
