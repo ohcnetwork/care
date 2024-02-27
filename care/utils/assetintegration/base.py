@@ -102,34 +102,9 @@ class BaseAssetIntegration:
                 queue = [x for x in queue if x != username]
             cache.set(asset_queue_key, queue, timeout=None)
 
-    def unlock_camera(self, username, asset_id):
-        if cache.get(asset_id) is None:
-            self.remove_from_waiting_queue(username, asset_id)
-            self.generate_notification(asset_id)
-            return True
-        elif cache.get(asset_id) == username:
-            cache.delete(asset_id)
-            self.remove_from_waiting_queue(username, asset_id)
-            self.generate_notification(asset_id)
-            return True
-        elif cache.get(asset_id) != username:
-            self.remove_from_waiting_queue(username, asset_id)
-            return False
-        return True
-
-    def lock_camera(self, username, asset_id):
-        if cache.get(asset_id) is None or not cache.get(asset_id):
-            cache.set(asset_id, username, timeout=None)
-            self.remove_from_waiting_queue(username, asset_id)
-            return True
-        elif cache.get(asset_id) == username:
-            self.remove_from_waiting_queue(username, asset_id)
-            return True
-        self.add_to_waiting_queue(username, asset_id)
-        return False
-
     def raise_conflict(self, asset_id):
-        user: User = User.objects.get(username=cache.get(asset_id))
+        asset_lock_key = f"asset_lock_{asset_id}"
+        user: User = User.objects.get(username=cache.get(asset_lock_key))
         raise PermissionDenied(
             {
                 "message": "Asset is currently in use by another user",
@@ -144,18 +119,20 @@ class BaseAssetIntegration:
         )
 
     def verify_access(self, username, asset_id):
-        if cache.get(asset_id) is None or cache.get(asset_id) == username:
+        asset_lock_key = f"asset_lock_{asset_id}"
+        if cache.get(asset_lock_key) is None or cache.get(asset_lock_key) == username:
             return True
-        elif cache.get(asset_id) != username:
+        elif cache.get(asset_lock_key) != username:
             return False
         return True
 
     def request_access(self, username, asset_id):
         from care.utils.notification_handler import send_webpush
 
-        if cache.get(asset_id) is None or cache.get(asset_id) == username:
+        asset_lock_key = f"asset_lock_{asset_id}"
+        if cache.get(asset_lock_key) is None or cache.get(asset_lock_key) == username:
             return {}
-        elif cache.get(asset_id) != username:
+        elif cache.get(asset_lock_key) != username:
             user: User = User.objects.get(username=username)
             message = {
                 "type": "MESSAGE",
@@ -169,5 +146,7 @@ class BaseAssetIntegration:
                 else "",
             }
 
-            send_webpush(username=cache.get(asset_id), message=json.dumps(message))
+            send_webpush(
+                username=cache.get(asset_lock_key), message=json.dumps(message)
+            )
             return {"message": "user notified"}

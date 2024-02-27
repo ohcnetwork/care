@@ -1,5 +1,6 @@
 import enum
 
+from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
 
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -36,6 +37,10 @@ class OnvifAsset(BaseAssetIntegration):
 
         username = kwargs.get("username", None)
         asset_id = kwargs.get("asset_id", None)
+
+        if not username or not asset_id:
+            return ValidationError({"error": "Username or Asset Id wasn't provided"})
+
         request_body = {
             "hostname": self.host,
             "port": 80,
@@ -91,27 +96,25 @@ class OnvifAsset(BaseAssetIntegration):
 
         action_type = action["type"]
         action_data = action.get("data", {})
-        boundary_preset_id = action_data.get("id", None)
+        asset_bed_id = action_data.get("id", None)
 
-        if (
-            not boundary_preset_id
-            or action_type != self.OnvifActions.RELATIVE_MOVE.value
-        ):
+        if not asset_bed_id or action_type != self.OnvifActions.RELATIVE_MOVE.value:
             return
 
-        boundary_preset = AssetBed.objects.get(external_id=boundary_preset_id)
+        boundary_preset = AssetBed.objects.get(external_id=asset_bed_id)
 
         # check if privacy mode is on
         consultation_bed = ConsultationBed.objects.filter(
-            bed=boundary_preset.bed, privacy=True
-        ).first()
+            bed=boundary_preset.bed, privacy=True, end_date__isnull=True
+        ).last()
 
         if (
             consultation_bed
-            and consultation_bed.privacy
-            and consultation_bed.meta["locked_by"] != action["user"]
+            and consultation_bed.meta.get("locked_by") != action["user"]
         ):
-            raise ValidationError({"action": "asset is locked, permission denies"})
+            raise ValidationError(
+                {"name": "Asset privacy is enabled, can't move camera"}
+            )
 
         if (
             not boundary_preset
@@ -131,3 +134,31 @@ class OnvifAsset(BaseAssetIntegration):
             or (camera_state["y"] + action_data["y"] > boundary_range["max_y"])
         ):
             raise ValidationError({"action": "invalid action type"})
+
+    def unlock_camera(self, username, asset_id):
+        asset_lock_key = f"asset_lock_{asset_id}"
+        if cache.get(asset_lock_key) is None:
+            self.remove_from_waiting_queue(username, asset_id)
+            self.generate_notification(asset_id)
+            return True
+        elif cache.get(asset_lock_key) == username:
+            cache.delete(asset_lock_key)
+            self.remove_from_waiting_queue(username, asset_id)
+            self.generate_notification(asset_id)
+            return True
+        elif cache.get(asset_lock_key) != username:
+            self.remove_from_waiting_queue(username, asset_id)
+            return False
+        return True
+
+    def lock_camera(self, username, asset_id):
+        asset_lock_key = f"asset_lock_{asset_id}"
+        if cache.get(asset_lock_key) is None or not cache.get(asset_lock_key):
+            cache.set(asset_lock_key, username, timeout=None)
+            self.remove_from_waiting_queue(username, asset_id)
+            return True
+        elif cache.get(asset_lock_key) == username:
+            self.remove_from_waiting_queue(username, asset_id)
+            return True
+        self.add_to_waiting_queue(username, asset_id)
+        return False

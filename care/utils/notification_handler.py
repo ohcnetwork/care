@@ -233,9 +233,7 @@ class NotificationGenerator:
                 )
         elif isinstance(self.caused_object, Asset):
             if self.event == Notification.Event.ASSET_UNLOCKED.value:
-                message = "{} is ready to use".format(
-                    self.caused_object.name,
-                )
+                message = f"{self.caused_object.name} is ready to use"
         elif isinstance(self.caused_object, PatientNotes):
             if self.event == Notification.Event.PATIENT_NOTE_ADDED.value:
                 message = "Notes for Patient {} was added by {}".format(
