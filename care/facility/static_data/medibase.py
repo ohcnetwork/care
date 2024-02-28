@@ -1,16 +1,13 @@
+import json
 from typing import TypedDict
 
-from django.core.paginator import Paginator
-from django.db.models import CharField, TextField, Value
-from django.db.models.functions import Coalesce
 from redis_om import Field, Migrator
 
-from care.facility.models.prescription import MedibaseMedicine as MedibaseMedicineModel
 from care.utils.static_data.models.base import BaseRedisModel
 
 
 class MedibaseMedicineObject(TypedDict):
-    id: str
+    id: int
     name: str
     type: str
     generic: str
@@ -21,7 +18,7 @@ class MedibaseMedicineObject(TypedDict):
 
 
 class MedibaseMedicine(BaseRedisModel):
-    id: str = Field(primary_key=True)
+    id: int = Field(primary_key=True)
     name: str = Field(index=True)
     type: str = Field(index=True)
     generic: str
@@ -48,43 +45,20 @@ class MedibaseMedicine(BaseRedisModel):
 def load_medibase_medicines():
     print("Loading Medibase Medicines into the redis cache...", end="", flush=True)
 
-    medibase_objects = (
-        MedibaseMedicineModel.objects.order_by("external_id")
-        .annotate(
-            generic_pretty=Coalesce("generic", Value(""), output_field=CharField()),
-            company_pretty=Coalesce("company", Value(""), output_field=CharField()),
-            contents_pretty=Coalesce("contents", Value(""), output_field=TextField()),
-            cims_class_pretty=Coalesce(
-                "cims_class", Value(""), output_field=CharField()
-            ),
-            atc_classification_pretty=Coalesce(
-                "atc_classification", Value(""), output_field=TextField()
-            ),
-        )
-        .values_list(
-            "external_id",
-            "name",
-            "type",
-            "generic_pretty",
-            "company_pretty",
-            "contents_pretty",
-            "cims_class_pretty",
-            "atc_classification_pretty",
-        )
-    )
-    paginator = Paginator(medibase_objects, 5000)
-    for page_number in paginator.page_range:
-        for medicine in paginator.page(page_number).object_list:
-            MedibaseMedicine(
-                id=str(medicine[0]),
-                name=medicine[1],
-                type=medicine[2],
-                generic=medicine[3],
-                company=medicine[4],
-                contents=medicine[5],
-                cims_class=medicine[6],
-                atc_classification=medicine[7],
-                vec=f"{medicine[1]} {medicine[3]} {medicine[4]}",
-            ).save()
+    with open("data/medibase.json", "r") as f:
+        medibase_data = json.load(f)
+
+    for medicine in medibase_data:
+        MedibaseMedicine(
+            id=medicine.get("id"),
+            name=medicine.get("name", ""),
+            type=medicine.get("type", ""),
+            generic=medicine.get("generic", ""),
+            company=medicine.get("company", ""),
+            contents=medicine.get("contents", ""),
+            cims_class=medicine.get("cims_class", ""),
+            atc_classification=medicine.get("atc_classification", ""),
+            vec=f"{medicine.get('name', '')} {medicine.get('generic', '')} {medicine.get('company', '')}",
+        ).save()
     Migrator().run()
     print("Done")

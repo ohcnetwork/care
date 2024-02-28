@@ -6,7 +6,7 @@ from django.db.models import JSONField
 from django.utils import timezone
 
 from care.facility.models.patient_consultation import PatientConsultation
-from care.utils.models.base import BaseModel
+from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import dosage_validator
 
 
@@ -48,7 +48,15 @@ class MedibaseMedicineType(enum.Enum):
     GENERIC = "generic"
 
 
-class MedibaseMedicine(BaseModel):
+class MedibaseMedicine(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    created_date = models.DateTimeField(
+        auto_now_add=True, null=True, blank=True, db_index=True
+    )
+    modified_date = models.DateTimeField(
+        auto_now=True, null=True, blank=True, db_index=True
+    )
+    deleted = models.BooleanField(default=False, db_index=True)
     name = models.CharField(
         max_length=255,
         blank=False,
@@ -69,8 +77,14 @@ class MedibaseMedicine(BaseModel):
     cims_class = models.CharField(max_length=255, blank=True, null=True)
     atc_classification = models.TextField(blank=True, null=True)
 
+    objects = BaseManager()
+
     def __str__(self):
         return " - ".join(filter(None, [self.name, self.generic, self.company]))
+
+    def delete(self, *args):
+        self.deleted = True
+        self.save(update_fields=["deleted"])
 
 
 class Prescription(BaseModel):
