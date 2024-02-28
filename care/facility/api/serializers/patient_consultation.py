@@ -519,13 +519,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 else validated.get("patient").facility
             )
             patient_no = validated["patient_no"]
-            print("*" * 100)
-            print(patient_no, facility)
-            print(facility.id)
             if PatientConsultation.objects.filter(
                 patient_no=patient_no, facility=facility
             ).exists():
-                print("#" * 10)
                 raise ValidationError(
                     "Patient number must be unique within the facility."
                 )
