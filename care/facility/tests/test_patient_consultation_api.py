@@ -30,6 +30,8 @@ class TestPatientConsultation(TestUtils, APITestCase):
         cls.doctor = cls.create_user(
             "doctor", cls.district, home_facility=cls.facility, user_type=15
         )
+        cls.patient1 = cls.create_patient(cls.district, cls.facility)
+        cls.patient2 = cls.create_patient(cls.district, cls.facility)
 
     def get_default_data(self):
         return {
@@ -529,3 +531,30 @@ class TestPatientConsultation(TestUtils, APITestCase):
             verification_status=ConditionVerificationStatus.PROVISIONAL,
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_consultations_with_duplicate_patient_no_within_facility(self):
+        facility = self.create_facility(self.super_user, self.district, self.local_body)
+
+        data = self.get_default_data().copy()
+        data.update(
+            {
+                "patient_no": "IP1234",
+                "patient": self.patient2.external_id,
+                "facility": facility.external_id,
+                "created_by": self.user.external_id,
+                "suggestion": "A",
+            }
+        )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        data.update(
+            {
+                "patient_no": "IP1234",
+                "patient": self.patient1.external_id,
+                "facility": facility.external_id,
+                "created_by": self.user.external_id,
+            }
+        )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

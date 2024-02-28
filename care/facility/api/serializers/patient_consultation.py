@@ -512,6 +512,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
+        if "patient_no" in validated:
+            facility = (
+                self.instance.facility
+                if self.instance
+                else validated.get("patient").facility
+            )
+            patient_no = validated["patient_no"]
+            print("*" * 100)
+            print(patient_no, facility)
+            print(facility.id)
+            if PatientConsultation.objects.filter(
+                patient_no=patient_no, facility=facility
+            ).exists():
+                print("#" * 10)
+                raise ValidationError(
+                    "Patient number must be unique within the facility."
+                )
 
         if (
             "suggestion" in validated
