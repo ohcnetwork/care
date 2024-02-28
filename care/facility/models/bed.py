@@ -99,22 +99,11 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
 
     def has_object_patient_privacy_permission(self, request, **kwargs):
         user = request.user
-        return (
-            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                and user.home_facility.external_id
-                == self.consultation.facility.external_id
-            )
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                and user.home_facility.external_id
-                == self.consultation.facility.external_id
-            )
-        )
+        if super().has_object_update_permission(request, **kwargs):
+            if user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]:
+                return True
+            return self.consultation.facility_id == request.user.home_facility_id
+        return False
 
     @staticmethod
     def has_disable_patient_privacy_permission(request, **kwargs):
@@ -123,22 +112,11 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
 
     def has_object_disable_patient_privacy_permission(self, request, **kwargs):
         user = request.user
-        return (
-            user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Doctor"]
-                and user.home_facility.external_id
-                == self.consultation.facility.external_id
-            )
-            or (
-                user.user_type == User.TYPE_VALUE_MAP["Staff"]
-                and user.home_facility.external_id
-                == self.consultation.facility.external_id
-            )
-        )
+        if super().has_object_update_permission(request, **kwargs):
+            if user.user_type == User.TYPE_VALUE_MAP["WardAdmin"]:
+                return True
+            return self.consultation.facility_id == request.user.home_facility_id
+        return False
 
 
 class ConsultationBedAsset(BaseModel):
