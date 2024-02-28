@@ -18,14 +18,17 @@ User = get_user_model()
 
 # Facility Model Start
 BASE_ROOM_TYPES = [
-    (1, "General Bed"),
-    (10, "ICU"),
-    (20, "Ventilator"),
-    (30, "Covid Beds"),
-    (100, "Covid Ventilators"),
-    (110, "Covid ICU"),
-    (120, "Covid Oxygen beds"),
-    (150, "Oxygen beds"),
+    (1, "Ordinary bed"),
+    (10, "ICU beds"),
+    # (20, "Ventilator"),
+    # (30, "Covid Beds"),
+    # (100, "Covid Ventilators"),
+    # (110, "Covid ICU"),
+    # (120, "Covid Oxygen beds"),
+    (150, "Oxygen supported bed"),
+    (4, "Isolation bed"),
+    (5, "Others"),
+
 ]
 
 ROOM_TYPES = [
