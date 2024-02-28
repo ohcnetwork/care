@@ -258,6 +258,11 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError(
                 {"non_field_errors": ["Either age or date_of_birth should be passed"]}
             )
+        if "date_of_birth" in validated:
+            if datetime.datetime.now().year-validated['date_of_birth'].year <=0:
+                raise serializers.ValidationError(
+                    {"date_of_birth": ["Date of birth cannot be in the future"]}
+                )
 
         if validated.get("is_vaccinated"):
             if validated.get("number_of_doses") == 0:
