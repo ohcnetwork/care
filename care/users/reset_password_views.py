@@ -41,6 +41,16 @@ HTTP_IP_ADDRESS_HEADER = getattr(
 class ResetPasswordUserSerializer(serializers.Serializer):
     username = serializers.CharField()
 
+    def validate(self, attrs):
+        username = attrs.get('username')
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this username does not exist.")
+
+        return attrs
+
 
 class ResetPasswordCheck(GenericAPIView):
     """
