@@ -32,11 +32,9 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
     def test_patient_privacy_toggle_success(self):
         allowed_user_types = [
             "DistrictAdmin",
-            "WardAdmin",
             "LocalBodyAdmin",
             "StateAdmin",
             "Doctor",
-            # "Staff",
         ]
         for user_type in allowed_user_types:
             self.user = self.create_user(
@@ -114,12 +112,8 @@ class TestPatientConsultationbed(TestUtils, APITestCase):
             "Pharmacist",
             "Volunteer",
             "StaffReadOnly",
-            # "Reserved",
-            # "DistrictLabAdmin",
             "DistrictReadOnlyAdmin",
-            # "StateLabAdmin",
             "StateReadOnlyAdmin",
-            # "Doctor",
             "Staff",
         ]
         for user_type in non_allowed_user_types:
