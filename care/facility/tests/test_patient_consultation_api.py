@@ -562,7 +562,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         patient2 = self.create_patient(self.district, facility2)
         doctor2 = self.create_user(
-            "doctor", self.district, home_facility=facility2, user_type=15
+            "doctor2", self.district, home_facility=facility2, user_type=15
         )
         data = self.get_default_data().copy()
         data.update(
@@ -582,6 +582,34 @@ class TestPatientConsultation(TestUtils, APITestCase):
                 "created_by": self.user.external_id,
                 "suggestion": "A",
                 "treating_physician": doctor2.id,
+            }
+        )
+        self.client.force_authenticate(user=doctor2)
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_patient_was_discharged_and_then_added_with_a_different_patient_number(
+        self,
+    ):
+        consultation = self.create_admission_consultation(
+            suggestion="A",
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            patient=self.patient1,
+        )
+        res = self.discharge(
+            consultation,
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            discharge_date="2020-04-02T15:30:00Z",
+            discharge_notes="Discharge as recovered after admission before future",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        data = self.get_default_data().copy()
+        data.update(
+            {
+                "patient_no": "IP1234",
+                "patient": self.patient1.external_id,
+                "created_by": self.user.external_id,
+                "suggestion": "A",
             }
         )
         res = self.client.post(self.get_url(), data, format="json")
