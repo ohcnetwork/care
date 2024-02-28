@@ -407,7 +407,9 @@ class AssetViewSet(
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except PermissionDenied as e:
-            user: User = User.objects.get(username=cache.get(asset.external_id))
+            user: User = User.objects.get(
+                username=cache.get(f"asset_lock_{asset.external_id}")
+            )
             return Response(
                 {
                     "message": e.detail.get("message", None),
