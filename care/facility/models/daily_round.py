@@ -506,27 +506,25 @@ class DailyRound(PatientBaseModel):
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
         if (
-            self.glasgow_eye_open is None
-            and self.glasgow_motor_response is None
-            and self.glasgow_verbal_response is None
+            self.glasgow_eye_open is not None
+            and self.glasgow_motor_response is not None
+            and self.glasgow_verbal_response is not None
         ):
-            self.glasgow_total_calculated = None
-        else:
             self.glasgow_total_calculated = (
                 self.cztn(self.glasgow_eye_open)
                 + self.cztn(self.glasgow_motor_response)
                 + self.cztn(self.glasgow_verbal_response)
             )
-        if not self.infusions and not self.iv_fluids and not self.feeds:
-            self.total_intake_calculated = None
-        else:
+        if (
+            self.infusions is not None
+            and self.iv_fluids is not None
+            and self.feeds is not None
+        ):
             self.total_intake_calculated = sum([x["quantity"] for x in self.infusions])
             self.total_intake_calculated += sum([x["quantity"] for x in self.iv_fluids])
             self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
 
-        if not self.output:
-            self.total_output_calculated = None
-        else:
+        if self.output is not None:
             self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
         super(DailyRound, self).save(*args, **kwargs)
