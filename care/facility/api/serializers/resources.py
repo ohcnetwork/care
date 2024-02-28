@@ -144,19 +144,25 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         if "status" in validated_data:
             validated_data.pop("status")
 
-        origin_facility_external_id = validated_data.pop("origin_facility")[
-            "external_id"
-        ]
-        validated_data["origin_facility_id"] = Facility.objects.get(
-            external_id=origin_facility_external_id
-        ).id
+        #As Origin facility is mandatory
+        try :
+            origin_facility_external_id = validated_data.pop("origin_facility")[
+                "external_id"
+            ]
+            validated_data["origin_facility_id"] = Facility.objects.get(
+                external_id=origin_facility_external_id
+            ).id
+        except Facility.DoesNotExist:
+            raise Exception("Origin facility id not found")
 
-        request_approving_facility_external_id = validated_data.pop(
-            "approving_facility"
-        )["external_id"]
-        validated_data["approving_facility_id"] = Facility.objects.get(
-            external_id=request_approving_facility_external_id
-        ).id
+        if "approving_facility" in validated_data:
+            request_approving_facility_external_id = validated_data.pop(
+                "approving_facility"
+            )["external_id"]
+            if request_approving_facility_external_id:
+                validated_data["approving_facility_id"] = Facility.objects.get(
+                    external_id=request_approving_facility_external_id
+                ).id
 
         if "assigned_facility" in validated_data:
             assigned_facility_external_id = validated_data.pop("assigned_facility")[
