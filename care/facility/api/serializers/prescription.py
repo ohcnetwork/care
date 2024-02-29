@@ -21,7 +21,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
     last_administered_on = serializers.SerializerMethodField()
     medicine_object = MedibaseMedicineSerializer(read_only=True, source="medicine")
-    medicine = serializers.UUIDField(write_only=True)
+    medicine = serializers.IntegerField(write_only=True)
 
     def get_last_administered_on(self, obj):
         last_administration = (

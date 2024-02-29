@@ -19,7 +19,7 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
             cls.district, cls.facility, local_body=cls.local_body
         )
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
-        meds = MedibaseMedicine.objects.all().values_list("external_id", flat=True)[:2]
+        meds = MedibaseMedicine.objects.all().values_list("id", flat=True)[:2]
         cls.medicine1 = str(meds[0])
 
     def setUp(self) -> None:
