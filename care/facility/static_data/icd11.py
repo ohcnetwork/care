@@ -5,7 +5,11 @@ from typing import TypedDict
 from redis_om import Field, Migrator
 from redis_om.model.model import NotFoundError as RedisModelNotFoundError
 
-from care.facility.management.commands.load_icd11_diagnoses_data import icd11_id_to_int
+from care.facility.management.commands.load_icd11_diagnoses_data import (
+    ICD11_GROUP_LABEL_PRETTY,
+    find_roots,
+    icd11_id_to_int,
+)
 from care.utils.static_data.models.base import BaseRedisModel
 
 DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
@@ -30,16 +34,14 @@ class ICD11(BaseRedisModel):
             "chapter": self.chapter,
         }
 
-    # def get_meta_short_chapter(item, roots_lookup):
+
+def get_meta_short_chapter(item, roots_lookup):
     """
     Get the meta short chapter for a given ICD11 ID.
     """
-    # roots = "find_roots"(item, roots_lookup)
-    # mapped = "ICD11_GROUP_LABEL_PRETTY".get(
-    #     roots["chapter"], roots["chapter"]
-    # )
-    #
-    # return mapped
+    roots = find_roots(item, roots_lookup)
+    mapped = ICD11_GROUP_LABEL_PRETTY.get(roots["chapter"], roots["chapter"])
+    return mapped
 
 
 def load_icd11_diagnosis():
@@ -48,16 +50,16 @@ def load_icd11_diagnosis():
     with open("data/icd11.json", "r") as f:
         icd_data = json.load(f)
 
-    # roots_lookup = {}  # Initialize roots lookup dictionary
+    roots_lookup = {}
 
     for diagnosis in icd_data:
         icd11_id = diagnosis.get("ID")
         label = diagnosis.get("label")
-        # meta_short_chapter = get_meta_short_chapter(diagnosis, roots_lookup)
+        meta_short_chapter = get_meta_short_chapter(diagnosis, roots_lookup)
         ICD11(
             id=icd11_id_to_int(icd11_id),
             label=label,
-            # chapter=meta_short_chapter,
+            chapter=meta_short_chapter if meta_short_chapter else "",
             has_code=1 if re.match(DISEASE_CODE_PATTERN, label) else 0,
         ).save()
 
