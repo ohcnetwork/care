@@ -59,41 +59,46 @@ FACILITY_TYPES = [
     (5, "Hotel"),
     (6, "Lodge"),
     (7, "TeleMedicine"),
-    (8, "Govt Hospital"),
-    (9, "Labs"),
-    # Use 8xx for Govt owned hospitals and health centres
+    # Change from "Govt Hospital" to "Govt Medical College Hospitals"
+    (8, "Govt Medical College Hospitals"),
+    (9, "Govt Labs"),
+    (10, "Private Labs"),
+    # Use 8xx for Govt owned hospitals and health centres --------------------------------------------------
     (800, "Primary Health Centres"),
-    (801, "24x7 Public Health Centres"),
+    # Change from "24x7 Public Health Centres" to "Primary Health Centres"
+    (801, "Primary Health Centres"),
     (802, "Family Health Centres"),
     (803, "Community Health Centres"),
-    (820, "Urban Primary Health Center"),
+    # Change from "Urban Primary Health Center" to "Primary Health Centres"
+    (820, "Primary Health Centres"),
     (830, "Taluk Hospitals"),
-    (831, "Taluk Headquarters Hospitals"),
+    (831, "Taluk Hospitals"),  # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
     (840, "Women and Child Health Centres"),
-    (850, "General hospitals"),  # TODO: same as 8, need to merge
+    (850, "District Hospitals"),  # Change from "General hospitals" to "District Hospitals"
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
-    (900, "Co-operative hospitals"),
-    (910, "Autonomous healthcare facility"),
-    # Use 9xx for Labs
-    (950, "Corona Testing Labs"),
-    # Use 10xx for Corona Care Center
-    (1000, "Corona Care Centre"),
+    # Change from "Co-operative hospitals" to "Autonomous healthcare facility"
+    (900, "Autonomous healthcare facility"),
+    # Use 9xx for Labs ----------------------------------------------------------------------------------------------------
+    (950, "Govt Labs"),  # Change from "Corona Testing Labs" to "Govt Labs"
+    # Use 10xx for Corona Care Center ----------------------------------------------------------------------------------------------------
+    (1000, "Other"),  # Change from "Corona Care Centre" to "Other"
     (1010, "COVID-19 Domiciliary Care Center"),
-    # Use 11xx for First Line Treatment Centre
+    # Use 11xx for First Line Treatment Centre----------------------------------------------------------------------------------------------------
     (1100, "First Line Treatment Centre"),
-    # Use 12xx for Second Line Treatment Center
+    # Use 12xx for Second Line Treatment Center--------------------------------------------------
     (1200, "Second Line Treatment Center"),
-    # Use 13xx for Shifting Centers
+    # Use 13xx for Shifting Centers--------------------------------------------------
     (1300, "Shifting Centre"),
-    # Use 14xx for Covid Management Centers.
+    # Use 14xx for Covid Management Centers.--------------------------------------------------
     (1400, "Covid Management Center"),
-    # Use 15xx for Resource Management Centers.
+    # Use 15xx for Resource Management Centers.--------------------------------------------------
     (1500, "Request Approving Center"),
     (1510, "Request Fulfilment Center"),
-    # Use 16xx for War Rooms.
+    # Use 16xx for War Rooms.--------------------------------------------------
     (1600, "District War Room"),
 ]
+
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 
