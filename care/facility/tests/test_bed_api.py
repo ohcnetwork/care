@@ -32,6 +32,7 @@ class BedViewSetTestCase(TestUtils, APITestCase):
         )
 
     def test_list_beds(self):
+        # includes 3 queries for auth and 1 for pagination count
         with self.assertNumQueries(5):
             response = self.client.get("/api/v1/bed/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
