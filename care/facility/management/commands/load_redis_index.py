@@ -19,7 +19,7 @@ class Command(BaseCommand):
             print("Redis Index already loading, skipping")
             return
 
-        cache.set("redis_index_loading", True, timeout=60 * 5)
+        cache.set("redis_index_loading", True, timeout=60 * 1)
 
         load_icd11_diagnosis()
         load_medibase_medicines()

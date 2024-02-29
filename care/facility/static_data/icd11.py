@@ -30,19 +30,37 @@ class ICD11(BaseRedisModel):
             "chapter": self.chapter,
         }
 
+    # def get_meta_short_chapter(item, roots_lookup):
+    """
+    Get the meta short chapter for a given ICD11 ID.
+    """
+    # roots = "find_roots"(item, roots_lookup)
+    # mapped = "ICD11_GROUP_LABEL_PRETTY".get(
+    #     roots["chapter"], roots["chapter"]
+    # )
+    #
+    # return mapped
+
 
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
     with open("data/icd11.json", "r") as f:
         icd_data = json.load(f)
+
+    # roots_lookup = {}  # Initialize roots lookup dictionary
+
     for diagnosis in icd_data:
+        icd11_id = diagnosis.get("ID")
+        label = diagnosis.get("label")
+        # meta_short_chapter = get_meta_short_chapter(diagnosis, roots_lookup)
         ICD11(
-            id=icd11_id_to_int(diagnosis.get("ID")),
-            label=diagnosis.get("label"),
-            chapter=diagnosis.get("meta_chapter_short", ""),
-            has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis.get("label")) else 0,
+            id=icd11_id_to_int(icd11_id),
+            label=label,
+            # chapter=meta_short_chapter,
+            has_code=1 if re.match(DISEASE_CODE_PATTERN, label) else 0,
         ).save()
+
     Migrator().run()
     print("Done")
 

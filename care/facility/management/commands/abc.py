@@ -140,7 +140,6 @@ class Command(BaseCommand):
                     self.CLASS_KIND_DB_KEYS.get(k, k): v for k, v in roots.items()
                 }
                 result["meta_chapter_short"] = mapped
-                print(mapped)
                 result["meta_hidden"] = mapped is None
                 return result
 
