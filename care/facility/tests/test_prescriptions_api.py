@@ -22,7 +22,7 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         self.medicine = MedibaseMedicine.objects.first()
 
         self.normal_prescription_data = {
-            "medicine": self.medicine.external_id,
+            "medicine": self.medicine.id,
             "prescription_type": "REGULAR",
             "dosage": "1 mg",
             "frequency": "OD",

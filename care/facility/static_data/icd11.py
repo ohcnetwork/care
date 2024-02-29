@@ -1,14 +1,14 @@
-import json
 import re
 from typing import TypedDict
 
 from redis_om import Field, Migrator
 from redis_om.model.model import NotFoundError as RedisModelNotFoundError
 
-from care.facility.management.commands.load_icd11_diagnoses_data import (
+from care.facility.management.commands.load_icd11_diagnoses_data import icd11_id_to_int
+from care.facility.utils.icd.common_data import (
     ICD11_GROUP_LABEL_PRETTY,
+    fetch_icd11_data,
     find_roots,
-    icd11_id_to_int,
 )
 from care.utils.static_data.models.base import BaseRedisModel
 
@@ -47,8 +47,7 @@ def get_meta_short_chapter(item, roots_lookup):
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
-    with open("data/icd11.json", "r") as f:
-        icd_data = json.load(f)
+    icd_data = fetch_icd11_data()
 
     roots_lookup = {}
 
