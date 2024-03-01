@@ -31,7 +31,6 @@ from care.facility.models.asset import (
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.users.models import User
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
@@ -214,7 +213,6 @@ class AssetSerializer(ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        user = self.context["request"].user
         last_serviced_on = validated_data.pop("last_serviced_on", None)
         note = validated_data.pop("note", None)
         with transaction.atomic():
