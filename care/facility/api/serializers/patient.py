@@ -221,12 +221,14 @@ class PatientDetailSerializer(PatientListSerializer):
 
     date_of_birth = serializers.DateField(required=False, allow_null=True)
 
+    is_antenatal = serializers.BooleanField(default=False)
+
+    year_of_birth = serializers.IntegerField(default=0)
 
     class Meta:
         model = PatientRegistration
         exclude = (
             "deleted",
-            "year_of_birth",
             "countries_travelled_old",
             "external_id",
         )
@@ -257,6 +259,11 @@ class PatientDetailSerializer(PatientListSerializer):
 
         return value
 
+    def validate_year_of_birth(self, value):
+        if value and value >= now().year:
+            raise serializers.ValidationError("Enter a valid year of birth")
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         if (
@@ -273,9 +280,6 @@ class PatientDetailSerializer(PatientListSerializer):
                 raise serializers.ValidationError("Number of doses cannot be 0")
             if validated.get("vaccine_name") is None:
                 raise serializers.ValidationError("Vaccine name cannot be null")
-
-        if "is_antedental" not in validated:
-            validated["is_antenatal"] = False
 
         return validated
 
