@@ -112,24 +112,6 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         if "origin_facility" in validated_data:
             validated_data.pop("origin_facility")
 
-        if "approving_facility" in validated_data:
-            approving_facility_external_id = validated_data.pop("approving_facility")[
-                "external_id"
-            ]
-            if approving_facility_external_id:
-                validated_data["approving_facility_id"] = Facility.objects.get(
-                    external_id=approving_facility_external_id
-                ).id
-
-        if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")[
-                "external_id"
-            ]
-            if assigned_facility_external_id:
-                validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
-                ).id
-
         instance.last_edited_by = self.context["request"].user
 
         new_instance = super().update(instance, validated_data)
