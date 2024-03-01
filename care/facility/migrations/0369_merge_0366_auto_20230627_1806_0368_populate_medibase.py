@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
     dependencies = [
         ("facility", "0366_auto_20230627_1806"),
-        ("facility", "0368_remove_external_id_and_populate_medibase"),
+        ("facility", "0368_populate_medibase"),
     ]
 
     operations = []

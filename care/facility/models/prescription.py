@@ -49,7 +49,7 @@ class MedibaseMedicineType(enum.Enum):
 
 
 class MedibaseMedicine(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    id = models.BigIntegerField(unique=True, primary_key=True)
     created_date = models.DateTimeField(
         auto_now_add=True, null=True, blank=True, db_index=True
     )
