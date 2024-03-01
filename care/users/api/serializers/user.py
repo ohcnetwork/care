@@ -1,5 +1,4 @@
-from datetime import date
-
+from datetime import datetime
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
@@ -43,7 +42,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "phone_number",
             "alt_phone_number",
             "gender",
-            "age",
+            "date_of_birth",
         )
 
     def create(self, validated_data):
@@ -112,6 +111,14 @@ class UserCreateSerializer(SignUpSerializer):
             "user_permissions",
             "created_by",
         )
+    date_of_birth = serializers.DateField(required=False)
+
+
+    def validate_date_of_birth(self, value):
+        if value and datetime.today().year - value.year <= 0:
+            raise serializers.ValidationError("Enter a valid date of birth.")
+
+        return value
 
     def validate_facilities(self, facility_ids):
         if facility_ids:
@@ -275,6 +282,8 @@ class UserSerializer(SignUpSerializer):
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
+    date_of_birth = serializers.DateField(required=False)
+
     class Meta:
         model = User
         fields = (
@@ -297,7 +306,7 @@ class UserSerializer(SignUpSerializer):
             "phone_number",
             "alt_phone_number",
             "gender",
-            "age",
+            "date_of_birth",
             "is_superuser",
             "verified",
             "home_facility_object",
@@ -322,6 +331,12 @@ class UserSerializer(SignUpSerializer):
         )
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
+
+    def validate_date_of_birth(self, value):
+        if value and datetime.today().year - value.year <= 0:
+            raise serializers.ValidationError("Enter a valid date of birth.")
+
+        return value
 
     def validate(self, attrs):
         validated = super().validate(attrs)

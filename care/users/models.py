@@ -235,7 +235,7 @@ class User(AbstractUser):
     video_connect_link = models.URLField(blank=True, null=True)
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    date_of_birth = models.DateField(blank=True, null=True)
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -290,7 +290,7 @@ class User(AbstractUser):
         "last_name": "Last Name",
         "phone_number": "Phone Number",
         "gender": "Gender",
-        "age": "Age",
+        "date_of_birth": "Date of Birth",
         "verified": "verified",
         "local_body__name": "Local Body",
         "district__name": "District",
