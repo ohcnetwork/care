@@ -219,6 +219,9 @@ class PatientDetailSerializer(PatientListSerializer):
     )
     abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
+    date_of_birth = serializers.DateField(required=False, allow_null=True)
+
+
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -248,6 +251,12 @@ class PatientDetailSerializer(PatientListSerializer):
             value = [value]
         return value
 
+    def validate_date_of_birth(self, value):
+        if value and now().year - value.year <= 0:
+            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         if (
@@ -258,17 +267,15 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError(
                 {"non_field_errors": ["Either age or date_of_birth should be passed"]}
             )
-        if "date_of_birth" in validated:
-            if datetime.datetime.now().year-validated['date_of_birth'].year <=0:
-                raise serializers.ValidationError(
-                    {"date_of_birth": ["Enter a valid DOB that age > 1"]}
-                )
 
         if validated.get("is_vaccinated"):
             if validated.get("number_of_doses") == 0:
                 raise serializers.ValidationError("Number of doses cannot be 0")
             if validated.get("vaccine_name") is None:
                 raise serializers.ValidationError("Vaccine name cannot be null")
+
+        if "is_antedental" not in validated:
+            validated["is_antenatal"] = False
 
         return validated
 
@@ -308,7 +315,11 @@ class PatientDetailSerializer(PatientListSerializer):
                     self.check_external_entry(validated_data["srf_id"])
 
             validated_data["created_by"] = self.context["request"].user
-            patient = super().create(validated_data)
+            try :
+                patient = super().create(validated_data)
+            except Exception as e:
+                print('Error in creating patient\n')
+                raise serializers.ValidationError({"non_field_errors": [str(e)]})
             diseases = []
 
             for disease in medical_history:

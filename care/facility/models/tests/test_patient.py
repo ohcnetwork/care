@@ -1,3 +1,6 @@
+from django.utils.timezone import now
+from datetime import timedelta
+from django.core.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from care.facility.models import DiseaseStatusEnum
@@ -23,3 +26,10 @@ class PatientRegistrationTest(TestUtils, APITestCase):
         patient.refresh_from_db()
 
         self.assertEqual(patient.disease_status, DiseaseStatusEnum.RECOVERED.value)
+
+    def test_age_validation(self):
+        patient = self.patient
+        patient.date_of_birth = now().today() + timedelta(days=365)
+        with self.assertRaises(ValidationError):
+            patient.full_clean()
+            patient.save(update_fields=["age","date_of_birth","year_of_birth"])
