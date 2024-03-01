@@ -391,13 +391,12 @@ class AssetViewSet(
             # cache the move camera actions for 3 seconds
             if action["type"] == "relative_move" or action["type"] == "absolute_move":
                 cacheId = f"asset_move: {str(asset.external_id)}"
-                if cache and cache.get(cacheId):
+                if cache.get(cacheId):
                     return Response(
                         {"status": "failure", "message": "Camera is still moving"},
                         status=status.HTTP_403_FORBIDDEN,
                     )
-                if cache:
-                    cache.set(cacheId, True, 3)
+                cache.set(cacheId, True, 3)
 
             result = asset_class.handle_action(
                 action,

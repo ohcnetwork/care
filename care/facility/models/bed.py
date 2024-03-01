@@ -110,11 +110,7 @@ class ConsultationBed(BaseModel, ConsultationRelatedPermissionMixin):
         return permission_mixin.has_write_permission(request)
 
     def has_object_disable_patient_privacy_permission(self, request, **kwargs):
-        if super().has_object_update_permission(request, **kwargs):
-            if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
-                return True
-            return self.consultation.facility_id == request.user.home_facility_id
-        return False
+        return self.has_object_patient_privacy_permission(request, **kwargs)
 
 
 class ConsultationBedAsset(BaseModel):
