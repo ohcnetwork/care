@@ -21,7 +21,8 @@ from django_rest_passwordreset.signals import (
     pre_password_reset,
     reset_password_token_created,
 )
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter, OpenApiResponse, OpenApiSchemaBase
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -49,7 +50,36 @@ class ResetPasswordCheck(GenericAPIView):
 
     permission_classes = ()
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(
+        tags=('users', 'auth'),
+
+
+        examples=[
+            OpenApiExample(
+
+                name='Password Reset Check Example',
+                summary='Password Reset Check',
+                description='Provide your unique token',
+                value={
+                    "token": "your token"
+                },
+                request_only=True
+
+            ),
+
+            OpenApiExample(
+                name='Password Reset Check Response Example',
+                summary='Password Reset Check Response',
+                description='Response for password reset check request',
+                value={
+                    "status": "your status",
+                    "detail": "your detail"
+                },
+                response_only=True,
+
+            ),
+        ]
+    )
     def post(self, request, *args, **kwargs):
         token = request.data.get("token", None)
 
@@ -95,7 +125,25 @@ class ResetPasswordConfirm(GenericAPIView):
     permission_classes = ()
     serializer_class = PasswordTokenSerializer
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(
+        tags=('users', 'auth'),
+
+
+        examples=[
+            OpenApiExample(
+
+                name='Password Reset Confirm',
+                summary='Password Reset Confirm',
+                description='Provide password and token to reset password',
+                value={
+                    "password": "your password",
+                    "token": "your token"
+                },
+                request_only=True
+
+            ),
+        ]
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -174,7 +222,35 @@ class ResetPasswordRequestToken(GenericAPIView):
     permission_classes = ()
     serializer_class = ResetPasswordUserSerializer
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(
+        tags=('users', 'auth'),
+
+
+        examples=[
+            OpenApiExample(
+
+                name='Password Reset Request Example',
+                summary='Password reset',
+                description='Provide your username for password reset',
+                value={
+                    "username": "your username"
+                },
+                request_only=True
+
+            ),
+
+            OpenApiExample(
+                name='Password Reset Response Example',
+                summary='Password Reset Response',
+                description='Response for password reset request',
+                value={
+                    "status": "OK"
+                },
+                response_only=True,
+
+            ),
+        ]
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
