@@ -1,6 +1,6 @@
 from django.utils.timezone import now
+from rest_framework import status
 from datetime import timedelta
-from django.core.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from care.facility.models import DiseaseStatusEnum
@@ -28,8 +28,20 @@ class PatientRegistrationTest(TestUtils, APITestCase):
         self.assertEqual(patient.disease_status, DiseaseStatusEnum.RECOVERED.value)
 
     def test_age_validation(self):
-        patient = self.patient
-        patient.date_of_birth = now().today() + timedelta(days=365)
-        with self.assertRaises(ValidationError):
-            patient.full_clean()
-            patient.save(update_fields=["age","date_of_birth","year_of_birth"])
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility":self.facility.external_id,
+            "blood_group":"AB+",
+            "gender":1,
+            "year_of_birth":2003,
+            "date_of_birth": now().date() + timedelta(days=365 * 1),
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data,format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("date_of_birth", response.data)
