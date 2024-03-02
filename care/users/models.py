@@ -234,7 +234,7 @@ class User(AbstractUser):
     video_connect_link = models.URLField(blank=True, null=True)
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    date_of_birth = models.DateField(null=True, blank=True)
+    date_of_birth = models.DateField()
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True

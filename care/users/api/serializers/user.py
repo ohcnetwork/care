@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils.timezone import now
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import exceptions, serializers
@@ -111,12 +111,12 @@ class UserCreateSerializer(SignUpSerializer):
             "user_permissions",
             "created_by",
         )
-    date_of_birth = serializers.DateField(required=False)
+    date_of_birth = serializers.DateField(required=True)
 
 
     def validate_date_of_birth(self, value):
-        if value and datetime.today().year - value.year <= 0:
-            raise serializers.ValidationError("Enter a valid date of birth.")
+        if value and now().year - value.year < 16:
+            raise serializers.ValidationError("Age must be greater than 15 years")
 
         return value
 
@@ -282,7 +282,7 @@ class UserSerializer(SignUpSerializer):
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
-    date_of_birth = serializers.DateField(required=False)
+    date_of_birth = serializers.DateField(required=True)
 
     class Meta:
         model = User
@@ -333,8 +333,8 @@ class UserSerializer(SignUpSerializer):
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
     def validate_date_of_birth(self, value):
-        if value and datetime.today().year - value.year <= 0:
-            raise serializers.ValidationError("Enter a valid date of birth.")
+        if value and now().year - value.year < 16:
+            raise serializers.ValidationError("Age must be greater than 15 years")
 
         return value
 
@@ -416,6 +416,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "username",
+            "date_of_birth",
             "local_body_object",
             "district_object",
             "state_object",
