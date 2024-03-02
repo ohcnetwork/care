@@ -42,6 +42,14 @@ class ResetPasswordUserSerializer(serializers.Serializer):
     username = serializers.CharField()
 
 
+class ResetPasswordUserResponseSerializer(serializers.Serializer):
+    status = serializers.CharField()
+
+
+class ResetPasswordConfirmResponseSerializer(serializers.Serializer):
+    status = serializers.CharField()
+
+
 class ResetPasswordCheck(GenericAPIView):
     """
     An Api View which provides a method to check if a password reset token is valid
@@ -49,36 +57,6 @@ class ResetPasswordCheck(GenericAPIView):
 
     permission_classes = ()
 
-    @extend_schema(
-        tags=('users', 'auth'),
-
-
-        examples=[
-            OpenApiExample(
-
-                name='Password Reset Check Example',
-                summary='Password Reset Check',
-                description='Provide your unique token',
-                value={
-                    "token": "your token"
-                },
-                request_only=True
-
-            ),
-
-            OpenApiExample(
-                name='Password Reset Check Response Example',
-                summary='Password Reset Check Response',
-                description='Response for password reset check request',
-                value={
-                    "status": "your status",
-                    "detail": "your detail"
-                },
-                response_only=True,
-
-            ),
-        ]
-    )
     def post(self, request, *args, **kwargs):
         token = request.data.get("token", None)
 
@@ -126,8 +104,11 @@ class ResetPasswordConfirm(GenericAPIView):
 
     @extend_schema(
         tags=('users', 'auth'),
-
-
+        parameters=[
+            PasswordTokenSerializer
+        ],
+        request=PasswordTokenSerializer,
+        responses=ResetPasswordConfirmResponseSerializer,
         examples=[
             OpenApiExample(
 
@@ -139,6 +120,16 @@ class ResetPasswordConfirm(GenericAPIView):
                     "token": "your token"
                 },
                 request_only=True
+
+            ),
+            OpenApiExample(
+                name='Password Reset Confirm Example',
+                summary='Password Reset Confirm',
+                description='Response for password confirm request',
+                value={
+                    "status": "OK"
+                },
+                response_only=True,
 
             ),
         ]
@@ -223,8 +214,11 @@ class ResetPasswordRequestToken(GenericAPIView):
 
     @extend_schema(
         tags=('users', 'auth'),
-
-
+        parameters=[
+            ResetPasswordUserSerializer,
+        ],
+        request=ResetPasswordUserSerializer,
+        responses=ResetPasswordUserResponseSerializer,
         examples=[
             OpenApiExample(
 
