@@ -205,11 +205,12 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related(
+        queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
         )
+        facilities = self.paginate_queryset(queryset)
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
-        return Response(facilities.data)
+        return self.get_paginated_response(facilities.data)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
