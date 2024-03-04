@@ -12,8 +12,8 @@ def update_facility_types(apps, schema_editor):
         850: 860,  # General hospitals to District Hospitals
         900: 910,  # Co-operative hospitals to Autonomous healthcare facility
         950: 870,  # Corona Testing Labs to Govt. Labs
-        1000: 3,   # Corona Care Centre to Other
-        8: 870,    # Govt Hospital to Govt Medical College Hospitals
+        1000: 3,  # Corona Care Centre to Other
+        8: 870,  # Govt Hospital to Govt Medical College Hospitals
     }
 
     for old_id, new_id in facilities_to_update.items():
@@ -22,9 +22,9 @@ def update_facility_types(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0414_remove_bed_old_name"),
+        ("facility", "0415_alter_patientmetainfo_head_of_household_and_more"),
     ]
 
     operations = [
-        migrations.RunPython(update_facility_types),
+        migrations.RunPython(update_facility_types, migrations.RunPython.noop),
     ]
