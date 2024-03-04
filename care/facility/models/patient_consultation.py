@@ -287,6 +287,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
             ),
+            models.UniqueConstraint(
+                fields=["patient_no", "facility"],
+                name="unique_patient_no_within_facility",
+            ),
         ]
 
     @staticmethod
