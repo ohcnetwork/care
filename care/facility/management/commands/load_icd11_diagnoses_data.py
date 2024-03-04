@@ -29,7 +29,7 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        print("Loading ICD11 diagnoses data to database...")
+        print("Loading ICD11 diagnoses data to database from icd11.json...")
         try:
             self.data = fetch_icd11_data()
             ICD11Diagnosis.objects.bulk_create(
