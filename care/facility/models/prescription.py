@@ -5,6 +5,9 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
 
+from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import dosage_validator
@@ -79,7 +82,7 @@ class MedibaseMedicine(BaseModel):
         return " - ".join(filter(None, [self.name, self.generic, self.company]))
 
 
-class Prescription(BaseModel):
+class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,
@@ -167,11 +170,14 @@ class Prescription(BaseModel):
     def last_administration(self):
         return self.administrations.order_by("-administered_date").first()
 
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
+
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
 
 
-class MedicineAdministration(BaseModel):
+class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.PROTECT,
@@ -202,6 +208,12 @@ class MedicineAdministration(BaseModel):
             + " - "
             + self.prescription.consultation.patient.name
         )
+
+    def get_related_consultation(self):
+        return self.prescription.consultation
+
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
     def validate(self) -> None:
         if self.prescription.discontinued:

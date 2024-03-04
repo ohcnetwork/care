@@ -179,6 +179,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             )
         # Authorisation Checks End
 
+        # Patient needs to have a bed assigned
+        if not consultation.current_bed:
+            raise ValidationError(
+                {
+                    "bed": "Patient does not have a bed assigned. Please assign a bed first"
+                }
+            )
+
         with transaction.atomic():
             if (
                 validated_data.get("rounds_type")
