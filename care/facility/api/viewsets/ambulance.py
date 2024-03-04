@@ -92,6 +92,12 @@ class AmbulanceViewSet(
         driver.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
 
 @extend_schema_view(create=extend_schema(tags=["ambulance"]))
 class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):

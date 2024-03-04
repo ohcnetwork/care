@@ -23,6 +23,21 @@ class BaseModel(models.Model):
     modified_date = models.DateTimeField(
         auto_now=True, null=True, blank=True, db_index=True
     )
+    created_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="%(class)s_created_by",
+    )
+    updated_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="%(class)s_updated_by",
+    )
+
     deleted = models.BooleanField(default=False, db_index=True)
 
     objects = BaseManager()

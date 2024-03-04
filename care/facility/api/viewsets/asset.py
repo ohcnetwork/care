@@ -120,7 +120,11 @@ class AssetLocationViewSet(
         )
 
     def perform_create(self, serializer):
-        serializer.save(facility=self.get_facility())
+        serializer.save(
+            facility=self.get_facility(),
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -130,6 +134,9 @@ class AssetLocationViewSet(
             raise ValidationError("Cannot delete a Location with associated Assets")
 
         return super().destroy(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
 
 class AssetFilter(filters.FilterSet):
@@ -324,6 +331,12 @@ class AssetViewSet(
             raise exceptions.AuthenticationFailed(
                 "Only District Admin and above can delete assets"
             )
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
