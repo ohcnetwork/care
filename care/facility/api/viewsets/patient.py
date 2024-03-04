@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import Case, OuterRef, Q, Subquery, When
+from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -272,10 +273,11 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
+                if view.action == "retrieve":
+                    q_filters |= Q(consultations__facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
-                queryset = queryset.filter(q_filters)
-
+                queryset = queryset.filter(q_filters).distinct("id")
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -507,6 +509,42 @@ class PatientViewSet(
             shifting_request.comments = f"{shifting_request.comments}\n The shifting request was auto rejected by the system as the patient was moved to {patient.facility.name}"
             shifting_request.save(update_fields=["status", "comments"])
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+
+
+class FacilityDischargedPatientFilterSet(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
+
+@extend_schema_view(tags=["patient"])
+class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
+    serializer_class = PatientListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityDischargedPatientFilterSet
+    queryset = PatientRegistration.objects.select_related(
+        "local_body",
+        "district",
+        "state",
+        "ward",
+        "assigned_to",
+        "facility",
+        "facility__ward",
+        "facility__local_body",
+        "facility__district",
+        "facility__state",
+        "last_consultation",
+        "last_consultation__assigned_to",
+        "last_edited",
+        "created_by",
+    )
+
+    def get_queryset(self) -> QuerySet:
+        qs = super().get_queryset()
+        return qs.filter(
+            Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
+            & Q(consultations__discharge_date__isnull=False)
+        ).distinct()
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
