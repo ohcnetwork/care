@@ -318,6 +318,7 @@ class TestUtils:
             "course_in_facility": "",
             "created_date": mock_equal,
             "modified_date": mock_equal,
+            "patient_no": int(datetime.now().timestamp() * 1000),
         }
 
     @classmethod
