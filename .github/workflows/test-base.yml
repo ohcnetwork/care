@@ -5,6 +5,11 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +30,7 @@ jobs:
         with:
           load: true
           set: |
+              *.platform=${{ matrix.platform }}
               *.cache-from=type=local,src=/tmp/.buildx-cache
               *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
