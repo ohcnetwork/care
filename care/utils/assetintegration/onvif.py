@@ -98,8 +98,9 @@ class OnvifAsset(BaseAssetIntegration):
         action_data = action.get("data", {})
         asset_bed_id = action_data.get("id", None)
 
+        # if action is not relative_move or asset_id not provided then skip boundary checks
         if not asset_bed_id or action_type != self.OnvifActions.RELATIVE_MOVE.value:
-            raise ValidationError({"asset": "Asset id not providede"})
+            return
 
         boundary_preset = AssetBed.objects.get(external_id=asset_bed_id)
 
