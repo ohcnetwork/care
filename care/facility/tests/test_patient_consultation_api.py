@@ -39,7 +39,9 @@ class TestPatientConsultation(TestUtils, APITestCase):
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
+                0
+            ],  # HOME ISOLATION
             "treating_physician": self.doctor.id,
             "create_diagnoses": [
                 {
