@@ -23,12 +23,12 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.admission_consultation_no_bed = cls.create_consultation(
             facility=cls.facility,
             patient=cls.patient,
-            suggestion=PatientConsultation.SUGGESTION_CHOICES[1][0],
+            suggestion=PatientConsultation.SUGGESTION_CHOICES[1][0],  # ADMISSION
         )
         cls.domiciliary_consultation_no_bed = cls.create_consultation(
             facility=cls.facility,
             patient=cls.patient,
-            suggestion=PatientConsultation.SUGGESTION_CHOICES[4][0],
+            suggestion=PatientConsultation.SUGGESTION_CHOICES[4][0],  # DOMICILIARY CARE
         )
         cls.consultation_with_bed = cls.create_consultation(
             facility=cls.facility, patient=cls.patient
