@@ -35,7 +35,7 @@ class Command(BaseCommand):
                 )
                 for medicine in medibase_objects
             ],
-            batch_size=1000,
+            batch_size=5000,
             update_conflicts=True,
             unique_fields=["name"],
             update_fields=[
