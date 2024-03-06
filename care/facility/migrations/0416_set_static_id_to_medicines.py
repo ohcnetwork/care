@@ -8,6 +8,9 @@ def set_static_id(apps, schema_editor):
     MedibaseMedicine = apps.get_model("facility", "MedibaseMedicine")
     Prescription = apps.get_model("facility", "Prescription")
 
+    if MedibaseMedicine.objects.count() == 0:
+        return
+
     with open("data/medibase.json", "r") as f:
         data = json.load(f)
 
