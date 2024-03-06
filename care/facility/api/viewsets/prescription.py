@@ -113,7 +113,12 @@ class ConsultationPrescriptionViewSet(
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
-        serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
+        serializer.save(
+            prescribed_by=self.request.user,
+            consultation=consultation_obj,
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
 
     @extend_schema(tags=["prescriptions"])
     @action(

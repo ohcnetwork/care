@@ -554,7 +554,14 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         return get_object_or_404(facility_qs)
 
     def perform_create(self, serializer):
-        return serializer.save(facility=self.get_facility())
+        return serializer.save(
+            facility=self.get_facility(),
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
 
     def list(self, request, *args, **kwargs):
         """
@@ -779,6 +786,7 @@ class PatientNotesViewSet(
             patient=patient,
             consultation=patient.last_consultation,
             created_by=self.request.user,
+            updated_by=self.request.user,
         )
 
         create_consultation_events(
@@ -831,4 +839,4 @@ class PatientNotesViewSet(
                 {"Note": "Only the user who created the note can edit it"}
             )
 
-        return super().perform_update(serializer)
+        return serializer.save(updated_by=self.request.user)

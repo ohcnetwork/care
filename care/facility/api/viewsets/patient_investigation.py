@@ -297,3 +297,6 @@ class InvestigationValueViewSet(
         ).generate()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_create(self, serializer):
+        serializer.save(updated_by=self.request.user)

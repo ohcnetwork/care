@@ -139,6 +139,12 @@ class ResourceRequestViewSet(
             )
         return super().list(request, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
 
 class ResourceRequestCommentViewSet(
     mixins.CreateModelMixin,
@@ -190,6 +196,3 @@ class ResourceRequestCommentViewSet(
         queryset = get_request_queryset(self.request, ResourceRequest.objects.all())
         queryset = queryset.filter(external_id=self.kwargs.get("resource_external_id"))
         return get_object_or_404(queryset)
-
-    def perform_create(self, serializer):
-        serializer.save(request=self.get_request())

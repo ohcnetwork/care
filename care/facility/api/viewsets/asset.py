@@ -136,7 +136,7 @@ class AssetLocationViewSet(
         return super().destroy(request, *args, **kwargs)
 
     def perform_update(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(updated_by=self.request.user)
 
 
 class AssetFilter(filters.FilterSet):
@@ -336,7 +336,7 @@ class AssetViewSet(
         serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(updated_by=self.request.user)
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
@@ -521,3 +521,6 @@ class AssetServiceViewSet(
                 asset__current_location__facility__id__in=allowed_facilities
             )
         return queryset
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)

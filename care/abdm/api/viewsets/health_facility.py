@@ -105,10 +105,12 @@ class HealthFacilityViewSet(
         return Response({"registered": registered})
 
     def perform_create(self, serializer):
-        instance = serializer.save()
+        instance = serializer.save(
+            created_by=self.request.user, updated_by=self.request.user
+        )
         register_health_facility_as_service.delay(instance.facility.external_id)
 
     def perform_update(self, serializer):
         serializer.validated_data["registered"] = False
-        instance = serializer.save()
+        instance = serializer.save(updated_by=self.request.user)
         register_health_facility_as_service.delay(instance.facility.external_id)

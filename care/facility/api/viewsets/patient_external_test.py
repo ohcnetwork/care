@@ -142,6 +142,9 @@ class PatientExternalTestViewSet(
             )
         return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
     @extend_schema(tags=["external_result"])
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request, *args, **kwargs):

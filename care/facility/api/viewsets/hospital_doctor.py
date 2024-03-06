@@ -47,4 +47,11 @@ class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
         return get_object_or_404(facility_qs)
 
     def perform_create(self, serializer):
-        serializer.save(facility=self.get_facility())
+        serializer.save(
+            facility=self.get_facility(),
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)

@@ -100,6 +100,12 @@ class PatientConsultationViewSet(
         applied_filters |= Q(patient__assigned_to=self.request.user)
         return self.queryset.filter(applied_filters)
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
     @extend_schema(tags=["consultation"])
     @action(detail=True, methods=["POST"])
     def discharge_patient(self, request, *args, **kwargs):

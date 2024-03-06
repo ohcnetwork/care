@@ -87,3 +87,6 @@ class NotificationViewSet(
             message=request.data["message"],
         ).generate()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)

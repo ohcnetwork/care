@@ -44,6 +44,10 @@ class UserAccessMixin:
         kwargs = {}
         if hasattr(model(), "created_by"):
             kwargs["created_by"] = self.request.user
+
+        if hasattr(model(), "updated_by"):
+            kwargs["updated_by"] = self.request.user
+
         serializer.save(**kwargs)
 
 

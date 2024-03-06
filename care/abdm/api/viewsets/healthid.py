@@ -184,6 +184,8 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             txn_id=token["txn_id"],
             access_token=token["access_token"],
             refresh_token=token["refresh_token"],
+            created_by=self.request.user,
+            updated_by=self.request.user,
         )
         abha_object.save()
 
@@ -352,6 +354,8 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 address=data["address"],
                 district=data["dist name"],
                 state=data["state name"],
+                created_by=self.request.user,
+                updated_by=self.request.user,
             )
 
             try:

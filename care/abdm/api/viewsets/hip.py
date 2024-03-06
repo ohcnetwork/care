@@ -68,6 +68,8 @@ class HipViewSet(GenericViewSet):
                     nationality="India",
                     address=patient_data["address"]["line"],
                     pincode=patient_data["address"]["pincode"],
+                    created_by=request.user,
+                    updated_by=request.user,
                 )
 
                 abha_number = AbhaNumber.objects.create(
@@ -85,6 +87,8 @@ class HipViewSet(GenericViewSet):
                     district=patient_data["address"]["district"],
                     state=patient_data["address"]["state"],
                     pincode=patient_data["address"]["pincode"],
+                    created_by=request.user,
+                    updated_by=request.user,
                 )
 
                 try:

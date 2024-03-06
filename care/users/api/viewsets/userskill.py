@@ -49,6 +49,11 @@ class UserSkillViewSet(
         username = self.kwargs["users_username"]
         user = get_object_or_404(get_users(self.request.user).filter(username=username))
         try:
-            serializer.save(user=user)
+            serializer.save(
+                user=user, created_by=self.request.user, updated_by=self.request.user
+            )
         except IntegrityError as e:
             raise ValidationError({"skill": "Already exists"}) from e
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
