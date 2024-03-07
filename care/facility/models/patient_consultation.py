@@ -46,7 +46,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     patient_no = models.CharField(
         max_length=100,
-        default="",
+        default=None,
         null=True,
         blank=True,
         help_text=(
@@ -286,6 +286,11 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 check=~models.Q(suggestion=SuggestionChoices.R)
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
+            ),
+            models.UniqueConstraint(
+                fields=["patient_no", "facility"],
+                name="unique_patient_no_within_facility",
+                condition=models.Q(patient_no__isnull=False),
             ),
         ]
 
