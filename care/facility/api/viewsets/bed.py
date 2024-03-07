@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db.models import OuterRef, Subquery
+from django.db import IntegrityError, transaction
+from django.db.models import Exists, OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
@@ -49,7 +50,7 @@ class BedViewSet(
 ):
     queryset = (
         Bed.objects.all()
-        .select_related("facility", "location")
+        .select_related("facility", "location", "location__facility")
         .order_by("-created_date")
     )
     serializer_class = BedSerializer
@@ -62,6 +63,15 @@ class BedViewSet(
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset
+
+        queryset = queryset.annotate(
+            is_occupied=Exists(
+                ConsultationBed.objects.filter(
+                    bed__id=OuterRef("id"), end_date__isnull=True
+                )
+            )
+        )
+
         if user.is_superuser:
             pass
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -73,6 +83,7 @@ class BedViewSet(
             queryset = queryset.filter(facility__id__in=allowed_facilities)
         return queryset
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -80,15 +91,21 @@ class BedViewSet(
         # Bulk creating n number of beds
         if number_of_beds > 1:
             data = serializer.validated_data.copy()
-            data.pop("name")
+            name = data.pop("name")
             beds = [
                 Bed(
                     **data,
-                    name=f"{serializer.validated_data['name']} {i+1}",
+                    name=f"{name} {i}",
                 )
-                for i in range(number_of_beds)
+                for i in range(1, number_of_beds + 1)
             ]
-            Bed.objects.bulk_create(beds)
+            try:
+                Bed.objects.bulk_create(beds)
+            except IntegrityError:
+                return Response(
+                    {"detail": "Bed with same name already exists in this location."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             return Response(status=status.HTTP_201_CREATED)
 
         self.perform_create(serializer)

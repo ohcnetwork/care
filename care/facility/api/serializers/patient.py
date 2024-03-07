@@ -29,6 +29,7 @@ from care.facility.models import (
 )
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
@@ -55,7 +56,7 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
+    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
 
     class Meta:
         model = PatientMetaInfo
@@ -311,9 +312,8 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
-                patient.meta_info = meta_info_obj
-                patient.save()
+                patient.meta_info = PatientMetaInfo.objects.create(**meta_info)
+                patient.meta_info.save()
 
             if contacted_patients:
                 contacted_patient_objs = [
@@ -360,8 +360,12 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                for key, value in meta_info.items():
-                    setattr(patient.meta_info, key, value)
+                if patient.meta_info is None:
+                   meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                   patient.meta_info = meta_info_obj
+                else:
+                    for key, value in meta_info.items():
+                        setattr(patient.meta_info, key, value)
                 patient.meta_info.save()
 
             if self.partial is not True:  # clear the list and enter details if PUT
@@ -475,9 +479,20 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             return instance
 
 
+class PatientNotesEditSerializer(serializers.ModelSerializer):
+    edited_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientNotesEdit
+        exclude = ("patient_note",)
+
+
 class PatientNotesSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    last_edited_by = serializers.CharField(read_only=True)
+    last_edited_date = serializers.DateTimeField(read_only=True)
     consultation = ExternalIdSerializerField(
         queryset=PatientConsultation.objects.all(),
         required=False,
@@ -503,16 +518,56 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
 
-        return super().create(validated_data)
+        user = self.context["request"].user
+        note = validated_data.get("note")
+        with transaction.atomic():
+            instance = super().create(validated_data)
+            initial_edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_date=instance.modified_date,
+                edited_by=user,
+                note=note,
+            )
+            initial_edit.save()
+
+        return instance
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        note = validated_data.get("note")
+
+        if note == instance.note:
+            return instance
+
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_date=instance.modified_date,
+                edited_by=user,
+                note=note,
+            )
+            edit.save()
+        return instance
 
     class Meta:
         model = PatientNotes
         fields = (
+            "id",
             "note",
             "facility",
             "consultation",
             "created_by_object",
             "user_type",
             "created_date",
+            "modified_date",
+            "last_edited_by",
+            "last_edited_date",
         )
-        read_only_fields = ("created_date",)
+        read_only_fields = (
+            "id",
+            "created_date",
+            "modified_date",
+            "last_edited_by",
+            "last_edited_date",
+        )

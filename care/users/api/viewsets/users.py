@@ -83,7 +83,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
@@ -205,11 +205,12 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related(
+        queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
         )
+        facilities = self.paginate_queryset(queryset)
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
-        return Response(facilities.data)
+        return self.get_paginated_response(facilities.data)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])

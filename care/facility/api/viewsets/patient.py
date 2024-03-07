@@ -5,8 +5,8 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, When
-from django.db.models.query_utils import Q
+from django.db.models import Case, OuterRef, Q, Subquery, When
+from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -17,7 +17,12 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,12 +32,14 @@ from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
+    PatientNotesEditSerializer,
     PatientNotesSerializer,
     PatientSearchSerializer,
     PatientTransferSerializer,
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
+from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -53,6 +60,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
@@ -129,6 +137,10 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_vaccinated_date"
     )
     is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    last_menstruation_start_date = filters.DateFromToRangeFilter(
+        field_name="last_menstruation_start_date"
+    )
+    date_of_delivery = filters.DateFromToRangeFilter(field_name="date_of_delivery")
     is_active = filters.BooleanFilter(field_name="is_active")
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
@@ -261,10 +273,11 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
             elif view.action != "transfer":
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
+                if view.action == "retrieve":
+                    q_filters |= Q(consultations__facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
-                queryset = queryset.filter(q_filters)
-
+                queryset = queryset.filter(q_filters).distinct("id")
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -498,6 +511,42 @@ class PatientViewSet(
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
+class FacilityDischargedPatientFilterSet(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
+
+@extend_schema_view(tags=["patient"])
+class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
+    serializer_class = PatientListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FacilityDischargedPatientFilterSet
+    queryset = PatientRegistration.objects.select_related(
+        "local_body",
+        "district",
+        "state",
+        "ward",
+        "assigned_to",
+        "facility",
+        "facility__ward",
+        "facility__local_body",
+        "facility__district",
+        "facility__state",
+        "last_consultation",
+        "last_consultation__assigned_to",
+        "last_edited",
+        "created_by",
+    )
+
+    def get_queryset(self) -> QuerySet:
+        qs = super().get_queryset()
+        return qs.filter(
+            Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
+            & Q(consultations__discharge_date__isnull=False)
+        ).distinct()
+
+
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
     entry_date = filters.DateFromToRangeFilter(field_name="entry_date")
 
@@ -664,14 +713,57 @@ class PatientNotesFilterSet(filters.FilterSet):
     consultation = filters.CharFilter(field_name="consultation__external_id")
 
 
+class PatientNotesEditViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    GenericViewSet,
+):
+    queryset = PatientNotesEdit.objects.all().order_by("-edited_date")
+    lookup_field = "external_id"
+    serializer_class = PatientNotesEditSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        queryset = self.queryset.filter(
+            patient_note__external_id=self.kwargs.get("notes_external_id")
+        )
+
+        if user.is_superuser:
+            return queryset
+        if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            queryset = queryset.filter(
+                patient_note__patient__facility__state=user.state
+            )
+        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            queryset = queryset.filter(
+                patient_note__patient__facility__district=user.district
+            )
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            q_filters = Q(patient_note__patient__facility__id__in=allowed_facilities)
+            q_filters |= Q(patient_note__patient__last_consultation__assigned_to=user)
+            q_filters |= Q(patient_note__patient__assigned_to=user)
+            q_filters |= Q(patient_note__created_by=user)
+            queryset = queryset.filter(q_filters)
+
+        return queryset
+
+
 class PatientNotesViewSet(
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
 ):
     queryset = (
         PatientNotes.objects.all()
         .select_related("facility", "patient", "created_by")
         .order_by("-created_date")
     )
+    lookup_field = "external_id"
     serializer_class = PatientNotesSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (filters.DjangoFilterBackend,)
@@ -679,10 +771,21 @@ class PatientNotesViewSet(
 
     def get_queryset(self):
         user = self.request.user
+
+        last_edit_subquery = PatientNotesEdit.objects.filter(
+            patient_note=OuterRef("pk")
+        ).order_by("-edited_date")
+
         queryset = self.queryset.filter(
             patient__external_id=self.kwargs.get("patient_external_id")
+        ).annotate(
+            last_edited_by=Subquery(
+                last_edit_subquery.values("edited_by__username")[:1]
+            ),
+            last_edited_date=Subquery(last_edit_subquery.values("edited_date")[:1]),
         )
-        if not user.is_superuser:
+
+        if user.is_superuser:
             return queryset
         if user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             queryset = queryset.filter(patient__facility__state=user.state)
@@ -693,6 +796,7 @@ class PatientNotesViewSet(
             q_filters = Q(patient__facility__id__in=allowed_facilities)
             q_filters |= Q(patient__last_consultation__assigned_to=user)
             q_filters |= Q(patient__assigned_to=user)
+            q_filters |= Q(created_by=user)
             queryset = queryset.filter(q_filters)
 
         return queryset
@@ -705,14 +809,21 @@ class PatientNotesViewSet(
         )
         if not patient.is_active:
             raise ValidationError(
-                {"patient": "Only active patients data can be updated"}
+                {"patient": "Updating patient data is only allowed for active patients"}
             )
 
-        instance = serializer.save(
+        instance: PatientNotes = serializer.save(
             facility=patient.facility,
             patient=patient,
             consultation=patient.last_consultation,
             created_by=self.request.user,
+        )
+
+        create_consultation_events(
+            instance.consultation_id,
+            instance,
+            self.request.user.id,
+            instance.created_date,
         )
 
         message = {
@@ -739,3 +850,23 @@ class PatientNotesViewSet(
         ).generate()
 
         return instance
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        patient = get_object_or_404(
+            get_patient_notes_queryset(self.request.user).filter(
+                external_id=self.kwargs.get("patient_external_id")
+            )
+        )
+
+        if not patient.is_active:
+            raise ValidationError(
+                {"patient": "Updating patient data is only allowed for active patients"}
+            )
+
+        if serializer.instance.created_by != user:
+            raise ValidationError(
+                {"Note": "Only the user who created the note can edit it"}
+            )
+
+        return super().perform_update(serializer)
