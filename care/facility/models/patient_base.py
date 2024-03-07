@@ -11,11 +11,13 @@ def reverse_choices(choices):
         output[choice[0]] = choice[1]
     return output
 
+
 def reverse_choices_class(choices_class):
     output = {}
     for choice in choices_class:
         output[choice.value] = choice.name
     return output
+
 
 CURRENT_HEALTH_CHOICES = [
     (0, "NO DATA"),
@@ -142,23 +144,33 @@ class RouteToFacility(IntegerChoices):
     __empty__ = _("(Unknown)")
 
 
-class BedType(enum.Enum):
-    ISOLATION = 1
-    ICU = 2
-    ICU_WITH_NON_INVASIVE_VENTILATOR = 3
-    ICU_WITH_OXYGEN_SUPPORT = 4
-    ICU_WITH_INVASIVE_VENTILATOR = 5
-    BED_WITH_OXYGEN_SUPPORT = 6
-    REGULAR = 7
+# class BedType(enum.Enum):
+#     ISOLATION = 1
+#     ICU = 2
+#     ICU_WITH_NON_INVASIVE_VENTILATOR = 3
+#     ICU_WITH_OXYGEN_SUPPORT = 4
+#     ICU_WITH_INVASIVE_VENTILATOR = 5
+#     BED_WITH_OXYGEN_SUPPORT = 6
+#     REGULAR = 7
+#
+#
+# BedTypeChoices = [(e.value, e.name) for e in BedType]
 
+class BedTypeChoices(IntegerChoices):
+    ISOLATION = 1, _('Isolation')
+    ICU = 2, _('ICU')
+    ICU_WITH_NON_INVASIVE_VENTILATOR = 3, _('ICU with Non-Invasive Ventilator')
+    ICU_WITH_OXYGEN_SUPPORT = 4, _('ICU with Oxygen Support')
+    ICU_WITH_INVASIVE_VENTILATOR = 5, _('ICU with Invasive Ventilator')
+    BED_WITH_OXYGEN_SUPPORT = 6, _('Bed with Oxygen Support')
+    REGULAR = 7, _('Regular')
 
-BedTypeChoices = [(e.value, e.name) for e in BedType]
 
 REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
+REVERSE_BED_TYPE_CHOICES = reverse_choices_class(BedTypeChoices)
 REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
 REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
 REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)

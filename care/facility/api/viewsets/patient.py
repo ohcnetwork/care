@@ -53,7 +53,7 @@ from care.facility.models import (
     PatientRegistration,
     ShiftingRequest,
 )
-from care.facility.models.base import covert_choice_dict
+from care.facility.models.base import covert_choice_dict, covert_choice_dict_class
 from care.facility.models.bed import AssetBed
 from care.facility.models.icd11_diagnosis import (
     INACTIVE_CONDITION_VERIFICATION_STATUSES,
@@ -78,7 +78,7 @@ from config.authentication import (
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
-REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
+REVERSE_BED_TYPES = covert_choice_dict_class(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 

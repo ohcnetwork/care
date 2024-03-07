@@ -16,10 +16,17 @@ def reverse_choices(choices):
     return output
 
 
-def covert_choice_dict(choices):
+def covert_choice_dict(choices):   # we have same function in choicefilter and inverse_choices.py
     output = {}
     for choice in choices:
         output[choice[1]] = choice[0]
+    return output
+
+
+def covert_choice_dict_class(choices_class):
+    output = {}
+    for choice in choices_class:
+        output[choice.name] = choice.value
     return output
 
 

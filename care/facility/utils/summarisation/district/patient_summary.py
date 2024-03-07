@@ -32,7 +32,7 @@ def district_patient_summary():
             # Get Total Counts
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value, text = bed_type_choice.value, bed_type_choice.name
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }
@@ -60,7 +60,7 @@ def district_patient_summary():
             ).count()
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value, text = bed_type_choice.value, bed_type_choice.name
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }
@@ -78,8 +78,8 @@ def district_patient_summary():
         )
         if (
             DistrictScopedSummary.objects.filter(district_id=district_object.id)
-            .filter(object_filter)
-            .exists()
+                .filter(object_filter)
+                .exists()
         ):
             district_summary_old = DistrictScopedSummary.objects.filter(
                 object_filter

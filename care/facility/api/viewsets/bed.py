@@ -29,9 +29,9 @@ from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices, inverse_choices_class
 
-inverse_bed_type = inverse_choices(BedTypeChoices)
+inverse_bed_type = inverse_choices_class(BedTypeChoices)
 
 
 class BedFilter(filters.FilterSet):

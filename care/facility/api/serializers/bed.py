@@ -37,7 +37,7 @@ from config.serializers import ChoiceField
 class BedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
     name = CharField(max_length=1024, required=True)
-    bed_type = ChoiceField(choices=BedTypeChoices)
+    bed_type = ChoiceField(choices=BedTypeChoices.choices)
 
     location_object = AssetLocationSerializer(source="location", read_only=True)
     is_occupied = BooleanField(default=False, read_only=True)

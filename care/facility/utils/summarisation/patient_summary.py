@@ -26,7 +26,7 @@ def patient_summary():
             # Get Total Counts
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value, text = bed_type_choice.value, bed_type_choice.name
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }
@@ -54,7 +54,7 @@ def patient_summary():
             ).count()
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value, text = bed_type_choice.value, bed_type_choice.name
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }
@@ -73,8 +73,8 @@ def patient_summary():
         )
         if (
             FacilityRelatedSummary.objects.filter(facility_id=i)
-            .filter(object_filter)
-            .exists()
+                .filter(object_filter)
+                .exists()
         ):
             facility = FacilityRelatedSummary.objects.filter(object_filter).get(
                 facility_id=i
