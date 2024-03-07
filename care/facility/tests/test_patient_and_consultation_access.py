@@ -52,6 +52,9 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         )
         cls.patient = cls.create_patient(cls.district, cls.remote_facility)
 
+    def list_patients(self, **kwargs):
+        return self.client.get("/api/v1/patient/", data=kwargs)
+
     def retrieve_patient(self, patient):
         return self.client.get(f"/api/v1/patient/{patient.external_id}/")
 
@@ -90,6 +93,10 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.remote_doctor)
         res = self.retrieve_discharged_patients_of_facility(self.remote_facility)
         self.assertNotContains(res, self.patient.external_id)
+        res = self.list_patients(
+            is_active="true", ordering="-last_consultation__current_bed__bed__name"
+        )
+        self.assertContains(res, self.patient.external_id)
         res = self.retrieve_patient(self.patient)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.retieve_patient_consultations(self.patient)
@@ -114,6 +121,12 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.remote_doctor)
         res = self.discharge(remote_consultation, discharge_date="2024-01-02T00:00:00Z")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res = self.list_patients(is_active="true", ordering="created_date")
+        self.assertNotContains(res, self.patient.external_id)
+        res = self.list_patients(
+            is_active="false", ordering="-last_consultation__current_bed__bed__name"
+        )
+        self.assertContains(res, self.patient.external_id)
 
         # Admit to home facility
         self.client.force_authenticate(user=self.home_doctor)
@@ -129,6 +142,8 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         res = self.retrieve_discharged_patients_of_facility(self.remote_facility)
         self.assertContains(res, self.patient.external_id)
         res = self.retrieve_patient(self.patient)
+        res = self.list_patients(is_active="true", ordering="-category_severity")
+        self.assertContains(res, self.patient.external_id)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.retieve_patient_consultations(self.patient)
         self.assertContains(res, remote_consultation.external_id)
@@ -145,6 +160,8 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         # Discharge the patient from home facility.
         res = self.discharge(home_consultation, discharge_date="2024-01-04T00:00:00Z")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res = self.list_patients(is_active="false", ordering="name")
+        self.assertContains(res, self.patient.external_id)
         res = self.retrieve_discharged_patients_of_facility(self.home_facility)
         self.assertContains(res, self.patient.external_id)
         self.assertContains(res, home_consultation.external_id)

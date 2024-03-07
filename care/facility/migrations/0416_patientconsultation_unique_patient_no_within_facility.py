@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="patientconsultation",
             constraint=models.UniqueConstraint(
+                condition=models.Q(("patient_no__isnull", False)),
                 fields=("patient_no", "facility"),
                 name="unique_patient_no_within_facility",
             ),

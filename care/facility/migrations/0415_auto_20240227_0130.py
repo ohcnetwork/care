@@ -8,6 +8,10 @@ from django.db.models.functions import RowNumber
 def fix_duplicate_patient_numbers(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
 
+    PatientConsultation.objects.filter(patient_no__regex=r"^\s*$").update(
+        patient_no=None
+    )
+
     window = Window(
         expression=RowNumber(),
         partition_by=[F("patient_no"), F("facility")],
@@ -15,7 +19,7 @@ def fix_duplicate_patient_numbers(apps, schema_editor):
     )
 
     consultations = PatientConsultation.objects.annotate(row_number=window).filter(
-        row_number__gt=1
+        row_number__gt=1, patient_no__isnull=False
     )
 
     for consultation in consultations:
