@@ -11,6 +11,11 @@ def reverse_choices(choices):
         output[choice[0]] = choice[1]
     return output
 
+def reverse_choices_class(choices_class):
+    output = {}
+    for choice in choices_class:
+        output[choice.value] = choice.name
+    return output
 
 CURRENT_HEALTH_CHOICES = [
     (0, "NO DATA"),

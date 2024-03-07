@@ -55,12 +55,12 @@ from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices,inverse_choices_class
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 
-inverse_asset_type = inverse_choices(AssetTypeChoices)
-inverse_asset_status = inverse_choices(StatusChoices)
+inverse_asset_type = inverse_choices_class(AssetTypeChoices)
+inverse_asset_status = inverse_choices_class(StatusChoices)
 
 
 @receiver(post_save, sender=Asset)

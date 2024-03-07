@@ -7,6 +7,13 @@ def inverse_choices(choices):
         output[choice[1]] = choice[0]
     return output
 
+def inverse_choices_class(choices_class):
+    output = {}
+    for choice in choices_class:
+        output[choice.name] = choice.value
+    return output
+
+
 
 class CareChoiceFilter(CharFilter):
     def __init__(self, *args, **kwargs):

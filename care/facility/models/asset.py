@@ -4,8 +4,9 @@ import uuid
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import JSONField, Q
+from django.utils.translation import gettext_lazy as _
 
-from care.facility.models import reverse_choices
+from care.facility.models import reverse_choices, reverse_choices_class
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.facility import (
@@ -21,11 +22,17 @@ def get_random_asset_id():
     return str(uuid.uuid4())
 
 
+# class AvailabilityStatus(models.TextChoices):
+#     NOT_MONITORED = "Not Monitored"
+#     OPERATIONAL = "Operational"
+#     DOWN = "Down"
+#     UNDER_MAINTENANCE = "Under Maintenance"
+
 class AvailabilityStatus(models.TextChoices):
-    NOT_MONITORED = "Not Monitored"
-    OPERATIONAL = "Operational"
-    DOWN = "Down"
-    UNDER_MAINTENANCE = "Under Maintenance"
+    NOT_MONITORED = "Not Monitored", _("Not Monitored")
+    OPERATIONAL = "Operational", _("Operational")
+    DOWN = "Down", _("Down")
+    UNDER_MAINTENANCE = "Under Maintenance", _("Under Maintenance")
 
 
 class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
@@ -34,17 +41,21 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts
     """
 
-    class RoomType(enum.Enum):
-        OTHER = 1
-        ICU = 10
-        WARD = 20
-
-    RoomTypeChoices = [(e.value, e.name) for e in RoomType]
+    # class RoomType(enum.Enum):
+    #     OTHER = 1
+    #     ICU = 10
+    #     WARD = 20
+    #
+    # RoomTypeChoices = [(e.value, e.name) for e in RoomType]
+    class RoomTypeChoices(models.IntegerChoices):
+        OTHER = 1, _("OTHER")
+        ICU = 10, _("ICU")
+        WARD = 20, _("WARD")
 
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     location_type = models.IntegerField(
-        choices=RoomTypeChoices, default=RoomType.OTHER.value
+        choices=RoomTypeChoices.choices, default=RoomTypeChoices.OTHER
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
@@ -55,37 +66,47 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     )
 
 
-class AssetType(enum.Enum):
-    INTERNAL = 50
-    EXTERNAL = 100
+# class AssetType(enum.Enum):
+#     INTERNAL = 50
+#     EXTERNAL = 100
+#
+#
+# AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
+class AssetTypeChoices(models.IntegerChoices):
+    INTERNAL = 50, _('Internal')
+    EXTERNAL = 100, _('External')
 
-AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
 AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
 
 
-class Status(enum.Enum):
-    ACTIVE = 50
-    TRANSFER_IN_PROGRESS = 100
+# class Status(enum.Enum):
+#     ACTIVE = 50
+#     TRANSFER_IN_PROGRESS = 100
+#
+#
+# StatusChoices = [(e.value, e.name) for e in Status]
+
+class StatusChoices(models.IntegerChoices):
+    ACTIVE = 50, _('Active')
+    TRANSFER_IN_PROGRESS = 100, _('Transfer in Progress')
 
 
-StatusChoices = [(e.value, e.name) for e in Status]
-
-REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices)
-REVERSE_STATUS = reverse_choices(StatusChoices)
+REVERSE_ASSET_TYPE = reverse_choices_class(AssetTypeChoices)
+REVERSE_STATUS = reverse_choices_class(StatusChoices)
 
 
 class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(
-        choices=AssetTypeChoices, default=AssetType.INTERNAL.value
+        choices=AssetTypeChoices.choices, default=AssetTypeChoices.INTERNAL
     )
     asset_class = models.CharField(
         choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
     )
-    status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
+    status = models.IntegerField(choices=StatusChoices.choices, default=StatusChoices.ACTIVE)
     current_location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )

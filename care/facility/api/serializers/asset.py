@@ -42,7 +42,7 @@ from config.validators import MiddlewareDomainAddressValidator
 class AssetLocationSerializer(ModelSerializer):
     facility = FacilityBareMinimumSerializer(read_only=True)
     id = UUIDField(source="external_id", read_only=True)
-    location_type = ChoiceField(choices=AssetLocation.RoomTypeChoices)
+    location_type = ChoiceField(choices=AssetLocation.RoomTypeChoices.choices)
 
     def validate_middleware_address(self, value):
         value = (value or "").strip()
@@ -142,7 +142,7 @@ class ResolvedMiddlewareField(serializers.JSONField):
 
 class AssetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
-    status = ChoiceField(choices=StatusChoices, read_only=True)
+    status = ChoiceField(choices=StatusChoices.choices, read_only=True)
     asset_type = ChoiceField(choices=AssetTypeChoices)
     location_object = AssetLocationSerializer(source="current_location", read_only=True)
     location = UUIDField(write_only=True, required=True)
