@@ -94,7 +94,7 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         res = self.retrieve_discharged_patients_of_facility(self.remote_facility)
         self.assertNotContains(res, self.patient.external_id)
         res = self.list_patients(
-            active="true", ordering="-last_consultation__current_bed__bed__name"
+            is_active="true", ordering="-last_consultation__current_bed__bed__name"
         )
         self.assertContains(res, self.patient.external_id)
         res = self.retrieve_patient(self.patient)
