@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.base import FacilityBaseModel
 from care.users.models import District
@@ -8,16 +9,28 @@ from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
-AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
+
+# AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
 
 
 class Ambulance(FacilityBaseModel):
+    class AmbulanceTypeChoices(models.IntegerChoices):
+        BASIC = 1, _("Basic")
+        CARDIAC = 2, _("Cardiac")
+        HEARSE = 3, _("Hearse")
+
+    class InsuranceYearChoices(models.IntegerChoices):
+        YEAR_2020 = 2020, _("2020")
+        YEAR_2021 = 2021, _("2021")
+        YEAR_2022 = 2022, _("2022")
+
+    # INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
+
     vehicle_number_regex = RegexValidator(
         regex="^[A-Z]{2}[0-9]{1,2}[A-Z]{0,2}[0-9]{1,4}$",
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
         code="invalid_vehicle_number",
     )
-    INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
     vehicle_number = models.CharField(
         max_length=20,
@@ -62,10 +75,10 @@ class Ambulance(FacilityBaseModel):
     has_suction_machine = models.BooleanField()
     has_defibrillator = models.BooleanField()
 
-    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+    insurance_valid_till_year = models.IntegerField(choices=InsuranceYearChoices.choices)
 
     ambulance_type = models.IntegerField(
-        choices=AMBULANCE_TYPES, blank=False, default=1
+        choices=AmbulanceTypeChoices.choices, blank=False, default=AmbulanceTypeChoices.BASIC
     )
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)
