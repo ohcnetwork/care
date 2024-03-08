@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.utils.event_utils import CustomJSONEncoder
 from care.utils.ulid.models import ULIDField
@@ -9,10 +10,15 @@ from care.utils.ulid.ulid import ULID
 User = get_user_model()
 
 
+# class ChangeType(models.TextChoices):
+#     CREATED = "CREATED"
+#     UPDATED = "UPDATED"
+#     DELETED = "DELETED"
+
 class ChangeType(models.TextChoices):
-    CREATED = "CREATED"
-    UPDATED = "UPDATED"
-    DELETED = "DELETED"
+    CREATED = "CREATED", _("Created")
+    UPDATED = "UPDATED", _("Updated")
+    DELETED = "DELETED", _("Deleted")
 
 
 class EventType(models.Model):
