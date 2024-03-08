@@ -165,7 +165,7 @@ class PatientConsultationViewSet(
         consultation = self.get_object()
         summary_file = (
             FileUpload.objects.filter(
-                file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
+                file_type=FileUpload.FileTypeChoices.DISCHARGE_SUMMARY,
                 associating_id=consultation.external_id,
                 upload_completed=True,
             )
@@ -204,7 +204,7 @@ class PatientConsultationViewSet(
         email = serializer.validated_data["email"]
         summary_file = (
             FileUpload.objects.filter(
-                file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
+                file_type=FileUpload.FileTypeChoices.DISCHARGE_SUMMARY,
                 associating_id=consultation_ext_id,
                 upload_completed=True,
             )

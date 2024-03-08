@@ -84,9 +84,9 @@ class FileUploadViewSet(
             )
         file_type = self.request.GET["file_type"]
         associating_id = self.request.GET["associating_id"]
-        if file_type not in FileUpload.FileType.__members__:
+        if file_type not in FileUpload.FileTypeChoices.__members__:
             raise ValidationError({"file_type": "invalid file type"})
-        file_type = FileUpload.FileType[file_type].value
+        file_type = FileUpload.FileTypeChoices[file_type].value
         associating_internal_id = check_permissions(
             file_type, associating_id, self.request.user, "read"
         )

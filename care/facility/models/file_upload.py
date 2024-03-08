@@ -1,9 +1,9 @@
-import enum
 import time
 from uuid import uuid4
 
 import boto3
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models import FacilityBaseModel
 from care.users.models import User
@@ -21,22 +21,36 @@ class FileUpload(FacilityBaseModel):
 
     # TODO : Periodic tasks that removes files that were never uploaded
 
-    class FileType(enum.Enum):
-        PATIENT = 1
-        CONSULTATION = 2
-        SAMPLE_MANAGEMENT = 3
-        CLAIM = 4
-        DISCHARGE_SUMMARY = 5
-        COMMUNICATION = 6
+    # class FileType(enum.Enum):
+    #     PATIENT = 1
+    #     CONSULTATION = 2
+    #     SAMPLE_MANAGEMENT = 3
+    #     CLAIM = 4
+    #     DISCHARGE_SUMMARY = 5
+    #     COMMUNICATION = 6
+    class FileTypeChoices(models.IntegerChoices):
+        PATIENT = 1, _("Patient")
+        CONSULTATION = 2, _("Consultation")
+        SAMPLE_MANAGEMENT = 3, _("Sample Management")
+        CLAIM = 4, _("Claim")
+        DISCHARGE_SUMMARY = 5, _("Discharge Summary")
+        COMMUNICATION = 6, _("Communication")
 
-    class FileCategory(enum.Enum):
-        UNSPECIFIED = "UNSPECIFIED"
-        XRAY = "XRAY"
-        AUDIO = "AUDIO"
-        IDENTITY_PROOF = "IDENTITY_PROOF"
+    # FileTypeChoices = [(e.value, e.name) for e in FileType]
 
-    FileTypeChoices = [(e.value, e.name) for e in FileType]
-    FileCategoryChoices = [(e.value, e.name) for e in FileCategory]
+    class FileCategoryChoices(models.TextChoices):
+        UNSPECIFIED = "UNSPECIFIED", _("Unspecified")
+        XRAY = "XRAY", _("X-ray")
+        AUDIO = "AUDIO", _("Audio")
+        IDENTITY_PROOF = "IDENTITY_PROOF", _("Identity Proof")
+
+    # class FileCategory(enum.Enum):
+    #     UNSPECIFIED = "UNSPECIFIED"
+    #     XRAY = "XRAY"
+    #     AUDIO = "AUDIO"
+    #     IDENTITY_PROOF = "IDENTITY_PROOF"
+    #
+    # FileCategoryChoices = [(e.value, e.name) for e in FileCategory]
 
     name = models.CharField(max_length=2000)
     internal_name = models.CharField(max_length=2000)
@@ -60,11 +74,11 @@ class FileUpload(FacilityBaseModel):
     )
     archived_datetime = models.DateTimeField(blank=True, null=True)
     file_type = models.IntegerField(
-        choices=FileTypeChoices, default=FileType.PATIENT.value
+        choices=FileTypeChoices, default=FileTypeChoices.PATIENT
     )
     file_category = models.CharField(
-        choices=FileCategoryChoices,
-        default=FileCategory.UNSPECIFIED.value,
+        choices=FileCategoryChoices.choices,
+        default=FileCategoryChoices.UNSPECIFIED,
         max_length=100,
     )
 
@@ -89,7 +103,7 @@ class FileUpload(FacilityBaseModel):
         s3 = boto3.client("s3", **config)
         params = {
             "Bucket": bucket_name,
-            "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            "Key": f"{self.FileTypeChoices(self.file_type).name}/{self.internal_name}",
         }
         if mime_type:
             params["ContentType"] = mime_type
@@ -106,7 +120,7 @@ class FileUpload(FacilityBaseModel):
             "get_object",
             Params={
                 "Bucket": bucket_name,
-                "Key": f"{self.FileType(self.file_type).name}/{self.internal_name}",
+                "Key": f"{self.FileTypeChoices(self.file_type).name}/{self.internal_name}",
             },
             ExpiresIn=duration,  # seconds
         )
@@ -117,7 +131,7 @@ class FileUpload(FacilityBaseModel):
         return s3.put_object(
             Body=file,
             Bucket=bucket_name,
-            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            Key=f"{self.FileTypeChoices(self.file_type).name}/{self.internal_name}",
             **kwargs,
         )
 
@@ -126,7 +140,7 @@ class FileUpload(FacilityBaseModel):
         s3 = boto3.client("s3", **config)
         return s3.get_object(
             Bucket=bucket_name,
-            Key=f"{self.FileType(self.file_type).name}/{self.internal_name}",
+            Key=f"{self.FileTypeChoices(self.file_type).name}/{self.internal_name}",
             **kwargs,
         )
 

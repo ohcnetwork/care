@@ -124,7 +124,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     files = FileUpload.objects.filter(
         associating_id=consultation.id,
-        file_type=FileUpload.FileType.CONSULTATION.value,
+        file_type=FileUpload.FileTypeChoices.CONSULTATION,
         upload_completed=True,
         is_archived=False,
     )
@@ -180,7 +180,7 @@ def generate_and_upload_discharge_summary(consultation: PatientConsultation):
         summary_file = FileUpload(
             name=f"discharge_summary-{consultation.patient.name}-{current_date}.pdf",
             internal_name=f"{uuid4()}.pdf",
-            file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
+            file_type=FileUpload.FileTypeChoices.DISCHARGE_SUMMARY,
             associating_id=consultation.external_id,
         )
 
