@@ -12,7 +12,7 @@ from rest_framework import status
 from care.facility.models import (
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
-    SYMPTOM_CHOICES,
+    SymptomChoices,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -303,7 +303,7 @@ class TestUtils:
         return {
             "patient": cls.patient,
             "facility": cls.facility,
-            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
+            "symptoms": [SymptomChoices.ASYMPTOMATIC, SymptomChoices.FEVER]
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "category": CATEGORY_CHOICES[0][0],

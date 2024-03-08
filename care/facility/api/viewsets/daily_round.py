@@ -26,8 +26,8 @@ class DailyRoundFilterSet(filters.FilterSet):
         values = value.split(",")
         for v in values:
             try:
-                rounds_type.add(DailyRound.RoundsTypeDict[v])
-            except KeyError:
+                rounds_type.add(DailyRound.RoundsTypeChoices(v).value)
+            except ValueError:
                 pass
         return queryset.filter(rounds_type__in=list(rounds_type))
 

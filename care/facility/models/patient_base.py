@@ -27,41 +27,78 @@ CURRENT_HEALTH_CHOICES = [
     (4, "BETTER"),
 ]
 
-SYMPTOM_CHOICES = [
-    (1, "ASYMPTOMATIC"),
-    (2, "FEVER"),
-    (3, "SORE THROAT"),
-    (4, "COUGH"),
-    (5, "BREATHLESSNESS"),
-    (6, "MYALGIA"),
-    (7, "ABDOMINAL DISCOMFORT"),
-    (8, "VOMITING"),
-    (9, "OTHERS"),
-    (11, "SPUTUM"),
-    (12, "NAUSEA"),
-    (13, "CHEST PAIN"),
-    (14, "HEMOPTYSIS"),
-    (15, "NASAL DISCHARGE"),
-    (16, "BODY ACHE"),
-    (17, "DIARRHOEA"),
-    (18, "PAIN"),
-    (19, "PEDAL EDEMA"),
-    (20, "WOUND"),
-    (21, "CONSTIPATION"),
-    (22, "HEAD ACHE"),
-    (23, "BLEEDING"),
-    (24, "DIZZINESS"),
-    (25, "CHILLS"),
-    (26, "GENERAL WEAKNESS"),
-    (27, "IRRITABILITY"),
-    (28, "CONFUSION"),
-    (29, "ABDOMINAL PAIN"),
-    (30, "JOINT PAIN"),
-    (31, "REDNESS OF EYES"),
-    (32, "ANOREXIA"),
-    (33, "NEW LOSS OF TASTE"),
-    (34, "NEW LOSS OF SMELL"),
-]
+
+# SYMPTOM_CHOICES = [
+#     (1, "ASYMPTOMATIC"),
+#     (2, "FEVER"),
+#     (3, "SORE THROAT"),
+#     (4, "COUGH"),
+#     (5, "BREATHLESSNESS"),
+#     (6, "MYALGIA"),
+#     (7, "ABDOMINAL DISCOMFORT"),
+#     (8, "VOMITING"),
+#     (9, "OTHERS"),
+#     (11, "SPUTUM"),
+#     (12, "NAUSEA"),
+#     (13, "CHEST PAIN"),
+#     (14, "HEMOPTYSIS"),
+#     (15, "NASAL DISCHARGE"),
+#     (16, "BODY ACHE"),
+#     (17, "DIARRHOEA"),
+#     (18, "PAIN"),
+#     (19, "PEDAL EDEMA"),
+#     (20, "WOUND"),
+#     (21, "CONSTIPATION"),
+#     (22, "HEAD ACHE"),
+#     (23, "BLEEDING"),
+#     (24, "DIZZINESS"),
+#     (25, "CHILLS"),
+#     (26, "GENERAL WEAKNESS"),
+#     (27, "IRRITABILITY"),
+#     (28, "CONFUSION"),
+#     (29, "ABDOMINAL PAIN"),
+#     (30, "JOINT PAIN"),
+#     (31, "REDNESS OF EYES"),
+#     (32, "ANOREXIA"),
+#     (33, "NEW LOSS OF TASTE"),
+#     (34, "NEW LOSS OF SMELL"),
+# ]
+
+class SymptomChoices(IntegerChoices):
+    ASYMPTOMATIC = 1, _("Asymptomatic")
+    FEVER = 2, _("Fever")
+    SORE_THROAT = 3, _("Sore Throat")
+    COUGH = 4, _("Cough")
+    BREATHLESSNESS = 5, _("Breathlessness")
+    MYALGIA = 6, _("Myalgia")
+    ABDOMINAL_DISCOMFORT = 7, _("Abdominal Discomfort")
+    VOMITING = 8, _("Vomiting")
+    OTHERS = 9, _("Others")
+    SPUTUM = 11, _("Sputum")
+    NAUSEA = 12, _("Nausea")
+    CHEST_PAIN = 13, _("Chest Pain")
+    HEMOPTYSIS = 14, _("Hemoptysis")
+    NASAL_DISCHARGE = 15, _("Nasal Discharge")
+    BODY_ACHE = 16, _("Body Ache")
+    DIARRHOEA = 17, _("Diarrhoea")
+    PAIN = 18, _("Pain")
+    PEDAL_EDEMA = 19, _("Pedal Edema")
+    WOUND = 20, _("Wound")
+    CONSTIPATION = 21, _("Constipation")
+    HEAD_ACHE = 22, _("Head Ache")
+    BLEEDING = 23, _("Bleeding")
+    DIZZINESS = 24, _("Dizziness")
+    CHILLS = 25, _("Chills")
+    GENERAL_WEAKNESS = 26, _("General Weakness")
+    IRRITABILITY = 27, _("Irritability")
+    CONFUSION = 28, _("Confusion")
+    ABDOMINAL_PAIN = 29, _("Abdominal Pain")
+    JOINT_PAIN = 30, _("Joint Pain")
+    REDNESS_OF_EYES = 31, _("Redness of Eyes")
+    ANOREXIA = 32, _("Anorexia")
+    NEW_LOSS_OF_TASTE = 33, _("New Loss of Taste")
+    NEW_LOSS_OF_SMELL = 34, _("New Loss of Smell")
+
 
 DISEASE_CHOICES_MAP = {
     "NO": 1,

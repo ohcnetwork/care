@@ -19,7 +19,7 @@ from care.facility.models.patient_base import (
     NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
-    SYMPTOM_CHOICES,
+    SymptomChoices,
     RouteToFacility,
     SuggestionChoices,
     reverse_choices,
@@ -71,11 +71,11 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         max_length=100, default="", blank=True, null=True
     )  # Deprecated in favour of ConsultationDiagnosis M2M model
     symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES,
-        default=1,
+        choices=SymptomChoices.choices,
+        default=SymptomChoices.ASYMPTOMATIC,
         null=True,
         blank=True,
-        max_length=get_max_length(SYMPTOM_CHOICES, None),
+        max_length=get_max_length(SymptomChoices.choices, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)

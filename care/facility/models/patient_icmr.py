@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
-    SYMPTOM_CHOICES,
+    SymptomChoices,
     PatientConsultation,
     PatientContactDetails,
     PatientRegistration,
@@ -215,7 +215,7 @@ class PatientConsultationICMR(PatientConsultation):
 
     def is_symptomatic(self):
         if (
-            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys()
+            SymptomChoices.ASYMPTOMATIC not in self.symptoms.choices
             or self.symptoms_onset_date is not None
         ):
             return True

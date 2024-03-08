@@ -1,9 +1,8 @@
-import enum
-
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
@@ -12,7 +11,6 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -25,103 +23,171 @@ from care.facility.models.json_schema.daily_round import (
     PAIN_SCALE_ENHANCED,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SymptomChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class DailyRound(PatientBaseModel):
-    class RoundsType(enum.Enum):
-        NORMAL = 0
-        VENTILATOR = 100
-        ICU = 200
-        AUTOMATED = 300
-        TELEMEDICINE = 400
+    # class RoundsType(enum.Enum):
+    #     NORMAL = 0
+    #     VENTILATOR = 100
+    #     ICU = 200
+    #     AUTOMATED = 300
+    #     TELEMEDICINE = 400
+    #
+    # RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
+    # RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
+    #
+    # class ConsciousnessType(enum.Enum):
+    #     UNKNOWN = 0
+    #     ALERT = 5
+    #     RESPONDS_TO_VOICE = 10
+    #     RESPONDS_TO_PAIN = 15
+    #     UNRESPONSIVE = 20
+    #     AGITATED_OR_CONFUSED = 25
+    #     ONSET_OF_AGITATION_AND_CONFUSION = 30
+    #
+    # ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
+    #
+    # class PupilReactionType(enum.Enum):
+    #     UNKNOWN = 0
+    #     BRISK = 5
+    #     SLUGGISH = 10
+    #     FIXED = 15
+    #     CANNOT_BE_ASSESSED = 20
+    #
+    # PupilReactionChoice = [(e.value, e.name) for e in PupilReactionType]
+    #
+    # class LimbResponseType(enum.Enum):
+    #     UNKNOWN = 0
+    #     STRONG = 5
+    #     MODERATE = 10
+    #     WEAK = 15
+    #     FLEXION = 20
+    #     EXTENSION = 25
+    #     NONE = 30
+    #
+    # LimbResponseChoice = [(e.value, e.name) for e in LimbResponseType]
+    #
+    # class RythmnType(enum.Enum):
+    #     UNKNOWN = 0
+    #     REGULAR = 5
+    #     IRREGULAR = 10
+    #
+    # RythmnChoice = [(e.value, e.name) for e in RythmnType]
+    #
+    # class VentilatorInterfaceType(enum.Enum):
+    #     UNKNOWN = 0
+    #     INVASIVE = 5
+    #     NON_INVASIVE = 10
+    #     OXYGEN_SUPPORT = 15
+    #
+    # VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
+    #
+    # class VentilatorModeType(enum.Enum):
+    #     UNKNOWN = 0
+    #     VCV = 5
+    #     PCV = 10
+    #     PRVC = 15
+    #     APRV = 20
+    #     VC_SIMV = 25
+    #     PC_SIMV = 30
+    #     PRVC_SIMV = 40
+    #     ASV = 45
+    #     PSV = 50
+    #
+    # VentilatorModeChoice = [(e.value, e.name) for e in VentilatorModeType]
+    #
+    # class VentilatorOxygenModalityType(enum.Enum):
+    #     UNKNOWN = 0
+    #     NASAL_PRONGS = 5
+    #     SIMPLE_FACE_MASK = 10
+    #     NON_REBREATHING_MASK = 15
+    #     HIGH_FLOW_NASAL_CANNULA = 20
+    #
+    # VentilatorOxygenModalityChoice = [
+    #     (e.value, e.name) for e in VentilatorOxygenModalityType
+    # ]
+    #
+    # class InsulinIntakeFrequencyType(enum.Enum):
+    #     UNKNOWN = 0
+    #     OD = 5
+    #     BD = 10
+    #     TD = 15
+    #
+    # InsulinIntakeFrequencyChoice = [
+    #     (e.value, e.name) for e in InsulinIntakeFrequencyType
+    # ]
 
-    RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
-    RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
+    class RoundsTypeChoices(models.IntegerChoices):
+        NORMAL = 0, _('Normal')
+        VENTILATOR = 100, _('Ventilator')
+        ICU = 200, _('ICU')
+        AUTOMATED = 300, _('Automated')
+        TELEMEDICINE = 400, _('Telemedicine')
 
-    class ConsciousnessType(enum.Enum):
-        UNKNOWN = 0
-        ALERT = 5
-        RESPONDS_TO_VOICE = 10
-        RESPONDS_TO_PAIN = 15
-        UNRESPONSIVE = 20
-        AGITATED_OR_CONFUSED = 25
-        ONSET_OF_AGITATION_AND_CONFUSION = 30
+    class ConsciousnessChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        ALERT = 5, _('Alert')
+        RESPONDS_TO_VOICE = 10, _('Responds to Voice')
+        RESPONDS_TO_PAIN = 15, _('Responds to Pain')
+        UNRESPONSIVE = 20, _('Unresponsive')
+        AGITATED_OR_CONFUSED = 25, _('Agitated or Confused')
+        ONSET_OF_AGITATION_AND_CONFUSION = 30, _('Onset of Agitation and Confusion')
 
-    ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
+    class PupilReactionChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        BRISK = 5, _('Brisk')
+        SLUGGISH = 10, _('Sluggish')
+        FIXED = 15, _('Fixed')
+        CANNOT_BE_ASSESSED = 20, _('Cannot be Assessed')
 
-    class PupilReactionType(enum.Enum):
-        UNKNOWN = 0
-        BRISK = 5
-        SLUGGISH = 10
-        FIXED = 15
-        CANNOT_BE_ASSESSED = 20
+    class LimbResponseChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        STRONG = 5, _('Strong')
+        MODERATE = 10, _('Moderate')
+        WEAK = 15, _('Weak')
+        FLEXION = 20, _('Flexion')
+        EXTENSION = 25, _('Extension')
+        NONE = 30, _('None')
 
-    PupilReactionChoice = [(e.value, e.name) for e in PupilReactionType]
+    class RhythmTypeChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        REGULAR = 5, _('Regular')
+        IRREGULAR = 10, _('Irregular')
 
-    class LimbResponseType(enum.Enum):
-        UNKNOWN = 0
-        STRONG = 5
-        MODERATE = 10
-        WEAK = 15
-        FLEXION = 20
-        EXTENSION = 25
-        NONE = 30
+    class VentilatorInterfaceChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        INVASIVE = 5, _('Invasive')
+        NON_INVASIVE = 10, _('Non-Invasive')
+        OXYGEN_SUPPORT = 15, _('Oxygen Support')
 
-    LimbResponseChoice = [(e.value, e.name) for e in LimbResponseType]
+    class VentilatorModeChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        VCV = 5, _('VCV')
+        PCV = 10, _('PCV')
+        PRVC = 15, _('PRVC')
+        APRV = 20, _('APRV')
+        VC_SIMV = 25, _('VC SIMV')
+        PC_SIMV = 30, _('PC SIMV')
+        PRVC_SIMV = 40, _('PRVC SIMV')
+        ASV = 45, _('ASV')
+        PSV = 50, _('PSV')
 
-    class RythmnType(enum.Enum):
-        UNKNOWN = 0
-        REGULAR = 5
-        IRREGULAR = 10
+    class VentilatorOxygenModalityChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        NASAL_PRONGS = 5, _('Nasal Prongs')
+        SIMPLE_FACE_MASK = 10, _('Simple Face Mask')
+        NON_REBREATHING_MASK = 15, _('Non-Rebreathing Mask')
+        HIGH_FLOW_NASAL_CANNULA = 20, _('High Flow Nasal Cannula')
 
-    RythmnChoice = [(e.value, e.name) for e in RythmnType]
-
-    class VentilatorInterfaceType(enum.Enum):
-        UNKNOWN = 0
-        INVASIVE = 5
-        NON_INVASIVE = 10
-        OXYGEN_SUPPORT = 15
-
-    VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
-
-    class VentilatorModeType(enum.Enum):
-        UNKNOWN = 0
-        VCV = 5
-        PCV = 10
-        PRVC = 15
-        APRV = 20
-        VC_SIMV = 25
-        PC_SIMV = 30
-        PRVC_SIMV = 40
-        ASV = 45
-        PSV = 50
-
-    VentilatorModeChoice = [(e.value, e.name) for e in VentilatorModeType]
-
-    class VentilatorOxygenModalityType(enum.Enum):
-        UNKNOWN = 0
-        NASAL_PRONGS = 5
-        SIMPLE_FACE_MASK = 10
-        NON_REBREATHING_MASK = 15
-        HIGH_FLOW_NASAL_CANNULA = 20
-
-    VentilatorOxygenModalityChoice = [
-        (e.value, e.name) for e in VentilatorOxygenModalityType
-    ]
-
-    class InsulinIntakeFrequencyType(enum.Enum):
-        UNKNOWN = 0
-        OD = 5
-        BD = 10
-        TD = 15
-
-    InsulinIntakeFrequencyChoice = [
-        (e.value, e.name) for e in InsulinIntakeFrequencyType
-    ]
+    class InsulinIntakeFrequencyChoices(models.IntegerChoices):
+        UNKNOWN = 0, _('Unknown')
+        OD = 5, _('OD')
+        BD = 10, _('BD')
+        TD = 15, _('TD')
 
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -142,11 +208,11 @@ class DailyRound(PatientBaseModel):
     temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES,
+        choices=SymptomChoices.choices,
         default=1,
         null=True,
         blank=True,
-        max_length=get_max_length(SYMPTOM_CHOICES, None),
+        max_length=get_max_length(SymptomChoices.choices, None),
     )
     other_symptoms = models.TextField(default="", blank=True)
     deprecated_covid_category = models.CharField(
@@ -185,13 +251,13 @@ class DailyRound(PatientBaseModel):
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(
-        choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
+        choices=RoundsTypeChoices.choices, default=RoundsTypeChoices.NORMAL
     )
 
     # Critical Care Attributes
 
     consciousness_level = models.IntegerField(
-        choices=ConsciousnessChoice, default=ConsciousnessType.UNKNOWN.value
+        choices=ConsciousnessChoices.choices, default=ConsciousnessChoices.UNKNOWN
     )
     consciousness_level_detail = models.TextField(default=None, null=True, blank=True)
 
@@ -205,7 +271,7 @@ class DailyRound(PatientBaseModel):
     )
     left_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     left_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoices.choices, default=PupilReactionChoices.UNKNOWN
     )
     left_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -218,7 +284,7 @@ class DailyRound(PatientBaseModel):
     )
     right_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     right_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoices.choices, default=PupilReactionChoices.UNKNOWN
     )
     right_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -244,16 +310,16 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(3), MaxValueValidator(15)],
     )
     limb_response_upper_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoices.choices, default=LimbResponseChoices.UNKNOWN
     )
     limb_response_upper_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoices.choices, default=LimbResponseChoices.UNKNOWN
     )
     limb_response_lower_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoices.choices, default=LimbResponseChoices.UNKNOWN
     )
     limb_response_lower_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoices.choices, default=LimbResponseChoices.UNKNOWN
     )
     bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
     pulse = models.IntegerField(
@@ -266,14 +332,14 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(150)],
     )
-    rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
+    rhythm = models.IntegerField(choices=RhythmTypeChoices.choices, default=RhythmTypeChoices.UNKNOWN)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
-        choices=VentilatorInterfaceChoice,
-        default=VentilatorInterfaceType.UNKNOWN.value,
+        choices=VentilatorInterfaceChoices.choices,
+        default=VentilatorInterfaceChoices.UNKNOWN,
     )
     ventilator_mode = models.IntegerField(
-        choices=VentilatorModeChoice, default=VentilatorModeType.UNKNOWN.value
+        choices=VentilatorModeChoices.choices, default=VentilatorModeChoices.UNKNOWN
     )
     ventilator_peep = models.DecimalField(
         decimal_places=2,
@@ -309,8 +375,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
     ventilator_oxygen_modality = models.IntegerField(
-        choices=VentilatorOxygenModalityChoice,
-        default=VentilatorOxygenModalityType.UNKNOWN.value,
+        choices=VentilatorOxygenModalityChoices.choices,
+        default=VentilatorOxygenModalityChoices.UNKNOWN,
     )
     ventilator_oxygen_modality_oxygen_rate = models.IntegerField(
         default=None,
@@ -416,8 +482,8 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     insulin_intake_frequency = models.IntegerField(
-        choices=InsulinIntakeFrequencyChoice,
-        default=InsulinIntakeFrequencyType.UNKNOWN.value,
+        choices=InsulinIntakeFrequencyChoices.choices,
+        default=InsulinIntakeFrequencyChoices.UNKNOWN,
     )
     infusions = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(INFUSIONS)]

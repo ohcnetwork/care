@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SYMPTOM_CHOICES
+from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SymptomChoices
 from care.facility.models.patient_icmr import (
     PatientConsultationICMR,
     PatientIcmr,
@@ -124,7 +124,7 @@ class ICMRExposureHistorySerializer(serializers.ModelSerializer):
 
 class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     date_of_onset_of_symptoms = serializers.DateField()
-    symptoms = serializers.ListSerializer(child=ChoiceField(choices=SYMPTOM_CHOICES))
+    symptoms = serializers.ListSerializer(child=serializers.ChoiceField(choices=SymptomChoices.choices))
     hospitalization_date = serializers.DateField()
     hospital_phone_number = serializers.CharField(
         source="consultation.facility.phone_number"

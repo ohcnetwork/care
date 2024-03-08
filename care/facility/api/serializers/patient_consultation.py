@@ -34,7 +34,7 @@ from care.facility.models.icd11_diagnosis import (
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    SYMPTOM_CHOICES,
+    SymptomChoices,
     NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
@@ -62,7 +62,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="suggestion",
     )
 
-    symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
+    symptoms = serializers.MultipleChoiceField(choices=SymptomChoices.choices)
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )

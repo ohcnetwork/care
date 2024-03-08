@@ -20,7 +20,7 @@ from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     CURRENT_HEALTH_CHOICES,
-    SYMPTOM_CHOICES,
+    SymptomChoices,
     SuggestionChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -33,7 +33,7 @@ from config.serializers import ChoiceField
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     additional_symptoms = serializers.MultipleChoiceField(
-        choices=SYMPTOM_CHOICES, required=False
+        choices=SymptomChoices.choices, required=False
     )
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
@@ -50,43 +50,43 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoices.choices, required=True)
 
     # Critical Care Components
 
     consciousness_level = ChoiceField(
-        choices=DailyRound.ConsciousnessChoice, required=False
+        choices=DailyRound.ConsciousnessChoices.choices, required=False
     )
     left_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionChoices.choices, required=False
     )
     right_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionChoices.choices, required=False
     )
     limb_response_upper_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoices.choices, required=False
     )
     limb_response_upper_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoices.choices, required=False
     )
     limb_response_lower_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoices.choices, required=False
     )
     limb_response_lower_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseChoices.choices, required=False
     )
-    rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
+    rhythm = ChoiceField(choices=DailyRound.RhythmTypeChoices, required=False)
     ventilator_interface = ChoiceField(
-        choices=DailyRound.VentilatorInterfaceChoice, required=False
+        choices=DailyRound.VentilatorInterfaceChoices.choices, required=False
     )
     ventilator_mode = ChoiceField(
-        choices=DailyRound.VentilatorModeChoice, required=False
+        choices=DailyRound.VentilatorModeChoices.choices, required=False
     )
     ventilator_oxygen_modality = ChoiceField(
-        choices=DailyRound.VentilatorOxygenModalityChoice, required=False
+        choices=DailyRound.VentilatorOxygenModalityChoices.choices, required=False
     )
     insulin_intake_frequency = ChoiceField(
-        choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
+        choices=DailyRound.InsulinIntakeFrequencyChoices.choices, required=False
     )
 
     clone_last = serializers.BooleanField(

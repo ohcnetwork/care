@@ -80,7 +80,7 @@ from config.authentication import (
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict_class(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
-VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
+VENTILATOR_CHOICES = covert_choice_dict_class(DailyRound.VentilatorInterfaceChoices)
 
 
 class PatientFilterSet(filters.FilterSet):
