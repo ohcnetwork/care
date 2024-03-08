@@ -1,7 +1,7 @@
 from django.db import models
 
 from care.facility.models import (
-    FACILITY_TYPES,
+    FacilityTypes,
     FacilityBaseModel,
     pretty_boolean,
     reverse_choices,
@@ -56,7 +56,7 @@ class ShiftingRequest(FacilityBaseModel):
         related_name="shifting_approving_facility",
     )
     assigned_facility_type = models.IntegerField(
-        choices=FACILITY_TYPES, default=None, null=True, blank=True
+        choices=FacilityTypes, default=None, null=True, blank=True
     )
     assigned_facility = models.ForeignKey(
         "Facility",

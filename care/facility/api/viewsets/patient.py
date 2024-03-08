@@ -44,7 +44,7 @@ from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
-    FACILITY_TYPES,
+    FacilityTypes,
     BedTypeChoices,
     DailyRound,
     Facility,
@@ -77,7 +77,7 @@ from config.authentication import (
     MiddlewareAuthentication,
 )
 
-REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
+REVERSE_FACILITY_TYPES = covert_choice_dict_class(FacilityTypes)
 REVERSE_BED_TYPES = covert_choice_dict_class(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 VENTILATOR_CHOICES = covert_choice_dict_class(DailyRound.VentilatorInterfaceChoices)

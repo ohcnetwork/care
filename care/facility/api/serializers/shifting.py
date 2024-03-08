@@ -13,7 +13,7 @@ from care.facility.api.serializers.patient import (
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
     CATEGORY_CHOICES,
-    FACILITY_TYPES,
+    FacilityTypes,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
     Facility,
@@ -208,7 +208,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     )
 
     assigned_facility_type = ChoiceField(
-        choices=FACILITY_TYPES, required=False, allow_null=True
+        choices=FacilityTypes.choices, required=False, allow_null=True
     )
     preferred_vehicle_choice = ChoiceField(
         choices=VEHICLE_CHOICES, required=False, allow_null=True

@@ -2,9 +2,9 @@ import boto3
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
+from care.facility.models import FacilityTypes, Facility, FacilityLocalGovtBody
 from care.facility.models.bed import Bed
-from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.facility import FeatureChoices
 from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
@@ -47,7 +47,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.MultipleChoiceField(choices=FeatureChoices.choices)
     patient_count = serializers.SerializerMethodField()
     bed_count = serializers.SerializerMethodField()
 
@@ -88,14 +88,14 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
 class FacilitySerializer(FacilityBasicInfoSerializer):
     """Serializer for facility.models.Facility."""
 
-    facility_type = ChoiceField(choices=FACILITY_TYPES)
+    facility_type = ChoiceField(choices=FacilityTypes.choices)
     # A valid location => {
     #     "latitude": 49.8782482189424,
     #     "longitude": 24.452545489
     # }
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.MultipleChoiceField(choices=FeatureChoices.choices)
     bed_count = serializers.SerializerMethodField()
 
     class Meta:

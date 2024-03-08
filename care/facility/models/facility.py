@@ -2,11 +2,12 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models import FacilityBaseModel, reverse_choices_class
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
@@ -16,112 +17,194 @@ from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
+
 # Facility Model Start
-BASE_ROOM_TYPES = [
-    (1, "General Bed"),
-    (10, "ICU"),
-    (20, "Ventilator"),
-    (30, "Covid Beds"),
-    (100, "Covid Ventilators"),
-    (110, "Covid ICU"),
-    (120, "Covid Oxygen beds"),
-    (150, "Oxygen beds"),
-]
+# BASE_ROOM_TYPES = [
+#     (1, "General Bed"),
+#     (10, "ICU"),
+#     (20, "Ventilator"),
+#     (30, "Covid Beds"),
+#     (100, "Covid Ventilators"),
+#     (110, "Covid ICU"),
+#     (120, "Covid Oxygen beds"),
+#     (150, "Oxygen beds"),
+# ]
+#
+# ROOM_TYPES = [
+#     (0, "Total"),
+#     (2, "Hostel"),
+#     (3, "Single Room with Attached Bathroom"),
+#     (40, "KASP Beds"),
+#     (50, "KASP ICU beds"),
+#     (60, "KASP Oxygen beds"),
+#     (70, "KASP Ventilator beds"),
+# ]
+#
+# FEATURE_CHOICES = [
+#     (1, "CT Scan Facility"),
+#     (2, "Maternity Care"),
+#     (3, "X-Ray facility"),
+#     (4, "Neonatal care"),
+#     (5, "Operation theater"),
+#     (6, "Blood Bank"),
+# ]
+class BaseRoomTypes(models.IntegerChoices):
+    GENERAL_BED = 1, _("General Bed")
+    ICU = 10, _("ICU")
+    VENTILATOR = 20, _("Ventilator")
+    COVID_BEDS = 30, _("Covid Beds")
+    COVID_VENTILATORS = 100, _("Covid Ventilators")
+    COVID_ICU = 110, _("Covid ICU")
+    COVID_OXYGEN_BEDS = 120, _("Covid Oxygen beds")
+    OXYGEN_BEDS = 150, _("Oxygen beds")
 
-ROOM_TYPES = [
-    (0, "Total"),
-    (2, "Hostel"),
-    (3, "Single Room with Attached Bathroom"),
-    (40, "KASP Beds"),
-    (50, "KASP ICU beds"),
-    (60, "KASP Oxygen beds"),
-    (70, "KASP Ventilator beds"),
-]
 
-FEATURE_CHOICES = [
-    (1, "CT Scan Facility"),
-    (2, "Maternity Care"),
-    (3, "X-Ray facility"),
-    (4, "Neonatal care"),
-    (5, "Operation theater"),
-    (6, "Blood Bank"),
-]
+class RoomTypes(BaseRoomTypes):
+    TOTAL = 0, _("Total")
+    HOSTEL = 2, _("Hostel")
+    SINGLE_ROOM_WITH_ATTACHED_BATHROOM = 3, _("Single Room with Attached Bathroom")
+    KASP_BEDS = 40, _("KASP Beds")
+    KASP_ICU_BEDS = 50, _("KASP ICU beds")
+    KASP_OXYGEN_BEDS = 60, _("KASP Oxygen beds")
+    KASP_VENTILATOR_BEDS = 70, _("KASP Ventilator beds")
 
-ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
-REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+class FeatureChoices(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, _("CT Scan Facility")
+    MATERNITY_CARE = 2, _("Maternity Care")
+    X_RAY_FACILITY = 3, _("X-Ray facility")
+    NEONATAL_CARE = 4, _("Neonatal care")
+    OPERATION_THEATER = 5, _("Operation theater")
+    BLOOD_BANK = 6, _("Blood Bank")
 
-FACILITY_TYPES = [
-    (1, "Educational Inst"),
-    (2, "Private Hospital"),
-    (3, "Other"),
-    (4, "Hostel"),
-    (5, "Hotel"),
-    (6, "Lodge"),
-    (7, "TeleMedicine"),
+
+REVERSE_ROOM_TYPES = reverse_choices_class(RoomTypes)
+
+
+# FACILITY_TYPES = [
+#     (1, "Educational Inst"),
+#     (2, "Private Hospital"),
+#     (3, "Other"),
+#     (4, "Hostel"),
+#     (5, "Hotel"),
+#     (6, "Lodge"),
+#     (7, "TeleMedicine"),
+#     # (8, "Govt Hospital"), # Change from "Govt Hospital" to "Govt Medical College Hospitals"
+#     (9, "Govt Labs"),
+#     (10, "Private Labs"),
+#     # Use 8xx for Govt owned hospitals and health centres
+#     (800, "Primary Health Centres"),
+#     # (801, "24x7 Public Health Centres"), # Change from "24x7 Public Health Centres" to "Primary Health Centres"
+#     (802, "Family Health Centres"),
+#     (803, "Community Health Centres"),
+#     # (820, "Urban Primary Health Center"),   # Change from "Urban Primary Health Center" to "Primary Health Centres"
+#     (830, "Taluk Hospitals"),
+#     # (831, "Taluk Headquarters Hospitals"),     # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
+#     (840, "Women and Child Health Centres"),
+#     # (850, "General hospitals"),  # Change from "General hospitals" to "District Hospitals"
+#     (860, "District Hospitals"),
+#     (870, "Govt Medical College Hospitals"),
+#     (900, "Co-operative hospitals"),
+#     (910, "Autonomous healthcare facility"),
+#     # Use 9xx for Labs
+#     # (950, "Corona Testing Labs"),    # Change from "Corona Testing Labs" to "Govt Labs"
+#     # Use 10xx for Corona Care Center
+#     # (1000, "Corona Care Centre"),   # Change from "Corona Care Centre" to "Other"
+#     (1010, "COVID-19 Domiciliary Care Center"),
+#     # Use 11xx for First Line Treatment Centre
+#     (1100, "First Line Treatment Centre"),
+#     # Use 12xx for Second Line Treatment Center
+#     (1200, "Second Line Treatment Center"),
+#     # Use 13xx for Shifting Centers
+#     (1300, "Shifting Centre"),
+#     # Use 14xx for Covid Management Centers.
+#     (1400, "Covid Management Center"),
+#     # Use 15xx for Resource Management Centers.
+#     (1500, "Request Approving Center"),
+#     (1510, "Request Fulfilment Center"),
+#     # Use 16xx for War Rooms.
+#     (1600, "District War Room"),
+# ]
+
+class FacilityTypes(models.IntegerChoices):
+    EDUCATIONAL_INST = 1, _("Educational Inst")
+    PRIVATE_HOSPITAL = 2, _("Private Hospital")
+    OTHER = 3, _("Other")
+    HOSTEL = 4, _("Hostel")
+    HOTEL = 5, _("Hotel")
+    LODGE = 6, _("Lodge")
+    TELEMEDICINE = 7, _("TeleMedicine")
     # (8, "Govt Hospital"), # Change from "Govt Hospital" to "Govt Medical College Hospitals"
-    (9, "Govt Labs"),
-    (10, "Private Labs"),
-    # Use 8xx for Govt owned hospitals and health centres
-    (800, "Primary Health Centres"),
+    GOVT_LABS = 9, _("Govt Labs")
+    PRIVATE_LABS = 10, _("Private Labs")
+    #     # Use 8xx for Govt owned hospitals and health centres
+    PRIMARY_HEALTH_CENTRES = 800, _("Primary Health Centres")
     # (801, "24x7 Public Health Centres"), # Change from "24x7 Public Health Centres" to "Primary Health Centres"
-    (802, "Family Health Centres"),
-    (803, "Community Health Centres"),
+    FAMILY_HEALTH_CENTRES = 802, _("Family Health Centres")
+    COMMUNITY_HEALTH_CENTRES = 803, _("Community Health Centres")
     # (820, "Urban Primary Health Center"),   # Change from "Urban Primary Health Center" to "Primary Health Centres"
-    (830, "Taluk Hospitals"),
+    TALUK_HOSPITALS = 830, _("Taluk Hospitals")
     # (831, "Taluk Headquarters Hospitals"),     # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
-    (840, "Women and Child Health Centres"),
+    WOMEN_AND_CHILD_HEALTH_CENTRES = 840, _("Women and Child Health Centres")
     # (850, "General hospitals"),  # Change from "General hospitals" to "District Hospitals"
-    (860, "District Hospitals"),
-    (870, "Govt Medical College Hospitals"),
-    (900, "Co-operative hospitals"),
-    (910, "Autonomous healthcare facility"),
+    DISTRICT_HOSPITALS = 860, _("District Hospitals")
+    GOVT_MEDICAL_COLLEGE_HOSPITALS = 870, _("Govt Medical College Hospitals")
+    COOPERATIVE_HOSPITALS = 900, _("Co-operative hospitals")
+    AUTONOMOUS_HEALTHCARE_FACILITY = 910, _("Autonomous healthcare facility")
     # Use 9xx for Labs
     # (950, "Corona Testing Labs"),    # Change from "Corona Testing Labs" to "Govt Labs"
     # Use 10xx for Corona Care Center
     # (1000, "Corona Care Centre"),   # Change from "Corona Care Centre" to "Other"
-    (1010, "COVID-19 Domiciliary Care Center"),
+    COVID19_DOMICILIARY_CARE_CENTER = 1010, _("COVID-19 Domiciliary Care Center")
     # Use 11xx for First Line Treatment Centre
-    (1100, "First Line Treatment Centre"),
+    FIRST_LINE_TREATMENT_CENTRE = 1100, _("First Line Treatment Centre")
     # Use 12xx for Second Line Treatment Center
-    (1200, "Second Line Treatment Center"),
+    SECOND_LINE_TREATMENT_CENTER = 1200, _("Second Line Treatment Center")
     # Use 13xx for Shifting Centers
-    (1300, "Shifting Centre"),
+    SHIFTING_CENTER = 1300, _("Shifting Centre")
     # Use 14xx for Covid Management Centers.
-    (1400, "Covid Management Center"),
+    COVID_MANAGEMENT_CENTER = 1400, _("Covid Management Center")
     # Use 15xx for Resource Management Centers.
-    (1500, "Request Approving Center"),
-    (1510, "Request Fulfilment Center"),
+    REQUEST_APPROVING_CENTER = 1500, _("Request Approving Center")
+    REQUEST_FULFILMENT_CENTER = 1510, _("Request Fulfilment Center")
     # Use 16xx for War Rooms.
-    (1600, "District War Room"),
-]
+    DISTRICT_WAR_ROOM = 1600, _("District War Room")
 
-REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 
-DOCTOR_TYPES = [
-    (1, "General Medicine"),
-    (2, "Pulmonology"),
-    (3, "Critical Care"),
-    (4, "Paediatrics"),
-    (5, "Other Speciality"),
-]
+REVERSE_FACILITY_TYPES = reverse_choices_class(FacilityTypes)
 
-REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
-REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
+# DOCTOR_TYPES = [
+#     (1, "General Medicine"),
+#     (2, "Pulmonology"),
+#     (3, "Critical Care"),
+#     (4, "Paediatrics"),
+#     (5, "Other Speciality"),
+# ]
+class DoctorTypes(models.IntegerChoices):
+    GENERAL_MEDICINE = 1, _("General Medicine")
+    PULMONOLOGY = 2, _("Pulmonology")
+    CRITICAL_CARE = 3, _("Critical Care")
+    PAEDIATRICS = 4, _("Paediatrics")
+    OTHER_SPECIALITY = 5, _("Other Speciality")
+
+
+REVERSE_DOCTOR_TYPES = reverse_choices_class(DoctorTypes)
+
+REVERSE_FEATURE_CHOICES = reverse_choices_class(FeatureChoices)
 
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    facility_type = models.IntegerField(choices=FACILITY_TYPES)
+    facility_type = models.IntegerField(choices=FacilityTypes.choices)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
     features = MultiSelectField(
-        choices=FEATURE_CHOICES,
+        choices=FeatureChoices.choices,
         null=True,
         blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
+        max_length=get_max_length(FeatureChoices.choices, None),
     )
 
     longitude = models.DecimalField(
@@ -240,7 +323,7 @@ class FacilityLocalGovtBody(models.Model):
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
                 check=models.Q(local_body__isnull=False)
-                | models.Q(district__isnull=False),
+                      | models.Q(district__isnull=False),
             )
         ]
 
@@ -265,7 +348,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    area = models.IntegerField(choices=DOCTOR_TYPES)
+    area = models.IntegerField(choices=DoctorTypes.choices)
     count = models.PositiveIntegerField()
 
     def __str__(self):
@@ -292,7 +375,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomTypes.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -391,7 +474,7 @@ class Room(FacilityBaseModel):
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     beds_capacity = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     occupied_beds = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomTypes.choices)
 
     def __str__(self):
         return self.num + " under " + str(self.building)
