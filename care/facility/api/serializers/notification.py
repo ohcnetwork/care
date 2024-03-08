@@ -10,8 +10,8 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     caused_by = UserBaseMinimumSerializer(read_only=True)
 
-    event = ChoiceField(choices=Notification.EventChoices, read_only=True)
-    event_type = ChoiceField(choices=Notification.EventTypeChoices, read_only=True)
+    event = ChoiceField(choices=Notification.EventChoices.choices, read_only=True)
+    event_type = ChoiceField(choices=Notification.EventTypeChoices.choices, read_only=True)
 
     class Meta:
         model = Notification

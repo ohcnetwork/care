@@ -14,13 +14,13 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.notification import NotificationSerializer
 from care.facility.models.notification import Notification
 from care.users.models import User
-from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices_class
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_facility_queryset
 
-inverse_event_type_choices = inverse_choices(Notification.EventTypeChoices)
-inverse_event_choices = inverse_choices(Notification.EventChoices)
-medium_choices = inverse_choices(Notification.MediumChoices)
+inverse_event_type_choices = inverse_choices_class(Notification.EventTypeChoices)
+inverse_event_choices = inverse_choices_class(Notification.EventChoices)
+medium_choices = inverse_choices_class(Notification.MediumChoices)
 
 
 class NotificationFilter(filters.FilterSet):
