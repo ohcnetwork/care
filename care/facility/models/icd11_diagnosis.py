@@ -4,14 +4,14 @@ from django.utils.translation import gettext_lazy as _
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
-from care.facility.models.patient_base import reverse_choices
+from care.facility.models.patient_base import reverse_choices_class,reverse_choices
 from care.utils.models.base import BaseModel
 
 
 class ICD11ClassKind(models.TextChoices):
-    CHAPTER = "chapter"
-    BLOCK = "block"
-    CATEGORY = "category"
+    CHAPTER = "chapter", _("Chapter")
+    BLOCK = "block", _("Block")
+    CATEGORY = "category", _("Category")
 
 
 class ICD11Diagnosis(models.Model):
@@ -64,7 +64,7 @@ ACTIVE_CONDITION_VERIFICATION_STATUSES = [
     if status not in INACTIVE_CONDITION_VERIFICATION_STATUSES
 ]  # These statuses are allowed to be selected during create and these diagnosis can only be a principal diagnosis
 
-REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices(ConditionVerificationStatus)
+REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices_class(ConditionVerificationStatus)  # issue here
 
 
 class ConsultationDiagnosis(BaseModel, ConsultationRelatedPermissionMixin):
