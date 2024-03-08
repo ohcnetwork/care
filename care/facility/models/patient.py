@@ -5,6 +5,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
@@ -52,49 +53,82 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "state_id",
     ]
 
-    class SourceEnum(enum.Enum):
-        CARE = 10
-        COVID_TRACKER = 20
-        STAY = 30
+    # class SourceEnum(enum.Enum):
+    #     CARE = 10
+    #     COVID_TRACKER = 20
+    #     STAY = 30
+    #
+    # SourceChoices = [(e.value, e.name) for e in SourceEnum]
+    #
+    # class vaccineEnum(enum.Enum):
+    #     COVISHIELD = "CoviShield"
+    #     COVAXIN = "Covaxin"
+    #     SPUTNIK = "Sputnik"
+    #     MODERNA = "Moderna"
+    #     PFIZER = "Pfizer"
+    #     JANSSEN = "Janssen"
+    #     SINOVAC = "Sinovac"
+    #
+    # vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
+    #
+    # class ActionEnum(enum.Enum):
+    #     NO_ACTION = 10
+    #     PENDING = 20
+    #     SPECIALIST_REQUIRED = 30
+    #     PLAN_FOR_HOME_CARE = 40
+    #     FOLLOW_UP_NOT_REQUIRED = 50
+    #     COMPLETE = 60
+    #     REVIEW = 70
+    #     NOT_REACHABLE = 80
+    #     DISCHARGE_RECOMMENDED = 90
+    #
+    # ActionChoices = [(e.value, e.name) for e in ActionEnum]
+    #
+    # class TestTypeEnum(enum.Enum):
+    #     UNK = 10
+    #     ANTIGEN = 20
+    #     RTPCR = 30
+    #     CBNAAT = 40
+    #     TRUENAT = 50
+    #     RTLAMP = 60
+    #     POCPCR = 70
+    #
+    # TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
+    class SourceChoices(models.IntegerChoices):
+        CARE = 10, _("Care")
+        COVID_TRACKER = 20, _("Covid Tracker")
+        STAY = 30, _("Stay")
 
-    SourceChoices = [(e.value, e.name) for e in SourceEnum]
+    class VaccineChoices(models.TextChoices):
+        COVISHIELD = "CoviShield", _("CoviShield")
+        COVAXIN = "Covaxin", _("Covaxin")
+        SPUTNIK = "Sputnik", _("Sputnik")
+        MODERNA = "Moderna", _("Moderna")
+        PFIZER = "Pfizer", _("Pfizer")
+        JANSSEN = "Janssen", _("Janssen")
+        SINOVAC = "Sinovac", _("Sinovac")
 
-    class vaccineEnum(enum.Enum):
-        COVISHIELD = "CoviShield"
-        COVAXIN = "Covaxin"
-        SPUTNIK = "Sputnik"
-        MODERNA = "Moderna"
-        PFIZER = "Pfizer"
-        JANSSEN = "Janssen"
-        SINOVAC = "Sinovac"
+    class ActionChoices(models.IntegerChoices):
+        NO_ACTION = 10, _("No Action")
+        PENDING = 20, _("Pending")
+        SPECIALIST_REQUIRED = 30, _("Specialist Required")
+        PLAN_FOR_HOME_CARE = 40, _("Plan for Home Care")
+        FOLLOW_UP_NOT_REQUIRED = 50, _("Follow-up Not Required")
+        COMPLETE = 60, _("Complete")
+        REVIEW = 70, _("Review")
+        NOT_REACHABLE = 80, _("Not Reachable")
+        DISCHARGE_RECOMMENDED = 90, _("Discharge Recommended")
 
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
+    class TestTypeChoices(models.IntegerChoices):
+        UNK = 10, _("Unknown")
+        ANTIGEN = 20, _("Antigen")
+        RTPCR = 30, _("RT-PCR")
+        CBNAAT = 40, _("CBNAAT")
+        TRUENAT = 50, _("Truenat")
+        RTLAMP = 60, _("RT-LAMP")
+        POCPCR = 70, _("POC-PCR")
 
-    class ActionEnum(enum.Enum):
-        NO_ACTION = 10
-        PENDING = 20
-        SPECIALIST_REQUIRED = 30
-        PLAN_FOR_HOME_CARE = 40
-        FOLLOW_UP_NOT_REQUIRED = 50
-        COMPLETE = 60
-        REVIEW = 70
-        NOT_REACHABLE = 80
-        DISCHARGE_RECOMMENDED = 90
-
-    ActionChoices = [(e.value, e.name) for e in ActionEnum]
-
-    class TestTypeEnum(enum.Enum):
-        UNK = 10
-        ANTIGEN = 20
-        RTPCR = 30
-        CBNAAT = 40
-        TRUENAT = 50
-        RTLAMP = 60
-        POCPCR = 70
-
-    TestTypeChoices = [(e.value, e.name) for e in TestTypeEnum]
-
-    source = models.IntegerField(choices=SourceChoices, default=SourceEnum.CARE.value)
+    source = models.IntegerField(choices=SourceChoices.choices, default=SourceChoices.CARE)
     facility = models.ForeignKey("Facility", on_delete=models.SET_NULL, null=True)
     nearest_facility = models.ForeignKey(
         "Facility",
@@ -251,7 +285,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     action = models.IntegerField(
-        choices=ActionChoices, blank=True, null=True, default=ActionEnum.NO_ACTION.value
+        choices=ActionChoices.choices, blank=True, null=True, default=ActionChoices.NO_ACTION
     )
     review_time = models.DateTimeField(
         null=True, blank=True, verbose_name="Patient's next review time"
@@ -282,7 +316,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
     srf_id = models.CharField(max_length=200, blank=True, default="")
     test_type = models.IntegerField(
-        choices=TestTypeChoices, default=TestTypeEnum.UNK.value
+        choices=TestTypeChoices.choices, default=TestTypeChoices.UNK
     )
 
     allow_transfer = models.BooleanField(default=False)
@@ -371,7 +405,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices,
+        choices=VaccineChoices.choices,
         default=None,
         null=True,
         blank=False,

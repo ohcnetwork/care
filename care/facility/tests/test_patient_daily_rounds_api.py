@@ -62,7 +62,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             id=self.consultation_with_bed.patient_id
         )
         self.assertEqual(
-            patient.action, PatientRegistration.ActionEnum.DISCHARGE_RECOMMENDED.value
+            patient.action, PatientRegistration.ActionChoices.DISCHARGE_RECOMMENDED.value
         )
 
     def test_log_update_without_bed(

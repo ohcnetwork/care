@@ -84,7 +84,7 @@ VENTILATOR_CHOICES = covert_choice_dict_class(DailyRound.VentilatorInterfaceChoi
 
 
 class PatientFilterSet(filters.FilterSet):
-    source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
+    source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices.choices)
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
     facility_type = CareChoiceFilter(

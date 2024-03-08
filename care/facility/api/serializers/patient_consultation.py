@@ -125,7 +125,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     discharge_prn_prescription = serializers.SerializerMethodField()
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices,
+        choices=PatientRegistration.ActionChoices.choices,
         write_only=True,
         required=False,
     )
@@ -575,7 +575,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to_external"] = None
 
         if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
+            if validated["action"] == PatientRegistration.ActionChoices.REVIEW:
                 if "review_interval" not in validated:
                     raise ValidationError(
                         {

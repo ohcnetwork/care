@@ -80,7 +80,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     disease_status = ChoiceField(
         choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
     )
-    source = ChoiceField(choices=PatientRegistration.SourceChoices)
+    source = ChoiceField(choices=PatientRegistration.SourceChoices.choices)
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
@@ -182,8 +182,8 @@ class PatientDetailSerializer(PatientListSerializer):
     # )
 
     source = ChoiceField(
-        choices=PatientRegistration.SourceChoices,
-        default=PatientRegistration.SourceEnum.CARE.value,
+        choices=PatientRegistration.SourceChoices.choices,
+        default=PatientRegistration.SourceChoices.CARE,
     )
     disease_status = ChoiceField(
         choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
@@ -195,15 +195,15 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     test_type = ChoiceField(
-        choices=PatientRegistration.TestTypeChoices,
+        choices=PatientRegistration.TestTypeChoices.choices,
         required=False,
-        default=PatientRegistration.TestTypeEnum.UNK.value,
+        default=PatientRegistration.TestTypeChoices.UNK,
     )
 
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
+        choices=PatientRegistration.VaccineChoices.choices, required=False, allow_null=True
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)

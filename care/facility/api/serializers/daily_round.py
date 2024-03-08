@@ -42,7 +42,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
-        choices=PatientRegistration.ActionChoices, write_only=True, required=False
+        choices=PatientRegistration.ActionChoices.choices, write_only=True, required=False
     )
     review_interval = serializers.IntegerField(
         source="consultation__review_interval", required=False
@@ -321,7 +321,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             )
 
         if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
+            if validated["action"] == PatientRegistration.ActionChoices.REVIEW:
                 if "consultation__review_interval" not in validated:
                     raise ValidationError(
                         {
