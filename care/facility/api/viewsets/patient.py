@@ -277,7 +277,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                     q_filters |= Q(consultations__facility__id__in=allowed_facilities)
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
-                queryset = queryset.filter(q_filters).distinct("id")
+                queryset = queryset.filter(q_filters)
         return queryset
 
     def filter_list_queryset(self, request, queryset, view):
@@ -314,7 +314,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
                 )
             ).order_by(ordering)
 
-        return queryset
+        return queryset.distinct(ordering.lstrip("-") if ordering else "id")
 
 
 @extend_schema_view(history=extend_schema(tags=["patient"]))

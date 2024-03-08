@@ -46,7 +46,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     patient_no = models.CharField(
         max_length=100,
-        default="",
+        default=None,
         null=True,
         blank=True,
         help_text=(
@@ -290,6 +290,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             models.UniqueConstraint(
                 fields=["patient_no", "facility"],
                 name="unique_patient_no_within_facility",
+                condition=models.Q(patient_no__isnull=False),
             ),
         ]
 
