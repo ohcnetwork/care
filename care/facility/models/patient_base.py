@@ -5,12 +5,12 @@ from django.db.models import IntegerChoices, TextChoices
 from django.utils.translation import gettext_lazy as _
 
 
-# def reverse_choices(choices):
-#     output = {}
-#     for choice in choices:
-#         output[choice[0]] = choice[1]
-#     return output
-#
+def reverse_choices(choices):
+    output = {}
+    for choice in choices:
+        output[choice[0]] = choice[1]
+    return output
+
 #
 # def reverse_choices_class(choices_class):
 #     output = {}

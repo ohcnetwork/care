@@ -1,4 +1,3 @@
-import enum
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
@@ -6,7 +5,6 @@ from django.db import models
 from django.db.models import JSONField, Q
 from django.utils.translation import gettext_lazy as _
 
-from care.facility.models import reverse_choices, reverse_choices_class
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.facility import (
@@ -93,9 +91,6 @@ class StatusChoices(models.IntegerChoices):
     TRANSFER_IN_PROGRESS = 100, _('Transfer in Progress')
 
 
-REVERSE_ASSET_TYPE = reverse_choices_class(AssetTypeChoices)
-REVERSE_STATUS = reverse_choices_class(StatusChoices)
-
 
 class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
@@ -161,8 +156,8 @@ class Asset(BaseModel):
     }
 
     CSV_MAKE_PRETTY = {
-        "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
-        "status": (lambda x: REVERSE_STATUS[x]),
+        "asset_type": (lambda x: AssetTypeChoices(x).label if x in AssetTypeChoices.values else "-"),
+        "status": (lambda x: StatusChoices(x).label if x in StatusChoices.values else "-"),
         "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
 

@@ -30,9 +30,9 @@ from care.facility.models.mixins.permissions.patient import (
 from care.facility.models.patient_base import (
     BloodGroupChoices,
     DiseaseStatus,
-    REVERSE_CATEGORY_CHOICES,
-    REVERSE_NEW_DISCHARGE_REASON_CHOICES,
-    REVERSE_ROUTE_TO_FACILITY_CHOICES,
+    CategoryChoices,
+    NewDischargeReasons,
+    RouteToFacility
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
@@ -596,11 +596,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "differential_diagnoses": format_diagnoses,
         "confirmed_diagnoses": format_diagnoses,
         "last_consultation__route_to_facility": (
-            lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
+            lambda x: RouteToFacility(x).label if x in RouteToFacility.values else "-"
         ),
-        "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
+        "last_consultation__category": lambda x: CategoryChoices(x).label if x in CategoryChoices.values else "-",
         "last_consultation__new_discharge_reason": (
-            lambda x: REVERSE_NEW_DISCHARGE_REASON_CHOICES.get(x, "-")
+            lambda x: NewDischargeReasons(x).label if x in NewDischargeReasons.values else "-",
         ),
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,

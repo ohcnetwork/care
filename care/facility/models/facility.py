@@ -7,7 +7,7 @@ from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
-from care.facility.models import FacilityBaseModel, reverse_choices_class
+from care.facility.models import FacilityBaseModel
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
@@ -76,9 +76,6 @@ class FeatureChoices(models.IntegerChoices):
     NEONATAL_CARE = 4, _("Neonatal care")
     OPERATION_THEATER = 5, _("Operation theater")
     BLOOD_BANK = 6, _("Blood Bank")
-
-
-REVERSE_ROOM_TYPES = reverse_choices_class(RoomTypes)
 
 
 # FACILITY_TYPES = [
@@ -171,9 +168,6 @@ class FacilityTypes(models.IntegerChoices):
     DISTRICT_WAR_ROOM = 1600, _("District War Room")
 
 
-REVERSE_FACILITY_TYPES = reverse_choices_class(FacilityTypes)
-
-
 # DOCTOR_TYPES = [
 #     (1, "General Medicine"),
 #     (2, "Pulmonology"),
@@ -187,11 +181,6 @@ class DoctorTypes(models.IntegerChoices):
     CRITICAL_CARE = 3, _("Critical Care")
     PAEDIATRICS = 4, _("Paediatrics")
     OTHER_SPECIALITY = 5, _("Other Speciality")
-
-
-REVERSE_DOCTOR_TYPES = reverse_choices_class(DoctorTypes)
-
-REVERSE_FEATURE_CHOICES = reverse_choices_class(FeatureChoices)
 
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
@@ -295,7 +284,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "phone_number": "Phone Number",
     }
 
-    CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+    CSV_MAKE_PRETTY = {"facility_type": (lambda x: FacilityTypes(x).label if x in FacilityTypes.values else "-")}
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -368,7 +357,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "hospitaldoctors__count": "Doctors Count",
     }
 
-    CSV_MAKE_PRETTY = {"hospitaldoctors__area": (lambda x: REVERSE_DOCTOR_TYPES[x])}
+    CSV_MAKE_PRETTY = {"hospitaldoctors__area": (lambda x: DoctorTypes(x).label if x in DoctorTypes.values else "-")}
 
 
 class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
@@ -403,7 +392,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {
-        "facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x]),
+        "facilitycapacity__room_type": (lambda x: RoomTypes(x).label if x in RoomTypes.values else "-"),
         "facilitycapacity__modified_date": (lambda x: x.strftime("%d-%m-%Y")),
     }
 
@@ -411,7 +400,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return (
             str(self.facility)
             + " "
-            + REVERSE_ROOM_TYPES[self.room_type]
+            + RoomTypes(self.room_type).label
             + " "
             + str(self.total_capacity)
         )

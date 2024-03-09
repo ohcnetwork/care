@@ -17,12 +17,11 @@ from care.facility.models.mixins.permissions.patient import (
 from care.facility.models.patient_base import (
     DischargeReasonChoices,
     NewDischargeReasons,
-    REVERSE_CATEGORY_CHOICES,
-    REVERSE_COVID_CATEGORY_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
     SymptomChoices,
     RouteToFacility,
     SuggestionChoices,
-    reverse_choices,
 )
 from care.users.models import User
 
@@ -248,9 +247,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     CSV_MAKE_PRETTY = {
         "deprecated_covid_category": (
-            lambda x: REVERSE_COVID_CATEGORY_CHOICES.get(x, "-")
+            lambda x: CovidCategoryChoices(x).label if x in CovidCategoryChoices.values else "-"
         ),
-        "category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
+        "category": lambda x: CategoryChoices(x).label if x in CategoryChoices.values else "-",
         "suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
