@@ -4,14 +4,12 @@ from rest_framework.exceptions import ValidationError
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models import (
-    RESOURCE_CATEGORY_CHOICES,
-    RESOURCE_STATUS_CHOICES,
     Facility,
     ResourceRequest,
     ResourceRequestComment,
     User,
 )
-from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
+from care.facility.models.resources import ResourceSubCategoryChoices,ResourceCategoryChoices,ResourceStatusChoices
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from config.serializers import ChoiceField
 
@@ -21,9 +19,6 @@ def inverse_choices(choices):
     for choice in choices:
         output[choice[1]] = choice[0]
     return output
-
-
-REVERSE_REQUEST_STATUS_CHOICES = inverse_choices(RESOURCE_STATUS_CHOICES)
 
 
 def has_facility_permission(user, facility):
@@ -46,7 +41,7 @@ def has_facility_permission(user, facility):
 class ResourceRequestSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
-    status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
+    status = ChoiceField(choices=ResourceStatusChoices.choices)
 
     origin_facility_object = FacilityBasicInfoSerializer(
         source="origin_facility", read_only=True, required=False
@@ -58,8 +53,8 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         source="assigned_facility", read_only=True, required=False
     )
 
-    category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
-    sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
+    category = ChoiceField(choices=ResourceCategoryChoices.choices)
+    sub_category = ChoiceField(choices=ResourceSubCategoryChoices.choices)
 
     origin_facility = serializers.UUIDField(
         source="origin_facility.external_id", allow_null=False, required=True
@@ -83,9 +78,9 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         super().__init__(instance=instance, **kwargs)
 
     def update(self, instance, validated_data):
-        LIMITED_RECIEVING_STATUS_ = []
-        LIMITED_RECIEVING_STATUS = [
-            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_
+        LIMITED_RECEIVING_STATUS_ = []
+        LIMITED_RECEIVING_STATUS = [
+            ResourceStatusChoices(x).label for x in LIMITED_RECEIVING_STATUS_
         ]
         LIMITED_REQUEST_STATUS_ = [
             "ON HOLD",
@@ -96,14 +91,14 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
             "COMPLETED",
         ]
         LIMITED_REQUEST_STATUS = [
-            REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_
+            ResourceStatusChoices(x).label for x in LIMITED_REQUEST_STATUS_
         ]
-        # LIMITED_ORGIN_STATUS = []
+        # LIMITED_ORIGIN_STATUS = []
 
         user = self.context["request"].user
 
         if "status" in validated_data:
-            if validated_data["status"] in LIMITED_RECIEVING_STATUS:
+            if validated_data["status"] in LIMITED_RECEIVING_STATUS:
                 if instance.assigned_facility:
                     if not has_facility_permission(user, instance.assigned_facility):
                         raise ValidationError({"status": ["Permission Denied"]})

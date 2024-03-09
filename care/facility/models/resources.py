@@ -1,34 +1,52 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models import FacilityBaseModel, pretty_boolean, reverse_choices
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
-RESOURCE_STATUS_CHOICES = (
-    (10, "PENDING"),
-    (15, "ON HOLD"),
-    (20, "APPROVED"),
-    (30, "REJECTED"),
-    (55, "TRANSPORTATION TO BE ARRANGED"),
-    (70, "TRANSFER IN PROGRESS"),
-    (80, "COMPLETED"),
-)
 
-RESOURCE_CATEGORY_CHOICES = (
-    (100, "OXYGEN"),
-    (200, "SUPPLIES"),
-)
+# RESOURCE_STATUS_CHOICES = (
+#     (10, "PENDING"),
+#     (15, "ON HOLD"),
+#     (20, "APPROVED"),
+#     (30, "REJECTED"),
+#     (55, "TRANSPORTATION TO BE ARRANGED"),
+#     (70, "TRANSFER IN PROGRESS"),
+#     (80, "COMPLETED"),
+# )
 
-RESOURCE_SUB_CATEGORY_CHOICES = (
-    (110, "LIQUID OXYGEN"),
-    (120, "B TYPE OXYGEN CYLINDER"),
-    (130, "C TYPE OXYGEN CYLINDER"),
-    (140, "JUMBO D TYPE OXYGEN CYLINDER"),
-    (1000, "UNSPECIFIED"),
-)
+class ResourceStatusChoices(models.IntegerChoices):
+    PENDING = 10, _("Pending")
+    ON_HOLD = 15, _("On Hold")
+    APPROVED = 20, _("Approved")
+    REJECTED = 30, _("Rejected")
+    TRANSPORTATION_TO_BE_ARRANGED = 55, _("Transportation to be Arranged")
+    TRANSFER_IN_PROGRESS = 70, _("Transfer in Progress")
+    COMPLETED = 80, _("Completed")
 
-REVERSE_CATEGORY = reverse_choices(RESOURCE_CATEGORY_CHOICES)
-REVERSE_SUB_CATEGORY = reverse_choices(RESOURCE_SUB_CATEGORY_CHOICES)
+# RESOURCE_CATEGORY_CHOICES = (
+#     (100, "OXYGEN"),
+#     (200, "SUPPLIES"),
+# )
+class ResourceCategoryChoices(models.IntegerChoices):
+    OXYGEN = 100, _("Oxygen")
+    SUPPLIES = 200, _("Supplies")
+
+
+# RESOURCE_SUB_CATEGORY_CHOICES = (
+#     (110, "LIQUID OXYGEN"),
+#     (120, "B TYPE OXYGEN CYLINDER"),
+#     (130, "C TYPE OXYGEN CYLINDER"),
+#     (140, "JUMBO D TYPE OXYGEN CYLINDER"),
+#     (1000, "UNSPECIFIED"),
+# )
+class ResourceSubCategoryChoices(models.IntegerChoices):
+    LIQUID_OXYGEN = 110, _("Liquid Oxygen")
+    B_TYPE_OXYGEN_CYLINDER = 120, _("B Type Oxygen Cylinder")
+    C_TYPE_OXYGEN_CYLINDER = 130, _("C Type Oxygen Cylinder")
+    JUMBO_D_TYPE_OXYGEN_CYLINDER = 140, _("Jumbo D Type Oxygen Cylinder")
+    UNSPECIFIED = 1000, _("Unspecified")
 
 
 class ResourceRequest(FacilityBaseModel):

@@ -32,7 +32,7 @@ def inverse_choices(choices):
     return output
 
 
-# inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
+inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
