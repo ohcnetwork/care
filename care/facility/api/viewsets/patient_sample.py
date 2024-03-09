@@ -23,7 +23,7 @@ from care.facility.models import (
     User,
 )
 from care.facility.models.patient_icmr import PatientSampleICMR
-from care.facility.models.patient_sample import SAMPLE_TYPE_CHOICES
+from care.facility.models.patient_sample import SampleTypeChoices
 
 
 class PatientSampleFilterBackend(DRYPermissionFiltersBase):
@@ -46,13 +46,13 @@ class PatientSampleFilterSet(filters.FilterSet):
     district_name = filters.CharFilter(
         field_name="consultation__facility__district__name", lookup_expr="icontains"
     )
-    status = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
-    result = filters.ChoiceFilter(choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES)
+    status = filters.ChoiceFilter(choices=PatientSample.SampleTestFlow.choices)
+    result = filters.ChoiceFilter(choices=PatientSample.SampleTestResultChoices.choices)
     patient_name = filters.CharFilter(
         field_name="patient__name", lookup_expr="icontains"
     )
     facility = filters.UUIDFilter(field_name="consultation__facility__external_id")
-    sample_type = filters.ChoiceFilter(choices=SAMPLE_TYPE_CHOICES)
+    sample_type = filters.ChoiceFilter(choices=SampleTypeChoices.choices)
 
 
 class PatientSampleViewSet(

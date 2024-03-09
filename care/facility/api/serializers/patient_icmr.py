@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from care.facility.models import DiseaseChoices, SAMPLE_TYPE_CHOICES, SymptomChoices
+from care.facility.models import DiseaseChoices, SampleTypeChoices, SymptomChoices
 from care.facility.models.patient_icmr import (
     PatientConsultationICMR,
     PatientIcmr,
@@ -42,7 +42,7 @@ class ICMRPersonalDetails(serializers.ModelSerializer):
 
 
 class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
-    sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES)
+    sample_type = ChoiceField(choices=SampleTypeChoices.choices)
     created_date = serializers.DateTimeField()
     label = serializers.CharField()
     is_repeated_sample = serializers.BooleanField(allow_null=True)
@@ -50,7 +50,7 @@ class ICMRSpecimenInformationSerializer(serializers.ModelSerializer):
     lab_pincode = serializers.CharField()
 
     icmr_category = ChoiceField(
-        choices=PatientSampleICMR.PATIENT_ICMR_CATEGORY, required=False
+        choices=PatientSampleICMR.PatientICMRCategory.choices, required=False
     )
 
     class Meta:

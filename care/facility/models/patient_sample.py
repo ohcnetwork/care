@@ -1,49 +1,88 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, reverse_choices
 from care.users.models import User
 
-SAMPLE_TYPE_CHOICES = [
-    (0, "UNKNOWN"),
-    (1, "BA/ETA"),
-    (2, "TS/NPS/NS"),
-    (3, "Blood in EDTA"),
-    (4, "Acute Sera"),
-    (5, "Covalescent sera"),
-    (6, "Biopsy"),
-    (7, "AMR"),
-    (8, "Communicable Diseases"),
-    (9, "OTHER TYPE"),
-]
-REVERSE_SAMPLE_TYPE_CHOICES = reverse_choices(SAMPLE_TYPE_CHOICES)
+
+#
+# SAMPLE_TYPE_CHOICES = [
+#     (0, "UNKNOWN"),
+#     (1, "BA/ETA"),
+#     (2, "TS/NPS/NS"),
+#     (3, "Blood in EDTA"),
+#     (4, "Acute Sera"),
+#     (5, "Covalescent sera"),
+#     (6, "Biopsy"),
+#     (7, "AMR"),
+#     (8, "Communicable Diseases"),
+#     (9, "OTHER TYPE"),
+# ]
+
+class SampleTypeChoices(models.IntegerChoices):
+    UNKNOWN = 0, _("Unknown")
+    BA_ETA = 1, _("BA/ETA")
+    TS_NPS_NS = 2, _("TS/NPS/NS")
+    BLOOD_IN_EDTA = 3, _("Blood in EDTA")
+    ACUTE_SERA = 4, _("Acute Sera")
+    COVALESCENT_SERA = 5, _("Covalescent sera")
+    BIOPSY = 6, _("Biopsy")
+    AMR = 7, _("AMR")
+    COMMUNICABLE_DISEASES = 8, _("Communicable Diseases")
+    OTHER_TYPE = 9, _("Other Type")
 
 
 class PatientSample(FacilityBaseModel):
-    SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
-    SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
-    REVERSE_SAMPLE_TEST_RESULT_CHOICES = reverse_choices(SAMPLE_TEST_RESULT_CHOICES)
+    class SampleTestResultChoices(models.IntegerChoices):
+        POSITIVE = 1, _("Positive")
+        NEGATIVE = 2, _("Negative")
+        AWAITING = 3, _("Awaiting")
+        INVALID = 4, _("Invalid")
 
-    PATIENT_ICMR_CATEGORY = [
-        (0, "Cat 0"),
-        (10, "Cat 1"),
-        (20, "Cat 2"),
-        (30, "Cat 3"),
-        (40, "Cat 4"),
-        (50, "Cat 5a"),
-        (60, "Cat 5b"),
-    ]
+    # SAMPLE_TEST_RESULT_MAP = {"POSITIVE": 1, "NEGATIVE": 2, "AWAITING": 3, "INVALID": 4}
+    # SAMPLE_TEST_RESULT_CHOICES = [(v, k) for k, v in SAMPLE_TEST_RESULT_MAP.items()]
+    # REVERSE_SAMPLE_TEST_RESULT_CHOICES = reverse_choices(SAMPLE_TEST_RESULT_CHOICES)
 
-    SAMPLE_TEST_FLOW_MAP = {
-        "REQUEST_SUBMITTED": 1,
-        "APPROVED": 2,
-        "DENIED": 3,
-        "SENT_TO_COLLECTON_CENTRE": 4,
-        "RECEIVED_AND_FORWARED": 5,
-        "RECEIVED_AT_LAB": 6,
-        "COMPLETED": 7,
-    }
-    SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
-    REVERSE_SAMPLE_TEST_FLOW_CHOICES = reverse_choices(SAMPLE_TEST_FLOW_CHOICES)
+    #
+    # PATIENT_ICMR_CATEGORY = [
+    #     (0, "Cat 0"),
+    #     (10, "Cat 1"),
+    #     (20, "Cat 2"),
+    #     (30, "Cat 3"),
+    #     (40, "Cat 4"),
+    #     (50, "Cat 5a"),
+    #     (60, "Cat 5b"),
+    # ]
+
+    class PatientICMRCategory(models.IntegerChoices):
+        CAT_0 = 0, _("Category 0")
+        CAT_1 = 10, _("Category 1")
+        CAT_2 = 20, _("Category 2")
+        CAT_3 = 30, _("Category 3")
+        CAT_4 = 40, _("Category 4")
+        CAT_5A = 50, _("Category 5a")
+        CAT_5B = 60, _("Category 5b")
+
+    # SAMPLE_TEST_FLOW_MAP = {
+    #     "REQUEST_SUBMITTED": 1,
+    #     "APPROVED": 2,
+    #     "DENIED": 3,
+    #     "SENT_TO_COLLECTON_CENTRE": 4,
+    #     "RECEIVED_AND_FORWARED": 5,
+    #     "RECEIVED_AT_LAB": 6,
+    #     "COMPLETED": 7,
+    # }
+    # SAMPLE_TEST_FLOW_CHOICES = [(v, k) for k, v in SAMPLE_TEST_FLOW_MAP.items()]
+
+    class SampleTestFlow(models.IntegerChoices):
+        REQUEST_SUBMITTED = 1, _("Request Submitted")
+        APPROVED = 2, _("Approved")
+        DENIED = 3, _("Denied")
+        SENT_TO_COLLECTION_CENTRE = 4, _("Sent to Collection Centre")
+        RECEIVED_AND_FORWARDED = 5, _("Received and Forwarded")
+        RECEIVED_AT_LAB = 6, _("Received at Lab")
+        COMPLETED = 7, _("Completed")
+
     SAMPLE_FLOW_RULES = {
         # previous rule      # next valid rules
         "REQUEST_SUBMITTED": {
@@ -70,7 +109,7 @@ class PatientSample(FacilityBaseModel):
     patient = models.ForeignKey(PatientRegistration, on_delete=models.PROTECT)
     consultation = models.ForeignKey("PatientConsultation", on_delete=models.PROTECT)
 
-    sample_type = models.IntegerField(choices=SAMPLE_TYPE_CHOICES, default=0)
+    sample_type = models.IntegerField(choices=SampleTypeChoices.choices, default=SampleTypeChoices.UNKNOWN)
     sample_type_other = models.TextField(default="")
 
     has_sari = models.BooleanField(default=False)
@@ -84,16 +123,16 @@ class PatientSample(FacilityBaseModel):
     atypical_presentation = models.TextField(default="")
     is_unusual_course = models.BooleanField(default=False)
 
-    icmr_category = models.IntegerField(choices=PATIENT_ICMR_CATEGORY, default=0)
+    icmr_category = models.IntegerField(choices=PatientICMRCategory.choices, default=PatientICMRCategory.CAT_0)
 
     icmr_label = models.CharField(max_length=200, default="")
 
     status = models.IntegerField(
-        choices=SAMPLE_TEST_FLOW_CHOICES,
-        default=SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"],
+        choices=SampleTestFlow.choices,
+        default=SampleTestFlow.REQUEST_SUBMITTED,
     )
     result = models.IntegerField(
-        choices=SAMPLE_TEST_RESULT_CHOICES, default=SAMPLE_TEST_RESULT_MAP["AWAITING"]
+        choices=SampleTestResultChoices, default=SampleTestResultChoices.AWAITING
     )
 
     fast_track = models.TextField(default="")
@@ -126,12 +165,12 @@ class PatientSample(FacilityBaseModel):
     }
 
     CSV_MAKE_PRETTY = {
-        "sample_type": (lambda x: REVERSE_SAMPLE_TYPE_CHOICES.get(x, "-")),
+        "sample_type": (lambda x: SampleTypeChoices(x).label if x in SampleTypeChoices.values else "-"),
         "status": (
-            lambda x: PatientSample.REVERSE_SAMPLE_TEST_FLOW_CHOICES.get(x, "-")
+            lambda x: PatientSample.SampleTestFlow(x) if x in PatientSample.SampleTestFlow.values else "-"
         ),
         "result": (
-            lambda x: PatientSample.REVERSE_SAMPLE_TEST_RESULT_CHOICES.get(x, "-")
+            lambda x: PatientSample.SampleTestResultChoices(x).label if x in PatientSample.SampleTestResultChoices.values else "-"
         ),
     }
 
@@ -207,6 +246,6 @@ class PatientSample(FacilityBaseModel):
 
 class PatientSampleFlow(FacilityBaseModel):
     patient_sample = models.ForeignKey(PatientSample, on_delete=models.PROTECT)
-    status = models.IntegerField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES)
+    status = models.IntegerField(choices=PatientSample.SampleTestFlow.choices)
     notes = models.CharField(max_length=255)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)

@@ -15,16 +15,16 @@ def tests_summary():
         )
         total_tests_count = facility_patients_samples.count()
         results_positive_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["POSITIVE"]
+            result=PatientSample.SampleTestResultChoices["POSITIVE"].value
         ).count()
         results_awaited_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
+            result=PatientSample.SampleTestResultChoices["AWAITING"].value
         ).count()
         results_negative_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["NEGATIVE"]
+            result=PatientSample.SampleTestResultChoices["NEGATIVE"].value
         ).count()
         test_discarded_count = facility_patients_samples.filter(
-            result=PatientSample.SAMPLE_TEST_RESULT_MAP["INVALID"]
+            result=PatientSample.SampleTestResultChoices["INVALID"].value
         ).count()
         facility_tests_summarised_data = {
             "facility_name": facility.name,

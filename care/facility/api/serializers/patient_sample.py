@@ -7,7 +7,7 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models import Facility, PatientConsultation, PatientRegistration
 from care.facility.models.patient_sample import (
-    SAMPLE_TYPE_CHOICES,
+    SampleTypeChoices,
     PatientSample,
     PatientSampleFlow,
 )
@@ -17,7 +17,7 @@ from config.serializers import ChoiceField
 
 
 class PatientSampleFlowSerializer(serializers.ModelSerializer):
-    status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
+    status = ChoiceField(choices=PatientSample.SampleTestFlow.choices, required=False)
 
     class Meta:
         model = PatientSampleFlow
@@ -46,14 +46,14 @@ class PatientSampleSerializer(serializers.ModelSerializer):
         source="consultation.facility", read_only=True
     )
 
-    sample_type = ChoiceField(choices=SAMPLE_TYPE_CHOICES, required=False)
-    status = ChoiceField(choices=PatientSample.SAMPLE_TEST_FLOW_CHOICES, required=False)
+    sample_type = ChoiceField(choices=SampleTypeChoices.choices, required=False)
+    status = ChoiceField(choices=PatientSample.SampleTestFlow.choices, required=False)
     result = ChoiceField(
-        choices=PatientSample.SAMPLE_TEST_RESULT_CHOICES, required=False
+        choices=PatientSample.SampleTestResultChoices.choices, required=False
     )
 
     icmr_category = ChoiceField(
-        choices=PatientSample.PATIENT_ICMR_CATEGORY, required=False
+        choices=PatientSample.PatientICMRCategory.choices, required=False
     )
 
     patient = ExternalIdSerializerField(
@@ -108,19 +108,17 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             is_completed = validated_data.get("result") in [1, 2]
             new_status = validated_data.get(
                 "status",
-                PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
+                PatientSample.SampleTestFlow["COMPLETED"].value
                 if is_completed
                 else None,
             )
-            choice = PatientSample.SAMPLE_TEST_FLOW_CHOICES[new_status - 1][1]
+            choice = PatientSample.SampleTestFlow(new_status).label
             if is_completed:
-                validated_data["status"] = PatientSample.SAMPLE_TEST_FLOW_MAP[
-                    "COMPLETED"
-                ]
+                validated_data["status"] = PatientSample.SampleTestFlow["COMPLETED"].value
         except KeyError:
             raise ValidationError({"status": ["is required"]})
         valid_choices = PatientSample.SAMPLE_FLOW_RULES[
-            PatientSample.SAMPLE_TEST_FLOW_CHOICES[instance.status - 1][1]
+            PatientSample.SampleTestFlow(instance.status).value
         ]
         if choice not in valid_choices:
             raise ValidationError(
@@ -146,7 +144,7 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             )
 
         if not instance.date_of_sample and validated_data.get("status") in [
-            PatientSample.SAMPLE_TEST_FLOW_MAP[key]
+            PatientSample.SampleTestFlow[key].value
             for key in [
                 "SENT_TO_COLLECTON_CENTRE",
                 "RECEIVED_AND_FORWARED",
@@ -156,9 +154,9 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             validated_data["date_of_sample"] = timezone.now()
         elif (
             validated_data.get("status")
-            == PatientSample.SAMPLE_TEST_FLOW_MAP["REQUEST_SUBMITTED"]
+            == PatientSample.SampleTestFlow["REQUEST_SUBMITTED"].value
         ):
-            validated_data["result"] = PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
+            validated_data["result"] = PatientSample.SampleTestResultChoices["AWAITING"].value
         elif (
             validated_data.get("result") is not None
             and validated_data.get("date_of_result") is None
