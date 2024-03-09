@@ -18,7 +18,6 @@ from care.facility.models import (
     MedicineAdministration,
     Prescription,
     PrescriptionType,
-    generate_choices,
 )
 from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -33,7 +32,7 @@ def inverse_choices(choices):
     return output
 
 
-inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
+# inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):

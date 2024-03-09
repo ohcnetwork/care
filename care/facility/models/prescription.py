@@ -1,9 +1,8 @@
-import enum
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
@@ -13,42 +12,75 @@ from care.utils.models.base import BaseModel
 from care.utils.models.validators import dosage_validator
 
 
-class FrequencyEnum(enum.Enum):
-    STAT = "Immediately"
-    OD = "once daily"
-    HS = "Night only"
-    BD = "Twice daily"
-    TID = "8th hourly"
-    QID = "6th hourly"
-    Q4H = "4th hourly"
-    QOD = "Alternate day"
-    QWK = "Once a week"
+# class FrequencyEnum(enum.Enum):
+#     STAT = "Immediately"
+#     OD = "once daily"
+#     HS = "Night only"
+#     BD = "Twice daily"
+#     TID = "8th hourly"
+#     QID = "6th hourly"
+#     Q4H = "4th hourly"
+#     QOD = "Alternate day"
+#     QWK = "Once a week"
+#
+#
+# class Routes(enum.Enum):
+#     ORAL = "Oral"
+#     IV = "IV"
+#     IM = "IM"
+#     SC = "S/C"
+#     INHALATION = "Inhalation"
+#     NASOGASTRIC = "Nasogastric/Gastrostomy tube"
+#     INTRATHECAL = "intrathecal injection"
+#     TRANSDERMAL = "Transdermal"
+#     RECTAL = "Rectal"
+#
+#
+# class PrescriptionType(enum.Enum):
+#     DISCHARGE = "DISCHARGE"
+#     REGULAR = "REGULAR"
+#
+#
+# def generate_choices(enum_class):
+#     return [(tag.name, tag.value) for tag in enum_class]
+#
+#
+# class MedibaseMedicineType(enum.Enum):
+#     BRAND = "brand"
+#     GENERIC = "generic"
+
+class FrequencyChoices(models.TextChoices):
+    STAT = "STAT", _("Immediately")
+    OD = "OD", _("Once daily")
+    HS = "HS", _("Night only")
+    BD = "BD", _("Twice daily")
+    TID = "TID", _("8th hourly")
+    QID = "QID", _("6th hourly")
+    Q4H = "Q4H", _("4th hourly")
+    QOD = "QOD", _("Alternate day")
+    QWK = "QWK", _("Once a week")
 
 
-class Routes(enum.Enum):
-    ORAL = "Oral"
-    IV = "IV"
-    IM = "IM"
-    SC = "S/C"
-    INHALATION = "Inhalation"
-    NASOGASTRIC = "Nasogastric/Gastrostomy tube"
-    INTRATHECAL = "intrathecal injection"
-    TRANSDERMAL = "Transdermal"
-    RECTAL = "Rectal"
+class RoutesChoices(models.TextChoices):
+    ORAL = "ORAL", _("Oral")
+    IV = "IV", _("IV")
+    IM = "IM", _("IM")
+    SC = "SC", _("S/C")
+    INHALATION = "INHALATION", _("Inhalation")
+    NASOGASTRIC = "NASOGASTRIC", _("Nasogastric/Gastrostomy tube")
+    INTRATHECAL = "INTRATHECAL", _("Intrathecal injection")
+    TRANSDERMAL = "TRANSDERMAL", _("Transdermal")
+    RECTAL = "RECTAL", _("Rectal")
 
 
-class PrescriptionType(enum.Enum):
-    DISCHARGE = "DISCHARGE"
-    REGULAR = "REGULAR"
+class PrescriptionType(models.TextChoices):
+    DISCHARGE = "DISCHARGE", _("Discharge")
+    REGULAR = "REGULAR", _("Regular")
 
 
-def generate_choices(enum_class):
-    return [(tag.name, tag.value) for tag in enum_class]
-
-
-class MedibaseMedicineType(enum.Enum):
-    BRAND = "brand"
-    GENERIC = "generic"
+class MedibaseMedicineType(models.TextChoices):
+    BRAND = "BRAND", _("Brand")
+    GENERIC = "GENERIC", _("Generic")
 
 
 class MedibaseMedicine(BaseModel):
@@ -61,7 +93,7 @@ class MedibaseMedicine(BaseModel):
     )
     type = models.CharField(
         max_length=16,
-        choices=generate_choices(MedibaseMedicineType),
+        choices=MedibaseMedicineType.choices,
         blank=False,
         null=False,
         db_index=True,
@@ -85,7 +117,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     prescription_type = models.CharField(
         max_length=100,
         default=PrescriptionType.REGULAR.value,
-        choices=generate_choices(PrescriptionType),
+        choices=PrescriptionType.choices,
     )
 
     medicine = models.ForeignKey(
@@ -97,7 +129,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     medicine_old = models.CharField(max_length=1023, blank=False, null=True)
     route = models.CharField(
         max_length=100,
-        choices=[(tag.name, tag.value) for tag in Routes],
+        choices=RoutesChoices.choices,
         blank=True,
         null=True,
     )
@@ -110,7 +142,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     # non prn fields
     frequency = models.CharField(
         max_length=100,
-        choices=[(tag.name, tag.value) for tag in FrequencyEnum],
+        choices=FrequencyChoices.choices,
         blank=True,
         null=True,
     )
