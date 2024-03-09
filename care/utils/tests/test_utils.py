@@ -10,17 +10,16 @@ from pytz import unicode
 from rest_framework import status
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    DISEASE_CHOICES_MAP,
+    CategoryChoices,
     SymptomChoices,
     Disease,
-    DiseaseStatusEnum,
+    DiseaseStatus,
     Facility,
     LocalBody,
     PatientConsultation,
     PatientRegistration,
     User,
-    Ward,
+    Ward, DISEASE_CHOICES_MAP,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -279,7 +278,7 @@ class TestUtils:
             {
                 "facility": facility,
                 "disease_status": getattr(
-                    DiseaseStatusEnum, patient_data["disease_status"]
+                    DiseaseStatus, patient_data["disease_status"]
                 ).value,
             }
         )
@@ -303,10 +302,10 @@ class TestUtils:
         return {
             "patient": cls.patient,
             "facility": cls.facility,
-            "symptoms": [SymptomChoices.ASYMPTOMATIC, SymptomChoices.FEVER]
+            "symptoms": [SymptomChoices.ASYMPTOMATIC, SymptomChoices.FEVER],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
-            "category": CATEGORY_CHOICES[0][0],
+            "category": CategoryChoices.COMFORT.value,
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",

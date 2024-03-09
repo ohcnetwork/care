@@ -10,8 +10,7 @@ from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
 from care.facility.models import (
-    DISEASE_CHOICES,
-    DiseaseStatusEnum,
+    DiseaseChoices,
     District,
     Facility,
     FacilityBaseModel,
@@ -29,8 +28,8 @@ from care.facility.models.mixins.permissions.patient import (
     PatientPermissionMixin,
 )
 from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
+    BloodGroupChoices,
+    DiseaseStatus,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
@@ -179,7 +178,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     blood_group = models.CharField(
-        choices=BLOOD_GROUP_CHOICES,
+        choices=BloodGroupChoices.choices,
         null=True,
         blank=False,
         max_length=4,
@@ -260,8 +259,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     )
 
     disease_status = models.IntegerField(
-        choices=DISEASE_STATUS_CHOICES,
-        default=1,
+        choices=DiseaseStatus.choices,
+        default=DiseaseStatus.SUSPECTED,
         blank=True,
         verbose_name="Disease Status",
     )
@@ -467,8 +466,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         return self.patientteleconsultation_set.order_by("-id")
 
     def _alias_recovery_to_recovered(self) -> None:
-        if self.disease_status == DiseaseStatusEnum.RECOVERY.value:
-            self.disease_status = DiseaseStatusEnum.RECOVERED.value
+        if self.disease_status == DiseaseStatus.RECOVERY.value:
+            self.disease_status = DiseaseStatus.RECOVERED.value
 
     def save(self, *args, **kwargs) -> None:
         """
@@ -693,7 +692,7 @@ class Disease(models.Model):
         on_delete=models.CASCADE,
         related_name="medical_history",
     )
-    disease = models.IntegerField(choices=DISEASE_CHOICES)
+    disease = models.IntegerField(choices=DiseaseChoices.choices)
     details = models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
 
@@ -712,7 +711,7 @@ class Disease(models.Model):
         return self.patient.name + " - " + self.get_disease_display()
 
     def get_disease_display(self):
-        return DISEASE_CHOICES[self.disease - 1][1]
+        return DiseaseChoices(self.disease).label
 
 
 class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):

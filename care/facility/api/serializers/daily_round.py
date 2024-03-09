@@ -11,15 +11,15 @@ from care.facility.events.handler import create_consultation_events
 
 # from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
     PatientRegistration,
 )
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    CURRENT_HEALTH_CHOICES,
+    CurrentHealthChoices,
     SymptomChoices,
     SuggestionChoices,
 )
@@ -36,10 +36,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         choices=SymptomChoices.choices, required=False
     )
     deprecated_covid_category = ChoiceField(
-        choices=COVID_CATEGORY_CHOICES, required=False
+        choices=CovidCategoryChoices.choices, required=False
     )  # Deprecated
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
+    patient_category = ChoiceField(choices=CategoryChoices.choices, required=False)
+    current_health = ChoiceField(choices=CurrentHealthChoices.choices, required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices.choices, write_only=True, required=False
@@ -146,7 +146,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         instance.consultation.save(update_fields=["last_updated_by_telemedicine"])
 
         NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED,
+            event=Notification.EventChoices.PATIENT_CONSULTATION_UPDATE_UPDATED,
             caused_by=self.context["request"].user,
             caused_object=instance,
             facility=instance.consultation.patient.facility,
@@ -160,7 +160,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         consultation.save()
 
         NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED,
+            event=Notification.EventChoices.PATIENT_CONSULTATION_UPDATE_CREATED,
             caused_by=self.context["request"].user,
             caused_object=daily_round_obj,
             facility=daily_round_obj.consultation.patient.facility,
@@ -190,7 +190,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             if (
                 validated_data.get("rounds_type")
-                == DailyRound.RoundsType.TELEMEDICINE.value
+                == DailyRound.RoundsTypeChoices.TELEMEDICINE.value
                 and consultation.suggestion != SuggestionChoices.DC
             ):
                 raise ValidationError(
@@ -215,7 +215,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                         )
 
                     rounds_type = validated_data.get("rounds_type")
-                    if rounds_type == DailyRound.RoundsType.NORMAL.value:
+                    if rounds_type == DailyRound.RoundsTypeChoices.NORMAL.value:
                         fields_to_clone = [
                             "consultation_id",
                             "patient_category",
@@ -300,7 +300,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 ]
             )
 
-            if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
+            if daily_round_obj.rounds_type != DailyRound.RoundsTypeChoices.AUTOMATED.value:
                 self.update_last_daily_round(daily_round_obj)
 
             create_consultation_events(

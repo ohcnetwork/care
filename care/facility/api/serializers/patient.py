@@ -17,7 +17,7 @@ from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
 from care.facility.models import (
-    DISEASE_CHOICES,
+    DiseaseChoices,
     GENDER_CHOICES,
     Disease,
     Facility,
@@ -31,10 +31,9 @@ from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
-    BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-    NewDischargeReasonEnum,
+    BloodGroupChoices,
+    DiseaseStatus,
+    NewDischargeReasons,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
@@ -76,9 +75,9 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     last_consultation = PatientConsultationSerializer(read_only=True)
 
-    blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
+    blood_group = ChoiceField(choices=BloodGroupChoices.choices, required=True)
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED.value
     )
     source = ChoiceField(choices=PatientRegistration.SourceChoices.choices)
 
@@ -157,7 +156,7 @@ class PatientContactDetailsSerializer(serializers.ModelSerializer):
 
 class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
-        disease = ChoiceField(choices=DISEASE_CHOICES)
+        disease = ChoiceField(choices=DiseaseChoices.choices)
         details = serializers.CharField(required=False, allow_blank=True)
 
     class PatientTeleConsultationSerializer(serializers.ModelSerializer):
@@ -186,7 +185,7 @@ class PatientDetailSerializer(PatientListSerializer):
         default=PatientRegistration.SourceChoices.CARE,
     )
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED.value
     )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)
@@ -326,7 +325,7 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.save()
 
         NotificationGenerator(
-            event=Notification.Event.PATIENT_CREATED,
+            event=Notification.EventChoices.PATIENT_CREATED,
             caused_by=self.context["request"].user,
             caused_object=patient,
             facility=patient.facility,
@@ -382,7 +381,7 @@ class PatientDetailSerializer(PatientListSerializer):
             patient.save()
 
             NotificationGenerator(
-                event=Notification.Event.PATIENT_UPDATED,
+                event=Notification.EventChoices.PATIENT_UPDATED,
                 caused_by=self.context["request"].user,
                 caused_object=patient,
                 facility=patient.facility,
@@ -467,7 +466,7 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
             if consultation:
                 consultation.discharge_date = now()
-                consultation.new_discharge_reason = NewDischargeReasonEnum.REFERRED
+                consultation.new_discharge_reason = NewDischargeReasons.REFERRED
                 consultation.current_bed = None
                 consultation.save()
 

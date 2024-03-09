@@ -41,9 +41,9 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
-    DISCHARGE_REASON_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
+    DischargeReasonChoices,
     FacilityTypes,
     BedTypeChoices,
     DailyRound,
@@ -62,8 +62,8 @@ from care.facility.models.icd11_diagnosis import (
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
-    DISEASE_STATUS_DICT,
-    NewDischargeReasonEnum,
+    DiseaseStatus,
+    NewDischargeReasons,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -79,7 +79,7 @@ from config.authentication import (
 
 REVERSE_FACILITY_TYPES = covert_choice_dict_class(FacilityTypes)
 REVERSE_BED_TYPES = covert_choice_dict_class(BedTypeChoices)
-DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
+DISCHARGE_REASONS = DischargeReasonChoices.values
 VENTILATOR_CHOICES = covert_choice_dict_class(DailyRound.VentilatorInterfaceChoices)
 
 

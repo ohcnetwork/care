@@ -1,31 +1,38 @@
 import enum
 from types import SimpleNamespace
 
-from django.db.models import IntegerChoices
+from django.db.models import IntegerChoices, TextChoices
 from django.utils.translation import gettext_lazy as _
 
 
-def reverse_choices(choices):
-    output = {}
-    for choice in choices:
-        output[choice[0]] = choice[1]
-    return output
+# def reverse_choices(choices):
+#     output = {}
+#     for choice in choices:
+#         output[choice[0]] = choice[1]
+#     return output
+#
+#
+# def reverse_choices_class(choices_class):
+#     output = {}
+#     for choice in choices_class:
+#         output[choice.value] = choice.label
+#     return output
 
 
-def reverse_choices_class(choices_class):
-    output = {}
-    for choice in choices_class:
-        output[choice.value] = choice.name
-    return output
+# CURRENT_HEALTH_CHOICES = [
+#     (0, "NO DATA"),
+#     (1, "REQUIRES VENTILATOR"),
+#     (2, "WORSE"),
+#     (3, "STATUS QUO"),
+#     (4, "BETTER"),
+# ]
 
-
-CURRENT_HEALTH_CHOICES = [
-    (0, "NO DATA"),
-    (1, "REQUIRES VENTILATOR"),
-    (2, "WORSE"),
-    (3, "STATUS QUO"),
-    (4, "BETTER"),
-]
+class CurrentHealthChoices(IntegerChoices):
+    NO_DATA = 0, _("No Data")
+    REQUIRES_VENTILATOR = 1, _("Requires Ventilator")
+    WORSE = 2, _("Worse")
+    STATUS_QUO = 3, _("Status Quo")
+    BETTER = 4, _("Better")
 
 
 # SYMPTOM_CHOICES = [
@@ -64,6 +71,7 @@ CURRENT_HEALTH_CHOICES = [
 #     (34, "NEW LOSS OF SMELL"),
 # ]
 
+
 class SymptomChoices(IntegerChoices):
     ASYMPTOMATIC = 1, _("Asymptomatic")
     FEVER = 2, _("Fever")
@@ -100,42 +108,87 @@ class SymptomChoices(IntegerChoices):
     NEW_LOSS_OF_SMELL = 34, _("New Loss of Smell")
 
 
-DISEASE_CHOICES_MAP = {
-    "NO": 1,
-    "Diabetes": 2,
-    "Heart Disease": 3,
-    "HyperTension": 4,
-    "Kidney Diseases": 5,
-    "Lung Diseases/Asthma": 6,
-    "Cancer": 7,
-    "OTHER": 8,
-}
-DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
+# DISEASE_CHOICES_MAP = {
+#     "NO": 1,
+#     "Diabetes": 2,
+#     "Heart Disease": 3,
+#     "HyperTension": 4,
+#     "Kidney Diseases": 5,
+#     "Lung Diseases/Asthma": 6,
+#     "Cancer": 7,
+#     "OTHER": 8,
+# }
+# DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
+#
+# COVID_CATEGORY_CHOICES = [
+#     ("ASYM", "ASYMPTOMATIC"),
+#     ("Mild", "Category-A"),
+#     ("Moderate", "Category-B"),
+#     ("Severe", "Category-C"),
+#     (None, "UNCLASSIFIED"),
+# ]  # Deprecated
 
-COVID_CATEGORY_CHOICES = [
-    ("ASYM", "ASYMPTOMATIC"),
-    ("Mild", "Category-A"),
-    ("Moderate", "Category-B"),
-    ("Severe", "Category-C"),
-    (None, "UNCLASSIFIED"),
-]  # Deprecated
+# CATEGORY_CHOICES = [
+#     ("Comfort", "Comfort Care"),
+#     ("Stable", "Stable"),
+#     ("Moderate", "Abnormal"),
+#     ("Critical", "Critical"),
+# ]
+#
+# DISCHARGE_REASON_CHOICES = [
+#     ("REC", "Recovered"),
+#     ("REF", "Referred"),
+#     ("EXP", "Expired"),
+#     ("LAMA", "LAMA"),
+# ]
 
-CATEGORY_CHOICES = [
-    ("Comfort", "Comfort Care"),
-    ("Stable", "Stable"),
-    ("Moderate", "Abnormal"),
-    ("Critical", "Critical"),
-]
-
-DISCHARGE_REASON_CHOICES = [
-    ("REC", "Recovered"),
-    ("REF", "Referred"),
-    ("EXP", "Expired"),
-    ("LAMA", "LAMA"),
-]
+class DiseaseChoices(IntegerChoices):
+    NO = 1, _("No")
+    DIABETES = 2, _("Diabetes")
+    HEART_DISEASE = 3, _("Heart Disease")
+    HYPERTENSION = 4, _("HyperTension")
+    KIDNEY_DISEASES = 5, _("Kidney Diseases")
+    LUNG_DISEASES_ASTHMA = 6, _("Lung Diseases/Asthma")
+    CANCER = 7, _("Cancer")
+    OTHER = 8, _("Other")
 
 
-class NewDischargeReasonEnum(IntegerChoices):
+DISEASE_CHOICES_MAP = {choice.label: choice.value for choice in DiseaseChoices}
+
+
+class CovidCategoryChoices(TextChoices): # Deprecated
+    ASYM = "ASYM", _("Asymptomatic")
+    MILD = "Mild", _("Category-A")
+    MODERATE = "Moderate", _("Category-B")
+    SEVERE = "Severe", _("Category-C")
+    UNCLASSIFIED = None, _("Unclassified")
+
+
+class CategoryChoices(TextChoices):
+    COMFORT = "Comfort", _("Comfort Care")
+    STABLE = "Stable", _("Stable")
+    MODERATE = "Moderate", _("Abnormal")
+    CRITICAL = "Critical", _("Critical")
+
+
+class DischargeReasonChoices(TextChoices):
+    REC = "REC", _("Recovered")
+    REF = "REF", _("Referred")
+    EXP = "EXP", _("Expired")
+    LAMA = "LAMA", _("LAMA")
+
+
+# class NewDischargeReasonEnum(IntegerChoices):
+#     UNKNOWN = -1, _("Unknown")
+#     RECOVERED = 1, _("Recovered")
+#     REFERRED = 2, _("Referred")
+#     EXPIRED = 3, _("Expired")
+#     LAMA = 4, _("LAMA")
+#
+#
+# NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
+
+class NewDischargeReasons(IntegerChoices):
     UNKNOWN = -1, _("Unknown")
     RECOVERED = 1, _("Recovered")
     REFERRED = 2, _("Referred")
@@ -143,34 +196,55 @@ class NewDischargeReasonEnum(IntegerChoices):
     LAMA = 4, _("LAMA")
 
 
-NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
+#
+# class DiseaseStatusEnum(enum.IntEnum):
+#     SUSPECTED = 1
+#     POSITIVE = 2
+#     NEGATIVE = 3
+#     RECOVERY = 4
+#     RECOVERED = 5
+#     EXPIRED = 6
+#
+#
+# DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
+
+# DISEASE_STATUS_DICT = {}                                #
+# for i in DISEASE_STATUS_CHOICES:
+#     DISEASE_STATUS_DICT[i[1]] = i[0]
+
+# BLOOD_GROUP_CHOICES = [
+#     ("A+", "A+"),
+#     ("A-", "A-"),
+#     ("B+", "B+"),
+#     ("B-", "B-"),
+#     ("AB+", "AB+"),
+#     ("AB-", "AB-"),
+#     ("O+", "O+"),
+#     ("O-", "O-"),
+#     ("UNK", "UNKNOWN"),
+# ]
+
+class DiseaseStatus(IntegerChoices):
+    SUSPECTED = 1, _("Suspected")
+    POSITIVE = 2, _("Positive")
+    NEGATIVE = 3, _("Negative")
+    RECOVERY = 4, _("Recovery")
+    RECOVERED = 5, _("Recovered")
+    EXPIRED = 6, _("Expired")
 
 
-class DiseaseStatusEnum(enum.IntEnum):
-    SUSPECTED = 1
-    POSITIVE = 2
-    NEGATIVE = 3
-    RECOVERY = 4
-    RECOVERED = 5
-    EXPIRED = 6
+class BloodGroupChoices(TextChoices):
+    A_POSITIVE = "A+", _("A+")
+    A_NEGATIVE = "A-", _("A-")
+    B_POSITIVE = "B+", _("B+")
+    B_NEGATIVE = "B-", _("B-")
+    AB_POSITIVE = "AB+", _("AB+")
+    AB_NEGATIVE = "AB-", _("AB-")
+    O_POSITIVE = "O+", _("O+")
+    O_NEGATIVE = "O-", _("O-")
+    UNKNOWN = "UNK", _("Unknown")
 
 
-DISEASE_STATUS_CHOICES = [(e.value, e.name) for e in DiseaseStatusEnum]
-DISEASE_STATUS_DICT = {}
-for i in DISEASE_STATUS_CHOICES:
-    DISEASE_STATUS_DICT[i[1]] = i[0]
-
-BLOOD_GROUP_CHOICES = [
-    ("A+", "A+"),
-    ("A-", "A-"),
-    ("B+", "B+"),
-    ("B-", "B-"),
-    ("AB+", "AB+"),
-    ("AB-", "AB-"),
-    ("O+", "O+"),
-    ("O-", "O-"),
-    ("UNK", "UNKNOWN"),
-]
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
@@ -203,11 +277,11 @@ class BedTypeChoices(IntegerChoices):
     REGULAR = 7, _('Regular')
 
 
-REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
-REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
-REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
-REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-REVERSE_BED_TYPE_CHOICES = reverse_choices_class(BedTypeChoices)
-REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
-REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
-REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)
+# REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
+# REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
+# REVERSE_COVID_CATEGORY_CHOICES = reverse_choices_class(CovidCategoryChoices)  # Deprecated
+# REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
+# REVERSE_BED_TYPE_CHOICES = reverse_choices_class(BedTypeChoices)
+# REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
+# REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
+# REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)

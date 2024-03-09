@@ -7,16 +7,16 @@ from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
     PatientBaseModel,
 )
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
-    DISCHARGE_REASON_CHOICES,
-    NEW_DISCHARGE_REASON_CHOICES,
+    DischargeReasonChoices,
+    NewDischargeReasons,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SymptomChoices,
@@ -80,14 +80,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     other_symptoms = models.TextField(default="", blank=True)
     symptoms_onset_date = models.DateTimeField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
-        choices=COVID_CATEGORY_CHOICES,
+        choices=CovidCategoryChoices.choices,
         max_length=8,
         default=None,
         blank=True,
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CategoryChoices.choices, max_length=8, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -132,14 +132,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     icu_admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     discharge_reason = models.CharField(
-        choices=DISCHARGE_REASON_CHOICES,
+        choices=DischargeReasonChoices.choices,
         max_length=4,
         default=None,
         blank=True,
         null=True,
     )
     new_discharge_reason = models.SmallIntegerField(
-        choices=NEW_DISCHARGE_REASON_CHOICES,
+        choices=NewDischargeReasons.choices,
         default=None,
         blank=True,
         null=True,

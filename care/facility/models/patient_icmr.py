@@ -3,7 +3,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from care.facility.models import (
-    DISEASE_CHOICES_MAP,
+    DiseaseChoices,
     SymptomChoices,
     PatientConsultation,
     PatientContactDetails,
@@ -189,7 +189,7 @@ class PatientSampleICMR(PatientSample):
         return [
             item.disease
             for item in self.patient.medical_history.all()
-            if item.disease != DISEASE_CHOICES_MAP["NO"]
+            if item.disease != DiseaseChoices["NO"]
         ]
 
     @property

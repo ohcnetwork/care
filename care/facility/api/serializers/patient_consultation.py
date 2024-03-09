@@ -19,8 +19,8 @@ from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
     Facility,
     PatientRegistration,
     Prescription,
@@ -35,7 +35,7 @@ from care.facility.models.icd11_diagnosis import (
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
     SymptomChoices,
-    NewDischargeReasonEnum,
+    NewDischargeReasons,
     RouteToFacility,
     SuggestionChoices,
 )
@@ -64,9 +64,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     symptoms = serializers.MultipleChoiceField(choices=SymptomChoices.choices)
     deprecated_covid_category = ChoiceField(
-        choices=COVID_CATEGORY_CHOICES, required=False
+        choices=CovidCategoryChoices.choices, required=False
     )
-    category = ChoiceField(choices=CATEGORY_CHOICES, required=True)
+    category = ChoiceField(choices=CategoryChoices.choices, required=True)
 
     referred_to_object = FacilityBasicInfoSerializer(
         source="referred_to", read_only=True
@@ -117,7 +117,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     )
 
     new_discharge_reason = serializers.ChoiceField(
-        choices=NewDischargeReasonEnum.choices, read_only=True, required=False
+        choices=NewDischargeReasons.choices, read_only=True, required=False
     )
     discharge_notes = serializers.CharField(read_only=True)
 
@@ -252,18 +252,18 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
                 NotificationGenerator(
-                    event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                    event=Notification.EventChoices.PATIENT_CONSULTATION_ASSIGNMENT,
                     caused_by=self.context["request"].user,
                     caused_object=instance,
                     facility=instance.patient.facility,
                     notification_mediums=[
-                        Notification.Medium.SYSTEM,
-                        Notification.Medium.WHATSAPP,
+                        Notification.MediumChoices.SYSTEM,
+                        Notification.MediumChoices.WHATSAPP,
                     ],
                 ).generate()
 
         NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_UPDATED,
+            event=Notification.EventChoices.PATIENT_CONSULTATION_UPDATED,
             caused_by=self.context["request"].user,
             caused_object=consultation,
             facility=consultation.patient.facility,
@@ -428,7 +428,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         patient.save()
         NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_CREATED,
+            event=Notification.EventChoices.PATIENT_CONSULTATION_CREATED,
             caused_by=self.context["request"].user,
             caused_object=consultation,
             facility=patient.facility,
@@ -443,13 +443,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if consultation.assigned_to:
             NotificationGenerator(
-                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                event=Notification.EventChoices.PATIENT_CONSULTATION_ASSIGNMENT,
                 caused_by=self.context["request"].user,
                 caused_object=consultation,
                 facility=consultation.patient.facility,
                 notification_mediums=[
-                    Notification.Medium.SYSTEM,
-                    Notification.Medium.WHATSAPP,
+                    Notification.MediumChoices.SYSTEM,
+                    Notification.MediumChoices.WHATSAPP,
                 ],
             ).generate()
 
@@ -601,7 +601,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
 class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     new_discharge_reason = serializers.ChoiceField(
-        choices=NewDischargeReasonEnum.choices, required=True
+        choices=NewDischargeReasons.choices, required=True
     )
     discharge_notes = serializers.CharField(required=False, allow_blank=True)
 
@@ -661,11 +661,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     ],
                 }
             )
-        if attrs.get("new_discharge_reason") != NewDischargeReasonEnum.EXPIRED:
+        if attrs.get("new_discharge_reason") != NewDischargeReasons.EXPIRED:
             attrs.pop("death_datetime", None)
             attrs.pop("death_confirmed_doctor", None)
 
-        if attrs.get("new_discharge_reason") == NewDischargeReasonEnum.EXPIRED:
+        if attrs.get("new_discharge_reason") == NewDischargeReasons.EXPIRED:
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
             if attrs.get("death_datetime") > now():

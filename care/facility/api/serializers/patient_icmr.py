@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from care.facility.models import DISEASE_CHOICES, SAMPLE_TYPE_CHOICES, SymptomChoices
+from care.facility.models import DiseaseChoices, SAMPLE_TYPE_CHOICES, SymptomChoices
 from care.facility.models.patient_icmr import (
     PatientConsultationICMR,
     PatientIcmr,
@@ -133,7 +133,7 @@ class ICMRMedicalConditionSerializer(serializers.ModelSerializer):
     hospital_pincode = serializers.CharField(source="consultation.facility.pincode")
 
     medical_conditions_list = serializers.ListSerializer(
-        child=ChoiceField(choices=DISEASE_CHOICES)
+        child=ChoiceField(choices=DiseaseChoices.choices)
     )
 
     class Meta:

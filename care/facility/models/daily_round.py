@@ -7,8 +7,8 @@ from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
+    CategoryChoices,
+    CovidCategoryChoices,
     PatientBaseModel,
 )
 from care.facility.models.bed import AssetBed
@@ -23,7 +23,7 @@ from care.facility.models.json_schema.daily_round import (
     PAIN_SCALE_ENHANCED,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SymptomChoices
+from care.facility.models.patient_base import CurrentHealthChoices, SymptomChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -216,17 +216,17 @@ class DailyRound(PatientBaseModel):
     )
     other_symptoms = models.TextField(default="", blank=True)
     deprecated_covid_category = models.CharField(
-        choices=COVID_CATEGORY_CHOICES,
+        choices=CovidCategoryChoices.choices,
         max_length=8,
         default=None,
         blank=True,
         null=True,
     )  # Deprecated
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CategoryChoices.choices, max_length=8, blank=False, null=True
     )
     current_health = models.IntegerField(
-        default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
+        default=CurrentHealthChoices.NO_DATA, choices=CurrentHealthChoices.choices, blank=True
     )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
