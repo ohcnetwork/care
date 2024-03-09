@@ -189,7 +189,7 @@ class PatientSampleICMR(PatientSample):
         return [
             item.disease
             for item in self.patient.medical_history.all()
-            if item.disease != DiseaseChoices["NO"]
+            if item.disease != DiseaseChoices["NO"].value
         ]
 
     @property
