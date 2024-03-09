@@ -20,8 +20,8 @@ from care.facility.api.serializers.shifting import (
     has_facility_permission,
 )
 from care.facility.models import (
-    BREATHLESSNESS_CHOICES,
-    SHIFTING_STATUS_CHOICES,
+    BreathlessnessLevelChoices,
+    ShiftingStatusChoices,
     ConsultationBed,
     PatientConsultation,
     ShiftingRequest,
@@ -29,8 +29,8 @@ from care.facility.models import (
     User,
 )
 from care.facility.models.patient_base import (
-    DISEASE_STATUS_DICT,
-    NewDischargeReasonEnum,
+    DiseaseStatus,
+    NewDischargeReasons,
 )
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -44,8 +44,9 @@ def inverse_choices(choices):
     return output
 
 
-inverse_shifting_status = inverse_choices(SHIFTING_STATUS_CHOICES)
-inverse_breathlessness_level = inverse_choices(BREATHLESSNESS_CHOICES)
+inverse_shifting_status = inverse_choices(ShiftingStatusChoices.choices)
+inverse_breathlessness_level = inverse_choices(BreathlessnessLevelChoices.choices)
+inverse_diseases_status = inverse_choices(DiseaseStatus.choices)
 
 
 class ShiftingFilterBackend(DRYPermissionFiltersBase):
@@ -58,7 +59,7 @@ class ShiftingFilterSet(filters.FilterSet):
     breathlessness_level = CareChoiceFilter(choice_dict=inverse_breathlessness_level)
 
     disease_status = CareChoiceFilter(
-        choice_dict=DISEASE_STATUS_DICT, field_name="patient__disease_status"
+        choice_dict=inverse_diseases_status, field_name="patient__disease_status"
     )
     facility = filters.UUIDFilter(field_name="facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")

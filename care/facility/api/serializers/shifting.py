@@ -11,11 +11,11 @@ from care.facility.api.serializers.patient import (
     PatientListSerializer,
 )
 from care.facility.models import (
-    BREATHLESSNESS_CHOICES,
-    CATEGORY_CHOICES,
+    BreathlessnessLevelChoices,
+    CategoryChoices,
     FacilityTypes,
-    SHIFTING_STATUS_CHOICES,
-    VEHICLE_CHOICES,
+    ShiftingStatusChoices,
+    VehicleTypeChoices,
     Facility,
     PatientRegistration,
     ShiftingRequest,
@@ -24,22 +24,12 @@ from care.facility.models import (
 )
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_base import NewDischargeReasons
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-
-
-def inverse_choices(choices):
-    output = {}
-    for choice in choices:
-        output[choice[1]] = choice[0]
-    return output
-
-
-REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
 
 
 def has_facility_permission(user, facility):
@@ -71,7 +61,7 @@ def discharge_patient(patient: PatientRegistration):
         PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
     )
     if last_consultation:
-        reason = NewDischargeReasonEnum.REFERRED
+        reason = NewDischargeReasons.REFERRED
         notes = "Patient Shifted to another facility"
         last_consultation.new_discharge_reason = reason
         last_consultation.discharge_notes = notes
@@ -86,85 +76,85 @@ def discharge_patient(patient: PatientRegistration):
 
 class ShiftingSerializer(serializers.ModelSerializer):
     LIMITED_SHIFTING_STATUS = [
-        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        ShiftingStatusChoices[x].value
         for x in [
             "PENDING",
-            "ON HOLD",
+            "ON_HOLD",
             "APPROVED",
             "REJECTED",
-            # "DESTINATION APPROVED",
-            # "DESTINATION REJECTED",
-            "TRANSPORTATION TO BE ARRANGED",
-            "PATIENT TO BE PICKED UP",
-            "TRANSFER IN PROGRESS",
+            # "DESTINATION_APPROVED",
+            # "DESTINATION_REJECTED",
+            "TRANSPORTATION_TO_BE_ARRANGED",
+            "PATIENT_TO_BE_PICKED_UP",
+            "TRANSFER_IN_PROGRESS",
             "COMPLETED",
-            "PATIENT EXPIRED",
+            "PATIENT_EXPIRED",
             "CANCELLED",
         ]
     ]
 
-    LIMITED_RECIEVING_STATUS = [
-        REVERSE_SHIFTING_STATUS_CHOICES[x]
+    LIMITED_RECEIVING_STATUS = [
+        ShiftingStatusChoices[x].value
         for x in [
             # "PENDING",
-            # "ON HOLD",
+            # "ON_HOLD",
             # "APPROVED",
             # "REJECTED",
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            # "TRANSPORTATION TO BE ARRANGED",
-            # "PATIENT TO BE PICKED UP",
-            # "TRANSFER IN PROGRESS",
+            "DESTINATION_APPROVED",
+            "DESTINATION_REJECTED",
+            # "TRANSPORTATION_TO_BE_ARRANGED",
+            # "PATIENT_TO_BE_PICKED_UP",
+            # "TRANSFER_IN_PROGRESS",
             "COMPLETED",
-            # "PATIENT EXPIRED",
+            # "PATIENT_EXPIRED",
             # "CANCELLED",
         ]
     ]
 
     PEACETIME_SHIFTING_STATUS = [
-        REVERSE_SHIFTING_STATUS_CHOICES[x]
+        ShiftingStatusChoices[x].value
         for x in [
             # "PENDING",
-            "ON HOLD",
+            "ON_HOLD",
             "APPROVED",
             "REJECTED",
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            "TRANSPORTATION TO BE ARRANGED",
-            "PATIENT TO BE PICKED UP",
-            "TRANSFER IN PROGRESS",
+            "DESTINATION_APPROVED",
+            "DESTINATION_REJECTED",
+            "TRANSPORTATION_TO_BE_ARRANGED",
+            "PATIENT_TO_BE_PICKED_UP",
+            "TRANSFER_IN_PROGRESS",
             "COMPLETED",
-            "PATIENT EXPIRED",
+            "PATIENT_EXPIRED",
             "CANCELLED",
         ]
     ]
 
-    PEACETIME_RECIEVING_STATUS = [
-        REVERSE_SHIFTING_STATUS_CHOICES[x]
+    PEACETIME_RECEIVING_STATUS = [
+        ShiftingStatusChoices[x].value
         for x in [
             # "PENDING",
-            # "ON HOLD",
+            # "ON_HOLD",
             # "APPROVED",
             # "REJECTED",
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            # "TRANSPORTATION TO BE ARRANGED",
-            # "PATIENT TO BE PICKED UP",
-            # "TRANSFER IN PROGRESS",
+            "DESTINATION_APPROVED",
+            "DESTINATION_REJECTED",
+            # "TRANSPORTATION_TO_BE_ARRANGED",
+            # "PATIENT_TO_BE_PICKED_UP",
+            # "TRANSFER_IN_PROGRESS",
             "COMPLETED",
-            # "PATIENT EXPIRED",
+            # "PATIENT_EXPIRED",
             # "CANCELLED",
         ]
     ]
 
-    RECIEVING_REQUIRED_STATUS = [
-        REVERSE_SHIFTING_STATUS_CHOICES[x]
+    RECEIVING_REQUIRED_STATUS = [
+        ShiftingStatusChoices[x].value
         for x in [
-            "DESTINATION APPROVED",
-            "DESTINATION REJECTED",
-            "TRANSPORTATION TO BE ARRANGED",
-            "PATIENT TO BE PICKED UP",
-            "TRANSFER IN PROGRESS",
+            "DESTINATION_APPROVED",
+            "DESTINATION_REJECTED",
+            "TRANSPORTATION_TO_BE_ARRANGED",
+            "PATIENT_TO_BE_PICKED_UP",
+            "TRANSFER_IN_PROGRESS",
             "COMPLETED",
         ]
     ]
@@ -178,9 +168,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
     )
     patient_object = PatientListSerializer(source="patient", read_only=True)
 
-    status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
+    status = ChoiceField(choices=ShiftingStatusChoices.choices)
     breathlessness_level = ChoiceField(
-        choices=BREATHLESSNESS_CHOICES, required=False, allow_null=True
+        choices=BreathlessnessLevelChoices.choices, required=False, allow_null=True
     )
 
     origin_facility = ExternalIdSerializerField(
@@ -211,7 +201,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
         choices=FacilityTypes.choices, required=False, allow_null=True
     )
     preferred_vehicle_choice = ChoiceField(
-        choices=VEHICLE_CHOICES, required=False, allow_null=True
+        choices=VehicleTypeChoices.choices, required=False, allow_null=True
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
@@ -219,7 +209,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
     )
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    patient_category = ChoiceField(choices=CategoryChoices.choices, required=False)
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -239,9 +229,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
+        if instance.status == ShiftingStatusChoices["CANCELLED"].value:
             raise ValidationError("Permission Denied, Shifting request was cancelled.")
-        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+        elif instance.status == ShiftingStatusChoices["COMPLETED"].value:
             raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
@@ -266,9 +256,9 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if "status" in validated_data:
             status = validated_data["status"]
-            if status == REVERSE_SHIFTING_STATUS_CHOICES[
+            if status == ShiftingStatusChoices[
                 "CANCELLED"
-            ] and not has_facility_permission(user, instance.origin_facility):
+            ].value and not has_facility_permission(user, instance.origin_facility):
                 raise ValidationError({"status": ["Permission Denied"]})
 
             if settings.PEACETIME_MODE:
@@ -322,7 +312,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if (
             "status" in validated_data
-            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            and validated_data["status"] == ShiftingStatusChoices["COMPLETED"].value
         ):
             discharge_patient(instance.patient)
 
@@ -341,13 +331,13 @@ class ShiftingSerializer(serializers.ModelSerializer):
             and validated_data["status"] == 40
         ):
             NotificationGenerator(
-                event=Notification.Event.SHIFTING_UPDATED,
+                event=Notification.EventChoices.SHIFTING_UPDATED,
                 caused_by=self.context["request"].user,
                 caused_object=new_instance,
                 facility=new_instance.shifting_approving_facility,
                 notification_mediums=[
-                    Notification.Medium.SYSTEM,
-                    Notification.Medium.SMS,
+                    Notification.MediumChoices.SYSTEM,
+                    Notification.MediumChoices.SMS,
                 ],
             ).generate()
 
@@ -407,7 +397,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if (
             "status" in validated_data
-            and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            and validated_data["status"] == ShiftingStatusChoices["COMPLETED"].value
         ):
             discharge_patient(patient)
 
