@@ -6,11 +6,7 @@ from django.utils import timezone
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
-from care.facility.models import (
-    CategoryChoices,
-    CovidCategoryChoices,
-    PatientBaseModel,
-)
+from care.facility.models.base import PatientBaseModel
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -27,15 +23,6 @@ from care.users.models import User
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
-    SUGGESTION_CHOICES = [
-        (SuggestionChoices.HI, "HOME ISOLATION"),
-        (SuggestionChoices.A, "ADMISSION"),
-        (SuggestionChoices.R, "REFERRAL"),
-        (SuggestionChoices.OP, "OP CONSULTATION"),
-        (SuggestionChoices.DC, "DOMICILIARY CARE"),
-        (SuggestionChoices.DD, "DECLARE DEATH"),
-    ]
-    REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
     patient = models.ForeignKey(
         "PatientRegistration",
@@ -96,7 +83,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     investigation = JSONField(default=dict)
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
-    suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
+    suggestion = models.CharField(max_length=4, choices=SuggestionChoices.choices)
     route_to_facility = models.SmallIntegerField(
         choices=RouteToFacility.choices, blank=True, null=True
     )
@@ -251,7 +238,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         ),
         "category": lambda x: CategoryChoices(x).label if x in CategoryChoices.values else "-",
         "suggestion": (
-            lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
+            lambda x: SuggestionChoices(x).label if x in SuggestionChoices.values else "-"
         ),
     }
 

@@ -245,8 +245,13 @@ class BloodGroupChoices(TextChoices):
     UNKNOWN = "UNK", _("Unknown")
 
 
-SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
-
+class SuggestionChoices(TextChoices):
+    HI = "HI", _("HOME ISOLATION")
+    A = "A", _("ADMISSION")
+    R = "R", _("REFERRAL")
+    OP = "OP", _("OP CONSULTATION")
+    DC = "DC", _("DOMICILIARY CARE")
+    DD = "DD", _("DECLARE DEATH")
 
 class RouteToFacility(IntegerChoices):
     OUTPATIENT = 10, _("Outpatient/Emergency Room")
