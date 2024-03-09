@@ -77,7 +77,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     blood_group = ChoiceField(choices=BloodGroupChoices.choices, required=True)
     disease_status = ChoiceField(
-        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED.value
+        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED
     )
     source = ChoiceField(choices=PatientRegistration.SourceChoices.choices)
 
@@ -185,7 +185,7 @@ class PatientDetailSerializer(PatientListSerializer):
         default=PatientRegistration.SourceChoices.CARE,
     )
     disease_status = ChoiceField(
-        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED.value
+        choices=DiseaseStatus.choices, default=DiseaseStatus.SUSPECTED
     )
 
     meta_info = PatientMetaInfoSerializer(required=False, allow_null=True)

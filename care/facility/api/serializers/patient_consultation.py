@@ -57,7 +57,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
     suggestion_text = ChoiceField(
-        choices=PatientConsultation.SUGGESTION_CHOICES,
+        choices=SuggestionChoices,
         read_only=True,
         source="suggestion",
     )
@@ -153,14 +153,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
+            prescription_type=PrescriptionType.DISCHARGE,
             is_prn=False,
         ).values()
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
+            prescription_type=PrescriptionType.DISCHARGE,
             is_prn=True,
         ).values()
 
@@ -565,7 +565,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "referred_to": [
-                                f"This field is required as the suggestion is {SuggestionChoices.R}."
+                                f"This field is required as the suggestion is {SuggestionChoices.R.label}."
                             ]
                         }
                     )
@@ -624,14 +624,14 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     def get_discharge_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
+            prescription_type=PrescriptionType.DISCHARGE,
             is_prn=False,
         ).values()
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
+            prescription_type=PrescriptionType.DISCHARGE,
             is_prn=True,
         ).values()
 

@@ -269,7 +269,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         constraints = [
             models.CheckConstraint(
                 name="if_referral_suggested",
-                check=~models.Q(suggestion=SuggestionChoices.R)
+                check=~models.Q(suggestion=SuggestionChoices.R.value)
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
             ),

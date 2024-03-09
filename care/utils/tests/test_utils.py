@@ -18,7 +18,7 @@ from care.facility.models import (
     LocalBody,
     PatientConsultation,
     PatientRegistration,
-    User,
+    User, SuggestionChoices,
     Ward, DISEASE_CHOICES_MAP,
 )
 from care.facility.models.asset import Asset, AssetLocation
@@ -309,7 +309,7 @@ class TestUtils:
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "suggestion": SuggestionChoices.HI,
             "referred_to": None,
             "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,

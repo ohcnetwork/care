@@ -311,20 +311,21 @@ class UserDefaultAssetLocationSerializer(ModelSerializer):
         exclude = ("deleted", "external_id", "location", "user", "id")
 
 
-class AssetActionSerializer(Serializer):
-    def actionChoices():
-        actions = [
-            OnvifAsset.OnvifActions,
-            HL7MonitorAsset.HL7MonitorActions,
-            VentilatorAsset.VentilatorActions,
-        ]
-        choices = []
-        for action in actions:
-            choices += [(e.value, e.name) for e in action]
-        return choices
+def action_choices():
+    actions = [
+        OnvifAsset.OnvifActions,
+        HL7MonitorAsset.HL7MonitorActions,
+        VentilatorAsset.VentilatorActions,
+    ]
+    choices = []
+    for action in actions:
+        choices += [(e.value, e.name) for e in action]
+    return choices
 
+
+class AssetActionSerializer(Serializer):
     type = ChoiceField(
-        choices=actionChoices(),
+        choices=action_choices(),
         required=True,
     )
     data = JSONField(required=False)
