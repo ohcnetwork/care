@@ -1,12 +1,17 @@
 from uuid import uuid4
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.base import BaseModel
 
-TestTypeChoices = [("Float", "Float"), ("String", "String"), ("Choice", "Choice")]
+
+class TestTypeChoices(models.TextChoices):
+    FLOAT = "Float", _("Float")
+    STRING = "String", _("String")
+    CHOICE = "Choice", _("Choice")
 
 
 class PatientInvestigationGroup(BaseModel):
@@ -24,7 +29,7 @@ class PatientInvestigation(BaseModel):
     min_value = models.FloatField(blank=True, default=None, null=True)
     max_value = models.FloatField(blank=True, default=None, null=True)
     investigation_type = models.CharField(
-        max_length=10, choices=TestTypeChoices, blank=False, null=True, default=None
+        max_length=10, choices=TestTypeChoices.choices, blank=False, null=True, default=None
     )
     choices = models.TextField(null=True, blank=True)
 
