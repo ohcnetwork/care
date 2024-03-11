@@ -3,11 +3,11 @@
 The project is developed and maintained by developers in an Open Source manner.
 Any support is welcome. You could help by writing documentation, pull-requests, report issues and/or translations.
 
-## Getting Started
+### Getting Started
 
 An issue wih the [good first](https://github.com/coronasafe/care/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22) or [help wanted](https://github.com/coronasafe/care/issues?q=is%3Aissue+sort%3Aupdated-desc+label%3A%22help+wanted%22+is%3Aopen) label might be a good place to start with.
 
-## Setting up the development environment
+### Setting up the development environment
 
 Install dependencies
 
@@ -22,12 +22,11 @@ pre-commit install
 ```
 
 to run pre-commit on your branch:
-
 ```bash
 pre-commit run --files $(git diff --name-only master...HEAD)
 ```
 
-### Using Docker - Set development environment
+#### Using Docker
 
 Make sure you have docker and docker-compose installed. Then run:
 
@@ -35,24 +34,22 @@ Make sure you have docker and docker-compose installed. Then run:
 make build
 ```
 
-### Using Virtualenv - Set development environment
+#### Using Virtualenv
 
 Make sure you have Postgres and Redis installed on your system.
 
-#### Setting up postgtres for the first time
+##### Setting up postgtres for the first time
 
 ```bash
 sudo -u postgres psql
 CREATE DATABASE care;
 ```
-
 put the following in your `.env` file
-
 ```bash
 DATABASE_URL=postgres://<your_username>:<your_password>@localhost:5432/care
 ```
 
-#### Setting up the environment
+##### Setting up the environment
 
 ```bash
 # create a virtualenv
@@ -67,21 +64,20 @@ export DJANGO_READ_DOT_ENV_FILE=true
 python manage.py migrate
 ```
 
-#### Troubleshooting Local Setup
+##### Troubleshooting Local Setup
 
 If you're on Mac and you have installed Postgres.app Run:
-
 ```bash
 export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/14/bin
 ```
 
 If you're pipenv install is failing on Pillow Consider installing these dependencies:
-
 ```bash
 brew install libjpeg libtiff little-cms2 openjpeg webp freetype harfbuzz fribidi
 ```
 
-## Setting up the database
+
+### Setting up the database
 
 - Seed the database with the following command:
 
@@ -95,9 +91,9 @@ python manage.py load_dummy_data
 python manage.py createsuperuser
 ```
 
-## Running the server
+### Running the server
 
-### Using Docker - Run sever
+#### Using Docker
 
 ```bash
 make up
@@ -110,8 +106,7 @@ if you want to attach the vscode debugger set `DJANGO_DEBUG=True` in `.env` file
 ```bash
 make re-build
 ```
-
-### Using Virtualenv - Run server
+#### Using Virtualenv
 
 ```bash
 python manage.py runserver
@@ -124,13 +119,12 @@ Docker:
 ```bash
 make test
 ```
-
 Local:
 
 ```bash
 python manage.py test
 ```
 
-***
+#
 
-#### Join us on Slack for more information
+**Join us on Slack for more information**
