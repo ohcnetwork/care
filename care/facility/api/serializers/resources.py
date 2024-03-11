@@ -1,4 +1,3 @@
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -14,6 +13,7 @@ from care.facility.models import (
 )
 from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
@@ -62,11 +62,17 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
     sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
-    origin_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=True)
+    origin_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True
+    )
 
-    approving_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=True)
+    approving_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True
+    )
 
-    assigned_facility = ExternalIdSerializerField(queryset=Facility.objects.all(), required=False)
+    assigned_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
+    )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)

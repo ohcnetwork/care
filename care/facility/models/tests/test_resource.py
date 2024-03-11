@@ -1,5 +1,6 @@
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
+
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -20,16 +21,16 @@ class ResourceTransferTest(TestUtils, APITestCase):
             "approving_facility": self.facility.external_id,
             "category": "OXYGEN",
             "emergency": "false",
-            "origin_facility": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", #invalid facility id
+            "origin_facility": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",  # invalid facility id
             "reason": "adadasa",
             "refering_facility_contact_name": "rash",
             "refering_facility_contact_number": "+918888888889",
             "requested_quantity": "10",
             "status": "PENDING",
             "sub_category": 110,
-            "title": "a"
-            }
+            "title": "a",
+        }
         self.client.force_authenticate(user=dist_admin)
-        response = self.client.post("/api/v1/resource/", sample_data,format="json")
+        response = self.client.post("/api/v1/resource/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("origin_facility", response.data)
