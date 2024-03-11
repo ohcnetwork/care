@@ -412,6 +412,44 @@ class AssetViewSet(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+    @extend_schema(tags=["asset"])
+    @action(methods=["POST"], detail=False)
+    def bulk_upsert(self, request, *args, **kwargs):
+        if "assets" not in request.data:
+            raise ValidationError({"assets": "No Data was provided"})
+        if not isinstance(request.data["assets"], list):
+            raise ValidationError({"assets": "Invalid Data"})
+        if "location" not in request.data:
+            raise ValidationError({"location": "Location is required"})
+
+        assets = request.data.get("assets", [])
+        location = request.data.get("location")
+        errors = []
+        counter = 0
+        ser_objects = []
+        invalid = False
+        for asset in assets:
+            counter += 1
+            asset["location"] = location
+            serialiser_obj = AssetSerializer(data=asset, context={"request": request})
+            valid = serialiser_obj.is_valid()
+            current_error = serialiser_obj.errors
+            if current_error and (not valid):
+                errors.append({"index": counter, "error": current_error})
+                invalid = True
+            ser_objects.append(serialiser_obj)
+
+        if invalid:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        for ser in ser_objects:
+            ser.save()
+
+        return Response(
+            {"message": f"Successfully created {counter} assets"},
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class AssetTransactionFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
