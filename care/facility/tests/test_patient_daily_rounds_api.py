@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import PatientRegistration
+from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -19,8 +20,15 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.patient = cls.create_patient(district=cls.district, facility=cls.facility)
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.bed = cls.create_bed(facility=cls.facility, location=cls.asset_location)
-        cls.consultation_without_bed = cls.create_consultation(
-            facility=cls.facility, patient=cls.patient
+        cls.admission_consultation_no_bed = cls.create_consultation(
+            facility=cls.facility,
+            patient=cls.patient,
+            suggestion=PatientConsultation.SUGGESTION_CHOICES[1][0],  # ADMISSION
+        )
+        cls.domiciliary_consultation_no_bed = cls.create_consultation(
+            facility=cls.facility,
+            patient=cls.patient,
+            suggestion=PatientConsultation.SUGGESTION_CHOICES[4][0],  # DOMICILIARY CARE
         )
         cls.consultation_with_bed = cls.create_consultation(
             facility=cls.facility, patient=cls.patient
@@ -65,11 +73,11 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             patient.action, PatientRegistration.ActionEnum.DISCHARGE_RECOMMENDED.value
         )
 
-    def test_log_update_without_bed(
+    def test_log_update_without_bed_for_admission(
         self,
     ):
         response = self.client.post(
-            f"/api/v1/consultation/{self.consultation_without_bed.external_id}/daily_rounds/",
+            f"/api/v1/consultation/{self.admission_consultation_no_bed.external_id}/daily_rounds/",
             data=self.log_update,
             format="json",
         )
@@ -78,3 +86,13 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             response.data["bed"],
             "Patient does not have a bed assigned. Please assign a bed first",
         )
+
+    def test_log_update_without_bed_for_domiciliary(
+        self,
+    ):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.domiciliary_consultation_no_bed.external_id}/daily_rounds/",
+            data=self.log_update,
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

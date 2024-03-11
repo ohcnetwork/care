@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from dry_rest_permissions.generics import DRYPermissions
 from redis_om import FindQuery
 from rest_framework import mixins, status
 from rest_framework.decorators import action
@@ -50,7 +51,7 @@ class MedicineAdministrationViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
 ):
     serializer_class = MedicineAdministrationSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = MedicineAdministration.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -94,7 +95,7 @@ class ConsultationPrescriptionViewSet(
     GenericViewSet,
 ):
     serializer_class = PrescriptionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
