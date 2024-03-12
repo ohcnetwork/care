@@ -45,6 +45,7 @@ requests = "==2.31.0"
 sentry-sdk = "==1.30.0"
 whitenoise = "==6.5.0"
 redis-om = "==0.2.1"
+psycopg-binary = "*"
 
 [dev-packages]
 black = "==23.9.1"
