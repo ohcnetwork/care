@@ -115,6 +115,14 @@ class PatientListSerializer(serializers.ModelSerializer):
             )
             return claim.total_claim_amount if claim is not None else None
 
+    death_datetime = serializers.DateTimeField(
+        source="last_consultation__death_datetime",
+        read_only=True,
+        allow_null=True,
+    )
+    age = serializers.IntegerField(read_only=True)
+    age_days = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -223,7 +231,6 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "year_of_birth",
             "countries_travelled_old",
             "external_id",
         )
@@ -252,11 +259,15 @@ class PatientDetailSerializer(PatientListSerializer):
         validated = super().validate(attrs)
         if (
             not self.partial
-            and not validated.get("age")
+            and not validated.get("year_of_birth")
             and not validated.get("date_of_birth")
         ):
             raise serializers.ValidationError(
-                {"non_field_errors": ["Either age or date_of_birth should be passed"]}
+                {
+                    "non_field_errors": [
+                        "Either year_of_birth or date_of_birth should be passed"
+                    ]
+                }
             )
 
         if validated.get("is_vaccinated"):
@@ -361,8 +372,8 @@ class PatientDetailSerializer(PatientListSerializer):
 
             if meta_info:
                 if patient.meta_info is None:
-                   meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
-                   patient.meta_info = meta_info_obj
+                    meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                    patient.meta_info = meta_info_obj
                 else:
                     for key, value in meta_info.items():
                         setattr(patient.meta_info, key, value)
