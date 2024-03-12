@@ -16,7 +16,7 @@ from config.serializers import ChoiceField
 
 def check_permissions(file_type, associating_id, user, action="create"):
     try:
-        if file_type == FileUpload.FileTypeChoices.PATIENT:
+        if file_type == FileUpload.FileTypeChoices.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
             if not patient.is_active:
                 raise serializers.ValidationError(
@@ -32,7 +32,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
-        elif file_type == FileUpload.FileTypeChoices.CONSULTATION:
+        elif file_type == FileUpload.FileTypeChoices.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if consultation.discharge_date:
                 if not action == "read":
@@ -53,7 +53,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.id
-        elif file_type == FileUpload.FileTypeChoices.DISCHARGE_SUMMARY:
+        elif file_type == FileUpload.FileTypeChoices.DISCHARGE_SUMMARY.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if (
                 consultation.patient.assigned_to
@@ -68,7 +68,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.external_id
-        elif file_type == FileUpload.FileTypeChoices.SAMPLE_MANAGEMENT:
+        elif file_type == FileUpload.FileTypeChoices.SAMPLE_MANAGEMENT.value:
             sample = PatientSample.objects.get(external_id=associating_id)
             patient = sample.patient
             if patient.assigned_to:
@@ -89,9 +89,9 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return sample.id
-        elif file_type == FileUpload.FileTypeChoices.CLAIM:
+        elif file_type == FileUpload.FileTypeChoices.CLAIM.value:
             return associating_id
-        elif file_type == FileUpload.FileTypeChoices.COMMUNICATION:
+        elif file_type == FileUpload.FileTypeChoices.COMMUNICATION.value:
             return associating_id
         else:
             raise Exception("Undefined File Type")

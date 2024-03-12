@@ -191,7 +191,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             if (
                 validated_data.get("rounds_type")
                 == DailyRound.RoundsTypeChoices.TELEMEDICINE.value
-                and consultation.suggestion != SuggestionChoices.DC
+                and consultation.suggestion != SuggestionChoices.DC.value
             ):
                 raise ValidationError(
                     {
@@ -321,7 +321,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             )
 
         if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionChoices.REVIEW:
+            if validated["action"] == PatientRegistration.ActionChoices.REVIEW.value:
                 if "consultation__review_interval" not in validated:
                     raise ValidationError(
                         {

@@ -54,8 +54,8 @@ class ConditionVerificationStatus(models.TextChoices):
 
 
 INACTIVE_CONDITION_VERIFICATION_STATUSES = [
-    ConditionVerificationStatus.REFUTED,
-    ConditionVerificationStatus.ENTERED_IN_ERROR,
+    ConditionVerificationStatus.REFUTED.value,
+    ConditionVerificationStatus.ENTERED_IN_ERROR.value,
 ]  # Theses statuses are not allowed to be selected during create or can't be a principal diagnosis
 
 ACTIVE_CONDITION_VERIFICATION_STATUSES = [

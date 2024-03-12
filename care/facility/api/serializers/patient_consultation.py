@@ -57,7 +57,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility_name = serializers.CharField(source="facility.name", read_only=True)
     suggestion_text = ChoiceField(
-        choices=SuggestionChoices,
+        choices=SuggestionChoices.choices,
         read_only=True,
         source="suggestion",
     )
@@ -206,7 +206,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 instance.save()
                 return instance
 
-        if instance.suggestion == SuggestionChoices.OP:
+        if instance.suggestion == SuggestionChoices.OP.value:
             instance.discharge_date = localtime(now())
             instance.save()
 
@@ -273,14 +273,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         if route_to_facility := validated_data.get("route_to_facility"):
-            if route_to_facility == RouteToFacility.OUTPATIENT:
+            if route_to_facility == RouteToFacility.OUTPATIENT.value:
                 validated_data["icu_admission_date"] = None
                 validated_data["transferred_from_location"] = None
                 validated_data["referred_from_facility"] = None
                 validated_data["referred_from_facility_external"] = ""
                 validated_data["referred_by_external"] = ""
 
-            if route_to_facility == RouteToFacility.INTRA_FACILITY_TRANSFER:
+            if route_to_facility == RouteToFacility.INTRA_FACILITY_TRANSFER.value:
                 validated_data["referred_from_facility"] = None
                 validated_data["referred_from_facility_external"] = ""
                 validated_data["referred_by_external"] = ""
@@ -294,7 +294,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         }
                     )
 
-            if route_to_facility == RouteToFacility.INTER_FACILITY_TRANSFER:
+            if route_to_facility == RouteToFacility.INTER_FACILITY_TRANSFER.value:
                 validated_data["transferred_from_location"] = None
 
                 if not validated_data.get(
@@ -377,8 +377,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         last_consultation = patient.last_consultation
         if (
             last_consultation
-            and consultation.suggestion == SuggestionChoices.A
-            and last_consultation.suggestion == SuggestionChoices.A
+            and consultation.suggestion == SuggestionChoices.A.value
+            and last_consultation.suggestion == SuggestionChoices.A.value
             and last_consultation.discharge_date
             and last_consultation.discharge_date + timedelta(days=30)
             > consultation.encounter_date
@@ -399,7 +399,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ]
         )
 
-        if bed and consultation.suggestion == SuggestionChoices.A:
+        if bed and consultation.suggestion == SuggestionChoices.A.value:
             consultation_bed = ConsultationBed(
                 bed=bed,
                 consultation=consultation,
@@ -409,7 +409,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation.current_bed = consultation_bed
             consultation.save(update_fields=["current_bed"])
 
-        if consultation.suggestion == SuggestionChoices.OP:
+        if consultation.suggestion == SuggestionChoices.OP.value:
             consultation.discharge_date = localtime(now())
             consultation.save()
             patient.is_active = False
@@ -528,7 +528,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if (
             "suggestion" in validated
-            and validated["suggestion"] != SuggestionChoices.DD
+            and validated["suggestion"] != SuggestionChoices.DD.value
         ):
             if "treating_physician" not in validated:
                 raise ValidationError(
@@ -558,7 +558,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 )
 
         if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R:
+            if validated["suggestion"] is SuggestionChoices.R.value:
                 if not validated.get("referred_to") and not validated.get(
                     "referred_to_external"
                 ):
@@ -575,7 +575,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     validated["referred_to_external"] = None
 
         if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionChoices.REVIEW:
+            if validated["action"] == PatientRegistration.ActionChoices.REVIEW.value:
                 if "review_interval" not in validated:
                     raise ValidationError(
                         {
@@ -661,11 +661,11 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                     ],
                 }
             )
-        if attrs.get("new_discharge_reason") != NewDischargeReasons.EXPIRED:
+        if attrs.get("new_discharge_reason") != NewDischargeReasons.EXPIRED.value:
             attrs.pop("death_datetime", None)
             attrs.pop("death_confirmed_doctor", None)
 
-        if attrs.get("new_discharge_reason") == NewDischargeReasons.EXPIRED:
+        if attrs.get("new_discharge_reason") == NewDischargeReasons.EXPIRED.value:
             if not attrs.get("death_datetime"):
                 raise ValidationError({"death_datetime": "This field is required"})
             if attrs.get("death_datetime") > now():
