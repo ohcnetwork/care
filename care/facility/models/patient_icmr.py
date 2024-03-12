@@ -1,7 +1,5 @@
 import datetime
 
-from dateutil.relativedelta import relativedelta
-
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
@@ -46,25 +44,8 @@ class PatientIcmr(PatientRegistration):
     #     return instance
 
     @property
-    def age_years(self):
-        if self.date_of_birth is not None:
-            age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
-        else:
-            age_years = relativedelta(
-                datetime.datetime.now(),
-                datetime.datetime(year=self.year_of_birth, month=1, day=1),
-            ).years
-        return age_years
-
-    @property
     def age_months(self):
-        if self.date_of_birth is None or self.year_of_birth is None:
-            age_months = 0
-        else:
-            age_months = relativedelta(
-                datetime.datetime.now(), self.date_of_birth
-            ).months
-        return age_months
+        return self.get_age_delta().months
 
     @property
     def email(self):

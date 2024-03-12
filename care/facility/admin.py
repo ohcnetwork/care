@@ -147,7 +147,7 @@ class AmbulanceDriverAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    list_display = ("id", "name", "age", "gender")
+    list_display = ("id", "name", "gender")
     djangoql_completion_enabled_by_default = True
 
 

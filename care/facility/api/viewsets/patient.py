@@ -99,9 +99,13 @@ class PatientFilterSet(filters.FilterSet):
         field_name="last_consultation__patient_no", lookup_expr="icontains"
     )
     gender = filters.NumberFilter(field_name="gender")
-    age = filters.NumberFilter(field_name="age")
-    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
-    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
+    year_of_birth = filters.NumberFilter(field_name="year_of_birth")
+    year_of_birth_min = filters.NumberFilter(
+        field_name="year_of_birth", lookup_expr="gte"
+    )
+    year_of_birth_max = filters.NumberFilter(
+        field_name="year_of_birth", lookup_expr="lte"
+    )
     deprecated_covid_category = filters.ChoiceFilter(
         field_name="last_consultation__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
@@ -643,14 +647,12 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
                     "year_of_birth",
                     "phone_number",
                     "name",
-                    "age",
                 ]
             else:
                 search_keys = [
                     "date_of_birth",
                     "year_of_birth",
                     "phone_number",
-                    "age",
                 ]
             search_fields = {
                 key: serializer.validated_data[key]
