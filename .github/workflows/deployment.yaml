@@ -6,7 +6,6 @@ on:
     tags:
       - 'v*'
     branches:
-      - master
       - develop
       - staging
     paths-ignore:
@@ -55,8 +54,6 @@ jobs:
             type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/v*' }}
             type=raw,value=staging-latest,enable=${{ github.ref == 'refs/heads/staging' }}
             type=raw,value=staging-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/staging' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
-            type=raw,value=latest-${{ github.run_number }},enable=${{ github.ref == 'refs/heads/master' }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
             type=raw,value=latest-${{ github.run_number }},enable=${{ github.ref == 'refs/heads/develop' }}
             type=semver,pattern={{version}}
@@ -130,7 +127,7 @@ jobs:
 
   deploy-staging-egov:
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/develop'
     name: Deploy to ECS API Egov
     runs-on: ubuntu-latest
     environment:
