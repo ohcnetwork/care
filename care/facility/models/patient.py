@@ -1,6 +1,5 @@
 import enum
 
-from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -129,6 +128,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     date_of_birth = models.DateField(default=None, null=True)
     year_of_birth = models.IntegerField(validators=[MinValueValidator(1900)], null=True)
+    death_datetime = models.DateTimeField(default=None, null=True)
 
     nationality = models.CharField(
         max_length=255, default="", verbose_name="Nationality of Patient"
@@ -426,26 +426,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     objects = BaseManager()
 
     def __str__(self):
-        return "{} - {} - {}".format(
-            self.name, self.year_of_birth, self.get_gender_display()
-        )
-
-    def get_age_delta(self):
-        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
-        end = (
-            self.last_consultation
-            and self.last_consultation.death_datetime
-            or timezone.now()
-        ).date()
-        return relativedelta(end, start)
-
-    @property
-    def age(self):
-        return self.get_age_delta().years
-
-    @property
-    def age_days(self):
-        return self.get_age_delta().days
+        return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
 
     @property
     def tele_consultation_history(self):

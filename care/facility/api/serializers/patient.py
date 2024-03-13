@@ -115,11 +115,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             )
             return claim.total_claim_amount if claim is not None else None
 
-    death_datetime = serializers.DateTimeField(
-        source="last_consultation__death_datetime",
-        read_only=True,
-        allow_null=True,
-    )
     age = serializers.IntegerField(read_only=True)
     age_days = serializers.IntegerField(read_only=True)
 
@@ -129,13 +124,12 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "year_of_birth",
             "meta_info",
             "countries_travelled_old",
             "allergies",
             "external_id",
         )
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("death_datetime",)
 
 
 class PatientContactDetailsSerializer(serializers.ModelSerializer):
@@ -235,7 +229,12 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+            "death_datetime",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()

@@ -1,5 +1,8 @@
 import datetime
 
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
+
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
@@ -42,6 +45,15 @@ class PatientIcmr(PatientRegistration):
     #     if instance is not None:
     #         instance.__class__ = PatientSampleICMR
     #     return instance
+
+    def get_age_delta(self):
+        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+        end = (self.death_datetime or timezone.now()).date()
+        return relativedelta(end - start)
+
+    @property
+    def age_years(self):
+        return self.get_age_delta().years
 
     @property
     def age_months(self):

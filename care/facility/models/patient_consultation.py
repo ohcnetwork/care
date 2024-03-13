@@ -277,6 +277,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             self.patient.facility = self.referred_to or self.facility
             self.patient.save()
         """
+        if self.death_datetime and self.patient.death_datetime != self.death_datetime:
+            self.patient.death_datetime = self.death_datetime
+            self.patient.save(update_fields=["death_datetime"])
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:

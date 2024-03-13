@@ -11,7 +11,7 @@ from config.serializers import ChoiceField
 
 
 class ICMRPersonalDetails(serializers.ModelSerializer):
-    age_years = serializers.IntegerField(source="age")
+    age_years = serializers.IntegerField()
     age_months = serializers.IntegerField()
     gender = ChoiceField(choices=GENDER_CHOICES)
     email = serializers.EmailField(allow_blank=True)
