@@ -1,6 +1,5 @@
 import datetime
 
-from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
 from care.facility.models import (
@@ -49,14 +48,14 @@ class PatientIcmr(PatientRegistration):
     def get_age_delta(self):
         start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
         end = (self.death_datetime or timezone.now()).date()
-        return relativedelta(end - start)
+        return end - start
 
     @property
-    def age_years(self):
-        return self.get_age_delta().years
+    def age_years(self) -> int:
+        return self.get_age_delta().year
 
     @property
-    def age_months(self):
+    def age_months(self) -> int:
         return self.get_age_delta().months
 
     @property

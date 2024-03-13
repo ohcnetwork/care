@@ -256,10 +256,8 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if (
-            not self.partial
-            and not validated.get("year_of_birth")
-            and not validated.get("date_of_birth")
+        if not self.partial and not (
+            validated.get("year_of_birth") or validated.get("date_of_birth")
         ):
             raise serializers.ValidationError(
                 {
