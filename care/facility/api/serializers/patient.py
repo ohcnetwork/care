@@ -115,9 +115,6 @@ class PatientListSerializer(serializers.ModelSerializer):
             )
             return claim.total_claim_amount if claim is not None else None
 
-    age = serializers.IntegerField(read_only=True)
-    age_days = serializers.IntegerField(read_only=True)
-
     class Meta:
         model = PatientRegistration
         exclude = (
