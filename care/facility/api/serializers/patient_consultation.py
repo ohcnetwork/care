@@ -518,15 +518,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
 
-        if not self.instance and "suggestion" in validated:
+        if (
+            not self.instance or validated.get("patient_no") != self.instance.patient_no
+        ) and "suggestion" in validated:
             suggestion = validated["suggestion"]
             patient_no = validated.get("patient_no")
+
             if suggestion == SuggestionChoices.A and not patient_no:
                 raise ValidationError(
                     {"patient_no": "This field is required for admission."}
                 )
+
             if (
-                suggestion == SuggestionChoices.A or suggestion == SuggestionChoices.OP
+                suggestion == SuggestionChoices.A or patient_no is not None
             ) and PatientConsultation.objects.filter(
                 patient_no=patient_no,
                 facility=(
