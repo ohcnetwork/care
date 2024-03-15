@@ -530,7 +530,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 )
 
             if (
-                suggestion == SuggestionChoices.A or patient_no is not None
+                suggestion == SuggestionChoices.A or patient_no
             ) and PatientConsultation.objects.filter(
                 patient_no=patient_no,
                 facility=(
