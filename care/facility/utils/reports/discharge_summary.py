@@ -178,7 +178,7 @@ def generate_and_upload_discharge_summary(consultation: PatientConsultation):
     try:
         current_date = timezone.now()
         summary_file = FileUpload(
-            name=f"discharge_summary-{consultation.patient.name}-{current_date}.pdf",
+            name=f"discharge_summary-{consultation.patient.name}-{current_date}",
             internal_name=f"{uuid4()}.pdf",
             file_type=FileUpload.FileType.DISCHARGE_SUMMARY.value,
             associating_id=consultation.external_id,
