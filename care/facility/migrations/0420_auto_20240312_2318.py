@@ -9,11 +9,9 @@ def double_pain_scale(apps, schema_editor):
     DailyRound = apps.get_model("facility", "DailyRound")
     records_to_update = []
     for daily_round in DailyRound.objects.filter(pain_scale_enhanced__isnull=False):
-        scale = daily_round.pain_scale_enhanced.get("scale", None)
-        if scale:
+        if daily_round.pain_scale_enhanced.get("scale"):
             daily_round.pain_scale_enhanced["scale"] *= 2
-
-        records_to_update.append(daily_round)
+            records_to_update.append(daily_round)
     DailyRound.objects.bulk_update(records_to_update, ["pain_scale_enhanced"])
 
 
