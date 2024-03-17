@@ -42,6 +42,12 @@ class PrescriptionType(enum.Enum):
     REGULAR = "REGULAR"
 
 
+class PrescriptionDosageType(models.TextChoices):
+    REGULAR = "REGULAR", "REGULAR"
+    TITRATED = "TITRATED", "TITRATED"
+    PRN = "PRN", "PRN"
+
+
 def generate_choices(enum_class):
     return [(tag.name, tag.value) for tag in enum_class]
 
@@ -101,11 +107,20 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
         blank=True,
         null=True,
     )
-    dosage = models.CharField(
+    base_dosage = models.CharField(
         max_length=100, blank=True, null=True, validators=[dosage_validator]
     )
+    dosage_type = models.CharField(
+        max_length=100,
+        choices=PrescriptionDosageType.choices,
+        default=PrescriptionDosageType.REGULAR.value,
+    )
 
-    is_prn = models.BooleanField(default=False)
+    # titrated fields
+    target_dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
+    )
+    instruction_on_titration = models.TextField(blank=True, null=True)
 
     # non prn fields
     frequency = models.CharField(
@@ -151,6 +166,10 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     def medicine_name(self):
         return str(self.medicine) if self.medicine else self.medicine_old
 
+    @property
+    def last_administration(self):
+        return self.administrations.order_by("-administered_date").first()
+
     def has_object_write_permission(self, request):
         return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
@@ -163,6 +182,9 @@ class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
         Prescription,
         on_delete=models.PROTECT,
         related_name="administrations",
+    )
+    dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
     )
     notes = models.TextField(default="", blank=True)
     administered_by = models.ForeignKey(
