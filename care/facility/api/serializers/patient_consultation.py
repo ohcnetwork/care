@@ -24,6 +24,7 @@ from care.facility.models import (
     Facility,
     PatientRegistration,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
 )
 from care.facility.models.asset import AssetLocation
@@ -151,17 +152,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
-        return Prescription.objects.filter(
-            consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=False,
-        ).values()
+        return (
+            Prescription.objects.filter(
+                consultation=consultation,
+                prescription_type=PrescriptionType.DISCHARGE.value,
+            )
+            .exclude(dosage_type=PrescriptionDosageType.PRN.value)
+            .values()
+        )
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
             prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=True,
+            dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
 
     class Meta:
@@ -519,16 +523,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         if (
-            not self.instance
-            and "suggestion" in validated
-            and validated["suggestion"] == SuggestionChoices.A
-        ):
+            not self.instance or validated.get("patient_no") != self.instance.patient_no
+        ) and "suggestion" in validated:
+            suggestion = validated["suggestion"]
             patient_no = validated.get("patient_no")
-            if not patient_no:
+
+            if suggestion == SuggestionChoices.A and not patient_no:
                 raise ValidationError(
-                    {"ip_no": ["This field is required for admission."]}
+                    {"patient_no": "This field is required for admission."}
                 )
-            if PatientConsultation.objects.filter(
+
+            if (
+                suggestion == SuggestionChoices.A or patient_no
+            ) and PatientConsultation.objects.filter(
                 patient_no=patient_no,
                 facility=(
                     self.instance.facility
@@ -537,7 +544,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 ),
             ).exists():
                 raise ValidationError(
-                    "Patient number must be unique within the facility."
+                    {
+                        "patient_no": "Consultation with this IP/OP number already exists within the facility."
+                    }
                 )
 
         if (
@@ -636,17 +645,20 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
     )
 
     def get_discharge_prescription(self, consultation):
-        return Prescription.objects.filter(
-            consultation=consultation,
-            prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=False,
-        ).values()
+        return (
+            Prescription.objects.filter(
+                consultation=consultation,
+                prescription_type=PrescriptionType.DISCHARGE.value,
+            )
+            .exclude(dosage_type=PrescriptionDosageType.PRN.value)
+            .values()
+        )
 
     def get_discharge_prn_prescription(self, consultation):
         return Prescription.objects.filter(
             consultation=consultation,
             prescription_type=PrescriptionType.DISCHARGE.value,
-            is_prn=True,
+            dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
 
     class Meta:

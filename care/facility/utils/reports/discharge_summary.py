@@ -18,6 +18,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientSample,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
 )
 from care.facility.models.file_upload import FileUpload
@@ -105,22 +106,21 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     prescriptions = Prescription.objects.filter(
         consultation=consultation,
         prescription_type=PrescriptionType.REGULAR.value,
-        is_prn=False,
-    )
+    ).exclude(dosage_type=PrescriptionDosageType.PRN.value)
     prn_prescriptions = Prescription.objects.filter(
         consultation=consultation,
         prescription_type=PrescriptionType.REGULAR.value,
-        is_prn=True,
+        dosage_type=PrescriptionDosageType.PRN.value,
     )
     discharge_prescriptions = Prescription.objects.filter(
         consultation=consultation,
         prescription_type=PrescriptionType.DISCHARGE.value,
-        is_prn=False,
-    )
+    ).exclude(dosage_type=PrescriptionDosageType.PRN.value)
+
     discharge_prn_prescriptions = Prescription.objects.filter(
         consultation=consultation,
         prescription_type=PrescriptionType.DISCHARGE.value,
-        is_prn=True,
+        dosage_type=PrescriptionDosageType.PRN.value,
     )
     files = FileUpload.objects.filter(
         associating_id=consultation.id,
