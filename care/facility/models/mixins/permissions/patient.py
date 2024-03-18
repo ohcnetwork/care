@@ -28,6 +28,7 @@ class PatientPermissionMixin(BasePermissionMixin):
             or (
                 self.facility
                 and request.user in self.facility.users.all()
+                or self.consultations.filter(facility__users=request.user).exists()
                 or doctor_allowed
             )
             or (

@@ -56,7 +56,7 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
+    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
 
     class Meta:
         model = PatientMetaInfo
@@ -312,9 +312,8 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
-                patient.meta_info = meta_info_obj
-                patient.save()
+                patient.meta_info = PatientMetaInfo.objects.create(**meta_info)
+                patient.meta_info.save()
 
             if contacted_patients:
                 contacted_patient_objs = [
@@ -361,8 +360,12 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                for key, value in meta_info.items():
-                    setattr(patient.meta_info, key, value)
+                if patient.meta_info is None:
+                   meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                   patient.meta_info = meta_info_obj
+                else:
+                    for key, value in meta_info.items():
+                        setattr(patient.meta_info, key, value)
                 patient.meta_info.save()
 
             if self.partial is not True:  # clear the list and enter details if PUT
