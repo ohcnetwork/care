@@ -31,7 +31,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_DISCHARGE_REASON_CHOICES,
+    REVERSE_NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -199,6 +199,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_antenatal = models.BooleanField(
         default=None, verbose_name="Does the patient require Prenatal Care ?"
+    )
+    last_menstruation_start_date = models.DateField(
+        default=None, null=True, verbose_name="Last Menstruation Start Date"
+    )
+    date_of_delivery = models.DateField(
+        default=None, null=True, verbose_name="Date of Delivery"
     )
 
     ward_old = models.CharField(
@@ -527,6 +533,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
+        "last_consultation__new_discharge_reason": "Reason for discharge",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
@@ -559,8 +566,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
-        "last_consultation__discharge_reason": (
-            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
+        "last_consultation__new_discharge_reason": (
+            lambda x: REVERSE_NEW_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,
@@ -570,17 +577,16 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 class PatientMetaInfo(models.Model):
     class OccupationEnum(enum.Enum):
         STUDENT = 1
-        MEDICAL_WORKER = 2
-        GOVT_EMPLOYEE = 3
-        PRIVATE_EMPLOYEE = 4
-        HOME_MAKER = 5
-        WORKING_ABROAD = 6
-        OTHERS = 7
+        BUSINESSMAN = 2
+        HEALTH_CARE_WORKER = 3
+        HEALTH_CARE_LAB_WORKER = 4
+        ANIMAL_HANDLER = 5
+        OTHERS = 6
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
-    occupation = models.IntegerField(choices=OccupationChoices)
-    head_of_household = models.BooleanField()
+    occupation = models.IntegerField(choices=OccupationChoices, blank=True, null=True)
+    head_of_household = models.BooleanField(blank=True, null=True)
 
 
 class PatientContactDetails(models.Model):
@@ -714,6 +720,9 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
     )
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=True, blank=True
+    )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -730,3 +739,22 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
         return self
+
+
+class PatientNotesEdit(models.Model):
+    patient_note = models.ForeignKey(
+        PatientNotes,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_date = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_date"]

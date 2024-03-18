@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     BooleanField,
+    CharField,
     DateTimeField,
     IntegerField,
     ListField,
@@ -35,6 +36,7 @@ from config.serializers import ChoiceField
 
 class BedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
+    name = CharField(max_length=1024, required=True)
     bed_type = ChoiceField(choices=BedTypeChoices)
 
     location_object = AssetLocationSerializer(source="location", read_only=True)
@@ -44,6 +46,9 @@ class BedSerializer(ModelSerializer):
     facility = UUIDField(write_only=True, required=True)
 
     number_of_beds = IntegerField(required=False, default=1, write_only=True)
+
+    def validate_name(self, value):
+        return value.strip() if value else value
 
     def validate_number_of_beds(self, value):
         if value > 100:
@@ -235,10 +240,7 @@ class ConsultationBedSerializer(ModelSerializer):
             raise ValidationError(
                 {"end_date": "End date cannot be before the start date"}
             )
-        if (
-            consultation.admission_date
-            and consultation.admission_date > current_start_date
-        ):
+        if consultation.encounter_date > current_start_date:
             raise ValidationError(
                 {"start_date": "Start date cannot be before the admission date"}
             )

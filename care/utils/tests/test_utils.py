@@ -11,7 +11,6 @@ from rest_framework import status
 
 from care.facility.models import (
     CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
     Disease,
@@ -21,10 +20,16 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ConsultationDiagnosis,
+    ICD11Diagnosis,
+)
 from care.users.models import District, State
 
 
@@ -122,7 +127,7 @@ class TestUtils:
         """
 
         return {
-            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
+            "user_type": user_type or User.TYPE_VALUE_MAP["Nurse"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
@@ -159,13 +164,20 @@ class TestUtils:
             "state": district.state,
             "district": district,
             "local_body": local_body,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE_MAP["Nurse"],
         }
         data.update(kwargs)
         user = User.objects.create_user(**data)
         if home_facility := kwargs.get("home_facility"):
             cls.link_user_with_facility(user, home_facility, user)
         return user
+
+    @classmethod
+    def create_ward(cls, local_body) -> Ward:
+        ward = Ward.objects.create(
+            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
+        )
+        return ward
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
@@ -294,19 +306,21 @@ class TestUtils:
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
-            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
+                0
+            ],  # HOME ISOLATION
             "referred_to": None,
-            "admission_date": None,
+            "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
             "created_date": mock_equal,
             "modified_date": mock_equal,
+            "patient_no": int(datetime.now().timestamp() * 1000),
         }
 
     @classmethod
@@ -326,7 +340,11 @@ class TestUtils:
             }
         )
         data.update(kwargs)
-        return PatientConsultation.objects.create(**data)
+        consultation = PatientConsultation.objects.create(**data)
+        patient.last_consultation = consultation
+        patient.facility = consultation.facility
+        patient.save()
+        return consultation
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
@@ -346,7 +364,7 @@ class TestUtils:
             "current_location": location,
             "asset_type": 50,
             "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)).date(),
-            "qr_code_id": "3dcee5fa-8fb8-4b07-be12-8e0d0baf6692",
+            "qr_code_id": uuid.uuid4(),
         }
         data.update(kwargs)
         return Asset.objects.create(**data)
@@ -377,6 +395,22 @@ class TestUtils:
         }
         data.update(kwargs)
         return ConsultationBed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_diagnosis(
+        cls,
+        consultation: PatientConsultation,
+        diagnosis: ICD11Diagnosis,
+        verification_status: ConditionVerificationStatus,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "diagnosis": diagnosis,
+            "verification_status": verification_status,
+        }
+        data.update(kwargs)
+        return ConsultationDiagnosis.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):

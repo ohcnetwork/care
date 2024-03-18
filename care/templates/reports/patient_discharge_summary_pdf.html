@@ -78,10 +78,16 @@
         <span class="text-sm leading-5 font-medium text-gray-500">Decision after consultation:</span>
         {{consultation.get_suggestion_display|field_name_to_label}}
       </p>
+      {% if consultation.icu_admission_date %}
+        <p>
+          <span class="text-sm leading-5 font-medium text-gray-500">ICU Admission Date & Time:</span>
+          {{consultation.icu_admission_date}}
+        </p>
+      {% endif %}
       {% if consultation.suggestion == 'A' %}
       <p>
         <span class="text-sm leading-5 font-medium text-gray-500">Date of addmission:</span>
-        {{consultation.admission_date.date}}
+        {{consultation.encounter_date}}
       </p>
       {% elif consultation.suggestion == 'R' %}
       <p>
@@ -474,8 +480,12 @@
             <td class="p-1 whitespace-normal text-sm">
               {{ prescription.medicine_name }}
             </td>
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+            <td class="p-1 whitespace-normal text-sm">
+              {{ prescription.base_dosage }}
+              {% if prescription.dosage_type == 'TITRATED' %}
+                to {{ prescription.target_dosage }}
+              <p class="text-xs mt-1"><span class="font-bold">Instruction on titration:</span> {{ prescription.instruction_on_titration }}</p>
+              {% endif %}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -532,7 +542,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
@@ -842,7 +852,7 @@
         <span class="text-sm text-gray-500">Discharge Reason:</span> {{consultation.get_discharge_reason_display}}
       </p>
     </div>
-    {% if consultation.discharge_reason == 'REC' %}
+    {% if consultation.new_discharge_reason == 1 %}
     {% if discharge_prescriptions %}
     <h4 class="mt-6 font-medium text-gray-500">
       Discharge Prescription Medication:
@@ -879,7 +889,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -936,7 +946,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
@@ -956,9 +966,9 @@
       </table>
     </div>
     {% endif %}
-    {% elif consultation.discharge_reason == 'REF' %}
-    {% elif consultation.discharge_reason == 'EXP' %}
-    {% elif consultation.discharge_reason == 'LAMA' %}
+    {% elif consultation.new_discharge_reason == 2 %}
+    {% elif consultation.new_discharge_reason == 3 %}
+    {% elif consultation.new_discharge_reason == 4 %}
     {% endif %}
 
     <p class="mt-6">

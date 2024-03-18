@@ -13,7 +13,17 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset_location_with_linked_bed = cls.create_asset_location(cls.facility)
+        cls.asset_location_with_linked_asset = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location_with_linked_asset)
+        cls.bed = cls.create_bed(cls.facility, cls.asset_location_with_linked_bed)
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.deleted_asset = cls.create_asset(cls.asset_location)
+        cls.deleted_asset.deleted = True
+        cls.deleted_asset.save()
 
     def test_list_asset_locations(self):
         response = self.client.get(
@@ -36,6 +46,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Test Asset Location",
             "middleware_address": "example.com",
+            "location_type": "ICU",
         }
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/",
@@ -51,6 +62,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Updated Test Asset Location",
             "middleware_address": "updated.example.com",
+            "location_type": "WARD",
         }
         response = self.client.patch(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
@@ -66,6 +78,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         sample_data = {
             "name": "Test Asset Location",
             "middleware_address": "https://invalid.middleware.///",
+            "location_type": "OTHER",
         }
         response = self.client.post(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/",
@@ -75,3 +88,27 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(
             response.data["middleware_address"][0].code, "invalid_domain_name"
         )
+
+    def test_delete_asset_location_with_beds(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data[0], "Cannot delete a Location with associated Beds"
+        )
+
+    def test_delete_asset_location_with_linked_assets(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_asset.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data[0], "Cannot delete a Location with associated Assets"
+        )
+
+    def test_delete_asset_location_with_no_assets_and_beds(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

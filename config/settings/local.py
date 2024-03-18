@@ -1,5 +1,8 @@
 from .base import *  # noqa
 
+# https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
+CORS_ORIGIN_ALLOW_ALL = True
+
 # WhiteNoise
 # ------------------------------------------------------------------------------
 # http://whitenoise.evans.io/en/latest/django.html#using-whitenoise-in-development
@@ -45,6 +48,3 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
 
 DISABLE_RATELIMIT = True
-
-FILE_UPLOAD_BUCKET_ENDPOINT = "http://localstack:4566"
-FACILITY_S3_BUCKET_ENDPOINT = "http://localstack:4566"

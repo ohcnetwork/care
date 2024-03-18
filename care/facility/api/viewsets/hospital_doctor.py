@@ -7,6 +7,7 @@ from care.facility.api.serializers.hospital_doctor import HospitalDoctorSerializ
 from care.facility.api.viewsets import FacilityBaseViewset
 from care.facility.models import Facility, HospitalDoctors
 from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
@@ -24,12 +25,15 @@ class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
             facility__external_id=self.kwargs.get("facility_external_id")
         )
         if user.is_superuser:
-            return queryset
+            pass
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            return queryset.filter(facility__state=user.state)
+            queryset = queryset.filter(facility__state=user.state)
         elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return queryset.filter(facility__district=user.district)
-        return queryset.filter(facility__users__id__exact=user.id)
+            queryset = queryset.filter(facility__district=user.district)
+        else:
+            allowed_facilities = get_accessible_facilities(user)
+            queryset = queryset.filter(facility__id__in=allowed_facilities)
+        return queryset
 
     def get_object(self):
         return get_object_or_404(self.get_queryset(), area=self.kwargs.get("pk"))

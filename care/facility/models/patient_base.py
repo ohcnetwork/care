@@ -44,6 +44,16 @@ SYMPTOM_CHOICES = [
     (22, "HEAD ACHE"),
     (23, "BLEEDING"),
     (24, "DIZZINESS"),
+    (25, "CHILLS"),
+    (26, "GENERAL WEAKNESS"),
+    (27, "IRRITABILITY"),
+    (28, "CONFUSION"),
+    (29, "ABDOMINAL PAIN"),
+    (30, "JOINT PAIN"),
+    (31, "REDNESS OF EYES"),
+    (32, "ANOREXIA"),
+    (33, "NEW LOSS OF TASTE"),
+    (34, "NEW LOSS OF SMELL"),
 ]
 
 DISEASE_CHOICES_MAP = {
@@ -79,6 +89,17 @@ DISCHARGE_REASON_CHOICES = [
     ("EXP", "Expired"),
     ("LAMA", "LAMA"),
 ]
+
+
+class NewDischargeReasonEnum(IntegerChoices):
+    UNKNOWN = -1, _("Unknown")
+    RECOVERED = 1, _("Recovered")
+    REFERRED = 2, _("Referred")
+    EXPIRED = 3, _("Expired")
+    LAMA = 4, _("LAMA")
+
+
+NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
 
 
 class DiseaseStatusEnum(enum.IntEnum):
@@ -135,3 +156,4 @@ REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
 REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
 REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
+REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)

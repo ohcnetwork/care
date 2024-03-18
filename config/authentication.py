@@ -149,7 +149,7 @@ class MiddlewareAuthentication(JWTAuthentication):
                 password=f"{password}123",  # The 123 makes it inaccessible without hashing
                 gender=3,
                 phone_number="919999999999",
-                user_type=User.TYPE_VALUE_MAP["Staff"],
+                user_type=User.TYPE_VALUE_MAP["Nurse"],
                 verified=True,
                 asset=asset_obj,
                 age=10,

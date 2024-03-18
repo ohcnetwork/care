@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
@@ -15,15 +14,13 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
     UserListSerializer,
     UserSerializer,
 )
-
-User = get_user_model()
+from care.users.models import User
 
 
 def remove_facility_user_cache(user_id):
@@ -86,7 +83,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
@@ -151,6 +148,12 @@ class UserViewSet(
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
                 is_superuser=False,
             )
+        elif request.user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            queryset = queryset.filter(
+                district=request.user.district,
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                is_superuser=False,
+            )
         else:
             return Response(
                 status=status.HTTP_403_FORBIDDEN, data={"permission": "Denied"}
@@ -202,11 +205,12 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related(
+        queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
         )
+        facilities = self.paginate_queryset(queryset)
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
-        return Response(facilities.data)
+        return self.get_paginated_response(facilities.data)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
@@ -246,12 +250,21 @@ class UserViewSet(
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or requesting_user.user_type in READ_ONLY_USER_TYPES
+            or requesting_user.user_type in User.READ_ONLY_TYPES
         ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        # ensure that district admin only able to delete in the same district
+        if (
+            requesting_user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and user.district_id != requesting_user.district_id
+        ):
+            raise ValidationError(
+                {"facility": "Cannot unlink User's Home Facility from other district"}
+            )
 
         user.home_facility = None
         user.save(update_fields=["home_facility"])
