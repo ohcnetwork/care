@@ -20,9 +20,9 @@ def halve_pain_scale(apps, schema_editor):
     records_to_update = []
     for daily_round in DailyRound.objects.filter(pain_scale_enhanced__isnull=False):
         if scale := daily_round.pain_scale_enhanced.get("scale"):
-        	scale = ceil(scale / 2)
+            scale = ceil(scale / 2)
             daily_round.pain_scale_enhanced["scale"] = scale
-        	records_to_update.append(daily_round)
+            records_to_update.append(daily_round)
     DailyRound.objects.bulk_update(records_to_update, ["pain_scale_enhanced"])
 
 
