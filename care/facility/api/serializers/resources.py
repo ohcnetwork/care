@@ -13,6 +13,7 @@ from care.facility.models import (
 )
 from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 
@@ -61,14 +62,16 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
     category = ChoiceField(choices=RESOURCE_CATEGORY_CHOICES)
     sub_category = ChoiceField(choices=RESOURCE_SUB_CATEGORY_CHOICES)
 
-    origin_facility = serializers.UUIDField(
-        source="origin_facility.external_id", allow_null=False, required=True
+    origin_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True
     )
-    approving_facility = serializers.UUIDField(
-        source="approving_facility.external_id", allow_null=False, required=True
+
+    approving_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True
     )
-    assigned_facility = serializers.UUIDField(
-        source="assigned_facility.external_id", allow_null=True, required=False
+
+    assigned_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=False
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
@@ -115,24 +118,6 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         if "origin_facility" in validated_data:
             validated_data.pop("origin_facility")
 
-        if "approving_facility" in validated_data:
-            approving_facility_external_id = validated_data.pop("approving_facility")[
-                "external_id"
-            ]
-            if approving_facility_external_id:
-                validated_data["approving_facility_id"] = Facility.objects.get(
-                    external_id=approving_facility_external_id
-                ).id
-
-        if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")[
-                "external_id"
-            ]
-            if assigned_facility_external_id:
-                validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
-                ).id
-
         instance.last_edited_by = self.context["request"].user
 
         new_instance = super().update(instance, validated_data)
@@ -143,29 +128,6 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         # Do Validity checks for each of these data
         if "status" in validated_data:
             validated_data.pop("status")
-
-        origin_facility_external_id = validated_data.pop("origin_facility")[
-            "external_id"
-        ]
-        validated_data["origin_facility_id"] = Facility.objects.get(
-            external_id=origin_facility_external_id
-        ).id
-
-        request_approving_facility_external_id = validated_data.pop(
-            "approving_facility"
-        )["external_id"]
-        validated_data["approving_facility_id"] = Facility.objects.get(
-            external_id=request_approving_facility_external_id
-        ).id
-
-        if "assigned_facility" in validated_data:
-            assigned_facility_external_id = validated_data.pop("assigned_facility")[
-                "external_id"
-            ]
-            if assigned_facility_external_id:
-                validated_data["assigned_facility_id"] = Facility.objects.get(
-                    external_id=assigned_facility_external_id
-                ).id
 
         validated_data["created_by"] = self.context["request"].user
         validated_data["last_edited_by"] = self.context["request"].user
