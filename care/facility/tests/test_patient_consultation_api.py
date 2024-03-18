@@ -546,6 +546,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
         data.update(
             {
                 "patient_no": "IP1234",
@@ -554,6 +555,10 @@ class TestPatientConsultation(TestUtils, APITestCase):
                 "created_by": self.user.external_id,
             }
         )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        data.update({"suggestion": SuggestionChoices.A})
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
