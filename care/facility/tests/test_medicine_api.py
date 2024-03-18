@@ -2,7 +2,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import MedibaseMedicine, Prescription
+from care.facility.models import MedibaseMedicine, Prescription, PrescriptionDosageType
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -29,94 +29,96 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         data = {
             "medicine": self.medicine1,
             "prescription_type": "REGULAR",
-            "dosage": "1 mg",
+            "base_dosage": "1 mg",
             "frequency": "OD",
-            "is_prn": False,
+            "dosage_type": kwargs.get(
+                "dosage_type", PrescriptionDosageType.REGULAR.value
+            ),
         }
         return {**data, **kwargs}
 
     def test_invalid_dosage(self):
-        data = self.prescription_data(dosage="abc")
+        data = self.prescription_data(base_dosage="abc")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Invalid Input, must be in the format: <amount> <unit>",
         )
 
     def test_dosage_out_of_range(self):
-        data = self.prescription_data(dosage="10000 mg")
+        data = self.prescription_data(base_dosage="10000 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Input amount must be between 0.0001 and 5000",
         )
 
-        data = self.prescription_data(dosage="-1 mg")
+        data = self.prescription_data(base_dosage="-1 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Input amount must be between 0.0001 and 5000",
         )
 
     def test_dosage_precision(self):
-        data = self.prescription_data(dosage="0.300003 mg")
+        data = self.prescription_data(base_dosage="0.300003 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Input amount must have at most 4 decimal places",
         )
 
     def test_dosage_unit_invalid(self):
-        data = self.prescription_data(dosage="1 abc")
+        data = self.prescription_data(base_dosage="1 abc")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue(res.json()["dosage"][0].startswith("Unit must be one of"))
+        self.assertTrue(res.json()["base_dosage"][0].startswith("Unit must be one of"))
 
     def test_dosage_leading_zero(self):
-        data = self.prescription_data(dosage="01 mg")
+        data = self.prescription_data(base_dosage="01 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Input amount must be a valid number without leading or trailing zeroes",
         )
 
     def test_dosage_trailing_zero(self):
-        data = self.prescription_data(dosage="1.0 mg")
+        data = self.prescription_data(base_dosage="1.0 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            res.json()["dosage"][0],
+            res.json()["base_dosage"][0],
             "Input amount must be a valid number without leading or trailing zeroes",
         )
 
     def test_dosage_validator_clean(self):
-        data = self.prescription_data(dosage=" 1 mg ")
+        data = self.prescription_data(base_dosage=" 1 mg ")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
@@ -124,12 +126,53 @@ class MedicinePrescriptionApiTestCase(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_valid_dosage(self):
-        data = self.prescription_data(dosage="1 mg")
+        data = self.prescription_data(base_dosage="1 mg")
         res = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             data,
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_titrated_prescription(self):
+        titrated_prescription_data = self.prescription_data(
+            dosage_type=PrescriptionDosageType.TITRATED.value,
+            target_dosage="2 mg",
+            instruction_on_titration="Test Instruction",
+        )
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            titrated_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        titrated_prescription_data = self.prescription_data(
+            dosage_type=PrescriptionDosageType.TITRATED.value,
+        )
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            titrated_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_prn_prescription(self):
+        prn_prescription_data = self.prescription_data(
+            dosage_type=PrescriptionDosageType.PRN.value,
+            indicator="Test Indicator",
+        )
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            prn_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        prn_prescription_data = self.prescription_data(
+            dosage_type=PrescriptionDosageType.PRN.value,
+        )
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            prn_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
@@ -154,9 +197,11 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             "consultation": self.create_consultation(self.patient, self.facility),
             "medicine": MedibaseMedicine.objects.first(),
             "prescription_type": "REGULAR",
-            "dosage": "1 mg",
+            "base_dosage": "1 mg",
             "frequency": "OD",
-            "is_prn": False,
+            "dosage_type": kwargs.get(
+                "dosage_type", PrescriptionDosageType.REGULAR.value
+            ),
         }
         return Prescription.objects.create(
             **{**data, **kwargs, "prescribed_by": self.user}
@@ -234,3 +279,20 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             {"notes": "Test Notes"},
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_administer_titrated_dosage(self):
+        prescription = self.create_prescription(
+            dosage_type=PrescriptionDosageType.TITRATED.value, target_dosage="10 mg"
+        )
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+            {"notes": "Test Notes"},
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+            {"notes": "Test Notes", "dosage": "1 mg"},
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
