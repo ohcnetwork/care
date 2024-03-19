@@ -191,7 +191,7 @@ class DailyRound(PatientBaseModel):
     # Critical Care Attributes
 
     consciousness_level = models.IntegerField(
-        choices=ConsciousnessChoice, default=ConsciousnessType.UNKNOWN.value
+        choices=ConsciousnessChoice, default=None, null=True
     )
     consciousness_level_detail = models.TextField(default=None, null=True, blank=True)
 
@@ -205,7 +205,7 @@ class DailyRound(PatientBaseModel):
     )
     left_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     left_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoice, default=None, null=True
     )
     left_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -218,7 +218,7 @@ class DailyRound(PatientBaseModel):
     )
     right_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     right_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=PupilReactionType.UNKNOWN.value
+        choices=PupilReactionChoice, default=None, null=True
     )
     right_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -244,16 +244,16 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(3), MaxValueValidator(15)],
     )
     limb_response_upper_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice, default=None, null=True
     )
     limb_response_upper_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice, default=None, null=True
     )
     limb_response_lower_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice, default=None, null=True
     )
     limb_response_lower_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=LimbResponseType.UNKNOWN.value
+        choices=LimbResponseChoice, default=None, null=True
     )
     bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
     pulse = models.IntegerField(
@@ -266,14 +266,15 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(150)],
     )
-    rhythm = models.IntegerField(choices=RythmnChoice, default=RythmnType.UNKNOWN.value)
+    rhythm = models.IntegerField(choices=RythmnChoice, default=None, null=True)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
         choices=VentilatorInterfaceChoice,
-        default=VentilatorInterfaceType.UNKNOWN.value,
+        default=None,
+        null=True,
     )
     ventilator_mode = models.IntegerField(
-        choices=VentilatorModeChoice, default=VentilatorModeType.UNKNOWN.value
+        choices=VentilatorModeChoice, default=None, null=True
     )
     ventilator_peep = models.DecimalField(
         decimal_places=2,
@@ -309,8 +310,7 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
     ventilator_oxygen_modality = models.IntegerField(
-        choices=VentilatorOxygenModalityChoice,
-        default=VentilatorOxygenModalityType.UNKNOWN.value,
+        choices=VentilatorOxygenModalityChoice, default=None, null=True
     )
     ventilator_oxygen_modality_oxygen_rate = models.IntegerField(
         default=None,
@@ -417,7 +417,8 @@ class DailyRound(PatientBaseModel):
     )
     insulin_intake_frequency = models.IntegerField(
         choices=InsulinIntakeFrequencyChoice,
-        default=InsulinIntakeFrequencyType.UNKNOWN.value,
+        default=None,
+        null=True,
     )
     infusions = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(INFUSIONS)]
@@ -504,18 +505,27 @@ class DailyRound(PatientBaseModel):
 
     def save(self, *args, **kwargs):
         # Calculate all automated columns and populate them
-        self.glasgow_total_calculated = (
-            self.cztn(self.glasgow_eye_open)
-            + self.cztn(self.glasgow_motor_response)
-            + self.cztn(self.glasgow_verbal_response)
-        )
-        self.total_intake_calculated = sum([x["quantity"] for x in self.infusions])
-        self.total_intake_calculated += sum([x["quantity"] for x in self.iv_fluids])
-        self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
+        if (
+            self.glasgow_eye_open is not None
+            and self.glasgow_motor_response is not None
+            and self.glasgow_verbal_response is not None
+        ):
+            self.glasgow_total_calculated = (
+                self.cztn(self.glasgow_eye_open)
+                + self.cztn(self.glasgow_motor_response)
+                + self.cztn(self.glasgow_verbal_response)
+            )
+        if (
+            self.infusions is not None
+            and self.iv_fluids is not None
+            and self.feeds is not None
+        ):
+            self.total_intake_calculated = sum([x["quantity"] for x in self.infusions])
+            self.total_intake_calculated += sum([x["quantity"] for x in self.iv_fluids])
+            self.total_intake_calculated += sum([x["quantity"] for x in self.feeds])
 
-        self.total_output_calculated = sum([x["quantity"] for x in self.output])
-
-        # self.pressure_sore = self.update_pressure_sore()
+        if self.output is not None:
+            self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
         super(DailyRound, self).save(*args, **kwargs)
 
