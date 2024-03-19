@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
-from django.utils.timezone import localtime, make_aware, now, timedelta
+from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
