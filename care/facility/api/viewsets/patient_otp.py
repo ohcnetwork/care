@@ -53,6 +53,3 @@ class PatientMobileOTPViewSet(
         token["phone_number"] = phone_number
 
         return Response({"access": str(token)})
-
-    def perform_create(self, serializer):
-        serializer.save(updated_by=self.request.user)
