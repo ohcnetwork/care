@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     def populate_patientregistration_death_datetime(apps, schema_editor):
         PatientRegistration = apps.get_model("facility", "PatientRegistration")
 
-        patients = PatientRegistration.objects.filter(
+        patients = PatientRegistration.objects.only("last_consultation").filter(
             last_consultation__death_datetime__isnull=False
         ).annotate(new_death_datetime=models.F("last_consultation__death_datetime"))
 
