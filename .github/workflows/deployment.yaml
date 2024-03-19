@@ -117,7 +117,7 @@ jobs:
 
   notify-release:
     needs: build
-    if: github.ref == 'refs/tags/v*'
+    if: startsWith(github.event.ref, 'refs/tags/v')
     name: Notify release
     runs-on: ubuntu-latest
     steps:
