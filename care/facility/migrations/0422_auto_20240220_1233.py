@@ -30,7 +30,7 @@ def reverse_transfer(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0415_patientconsultation_assigned_clinicians"),
+        ("facility", "0421_merge_20240318_1434"),
     ]
 
     operations = [
