@@ -38,8 +38,10 @@ class FileUpload(FacilityBaseModel):
     FileTypeChoices = [(e.value, e.name) for e in FileType]
     FileCategoryChoices = [(e.value, e.name) for e in FileCategory]
 
-    name = models.CharField(max_length=2000)
-    internal_name = models.CharField(max_length=2000)
+    name = models.CharField(max_length=2000)  # name should not contain file extension
+    internal_name = models.CharField(
+        max_length=2000
+    )  # internal_name should include file extension
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     upload_completed = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
