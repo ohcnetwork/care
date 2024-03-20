@@ -174,6 +174,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     class Meta:
         verbose_name_plural = "Facilities"
 
+    def delete(self, *args, **kwargs):
+        from care.facility.models.asset import Asset, AssetLocation
+
+        Asset.objects.filter(current_location__facility=self).update(deleted=True)
+        super().delete(self, *args, **kwargs)
+
     def read_cover_image_url(self):
         if self.cover_image_url:
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
