@@ -168,6 +168,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
+    assigned_clinicians = models.ManyToManyField(
+        User,
+        related_name="patient_assigned_clinician",
+        through="ConsultationClinician",
+    )
+
     medico_legal_case = models.BooleanField(default=False)
 
     deprecated_verified_by = models.TextField(
@@ -343,3 +349,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     def has_object_generate_discharge_summary_permission(self, request):
         return self.has_object_read_permission(request)
+
+
+class ConsultationClinician(models.Model):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+    )
+    clinician = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+    )
