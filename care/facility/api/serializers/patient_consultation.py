@@ -199,7 +199,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def get_mews_field(self, consultation):
         current_time = localtime(now())
         past_30_minutes = current_time - timedelta(minutes=30)
-        recentDailyArray = DailyRound.objects.filter(rounds_type = DailyRound.RoundsType.NORMAL.value ,consultation = consultation ,modified_date__gte=past_30_minutes, modified_date__lte=current_time).order_by("-modified_date")
         mews_field_data = {
             "resp":None,
             "bp":{},
@@ -208,6 +207,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "consciousness_level":DailyRound.ConsciousnessType.UNKNOWN.value,
             "modified_date":None,
         }
+        recentDailyArray = DailyRound.objects.filter(consultation = consultation, created_date__gte=past_30_minutes, created_date__lte=current_time).order_by("-created_date").only(*(list(mews_field_data.keys())))
         if(len(recentDailyArray)==0):
             return mews_field_data
         mews_field_data["modified_date"] = localtime(recentDailyArray[0].modified_date)
