@@ -2,6 +2,28 @@
 
 from django.db import migrations, models
 
+OLD_TO_NEW_MAPPINGS = {
+    20: 10,  # Ventilator => ICU
+    30: 4,  # Covid Beds => Isolation beds
+    100: 4,  # Covid Ventilators => Isolation beds
+    110: 4,  # Covid ICU => Isolation beds
+    120: 4,  # Covid Oxygen beds => Isolation beds
+    2: 5,  # Hostel => Others
+    3: 5,  # Single Room with Attached Bathroom => Others
+    70: 50,  # KASP Ventilator beds => KASP ICU beds
+}
+
+def migrate_data(apps, schema_editor):
+    Room = apps.get_model('facility', 'Room')
+
+    # Update Room instances
+    rooms_to_update = []
+    for room in Room.objects.all():
+        if room.room_type in OLD_TO_NEW_MAPPINGS:
+            room.room_type = OLD_TO_NEW_MAPPINGS[room.room_type]
+            rooms_to_update.append(room)
+
+    Room.objects.bulk_update(rooms_to_update, ['room_type'])
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -84,4 +106,6 @@ class Migration(migrations.Migration):
                 ]
             ),
         ),
+        migrations.RunPython(migrate_data),
+
     ]

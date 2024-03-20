@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
-from care.facility.models import RoomTypes, FacilityCapacity
+from care.facility.models import RoomType, FacilityCapacity
 from config.serializers import ChoiceField
 
 
 class FacilityCapacitySerializer(serializers.ModelSerializer):
-    room_type_text = ChoiceField(choices=RoomTypes.choices, read_only=True, source="room_type")
+    room_type_text = ChoiceField(choices=RoomType.choices, read_only=True, source="room_type")
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     def validate(self, data):

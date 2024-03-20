@@ -20,7 +20,7 @@ User = get_user_model()
 # Facility Model Start
 
 
-class RoomTypes(models.IntegerChoices):
+class RoomType(models.IntegerChoices):
     GENERAL_BED = 1, "General Bed"
     ISOLATION_BEDS = 4, "Isolation beds"
     OTHERS = 5, "Others"
@@ -51,7 +51,7 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
-REVERSE_ROOM_TYPES = reverse_choices(RoomTypes.choices)
+REVERSE_ROOM_TYPES = reverse_choices(RoomType.choices)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -294,7 +294,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=RoomTypes.choices)
+    room_type = models.IntegerField(choices=RoomType.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -393,7 +393,7 @@ class Room(FacilityBaseModel):
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     beds_capacity = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     occupied_beds = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    room_type = models.IntegerField(choices=RoomTypes.choices)
+    room_type = models.IntegerField(choices=RoomType.choices)
 
     def __str__(self):
         return self.num + " under " + str(self.building)
