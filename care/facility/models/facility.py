@@ -16,27 +16,31 @@ from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
-# Facility Model Start
-BASE_ROOM_TYPES = [
-    (1, "General Bed"),
-    (10, "ICU"),
-    (20, "Ventilator"),
-    (30, "Covid Beds"),
-    (100, "Covid Ventilators"),
-    (110, "Covid ICU"),
-    (120, "Covid Oxygen beds"),
-    (150, "Oxygen beds"),
-]
 
-ROOM_TYPES = [
-    (0, "Total"),
-    (2, "Hostel"),
-    (3, "Single Room with Attached Bathroom"),
-    (40, "KASP Beds"),
-    (50, "KASP ICU beds"),
-    (60, "KASP Oxygen beds"),
-    (70, "KASP Ventilator beds"),
-]
+# Facility Model Start
+
+
+class RoomTypes(models.IntegerChoices):
+    GENERAL_BED = 1, "General Bed"
+    ISOLATION_BEDS = 4, "Isolation beds"
+    OTHERS = 5, "Others"
+    ICU = 10, "ICU"
+    OXYGEN_BEDS = 150, "Oxygen beds"
+    TOTAL = 0, "Total"
+    KASP_BEDS = 40, "KASP Beds"
+    KASP_ICU_BEDS = 50, "KASP ICU beds"
+    KASP_OXYGEN_BEDS = 60, "KASP Oxygen beds"
+
+    # deprecated
+    KASP_VENTILATOR_BEDS = 70, "KASP Ventilator beds"
+    VENTILATOR = 20, "Ventilator"
+    COVID_BEDS = 30, "Covid Beds"
+    COVID_VENTILATORS = 100, "Covid Ventilators"
+    COVID_ICU = 110, "Covid ICU"
+    COVID_OXYGEN_BEDS = 120, "Covid Oxygen beds"
+    HOSTEL = 2, "Hostel"
+    SINGLE_ROOM_WITH_ATTACHED_BATHROOM = 3, "Single Room with Attached Bathroom"
+
 
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
@@ -47,9 +51,7 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
-ROOM_TYPES.extend(BASE_ROOM_TYPES)
-
-REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_ROOM_TYPES = reverse_choices(RoomTypes.choices)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -240,7 +242,7 @@ class FacilityLocalGovtBody(models.Model):
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
                 check=models.Q(local_body__isnull=False)
-                | models.Q(district__isnull=False),
+                      | models.Q(district__isnull=False),
             )
         ]
 
@@ -292,7 +294,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomTypes.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -391,7 +393,7 @@ class Room(FacilityBaseModel):
     floor = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     beds_capacity = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     occupied_beds = models.IntegerField(validators=[MinValueValidator(0)], default=0)
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomTypes.choices)
 
     def __str__(self):
         return self.num + " under " + str(self.building)
