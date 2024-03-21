@@ -11,10 +11,10 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS  # noqa F405
 # django-silk
 # ------------------------------------------------------------------------------
 # https://github.com/jazzband/django-silk#requirements
-INSTALLED_APPS += ["silk"]  # noqa F405
-MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]  # noqa F405
-# https://github.com/jazzband/django-silk#profiling
-SILKY_PYTHON_PROFILER = True
+# INSTALLED_APPS += ["silk"]  # noqa F405
+# MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]  # noqa F405
+# # https://github.com/jazzband/django-silk#profiling
+# SILKY_PYTHON_PROFILER = True
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------

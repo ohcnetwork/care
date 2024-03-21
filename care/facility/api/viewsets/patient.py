@@ -74,7 +74,7 @@ from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
-    MiddlewareAuthentication,
+    MiddlewareAssetAuthentication,
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
@@ -329,7 +329,7 @@ class PatientViewSet(
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
-        MiddlewareAuthentication,
+        MiddlewareAssetAuthentication,
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
