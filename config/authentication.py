@@ -4,6 +4,7 @@ import jwt
 import requests
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
@@ -65,10 +66,22 @@ class MiddlewareAuthentication(JWTAuthentication):
     auth_header_type_bytes = auth_header_type.encode(HTTP_HEADER_ENCODING)
 
     def open_id_authenticate(self, url, token):
-        public_key = requests.get(url)
-        jwk = public_key.json()["keys"][0]
-        public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
-        return jwt.decode(token, key=public_key, algorithms=["RS256"])
+        public_key_json = cache.get(url)
+        try:
+            if not public_key_json:
+                res = requests.get(url)
+                res.raise_for_status()
+                public_key_json = res.json()
+
+            public_key = jwt.algorithms.RSAAlgorithm.from_jwk(
+                json.dumps(public_key_json["keys"][0])
+            )
+            payload = jwt.decode(token, key=public_key, algorithms=["RS256"])
+            cache.set(url, public_key_json, timeout=60 * 5)
+            return payload
+        except Exception:
+            cache.delete(url)
+            raise
 
     def authenticate_header(self, request):
         return f'{self.auth_header_type} realm="{self.www_authenticate_realm}"'
