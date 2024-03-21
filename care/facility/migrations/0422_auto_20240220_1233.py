@@ -5,13 +5,20 @@ from django.db import migrations
 
 def transfer_assigned_to_to_clinicians(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    ConsultationClinician = apps.get_model("facility", "ConsultationClinician")
+    clinician_links = []
 
-    for patient_consultation in PatientConsultation.objects.all():
-        if patient_consultation.assigned_to:
-            # Direct assignment to ManyToManyField not possible; need to use .add()
-            patient_consultation.assigned_clinicians.add(
-                patient_consultation.assigned_to
-            )
+    consultations = PatientConsultation.objects.filter(
+        assigned_to__isnull=False
+    ).select_related("assigned_to")
+
+    for consultation in consultations:
+        link = ConsultationClinician(
+            consultation=consultation, clinician=consultation.assigned_to
+        )
+        clinician_links.append(link)
+
+    ConsultationClinician.objects.bulk_create(clinician_links)
 
 
 def reverse_transfer(apps, schema_editor):

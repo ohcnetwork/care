@@ -62,6 +62,7 @@ class UserFilterSet(filters.FilterSet):
         field_name,
         value,
     ):
+        # TODO: use https://django-filter.readthedocs.io/en/stable/ref/filters.html#multiplechoicefilter
         if value:
             user_types = value.split(",")
             filtered_query = queryset.filter(

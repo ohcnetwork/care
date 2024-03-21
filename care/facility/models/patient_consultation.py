@@ -169,10 +169,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     )  # Deprecated
 
     assigned_clinicians = models.ManyToManyField(
-        User, related_name="patient_assigned_clinician"
-    )
-
-    assigned_clinicians = models.ManyToManyField(
         User,
         related_name="patient_assigned_clinician",
         through="ConsultationClinician",
