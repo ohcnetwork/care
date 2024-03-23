@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from django.utils.timezone import now
@@ -408,6 +409,18 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             self.get_base_url(), {"diagnoses_confirmed": self.diagnoses[2].id}
         )
         self.assertNotContains(res, self.patient.external_id)
+
+    def test_filter_by_review_missed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(self.get_base_url(), {"review_missed": True})
+        for patient in res.data["results"]:
+            review_time = datetime.fromisoformat(patient["review_time"])
+            self.assertLess(review_time, now())
+
+        res = self.client.egt(self.get_base_url(), {"review_missed": False})
+        for patient in res.data["results"]:
+            review_time = datetime.fromisoformat(patient["review_time"])
+            self.assertGreaterEqual(review_time, now())
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):
