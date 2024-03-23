@@ -1,5 +1,5 @@
 import datetime
-
+from decimal import Decimal
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -96,3 +96,52 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    def test_log_update_mews(
+        self,
+    ):
+        log_updates = [
+            {
+                "clone_last": False,
+                "rounds_type": "AUTOMATED",
+                "patient_category": "Comfort",
+                "resp": 16,
+                "bp": {
+                    "systolic": 130,
+                    "diastolic": 80,
+                    "mean": 105,
+                },
+                "taken_at": (datetime.datetime.now() - datetime.timedelta(minutes=27)).isoformat(),
+                "temperature": '98.9',
+            },
+            {
+                "clone_last": False,
+                "rounds_type": "NORMAL",
+                "patient_category": "Comfort",
+                "pulse": 73,
+                "taken_at": (datetime.datetime.now() - datetime.timedelta(minutes=15)).isoformat(),
+            },
+            {
+                "clone_last": False,
+                "rounds_type": "NORMAL",
+                "patient_category": "Comfort",
+                "consciousness_level": "RESPONDS_TO_VOICE",
+                "taken_at": (datetime.datetime.now()).isoformat(),
+            }
+        ]
+        for log_update in log_updates:
+            response = self.client.post(
+                f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
+                data=log_update,
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # getting mews:
+        data = self.client.get(f"/api/v1/consultation/{self.consultation_with_bed.external_id}/")
+        self.assertEqual(data.status_code, status.HTTP_200_OK)
+        mews_field = data.data['mews_field']
+        self.assertEqual(mews_field['resp'], 16)
+        self.assertEqual(mews_field['temperature'], Decimal('98.90'))
+        self.assertEqual(mews_field['consciousness_level'], 10)
+        self.assertEqual(mews_field['pulse'], 73)
+        self.assertDictEqual(mews_field['bp'], {"systolic": 130, "diastolic": 80, "mean": 105})

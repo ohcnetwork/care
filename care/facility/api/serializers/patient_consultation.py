@@ -50,6 +50,7 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from config.mews_annotation import MewsType
 
 MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
 
@@ -94,7 +95,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         required=False, allow_null=True, allow_blank=True
     )
 
-    mews_field = serializers.SerializerMethodField()
+    mews_field: MewsType = serializers.SerializerMethodField()
 
     transferred_from_location_object = AssetLocationSerializer(
         source="transferred_from_location", read_only=True
@@ -199,7 +200,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def get_mews_field(self, consultation):
         current_time = localtime(now())
         past_30_minutes = current_time - timedelta(minutes=30)
-        mews_field_data = {
+        mews_field_data: MewsType = {
             "resp":None,
             "bp":{},
             "pulse":None,
