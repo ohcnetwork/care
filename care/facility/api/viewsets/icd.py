@@ -30,10 +30,7 @@ class ICDViewSet(ViewSet):
         if q := request.query_params.get("query"):
             query.append(ICD11.label % query_builder(q))
 
-        try:
-            result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
-                exhaust_results=False
-            )
-            return Response(self.serialize_data(result))
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+        result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
+            exhaust_results=False
+        )
+        return Response(self.serialize_data(result))
