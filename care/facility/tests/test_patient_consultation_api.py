@@ -1,10 +1,12 @@
 import datetime
+from unittest.mock import patch
 
 from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
@@ -223,6 +225,32 @@ class TestPatientConsultation(TestUtils, APITestCase):
         consultation.refresh_from_db()
         self.assertIsNone(consultation.death_datetime)
         self.assertIsNot(consultation.death_confirmed_doctor, "Dr. Test")
+
+    def discharge_summary(self, consultation, **kwargs):
+        return self.client.post(
+            f"{self.get_url(consultation)}generate_discharge_summary/", kwargs, "json"
+        )
+
+    def test_discharge_summary(self):
+        consultation = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+        )
+        with patch.object(FileUpload, "put_object"):
+            self.discharge_summary(
+                consultation,
+                new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+                discharge_date="2020-04-02T15:30:00Z",
+                discharge_notes="Discharge as recovered after admission before future",
+            )
+
+        file_res = FileUpload.objects.filter(
+            associating_id=consultation.external_id,
+            upload_completed=True,
+            is_archived=False,
+        )
+        uploaded_file = file_res[0]
+        self.assertFalse(uploaded_file.name.endswith(".pdf"))
 
     def test_referred_to_external_null(self):
         consultation = self.create_admission_consultation(
@@ -546,6 +574,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
         data.update(
             {
                 "patient_no": "IP1234",
@@ -554,6 +583,10 @@ class TestPatientConsultation(TestUtils, APITestCase):
                 "created_by": self.user.external_id,
             }
         )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        data.update({"suggestion": SuggestionChoices.A})
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 

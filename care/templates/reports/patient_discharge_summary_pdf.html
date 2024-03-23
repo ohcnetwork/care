@@ -480,8 +480,12 @@
             <td class="p-1 whitespace-normal text-sm">
               {{ prescription.medicine_name }}
             </td>
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+            <td class="p-1 whitespace-normal text-sm">
+              {{ prescription.base_dosage }}
+              {% if prescription.dosage_type == 'TITRATED' %}
+                to {{ prescription.target_dosage }}
+              <p class="text-xs mt-1"><span class="font-bold">Instruction on titration:</span> {{ prescription.instruction_on_titration }}</p>
+              {% endif %}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -538,7 +542,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
@@ -885,7 +889,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -942,7 +946,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
