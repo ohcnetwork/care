@@ -1,6 +1,6 @@
-from django.utils.timezone import now
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.utils.timezone import now
 from rest_framework import exceptions, serializers
 
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
@@ -66,7 +66,7 @@ class SignUpSerializer(serializers.ModelSerializer):
                     },
                 )
 
-            if attrs["doctor_experience_commenced_on"] > date.today():
+            if attrs["doctor_experience_commenced_on"] > now().date():
                 raise serializers.ValidationError(
                     {
                         "doctor_experience_commenced_on": "Experience cannot be in the future",
@@ -111,8 +111,8 @@ class UserCreateSerializer(SignUpSerializer):
             "user_permissions",
             "created_by",
         )
-    date_of_birth = serializers.DateField(required=True)
 
+    date_of_birth = serializers.DateField(required=True)
 
     def validate_date_of_birth(self, value):
         if value and now().year - value.year < 16:

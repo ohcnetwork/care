@@ -289,7 +289,7 @@ class User(AbstractUser):
         "last_name": "Last Name",
         "phone_number": "Phone Number",
         "gender": "Gender",
-        "date_of_birth":"Date of Birth",
+        "date_of_birth": "Date of Birth",
         "verified": "verified",
         "local_body__name": "Local Body",
         "district__name": "District",
