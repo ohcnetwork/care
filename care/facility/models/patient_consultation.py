@@ -238,6 +238,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    consent_records = JSONField(default=list)
+
     def get_related_consultation(self):
         return self
 
