@@ -15,7 +15,7 @@ from django_rest_passwordreset.models import (
     get_password_reset_lookup_field,
     get_password_reset_token_expiry_time,
 )
-from django_rest_passwordreset.serializers import PasswordTokenSerializer
+from django_rest_passwordreset.serializers import PasswordValidateMixin
 from django_rest_passwordreset.signals import (
     post_password_reset,
     pre_password_reset,
@@ -38,8 +38,24 @@ HTTP_IP_ADDRESS_HEADER = getattr(
 )
 
 
-class ResetPasswordUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
+class ResetPasswordCheckSerializer(serializers.Serializer):
+    token = serializers.CharField(
+        write_only=True, help_text="The token that was sent to the user's email address"
+    )
+    status = serializers.CharField(read_only=True, help_text="Request status")
+
+
+class ResetPasswordConfirmSerializer(PasswordValidateMixin, serializers.Serializer):
+    token = serializers.CharField(
+        write_only=True, help_text="The token that was sent to the user's email address"
+    )
+    password = serializers.CharField(write_only=True, help_text="The new password")
+    status = serializers.CharField(read_only=True, help_text="Request status")
+
+
+class ResetPasswordRequestTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(write_only=True)
+    status = serializers.CharField(read_only=True, help_text="Request status")
 
 
 class ResetPasswordCheck(GenericAPIView):
@@ -47,11 +63,15 @@ class ResetPasswordCheck(GenericAPIView):
     An Api View which provides a method to check if a password reset token is valid
     """
 
+    authentication_classes = ()
     permission_classes = ()
+    serializer_class = ResetPasswordCheckSerializer
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
-        token = request.data.get("token", None)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.validated_data["token"]
 
         if ratelimit(request, "reset", [token], "20/h"):
             return Response(
@@ -92,10 +112,11 @@ class ResetPasswordConfirm(GenericAPIView):
     An Api View which provides a method to reset a password based on a unique token
     """
 
+    authentication_classes = ()
     permission_classes = ()
-    serializer_class = PasswordTokenSerializer
+    serializer_class = ResetPasswordConfirmSerializer
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -171,10 +192,11 @@ class ResetPasswordRequestToken(GenericAPIView):
     """
 
     throttle_classes = ()
+    authentication_classes = ()
     permission_classes = ()
-    serializer_class = ResetPasswordUserSerializer
+    serializer_class = ResetPasswordRequestTokenSerializer
 
-    @extend_schema(tags=["auth", "users"])
+    @extend_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -218,9 +240,9 @@ class ResetPasswordRequestToken(GenericAPIView):
         ):
             raise exceptions.ValidationError(
                 {
-                    "email": [
+                    "username": [
                         _(
-                            "There is no active user associated with this e-mail address or the password can not be changed"
+                            "There is no active user associated with this username or the password can not be changed"
                         )
                     ],
                 }
