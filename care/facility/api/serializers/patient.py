@@ -361,8 +361,8 @@ class PatientDetailSerializer(PatientListSerializer):
 
             if meta_info:
                 if patient.meta_info is None:
-                   meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
-                   patient.meta_info = meta_info_obj
+                    meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                    patient.meta_info = meta_info_obj
                 else:
                     for key, value in meta_info.items():
                         setattr(patient.meta_info, key, value)

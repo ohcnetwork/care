@@ -132,7 +132,7 @@ class TestUtils:
             "state": district.state,
             "phone_number": "8887776665",
             "gender": 2,
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "email": "foo@foobar.com",
             "username": "user",
             "password": "bar",
@@ -156,7 +156,7 @@ class TestUtils:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "verified": True,
             "username": username,
