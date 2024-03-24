@@ -45,3 +45,23 @@ class FacilityUserTest(TestUtils, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 2)
+
+    def test_user_access_to_facility_on_user_type(self):
+        # when a user is a state_lab_admin or a district_lab_admin
+        state_lab_admin = self.create_user(
+            "state_lab_admin", self.district, user_type=35
+        )
+        district_lab_admin = self.create_user(
+            "district_lab_admin", self.district, user_type=25
+        )
+
+        self.client.force_authenticate(user=state_lab_admin)
+
+        # when they try to access a facility in their state or district then they
+        # should be able to do so without permission issue
+        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=district_lab_admin)
+        response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
+        self.assertIs(response.status_code, status.HTTP_200_OK)
