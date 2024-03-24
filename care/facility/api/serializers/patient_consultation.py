@@ -378,6 +378,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         consultation.created_by = self.context["request"].user
         consultation.last_edited_by = self.context["request"].user
         patient = consultation.patient
+        consultation.previous_consultation = patient.last_consultation
         last_consultation = patient.last_consultation
         if (
             last_consultation
