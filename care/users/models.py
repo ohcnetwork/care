@@ -132,7 +132,6 @@ class CustomUserManager(UserManager):
     def create_superuser(self, username, email, password, **extra_fields):
         district = District.objects.all()[0]
         extra_fields["district"] = district
-        extra_fields["age"] = 20
         extra_fields["phone_number"] = "+919696969696"
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
@@ -235,7 +234,7 @@ class User(AbstractUser):
     video_connect_link = models.URLField(blank=True, null=True)
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    date_of_birth = models.DateField(null=True, blank=True)
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -290,7 +289,7 @@ class User(AbstractUser):
         "last_name": "Last Name",
         "phone_number": "Phone Number",
         "gender": "Gender",
-        "age": "Age",
+        "date_of_birth": "Date of Birth",
         "verified": "verified",
         "local_body__name": "Local Body",
         "district__name": "District",

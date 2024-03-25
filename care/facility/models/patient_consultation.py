@@ -126,6 +126,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         default="", null=True, blank=True
     )
     referred_by_external = models.TextField(default="", null=True, blank=True)
+    previous_consultation = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
     is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
     encounter_date = models.DateTimeField(default=timezone.now, db_index=True)
