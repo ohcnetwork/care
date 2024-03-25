@@ -410,7 +410,12 @@ class PatientViewSet(
         if self.action == "list" and settings.CSV_REQUEST_PARAMETER in self.request.GET:
             for backend in (PatientDRYFilter, filters.DjangoFilterBackend):
                 queryset = backend().filter_queryset(self.request, queryset, self)
-            return queryset.filter(last_consultation__discharge_date__isnull=True)
+            return queryset.filter(
+                last_consultation__discharge_date__isnull=self.request.GET.get(
+                    "is_active"
+                )
+                == "True"
+            )
 
         return super().filter_queryset(queryset)
 
