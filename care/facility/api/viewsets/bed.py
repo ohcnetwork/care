@@ -30,7 +30,7 @@ from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
-from config.authentication import CustomJWTAuthentication, MiddlewareAssetAuthentication
+from config.authentication import MiddlewareAssetAuthentication
 
 inverse_bed_type = inverse_choices(BedTypeChoices)
 
@@ -155,16 +155,16 @@ class AssetBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
     lookup_field = "external_id"
-    authentication_classes = [
-        MiddlewareAssetAuthentication,
-        CustomJWTAuthentication,
-    ]
+    permission_classes = (IsAuthenticated,)
+
+    def get_authenticators(self):
+        return [MiddlewareAssetAuthentication()] + super().get_authenticators()
 
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset
         if user.asset:
-            return queryset.filter(asset=user.asset)
+            return queryset.filter(asset__current_location=user.asset.current_location)
         if user.is_superuser:
             pass
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
