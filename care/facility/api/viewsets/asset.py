@@ -447,11 +447,17 @@ class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
         middleware_hostname = request.query_params.get("middleware_hostname")
         if not middleware_hostname:
             return Response(
-                {"middleware_hostname": "is required"},
+                {"middleware_hostname": "Middleware hostname is required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        middleware_hostname = re.sub(r"^https?://", "", middleware_hostname)
+        if match := re.match(r"^(https?://)?([^\s/]+)/?$", middleware_hostname):
+            middleware_hostname = match.group(2)  # extract the hostname from the URL
+        else:
+            return Response(
+                {"middleware_hostname": "Invalid middleware hostname"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         queryset = (
             self.get_queryset()
