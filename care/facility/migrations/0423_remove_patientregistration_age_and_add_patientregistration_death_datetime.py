@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0421_merge_20240318_1434"),
+        ("facility", "0422_merge_20240325_1411"),
     ]
 
     def populate_patientregistration_death_datetime(apps, schema_editor):
