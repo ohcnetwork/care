@@ -13,8 +13,9 @@ OLD_TO_NEW_MAPPINGS = {
     70: 50,  # KASP Ventilator beds => KASP ICU beds
 }
 
+
 def migrate_data(apps, schema_editor):
-    Room = apps.get_model('facility', 'Room')
+    Room = apps.get_model("facility", "Room")
 
     # Update Room instances
     rooms_to_update = []
@@ -23,7 +24,8 @@ def migrate_data(apps, schema_editor):
             room.room_type = OLD_TO_NEW_MAPPINGS[room.room_type]
             rooms_to_update.append(room)
 
-    Room.objects.bulk_update(rooms_to_update, ['room_type'])
+    Room.objects.bulk_update(rooms_to_update, ["room_type"])
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -107,5 +109,4 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(migrate_data),
-
     ]

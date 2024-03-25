@@ -242,7 +242,7 @@ class FacilityLocalGovtBody(models.Model):
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
                 check=models.Q(local_body__isnull=False)
-                      | models.Q(district__isnull=False),
+                | models.Q(district__isnull=False),
             )
         ]
 
