@@ -4,7 +4,7 @@ import jwt
 import requests
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.core import cache
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
@@ -18,6 +18,10 @@ from rest_framework_simplejwt.tokens import Token
 from care.facility.models import Facility
 from care.facility.models.asset import Asset
 from care.users.models import User
+
+
+def jwk_response_cache_key(url: str) -> str:
+    return f"jwk_response:{url}"
 
 
 class MiddlewareUser(AnonymousUser):
@@ -66,7 +70,7 @@ class MiddlewareAuthentication(JWTAuthentication):
     auth_header_type_bytes = auth_header_type.encode(HTTP_HEADER_ENCODING)
 
     def open_id_authenticate(self, url, token):
-        public_key_json = cache.get(url)
+        public_key_json = cache.get(jwk_response_cache_key(url))
         try:
             if not public_key_json:
                 res = requests.get(url)
@@ -77,10 +81,10 @@ class MiddlewareAuthentication(JWTAuthentication):
                 json.dumps(public_key_json["keys"][0])
             )
             payload = jwt.decode(token, key=public_key, algorithms=["RS256"])
-            cache.set(url, public_key_json, timeout=60 * 5)
+            cache.set(jwk_response_cache_key(url), public_key_json, timeout=60 * 5)
             return payload
         except Exception:
-            cache.delete(url)
+            cache.delete(jwk_response_cache_key(url))
             raise
 
     def authenticate_header(self, request):
