@@ -162,8 +162,8 @@ class TestPasswordReset(TestUtils, APITestCase):
 
     def test_verify_password_reset_token_with_missing_fields(self):
         response = self.client.post("/api/v1/password_reset/check/")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["detail"], "The password reset link is invalid")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()["token"], ["This field is required."])
 
     def test_verify_password_reset_token_with_invalid_token(self):
         response = self.client.post(
