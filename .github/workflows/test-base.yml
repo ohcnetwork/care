@@ -35,6 +35,9 @@ jobs:
       - name: Check migrations
         run: make checkmigration
 
+      - name: Validate integrity of fixtures
+        run: make load-dummy-data
+
       - name: Run tests
         run: make test-coverage
 
@@ -45,6 +48,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Validate integrity of fixtures
-        run: make load-dummy-data
