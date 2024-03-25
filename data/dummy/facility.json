@@ -1020,6 +1020,24 @@
         }
     },
     {
+        "model": "facility.facilityuser",
+        "pk": 23,
+        "fields": {
+            "facility": 1,
+            "user": 23,
+            "created_by": 2
+        }
+    },
+    {
+        "model": "facility.facilityuser",
+        "pk": 24,
+        "fields": {
+            "facility": 1,
+            "user": 24,
+            "created_by": 2
+        }
+    },
+    {
         "model": "facility.assetlocation",
         "pk": 1,
         "fields": {
