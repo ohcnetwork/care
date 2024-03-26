@@ -11,7 +11,6 @@ from rest_framework import status
 
 from care.facility.models import (
     CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
     Disease,
@@ -133,7 +132,7 @@ class TestUtils:
             "state": district.state,
             "phone_number": "8887776665",
             "gender": 2,
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "email": "foo@foobar.com",
             "username": "user",
             "password": "bar",
@@ -157,7 +156,7 @@ class TestUtils:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "verified": True,
             "username": username,
@@ -307,12 +306,13 @@ class TestUtils:
             "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
             "other_symptoms": "No other symptoms",
             "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
-            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
+                0
+            ],  # HOME ISOLATION
             "referred_to": None,
             "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
@@ -320,6 +320,7 @@ class TestUtils:
             "course_in_facility": "",
             "created_date": mock_equal,
             "modified_date": mock_equal,
+            "patient_no": int(datetime.now().timestamp() * 1000),
         }
 
     @classmethod
@@ -341,6 +342,7 @@ class TestUtils:
         data.update(kwargs)
         consultation = PatientConsultation.objects.create(**data)
         patient.last_consultation = consultation
+        patient.facility = consultation.facility
         patient.save()
         return consultation
 

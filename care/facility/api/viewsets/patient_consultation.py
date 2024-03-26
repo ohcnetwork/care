@@ -95,9 +95,12 @@ class PatientConsultationViewSet(
                 patient__facility__district=self.request.user.district
             )
         allowed_facilities = get_accessible_facilities(self.request.user)
-        applied_filters = Q(patient__facility__id__in=allowed_facilities)
-        applied_filters |= Q(assigned_to=self.request.user)
-        applied_filters |= Q(patient__assigned_to=self.request.user)
+        # A user should be able to see all the consultations of a patient if the patient is active in an accessible facility
+        applied_filters = Q(
+            Q(patient__is_active=True) & Q(patient__facility__id__in=allowed_facilities)
+        )
+        # A user should be able to see all consultations part of their home facility
+        applied_filters |= Q(facility=self.request.user.home_facility)
         return self.queryset.filter(applied_filters)
 
     def perform_create(self, serializer):

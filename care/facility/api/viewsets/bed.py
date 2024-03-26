@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import OuterRef, Subquery
+from django.db.models import Exists, OuterRef, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
@@ -50,7 +50,7 @@ class BedViewSet(
 ):
     queryset = (
         Bed.objects.all()
-        .select_related("facility", "location")
+        .select_related("facility", "location", "location__facility")
         .order_by("-created_date")
     )
     serializer_class = BedSerializer
@@ -63,6 +63,15 @@ class BedViewSet(
     def get_queryset(self):
         user = self.request.user
         queryset = self.queryset
+
+        queryset = queryset.annotate(
+            is_occupied=Exists(
+                ConsultationBed.objects.filter(
+                    bed__id=OuterRef("id"), end_date__isnull=True
+                )
+            )
+        )
+
         if user.is_superuser:
             pass
         elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
