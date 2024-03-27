@@ -4,6 +4,7 @@ from celery import shared_task
 from django.apps import apps
 from django.conf import settings
 from pywebpush import WebPushException, webpush
+from sms import send_sms
 
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.facility import Facility, FacilityUser
@@ -16,7 +17,6 @@ from care.facility.models.patient_investigation import (
 )
 from care.facility.models.shifting import ShiftingRequest
 from care.users.models import User
-from care.utils.sms.sendSMS import sendSMS
 
 
 class NotificationCreationException(Exception):
@@ -392,10 +392,9 @@ class NotificationGenerator:
                 medium == Notification.Medium.SMS.value
                 and settings.SEND_SMS_NOTIFICATION
             ):
-                sendSMS(
-                    self.generate_sms_phone_numbers(),
-                    self.generate_sms_message(),
-                    many=True,
+                send_sms(
+                    body=self.generate_sms_message(),
+                    recipients=self.generate_sms_phone_numbers(),
                 )
             elif medium == Notification.Medium.SYSTEM.value:
                 if not self.message:
