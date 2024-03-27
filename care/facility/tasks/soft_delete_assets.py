@@ -11,7 +11,7 @@ app = Celery("soft_delete_assets", broker=broker_url)
 
 @app.task
 def soft_delete_assets_schedule():
-    facilities = Facility.objects.all().values_list("name", flat=True)
-    Asset.objects.exclude(current_location__facility__name__in=facilities).update(
-        deleted=True
-    )
+    facilities = Facility.objects.all().values_list("external_id", flat=True)
+    Asset.objects.exclude(
+        current_location__facility__external_id__in=facilities
+    ).update(deleted=True)
