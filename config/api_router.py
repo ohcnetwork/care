@@ -6,6 +6,7 @@ from rest_framework_nested.routers import NestedSimpleRouter
 from care.abdm.api.viewsets.abha import AbhaViewSet
 from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
 from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
+from care.facility.api.viewsets.ai import AIFormFillViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
@@ -248,6 +249,9 @@ if settings.ENABLE_ABDM:
 router.register(
     "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
 )
+# AI endpoints
+if settings.ENABLE_SCRIBE:
+    router.register("scribe", AIFormFillViewSet)
 
 app_name = "api"
 urlpatterns = [
