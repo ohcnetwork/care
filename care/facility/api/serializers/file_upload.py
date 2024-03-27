@@ -36,6 +36,9 @@ def check_permissions(file_type, associating_id, user, action="create"):
             file_type == FileUpload.FileType.CONSULTATION.value
             or file_type == FileUpload.FileType.CONSENT_RECORD.value
         ):
+            if file_type == FileUpload.FileType.CONSENT_RECORD.value:
+                associating_id = "-".join(associating_id.split("-")[:-1])
+
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if consultation.discharge_date:
                 if not action == "read":
