@@ -48,3 +48,5 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
 
 DISABLE_RATELIMIT = True
+
+SMS_BACKEND = "care.utils.sms.sendSMS.CustomSMSBackendSNS"
