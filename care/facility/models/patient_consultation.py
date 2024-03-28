@@ -11,7 +11,6 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.file_upload import FileUpload
 from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
@@ -286,29 +285,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
-
-    def save(self, *args, **kwargs):
-        """
-        # Removing Patient Hospital Change on Referral
-        if not self.pk or self.referred_to is not None:
-            # pk is None when the consultation is created
-            # referred to is not null when the person is being referred to a new facility
-            self.patient.facility = self.referred_to or self.facility
-            self.patient.save()
-        """
-
-        deleted_consent_records = filter(
-            lambda record: record.get("deleted", False) is True, self.consent_records
-        )
-        deleted_consent_record_ids = [
-            record.get("id") for record in deleted_consent_records
-        ]
-
-        FileUpload.objects.filter(associating_id__in=deleted_consent_record_ids).update(
-            is_archived=True, archive_reason="Parent Consent Deleted"
-        )
-
-        super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
         constraints = [
