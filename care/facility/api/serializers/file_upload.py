@@ -32,25 +32,14 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
-        elif (
-            file_type == FileUpload.FileType.CONSULTATION.value
-            or file_type == FileUpload.FileType.CONSENT_RECORD.value
-        ):
-            if file_type == FileUpload.FileType.CONSENT_RECORD.value:
-                consultation = PatientConsultation.objects.get(
-                    consent_records__contains=[{"id": associating_id}]
+        elif file_type == FileUpload.FileType.CONSULTATION.value:
+            consultation = PatientConsultation.objects.get(external_id=associating_id)
+            if consultation.discharge_date and not action == "read":
+                raise serializers.ValidationError(
+                    {
+                        "consultation": "Cannot upload file for a discharged consultation."
+                    }
                 )
-            else:
-                consultation = PatientConsultation.objects.get(
-                    external_id=associating_id
-                )
-            if consultation.discharge_date:
-                if not action == "read":
-                    raise serializers.ValidationError(
-                        {
-                            "consultation": "Cannot upload file for a discharged consultation."
-                        }
-                    )
             if consultation.patient.assigned_to:
                 if user == consultation.patient.assigned_to:
                     return consultation.id
@@ -62,10 +51,25 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 or has_facility_permission(user, consultation.facility)
             ):
                 raise Exception("No Permission")
-            if file_type == FileUpload.FileType.CONSENT_RECORD.value:
+            return consultation.id
+        elif file_type == FileUpload.FileType.CONSENT_RECORD.value:
+            consultation = PatientConsultation.objects.get(
+                consent_records__contains=[{"id": associating_id}]
+            )
+            if consultation.discharge_date and not action == "read":
+                raise serializers.ValidationError(
+                    {
+                        "consultation": "Cannot upload file for a discharged consultation."
+                    }
+                )
+            if (
+                user == consultation.assigned_to
+                or user == consultation.patient.assigned_to
+                or has_facility_permission(user, consultation.facility)
+                or has_facility_permission(user, consultation.patient.facility)
+            ):
                 return associating_id
-            else:
-                return consultation.id
+            raise Exception("No Permission")
         elif file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if (
