@@ -95,11 +95,7 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
-        cls.ward = Ward.objects.create(
-            name="Test Ward",
-            local_body=cls.local_body,
-            number=1
-        )
+        cls.ward = cls.create_ward(cls.local_body)
 
     def test_list_ward(self):
         response = self.client.get("/api/v1/ward/")
