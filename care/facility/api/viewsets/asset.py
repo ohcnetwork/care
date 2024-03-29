@@ -422,9 +422,8 @@ class AssetViewSet(
         if "location" not in request.data:
             raise ValidationError({"location": "Location is required"})
 
-        limit = request.data.get("limit", None)
-        if limit is None:
-            limit = float("inf")
+        limit = 200
+
         if len(request.data["assets"]) > limit:
             raise ValidationError(
                 {"assets": f"Maximum of {limit} assets can be created at once"}
