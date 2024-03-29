@@ -25,8 +25,8 @@ jobs:
         with:
           load: true
           set: |
-              *.cache-from=type=local,src=/tmp/.buildx-cache
-              *.cache-to=type=local,dest=/tmp/.buildx-cache-new
+            *.cache-from=type=local,src=/tmp/.buildx-cache
+            *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
 
       - name: Start services
@@ -34,6 +34,9 @@ jobs:
 
       - name: Check migrations
         run: make checkmigration
+
+      - name: Validate integrity of fixtures
+        run: make load-dummy-data
 
       - name: Run tests
         run: make test-coverage

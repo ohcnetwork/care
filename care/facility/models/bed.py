@@ -40,10 +40,6 @@ class Bed(BaseModel):
             )
         ]
 
-    @property
-    def is_occupied(self) -> bool:
-        return ConsultationBed.objects.filter(bed=self, end_date__isnull=True).exists()
-
     def __str__(self):
         return self.name
 
