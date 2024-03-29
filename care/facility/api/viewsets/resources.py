@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Count
 from django.db.models.query_utils import Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -89,25 +90,33 @@ class ResourceRequestViewSet(
 ):
     serializer_class = ResourceRequestSerializer
     lookup_field = "external_id"
-    queryset = ResourceRequest.objects.all().select_related(
-        "origin_facility",
-        "origin_facility__ward",
-        "origin_facility__local_body",
-        "origin_facility__district",
-        "origin_facility__state",
-        "approving_facility",
-        "approving_facility__ward",
-        "approving_facility__local_body",
-        "approving_facility__district",
-        "approving_facility__state",
-        "assigned_facility",
-        "assigned_facility__ward",
-        "assigned_facility__local_body",
-        "assigned_facility__district",
-        "assigned_facility__state",
-        "assigned_to",
-        "created_by",
-        "last_edited_by",
+    queryset = (
+        ResourceRequest.objects.all()
+        .select_related(
+            "origin_facility",
+            "origin_facility__ward",
+            "origin_facility__local_body",
+            "origin_facility__district",
+            "origin_facility__state",
+            "approving_facility",
+            "approving_facility__ward",
+            "approving_facility__local_body",
+            "approving_facility__district",
+            "approving_facility__state",
+            "assigned_facility",
+            "assigned_facility__ward",
+            "assigned_facility__local_body",
+            "assigned_facility__district",
+            "assigned_facility__state",
+            "assigned_to",
+            "created_by",
+            "last_edited_by",
+        )
+        .annotate(
+            origin_facility_bed_count=Count("origin_facility__bed"),
+            approving_facility_bed_count=Count("approving_facility__bed"),
+            assigned_facility_bed_count=Count("assigned_facility__bed"),
+        )
     )
     ordering_fields = [
         "id",

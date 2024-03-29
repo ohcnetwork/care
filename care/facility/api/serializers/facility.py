@@ -49,10 +49,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     read_cover_image_url = serializers.CharField(read_only=True)
     features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
     patient_count = serializers.SerializerMethodField()
-    bed_count = serializers.SerializerMethodField()
 
-    def get_bed_count(self, facility):
-        return Bed.objects.filter(facility=facility).count()
 
     def get_patient_count(self, facility):
         return PatientRegistration.objects.filter(
@@ -81,7 +78,6 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "read_cover_image_url",
             "features",
             "patient_count",
-            "bed_count",
         )
 
 

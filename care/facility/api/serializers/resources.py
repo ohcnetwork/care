@@ -49,6 +49,10 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
     status = ChoiceField(choices=RESOURCE_STATUS_CHOICES)
 
+    origin_facility_bed_count = serializers.IntegerField(read_only=True)
+    approving_facility_bed_count = serializers.IntegerField(read_only=True)
+    assigned_facility_bed_count = serializers.IntegerField(read_only=True)
+
     origin_facility_object = FacilityBasicInfoSerializer(
         source="origin_facility", read_only=True, required=False
     )
@@ -133,6 +137,19 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         validated_data["last_edited_by"] = self.context["request"].user
 
         return super().create(validated_data)
+
+    def to_representation(self, instance):
+        data = super(ResourceRequestSerializer, self).to_representation(instance)
+
+        # attach bed_count
+        data["origin_facility_object"]["bed_count"] = data["origin_facility_bed_count"]
+        data["approving_facility_object"]["bed_count"] = data[
+            "approving_facility_bed_count"
+        ]
+        data["assigned_facility_object"]["bed_count"] = data[
+            "assigned_facility_bed_count"
+        ]
+        return data
 
     class Meta:
         model = ResourceRequest
