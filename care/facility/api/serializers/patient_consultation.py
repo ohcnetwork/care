@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from drf_spectacular.utils import extend_schema_field
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -50,7 +51,6 @@ from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.mews_annotation import MewsType
 from config.serializers import ChoiceField
 
 MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
@@ -96,7 +96,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         required=False, allow_null=True, allow_blank=True
     )
 
-    mews_field: MewsType = serializers.SerializerMethodField()
+    mews_field = serializers.SerializerMethodField()
 
     transferred_from_location_object = AssetLocationSerializer(
         source="transferred_from_location", read_only=True
@@ -201,10 +201,29 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             bed_number = None
         return bed_number
 
+
+    @extend_schema_field({
+        "type": "object",
+        "properties": {
+            "resp": {"type": "number", "nullable": True, "default": 16},
+            "bp": {
+                "type": "object",
+                "properties": {
+                    "property1": {"type": "null"},
+                    "property2": {"type": "null"}
+                },
+                "nullable": True
+            },
+            "pulse": {"type": "number", "nullable": True, "default": 72},
+            "temperature": {"type": "string", "nullable": True},
+            "consciousness_level": {"type": "number", "nullable": True, "enum": [0, 5, 10, 15, 20, 25, 30], "default": 0},
+            "modified_date": {"type": "string", "format": "date-time", "nullable": True},
+        }
+    })
     def get_mews_field(self, consultation):
         current_time = localtime(now())
         past_30_minutes = current_time - timedelta(minutes=30)
-        mews_field_data: MewsType = {
+        mews_field_data = {
             "resp": None,
             "bp": {},
             "pulse": None,
