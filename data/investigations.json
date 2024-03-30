@@ -1452,18 +1452,6 @@
         ]
     },
     {
-        "name": "Albumin",
-        "type": "String",
-        "choices": null,
-        "unit": null,
-        "ideal": null,
-        "min": null,
-        "max": null,
-        "category_id": [
-            3
-        ]
-    },
-    {
         "name": "Sugar",
         "type": "String",
         "choices": null,

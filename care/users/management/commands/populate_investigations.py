@@ -1,6 +1,8 @@
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import BaseCommand
+from django.db import transaction
 
 from care.facility.models.patient_investigation import (
     PatientInvestigation,
@@ -24,39 +26,52 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         investigation_group_dict = {}
 
-        # Assuming investigations is a list of dictionaries where each dictionary represents an investigation
-        for investigation_group in investigation_groups:
-            current_obj = PatientInvestigationGroup.objects.filter(
-                name=investigation_group.get("name")
-            ).first()
-            if not current_obj:
-                current_obj = PatientInvestigationGroup(
-                    name=investigation_group.get("name")
-                )
-                current_obj.save()
-            investigation_group_dict[investigation_group.get("id")] = current_obj
+        investigation_groups_to_create = [
+            PatientInvestigationGroup(name=group.get("name"))
+            for group in investigation_groups
+            if group.get('id') not in investigation_group_dict
+        ]
+        created_groups = PatientInvestigationGroup.objects.bulk_create(investigation_groups_to_create)
+        investigation_group_dict.update({group.id: group for group in created_groups})
+
+        existing_objs = PatientInvestigation.objects.filter(
+            name__in=[investigation["name"] for investigation in investigations]
+        )
+
+        bulk_create_data = []
+        bulk_update_data = []
 
         for investigation in investigations:
             data = {
                 "name": investigation["name"],
                 "unit": investigation.get("unit", ""),
                 "ideal_value": investigation.get("ideal_value", ""),
-                "min_value": None
-                if investigation.get("min_value") is None
-                else float(investigation.get("min_value")),
-                "max_value": None
-                if investigation.get("max_value") is None
-                else float(investigation.get("max_value")),
+                "min_value": None if investigation.get("min_value") is None else float(investigation.get("min_value")),
+                "max_value": None if investigation.get("max_value") is None else float(investigation.get("max_value")),
                 "investigation_type": investigation["type"],
                 "choices": investigation.get("choices", ""),
             }
 
-            current_obj = PatientInvestigation.objects.filter(**data).first()
-            if not current_obj:
-                current_obj = PatientInvestigation(**data)
-                current_obj.save()
+            existing_obj = existing_objs.filter(name=data["name"]).first()
+            if existing_obj:
+                bulk_update_data.append(existing_obj)
+            else:
+                new_obj = PatientInvestigation(**data)
+                bulk_create_data.append(new_obj)
 
-            for category_id in investigation.get("category_ids", []):
-                current_obj.groups.add(investigation_group_dict[category_id])
+            group_ids = investigation.get("category_ids", [])
+            groups_to_add = [investigation_group_dict[category_id] for category_id in group_ids]
+            if existing_obj:
+                existing_obj.groups.set(groups_to_add)
+            else:
+                data["groups"] = groups_to_add
 
-            current_obj.save()
+        with transaction.atomic():
+            if bulk_create_data:
+                PatientInvestigation.objects.bulk_create(bulk_create_data)
+
+            if bulk_update_data:
+                PatientInvestigation.objects.bulk_update(
+                    bulk_update_data,
+                    fields=["unit", "ideal_value", "min_value", "max_value", "investigation_type", "choices"]
+                )
