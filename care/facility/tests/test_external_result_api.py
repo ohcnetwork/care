@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -38,13 +40,20 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
 
     def test_list_external_result(self):
         response = self.client.get("/api/v1/external_result/")
+        patient_external_test = PatientExternalTest.objects.all()
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], len(patient_external_test))
 
     def test_retrieve_external_result(self):
         response = self.client.get(
             f"/api/v1/external_result/{self.external_result.id}/"
         )
+        patient_external_test = PatientExternalTest.objects.get(id=self.external_result.id)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("id"), patient_external_test.id)
+        self.assertEqual(response.data.get("name"), patient_external_test.name)
 
     def test_update_patient_external_result(self):
         sample_data = {
