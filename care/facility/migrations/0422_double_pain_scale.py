@@ -28,7 +28,7 @@ def halve_pain_scale(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0419_alter_patientconsultation_patient_no"),
+        ("facility", "0421_merge_20240318_1434"),
     ]
 
     operations = [
