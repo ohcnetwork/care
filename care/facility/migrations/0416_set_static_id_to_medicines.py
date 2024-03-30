@@ -30,7 +30,9 @@ def set_static_id(apps, schema_editor):
                 generic=medicine.get("generic"),
             )
         else:
-            MedibaseMedicine.objects.filter(name=medicine["name"]).update(id=medicine["id"])
+            MedibaseMedicine.objects.filter(name=medicine["name"]).update(
+                id=medicine["id"]
+            )
 
         Prescription.objects.filter(medicine_id=m.id).update(medicine_id=medicine["id"])
 
