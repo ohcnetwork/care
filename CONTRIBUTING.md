@@ -23,7 +23,7 @@ pre-commit install
 
 to run pre-commit on your branch:
 ```bash
-pre-commit run --files $(git diff --name-only master...HEAD)
+pre-commit run --files $(git diff --name-only develop...HEAD)
 ```
 
 #### Using Docker
