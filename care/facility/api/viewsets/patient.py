@@ -228,10 +228,15 @@ class PatientFilterSet(filters.FilterSet):
         )
 
     def filter_by_review_missed(self, queryset, name, value):
-        if value:
-            queryset = queryset.filter(
-                (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
-            )
+        if isinstance(value, bool):
+            if value:
+                queryset = queryset.filter(
+                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                )
+            else:
+                queryset = queryset.filter(
+                    Q(review_time__isnull=True) | Q(review_time__gt=timezone.now())
+                )
         return queryset
 
     review_missed = filters.BooleanFilter(method="filter_by_review_missed")
