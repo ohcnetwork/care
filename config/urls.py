@@ -28,76 +28,75 @@ from care.users.reset_password_views import (
 )
 from config import api_router
 from config.health_views import MiddlewareAuthenticationVerifyView
-
 from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
 from .views import home_view, ping
 
 urlpatterns = [
-    path("", home_view, name="home"),
-    path("ping/", ping, name="ping"),
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # Rest API
-    path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path(
-        "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
-    ),
-    path(
-        "api/v1/auth/token/verify/",
-        AnnotatedTokenVerifyView.as_view(),
-        name="token_verify",
-    ),
-    path(
-        "api/v1/password_reset/",
-        ResetPasswordRequestToken.as_view(),
-        name="password_reset_request",
-    ),
-    path(
-        "api/v1/password_reset/confirm/",
-        ResetPasswordConfirm.as_view(),
-        name="password_reset_confirm",
-    ),
-    path(
-        "api/v1/password_reset/check/",
-        ResetPasswordCheck.as_view(),
-        name="password_reset_check",
-    ),
-    path(
-        "api/v1/password_change/",
-        ChangePasswordView.as_view(),
-        name="change_password_view",
-    ),
-    path("api/v1/", include(api_router.urlpatterns)),
-    # Hcx Listeners
-    path(
-        "coverageeligibility/on_check",
-        CoverageElibilityOnCheckView.as_view(),
-        name="hcx_coverage_eligibility_on_check",
-    ),
-    path(
-        "preauth/on_submit",
-        PreAuthOnSubmitView.as_view(),
-        name="hcx_pre_auth_on_submit",
-    ),
-    path(
-        "claim/on_submit",
-        ClaimOnSubmitView.as_view(),
-        name="hcx_claim_on_submit",
-    ),
-    path(
-        "communication/request",
-        CommunicationRequestView.as_view(),
-        name="hcx_communication_on_request",
-    ),
-    # Health check urls
-    path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
-    path(
-        ".well-known/openid-configuration",
-        OpenIdConfigView.as_view(),
-        name="openid-configuration",
-    ),
-    path("health/", include("healthy_django.urls", namespace="healthy_django")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path("", home_view, name="home"),
+                  path("ping/", ping, name="ping"),
+                  # Django Admin, use {% url 'admin:index' %}
+                  path(settings.ADMIN_URL, admin.site.urls),
+                  # Rest API
+                  path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+                  path(
+                      "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+                  ),
+                  path(
+                      "api/v1/auth/token/verify/",
+                      AnnotatedTokenVerifyView.as_view(),
+                      name="token_verify",
+                  ),
+                  path(
+                      "api/v1/password_reset/",
+                      ResetPasswordRequestToken.as_view(),
+                      name="password_reset_request",
+                  ),
+                  path(
+                      "api/v1/password_reset/confirm/",
+                      ResetPasswordConfirm.as_view(),
+                      name="password_reset_confirm",
+                  ),
+                  path(
+                      "api/v1/password_reset/check/",
+                      ResetPasswordCheck.as_view(),
+                      name="password_reset_check",
+                  ),
+                  path(
+                      "api/v1/password_change/",
+                      ChangePasswordView.as_view(),
+                      name="change_password_view",
+                  ),
+                  path("api/v1/", include(api_router.urlpatterns)),
+                  # Hcx Listeners
+                  path(
+                      "coverageeligibility/on_check",
+                      CoverageElibilityOnCheckView.as_view(),
+                      name="hcx_coverage_eligibility_on_check",
+                  ),
+                  path(
+                      "preauth/on_submit",
+                      PreAuthOnSubmitView.as_view(),
+                      name="hcx_pre_auth_on_submit",
+                  ),
+                  path(
+                      "claim/on_submit",
+                      ClaimOnSubmitView.as_view(),
+                      name="hcx_claim_on_submit",
+                  ),
+                  path(
+                      "communication/request",
+                      CommunicationRequestView.as_view(),
+                      name="hcx_communication_on_request",
+                  ),
+                  # Health check urls
+                  path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
+                  path(
+                      ".well-known/openid-configuration",
+                      OpenIdConfigView.as_view(),
+                      name="openid-configuration",
+                  ),
+                  path("health/", include("healthy_django.urls", namespace="healthy_django")),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.ENABLE_ABDM:
     urlpatterns += abdm_urlpatterns
@@ -143,3 +142,6 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
         ),
         path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     ]
+
+for plug in settings.PLUGIN_APPS:
+    urlpatterns += [path(f"{plug}/", include(f"{plug}.urls"))]
