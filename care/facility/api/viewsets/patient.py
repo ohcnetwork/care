@@ -6,8 +6,8 @@ from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import Case, OuterRef, Q, Subquery, When
-from django.utils import timezone
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
