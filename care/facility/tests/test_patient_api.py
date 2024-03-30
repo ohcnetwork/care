@@ -411,7 +411,6 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         self.assertNotContains(res, self.patient.external_id)
 
     def test_filter_by_review_missed(self):
-        self.client.force_authenticate(user=self.user)
         res = self.client.get(self.get_base_url(), {"review_missed": True})
         for patient in res.data["results"]:
             review_time = datetime.fromisoformat(patient["review_time"])
