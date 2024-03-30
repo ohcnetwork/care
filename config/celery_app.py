@@ -1,7 +1,6 @@
 import os
 
 from celery import Celery
-
 from celerybeat_schedule import CELERYBEAT_SCHEDULE
 
 # set the default Django settings module for the 'celery' program.
@@ -17,5 +16,4 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 app.conf.update(enable_utc=False, timezone="Asia/Kolkata")
 # Load task modules from all registered Django app configs.
-app.conf.update(CELERYBEAT_SCHEDULE=CELERYBEAT_SCHEDULE)
 app.autodiscover_tasks()

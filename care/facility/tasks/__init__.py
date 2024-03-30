@@ -7,6 +7,7 @@ from care.facility.tasks.cleanup import delete_old_notifications
 from care.facility.tasks.location_monitor import check_location_status
 from care.facility.tasks.plausible_stats import capture_goals
 from care.facility.tasks.redis_index import load_redis_index
+from care.facility.tasks.soft_delete_assets import soft_delete_assets_schedule
 from care.facility.tasks.summarisation import (
     summarise_district_patient,
     summarise_facility_capacity,
@@ -73,4 +74,9 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(minute="*/30"),
         check_location_status.s(),
         name="check_location_status",
+    )
+    sender.add_periodic_task(
+        crontab(hour="23", minute="59"),
+        soft_delete_assets_schedule.s(),
+        name="soft_delete_assets",
     )
