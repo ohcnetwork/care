@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.users.models import Ward
+from care.users.models import Ward, District, LocalBody, State
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -23,7 +23,10 @@ class DistrictViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get(
             f"/api/v1/district/{self.district.id}/"
         )
+        district_obj = District.objects.get(pk=self.district.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("id"), district_obj.id)
+        self.assertEqual(response.data.get("name"), district_obj.name)
 
     def test_list_district_all_local_body(self):
         response = self.client.get(
@@ -56,7 +59,10 @@ class LocalBodyViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get(
             f"/api/v1/local_body/{self.local_body.id}/"
         )
+        local_body_obj = LocalBody.objects.get(pk=self.local_body.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("id"), local_body_obj.id)
+        self.assertEqual(response.data.get("name"), local_body_obj.name)
 
 
 class StateViewSetTestCase(TestUtils, APITestCase):
@@ -77,7 +83,10 @@ class StateViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get(
             f"/api/v1/state/{self.state.id}/"
         )
+        state_obj = State.objects.get(pk=self.state.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("id"), state_obj.id)
+        self.assertEqual(response.data.get("name"), state_obj.name)
 
     def test_list_state_districts(self):
         response = self.client.get(
@@ -105,4 +114,7 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get(
             f"/api/v1/ward/{self.ward.id}/"
         )
+        ward_obj = Ward.objects.get(pk=self.ward.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("id"), ward_obj.id)
+        self.assertEqual(response.data.get("name"), ward_obj.name)
