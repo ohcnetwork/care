@@ -41,9 +41,9 @@ makemigrations:
 	docker compose exec backend bash -c "python manage.py makemigrations"
 
 test:
-	docker compose exec backend bash -c "python manage.py test --keepdb --parallel"
+	docker compose exec backend bash -c "python manage.py test --keepdb --parallel --shuffle"
 
 test-coverage:
-	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel"
+	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel --shuffle"
 	docker compose exec backend bash -c "coverage combine || true; coverage xml"
 	docker compose cp backend:/app/coverage.xml coverage.xml

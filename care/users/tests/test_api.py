@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -29,7 +31,7 @@ class TestSuperUser(TestUtils, APITestCase):
             "created_by": obj.created_by,
             "phone_number": obj.phone_number,
             "alt_phone_number": obj.alt_phone_number,
-            "age": obj.age,
+            "date_of_birth": str(obj.date_of_birth),
             "gender": GENDER_CHOICES[obj.gender - 1][1],
             "home_facility": None,
             "home_facility_object": None,
@@ -56,8 +58,8 @@ class TestSuperUser(TestUtils, APITestCase):
         response = self.client.get(f"/api/v1/users/{self.user.username}/")
         res_data_json = response.json()
         res_data_json.pop("id")
-
         data = self.user_data.copy()
+        data["date_of_birth"] = str(data["date_of_birth"])
         data.pop("password")
         self.assertDictEqual(
             res_data_json,
@@ -74,14 +76,16 @@ class TestSuperUser(TestUtils, APITestCase):
 
         response = self.client.patch(
             f"/api/v1/users/{username}/",
-            {"age": 31},
+            {"date_of_birth": date(1992, 4, 1)},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
-        self.assertEqual(response.json()["age"], 31)
+        self.assertEqual(response.json()["date_of_birth"], "1992-04-01")
         # test value at the backend
-        self.assertEqual(User.objects.get(username=username).age, 31)
+        self.assertEqual(
+            User.objects.get(username=username).date_of_birth, date(1992, 4, 1)
+        )
 
     def test_superuser_can_delete(self):
         """Test superuser can delete other users"""
@@ -108,7 +112,7 @@ class TestUser(TestUtils, APITestCase):
             "phone_number": obj.phone_number,
             "first_name": obj.first_name,
             "last_name": obj.last_name,
-            "age": obj.age,
+            "date_of_birth": str(obj.date_of_birth),
             **self.get_local_body_district_state_representation(obj),
         }
 
@@ -150,15 +154,17 @@ class TestUser(TestUtils, APITestCase):
         response = self.client.patch(
             f"/api/v1/users/{username}/",
             {
-                "age": 31,
+                "date_of_birth": date(2005, 4, 1),
                 "password": password,
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # test the value from api
-        self.assertEqual(response.json()["age"], 31)
+        self.assertEqual(response.json()["date_of_birth"], "2005-04-01")
         # test value at the backend
-        self.assertEqual(User.objects.get(username=username).age, 31)
+        self.assertEqual(
+            User.objects.get(username=username).date_of_birth, date(2005, 4, 1)
+        )
 
     def test_user_cannot_read_others(self):
         """Test 1 user can read the attributes of the other user"""
@@ -173,7 +179,7 @@ class TestUser(TestUtils, APITestCase):
         response = self.client.patch(
             f"/api/v1/users/{username}/",
             {
-                "age": 31,
+                "date_of_birth": date(2005, 4, 1),
                 "password": password,
             },
         )
