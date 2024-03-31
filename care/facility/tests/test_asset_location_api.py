@@ -112,3 +112,28 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
             f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_user_access_to_asset_location_on_user_type(self):
+        # when a user is a state_lab_admin or a district_lab_admin
+        state_lab_admin = self.create_user(
+            "state_lab_admin", self.district, user_type=35
+        )
+        district_lab_admin = self.create_user(
+            "district_lab_admin", self.district, user_type=25
+        )
+
+        self.client.force_authenticate(user=state_lab_admin)
+
+        # when they try to access a asset_location in their state or district then they
+        # should be able to do so without permission issue
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/"
+        )
+
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=district_lab_admin)
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/"
+        )
+        self.assertIs(response.status_code, status.HTTP_200_OK)

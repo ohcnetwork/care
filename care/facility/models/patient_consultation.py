@@ -11,6 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
+from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -25,6 +26,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -126,6 +128,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         default="", null=True, blank=True
     )
     referred_by_external = models.TextField(default="", null=True, blank=True)
+    previous_consultation = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
     is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
     encounter_date = models.DateTimeField(default=timezone.now, db_index=True)
@@ -238,6 +246,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    consent_records = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -273,17 +285,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
-
-    def save(self, *args, **kwargs):
-        """
-        # Removing Patient Hospital Change on Referral
-        if not self.pk or self.referred_to is not None:
-            # pk is None when the consultation is created
-            # referred to is not null when the person is being referred to a new facility
-            self.patient.facility = self.referred_to or self.facility
-            self.patient.save()
-        """
-        super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
         constraints = [
