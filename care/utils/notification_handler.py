@@ -143,23 +143,40 @@ class NotificationGenerator:
         return extra_data
 
     def generate_extra_users(self):
+        assigned_clinicians_fields = ("id", "local_body", "district", "state")
         if isinstance(self.caused_object, PatientConsultation):
-            for clinician in self.caused_object.assigned_clinicians.all():
+            for clinician in self.caused_object.assigned_clinicians.all().only(
+                *assigned_clinicians_fields
+            ):
                 self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, PatientRegistration):
             if self.caused_object.last_consultation:
                 for (
                     clinician
-                ) in self.caused_object.last_consultation.assigned_clinicians.all():
+                ) in self.caused_object.last_consultation.assigned_clinicians.all().only(
+                    *assigned_clinicians_fields
+                ):
                     self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, InvestigationSession):
-            for clinician in self.extra_data["consultation"].assigned_clinicians.all():
+            for clinician in (
+                self.extra_data["consultation"]
+                .assigned_clinicians.all()
+                .only(*assigned_clinicians_fields)
+            ):
                 self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, InvestigationValue):
-            for clinician in self.caused_object.consultation.assigned_clinicians.all():
+            for (
+                clinician
+            ) in self.caused_object.consultation.assigned_clinicians.all().only(
+                *assigned_clinicians_fields
+            ):
                 self.extra_users.append(clinician.id)
         if isinstance(self.caused_object, DailyRound):
-            for clinician in self.caused_object.consultation.assigned_clinicians.all():
+            for (
+                clinician
+            ) in self.caused_object.consultation.assigned_clinicians.all().only(
+                *assigned_clinicians_fields
+            ):
                 self.extra_users.append(clinician.id)
 
     def generate_system_message(self):
