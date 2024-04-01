@@ -51,7 +51,7 @@ jobs:
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
             type=raw,value=production-latest,enable=${{ github.ref == 'refs/heads/v*' }}
-            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/v*' }}
+            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ startsWith(github.event.ref, 'refs/tags/v') }}
             type=raw,value=staging-latest,enable=${{ github.ref == 'refs/heads/staging' }}
             type=raw,value=staging-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/staging' }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
@@ -117,7 +117,7 @@ jobs:
 
   notify-release:
     needs: build
-    if: github.ref == 'refs/tags/v*'
+    if: startsWith(github.event.ref, 'refs/tags/v')
     name: Notify release
     runs-on: ubuntu-latest
     steps:
