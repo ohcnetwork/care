@@ -20,7 +20,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
-    Ward,
+    Ward, PatientExternalTest,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -345,6 +345,38 @@ class TestUtils:
         patient.facility = consultation.facility
         patient.save()
         return consultation
+
+    @classmethod
+    def get_patient_external_test_data(cls, district, local_body, ward) -> dict:
+        return {
+            "district": district,
+            "srf_id": "00/EKM/0000",
+            "name": now().timestamp(),
+            "age": 24,
+            "age_in": "years",
+            "gender": "m",
+            "mobile_number": 8888888888,
+            "address": "Upload test address",
+            "ward": ward,
+            "local_body": local_body,
+            "source": "Secondary contact aparna",
+            "sample_collection_date": "2020-10-14",
+            "result_date": "2020-10-14",
+            "test_type": "Antigen",
+            "lab_name": "Karothukuzhi Laboratory",
+            "sample_type": "Ag-SD_Biosensor_Standard_Q_COVID-19_Ag_detection_kit",
+            "patient_status": "Asymptomatic",
+            "is_repeat": True,
+            "patient_category": "Cat 17: All individuals who wish to get themselves tested",
+            "result": "Negative",
+        }
+
+    @classmethod
+    def create_patient_external_test(cls, district: District, local_body: LocalBody, ward: Ward,
+                                     **kwargs) -> PatientExternalTest:
+        data = cls.get_patient_external_test_data(district, local_body, ward).copy()
+        data.update(kwargs)
+        return PatientExternalTest.objects.create(**data)
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:

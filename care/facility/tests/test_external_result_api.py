@@ -15,35 +15,48 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.ward = cls.create_ward(cls.local_body)
         cls.user = cls.create_super_user("su", cls.district)
-        cls.external_result = PatientExternalTest.objects.create(
-            district=cls.district,
-            srf_id="00/EKM/0000",
-            name="Test Upload0",
-            age=24,
-            age_in="years",
-            gender="m",
-            mobile_number=8888888888,
-            address="Upload test address",
-            ward=cls.ward,
-            local_body=cls.local_body,
-            source="Secondary contact aparna",
-            sample_collection_date="2020-10-14",
-            result_date="2020-10-14",
-            test_type="Antigen",
-            lab_name="Karothukuzhi Laboratory",
-            sample_type="Ag-SD_Biosensor_Standard_Q_COVID-19_Ag_detection_kit",
-            patient_status="Asymptomatic",
-            is_repeat=True,
-            patient_category="Cat 17: All individuals who wish to get themselves tested",
-            result="Negative",
+        cls.external_result = cls.create_patient_external_test(
+            cls.district, cls.local_body, cls.ward, name="TEST_1"
         )
 
     def test_list_external_result(self):
+        state2 = self.create_state()
+        district2 = self.create_district(state2)
+        local_body2 = self.create_local_body(district2)
+        ward2 = self.create_ward(local_body2)
+
+        self.create_patient_external_test(district2, local_body2, ward2, name="TEST_2", mobile_number="9999988888")
+        self.create_patient_external_test(self.district, self.local_body, self.ward, srf_id="ID001")
+
         response = self.client.get("/api/v1/external_result/")
         patient_external_test = PatientExternalTest.objects.all()
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], len(patient_external_test))
+
+        response = self.client.get("/api/v1/external_result/?name=TEST_2")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "TEST_2")
+
+        response = self.client.get("/api/v1/external_result/?srf_id=ID001")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["srf_id"], "ID001")
+
+        response = self.client.get(f"/api/v1/external_result/?ward__id={self.ward.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["ward_object"]["name"], self.ward.name)
+
+        response = self.client.get(f"/api/v1/external_result/?district__id={self.district.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["district_object"]["name"], self.district.name)
+
+        response = self.client.get(f"/api/v1/external_result/?local_body={self.local_body.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["local_body_object"]["name"], self.local_body.name)
+
+        response = self.client.get(f"/api/v1/external_result/?mobile_number=9999988888")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["mobile_number"], "9999988888")
+        self.assertEqual(response.data["results"][0]["name"], "TEST_2")
 
     def test_retrieve_external_result(self):
         response = self.client.get(
