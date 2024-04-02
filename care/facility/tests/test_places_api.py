@@ -16,8 +16,23 @@ class DistrictViewSetTestCase(TestUtils, APITestCase):
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
     def test_list_district(self):
+        state2 = self.create_state(name="TEST_STATE_2")
+        self.create_district(state2, name="TEST_DISTRICT_2")
+
         response = self.client.get("/api/v1/district/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get("/api/v1/district/?district_name=TEST_DISTRICT_2")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "TEST_DISTRICT_2")
+
+        response = self.client.get(f"/api/v1/district/?state={state2.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "TEST_DISTRICT_2")
+
+        response = self.client.get(f"/api/v1/district/?state_name={self.state.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.district.name)
 
     def test_retrieve_district(self):
         response = self.client.get(

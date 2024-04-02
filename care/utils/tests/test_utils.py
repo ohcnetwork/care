@@ -94,16 +94,21 @@ class TestUtils:
         raise NotImplementedError()
 
     @classmethod
-    def create_state(cls,**kwargs) -> State:
-        data={
-            "name" : f"State{now().timestamp()}",
+    def create_state(cls, **kwargs) -> State:
+        data = {
+            "name": f"State{now().timestamp()}",
         }
         data.update(kwargs)
         return State.objects.create(**data)
 
     @classmethod
-    def create_district(cls, state: State) -> District:
-        return District.objects.create(state=state, name=f"District{now().timestamp()}")
+    def create_district(cls, state: State, **kwargs) -> District:
+        data = {
+            "state": state,
+            "name": f"District{now().timestamp()}"
+        }
+        data.update(**kwargs)
+        return District.objects.create(**data)
 
     @classmethod
     def create_local_body(cls, district: District, **kwargs) -> LocalBody:
