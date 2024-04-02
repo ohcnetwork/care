@@ -94,8 +94,12 @@ class TestUtils:
         raise NotImplementedError()
 
     @classmethod
-    def create_state(cls) -> State:
-        return State.objects.create(name=f"State{now().timestamp()}")
+    def create_state(cls,**kwargs) -> State:
+        data={
+            "name" : f"State{now().timestamp()}",
+        }
+        data.update(kwargs)
+        return State.objects.create(**data)
 
     @classmethod
     def create_district(cls, state: State) -> District:
@@ -173,10 +177,14 @@ class TestUtils:
         return user
 
     @classmethod
-    def create_ward(cls, local_body) -> Ward:
-        ward = Ward.objects.create(
-            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
-        )
+    def create_ward(cls, local_body, **kwargs) -> Ward:
+        data = {
+            "name": f"Ward{now().timestamp()}",
+            "local_body": local_body,
+            "number": 1
+        }
+        data.update(kwargs)
+        ward = Ward.objects.create(**data)
         return ward
 
     @classmethod

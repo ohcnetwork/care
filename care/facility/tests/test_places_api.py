@@ -107,8 +107,36 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         cls.ward = cls.create_ward(cls.local_body)
 
     def test_list_ward(self):
+        state2 = self.create_state(name="TEST_STATE_2")
+        district2 = self.create_district(state2)
+        local_body2 = self.create_local_body(district2)
+        ward2 = self.create_ward(local_body2, name="WARD2")
+
+        # Endpoints to filter with state id and state name are throwing error
+
         response = self.client.get("/api/v1/ward/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get("/api/v1/ward/?ward_name=WARD2")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "WARD2")
+
+        response = self.client.get(f"/api/v1/ward/?district={district2.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "WARD2")
+
+        response = self.client.get(f"/api/v1/ward/?district_name={self.district.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.ward.name)
+
+        response = self.client.get(f"/api/v1/ward/?local_body={self.local_body.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.ward.name)
+        self.assertEqual(response.data["results"][0]["local_body"], self.local_body.id)
+
+        response = self.client.get(f"/api/v1/ward/?local_body_name={local_body2.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], ward2.name)
 
     def test_retrieve_ward(self):
         response = self.client.get(
