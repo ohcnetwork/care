@@ -145,4 +145,4 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
     ]
 
 for plug in settings.PLUGIN_APPS:
-    urlpatterns += [path(f"{plug}/", include(f"{plug}.urls"))]
+    urlpatterns += [path(f"api/{plug}/", include(f"{plug}.urls"))]
