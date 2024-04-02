@@ -119,8 +119,8 @@ def check_permissions(file_type, associating_id, user, action="create"):
 
 class FileUploadCreateSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
-    file_type = ChoiceField(choices=FileUpload.FileType.choices)
-    file_category = ChoiceField(choices=FileUpload.FileCategory.choices, required=False)
+    file_type = ChoiceField(choices=FileUpload.FileTypeChoices)
+    file_category = ChoiceField(choices=FileUpload.FileCategoryChoices, required=False)
 
     signed_url = serializers.CharField(read_only=True)
     associating_id = serializers.CharField(write_only=True)

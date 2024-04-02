@@ -157,3 +157,7 @@ class FileUpload(BaseFileUpload):
         related_name="archived_by",
     )
     archived_datetime = models.DateTimeField(blank=True, null=True)
+
+    # TODO: switch to Choices.choices
+    FileTypeChoices = [(x.value, x.name) for x in FileType]
+    FileCategoryChoices = [(x.value, x.name) for x in BaseFileUpload.FileCategory]
