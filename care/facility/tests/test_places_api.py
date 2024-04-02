@@ -117,6 +117,7 @@ class StateViewSetTestCase(TestUtils, APITestCase):
     def test_list_state(self):
         response = self.client.get("/api/v1/state/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], len(State.objects.all()))
 
     def test_retrieve_state(self):
         response = self.client.get(
@@ -132,6 +133,7 @@ class StateViewSetTestCase(TestUtils, APITestCase):
             f"/api/v1/state/{self.state.id}/districts/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["name"], self.district.name)
 
 
 class WardViewSetTestCase(TestUtils, APITestCase):
