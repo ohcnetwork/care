@@ -52,8 +52,32 @@ class LocalBodyViewSetTestCase(TestUtils, APITestCase):
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
 
     def test_list_local_body(self):
+        state2 = self.create_state(name="TEST_STATE_2")
+        district2 = self.create_district(state2)
+        self.create_local_body(district2, name="LOCAL_BODY_2")
+
         response = self.client.get("/api/v1/local_body/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"/api/v1/local_body/?local_body_name={self.local_body.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.local_body.name)
+
+        response = self.client.get(f"/api/v1/local_body/?state={state2.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "LOCAL_BODY_2")
+
+        response = self.client.get(f"/api/v1/local_body/?state_name={self.state.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.local_body.name)
+
+        response = self.client.get(f"/api/v1/local_body/?district={self.district.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.local_body.name)
+
+        response = self.client.get(f"/api/v1/local_body/?district2={district2.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "LOCAL_BODY_2")
 
     def test_retrieve_local_body(self):
         response = self.client.get(
@@ -110,7 +134,7 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         state2 = self.create_state(name="TEST_STATE_2")
         district2 = self.create_district(state2)
         local_body2 = self.create_local_body(district2)
-        ward2 = self.create_ward(local_body2, name="WARD2")
+        self.create_ward(local_body2, name="WARD2")
 
         # Endpoints to filter with state id and state name are throwing error
 
@@ -136,7 +160,7 @@ class WardViewSetTestCase(TestUtils, APITestCase):
 
         response = self.client.get(f"/api/v1/ward/?local_body_name={local_body2.name}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["results"][0]["name"], ward2.name)
+        self.assertEqual(response.data["results"][0]["name"], "WARD2")
 
     def test_retrieve_ward(self):
         response = self.client.get(
