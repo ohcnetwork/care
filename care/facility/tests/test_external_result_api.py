@@ -1,5 +1,3 @@
-import json
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -107,34 +105,15 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["sample_tests"], "No Data was provided")
 
     def test_different_district_upload(self):
+        state2 = self.create_state()
+        district2 = self.create_district(state2)
+        external_test_data = self.get_patient_external_test_data(str(district2), str(self.local_body.name),
+                                                                 self.ward.number).copy()
         sample_data = {
             "sample_tests": [
-                {
-                    "district": "Random_district",
-                    "srf_id": "00/EKM/0000",
-                    "name": "Test Upload0",
-                    "age": 24,
-                    "age_in": "years",
-                    "gender": "m",
-                    "mobile_number": 8888888888,
-                    "address": "Upload test address",
-                    "ward": self.ward.number,
-                    "local_body": str(self.local_body.name),
-                    "local_body_type": "municipality",
-                    "source": "Secondary contact aparna",
-                    "sample_collection_date": "2020-10-14",
-                    "result_date": "2020-10-14",
-                    "test_type": "Antigen",
-                    "lab_name": "Karothukuzhi Laboratory",
-                    "sample_type": "Ag-SD_Biosensor_Standard_Q_COVID-19_Ag_detection_kit",
-                    "patient_status": "Asymptomatic",
-                    "is_repeat": "NO",
-                    "patient_category": "Cat 17: All individuals who wish to get themselves tested",
-                    "result": "Negative",
-                }
+                external_test_data
             ]
         }
-
         response = self.client.post(
             "/api/v1/external_result/bulk_upsert/", sample_data, format="json"
         )
@@ -142,34 +121,16 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["Error"], "User must belong to same district")
 
     def test_same_district_upload(self):
+        external_test_data = self.get_patient_external_test_data(str(self.district), str(self.local_body.name),
+                                                                 self.ward.number).copy()
+        external_test_data.update({
+            "local_body_type": "municipality"
+        })
         sample_data = {
             "sample_tests": [
-                {
-                    "district": str(self.district),
-                    "srf_id": "00/EKM/0000",
-                    "name": "Test Upload0",
-                    "age": 24,
-                    "age_in": "years",
-                    "gender": "m",
-                    "mobile_number": 8888888888,
-                    "address": "Upload test address",
-                    "ward": self.ward.number,
-                    "local_body": str(self.local_body.name),
-                    "local_body_type": "municipality",
-                    "source": "Secondary contact aparna",
-                    "sample_collection_date": "2020-10-14",
-                    "result_date": "2020-10-14",
-                    "test_type": "Antigen",
-                    "lab_name": "Karothukuzhi Laboratory",
-                    "sample_type": "Ag-SD_Biosensor_Standard_Q_COVID-19_Ag_detection_kit",
-                    "patient_status": "Asymptomatic",
-                    "is_repeat": "NO",
-                    "patient_category": "Cat 17: All individuals who wish to get themselves tested",
-                    "result": "Negative",
-                }
+                external_test_data
             ]
         }
-
         response = self.client.post(
             "/api/v1/external_result/bulk_upsert/", sample_data, format="json"
         )
