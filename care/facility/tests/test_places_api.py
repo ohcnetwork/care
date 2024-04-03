@@ -179,6 +179,14 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["results"][0]["name"], "WARD2")
 
+        response = self.client.get(f"/api/v1/ward/?state_name={state2.name}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], "WARD2")
+
+        response = self.client.get(f"/api/v1/ward/?state={self.state.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"][0]["name"], self.ward.name)
+
     def test_retrieve_ward(self):
         response = self.client.get(
             f"/api/v1/ward/{self.ward.id}/"
