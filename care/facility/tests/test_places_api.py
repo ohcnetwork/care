@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.users.models import Ward, District, LocalBody, State
+from care.users.models import District, LocalBody, State, Ward
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -14,6 +14,7 @@ class DistrictViewSetTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.ward = cls.create_ward(cls.local_body)
 
     def test_list_district(self):
         state2 = self.create_state(name="TEST_STATE_2")
@@ -35,9 +36,7 @@ class DistrictViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["results"][0]["name"], self.district.name)
 
     def test_retrieve_district(self):
-        response = self.client.get(
-            f"/api/v1/district/{self.district.id}/"
-        )
+        response = self.client.get(f"/api/v1/district/{self.district.id}/")
         district_obj = District.objects.get(pk=self.district.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("id"), district_obj.id)
@@ -48,12 +47,16 @@ class DistrictViewSetTestCase(TestUtils, APITestCase):
             f"/api/v1/district/{self.district.id}/get_all_local_body/"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["name"], self.local_body.name)
+        self.assertEqual(response.data[0]["wards"][0]["name"], self.ward.name)
 
     def test_list_district_local_body(self):
         response = self.client.get(
             f"/api/v1/district/{self.district.id}/local_bodies/",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["name"], self.local_body.name)
 
 
 class LocalBodyViewSetTestCase(TestUtils, APITestCase):
@@ -74,7 +77,9 @@ class LocalBodyViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get("/api/v1/local_body/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get(f"/api/v1/local_body/?local_body_name={self.local_body.name}")
+        response = self.client.get(
+            f"/api/v1/local_body/?local_body_name={self.local_body.name}"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["results"][0]["name"], self.local_body.name)
 
@@ -95,9 +100,7 @@ class LocalBodyViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["results"][0]["name"], "LOCAL_BODY_2")
 
     def test_retrieve_local_body(self):
-        response = self.client.get(
-            f"/api/v1/local_body/{self.local_body.id}/"
-        )
+        response = self.client.get(f"/api/v1/local_body/{self.local_body.id}/")
         local_body_obj = LocalBody.objects.get(pk=self.local_body.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("id"), local_body_obj.id)
@@ -120,18 +123,14 @@ class StateViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["count"], len(State.objects.all()))
 
     def test_retrieve_state(self):
-        response = self.client.get(
-            f"/api/v1/state/{self.state.id}/"
-        )
+        response = self.client.get(f"/api/v1/state/{self.state.id}/")
         state_obj = State.objects.get(pk=self.state.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("id"), state_obj.id)
         self.assertEqual(response.data.get("name"), state_obj.name)
 
     def test_list_state_districts(self):
-        response = self.client.get(
-            f"/api/v1/state/{self.state.id}/districts/"
-        )
+        response = self.client.get(f"/api/v1/state/{self.state.id}/districts/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["name"], self.district.name)
 
@@ -188,9 +187,7 @@ class WardViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["results"][0]["name"], self.ward.name)
 
     def test_retrieve_ward(self):
-        response = self.client.get(
-            f"/api/v1/ward/{self.ward.id}/"
-        )
+        response = self.client.get(f"/api/v1/ward/{self.ward.id}/")
         ward_obj = Ward.objects.get(pk=self.ward.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("id"), ward_obj.id)
