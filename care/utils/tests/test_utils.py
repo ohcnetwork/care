@@ -95,18 +95,13 @@ class TestUtils:
 
     @classmethod
     def create_state(cls, **kwargs) -> State:
-        data = {
-            "name": f"State{now().timestamp()}",
-        }
+        data = {"name": f"State{now().timestamp()}"}
         data.update(kwargs)
         return State.objects.create(**data)
 
     @classmethod
     def create_district(cls, state: State, **kwargs) -> District:
-        data = {
-            "state": state,
-            "name": f"District{now().timestamp()}"
-        }
+        data = {"state": state, "name": f"District{now().timestamp()}"}
         data.update(**kwargs)
         return District.objects.create(**data)
 
@@ -186,7 +181,7 @@ class TestUtils:
         data = {
             "name": f"Ward{now().timestamp()}",
             "local_body": local_body,
-            "number": 1
+            "number": 1,
         }
         data.update(kwargs)
         ward = Ward.objects.create(**data)
