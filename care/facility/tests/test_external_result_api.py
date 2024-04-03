@@ -23,8 +23,12 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         local_body2 = self.create_local_body(district2)
         ward2 = self.create_ward(local_body2)
 
-        self.create_patient_external_test(district2, local_body2, ward2, name="TEST_2", mobile_number="9999988888")
-        self.create_patient_external_test(self.district, self.local_body, self.ward, srf_id="ID001")
+        self.create_patient_external_test(
+            district2, local_body2, ward2, name="TEST_2", mobile_number="9999988888"
+        )
+        self.create_patient_external_test(
+            self.district, self.local_body, self.ward, srf_id="ID001"
+        )
 
         response = self.client.get("/api/v1/external_result/")
         patient_external_test = PatientExternalTest.objects.all()
@@ -41,17 +45,28 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
 
         response = self.client.get(f"/api/v1/external_result/?ward__id={self.ward.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["results"][0]["ward_object"]["name"], self.ward.name)
+        self.assertEqual(
+            response.data["results"][0]["ward_object"]["name"], self.ward.name
+        )
 
-        response = self.client.get(f"/api/v1/external_result/?district__id={self.district.id}")
+        response = self.client.get(
+            f"/api/v1/external_result/?district__id={self.district.id}"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["results"][0]["district_object"]["name"], self.district.name)
+        self.assertEqual(
+            response.data["results"][0]["district_object"]["name"], self.district.name
+        )
 
-        response = self.client.get(f"/api/v1/external_result/?local_body={self.local_body.id}")
+        response = self.client.get(
+            f"/api/v1/external_result/?local_body={self.local_body.id}"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["results"][0]["local_body_object"]["name"], self.local_body.name)
+        self.assertEqual(
+            response.data["results"][0]["local_body_object"]["name"],
+            self.local_body.name,
+        )
 
-        response = self.client.get(f"/api/v1/external_result/?mobile_number=9999988888")
+        response = self.client.get("/api/v1/external_result/?mobile_number=9999988888")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["results"][0]["mobile_number"], "9999988888")
         self.assertEqual(response.data["results"][0]["name"], "TEST_2")
@@ -60,7 +75,9 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         response = self.client.get(
             f"/api/v1/external_result/{self.external_result.id}/"
         )
-        patient_external_test = PatientExternalTest.objects.get(id=self.external_result.id)
+        patient_external_test = PatientExternalTest.objects.get(
+            id=self.external_result.id
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("id"), patient_external_test.id)
@@ -107,13 +124,10 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
     def test_different_district_upload(self):
         state2 = self.create_state()
         district2 = self.create_district(state2)
-        external_test_data = self.get_patient_external_test_data(str(district2), str(self.local_body.name),
-                                                                 self.ward.number).copy()
-        sample_data = {
-            "sample_tests": [
-                external_test_data
-            ]
-        }
+        external_test_data = self.get_patient_external_test_data(
+            str(district2), str(self.local_body.name), self.ward.number
+        ).copy()
+        sample_data = {"sample_tests": [external_test_data]}
         response = self.client.post(
             "/api/v1/external_result/bulk_upsert/", sample_data, format="json"
         )
@@ -121,18 +135,12 @@ class PatientExternalTestViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.data["Error"], "User must belong to same district")
 
     def test_same_district_upload(self):
-        external_test_data = self.get_patient_external_test_data(str(self.district), str(self.local_body.name),
-                                                                 self.ward.number).copy()
-        external_test_data.update({
-            "local_body_type": "municipality"
-        })
-        sample_data = {
-            "sample_tests": [
-                external_test_data
-            ]
-        }
+        external_test_data = self.get_patient_external_test_data(
+            str(self.district), str(self.local_body.name), self.ward.number
+        ).copy()
+        external_test_data.update({"local_body_type": "municipality"})
+        sample_data = {"sample_tests": [external_test_data]}
         response = self.client.post(
             "/api/v1/external_result/bulk_upsert/", sample_data, format="json"
         )
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
