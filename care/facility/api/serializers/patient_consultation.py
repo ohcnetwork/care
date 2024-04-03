@@ -201,25 +201,34 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             bed_number = None
         return bed_number
 
-
-    @extend_schema_field({
-        "type": "object",
-        "properties": {
-            "resp": {"type": "number", "nullable": True, "default": 16},
-            "bp": {
-                "type": "object",
-                "properties": {
-                    "property1": {"type": "null"},
-                    "property2": {"type": "null"}
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "resp": {"type": "number", "nullable": True, "default": 16},
+                "bp": {
+                    "type": "object",
+                    "properties": {
+                        "property1": {"type": "null"},
+                        "property2": {"type": "null"},
+                    },
+                    "nullable": True,
                 },
-                "nullable": True
+                "pulse": {"type": "number", "nullable": True, "default": 72},
+                "temperature": {"type": "string", "nullable": True},
+                "consciousness_level": {
+                    "type": "string",
+                    "nullable": True,
+                    "default": "UNKNOWN",
+                },
+                "modified_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": True,
+                },
             },
-            "pulse": {"type": "number", "nullable": True, "default": 72},
-            "temperature": {"type": "string", "nullable": True},
-            "consciousness_level": {"type": "string", "nullable": True, "default": "UNKNOWN"},
-            "modified_date": {"type": "string", "format": "date-time", "nullable": True},
         }
-    })
+    )
     def get_mews_field(self, consultation):
         current_time = localtime(now())
         past_30_minutes = current_time - timedelta(minutes=30)
@@ -262,7 +271,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     )
                     or (mews_field_data[key] is None and newValue is not None)
                 ):
-                    mews_field_data[key] = None if newValue==None else DailyRound.ConsciousnessType(newValue).name if key=="consciousness_level" else newValue
+                    mews_field_data[key] = (
+                        None
+                        if newValue == None
+                        else DailyRound.ConsciousnessType(newValue).name
+                        if key == "consciousness_level"
+                        else newValue
+                    )
                     count += 1
             if count == 5:
                 break
