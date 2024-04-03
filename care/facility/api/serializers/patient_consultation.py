@@ -219,7 +219,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 "consciousness_level": {
                     "type": "string",
                     "nullable": True,
-                    "default": "UNKNOWN",
+                    "default": 0,
                 },
                 "modified_date": {
                     "type": "string",
