@@ -18,9 +18,10 @@ from care.facility.models import (
     Facility,
     LocalBody,
     PatientConsultation,
+    PatientExternalTest,
     PatientRegistration,
     User,
-    Ward, PatientExternalTest,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -371,8 +372,9 @@ class TestUtils:
         }
 
     @classmethod
-    def create_patient_external_test(cls, district: District, local_body: LocalBody, ward: Ward,
-                                     **kwargs) -> PatientExternalTest:
+    def create_patient_external_test(
+        cls, district: District, local_body: LocalBody, ward: Ward, **kwargs
+    ) -> PatientExternalTest:
         data = cls.get_patient_external_test_data(district, local_body, ward).copy()
         data.update(kwargs)
         return PatientExternalTest.objects.create(**data)
