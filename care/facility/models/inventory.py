@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Index
 
@@ -108,7 +109,7 @@ class FacilityInventoryLog(FacilityBaseModel, FacilityRelatedPermissionMixin):
     )
     current_stock = models.FloatField(default=0)
     quantity_in_default_unit = models.FloatField(default=0)
-    quantity = models.FloatField(default=0)
+    quantity = models.FloatField(default=0, validators=[MinValueValidator(0.0)])
     unit = models.ForeignKey(
         FacilityInventoryUnit, on_delete=models.SET_NULL, null=True, blank=False
     )
@@ -157,7 +158,7 @@ class FacilityInventoryMinQuantity(FacilityBaseModel, FacilityRelatedPermissionM
     item = models.ForeignKey(
         FacilityInventoryItem, on_delete=models.SET_NULL, null=True, blank=False
     )
-    min_quantity = models.FloatField(default=0)
+    min_quantity = models.FloatField(default=0, validators=[MinValueValidator(0.0)])
 
     class Meta:
         constraints = [
