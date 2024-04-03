@@ -216,7 +216,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             },
             "pulse": {"type": "number", "nullable": True, "default": 72},
             "temperature": {"type": "string", "nullable": True},
-            "consciousness_level": {"type": "number", "nullable": True, "enum": [0, 5, 10, 15, 20, 25, 30], "default": 0},
+            "consciousness_level": {"type": "string", "nullable": True, "default": "UNKNOWN"},
             "modified_date": {"type": "string", "format": "date-time", "nullable": True},
         }
     })
@@ -228,7 +228,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "bp": {},
             "pulse": None,
             "temperature": None,
-            "consciousness_level": DailyRound.ConsciousnessType.UNKNOWN.value,
+            "consciousness_level": DailyRound.ConsciousnessType.UNKNOWN.name,
             "modified_date": None,
         }
         recentDailyArray = (
@@ -257,12 +257,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     or (
                         key == "consciousness_level"
                         and mews_field_data[key]
-                        == DailyRound.ConsciousnessType.UNKNOWN.value
+                        == DailyRound.ConsciousnessType.UNKNOWN.name
                         and newValue != DailyRound.ConsciousnessType.UNKNOWN.value
                     )
                     or (mews_field_data[key] is None and newValue is not None)
                 ):
-                    mews_field_data[key] = newValue
+                    mews_field_data[key] = None if newValue==None else DailyRound.ConsciousnessType(newValue).name if key=="consciousness_level" else newValue
                     count += 1
             if count == 5:
                 break

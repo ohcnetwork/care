@@ -150,7 +150,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         mews_field = data.data["mews_field"]
         self.assertEqual(mews_field["resp"], 16)
         self.assertEqual(mews_field["temperature"], Decimal("98.90"))
-        self.assertEqual(mews_field["consciousness_level"], 10)
+        self.assertEqual(mews_field["consciousness_level"], "RESPONDS_TO_VOICE")
         self.assertEqual(mews_field["pulse"], 73)
         self.assertDictEqual(
             mews_field["bp"], {"systolic": 130, "diastolic": 80, "mean": 105}
