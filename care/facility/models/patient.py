@@ -1,5 +1,6 @@
 import enum
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -469,6 +470,11 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
+
+    def get_age(self) -> int:
+        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+        end = (self.death_datetime or timezone.now()).date()
+        return relativedelta(end, start).years
 
     def annotate_diagnosis_ids(*args, **kwargs):
         return ArrayAgg(
