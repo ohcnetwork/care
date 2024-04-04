@@ -238,7 +238,6 @@ class TestUtils:
     def get_patient_data(cls, district, state) -> dict:
         return {
             "name": "Foo",
-            "age": 32,
             "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
