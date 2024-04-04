@@ -275,6 +275,31 @@ class AssetSerializer(ModelSerializer):
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
 
+class BulkAssetSerializer(AssetSerializer):
+    location = None
+    class Meta:
+        model = Asset
+        exclude = ("deleted", "external_id", "current_location")
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "resolved_middleware",
+            "latest_status",
+        )
+
+class AssetBulkUpsertSerializer(Serializer):
+    location = serializers.UUIDField(required=True, error_messages={"required": "Location is required"})
+    assets = serializers.ListField(
+        required=True,
+        child = BulkAssetSerializer(),
+        allow_empty=False,
+        max_length=200,
+        error_messages={
+            "max_length": "Maximum 200 assets can be created at once",
+            "empty": "No Data was provided"
+        }
+    )
+
+    class Meta:
+        fields = ("assets", "location")
 
 class AssetTransactionSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)

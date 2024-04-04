@@ -37,6 +37,7 @@ from care.facility.api.serializers.asset import (
     DummyAssetOperateResponseSerializer,
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
+    AssetBulkUpsertSerializer,
 )
 from care.facility.models import (
     Asset,
@@ -413,40 +414,31 @@ class AssetViewSet(
             )
 
     @extend_schema(tags=["asset"])
-    @action(methods=["POST"], detail=False)
+    @action(methods=["POST"], detail=False, serializer_class=AssetBulkUpsertSerializer)
     def bulk_upsert(self, request, *args, **kwargs):
-        if "assets" not in request.data:
-            raise ValidationError({"assets": "No Data was provided"})
-        if not isinstance(request.data["assets"], list):
-            raise ValidationError({"assets": "Invalid Data"})
-        if "location" not in request.data:
-            raise ValidationError({"location": "Location is required"})
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        limit = 200
+        assets = serializer.validated_data['assets']
+        location = serializer.validated_data['location']
 
-        if len(request.data["assets"]) > limit:
-            raise ValidationError(
-                {"assets": f"Maximum of {limit} assets can be created at once"}
-            )
-
-        assets = request.data.get("assets", [])
-        location = request.data.get("location")
         errors = []
         counter = 0
         ser_objects = []
-        invalid = False
+
         for asset in assets:
             counter += 1
             asset["location"] = location
             serialiser_obj = AssetSerializer(data=asset, context={"request": request})
             valid = serialiser_obj.is_valid()
-            current_error = serialiser_obj.errors
-            if current_error and (not valid):
-                errors.append({"index": counter, "error": current_error})
-                invalid = True
-            ser_objects.append(serialiser_obj)
 
-        if invalid:
+            if not valid:
+                errors.append({"index": counter, "error": serialiser_obj.errors})
+            else:
+                ser_objects.append(serialiser_obj)
+
+        if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
         for ser in ser_objects:
@@ -456,7 +448,6 @@ class AssetViewSet(
             {"message": f"Successfully created {counter} assets"},
             status=status.HTTP_201_CREATED,
         )
-
 
 class AssetTransactionFilter(filters.FilterSet):
     qr_code_id = filters.CharFilter(field_name="asset__qr_code_id")
