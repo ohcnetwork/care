@@ -131,6 +131,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
 
     return {
         "patient": consultation.patient,
+        "patient_age": consultation.patient.get_age(),
         "samples": samples,
         "hcx": hcx,
         "principal_diagnoses": diagnoses["principal"],
