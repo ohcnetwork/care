@@ -25,7 +25,7 @@ HEALTHCHECK \
   --interval=10s \
   --timeout=5s \
   --start-period=10s \
-  --retries=12 \
+  --retries=24 \
   CMD ["/app/scripts/healthcheck.sh"]
 
 WORKDIR /app
