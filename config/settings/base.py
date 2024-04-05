@@ -484,7 +484,7 @@ VAPID_PRIVATE_KEY = env(
     "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
 )
 SEND_SMS_NOTIFICATION = False
-
+SMS_BACKEND = "care.utils.sms.sendSMS.CustomSMSBackendSNS"
 
 # Cloud and Buckets
 # ------------------------------------------------------------------------------

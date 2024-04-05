@@ -74,3 +74,5 @@ LOGGING = {
 }
 
 CELERY_TASK_ALWAYS_EAGER = True
+
+SMS_BACKEND = "django.core.mail.backends.console.EmailBackend"
