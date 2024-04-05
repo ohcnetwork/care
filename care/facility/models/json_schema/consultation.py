@@ -17,3 +17,21 @@ LINES_CATHETERS = {
         }
     ],
 }
+
+CONSENT_RECORDS = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": [
+        {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "type": {"type": "number"},
+                "patient_code_status": {"type": "number"},
+                "deleted": {"type": "boolean"},
+            },
+            "additionalProperties": False,
+            "required": ["id", "type"],
+        }
+    ],
+}
