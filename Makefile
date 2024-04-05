@@ -1,7 +1,7 @@
 .PHONY: build, re-build, up, down, list, logs, test, makemigrations
 
 
-DOCKER_VERSION := docker --vesion
+DOCKER_VERSION := $(shell docker --version 2>/dev/null)
 
 docker_config_file := 'docker-compose.local.yaml'
 
