@@ -572,10 +572,10 @@ class PatientMetaInfo(models.Model):
         ANIMAL_HANDLER = 5
         HEALTHCARE_PRACTITIONER = 6
         PARADEMICS = 7
-        Business_related = 8
+        BUSINESS_RELATED = 8
         ENGINEER = 9
         TEACHER = 10
-        Other_Professions = 11
+        OTHER_PROFESSIONS = 11
         OFFICE_ADMINISTRATIVE = 12
         CHEF = 13
         PROTECTIVE_SERVICE = 14
