@@ -575,7 +575,7 @@ class PatientMetaInfo(models.Model):
         BUSINESS_RELATED = 8
         ENGINEER = 9
         TEACHER = 10
-        OTHER_PROFESSIONS = 11
+        OTHER_PROFESSIONAL_OCCUPATIONS = 11
         OFFICE_ADMINISTRATIVE = 12
         CHEF = 13
         PROTECTIVE_SERVICE = 14
