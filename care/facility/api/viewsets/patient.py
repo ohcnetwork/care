@@ -5,7 +5,18 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, OuterRef, Q, Subquery, When
+from django.db.models import (
+    Case,
+    ExpressionWrapper,
+    F,
+    Func,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -333,25 +344,61 @@ class PatientViewSet(
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
-    queryset = PatientRegistration.objects.all().select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        # "nearest_facility",
-        # "nearest_facility__local_body",
-        # "nearest_facility__district",
-        # "nearest_facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    queryset = (
+        PatientRegistration.objects.all()
+        .select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            # "nearest_facility",
+            # "nearest_facility__local_body",
+            # "nearest_facility__district",
+            # "nearest_facility__state",
+            "last_consultation",
+            "last_consultation__assigned_to",
+            "last_edited",
+            "created_by",
+        )
+        .annotate(
+            coalesced_dob=Coalesce(
+                "date_of_birth",
+                Func(
+                    F("year_of_birth"),
+                    Value(1),
+                    Value(1),
+                    function="MAKE_DATE",
+                    output_field=models.DateField(),
+                ),
+                output_field=models.DateField(),
+            ),
+            age_end=Case(
+                When(death_datetime__isnull=True, then=Now()),
+                default=F("death_datetime__date"),
+            ),
+        )
+        .annotate(
+            age=Func(
+                Value("year"),
+                Func(
+                    F("age_end"),
+                    F("coalesced_dob"),
+                    function="age",
+                ),
+                function="date_part",
+                output_field=models.IntegerField(),
+            ),
+            age_days=ExpressionWrapper(
+                ExtractDay(F("age_end") - F("coalesced_dob")),
+                output_field=models.IntegerField(),
+            ),
+        )
     )
     ordering_fields = [
         "facility__name",

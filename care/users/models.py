@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -130,7 +131,18 @@ class CustomUserManager(UserManager):
         return super().get_queryset().select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
-        district = District.objects.all()[0]
+        district = District.objects.all().first()
+        data_command = (
+            "load_data" if settings.IS_PRODUCTION is True else "load_dummy_data"
+        )
+        if not district:
+            proceed = input(
+                f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
+            )
+            if proceed.lower() != "y":
+                raise Exception("Aborted Superuser Creation")
+            district = None
+
         extra_fields["district"] = district
         extra_fields["phone_number"] = "+919696969696"
         extra_fields["gender"] = 3
