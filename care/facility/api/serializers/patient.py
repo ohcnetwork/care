@@ -121,13 +121,12 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "year_of_birth",
             "meta_info",
             "countries_travelled_old",
             "allergies",
             "external_id",
         )
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("death_datetime",)
 
 
 class PatientContactDetailsSerializer(serializers.ModelSerializer):
@@ -223,12 +222,16 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "year_of_birth",
             "countries_travelled_old",
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+            "death_datetime",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -250,13 +253,15 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if (
-            not self.partial
-            and not validated.get("age")
-            and not validated.get("date_of_birth")
+        if not self.partial and not (
+            validated.get("year_of_birth") or validated.get("date_of_birth")
         ):
             raise serializers.ValidationError(
-                {"non_field_errors": ["Either age or date_of_birth should be passed"]}
+                {
+                    "non_field_errors": [
+                        "Either year_of_birth or date_of_birth should be passed"
+                    ]
+                }
             )
 
         if validated.get("is_vaccinated"):

@@ -11,6 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
+from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -25,6 +26,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -244,6 +246,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    consent_records = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -289,6 +295,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             self.patient.facility = self.referred_to or self.facility
             self.patient.save()
         """
+        if self.death_datetime and self.patient.death_datetime != self.death_datetime:
+            self.patient.death_datetime = self.death_datetime
+            self.patient.save(update_fields=["death_datetime"])
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
