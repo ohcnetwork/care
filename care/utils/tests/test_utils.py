@@ -13,6 +13,7 @@ from care.facility.models import (
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
+    Ambulance,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -20,7 +21,7 @@ from care.facility.models import (
     PatientConsultation,
     PatientRegistration,
     User,
-    Ward, Ambulance,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
@@ -443,7 +444,7 @@ class TestUtils:
         }
 
     @classmethod
-    def create_ambulance(cls, district: District , user: User , **kwargs) -> Ambulance:
+    def create_ambulance(cls, district: District, user: User, **kwargs) -> Ambulance:
         data = cls.get_ambulance_data(district, user)
         data.update(**kwargs)
         return Ambulance.objects.create(**data)
