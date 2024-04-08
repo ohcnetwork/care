@@ -33,6 +33,7 @@ class MiddlewareUser(AnonymousUser):
     def __init__(self, facility, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.facility = facility
+        self.username = f"middleware{facility.external_id}"
 
     @property
     def is_authenticated(self):
@@ -70,23 +71,19 @@ class MiddlewareAuthentication(JWTAuthentication):
     auth_header_type = "Middleware_Bearer"
     auth_header_type_bytes = auth_header_type.encode(HTTP_HEADER_ENCODING)
 
-    def open_id_authenticate(self, url, token):
+    def get_public_key(self, url):
         public_key_json = cache.get(jwk_response_cache_key(url))
-        try:
-            if not public_key_json:
-                res = requests.get(url)
-                res.raise_for_status()
-                public_key_json = res.json()
-
-            public_key = jwt.algorithms.RSAAlgorithm.from_jwk(
-                json.dumps(public_key_json["keys"][0])
-            )
-            payload = jwt.decode(token, key=public_key, algorithms=["RS256"])
+        if not public_key_json:
+            res = requests.get(url)
+            res.raise_for_status()
+            public_key_json = res.json()
             cache.set(jwk_response_cache_key(url), public_key_json, timeout=60 * 5)
-            return payload
-        except Exception:
-            cache.delete(jwk_response_cache_key(url))
-            raise
+        return public_key_json["keys"][0]
+
+    def open_id_authenticate(self, url, token):
+        public_key_response = self.get_public_key(url)
+        public_key = jwt.algorithms.RSAAlgorithm.from_jwk(public_key_response)
+        return jwt.decode(token, key=public_key, algorithms=["RS256"])
 
     def authenticate_header(self, request):
         return f'{self.auth_header_type} realm="{self.www_authenticate_realm}"'
