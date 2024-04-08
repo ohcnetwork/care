@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import jwt
 import requests
@@ -189,7 +190,7 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
                 user_type=User.TYPE_VALUE_MAP["Nurse"],
                 verified=True,
                 asset=asset_obj,
-                age=10,
+                date_of_birth=datetime.now().date(),
             )
             asset_user.save()
         return asset_user
@@ -240,7 +241,7 @@ class ABDMAuthentication(JWTAuthentication):
                 phone_number="917777777777",
                 user_type=User.TYPE_VALUE_MAP["Volunteer"],
                 verified=True,
-                age=10,
+                date_of_birth=datetime.now().date(),
             )
             user.save()
         return user
