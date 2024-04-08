@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-printf "api" >> /tmp/container-role
+printf "api" > /tmp/container-role
 
 cd /app
 
