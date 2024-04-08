@@ -13,6 +13,7 @@ from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
 from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
+from care.users.models import User
 from care.utils.models.base import BaseModel
 
 
@@ -71,6 +72,26 @@ class AssetBed(BaseModel):
         return f"{self.asset.name} - {self.bed.name}"
 
 
+class CameraPreset(BaseModel):
+    asset_beds = models.ManyToManyField(AssetBed, related_name="camera_presets")
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="camera_presets_created_by",
+    )
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="camera_presets_updated_by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updateded_at = models.DateTimeField(auto_now=True)
+
+
 class ConsultationBed(BaseModel):
     consultation = models.ForeignKey(
         PatientConsultation, on_delete=models.PROTECT, null=False, blank=False
@@ -80,7 +101,9 @@ class ConsultationBed(BaseModel):
     end_date = models.DateTimeField(null=True, blank=True, default=None)
     meta = JSONField(default=dict, blank=True)
     assets = models.ManyToManyField(
-        Asset, through="ConsultationBedAsset", related_name="assigned_consultation_beds"
+        Asset,
+        through="ConsultationBedAsset",
+        related_name="assigned_consultation_beds",
     )
 
 

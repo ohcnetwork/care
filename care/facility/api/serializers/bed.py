@@ -20,6 +20,7 @@ from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.bed import (
     AssetBed,
     Bed,
+    CameraPreset,
     ConsultationBed,
     ConsultationBedAsset,
 )
@@ -79,7 +80,10 @@ class BedSerializer(ModelSerializer):
             attrs["facility"] = facility
         else:
             raise ValidationError(
-                {"location": "Field is Required", "facility": "Field is Required"}
+                {
+                    "location": "Field is Required",
+                    "facility": "Field is Required",
+                }
             )
         return super().validate(attrs)
 
@@ -139,6 +143,19 @@ class AssetBedSerializer(ModelSerializer):
         return super().validate(attrs)
 
 
+class CameraPresetSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    asset_beds = ListField(child=UUIDField(), required=True, write_only=True)
+    asset_beds_objects = AssetBedSerializer(
+        source="asset_beds", many=True, read_only=True
+    )
+
+    class Meta:
+        model = CameraPreset
+        exclude = ("deleted", "external_id")
+        read_only_fields = TIMESTAMP_FIELDS
+
+
 class PatientAssetBedSerializer(ModelSerializer):
     asset = AssetSerializer(read_only=True)
     bed = BedSerializer(read_only=True)
@@ -164,7 +181,9 @@ class ConsultationBedSerializer(ModelSerializer):
     bed_object = BedSerializer(source="bed", read_only=True)
 
     consultation = ExternalIdSerializerField(
-        queryset=PatientConsultation.objects.all(), write_only=True, required=True
+        queryset=PatientConsultation.objects.all(),
+        write_only=True,
+        required=True,
     )
     bed = ExternalIdSerializerField(
         queryset=Bed.objects.all(), write_only=True, required=True
@@ -277,13 +296,15 @@ class ConsultationBedSerializer(ModelSerializer):
 
         conflicting_beds = ConsultationBed.objects.filter(bed=bed)
         if conflicting_beds.filter(
-            start_date__lte=current_start_date, end_date__gte=current_start_date
+            start_date__lte=current_start_date,
+            end_date__gte=current_start_date,
         ).exists():
             raise ValidationError({"start_date": "Cannot create conflicting entry"})
         if (
             current_end_date
             and conflicting_beds.filter(
-                start_date__lte=current_end_date, end_date__gte=current_end_date
+                start_date__lte=current_end_date,
+                end_date__gte=current_end_date,
             ).exists()
         ):
             raise ValidationError({"end_date": "Cannot create conflicting entry"})
