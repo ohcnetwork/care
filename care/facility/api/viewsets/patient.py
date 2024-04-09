@@ -5,8 +5,20 @@ from json import JSONDecodeError
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
-from django.db.models import Case, OuterRef, Q, Subquery, When
+from django.db.models import (
+    Case,
+    ExpressionWrapper,
+    F,
+    Func,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -226,6 +238,20 @@ class PatientFilterSet(filters.FilterSet):
             last_consultation__discharge_date__isnull=True,
         )
 
+    def filter_by_review_missed(self, queryset, name, value):
+        if isinstance(value, bool):
+            if value:
+                queryset = queryset.filter(
+                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                )
+            else:
+                queryset = queryset.filter(
+                    Q(review_time__isnull=True) | Q(review_time__gt=timezone.now())
+                )
+        return queryset
+
+    review_missed = filters.BooleanFilter(method="filter_by_review_missed")
+
     # Filter consultations by ICD-11 Diagnoses
     diagnoses = MultiSelectFilter(method="filter_by_diagnoses")
     diagnoses_unconfirmed = MultiSelectFilter(method="filter_by_diagnoses")
@@ -333,25 +359,61 @@ class PatientViewSet(
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
-    queryset = PatientRegistration.objects.all().select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        # "nearest_facility",
-        # "nearest_facility__local_body",
-        # "nearest_facility__district",
-        # "nearest_facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    queryset = (
+        PatientRegistration.objects.all()
+        .select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            # "nearest_facility",
+            # "nearest_facility__local_body",
+            # "nearest_facility__district",
+            # "nearest_facility__state",
+            "last_consultation",
+            "last_consultation__assigned_to",
+            "last_edited",
+            "created_by",
+        )
+        .annotate(
+            coalesced_dob=Coalesce(
+                "date_of_birth",
+                Func(
+                    F("year_of_birth"),
+                    Value(1),
+                    Value(1),
+                    function="MAKE_DATE",
+                    output_field=models.DateField(),
+                ),
+                output_field=models.DateField(),
+            ),
+            age_end=Case(
+                When(death_datetime__isnull=True, then=Now()),
+                default=F("death_datetime__date"),
+            ),
+        )
+        .annotate(
+            age=Func(
+                Value("year"),
+                Func(
+                    F("age_end"),
+                    F("coalesced_dob"),
+                    function="age",
+                ),
+                function="date_part",
+                output_field=models.IntegerField(),
+            ),
+            age_days=ExpressionWrapper(
+                ExtractDay(F("age_end") - F("coalesced_dob")),
+                output_field=models.IntegerField(),
+            ),
+        )
     )
     ordering_fields = [
         "facility__name",
@@ -405,6 +467,15 @@ class PatientViewSet(
             return PatientTransferSerializer
         else:
             return self.serializer_class
+
+    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
+        if self.action == "list" and settings.CSV_REQUEST_PARAMETER in self.request.GET:
+            for backend in (PatientDRYFilter, filters.DjangoFilterBackend):
+                queryset = backend().filter_queryset(self.request, queryset, self)
+            is_active = self.request.GET.get("is_active", "False") == "True"
+            return queryset.filter(last_consultation__discharge_date__isnull=is_active)
+
+        return super().filter_queryset(queryset)
 
     def list(self, request, *args, **kwargs):
         """
