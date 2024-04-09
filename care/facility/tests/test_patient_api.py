@@ -444,6 +444,9 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         cls.patient.save()
 
     def test_patient_transfer(self):
+        # test transfer of patient to a outside facility with allow_transfer set to "True"
+        # test transfer patient with dob
+
         self.client.force_authenticate(user=self.super_user)
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
@@ -489,6 +492,8 @@ class PatientTransferTestCase(TestUtils, APITestCase):
 
     def test_transfer_disallowed_by_facility(self):
         # Set the patient's facility to disallow transfers
+        # Also test transfer of patient with live consultation to different facility with allow_transfer="False"
+
         self.patient.allow_transfer = False
         self.patient.save()
 
@@ -505,3 +510,39 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             response.data["Patient"],
             "Patient transfer cannot be completed because the source facility does not permit it",
         )
+
+    def test_transfer_within_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "date_of_birth": "1992-04-01",
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
+        )
+
+    def test_transfer_without_dob(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "age": "32",
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.patient.refresh_from_db()
+        self.consultation.refresh_from_db()
+
+        self.assertEqual(self.patient.facility, self.destination_facility)
+
+        self.assertEqual(
+            self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
+        )
+        self.assertIsNotNone(self.consultation.discharge_date)
