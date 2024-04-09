@@ -64,7 +64,6 @@ class MiddlewareAuthTestCase(TestUtils, APITestCase):
         mock_get_public_key.return_value = self.public_key
         token = generate_jwt(jwks=self.private_key)
 
-        # with HTTMock(self.public_key_mock):
         response = self.client.get(
             "/middleware/verify",
             headers={
