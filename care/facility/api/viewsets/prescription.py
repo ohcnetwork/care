@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
-    MedibaseMedicineSerializer,
     MedicineAdministrationSerializer,
     PrescriptionSerializer,
 )
@@ -118,47 +117,6 @@ class ConsultationPrescriptionViewSet(
     def get_queryset(self):
         consultation_obj = self.get_consultation_obj()
         return self.queryset.filter(consultation_id=consultation_obj.id)
-
-    @action(detail=False, methods=["get"])
-    def prescribed_medicines(self, request, *args, **kwargs):
-        consultation_obj = self.get_consultation_obj()
-        prescriptions = Prescription.objects.filter(
-            consultation=consultation_obj
-        ).prefetch_related("medicine")
-        medicines = {prescription.medicine for prescription in prescriptions}
-        serializer = MedibaseMedicineSerializer(medicines, many=True)
-        return Response(serializer.data)
-
-    @extend_schema(
-        description="Get prescriptions by medicine for the consultation",
-        responses={200: PrescriptionSerializer(many=True)},
-        parameters=[
-            {
-                "name": "medicine_id",
-                "required": True,
-                "type": "string",
-                "in": "path",
-                "description": "ID of the medicine",
-            }
-        ],
-    )
-    @action(
-        detail=False,
-        methods=["get"],
-        url_path="prescriptions_by_medicine/(?P<medicine_id>[^/.]+)",
-    )
-    def prescriptions_by_medicine(self, request, *args, **kwargs):
-        consultation_obj = self.get_consultation_obj()
-        medicine_id = kwargs.get("medicine_id")
-        if not medicine_id:
-            return Response(
-                {"error": "Medicine ID is required"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        prescriptions = Prescription.objects.filter(
-            consultation=consultation_obj, medicine=medicine_id
-        )
-        serializer = self.get_serializer(prescriptions, many=True)
-        return Response(serializer.data)
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
