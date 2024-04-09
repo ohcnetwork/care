@@ -51,7 +51,7 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     )
 
     middleware_address = models.CharField(
-        null=True, blank=True, default=None, max_length=200, db_index=True
+        null=True, blank=True, default=None, max_length=200
     )
 
 
@@ -170,12 +170,6 @@ class Asset(BaseModel):
                 name="qr_code_unique_when_not_null",
                 condition=Q(qr_code_id__isnull=False),
             ),
-        ]
-        indexes = [
-            models.Index(
-                models.F("meta__middleware_hostname"),
-                name="asset_middleware_hostname_idx",
-            )
         ]
 
     def delete(self, *args, **kwargs):
