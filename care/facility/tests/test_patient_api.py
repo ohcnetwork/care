@@ -409,6 +409,21 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         )
         self.assertNotContains(res, self.patient.external_id)
 
+    def test_filter_by_review_missed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(self.get_base_url() + "?review_missed=true")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        for patient in res.json()["results"]:
+            self.assertLess(patient["review_time"], now())
+
+        res = self.client.get(self.get_base_url() + "?review_missed=false")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        for patient in res.json()["results"]:
+            if patient["review_time"]:
+                self.assertGreaterEqual(patient["review_time"], now())
+            else:
+                self.assertIsNone(patient["review_time"])
+
 
 class PatientTransferTestCase(TestUtils, APITestCase):
     @classmethod
