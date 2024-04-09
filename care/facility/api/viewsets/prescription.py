@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
+    MedibaseMedicineSerializer,
     MedicineAdministrationSerializer,
     PrescriptionSerializer,
 )
@@ -91,7 +92,7 @@ class ConsultationPrescriptionFilter(filters.FilterSet):
     dosage_type = MultiSelectFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
-    medicine = filters.UUIDFilter(field_name="medicine")
+    medicine = filters.NumberFilter(field_name="medicine")
 
 
 class ConsultationPrescriptionViewSet(
@@ -121,12 +122,12 @@ class ConsultationPrescriptionViewSet(
     @action(detail=False, methods=["get"])
     def prescribed_medicines(self, request, *args, **kwargs):
         consultation_obj = self.get_consultation_obj()
-        prescribed_medicines = (
-            Prescription.objects.filter(consultation=consultation_obj)
-            .values("medicine")
-            .distinct()
-        )
-        return Response(prescribed_medicines)
+        prescriptions = Prescription.objects.filter(
+            consultation=consultation_obj
+        ).prefetch_related("medicine")
+        medicines = {prescription.medicine for prescription in prescriptions}
+        serializer = MedibaseMedicineSerializer(medicines, many=True)
+        return Response(serializer.data)
 
     @extend_schema(
         description="Get prescriptions by medicine for the consultation",
