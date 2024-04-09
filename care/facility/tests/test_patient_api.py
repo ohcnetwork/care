@@ -451,7 +451,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.destination_facility.external_id,
             },
         )
@@ -480,7 +480,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.facility.external_id,
             },
         )
@@ -501,7 +501,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.destination_facility.external_id,
             },
         )

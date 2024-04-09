@@ -6,9 +6,14 @@ services:
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "start-ecs.sh" ]
+    restart: unless-stopped
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      celery-beat:
+        condition: service_healthy
     ports:
       - "9000:9000"
 
@@ -17,15 +22,21 @@ services:
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "celery_worker-ecs.sh" ]
+    restart: unless-stopped
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      celery-beat:
+        condition: service_healthy
 
   celery-beat:
     image: "ghcr.io/coronasafe/care:latest"
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "celery_beat-ecs.sh" ]
+    restart: unless-stopped
     depends_on:
       - db
       - redis
