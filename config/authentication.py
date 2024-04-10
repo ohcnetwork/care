@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 import jwt
@@ -19,6 +20,8 @@ from rest_framework_simplejwt.tokens import Token
 from care.facility.models import Facility
 from care.facility.models.asset import Asset
 from care.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 def jwk_response_cache_key(url: str) -> str:
@@ -149,7 +152,7 @@ class MiddlewareAuthentication(JWTAuthentication):
         try:
             return self.open_id_authenticate(url, raw_token)
         except Exception as e:
-            print(e)
+            logger.info(e, "Token: ", raw_token)
 
         raise InvalidToken({"detail": "Given token not valid for any token type"})
 
@@ -223,7 +226,7 @@ class ABDMAuthentication(JWTAuthentication):
         try:
             return self.open_id_authenticate(url, token)
         except Exception as e:
-            print(e)
+            logger.info(e, "Token: ", token)
             raise InvalidToken({"detail": f"Invalid Authorization token: {e}"})
 
     def get_user(self, validated_token):
