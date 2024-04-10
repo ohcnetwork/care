@@ -30,7 +30,7 @@ def update_asset_config_on_middleware(
         return
 
     new_hostname = instance.resolved_middleware.get("hostname")
-    old_hostname = instance._previous_values.get("hostname")
+    old_hostname = getattr(instance, "_previous_values", {}).get("hostname")
     push_config_to_middleware_task.s(
         new_hostname,
         instance.external_id,
