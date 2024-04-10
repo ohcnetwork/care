@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 from django.core.cache import cache
@@ -36,13 +35,10 @@ from care.facility.models.asset import (
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
-from care.utils.assetintegration.push_config import push_config_to_middleware
 from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.queryset.facility import get_facility_queryset
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
-
-logger = logging.getLogger(__name__)
 
 
 class AssetLocationSerializer(ModelSerializer):
@@ -319,17 +315,8 @@ class AssetSerializer(ModelSerializer):
                     asset=instance,
                     performed_by=user,
                 ).save()
-            old_hostname = instance.resolved_middleware.get("hostname")
             updated_instance: Asset = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
-            new_hostname = updated_instance.resolved_middleware.get("hostname")
-            response = push_config_to_middleware(
-                new_hostname,
-                updated_instance.external_id,
-                AssetConfigSerializer(updated_instance).data,
-                old_hostname,
-            )
-            logger.info(f"Asset update response from middleware: {response}")
         return updated_instance
 
 

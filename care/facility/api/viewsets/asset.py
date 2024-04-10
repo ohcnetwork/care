@@ -58,7 +58,6 @@ from care.facility.models.asset import (
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
-from care.utils.assetintegration.push_config import delete_asset_from_middleware
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
@@ -310,11 +309,6 @@ class AssetViewSet(
             )
         )
         return queryset
-
-    def perform_destroy(self, instance: Asset) -> None:
-        if hostname := instance.resolved_middleware:
-            delete_asset_from_middleware(hostname["hostname"], instance.external_id)
-        return super().perform_destroy(instance)
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
