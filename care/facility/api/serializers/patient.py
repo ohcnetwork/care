@@ -452,11 +452,11 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = ("facility", "date_of_birth", "patient", "facility_object")
+        fields = ("facility", "year_of_birth", "patient", "facility_object")
 
-    def validate_date_of_birth(self, value):
-        if self.instance and self.instance.date_of_birth != value:
-            raise serializers.ValidationError("Date of birth does not match")
+    def validate_year_of_birth(self, value):
+        if self.instance and self.instance.year_of_birth != value:
+            raise serializers.ValidationError("Year of birth does not match")
         return value
 
     def create(self, validated_data):

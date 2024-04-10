@@ -18,6 +18,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -236,6 +237,20 @@ class PatientFilterSet(filters.FilterSet):
             last_consultation__bed_number__isnull=value,
             last_consultation__discharge_date__isnull=True,
         )
+
+    def filter_by_review_missed(self, queryset, name, value):
+        if isinstance(value, bool):
+            if value:
+                queryset = queryset.filter(
+                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                )
+            else:
+                queryset = queryset.filter(
+                    Q(review_time__isnull=True) | Q(review_time__gt=timezone.now())
+                )
+        return queryset
+
+    review_missed = filters.BooleanFilter(method="filter_by_review_missed")
 
     # Filter consultations by ICD-11 Diagnoses
     diagnoses = MultiSelectFilter(method="filter_by_diagnoses")
