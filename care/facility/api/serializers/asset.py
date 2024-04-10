@@ -1,9 +1,8 @@
 from datetime import datetime
 
 from django.core.cache import cache
-from django.db import models, transaction
-from django.db.models import F, Value
-from django.db.models.functions import Cast, Coalesce, NullIf
+from django.db import transaction
+from django.db.models import Q, Subquery
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema_field
@@ -32,7 +31,9 @@ from care.facility.models.asset import (
     StatusChoices,
     UserDefaultAssetLocation,
 )
+from care.facility.models.facility import Facility
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
@@ -223,35 +224,40 @@ class AssetSerializer(ModelSerializer):
                 or current_location.facility.middleware_address
             )
             if ip_address and middleware_hostname:
-                assets_using_ip = (
+                asset_using_ip = (
                     Asset.objects.filter(
-                        current_location__facility=current_location.facility
-                    )
-                    .annotate(
-                        resolved_middleware_hostname=Coalesce(
-                            NullIf(
-                                Cast(
-                                    F("meta__middleware_hostname"), models.CharField()
-                                ),
-                                Value('""'),
-                            ),
-                            NullIf(
-                                F("current_location__middleware_address"), Value("")
-                            ),
-                            F("current_location__facility__middleware_address"),
-                            output_field=models.CharField(),
+                        Q(
+                            current_location__in=(
+                                Subquery(
+                                    AssetLocation.objects.filter(
+                                        Q(
+                                            facility__in=Subquery(
+                                                Facility.objects.filter(
+                                                    middleware_address=middleware_hostname
+                                                ).only("id")
+                                            )
+                                        )
+                                        | Q(middleware_address=middleware_hostname)
+                                    ).only("id")
+                                )
+                            )
                         )
-                    )
-                    .filter(
-                        resolved_middleware_hostname=middleware_hostname,
+                        | Q(
+                            meta__middleware_hostname=middleware_hostname,
+                        ),
+                        asset_class__in=[
+                            AssetClasses.ONVIF.name,
+                            AssetClasses.HL7MONITOR.name,
+                        ],
                         meta__local_ip_address=ip_address,
                     )
                     .exclude(id=self.instance.id if self.instance else None)
-                    .values_list("name", flat=True)
+                    .only("name")
+                    .first()
                 )
-                if assets_using_ip:
+                if asset_using_ip:
                     raise ValidationError(
-                        f"IP Address {ip_address} is already in use by {', '.join(assets_using_ip)} asset(s)"
+                        f"IP Address {ip_address} is already in use by {asset_using_ip.name} asset"
                     )
 
         return super().validate(attrs)
