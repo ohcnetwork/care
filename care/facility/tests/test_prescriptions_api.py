@@ -20,9 +20,18 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         super().setUp()
         self.consultation = self.create_consultation(self.patient, self.facility)
         self.medicine = MedibaseMedicine.objects.first()
+        self.medicine2 = MedibaseMedicine.objects.all()[1]
 
         self.normal_prescription_data = {
             "medicine": self.medicine.external_id,
+            "prescription_type": "REGULAR",
+            "base_dosage": "1 mg",
+            "frequency": "OD",
+            "dosage_type": "REGULAR",
+        }
+
+        self.normal_prescription_data2 = {
+            "medicine": self.medicine2.external_id,
             "prescription_type": "REGULAR",
             "base_dosage": "1 mg",
             "frequency": "OD",
@@ -113,3 +122,26 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             prn_prescription_data,
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_medicine_filter_for_prescription(self):
+        # post 2 prescriptions with different medicines
+        self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            self.normal_prescription_data,
+        )
+        self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            self.normal_prescription_data2,
+        )
+
+        # get all prescriptions without medicine filter
+        response = self.client.get(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+        )
+        self.assertEqual(response.data["count"], 2)
+
+        # get all prescriptions with medicien filter
+        response = self.client.get(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/?medicine={self.medicine.external_id}",
+        )
+        self.assertEqual(response.data["count"], 1)

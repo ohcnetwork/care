@@ -91,7 +91,7 @@ class ConsultationPrescriptionFilter(filters.FilterSet):
     dosage_type = MultiSelectFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
-    medicine = filters.NumberFilter(field_name="medicine")
+    medicine = filters.UUIDFilter(field_name="medicine__external_id")
 
 
 class ConsultationPrescriptionViewSet(
