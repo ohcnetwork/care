@@ -6,11 +6,13 @@ from rest_framework.exceptions import ValidationError
 from care.facility.api.serializers.shifting import has_facility_permission
 from care.facility.models.facility import Facility
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
+from care.utils.notification_handler import NotificationGenerator
 from config.serializers import ChoiceField
 
 
@@ -153,12 +155,31 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         internal_id = check_permissions(
             validated_data["file_type"], validated_data["associating_id"], user
         )
+        associating_id = validated_data["associating_id"]
         validated_data["associating_id"] = internal_id
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
         del validated_data["original_name"]
         file_upload: FileUpload = super().create(validated_data)
         file_upload.signed_url = file_upload.signed_url(mime_type=mime_type)
+        if validated_data["file_type"] == FileUpload.FileType.CONSULTATION.value:
+            consultation = PatientConsultation.objects.get(external_id=associating_id)
+            NotificationGenerator(
+                event=Notification.Event.CONSULTATION_FILE_UPLOAD_CREATED,
+                caused_by=user,
+                caused_object=consultation,
+                facility=consultation.facility,
+                generate_for_facility=True,
+            ).generate()
+        if validated_data["file_type"] == FileUpload.FileType.PATIENT.value:
+            patient = PatientRegistration.objects.get(external_id=associating_id)
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_FILE_UPLOAD_CREATED,
+                caused_by=user,
+                caused_object=patient,
+                facility=patient.facility,
+                generate_for_facility=True,
+            ).generate()
         return file_upload
 
 
