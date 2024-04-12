@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
 env = environ.Env()
 
-if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=True):
+if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=False):
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
 
@@ -582,6 +582,7 @@ CSV_REQUEST_PARAMETER = "csv"
 
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
 # open id connect
 JWKS = JsonWebKey.import_key_set(
