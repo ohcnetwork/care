@@ -678,7 +678,7 @@ class AbdmGateway:
 
     def data_transfer(self, data):
         auth_header = Request("").auth_header()
-        
+
         if not auth_header:
             return None
 
