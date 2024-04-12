@@ -64,7 +64,7 @@ ACTIVE_CONDITION_VERIFICATION_STATUSES = [
     if status not in INACTIVE_CONDITION_VERIFICATION_STATUSES
 ]  # These statuses are allowed to be selected during create and these diagnosis can only be a principal diagnosis
 
-REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices(ConditionVerificationStatus)
+REVERSE_CONDITION_VERIFICATION_STATUSES = reverse_choices([(x.value, str(x.label)) for x in ConditionVerificationStatus])
 
 
 class ConsultationDiagnosis(BaseModel, ConsultationRelatedPermissionMixin):
