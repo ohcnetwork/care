@@ -52,7 +52,7 @@ boto3-stubs = {extras = ["s3", "boto3"], version = "==1.34.75"}
 coverage = "==7.4.0"
 debugpy = "==1.8.1"
 django-coverage-plugin = "==3.1.0"
-django-debug-toolbar = "==4.2.0"
+django-debug-toolbar = "==4.3.0"
 django-extensions = "==3.2.3"
 django-silk = "==5.0.3"
 django-stubs = "==4.2.4"
