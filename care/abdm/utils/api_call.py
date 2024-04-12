@@ -677,17 +677,14 @@ class AbdmGateway:
         return response
 
     def data_transfer(self, data):
-        token = cache.get(ABDM_TOKEN_CACHE_KEY)
-
-        if not token:
-            Request("").auth_header()
-            token = cache.get(ABDM_TOKEN_CACHE_KEY)
-            if not token:
-                return None
+        auth_header = Request("").auth_header()
+        
+        if not auth_header:
+            return None
 
         headers = {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + cache.get(ABDM_TOKEN_CACHE_KEY),
+            **auth_header,
         }
 
         payload = {
