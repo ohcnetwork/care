@@ -1,6 +1,7 @@
 import datetime
 
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
@@ -45,26 +46,18 @@ class PatientIcmr(PatientRegistration):
     #         instance.__class__ = PatientSampleICMR
     #     return instance
 
-    @property
-    def age_years(self):
-        if self.date_of_birth is not None:
-            age_years = relativedelta(datetime.datetime.now(), self.date_of_birth).years
-        else:
-            age_years = relativedelta(
-                datetime.datetime.now(),
-                datetime.datetime(year=self.year_of_birth, month=1, day=1),
-            ).years
-        return age_years
+    def get_age_delta(self):
+        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+        end = (self.death_datetime or timezone.now()).date()
+        return relativedelta(end, start)
 
     @property
-    def age_months(self):
-        if self.date_of_birth is None or self.year_of_birth is None:
-            age_months = 0
-        else:
-            age_months = relativedelta(
-                datetime.datetime.now(), self.date_of_birth
-            ).months
-        return age_months
+    def age_years(self) -> int:
+        return self.get_age_delta().year
+
+    @property
+    def age_months(self) -> int:
+        return self.get_age_delta().months
 
     @property
     def email(self):
