@@ -125,7 +125,7 @@ class Gateway:
             ),
             "hiRequest": {
                 "consent": {"id": str(artefact.artefact_id)},
-                "dataPushUrl": f"https://{settings.BACKEND_DOMAIN}"
+                "dataPushUrl": settings.BACKEND_DOMAIN
                 + "/v0.5/health-information/transfer",
                 "keyMaterial": {
                     "cryptoAlg": artefact.key_material_algorithm,
