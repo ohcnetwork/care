@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Working Components" href="../working-components/configuration.html" /><link rel="prev" title="Setting up development environment" href="../local-setup/configuration.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Django Commands" href="../django-commands/configuration.html" /><link rel="prev" title="Environment Variables" href="../django-configuration/configuration.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Debugging with Pycharm - Care documentation</title>
+        <title>Pluggable Apps - Care documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -157,10 +157,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../local-setup/configuration.html">Setting up development environment</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Debugging with Pycharm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pycharm/configuration.html">Debugging with Pycharm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../working-components/configuration.html">Working Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../django-configuration/configuration.html">Environment Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pluggable-apps/configuration.html">Pluggable Apps</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Pluggable Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../django-commands/configuration.html">Django Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../github-repo/configuration.html">GitHub Repository</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others/configuration.html">Other Details</a></li>
@@ -200,58 +200,58 @@
           </label>
         </div>
         <article role="main">
-          <section id="debugging-with-pycharm">
-<h1>Debugging with Pycharm<a class="headerlink" href="#debugging-with-pycharm" title="Link to this heading">#</a></h1>
-<p>To connect to python remote interpreter inside docker, you have to make sure first, that Pycharm is aware of your docker.</p>
-<p>Go to <em>Settings &gt; Build, Execution, Deployment &gt; Docker</em>. If you are on linux, you can use docker directly using its socket  <cite>unix:///var/run/docker.sock</cite>, if you are on Windows or Mac, make sure that you have docker-machine installed, then you can simply <em>Import credentials from Docker Machine</em>.</p>
-<img alt="../_images/1.png" src="../_images/1.png" />
-<section id="configure-remote-python-interpreter">
-<h2>Configure Remote Python Interpreter<a class="headerlink" href="#configure-remote-python-interpreter" title="Link to this heading">#</a></h2>
-<p>This repository comes with already prepared “Run/Debug Configurations” for docker.</p>
-<img alt="../_images/2.png" src="../_images/2.png" />
-<p>But as you can see, at the beginning there is something wrong with them. They have red X on django icon, and they cannot be used, without configuring remote python interpteter. To do that, you have to go to <em>Settings &gt; Build, Execution, Deployment</em> first.</p>
-<p>Next, you have to add new remote python interpreter, based on already tested deployment settings. Go to <em>Settings &gt; Project &gt; Project Interpreter</em>. Click on the cog icon, and click <em>Add Remote</em>.</p>
-<img alt="../_images/3.png" src="../_images/3.png" />
-<p>Switch to <em>Docker Compose</em> and select <cite>local.yml</cite> file from directory of your project, next set <em>Service name</em> to <cite>django</cite></p>
-<img alt="../_images/4.png" src="../_images/4.png" />
-<p>Having that, click <em>OK</em>. Close <em>Settings</em> panel, and wait few seconds…</p>
-<img alt="../_images/7.png" src="../_images/7.png" />
-<p>After few seconds, all <em>Run/Debug Configurations</em> should be ready to use.</p>
-<img alt="../_images/8.png" src="../_images/8.png" />
-<p><strong>Things you can do with provided configuration</strong>:</p>
-<ul class="simple">
-<li><p>run and debug python code</p></li>
-</ul>
-<img alt="../_images/f1.png" src="../_images/f1.png" />
-<ul class="simple">
-<li><p>run and debug tests</p></li>
-</ul>
-<img alt="../_images/f2.png" src="../_images/f2.png" />
-<img alt="../_images/f3.png" src="../_images/f3.png" />
-<ul class="simple">
-<li><p>run and debug migrations or different django management commands</p></li>
-</ul>
-<img alt="../_images/f4.png" src="../_images/f4.png" />
-<ul class="simple">
-<li><p>and many others..</p></li>
-</ul>
-</section>
-<section id="known-issues">
-<h2>Known issues<a class="headerlink" href="#known-issues" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Pycharm hangs on “Connecting to Debugger”</p></li>
-</ul>
-<img alt="../_images/issue1.png" src="../_images/issue1.png" />
-<p>This might be fault of your firewall. Take a look on this ticket - <a class="reference external" href="https://youtrack.jetbrains.com/issue/PY-18913">https://youtrack.jetbrains.com/issue/PY-18913</a></p>
-<ul class="simple">
-<li><p>Modified files in <cite>.idea</cite> directory</p></li>
-</ul>
-<p>Most of the files from <cite>.idea/</cite> were added to <cite>.gitignore</cite> with a few exceptions, which were made, to provide “ready to go” configuration. After adding remote interpreter some of these files are altered by PyCharm:</p>
-<img alt="../_images/issue2.png" src="../_images/issue2.png" />
-<p>In theory you can remove them from repository, but then, other people will lose a ability to initialize a project from provided configurations as you did. To get rid of this annoying state, you can run command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git update-index --assume-unchanged care.iml
+          <section id="pluggable-apps">
+<h1>Pluggable Apps<a class="headerlink" href="#pluggable-apps" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>Care supports plugins that can be used to extend its functionality. Plugins are basically django apps that are defined in the <code class="docutils literal notranslate"><span class="pre">plug_config.py</span></code>.
+These plugins can be automatically loaded during docker image build or run time, however its recommended to include them during docker image build time.
+The default care image does not include any plugins, but you can create your own plugin config by overriding the <code class="docutils literal notranslate"><span class="pre">plug_config.py</span></code> file.</p>
+<p>example <code class="docutils literal notranslate"><span class="pre">plug_config.py</span></code> file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">plugs.manager</span> <span class="kn">import</span> <span class="n">PlugManager</span>
+<span class="kn">from</span> <span class="nn">plugs.plug</span> <span class="kn">import</span> <span class="n">Plug</span>
+
+<span class="n">my_plugin</span> <span class="o">=</span> <span class="n">Plug</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_plugin&quot;</span><span class="p">,</span>
+    <span class="n">package_name</span><span class="o">=</span><span class="s2">&quot;git+https://github.com/octo/my_plugin.git&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;@v1.0.0&quot;</span><span class="p">,</span>
+    <span class="n">configs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;SERVICE_API_KEY&quot;</span><span class="p">:</span> <span class="s2">&quot;my_api_key&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SERVICE_SECRET_KEY&quot;</span><span class="p">:</span> <span class="s2">&quot;my_secret_key&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VALUE_1_MAX&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">plugs</span> <span class="o">=</span> <span class="p">[</span><span class="n">my_plugin</span><span class="p">]</span>
+
+<span class="n">manager</span> <span class="o">=</span> <span class="n">PlugManager</span><span class="p">(</span><span class="n">plugs</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="plugin-config-variables">
+<h2>Plugin config variables<a class="headerlink" href="#plugin-config-variables" title="Link to this heading">#</a></h2>
+<p>Each plugin will define their own config variables with some defaults, they can also pick the values from the environment variables if required.
+The order of precedence is as follows:</p>
+<ul class="simple">
+<li><p>Environment variables</p></li>
+<li><p>Configs defined in the <code class="docutils literal notranslate"><span class="pre">plug_config.py</span></code></p></li>
+<li><p>Default values defined in the plugin</p></li>
+</ul>
+</section>
+<section id="development">
+<h2>Development<a class="headerlink" href="#development" title="Link to this heading">#</a></h2>
+<p>To get started with developing a plugin, use <a class="reference external" href="https://github.com/coronasafe/care-plugin-cookiecutter">care-plugin-cookiecutter</a>
+The plugin follows the structure of a typical django app where you can define your models, views, urls, etc. in the plugin folder.
+The plugin manager will automatically load the required configurations and plugin urls under <code class="docutils literal notranslate"><span class="pre">/api/plugin-name/</span></code>.</p>
+<p>To develop the plugins locally you can install the plugin in the editable mode using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">/path/to/plugin</span></code>.</p>
+<p>If you need to inherit the components from the core app, you can install care in editable mode in the plugin using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">/path/to/care</span></code>.</p>
+</section>
+<section id="available-plugins">
+<h2>Available Plugins<a class="headerlink" href="#available-plugins" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/coronasafe/care_scribe">Care Scribe</a>: Care Scribe is a plugin that provides autofill functionality for the care consultation forms.</p></li>
+</ul>
 </section>
 </section>
 
@@ -260,23 +260,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../working-components/configuration.html">
+          <a class="next-page" href="../django-commands/configuration.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Working Components</div>
+                <div class="title">Django Commands</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../local-setup/configuration.html">
+          <a class="prev-page" href="../django-configuration/configuration.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Setting up development environment</div>
+                <div class="title">Environment Variables</div>
                 
               </div>
             </a>
@@ -310,9 +310,11 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Debugging with Pycharm</a><ul>
-<li><a class="reference internal" href="#configure-remote-python-interpreter">Configure Remote Python Interpreter</a></li>
-<li><a class="reference internal" href="#known-issues">Known issues</a></li>
+<li><a class="reference internal" href="#">Pluggable Apps</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#plugin-config-variables">Plugin config variables</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
+<li><a class="reference internal" href="#available-plugins">Available Plugins</a></li>
 </ul>
 </li>
 </ul>
