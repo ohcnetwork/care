@@ -731,7 +731,7 @@ class AbdmGateway:
                 ),
                 "statusNotification": {
                     "sessionStatus": data["session_status"],
-                    "hipId": self.get_hip_id_by_health_id(data["healthId"]),
+                    "hipId": self.get_hip_id_by_health_id(data["health_id"]),
                     "statusResponses": list(
                         map(
                             lambda context: {
