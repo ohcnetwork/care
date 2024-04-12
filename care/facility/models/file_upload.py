@@ -13,10 +13,10 @@ User = get_user_model()
 
 class BaseFileUpload(models.Model):
     class FileCategory(models.TextChoices):
-        UNSPECIFIED = "UNSPECIFIED"
-        XRAY = "XRAY"
-        AUDIO = "AUDIO"
-        IDENTITY_PROOF = "IDENTITY_PROOF"
+        UNSPECIFIED = "UNSPECIFIED", "UNSPECIFIED"
+        XRAY = "XRAY", "XRAY"
+        AUDIO = "AUDIO", "AUDIO"
+        IDENTITY_PROOF = "IDENTITY_PROOF", "IDENTITY_PROOF"
 
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
 
@@ -130,14 +130,14 @@ class FileUpload(BaseFileUpload):
     # TODO : Periodic tasks that removes files that were never uploaded
 
     class FileType(models.IntegerChoices):
-        OTHER = 0
-        PATIENT = 1
-        CONSULTATION = 2
-        SAMPLE_MANAGEMENT = 3
-        CLAIM = 4
-        DISCHARGE_SUMMARY = 5
-        COMMUNICATION = 6
-        CONSENT_RECORD = 7
+        OTHER = 0, "OTHER"
+        PATIENT = 1, "PATIENT"
+        CONSULTATION = 2, "CONSULTATION"
+        SAMPLE_MANAGEMENT = 3, "SAMPLE_MANAGEMENT"
+        CLAIM = 4, "CLAIM"
+        DISCHARGE_SUMMARY = 5, "DISCHARGE_SUMMARY"
+        COMMUNICATION = 6, "COMMUNICATION"
+        CONSENT_RECORD = 7, "CONSENT_RECORD"
 
     file_type = models.IntegerField(choices=FileType.choices, default=FileType.PATIENT)
     is_archived = models.BooleanField(default=False)
