@@ -13,9 +13,10 @@ class PlugManager:
 
     def install(self):
         packages = [x.package_name + x.version for x in self.plugs]
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", " ".join(packages)]
-        )
+        if packages:
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", " ".join(packages)]
+            )
 
     def get_apps(self):
         return [plug.name for plug in self.plugs]
