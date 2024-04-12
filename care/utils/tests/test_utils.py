@@ -132,7 +132,7 @@ class TestUtils:
             "state": district.state,
             "phone_number": "8887776665",
             "gender": 2,
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "email": "foo@foobar.com",
             "username": "user",
             "password": "bar",
@@ -156,7 +156,7 @@ class TestUtils:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "verified": True,
             "username": username,
@@ -238,7 +238,6 @@ class TestUtils:
     def get_patient_data(cls, district, state) -> dict:
         return {
             "name": "Foo",
-            "age": 32,
             "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
@@ -310,7 +309,9 @@ class TestUtils:
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
+                0
+            ],  # HOME ISOLATION
             "referred_to": None,
             "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
