@@ -244,7 +244,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             DailyRound.objects.filter(
                 consultation=consultation,
                 created_date__gte=past_30_minutes,
-                created_date__lte=current_time,
             )
             .order_by("-created_date")
             .only(*(list(mews_field_data.keys())))
