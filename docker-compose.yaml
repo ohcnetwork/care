@@ -7,7 +7,7 @@ networks:
 services:
   db:
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./docker/.prebuilt.env
     volumes:
@@ -15,12 +15,13 @@ services:
 
   redis:
     image: redis/redis-stack-server:6.2.6-v10
-    restart: always
+    restart: unless-stopped
     volumes:
       - redis-data:/data
 
   localstack:
     image: localstack/localstack:latest
+    restart: unless-stopped
     environment:
       - AWS_DEFAULT_REGION=ap-south-1
       - EDGE_PORT=4566
@@ -34,8 +35,8 @@ services:
       - "4566:4566"
 
   fidelius:
-    image: khavinshankar/fidelius:v1.0
-    restart: always
+    image: khavinshankar/fidelius:latest
+    restart: unless-stopped
 
 volumes:
   postgres-data:
