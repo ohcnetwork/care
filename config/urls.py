@@ -143,3 +143,6 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
         ),
         path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     ]
+
+for plug in settings.PLUGIN_APPS:
+    urlpatterns += [path(f"api/{plug}/", include(f"{plug}.urls"))]
