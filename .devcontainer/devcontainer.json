@@ -19,6 +19,6 @@
     }
   },
   "postCreateCommand": "echo 'eval \"$(direnv hook bash)\"' >> ~/.bashrc && cp .env.example .env",
-  "postAttachCommand": "make build up",
+  "postAttachCommand": "make up",
   "forwardPorts": [8000, 9000, 4000]
 }
