@@ -36,8 +36,8 @@ manager = PlugManager(plugs)
 Each plugin will define their own config variables with some defaults, they can also pick the values from the environment variables if required.
 The order of precedence is as follows:
 
-- Environment variables
 - Configs defined in the `plug_config.py`
+- Environment variables
 - Default values defined in the plugin
 
 
