@@ -14,7 +14,7 @@
     "ghcr.io/devcontainers-contrib/features/pipenv:2": {},
     "ghcr.io/devcontainers-contrib/features/direnv:1": {},
     "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
-      "packages": "build-essential,libjpeg-dev,zlib1g-dev,libpq-dev,gettext,wget,curl,gnupg,chromium",
+      "packages": "build-essential,libjpeg-dev,zlib1g-dev,libpq-dev,gettext,wget,curl,gnupg",
       "preserve_apt_list": false
     }
   },
