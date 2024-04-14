@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils.timezone import localtime, make_aware, now
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -250,36 +251,33 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         )
         if len(recentDailyArray) == 0:
             return mews_field_data
+
         mews_field_data["modified_date"] = localtime(recentDailyArray[0].modified_date)
-        for obj in recentDailyArray:
-            count = 0
-            for key in mews_field_data:
-                newValue = getattr(obj, key, None)
-                if (
-                    (key != "modified_date")
-                    and (
-                        key == "bp"
-                        and len(mews_field_data[key]) == 0
-                        and len(newValue) == 3
-                    )
-                    or (
-                        key == "consciousness_level"
-                        and mews_field_data[key]
-                        == DailyRound.ConsciousnessType.UNKNOWN.name
-                        and newValue != DailyRound.ConsciousnessType.UNKNOWN.value
-                    )
-                    or (mews_field_data[key] is None and newValue is not None)
-                ):
-                    mews_field_data[key] = (
-                        None
-                        if newValue == None
-                        else DailyRound.ConsciousnessType(newValue).name
-                        if key == "consciousness_level"
-                        else newValue
-                    )
-                    count += 1
-            if count == 5:
-                break
+        mews_field_data["pulse"] = (
+            recentDailyArray.exclude(pulse__isnull=True)
+            .values_list("pulse", flat=True)
+            .first()
+        )
+        mews_field_data["temperature"] = (
+            recentDailyArray.exclude(temperature__isnull=True)
+            .values_list("temperature", flat=True)
+            .first()
+        )
+        mews_field_data["resp"] = (
+            recentDailyArray.exclude(resp__isnull=True)
+            .values_list("resp", flat=True)
+            .first()
+        )
+        bp_array = recentDailyArray.exclude(bp={}).values_list("bp")
+        if bp_array.exists():
+            mews_field_data["bp"] = bp_array.first()[0]
+        consciousness_level_array = recentDailyArray.exclude(
+            Q(consciousness_level=0) | Q(consciousness_level__isnull=True)
+        ).values_list("consciousness_level")
+        if consciousness_level_array.exists():
+            mews_field_data["consciousness_level"] = DailyRound.ConsciousnessType(
+                consciousness_level_array.first()[0]
+            ).name
         return mews_field_data
 
     def update(self, instance, validated_data):
