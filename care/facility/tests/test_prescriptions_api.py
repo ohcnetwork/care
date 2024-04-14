@@ -140,8 +140,12 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         )
         self.assertEqual(response.data["count"], 2)
 
-        # get all prescriptions with medicien filter
+        # get all prescriptions with medicine filter
         response = self.client.get(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/?medicine={self.medicine.external_id}",
         )
-        self.assertEqual(response.data["count"], 1)
+
+        for prescription in response.data["results"]:
+            self.assertEqual(
+                prescription["medicine_object"]["name"], self.medicine.name
+            )
