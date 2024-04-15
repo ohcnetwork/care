@@ -226,7 +226,7 @@ jobs:
           version: "v1.23.6"
         id: install
 
-      - name: Deploy Care Production Manipur
+      - name: Deploy Care Staging
         run: |
           mkdir -p $HOME/.kube/
           cd kube/deployments/
