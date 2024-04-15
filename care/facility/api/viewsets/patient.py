@@ -18,6 +18,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -85,7 +86,7 @@ from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
-    MiddlewareAuthentication,
+    MiddlewareAssetAuthentication,
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
@@ -237,6 +238,20 @@ class PatientFilterSet(filters.FilterSet):
             last_consultation__discharge_date__isnull=True,
         )
 
+    def filter_by_review_missed(self, queryset, name, value):
+        if isinstance(value, bool):
+            if value:
+                queryset = queryset.filter(
+                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                )
+            else:
+                queryset = queryset.filter(
+                    Q(review_time__isnull=True) | Q(review_time__gt=timezone.now())
+                )
+        return queryset
+
+    review_missed = filters.BooleanFilter(method="filter_by_review_missed")
+
     # Filter consultations by ICD-11 Diagnoses
     diagnoses = MultiSelectFilter(method="filter_by_diagnoses")
     diagnoses_unconfirmed = MultiSelectFilter(method="filter_by_diagnoses")
@@ -340,7 +355,7 @@ class PatientViewSet(
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
-        MiddlewareAuthentication,
+        MiddlewareAssetAuthentication,
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
