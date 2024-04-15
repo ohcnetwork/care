@@ -26,7 +26,11 @@ def save_asset_fields_before_update(
 def update_asset_config_on_middleware(
     sender, instance, created, raw, using, update_fields, **kwargs
 ):
-    if raw or (update_fields and "meta" not in update_fields):
+    if (
+        raw
+        or (update_fields and "meta" not in update_fields)
+        or (instance.resolved_middleware is None)
+    ):
         return
 
     new_hostname = instance.resolved_middleware.get("hostname")
