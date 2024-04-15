@@ -3,9 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
-from care.facility.models.bed import Bed
 from care.facility.models.facility import FEATURE_CHOICES
-from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -52,12 +50,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     bed_count = serializers.SerializerMethodField()
 
     def get_bed_count(self, facility):
-        return Bed.objects.filter(facility=facility).count()
+        return facility.bed_set.count()
 
     def get_patient_count(self, facility):
-        return PatientRegistration.objects.filter(
-            facility=facility, is_active=True
-        ).count()
+        return facility.patientregistration_set.count()
 
     def get_facility_type(self, facility):
         return {

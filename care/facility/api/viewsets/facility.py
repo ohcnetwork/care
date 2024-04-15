@@ -71,8 +71,15 @@ class FacilityViewSet(
 ):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.all().select_related(
-        "ward", "local_body", "district", "state"
+    queryset = (
+        Facility.objects.all()
+        .select_related(
+            "ward",
+            "local_body",
+            "district",
+            "state",
+        )
+        .prefetch_related("patientregistration_set", "bed_set")
     )
     permission_classes = (
         IsAuthenticated,
@@ -147,6 +154,13 @@ class FacilityViewSet(
             return render_to_csv_response(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
+
+        # for facility in self.get_queryset():
+        #     print(facility.__dict__)
+        #     facility.patient_count = facility.patientregistration_set.filter(
+        #         is_active=True
+        #     ).count()
+        #     facility.bed_count = facility.bed_set.count()
 
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 

@@ -91,3 +91,26 @@ class FacilityTests(TestUtils, APITestCase):
         self.client.force_authenticate(user=state_admin)
         response = self.client.delete(f"/api/v1/facility/{facility.external_id}/")
         self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_listing_db_queries(self):
+        """This test case is to test the get api endpoint for facility and to ensure that only one db query is made for fetching the list of facilities"""
+        facility_1 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        facility_2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        facility_3 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        self.create_patient(self.district, facility_1)
+        self.create_patient(self.district, facility_2)
+        self.create_patient(self.district, facility_3)
+
+        self.client.force_authenticate(user=self.super_user)
+
+        # 3 for auth and 1 for fetching facilities
+        with self.assertNumQueries(4):
+            response = self.client.get("/api/v1/facility/")
+
+        self.assertIs(response.status_code, status.HTTP_200_OK)
