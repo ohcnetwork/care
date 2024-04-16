@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[],
     author="Open Healthcare Network",
-    author_email="care@ops.ohc.network",
+    author_email="info@ohc.network",
     description="A Django app for managing healthcare across hospitals and care centers.",
     license="MIT",
     keywords="django care ohc",

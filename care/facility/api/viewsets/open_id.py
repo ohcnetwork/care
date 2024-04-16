@@ -1,10 +1,12 @@
 from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
-class OpenIdConfigView(GenericAPIView):
+class PublicJWKsView(GenericAPIView):
     """
     Retrieve the OpenID Connect configuration
     """
@@ -12,5 +14,6 @@ class OpenIdConfigView(GenericAPIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, *args, **kwargs):
         return Response(settings.JWKS.as_dict())
