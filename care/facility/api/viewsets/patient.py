@@ -615,14 +615,10 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     )
 
     ordering_fields = [
-        "facility__name",
         "id",
         "name",
         "created_date",
         "modified_date",
-        "review_time",
-        "last_consultation__current_bed__bed__name",
-        "date_declared_positive",
     ]
 
     def get_queryset(self) -> QuerySet:
