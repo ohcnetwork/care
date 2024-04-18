@@ -214,6 +214,5 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
             ),
             data={"driver_id": driver_id},
         )
-        print(res.data)
         self.assertEqual(res.status_code, 204)
         self.assertFalse(self.ambulance.drivers.exists())
