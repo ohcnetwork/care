@@ -13,7 +13,7 @@ from care.facility.tasks.push_asset_config import (
 def save_asset_fields_before_update(
     sender, instance, raw, using, update_fields, **kwargs
 ):
-    if raw:
+    if raw or instance.resolved_middleware is None:
         return
 
     if instance.pk:
@@ -45,5 +45,7 @@ def update_asset_config_on_middleware(
 
 @receiver(post_delete, sender=Asset)
 def delete_asset_on_middleware(sender, instance, using, **kwargs):
+    if instance.resolved_middleware is None:
+        return
     hostname = instance.resolved_middleware.get("hostname")
     delete_asset_from_middleware_task.s(hostname, instance.external_id)
