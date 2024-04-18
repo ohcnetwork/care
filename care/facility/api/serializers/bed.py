@@ -187,6 +187,14 @@ class AssetBedSerializer(ModelSerializer):
             )
         return asset_bed
 
+    def update(self, instance, validated_data):
+        asset = instance.asset
+        if asset.asset_class == AssetClasses.ONVIF.name:
+            CameraPreset.objects.filter(asset_bed=instance).update(
+                updated_by=self.context["request"].user,
+            )
+        return super().update(instance, validated_data)
+
 
 class PatientAssetBedSerializer(ModelSerializer):
     asset = AssetSerializer(read_only=True)
