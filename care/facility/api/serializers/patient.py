@@ -255,7 +255,7 @@ class PatientDetailSerializer(PatientListSerializer):
         return value
 
     def validate_date_of_birth(self, value):
-        if value and value > now().date:
+        if value and value > now().date():
             raise serializers.ValidationError("Enter a valid DOB such that age > 0")
         return value
 
