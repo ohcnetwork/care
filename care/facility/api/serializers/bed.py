@@ -88,6 +88,15 @@ class BedSerializer(ModelSerializer):
         return super().validate(attrs)
 
 
+class CameraPresetSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = CameraPreset
+        exclude = ("deleted", "external_id")
+        read_only_fields = TIMESTAMP_FIELDS
+
+
 class AssetBedSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
 
@@ -96,6 +105,8 @@ class AssetBedSerializer(ModelSerializer):
 
     asset = UUIDField(write_only=True, required=True)
     bed = UUIDField(write_only=True, required=True)
+
+    camera_presets = CameraPresetSerializer(many=True, read_only=True)
 
     class Meta:
         model = AssetBed
@@ -142,18 +153,20 @@ class AssetBedSerializer(ModelSerializer):
             )
         return super().validate(attrs)
 
+    def create(self, validated_data):
+        asset = validated_data["asset"]
+        bed = validated_data["bed"]
+        asset_bed = AssetBed.objects.filter(asset=asset, bed=bed).first()
+        if not asset_bed:
+            asset_bed = super().create(validated_data)
 
-class CameraPresetSerializer(ModelSerializer):
-    id = UUIDField(source="external_id", read_only=True)
-    asset_beds = ListField(child=UUIDField(), required=True, write_only=True)
-    asset_beds_objects = AssetBedSerializer(
-        source="asset_beds", many=True, read_only=True
-    )
-
-    class Meta:
-        model = CameraPreset
-        exclude = ("deleted", "external_id")
-        read_only_fields = TIMESTAMP_FIELDS
+        if asset.asset_class == AssetClasses.ONVIF.name:
+            CameraPreset.objects.create(
+                asset_bed=asset_bed,
+                created_by=self.context["request"].user,
+                updated_by=self.context["request"].user,
+            )
+        return asset_bed
 
 
 class PatientAssetBedSerializer(ModelSerializer):

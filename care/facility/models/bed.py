@@ -66,14 +66,36 @@ class Bed(BaseModel):
 class AssetBed(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
-    meta = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.asset.name} - {self.bed.name}"
 
 
 class CameraPreset(BaseModel):
-    asset_beds = models.ManyToManyField(AssetBed, related_name="camera_presets")
+    asset_bed = models.ForeignKey(
+        AssetBed,
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
+        related_name="camera_presets",
+    )
+    x = models.FloatField(
+        null=False,
+        blank=False,
+    )
+    y = models.FloatField(
+        null=False,
+        blank=False,
+    )
+    zoom = models.FloatField(
+        null=False,
+        blank=False,
+    )
+    preset_name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -88,8 +110,6 @@ class CameraPreset(BaseModel):
         blank=True,
         related_name="camera_presets_updated_by",
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updateded_at = models.DateTimeField(auto_now=True)
 
 
 class ConsultationBed(BaseModel):
