@@ -1,6 +1,6 @@
 from care.facility.models.mixins.permissions.asset import DRYAssetPermissions
 from care.users.models import User
-from config.authentication import MiddlewareAuthentication
+from config.authentication import MiddlewareAssetAuthentication
 
 
 class UserAccessMixin:
@@ -55,7 +55,7 @@ class AssetUserAccessMixin:
     asset_permissions = (DRYAssetPermissions,)
 
     def get_authenticators(self):
-        return [MiddlewareAuthentication()] + super().get_authenticators()
+        return [MiddlewareAssetAuthentication()] + super().get_authenticators()
 
     def get_permissions(self):
         """
