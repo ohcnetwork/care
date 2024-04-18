@@ -23,7 +23,7 @@ def add_camerapreset(apps, schema_editor):
                 x=asset_bed.meta.get("x", 0),
                 y=asset_bed.meta.get("y", 0),
                 zoom=asset_bed.meta.get("zoom", 1),
-                preset_name=asset_bed.meta.get("preset_name", "Default"),
+                preset_name=asset_bed.meta.get("preset_name", "Unnamed Preset"),
                 created_by=User.objects.first(),
                 updated_by=User.objects.first(),
                 created_date=asset_bed.created_date,

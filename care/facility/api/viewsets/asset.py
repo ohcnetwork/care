@@ -43,6 +43,7 @@ from care.facility.api.serializers.asset import (
     DummyAssetOperateSerializer,
     UserDefaultAssetLocationSerializer,
 )
+from care.facility.api.serializers.bed import CameraPresetSerializer
 from care.facility.models import (
     Asset,
     AssetLocation,
@@ -56,6 +57,7 @@ from care.facility.models.asset import (
     AvailabilityRecord,
     StatusChoices,
 )
+from care.facility.models.bed import CameraPreset
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.base import BaseAssetIntegration
@@ -246,7 +248,8 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 )
         elif "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
-                AssetLocation, external_id=self.kwargs["asset_location_external_id"]
+                AssetLocation,
+                external_id=self.kwargs["asset_location_external_id"],
             )
             if asset_location.facility in facility_queryset:
                 return self.queryset.filter(
@@ -317,7 +320,9 @@ class AssetViewSet(
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             pretty_mapping = Asset.CSV_MAKE_PRETTY.copy()
             return render_to_csv_response(
-                queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
+                queryset,
+                field_header_map=mapping,
+                field_serializer_map=pretty_mapping,
             )
 
         return super(AssetViewSet, self).list(request, *args, **kwargs)
@@ -417,6 +422,19 @@ class AssetViewSet(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+    @extend_schema(tags=["asset"])
+    @action(detail=True, methods=["get"])
+    def get_presets(self, request, *args, **kwargs):
+        """
+        This API is used to get the presets for the asset.
+        """
+        asset = self.get_object()
+        queryset = self.paginate_queryset(
+            CameraPreset.objects.filter(asset_bed__asset=asset)
+        )
+        presets = CameraPresetSerializer(queryset, many=True)
+        return self.get_paginated_response(presets.data)
 
 
 class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):

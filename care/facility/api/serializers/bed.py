@@ -28,6 +28,7 @@ from care.facility.models.facility import Facility
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_base import BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
@@ -90,6 +91,17 @@ class BedSerializer(ModelSerializer):
 
 class CameraPresetSerializer(ModelSerializer):
     id = UUIDField(source="external_id", read_only=True)
+    asset_bed_object = SerializerMethodField()
+    asset_bed = UUIDField(write_only=True, required=True)
+    updated_by = UserBaseMinimumSerializer(read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+
+    def get_asset_bed_object(self, obj):
+        return {
+            "id": obj.asset_bed.external_id,
+            "asset": AssetSerializer(obj.asset_bed.asset).data,
+            "bed": BedSerializer(obj.asset_bed.bed).data,
+        }
 
     class Meta:
         model = CameraPreset
@@ -106,7 +118,14 @@ class AssetBedSerializer(ModelSerializer):
     asset = UUIDField(write_only=True, required=True)
     bed = UUIDField(write_only=True, required=True)
 
-    camera_presets = CameraPresetSerializer(many=True, read_only=True)
+    camera_presets = SerializerMethodField()
+
+    def get_camera_presets(self, obj):
+        if obj.asset.asset_class == AssetClasses.ONVIF.name:
+            return CameraPresetSerializer(
+                CameraPreset.objects.filter(asset_bed=obj), many=True
+            ).data
+        return []
 
     class Meta:
         model = AssetBed

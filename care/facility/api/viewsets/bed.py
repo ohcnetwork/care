@@ -22,6 +22,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.bed import (
     AssetBedSerializer,
     BedSerializer,
+    CameraPresetSerializer,
     ConsultationBedSerializer,
     PatientAssetBedSerializer,
 )
@@ -151,6 +152,11 @@ class AssetBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
     lookup_field = "external_id"
+
+    def get_serializer(self, *args, **kwargs):
+        if self.action in ["add_camera_preset"]:
+            return CameraPresetSerializer(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self):
         user = self.request.user
