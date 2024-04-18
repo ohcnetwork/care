@@ -184,8 +184,7 @@ class TestUtils:
             "number": 1,
         }
         data.update(kwargs)
-        ward = Ward.objects.create(**data)
-        return ward
+        return Ward.objects.create(**data)
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
