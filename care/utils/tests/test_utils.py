@@ -385,7 +385,6 @@ class TestUtils:
             "name": "asset1 location",
             "location_type": 1,
             "facility": facility,
-            "middleware_address": "example.com",
         }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
