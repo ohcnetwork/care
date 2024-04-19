@@ -4,7 +4,8 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import Case, F, Func, JSONField, Value, When
+from django.db.models.functions import Coalesce, Now
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
@@ -747,3 +748,42 @@ class PatientNotesEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_date"]
+
+
+class PatientAgeFunc(Func):
+    """
+    Expression to calculate the age of a patient based on date of birth/year of
+    birth and death date time.
+
+    Eg:
+
+    ```
+    PatientSample.objects.annotate(patient_age=PatientAgeFunc())
+    ```
+    """
+
+    function = "date_part"
+
+    def __init__(self) -> None:
+        super().__init__(
+            Value("year"),
+            Func(
+                Case(
+                    When(patient__death_datetime__isnull=True, then=Now()),
+                    default=F("patient__death_datetime__date"),
+                ),
+                Coalesce(
+                    "patient__date_of_birth",
+                    Func(
+                        F("patient__year_of_birth"),
+                        Value(1),
+                        Value(1),
+                        function="MAKE_DATE",
+                        output_field=models.DateField(),
+                    ),
+                    output_field=models.DateField(),
+                ),
+                function="age",
+            ),
+            output_field=models.IntegerField(),
+        )

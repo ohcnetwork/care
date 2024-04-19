@@ -1,6 +1,7 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, reverse_choices
+from care.facility.models.patient import PatientAgeFunc
 from care.users.models import User
 
 SAMPLE_TYPE_CHOICES = [
@@ -123,6 +124,10 @@ class PatientSample(FacilityBaseModel):
         "result": "Result",
         "date_of_sample": "Date of Sample",
         "date_of_result": "Date of Result",
+    }
+
+    CSV_ANNOTATE_FIELDS = {
+        "patient__age": PatientAgeFunc(),
     }
 
     CSV_MAKE_PRETTY = {
