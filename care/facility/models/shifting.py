@@ -126,7 +126,7 @@ class ShiftingRequest(FacilityBaseModel):
         "modified_date": "Modified Date",
         "patient__name": "Patient Name",
         "patient__phone_number": "Patient Phone Number",
-        "patient_age": "Patient Age",
+        "patient__age": "Patient Age",
         "patient__is_antenatal": "Patient is Antenatal",
         "origin_facility__name": "From Facility",
         "assigned_facility__name": "To Facility",
@@ -139,7 +139,7 @@ class ShiftingRequest(FacilityBaseModel):
     }
 
     CSV_ANNOTATE_FIELDS = {
-        "patient_age": PatientAgeFunc(),
+        "patient__age": PatientAgeFunc(),
     }
 
     CSV_MAKE_PRETTY = {
