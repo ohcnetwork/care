@@ -8,6 +8,7 @@ from rest_framework.serializers import (
     CharField,
     DateTimeField,
     IntegerField,
+    JSONField,
     ListField,
     ModelSerializer,
     SerializerMethodField,
@@ -118,6 +119,7 @@ class AssetBedSerializer(ModelSerializer):
     asset = UUIDField(write_only=True, required=True)
     bed = UUIDField(write_only=True, required=True)
 
+    meta = JSONField(required=False, write_only=True)
     camera_presets = SerializerMethodField()
 
     def get_camera_presets(self, obj):
@@ -179,8 +181,19 @@ class AssetBedSerializer(ModelSerializer):
         if not asset_bed:
             asset_bed = super().create(validated_data)
 
-        if asset.asset_class == AssetClasses.ONVIF.name:
+        if asset_bed.asset.asset_class == AssetClasses.ONVIF.name:
+            meta = validated_data.pop("meta", None)
+            if not meta:
+                raise ValidationError(
+                    {
+                        "details": "Please provide the camera preset details in the meta field"
+                    }
+                )
             CameraPreset.objects.create(
+                x=meta.get("x"),
+                y=meta.get("y"),
+                zoom=meta.get("zoom"),
+                preset_name=meta.get("preset_name"),
                 asset_bed=asset_bed,
                 created_by=self.context["request"].user,
                 updated_by=self.context["request"].user,
@@ -188,9 +201,16 @@ class AssetBedSerializer(ModelSerializer):
         return asset_bed
 
     def update(self, instance, validated_data):
-        asset = instance.asset
-        if asset.asset_class == AssetClasses.ONVIF.name:
-            CameraPreset.objects.filter(asset_bed=instance).update(
+        if instance.asset.asset_class == AssetClasses.ONVIF.name:
+            meta = validated_data.pop("meta", None)
+            external_id = meta.get("external_id") if meta else None
+            if not external_id:
+                raise ValidationError(
+                    {
+                        "details": "Please provide the camera preset details in the meta field"
+                    }
+                )
+            CameraPreset.objects.filter(external_id=meta.get("external_id")).update(
                 updated_by=self.context["request"].user,
             )
         return super().update(instance, validated_data)

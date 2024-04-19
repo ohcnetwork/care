@@ -430,9 +430,15 @@ class AssetViewSet(
         This API is used to get the presets for the asset.
         """
         asset = self.get_object()
-        queryset = self.paginate_queryset(
-            CameraPreset.objects.filter(asset_bed__asset=asset)
-        )
+        bed = kwargs.get("bed")
+        if bed:
+            queryset = self.paginate_queryset(
+                CameraPreset.objects.filter(asset_bed__asset=asset, asset_bed__bed=bed)
+            )
+        else:
+            queryset = self.paginate_queryset(
+                CameraPreset.objects.filter(asset_bed__asset=asset)
+            )
         presets = CameraPresetSerializer(queryset, many=True)
         return self.get_paginated_response(presets.data)
 
