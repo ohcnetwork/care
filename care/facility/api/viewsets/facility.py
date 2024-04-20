@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.db.models import Count, OuterRef, Subquery
+from django.db.models.functions import Coalesce
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -21,7 +23,9 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     HospitalDoctors,
 )
+from care.facility.models.bed import Bed
 from care.facility.models.facility import FacilityUser
+from care.facility.models.patient import PatientRegistration
 from care.users.models import User
 
 
@@ -71,6 +75,19 @@ class FacilityViewSet(
 ):
     """Viewset for facility CRUD operations."""
 
+    patient_registration_count_subquery = Subquery(
+        PatientRegistration.objects.filter(facility=OuterRef("pk"))
+        .values("facility")
+        .annotate(count=Count("id"))
+        .values("count")
+    )
+    bed_count_subquery = Subquery(
+        Bed.objects.filter(facility=OuterRef("pk"))
+        .values("facility")
+        .annotate(count=Count("id"))
+        .values("count")
+    )
+
     queryset = (
         Facility.objects.all()
         .select_related(
@@ -79,7 +96,10 @@ class FacilityViewSet(
             "district",
             "state",
         )
-        .prefetch_related("patientregistration_set", "bed_set")
+        .annotate(
+            patientregistrations_count=Coalesce(patient_registration_count_subquery, 0)
+        )
+        .annotate(bed_count=Coalesce(bed_count_subquery, 0))
     )
     permission_classes = (
         IsAuthenticated,

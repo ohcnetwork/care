@@ -109,8 +109,7 @@ class FacilityTests(TestUtils, APITestCase):
 
         self.client.force_authenticate(user=self.super_user)
 
-        # 3 for auth and 1 for fetching facilities
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(2):
             response = self.client.get("/api/v1/facility/")
 
         self.assertIs(response.status_code, status.HTTP_200_OK)
