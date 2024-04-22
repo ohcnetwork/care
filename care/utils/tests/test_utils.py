@@ -13,6 +13,7 @@ from care.facility.models import (
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     SYMPTOM_CHOICES,
+    Ambulance,
     Disease,
     DiseaseStatusEnum,
     Facility,
@@ -95,12 +96,16 @@ class TestUtils:
         raise NotImplementedError()
 
     @classmethod
-    def create_state(cls) -> State:
-        return State.objects.create(name=f"State{now().timestamp()}")
+    def create_state(cls, **kwargs) -> State:
+        data = {"name": f"State{now().timestamp()}"}
+        data.update(kwargs)
+        return State.objects.create(**data)
 
     @classmethod
-    def create_district(cls, state: State) -> District:
-        return District.objects.create(state=state, name=f"District{now().timestamp()}")
+    def create_district(cls, state: State, **kwargs) -> District:
+        data = {"state": state, "name": f"District{now().timestamp()}"}
+        data.update(**kwargs)
+        return District.objects.create(**data)
 
     @classmethod
     def create_local_body(cls, district: District, **kwargs) -> LocalBody:
@@ -174,11 +179,14 @@ class TestUtils:
         return user
 
     @classmethod
-    def create_ward(cls, local_body) -> Ward:
-        ward = Ward.objects.create(
-            name=f"Ward{now().timestamp()}", local_body=local_body, number=1
-        )
-        return ward
+    def create_ward(cls, local_body, **kwargs) -> Ward:
+        data = {
+            "name": f"Ward{now().timestamp()}",
+            "local_body": local_body,
+            "number": 1,
+        }
+        data.update(kwargs)
+        return Ward.objects.create(**data)
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
@@ -385,7 +393,6 @@ class TestUtils:
             "name": "asset1 location",
             "location_type": 1,
             "facility": facility,
-            "middleware_address": "example.com",
         }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
@@ -457,6 +464,29 @@ class TestUtils:
         if save:
             new_obj.save()
         return new_obj
+
+    @classmethod
+    def get_ambulance_data(cls, district, user) -> dict:
+        return {
+            "vehicle_number": "KL01AB1234",
+            "owner_name": "Foo",
+            "owner_phone_number": "9998887776",
+            "primary_district": district,
+            "has_oxygen": True,
+            "has_ventilator": True,
+            "has_suction_machine": True,
+            "has_defibrillator": True,
+            "insurance_valid_till_year": 2021,
+            "price_per_km": 10,
+            "has_free_service": False,
+            "created_by": user,
+        }
+
+    @classmethod
+    def create_ambulance(cls, district: District, user: User, **kwargs) -> Ambulance:
+        data = cls.get_ambulance_data(district, user)
+        data.update(**kwargs)
+        return Ambulance.objects.create(**data)
 
     def get_list_representation(self, obj) -> dict:
         """
