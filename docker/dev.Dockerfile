@@ -8,7 +8,7 @@ ENV PATH /venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev \
-  libpq-dev gettext wget curl gnupg chromium \
+  libpq-dev gettext wget curl gnupg chromium git \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -20,6 +20,8 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"
 
 COPY . /app
+
+RUN python3 /app/install_plugins.py
 
 HEALTHCHECK \
   --interval=10s \

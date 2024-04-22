@@ -86,7 +86,7 @@ from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
-    MiddlewareAuthentication,
+    MiddlewareAssetAuthentication,
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
@@ -301,6 +301,7 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 q_filters = Q(facility__id__in=allowed_facilities)
                 if view.action == "retrieve":
                     q_filters |= Q(consultations__facility__id__in=allowed_facilities)
+                    queryset = queryset.distinct("id")
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
@@ -340,7 +341,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
                 )
             ).order_by(ordering)
 
-        return queryset.distinct(ordering.lstrip("-") if ordering else "id")
+        return queryset
 
 
 @extend_schema_view(history=extend_schema(tags=["patient"]))
@@ -355,7 +356,7 @@ class PatientViewSet(
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
-        MiddlewareAuthentication,
+        MiddlewareAssetAuthentication,
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
