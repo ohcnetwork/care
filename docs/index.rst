@@ -14,6 +14,7 @@ Welcome to Care's documentation!
    pycharm/configuration
    working-components/configuration
    django-configuration/configuration
+   pluggable-apps/configuration
    django-commands/configuration
    github-repo/configuration
    others/configuration
