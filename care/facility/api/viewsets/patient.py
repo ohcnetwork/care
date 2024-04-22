@@ -606,7 +606,11 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+        PatientCustomOrderingFilter,
+    )
     filterset_class = FacilityDischargedPatientFilterSet
     queryset = PatientRegistration.objects.select_related(
         "local_body",
@@ -624,6 +628,13 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "last_edited",
         "created_by",
     )
+
+    ordering_fields = [
+        "id",
+        "name",
+        "created_date",
+        "modified_date",
+    ]
 
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
