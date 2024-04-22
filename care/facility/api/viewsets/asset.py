@@ -3,7 +3,8 @@ import re
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import CharField, Exists, F, OuterRef, Q, Subquery, Value
-from django.db.models.functions import Cast, Coalesce, NullIf
+from django.db.models.fields.json import KT
+from django.db.models.functions import Coalesce, NullIf
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -464,10 +465,7 @@ class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
             )
             .annotate(
                 resolved_middleware_hostname=Coalesce(
-                    NullIf(
-                        Cast(F("meta__middleware_hostname"), CharField()),
-                        Value('""'),
-                    ),
+                    NullIf(KT("meta__middleware_hostname"), Value("")),
                     NullIf(F("current_location__middleware_address"), Value("")),
                     F("current_location__facility__middleware_address"),
                     output_field=CharField(),
