@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -21,11 +22,21 @@ class AbhaViewSet(GenericViewSet):
         patient_obj = get_object_or_404(
             queryset.filter(external_id=self.kwargs.get("patient_external_id"))
         )
+
+        if hasattr(patient_obj, "abha_number") is False:
+            return None
+
         return patient_obj.abha_number
 
     @action(detail=False, methods=["GET"])
     def get_qr_code(self, request, *args, **kwargs):
         obj = self.get_abha_object()
+
+        if obj is None:
+            return Response(
+                {"detail": "Abha Number Not Found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
         gateway = HealthIdGateway()
         response = gateway.get_qr_code(obj)
         return Response(response)
@@ -33,6 +44,12 @@ class AbhaViewSet(GenericViewSet):
     @action(detail=False, methods=["GET"])
     def get_profile(self, request, *args, **kwargs):
         obj = self.get_abha_object()
+
+        if obj is None:
+            return Response(
+                {"detail": "Abha Number Not Found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
         gateway = HealthIdGateway()
         response = gateway.get_profile(obj)
         return Response(response)

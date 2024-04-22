@@ -190,8 +190,8 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return abha_object
 
     def add_abha_details_to_patient(self, abha_object, patient_object):
-        patient_object.abha_number = abha_object
-        patient_object.save()
+        abha_object.patient = patient_object
+        abha_object.save()
         return True
 
     @extend_schema(
@@ -293,7 +293,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if not patient:
             raise ValidationError({"patient": "Not Found"})
 
-        if not patient.abha_number:
+        if hasattr(patient, "abha_number") is False or patient.abha_number is None:
             raise ValidationError({"abha": "Patient hasn't linked thier abha"})
 
         if data["type"] == "png":
@@ -390,8 +390,8 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            patient.abha_number = abha_number
-            patient.save()
+            abha_number.patient = patient
+            abha_number.save()
 
         abha_serialized = AbhaNumberSerializer(abha_number).data
         return Response(
@@ -460,6 +460,15 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        if (
+            hasattr(consultation.patient, "abha_number") is False
+            or consultation.patient.abha_number is None
+        ):
+            return Response(
+                {"abha": "Patient hasn't linked thier abha"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             AbdmGateway().fetch_modes(
                 {
@@ -507,8 +516,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if not patient:
             return Response(
-                {"consultation": "No matching records found"},
+                {"patient": "No matching records found"},
                 status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if hasattr(patient, "abha_number") is False or patient.abha_number is None:
+            return Response(
+                {"abha": "Patient hasn't linked thier abha"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
