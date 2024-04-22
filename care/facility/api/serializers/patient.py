@@ -218,6 +218,9 @@ class PatientDetailSerializer(PatientListSerializer):
     )
     abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
+    date_of_birth = serializers.DateField(required=False, allow_null=True)
+    year_of_birth = serializers.IntegerField(default=0)
+
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -249,6 +252,16 @@ class PatientDetailSerializer(PatientListSerializer):
             value = []
         if not isinstance(value, list):
             value = [value]
+        return value
+
+    def validate_date_of_birth(self, value):
+        if value and value > now().date():
+            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+        return value
+
+    def validate_year_of_birth(self, value):
+        if value and value > now().year:
+            raise serializers.ValidationError("Enter a valid year of birth")
         return value
 
     def validate(self, attrs):
@@ -452,11 +465,11 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = ("facility", "date_of_birth", "patient", "facility_object")
+        fields = ("facility", "year_of_birth", "patient", "facility_object")
 
-    def validate_date_of_birth(self, value):
-        if self.instance and self.instance.date_of_birth != value:
-            raise serializers.ValidationError("Date of birth does not match")
+    def validate_year_of_birth(self, value):
+        if self.instance and self.instance.year_of_birth != value:
+            raise serializers.ValidationError("Year of birth does not match")
         return value
 
     def create(self, validated_data):
