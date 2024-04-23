@@ -77,6 +77,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -300,8 +301,11 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
                 if view.action == "retrieve":
-                    q_filters |= Q(consultations__facility__id__in=allowed_facilities)
-                    queryset = queryset.distinct("id")
+                    q_filters |= Q(
+                        id__in=PatientConsultation.objects.filter(
+                            facility__id__in=allowed_facilities
+                        ).values("patient_id")
+                    )
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
@@ -639,9 +643,11 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
         return qs.filter(
-            Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
-            & Q(consultations__discharge_date__isnull=False)
-        ).distinct()
+            id__in=PatientConsultation.objects.filter(
+                discharge_date__isnull=False,
+                facility__external_id=self.kwargs["facility_external_id"],
+            ).values_list("patient_id")
+        )
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
