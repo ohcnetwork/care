@@ -77,6 +77,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -86,7 +87,7 @@ from care.utils.queryset.patient import get_patient_notes_queryset
 from config.authentication import (
     CustomBasicAuthentication,
     CustomJWTAuthentication,
-    MiddlewareAuthentication,
+    MiddlewareAssetAuthentication,
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
@@ -300,7 +301,11 @@ class PatientDRYFilter(DRYPermissionFiltersBase):
                 allowed_facilities = get_accessible_facilities(request.user)
                 q_filters = Q(facility__id__in=allowed_facilities)
                 if view.action == "retrieve":
-                    q_filters |= Q(consultations__facility__id__in=allowed_facilities)
+                    q_filters |= Q(
+                        id__in=PatientConsultation.objects.filter(
+                            facility__id__in=allowed_facilities
+                        ).values("patient_id")
+                    )
                 q_filters |= Q(last_consultation__assigned_to=request.user)
                 q_filters |= Q(assigned_to=request.user)
                 queryset = queryset.filter(q_filters)
@@ -340,7 +345,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
                 )
             ).order_by(ordering)
 
-        return queryset.distinct(ordering.lstrip("-") if ordering else "id")
+        return queryset
 
 
 @extend_schema_view(history=extend_schema(tags=["patient"]))
@@ -355,7 +360,7 @@ class PatientViewSet(
     authentication_classes = [
         CustomBasicAuthentication,
         CustomJWTAuthentication,
-        MiddlewareAuthentication,
+        MiddlewareAssetAuthentication,
     ]
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
@@ -448,14 +453,28 @@ class PatientViewSet(
     CSV_EXPORT_LIMIT = 7
 
     def get_queryset(self):
-        # filter_query = self.request.query_params.get("disease_status")
-        queryset = super().get_queryset()
-        # if filter_query:
-        #     disease_status = filter_query if filter_query.isdigit() else DiseaseStatusEnum[filter_query].value
-        #     return queryset.filter(disease_status=disease_status)
+        queryset = super().get_queryset().order_by("modified_date")
 
-        # if self.action == "list":
-        #     queryset = queryset.filter(is_active=self.request.GET.get("is_active", True))
+        if self.action == "list":
+            queryset = queryset.annotate(
+                no_consultation_filed=Case(
+                    When(
+                        Q(last_consultation__isnull=True)
+                        | ~Q(last_consultation__facility__id=F("facility__id"))
+                        | (
+                            Q(last_consultation__discharge_date__isnull=False)
+                            & Q(is_active=True)
+                        ),
+                        then=True,
+                    ),
+                    default=False,
+                    output_field=models.BooleanField(),
+                )
+            ).order_by(
+                "-no_consultation_filed",
+                "modified_date",
+            )
+
         return queryset
 
     def get_serializer_class(self):
@@ -591,7 +610,11 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+        PatientCustomOrderingFilter,
+    )
     filterset_class = FacilityDischargedPatientFilterSet
     queryset = PatientRegistration.objects.select_related(
         "local_body",
@@ -610,12 +633,21 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "created_by",
     )
 
+    ordering_fields = [
+        "id",
+        "name",
+        "created_date",
+        "modified_date",
+    ]
+
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
         return qs.filter(
-            Q(consultations__facility__external_id=self.kwargs["facility_external_id"])
-            & Q(consultations__discharge_date__isnull=False)
-        ).distinct()
+            id__in=PatientConsultation.objects.filter(
+                discharge_date__isnull=False,
+                facility__external_id=self.kwargs["facility_external_id"],
+            ).values_list("patient_id")
+        )
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
