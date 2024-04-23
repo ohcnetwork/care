@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.db.models import F
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -89,6 +90,7 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
     permission_classes = (
