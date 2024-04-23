@@ -571,6 +571,32 @@ class PatientMetaInfo(models.Model):
         HEALTH_CARE_LAB_WORKER = 4
         ANIMAL_HANDLER = 5
         OTHERS = 6
+        HEALTHCARE_PRACTITIONER = 7
+        PARADEMICS = 8
+        BUSINESS_RELATED = 9
+        ENGINEER = 10
+        TEACHER = 11
+        OTHER_PROFESSIONAL_OCCUPATIONS = 12
+        OFFICE_ADMINISTRATIVE = 13
+        CHEF = 14
+        PROTECTIVE_SERVICE = 15
+        HOSPITALITY = 16
+        CUSTODIAL = 17
+        CUSTOMER_SERVICE = 18
+        SALES_SUPERVISOR = 19
+        RETAIL_SALES_WORKER = 20
+        INSURANCE_SALES_AGENT = 21
+        SALES_REPRESENTATIVE = 22
+        REAL_ESTATE = 23
+        CONSTRUCTION_EXTRACTION = 24
+        AGRI_NATURAL = 25
+        PRODUCTION_OCCUPATION = 26
+        PILOT_FLIGHT = 27
+        VEHICLE_DRIVER = 28
+        MILITARY = 29
+        HOMEMAKER = 30
+        UNKNOWN = 31
+        NOT_APPLICABLE = 32
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
