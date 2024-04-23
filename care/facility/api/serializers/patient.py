@@ -3,7 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.utils.timezone import make_aware, now
+from django.utils.timezone import make_aware
 from rest_framework import serializers
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
@@ -449,14 +449,30 @@ class PatientTransferSerializer(serializers.ModelSerializer):
         write_only=True, queryset=Facility.objects.all()
     )
     patient = serializers.UUIDField(source="external_id", read_only=True)
+    last_consultation_discharge_date = serializers.DateTimeField(
+        write_only=True, required=True
+    )
 
     class Meta:
         model = PatientRegistration
-        fields = ("facility", "year_of_birth", "patient", "facility_object")
+        fields = (
+            "facility",
+            "year_of_birth",
+            "patient",
+            "facility_object",
+            "last_consultation_discharge_date",
+        )
 
     def validate_year_of_birth(self, value):
         if self.instance and self.instance.year_of_birth != value:
             raise serializers.ValidationError("Year of birth does not match")
+        return value
+
+    def validate_last_consultation_discharge_date(self, value):
+        if self.instance and self.instance.last_consultation.encounter_date >= value:
+            raise serializers.ValidationError(
+                "Discharge date should be after the last encounter date"
+            )
         return value
 
     def create(self, validated_data):
@@ -471,14 +487,16 @@ class PatientTransferSerializer(serializers.ModelSerializer):
             ).first()
 
             if consultation:
-                consultation.discharge_date = now()
+                consultation.discharge_date = validated_data[
+                    "last_consultation_discharge_date"
+                ]
                 consultation.new_discharge_reason = NewDischargeReasonEnum.REFERRED
                 consultation.current_bed = None
                 consultation.save()
 
                 ConsultationBed.objects.filter(
                     consultation=consultation, end_date__isnull=True
-                ).update(end_date=now())
+                ).update(end_date=validated_data["last_consultation_discharge_date"])
 
             instance.save()
             return instance

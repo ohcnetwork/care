@@ -515,6 +515,22 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {"encounter_date": "This field value cannot be in the future."}
             )
+
+        last_consultation = (
+            PatientConsultation.objects.filter(
+                patient=self.validated_data["patient"], discharge_date__isnull=False
+            )
+            .order_by("-encounter_date")
+            .first()
+        )
+        if last_consultation and value < last_consultation.encounter_date:
+            raise ValidationError(
+                {
+                    "encounter_date": [
+                        "This field value must be greater than the last discharge date."
+                    ]
+                }
+            )
         return value
 
     def validate_patient_no(self, value):
