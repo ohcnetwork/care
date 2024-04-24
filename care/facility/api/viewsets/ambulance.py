@@ -65,7 +65,7 @@ class AmbulanceViewSet(
 
     @extend_schema(tags=["ambulance"])
     @action(methods=["POST"], detail=True)
-    def add_driver(self, request):
+    def add_driver(self, request, *args, **kwargs):
         ambulance = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -78,7 +78,7 @@ class AmbulanceViewSet(
 
     @extend_schema(tags=["ambulance"])
     @action(methods=["DELETE"], detail=True)
-    def remove_driver(self, request):
+    def remove_driver(self, request, *args, **kwargs):
         ambulance = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
