@@ -187,6 +187,7 @@ class DailyRound(PatientBaseModel):
     rounds_type = models.IntegerField(
         choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
     )
+    is_parsed_by_ocr = models.BooleanField(default=False)
 
     # Critical Care Attributes
 

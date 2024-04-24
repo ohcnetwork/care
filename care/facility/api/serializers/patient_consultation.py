@@ -10,7 +10,10 @@ from rest_framework.exceptions import ValidationError
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer
-from care.facility.api.serializers.bed import ConsultationBedSerializer
+from care.facility.api.serializers.bed import (
+    AssetBedSerializer,
+    ConsultationBedSerializer,
+)
 from care.facility.api.serializers.consultation_diagnosis import (
     ConsultationCreateDiagnosisSerializer,
     ConsultationDiagnosisSerializer,
@@ -794,14 +797,14 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         raise NotImplementedError
 
 
-class PatientConsultationIDSerializer(serializers.ModelSerializer):
-    consultation_id = serializers.UUIDField(source="external_id", read_only=True)
-    patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
-    bed_id = serializers.UUIDField(source="current_bed.bed.external_id", read_only=True)
+class PatientConsultationIDSerializer(serializers.Serializer):
+    consultation_id = serializers.UUIDField(read_only=True)
+    patient_id = serializers.UUIDField(read_only=True)
+    bed_id = serializers.UUIDField(read_only=True)
+    asset_beds = AssetBedSerializer(many=True, read_only=True)
 
     class Meta:
-        model = PatientConsultation
-        fields = ("consultation_id", "patient_id", "bed_id")
+        fields = ("consultation_id", "patient_id", "bed_id", "asset_beds")
 
 
 class EmailDischargeSummarySerializer(serializers.Serializer):

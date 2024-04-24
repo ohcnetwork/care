@@ -286,6 +286,20 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
 
+    def save(self, *args, **kwargs):
+        """
+        # Removing Patient Hospital Change on Referral
+        if not self.pk or self.referred_to is not None:
+            # pk is None when the consultation is created
+            # referred to is not null when the person is being referred to a new facility
+            self.patient.facility = self.referred_to or self.facility
+            self.patient.save()
+        """
+        if self.death_datetime and self.patient.death_datetime != self.death_datetime:
+            self.patient.death_datetime = self.death_datetime
+            self.patient.save(update_fields=["death_datetime"])
+        super(PatientConsultation, self).save(*args, **kwargs)
+
     class Meta:
         constraints = [
             models.CheckConstraint(
