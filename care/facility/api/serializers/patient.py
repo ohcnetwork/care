@@ -3,7 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
