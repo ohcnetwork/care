@@ -624,24 +624,25 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if not self.instance and "create_diagnoses" not in validated:
             raise ValidationError({"create_diagnoses": ["This field is required."]})
 
-        last_consultation = (
-            PatientConsultation.objects.filter(
-                patient=validated["patient"], discharge_date__isnull=False
+        if "encounter_date" in validated and "patient" in validated:
+            last_consultation = (
+                PatientConsultation.objects.filter(
+                    patient=validated["patient"], discharge_date__isnull=False
+                )
+                .order_by("-encounter_date")
+                .first()
             )
-            .order_by("-encounter_date")
-            .first()
-        )
-        if (
-            last_consultation
-            and validated["encounter_date"] <= last_consultation.discharge_date
-        ):
-            raise ValidationError(
-                {
-                    "encounter_date": [
-                        "This field value must be greater than the last discharge date."
-                    ]
-                }
-            )
+            if (
+                last_consultation
+                and validated["encounter_date"] <= last_consultation.discharge_date
+            ):
+                raise ValidationError(
+                    {
+                        "encounter_date": [
+                            "This field value must be greater than the last discharge date."
+                        ]
+                    }
+                )
 
         return validated
 

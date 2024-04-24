@@ -465,6 +465,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             {
                 "year_of_birth": 1992,
                 "facility": self.destination_facility.external_id,
+                "last_consultation_discharge_date": now().isoformat(),
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -481,6 +482,22 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
         )
         self.assertIsNotNone(self.consultation.discharge_date)
+
+    def test_patient_transfer_with_invalid_discharge_date(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.destination_facility.external_id,
+                "last_consultation_discharge_date": "2000-01-01T00:00:00Z",  # This is before the consultation date
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["last_consultation_discharge_date"][0],
+            "Discharge date should be after the last encounter date",
+        )
 
     def test_transfer_with_active_consultation_same_facility(self):
         # Set the patient's facility to allow transfers
