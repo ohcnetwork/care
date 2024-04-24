@@ -37,7 +37,7 @@ def reverse_transfer(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0423_patientconsultation_consent_records_and_more"),
+        ("facility", "0428_alter_patientmetainfo_occupation"),
     ]
 
     operations = [
