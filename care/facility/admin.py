@@ -24,7 +24,6 @@ from .models import (
     Inventory,
     InventoryItem,
     InventoryLog,
-    MetaICD11Diagnosis,
     PatientExternalTest,
     PatientInvestigation,
     PatientInvestigationGroup,
@@ -148,7 +147,7 @@ class AmbulanceDriverAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
 
 
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
-    list_display = ("id", "name", "age", "gender")
+    list_display = ("id", "name", "year_of_birth", "gender")
     djangoql_completion_enabled_by_default = True
 
 
@@ -212,4 +211,3 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
-admin.site.register(MetaICD11Diagnosis)

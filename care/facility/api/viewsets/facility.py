@@ -20,8 +20,8 @@ from care.facility.models import (
     FacilityCapacity,
     FacilityPatientStatsHistory,
     HospitalDoctors,
-    PatientRegistration,
 )
+from care.facility.models.facility import FacilityUser
 from care.users.models import User
 
 
@@ -39,6 +39,12 @@ class FacilityFilter(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     kasp_empanelled = filters.BooleanFilter(field_name="kasp_empanelled")
+    exclude_user = filters.CharFilter(method="filter_exclude_user")
+
+    def filter_exclude_user(self, queryset, name, value):
+        if value:
+            queryset = queryset.exclude(facilityuser__user__username=value)
+        return queryset
 
 
 class FacilityQSPermissions(DRYPermissionFiltersBase):
@@ -105,20 +111,22 @@ class FacilityViewSet(
             return FacilitySerializer
 
     def destroy(self, request, *args, **kwargs):
-        if (
-            request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        ):
-            if not PatientRegistration.objects.filter(
-                facility=self.get_object(), is_active=True
-            ).exists():
-                return super().destroy(request, *args, **kwargs)
-            else:
-                return Response(
-                    {"facility": "cannot delete facility with active patients"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        return Response({"permission": "denied"}, status=status.HTTP_403_FORBIDDEN)
+        instance = self.get_object()
+        if instance.patientregistration_set.filter(is_active=True).exists():
+            return Response(
+                {
+                    "facility": (
+                        "You cannot delete a facility with Live patients. "
+                        "Discharge all patients and try again"
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        FacilityUser.objects.filter(facility=instance).delete()
+        User.objects.filter(home_facility=instance).update(home_facility=None)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:

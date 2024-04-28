@@ -59,26 +59,27 @@ FACILITY_TYPES = [
     (5, "Hotel"),
     (6, "Lodge"),
     (7, "TeleMedicine"),
-    (8, "Govt Hospital"),
-    (9, "Labs"),
+    # (8, "Govt Hospital"), # Change from "Govt Hospital" to "Govt Medical College Hospitals"
+    (9, "Govt Labs"),
+    (10, "Private Labs"),
     # Use 8xx for Govt owned hospitals and health centres
     (800, "Primary Health Centres"),
-    (801, "24x7 Public Health Centres"),
+    # (801, "24x7 Public Health Centres"), # Change from "24x7 Public Health Centres" to "Primary Health Centres"
     (802, "Family Health Centres"),
     (803, "Community Health Centres"),
-    (820, "Urban Primary Health Center"),
+    # (820, "Urban Primary Health Center"),   # Change from "Urban Primary Health Center" to "Primary Health Centres"
     (830, "Taluk Hospitals"),
-    (831, "Taluk Headquarters Hospitals"),
+    # (831, "Taluk Headquarters Hospitals"),     # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
     (840, "Women and Child Health Centres"),
-    (850, "General hospitals"),  # TODO: same as 8, need to merge
+    # (850, "General hospitals"),  # Change from "General hospitals" to "District Hospitals"
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
     (900, "Co-operative hospitals"),
     (910, "Autonomous healthcare facility"),
     # Use 9xx for Labs
-    (950, "Corona Testing Labs"),
+    # (950, "Corona Testing Labs"),    # Change from "Corona Testing Labs" to "Govt Labs"
     # Use 10xx for Corona Care Center
-    (1000, "Corona Care Centre"),
+    # (1000, "Corona Care Centre"),   # Change from "Corona Care Centre" to "Other"
     (1010, "COVID-19 Domiciliary Care Center"),
     # Use 11xx for First Line Treatment Centre
     (1100, "First Line Treatment Centre"),
@@ -175,7 +176,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
 
     def read_cover_image_url(self):
         if self.cover_image_url:
-            return f"{settings.FACILITY_S3_STATIC_PREFIX}/{self.cover_image_url}"
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
         return None
 
     def __str__(self):
@@ -208,11 +209,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
-        "oxygen_capacity": "Oxygen Capacity",
         "phone_number": "Phone Number",
-        "type_b_cylinders": "B Type Oxygen Cylinder",
-        "type_c_cylinders": "C Type Oxygen Cylinder",
-        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
@@ -269,7 +266,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     area = models.IntegerField(choices=DOCTOR_TYPES)
-    count = models.IntegerField()
+    count = models.PositiveIntegerField()
 
     def __str__(self):
         return str(self.facility) + str(self.count)
@@ -316,9 +313,16 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "facilitycapacity__total_capacity": "Total Capacity",
         "facilitycapacity__current_capacity": "Current Capacity",
         "facilitycapacity__modified_date": "Updated Date",
+        "oxygen_capacity": "Oxygen Capacity",
+        "type_b_cylinders": "B Type Oxygen Cylinder",
+        "type_c_cylinders": "C Type Oxygen Cylinder",
+        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
-    CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
+    CSV_MAKE_PRETTY = {
+        "facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x]),
+        "facilitycapacity__modified_date": (lambda x: x.strftime("%d-%m-%Y")),
+    }
 
     def __str__(self):
         return (

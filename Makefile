@@ -20,10 +20,13 @@ build:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) build
 
 up:
-	docker compose -f docker-compose.yaml -f $(docker_config_file) up -d
+	docker compose -f docker-compose.yaml -f $(docker_config_file) up -d --wait
 
 down:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) down
+
+load-dummy-data:
+	docker compose exec backend bash -c "python manage.py load_dummy_data"
 
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
@@ -31,16 +34,16 @@ list:
 logs:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) logs
 
-checkmigration: up
+checkmigration:
 	docker compose exec backend bash -c "python manage.py makemigrations --check --dry-run"
 
-makemigrations: up
+makemigrations:
 	docker compose exec backend bash -c "python manage.py makemigrations"
 
-test: up
-	docker compose exec backend bash -c "python manage.py test --keepdb --parallel"
+test:
+	docker compose exec backend bash -c "python manage.py test --keepdb --parallel --shuffle"
 
-test-coverage: up
-	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel"
+test-coverage:
+	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel --shuffle"
 	docker compose exec backend bash -c "coverage combine || true; coverage xml"
 	docker compose cp backend:/app/coverage.xml coverage.xml

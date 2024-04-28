@@ -40,7 +40,6 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
                     "phone_number",
                     "alt_phone_number",
                     "gender",
-                    "age",
                     "verified",
                 )
             },

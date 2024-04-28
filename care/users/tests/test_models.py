@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.test import TestCase
 
 from care.users.models import District, LocalBody, Skill, State, User
@@ -110,7 +112,7 @@ class UserModelTest(TestCase):
             district=district,
             phone_number=8_888_888_888,
             gender=1,
-            age=21,
+            date_of_birth=date(2005, 1, 1),
         )
 
     def test_max_length_phone_number(self):

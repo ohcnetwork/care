@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
@@ -10,23 +11,25 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
+from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
-    PatientRelatedPermissionMixin,
+    ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
+    NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
     SYMPTOM_CHOICES,
-    ConsultationStatusChoices,
-    ConsultationStatusEnum,
+    RouteToFacility,
     SuggestionChoices,
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
-class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
+class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
         (SuggestionChoices.A, "ADMISSION"),
@@ -45,7 +48,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     patient_no = models.CharField(
         max_length=100,
-        default="",
+        default=None,
         null=True,
         blank=True,
         help_text=(
@@ -57,16 +60,18 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    diagnosis = models.TextField(default="", null=True, blank=True)  # Deprecated
-    icd11_provisional_diagnoses = ArrayField(
+    deprecated_diagnosis = models.TextField(
+        default="", null=True, blank=True
+    )  # Deprecated
+    deprecated_icd11_provisional_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
-    icd11_diagnoses = ArrayField(
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_diagnoses = ArrayField(
         models.CharField(max_length=100), default=list, blank=True, null=True
-    )
-    icd11_principal_diagnosis = models.CharField(
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
+    deprecated_icd11_principal_diagnosis = models.CharField(
         max_length=100, default="", blank=True, null=True
-    )
+    )  # Deprecated in favour of ConsultationDiagnosis M2M model
     symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
@@ -95,9 +100,8 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prescriptions = JSONField(default=dict)  # Deprecated
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
-    consultation_status = models.IntegerField(
-        default=ConsultationStatusEnum.UNKNOWN.value,
-        choices=ConsultationStatusChoices,
+    route_to_facility = models.SmallIntegerField(
+        choices=RouteToFacility.choices, blank=True, null=True
     )
     review_interval = models.IntegerField(default=-1)
     referred_to = models.ForeignKey(
@@ -106,15 +110,44 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         blank=True,
         on_delete=models.PROTECT,
         related_name="referred_patients",
-    )  # Deprecated
-    is_readmission = models.BooleanField(default=False)
+    )
     referred_to_external = models.TextField(default="", null=True, blank=True)
+    transferred_from_location = models.ForeignKey(
+        "AssetLocation",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
+    referred_from_facility = models.ForeignKey(
+        "Facility",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
+    referred_from_facility_external = models.TextField(
+        default="", null=True, blank=True
+    )
+    referred_by_external = models.TextField(default="", null=True, blank=True)
+    previous_consultation = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
+    is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
-    admission_date = models.DateTimeField(null=True, blank=True)  # Deprecated
+    encounter_date = models.DateTimeField(default=timezone.now, db_index=True)
+    icu_admission_date = models.DateTimeField(null=True, blank=True)
     discharge_date = models.DateTimeField(null=True, blank=True)
     discharge_reason = models.CharField(
         choices=DISCHARGE_REASON_CHOICES,
         max_length=4,
+        default=None,
+        blank=True,
+        null=True,
+    )
+    new_discharge_reason = models.SmallIntegerField(
+        choices=NEW_DISCHARGE_REASON_CHOICES,
         default=None,
         blank=True,
         null=True,
@@ -143,8 +176,18 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
         related_name="patient_assigned_to",
     )
 
-    deprecated_verified_by = models.TextField(default="", null=True, blank=True)
-    verified_by = models.ForeignKey(
+    assigned_clinicians = models.ManyToManyField(
+        User,
+        related_name="patient_assigned_clinician",
+        through="ConsultationClinician",
+    )
+
+    medico_legal_case = models.BooleanField(default=False)
+
+    deprecated_verified_by = models.TextField(
+        default="", null=True, blank=True
+    )  # Deprecated
+    treating_physician = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
 
@@ -203,9 +246,16 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    consent_records = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
+    )
+
+    def get_related_consultation(self):
+        return self
+
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
-        "admission_date": "Date of Admission",
+        "encounter_date": "Date of Admission",
         "symptoms_onset_date": "Date of Onset of Symptoms",
         "symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
@@ -225,7 +275,7 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
     }
 
     # CSV_DATATYPE_DEFAULT_MAPPING = {
-    #     "admission_date": (None, models.DateTimeField(),),
+    #     "encounter_date": (None, models.DateTimeField(),),
     #     "symptoms_onset_date": (None, models.DateTimeField(),),
     #     "symptoms": ("-", models.CharField(),),
     #     "category": ("-", models.CharField(),),
@@ -245,6 +295,9 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
             self.patient.facility = self.referred_to or self.facility
             self.patient.save()
         """
+        if self.death_datetime and self.patient.death_datetime != self.death_datetime:
+            self.patient.death_datetime = self.death_datetime
+            self.patient.save(update_fields=["death_datetime"])
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
@@ -255,11 +308,53 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
             ),
-            models.CheckConstraint(
-                name="if_admitted",
-                check=models.Q(admitted=False) | models.Q(admission_date__isnull=False),
+            models.UniqueConstraint(
+                fields=["patient_no", "facility"],
+                name="unique_patient_no_within_facility",
+                condition=models.Q(patient_no__isnull=False),
             ),
         ]
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
+        )
+
+    def has_object_read_permission(self, request):
+        if not super().has_object_read_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or (
+                self.patient.facility
+                and request.user in self.patient.facility.users.all()
+            )
+            or (
+                self.assigned_to == request.user
+                or request.user == self.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.district == self.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.patient.facility
+                    and request.user.state == self.patient.facility.state
+                )
+            )
+        )
+
+    def has_object_update_permission(self, request):
+        return super().has_object_update_permission(
+            request
+        ) and self.has_object_read_permission(request)
 
     def has_object_discharge_patient_permission(self, request):
         return self.has_object_update_permission(request)
@@ -269,3 +364,14 @@ class PatientConsultation(PatientBaseModel, PatientRelatedPermissionMixin):
 
     def has_object_generate_discharge_summary_permission(self, request):
         return self.has_object_read_permission(request)
+
+
+class ConsultationClinician(models.Model):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+    )
+    clinician = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+    )

@@ -1,9 +1,11 @@
-import datetime
 import enum
 
+from dateutil.relativedelta import relativedelta
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
@@ -18,22 +20,23 @@ from care.facility.models import (
     State,
     Ward,
 )
+from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
     PatientPermissionMixin,
-    PatientRelatedPermissionMixin,
 )
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_CONSULTATION_STATUS_CHOICES,
-    REVERSE_DISCHARGE_REASON_CHOICES,
+    REVERSE_NEW_DISCHARGE_REASON_CHOICES,
+    REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
@@ -77,6 +80,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         COMPLETE = 60
         REVIEW = 70
         NOT_REACHABLE = 80
+        DISCHARGE_RECOMMENDED = 90
 
     ActionChoices = [(e.value, e.name) for e in ActionEnum]
 
@@ -106,7 +110,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 
-    age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
 
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
@@ -125,7 +128,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     pincode = models.IntegerField(default=0, blank=True, null=True)
 
     date_of_birth = models.DateField(default=None, null=True)
-    year_of_birth = models.IntegerField(default=0, null=True)
+    year_of_birth = models.IntegerField(validators=[MinValueValidator(1900)], null=True)
+    death_datetime = models.DateTimeField(default=None, null=True)
 
     nationality = models.CharField(
         max_length=255, default="", verbose_name="Nationality of Patient"
@@ -196,6 +200,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_antenatal = models.BooleanField(
         default=None, verbose_name="Does the patient require Prenatal Care ?"
+    )
+    last_menstruation_start_date = models.DateField(
+        default=None, null=True, verbose_name="Last Menstruation Start Date"
+    )
+    date_of_delivery = models.DateField(
+        default=None, null=True, verbose_name="Date of Delivery"
     )
 
     ward_old = models.CharField(
@@ -417,7 +427,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     objects = BaseManager()
 
     def __str__(self):
-        return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
+        return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
 
     @property
     def tele_consultation_history(self):
@@ -449,34 +459,47 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         if self.district is not None:
             self.state = self.district.state
 
-        self.year_of_birth = (
-            self.date_of_birth.year
-            if self.date_of_birth is not None
-            else datetime.datetime.now().year - self.age
-        )
-
-        today = datetime.date.today()
-
         if self.date_of_birth:
-            self.age = (
-                today.year
-                - self.date_of_birth.year
-                - (
-                    (today.month, today.day)
-                    < (self.date_of_birth.month, self.date_of_birth.day)
-                )
-            )
-        elif self.year_of_birth:
-            self.age = today.year - self.year_of_birth
+            self.year_of_birth = self.date_of_birth.year
 
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
             if self.date_of_receipt_of_information is not None
-            else datetime.datetime.now()
+            else timezone.now()
         )
 
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
+
+    def get_age(self) -> int:
+        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+        end = (self.death_datetime or timezone.now()).date()
+        return relativedelta(end, start).years
+
+    def annotate_diagnosis_ids(*args, **kwargs):
+        return ArrayAgg(
+            "last_consultation__diagnoses__diagnosis_id",
+            filter=models.Q(*args, **kwargs),
+        )
+
+    CSV_ANNOTATE_FIELDS = {
+        # Principal Diagnoses
+        "principal_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__is_principal=True
+        ),
+        "unconfirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.UNCONFIRMED
+        ),
+        "provisional_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.PROVISIONAL
+        ),
+        "differential_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.DIFFERENTIAL
+        ),
+        "confirmed_diagnoses": annotate_diagnosis_ids(
+            last_consultation__diagnoses__verification_status=ConditionVerificationStatus.CONFIRMED
+        ),
+    }
 
     CSV_MAPPING = {
         # Patient Details
@@ -487,13 +510,19 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "created_date": "Date of Registration",
         "created_date__time": "Time of Registration",
         # Last Consultation Details
-        "last_consultation__consultation_status": "Status during consultation",
+        "last_consultation__route_to_facility": "Route to Facility",
         "last_consultation__created_date": "Date of first consultation",
         "last_consultation__created_date__time": "Time of first consultation",
-        "last_consultation__icd11_diagnoses": "Diagnoses",
-        "last_consultation__icd11_provisional_diagnoses": "Provisional Diagnoses",
+        # Diagnosis Details
+        "principal_diagnoses": "Principal Diagnosis",
+        "unconfirmed_diagnoses": "Unconfirmed Diagnoses",
+        "provisional_diagnoses": "Provisional Diagnoses",
+        "differential_diagnoses": "Differential Diagnoses",
+        "confirmed_diagnoses": "Confirmed Diagnoses",
+        # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
+        "last_consultation__new_discharge_reason": "Reason for discharge",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
@@ -504,6 +533,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     def format_as_time(time):
         return time.strftime("%H:%M")
 
+    def format_diagnoses(diagnosis_ids):
+        diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+        return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
+
     CSV_MAKE_PRETTY = {
         "gender": (lambda x: REVERSE_GENDER_CHOICES[x]),
         "created_date": format_as_date,
@@ -513,18 +546,17 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__suggestion": (
             lambda x: PatientConsultation.REVERSE_SUGGESTION_CHOICES.get(x, "-")
         ),
-        "last_consultation__icd11_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
-        "last_consultation__icd11_provisional_diagnoses": (
-            lambda x: ", ".join([ICDDiseases.by.id[id].label.strip() for id in x])
-        ),
-        "last_consultation__consultation_status": (
-            lambda x: REVERSE_CONSULTATION_STATUS_CHOICES.get(x, "-").replace("_", " ")
+        "principal_diagnoses": format_diagnoses,
+        "unconfirmed_diagnoses": format_diagnoses,
+        "provisional_diagnoses": format_diagnoses,
+        "differential_diagnoses": format_diagnoses,
+        "confirmed_diagnoses": format_diagnoses,
+        "last_consultation__route_to_facility": (
+            lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
-        "last_consultation__discharge_reason": (
-            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
+        "last_consultation__new_discharge_reason": (
+            lambda x: REVERSE_NEW_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,
@@ -534,17 +566,42 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 class PatientMetaInfo(models.Model):
     class OccupationEnum(enum.Enum):
         STUDENT = 1
-        MEDICAL_WORKER = 2
-        GOVT_EMPLOYEE = 3
-        PRIVATE_EMPLOYEE = 4
-        HOME_MAKER = 5
-        WORKING_ABROAD = 6
-        OTHERS = 7
+        BUSINESSMAN = 2
+        HEALTH_CARE_WORKER = 3
+        HEALTH_CARE_LAB_WORKER = 4
+        ANIMAL_HANDLER = 5
+        OTHERS = 6
+        HEALTHCARE_PRACTITIONER = 7
+        PARADEMICS = 8
+        BUSINESS_RELATED = 9
+        ENGINEER = 10
+        TEACHER = 11
+        OTHER_PROFESSIONAL_OCCUPATIONS = 12
+        OFFICE_ADMINISTRATIVE = 13
+        CHEF = 14
+        PROTECTIVE_SERVICE = 15
+        HOSPITALITY = 16
+        CUSTODIAL = 17
+        CUSTOMER_SERVICE = 18
+        SALES_SUPERVISOR = 19
+        RETAIL_SALES_WORKER = 20
+        INSURANCE_SALES_AGENT = 21
+        SALES_REPRESENTATIVE = 22
+        REAL_ESTATE = 23
+        CONSTRUCTION_EXTRACTION = 24
+        AGRI_NATURAL = 25
+        PRODUCTION_OCCUPATION = 26
+        PILOT_FLIGHT = 27
+        VEHICLE_DRIVER = 28
+        MILITARY = 29
+        HOMEMAKER = 30
+        UNKNOWN = 31
+        NOT_APPLICABLE = 32
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
-    occupation = models.IntegerField(choices=OccupationChoices)
-    head_of_household = models.BooleanField()
+    occupation = models.IntegerField(choices=OccupationChoices, blank=True, null=True)
+    head_of_household = models.BooleanField(blank=True, null=True)
 
 
 class PatientContactDetails(models.Model):
@@ -653,7 +710,7 @@ class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMi
         "facilitypatientstatshistory__num_patients_visited": "Vistited Patients",
         "facilitypatientstatshistory__num_patients_home_quarantine": "Home Quarantined Patients",
         "facilitypatientstatshistory__num_patients_isolation": "Patients Isolated",
-        "facilitypatientstatshistory__num_patient_referred": "Patients Reffered",
+        "facilitypatientstatshistory__num_patient_referred": "Patients Referred",
         "facilitypatientstatshistory__num_patient_confirmed_positive": "Patients Confirmed Positive",
     }
 
@@ -674,9 +731,12 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
-class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
+class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
+    )
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.PROTECT, null=True, blank=True
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
@@ -688,3 +748,28 @@ class PatientNotes(FacilityBaseModel, PatientRelatedPermissionMixin):
         null=True,
     )
     note = models.TextField(default="", blank=True)
+
+    def get_related_consultation(self):
+        # This is a temporary hack! this model does not have `assigned_to` field
+        # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
+        # Remove once patient notes is made consultation specific.
+        return self
+
+
+class PatientNotesEdit(models.Model):
+    patient_note = models.ForeignKey(
+        PatientNotes,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_date = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_date"]

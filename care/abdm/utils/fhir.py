@@ -32,8 +32,9 @@ from fhir.resources.quantity import Quantity
 from fhir.resources.reference import Reference
 
 from care.facility.models.file_upload import FileUpload
+from care.facility.models.icd11_diagnosis import REVERSE_CONDITION_VERIFICATION_STATUSES
 from care.facility.models.patient_investigation import InvestigationValue
-from care.facility.static_data.icd11 import ICDDiseases
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 
 
 class Fhir:
@@ -89,8 +90,8 @@ class Fhir:
         id = str(uuid())
         name = (
             (
-                self.consultation.verified_by
-                and f"{self.consultation.verified_by.first_name} {self.consultation.verified_by.last_name}"
+                self.consultation.treating_physician
+                and f"{self.consultation.treating_physician.first_name} {self.consultation.treating_physician.last_name}"
             )
             or self.consultation.deprecated_verified_by
             or f"{self.consultation.created_by.first_name} {self.consultation.created_by.last_name}"
@@ -136,8 +137,8 @@ class Fhir:
 
         return self._organization_profile
 
-    def _condition(self, diagnosis_id, provisional=False):
-        diagnosis = ICDDiseases.by.id[diagnosis_id]
+    def _condition(self, diagnosis_id, verification_status):
+        diagnosis = get_icd11_diagnosis_object_by_id(diagnosis_id)
         [code, label] = diagnosis.label.split(" ", 1)
         condition_profile = Condition(
             id=diagnosis_id,
@@ -158,8 +159,10 @@ class Fhir:
                 coding=[
                     Coding(
                         system="http://terminology.hl7.org/CodeSystem/condition-ver-status",
-                        code="provisional" if provisional else "confirmed",
-                        display="Provisional" if provisional else "Confirmed",
+                        code=verification_status,
+                        display=REVERSE_CONDITION_VERIFICATION_STATUSES[
+                            verification_status
+                        ],
                     )
                 ]
             ),
@@ -209,7 +212,7 @@ class Fhir:
             title="Care Plan",
             description="This includes Treatment Summary, Prescribed Medication, General Notes and Special Instructions",
             period=Period(
-                start=self.consultation.admission_date.isoformat(),
+                start=self.consultation.encounter_date.isoformat(),
                 end=self.consultation.discharge_date.isoformat()
                 if self.consultation.discharge_date
                 else None,
@@ -352,7 +355,7 @@ class Fhir:
 
         id = str(self.consultation.external_id)
         status = "finished" if self.consultation.discharge_date else "in-progress"
-        period_start = self.consultation.admission_date.isoformat()
+        period_start = self.consultation.encounter_date.isoformat()
         period_end = (
             self.consultation.discharge_date.isoformat()
             if self.consultation.discharge_date
@@ -368,20 +371,15 @@ class Fhir:
                 "period": Period(start=period_start, end=period_end),
                 "diagnosis": list(
                     map(
-                        lambda diagnosis: EncounterDiagnosis(
+                        lambda consultation_diagnosis: EncounterDiagnosis(
                             condition=self._reference(
-                                self._condition(diagnosis),
+                                self._condition(
+                                    consultation_diagnosis.diagnosis_id,
+                                    consultation_diagnosis.verification_status,
+                                ),
                             )
                         ),
-                        self.consultation.icd11_diagnoses,
-                    )
-                )
-                + list(
-                    map(
-                        lambda diagnosis: EncounterDiagnosis(
-                            condition=self._reference(self._condition(diagnosis))
-                        ),
-                        self.consultation.icd11_provisional_diagnoses,
+                        self.consultation.diagnoses.all(),
                     )
                 )
                 if include_diagnosis
@@ -465,7 +463,7 @@ class Fhir:
     def _medication_request(self, medicine):
         id = str(uuid())
         prescription_date = (
-            self.consultation.admission_date.isoformat()
+            self.consultation.encounter_date.isoformat()
         )  # TODO: change to the time of prescription
         status = "unknown"  # TODO: get correct status active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown
         dosage_text = f"{medicine['dosage_new']} / {medicine['dosage']} for {medicine['days']} days"

@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.utils.timezone import localtime, now
-from jsonschema import ValidationError
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from care.facility.api.serializers.shifting import has_facility_permission
 from care.facility.models.facility import Facility
@@ -33,13 +34,12 @@ def check_permissions(file_type, associating_id, user, action="create"):
             return patient.id
         elif file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
-            if consultation.discharge_date:
-                if not action == "read":
-                    raise serializers.ValidationError(
-                        {
-                            "consultation": "Cannot upload file for a discharged consultation."
-                        }
-                    )
+            if consultation.discharge_date and not action == "read":
+                raise serializers.ValidationError(
+                    {
+                        "consultation": "Cannot upload file for a discharged consultation."
+                    }
+                )
             if consultation.patient.assigned_to:
                 if user == consultation.patient.assigned_to:
                     return consultation.id
@@ -52,6 +52,24 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.id
+        elif file_type == FileUpload.FileType.CONSENT_RECORD.value:
+            consultation = PatientConsultation.objects.get(
+                consent_records__contains=[{"id": associating_id}]
+            )
+            if consultation.discharge_date and not action == "read":
+                raise serializers.ValidationError(
+                    {
+                        "consultation": "Cannot upload file for a discharged consultation."
+                    }
+                )
+            if (
+                user == consultation.assigned_to
+                or user == consultation.patient.assigned_to
+                or has_facility_permission(user, consultation.facility)
+                or has_facility_permission(user, consultation.patient.facility)
+            ):
+                return associating_id
+            raise Exception("No Permission")
         elif file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if (
@@ -108,6 +126,7 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
     associating_id = serializers.CharField(write_only=True)
     internal_name = serializers.CharField(read_only=True)
     original_name = serializers.CharField(write_only=True)
+    mime_type = serializers.CharField(write_only=True)
 
     class Meta:
         model = FileUpload
@@ -120,11 +139,17 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
             "signed_url",
             "internal_name",
             "original_name",
+            "mime_type",
         )
         write_only_fields = ("associating_id",)
 
     def create(self, validated_data):
         user = self.context["request"].user
+        mime_type = validated_data.pop("mime_type")
+
+        if mime_type not in settings.ALLOWED_MIME_TYPES:
+            raise ValidationError({"detail": "Invalid File Type"})
+
         internal_id = check_permissions(
             validated_data["file_type"], validated_data["associating_id"], user
         )
@@ -132,7 +157,9 @@ class FileUploadCreateSerializer(serializers.ModelSerializer):
         validated_data["uploaded_by"] = user
         validated_data["internal_name"] = validated_data["original_name"]
         del validated_data["original_name"]
-        return super().create(validated_data)
+        file_upload: FileUpload = super().create(validated_data)
+        file_upload.signed_url = file_upload.signed_url(mime_type=mime_type)
+        return file_upload
 
 
 class FileUploadListSerializer(serializers.ModelSerializer):
