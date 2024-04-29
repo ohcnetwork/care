@@ -163,6 +163,9 @@ def generate_discharge_summary_pdf(data, file):
         html_string.encode(),
         file,
         **{
+            "log-path": "/dev/null",
+            "v": "1",
+            "enable-logging": "/dev/null",
             "no-margins": None,
             "disable-gpu": None,
             "disable-dev-shm-usage": False,
