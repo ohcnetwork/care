@@ -77,6 +77,7 @@ class ResourceFilterSet(filters.FilterSet):
     last_edited_by = filters.NumberFilter(field_name="last_edited_by__id")
     priority = filters.NumberFilter(field_name="priority")
     emergency = filters.BooleanFilter(field_name="emergency")
+    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
 
 
 class ResourceRequestViewSet(

@@ -1,4 +1,7 @@
+import re
+
 from celery import shared_task
+from django.conf import settings
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -13,7 +16,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.health_facility import HealthFacilitySerializer
 from care.abdm.models import HealthFacility
-from care.abdm.utils.api_call import Bridge
+from care.abdm.utils.api_call import Facility
 from care.utils.queryset.facility import get_facility_queryset
 
 
@@ -24,27 +27,54 @@ def register_health_facility_as_service(facility_external_id):
     ).first()
 
     if not health_facility:
-        return False
+        return [False, "Health Facility Not Found"]
 
     if health_facility.registered:
-        return True
+        return [True, None]
 
-    response = Bridge().add_update_service(
+    clean_facility_name = re.sub(r"[^A-Za-z0-9 ]+", " ", health_facility.facility.name)
+    clean_facility_name = re.sub(r"\s+", " ", clean_facility_name).strip()
+    hip_name = settings.HIP_NAME_PREFIX + clean_facility_name + settings.HIP_NAME_SUFFIX
+    response = Facility().add_update_service(
         {
-            "id": health_facility.hf_id,
-            "name": health_facility.facility.name,
-            "type": "HIP",
-            "active": True,
-            "alias": ["CARE_HIP"],
+            "facilityId": health_facility.hf_id,
+            "facilityName": hip_name,
+            "HRP": [
+                {
+                    "bridgeId": settings.ABDM_CLIENT_ID,
+                    "hipName": hip_name,
+                    "type": "HIP",
+                    "active": True,
+                    "alias": ["CARE_HIP"],
+                }
+            ],
         }
     )
 
     if response.status_code == 200:
-        health_facility.registered = True
-        health_facility.save()
-        return True
+        data = response.json()[0]
 
-    return False
+        if "error" in data:
+            if (
+                data["error"].get("code") == "2500"
+                and settings.ABDM_CLIENT_ID in data["error"].get("message")
+                and "already associated" in data["error"].get("message")
+            ):
+                health_facility.registered = True
+                health_facility.save()
+                return [True, None]
+
+            return [
+                False,
+                data["error"].get("message", "Error while registering HIP as service"),
+            ]
+
+        if "servicesLinked" in data:
+            health_facility.registered = True
+            health_facility.save()
+            return [True, None]
+
+    return [False, None]
 
 
 class HealthFacilityViewSet(
@@ -67,7 +97,10 @@ class HealthFacilityViewSet(
 
     @action(detail=True, methods=["POST"])
     def register_service(self, request, facility__external_id):
-        registered = register_health_facility_as_service(facility__external_id)
+        [registered, error] = register_health_facility_as_service(facility__external_id)
+
+        if error:
+            return Response({"detail": error}, status=400)
 
         return Response({"registered": registered})
 

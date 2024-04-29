@@ -1,7 +1,10 @@
 from datetime import datetime
 
 from django.core.cache import cache
-from django.db import transaction
+from django.db import models, transaction
+from django.db.models import F, Value
+from django.db.models.fields.json import KT
+from django.db.models.functions import Coalesce, NullIf
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema_field
@@ -12,6 +15,7 @@ from rest_framework.serializers import (
     JSONField,
     ModelSerializer,
     Serializer,
+    SerializerMethodField,
     UUIDField,
 )
 from rest_framework.validators import UniqueValidator
@@ -20,16 +24,17 @@ from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models.asset import (
     Asset,
-    AssetAvailabilityRecord,
     AssetLocation,
     AssetService,
     AssetServiceEdit,
     AssetTransaction,
     AssetTypeChoices,
+    AvailabilityRecord,
     StatusChoices,
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
@@ -149,11 +154,15 @@ class AssetSerializer(ModelSerializer):
     last_serviced_on = serializers.DateField(write_only=True, required=False)
     note = serializers.CharField(write_only=True, required=False, allow_blank=True)
     resolved_middleware = ResolvedMiddlewareField(read_only=True)
+    latest_status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
-        read_only_fields = TIMESTAMP_FIELDS + ("resolved_middleware",)
+        read_only_fields = TIMESTAMP_FIELDS + (
+            "resolved_middleware",
+            "latest_status",
+        )
 
     def validate_qr_code_id(self, value):
         value = value or None  # treat empty string as null
@@ -205,13 +214,53 @@ class AssetSerializer(ModelSerializer):
         ):
             raise ValidationError({"asset_class": "Cannot change asset class"})
 
+        if meta := attrs.get("meta"):
+            current_location = (
+                attrs.get("current_location") or self.instance.current_location
+            )
+            ip_address = meta.get("local_ip_address")
+            middleware_hostname = (
+                meta.get("middleware_hostname")
+                or current_location.middleware_address
+                or current_location.facility.middleware_address
+            )
+            if ip_address and middleware_hostname:
+                asset_using_ip = (
+                    Asset.objects.annotate(
+                        resolved_middleware_hostname=Coalesce(
+                            NullIf(KT("meta__middleware_hostname"), Value("")),
+                            NullIf(
+                                F("current_location__middleware_address"), Value("")
+                            ),
+                            F("current_location__facility__middleware_address"),
+                            output_field=models.CharField(),
+                        )
+                    )
+                    .filter(
+                        asset_class__in=[
+                            AssetClasses.ONVIF.name,
+                            AssetClasses.HL7MONITOR.name,
+                        ],
+                        current_location__facility=current_location.facility_id,
+                        resolved_middleware_hostname=middleware_hostname,
+                        meta__local_ip_address=ip_address,
+                    )
+                    .exclude(id=self.instance.id if self.instance else None)
+                    .only("name")
+                    .first()
+                )
+                if asset_using_ip:
+                    raise ValidationError(
+                        f"IP Address {ip_address} is already in use by {asset_using_ip.name} asset"
+                    )
+
         return super().validate(attrs)
 
     def create(self, validated_data):
         last_serviced_on = validated_data.pop("last_serviced_on", None)
         note = validated_data.pop("note", None)
         with transaction.atomic():
-            asset_instance = super().create(validated_data)
+            asset_instance: Asset = super().create(validated_data)
             if last_serviced_on or note:
                 asset_service = AssetService(
                     asset=asset_instance, serviced_on=last_serviced_on, note=note
@@ -221,7 +270,7 @@ class AssetSerializer(ModelSerializer):
                 asset_instance.save(update_fields=["last_service"])
         return asset_instance
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Asset, validated_data):
         user = self.context["request"].user
         with transaction.atomic():
             if validated_data.get("last_serviced_on") and (
@@ -266,9 +315,43 @@ class AssetSerializer(ModelSerializer):
                     asset=instance,
                     performed_by=user,
                 ).save()
-            updated_instance = super().update(instance, validated_data)
+            updated_instance: Asset = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
+
+
+class AssetConfigSerializer(ModelSerializer):
+    id = UUIDField(source="external_id")
+    type = CharField(source="asset_class")
+    description = CharField(default="")
+    ip_address = CharField(default="")
+    access_key = CharField(default="")
+    username = CharField(default="")
+    password = CharField(default="")
+    port = serializers.IntegerField(default=80)
+
+    def to_representation(self, instance: Asset):
+        data = super().to_representation(instance)
+        data["ip_address"] = instance.meta.get("local_ip_address")
+        if camera_access_key := instance.meta.get("camera_access_key"):
+            values = camera_access_key.split(":")
+            if len(values) == 3:
+                data["username"], data["password"], data["access_key"] = values
+        return data
+
+    class Meta:
+        model = Asset
+        fields = (
+            "id",
+            "name",
+            "type",
+            "description",
+            "ip_address",
+            "access_key",
+            "username",
+            "password",
+            "port",
+        )
 
 
 class AssetTransactionSerializer(ModelSerializer):
@@ -283,13 +366,19 @@ class AssetTransactionSerializer(ModelSerializer):
         exclude = ("deleted", "external_id")
 
 
-class AssetAvailabilitySerializer(ModelSerializer):
-    id = UUIDField(source="external_id", read_only=True)
-    asset = AssetBareMinimumSerializer(read_only=True)
+class AvailabilityRecordSerializer(ModelSerializer):
+    linked_id = SerializerMethodField()
+    linked_model = SerializerMethodField()
 
     class Meta:
-        model = AssetAvailabilityRecord
-        exclude = ("deleted", "external_id")
+        model = AvailabilityRecord
+        fields = ("status", "timestamp", "linked_id", "linked_model")
+
+    def get_linked_id(self, obj):
+        return obj.object_external_id
+
+    def get_linked_model(self, obj):
+        return obj.content_type.model
 
 
 class UserDefaultAssetLocationSerializer(ModelSerializer):

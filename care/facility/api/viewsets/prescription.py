@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from dry_rest_permissions.generics import DRYPermissions
+from redis_om import FindQuery
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -15,11 +17,15 @@ from care.facility.api.serializers.prescription import (
 from care.facility.models import (
     MedicineAdministration,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
     generate_choices,
 )
+from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.queryset.consultation import get_consultation_queryset
+from care.utils.static_data.helpers import query_builder, token_escaper
 
 
 def inverse_choices(choices):
@@ -30,6 +36,9 @@ def inverse_choices(choices):
 
 
 inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
+inverse_prescription_dosage_type = inverse_choices(
+    generate_choices(PrescriptionDosageType)
+)
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
@@ -47,7 +56,7 @@ class MedicineAdministrationViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
 ):
     serializer_class = MedicineAdministrationSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = MedicineAdministration.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -79,7 +88,7 @@ class MedicineAdministrationViewSet(
 
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
-    is_prn = filters.BooleanFilter()
+    dosage_type = MultiSelectFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
 
@@ -91,7 +100,7 @@ class ConsultationPrescriptionViewSet(
     GenericViewSet,
 ):
     serializer_class = PrescriptionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -150,57 +159,27 @@ class ConsultationPrescriptionViewSet(
 class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
-    def serailize_data(self, objects):
-        return [
-            {
-                "id": x[0],
-                "name": x[1],
-                "type": x[2],
-                "generic": x[3],
-                "company": x[4],
-                "contents": x[5],
-                "cims_class": x[6],
-                "atc_classification": x[7],
-            }
-            for x in objects
-        ]
-
-    def sort(self, query, results):
-        exact_matches = []
-        word_matches = []
-        partial_matches = []
-
-        for x in results:
-            name = x[1].lower()
-            generic = x[3].lower()
-            company = x[4].lower()
-            words = f"{name} {generic} {company}".split()
-
-            if name == query:
-                exact_matches.append(x)
-            elif query in words:
-                word_matches.append(x)
-            else:
-                partial_matches.append(x)
-
-        return exact_matches + word_matches + partial_matches
+    def serialize_data(self, objects: list[MedibaseMedicine]):
+        return [medicine.get_representation() for medicine in objects]
 
     def list(self, request):
-        from care.facility.static_data.medibase import MedibaseMedicineTable
-
-        queryset = MedibaseMedicineTable
-
-        if type := request.query_params.get("type"):
-            queryset = [x for x in queryset if x[2] == type]
-
-        if query := request.query_params.get("query"):
-            query = query.strip().lower()
-            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
-            queryset = self.sort(query, queryset)
-
         try:
-            limit = min(int(request.query_params.get("limit", 30)), 100)
-        except ValueError:
+            limit = min(int(request.query_params.get("limit")), 30)
+        except (ValueError, TypeError):
             limit = 30
 
-        return Response(self.serailize_data(queryset[:limit]))
+        query = []
+        if type := request.query_params.get("type"):
+            query.append(MedibaseMedicine.type == type)
+
+        if q := request.query_params.get("query"):
+            query.append(
+                (MedibaseMedicine.name == token_escaper.escape(q))
+                | (MedibaseMedicine.vec % query_builder(q))
+            )
+
+        result = FindQuery(
+            expressions=query, model=MedibaseMedicine, limit=limit
+        ).execute(exhaust_results=False)
+
+        return Response(self.serialize_data(result))

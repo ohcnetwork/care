@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -31,7 +33,7 @@ class TestFacilityUserApi(TestUtils, APITestCase):
             "last_name": obj.last_name,
             "email": obj.email,
             "phone_number": obj.phone_number,
-            "age": obj.age,
+            "date_of_birth": str(obj.date_of_birth),
             "local_body": getattr(obj.local_body, "id", None),
             "district": getattr(obj.district, "id", None),
             "state": getattr(obj.state, "id", None),
@@ -50,7 +52,7 @@ class TestFacilityUserApi(TestUtils, APITestCase):
             "user_type": "Staff",
             "phone_number": "+917795937091",
             "gender": "Male",
-            "age": 28,
+            "date_of_birth": date(2005, 1, 1),
             "first_name": "Roopak",
             "last_name": "A N",
             "email": "anroopak@gmail.com",

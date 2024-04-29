@@ -13,7 +13,17 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.asset_location_with_linked_bed = cls.create_asset_location(cls.facility)
+        cls.asset_location_with_linked_asset = cls.create_asset_location(cls.facility)
+        cls.asset = cls.create_asset(cls.asset_location_with_linked_asset)
+        cls.bed = cls.create_bed(cls.facility, cls.asset_location_with_linked_bed)
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+        cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.deleted_asset = cls.create_asset(cls.asset_location)
+        cls.deleted_asset.deleted = True
+        cls.deleted_asset.save()
 
     def test_list_asset_locations(self):
         response = self.client.get(
@@ -78,3 +88,52 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(
             response.data["middleware_address"][0].code, "invalid_domain_name"
         )
+
+    def test_delete_asset_location_with_beds(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data[0], "Cannot delete a Location with associated Beds"
+        )
+
+    def test_delete_asset_location_with_linked_assets(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_asset.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data[0], "Cannot delete a Location with associated Assets"
+        )
+
+    def test_delete_asset_location_with_no_assets_and_beds(self):
+        response = self.client.delete(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location.external_id}/",
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_user_access_to_asset_location_on_user_type(self):
+        # when a user is a state_lab_admin or a district_lab_admin
+        state_lab_admin = self.create_user(
+            "state_lab_admin", self.district, user_type=35
+        )
+        district_lab_admin = self.create_user(
+            "district_lab_admin", self.district, user_type=25
+        )
+
+        self.client.force_authenticate(user=state_lab_admin)
+
+        # when they try to access a asset_location in their state or district then they
+        # should be able to do so without permission issue
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/"
+        )
+
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=district_lab_admin)
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/asset_location/{self.asset_location_with_linked_bed.external_id}/"
+        )
+        self.assertIs(response.status_code, status.HTTP_200_OK)

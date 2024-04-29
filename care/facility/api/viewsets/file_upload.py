@@ -7,7 +7,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.file_upload import (
@@ -18,11 +18,34 @@ from care.facility.api.serializers.file_upload import (
     check_permissions,
 )
 from care.facility.models.file_upload import FileUpload
+from care.users.models import User
 
 
 class FileUploadFilter(filters.FilterSet):
     file_category = filters.CharFilter(field_name="file_category")
     is_archived = filters.BooleanFilter(field_name="is_archived")
+
+
+class FileUploadPermission(BasePermission):
+    def has_permission(self, request, view) -> bool:
+        if request.user.user_type in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+        ):
+            if request.method == "GET":
+                return request.query_params.get("file_type") not in (
+                    "PATIENT",
+                    "CONSULTATION",
+                )
+            else:
+                return request.data.get("file_type") not in (
+                    "PATIENT",
+                    "CONSULTATION",
+                )
+        return True
+
+    def has_object_permission(self, request, view, obj) -> bool:
+        return self.has_permission(request, view)
 
 
 class FileUploadViewSet(
@@ -36,7 +59,7 @@ class FileUploadViewSet(
     queryset = (
         FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
     )
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, FileUploadPermission]
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FileUploadFilter
@@ -54,6 +77,7 @@ class FileUploadViewSet(
     def get_queryset(self):
         if "file_type" not in self.request.GET:
             raise ValidationError({"file_type": "file_type missing in request params"})
+
         if "associating_id" not in self.request.GET:
             raise ValidationError(
                 {"associating_id": "associating_id missing in request params"}

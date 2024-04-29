@@ -1,10 +1,11 @@
-import datetime
 import enum
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
@@ -31,7 +32,7 @@ from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     REVERSE_CATEGORY_CHOICES,
-    REVERSE_DISCHARGE_REASON_CHOICES,
+    REVERSE_NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
 )
 from care.facility.models.patient_consultation import PatientConsultation
@@ -109,7 +110,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     # name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 
-    age = models.PositiveIntegerField(null=True, blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
 
     # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
@@ -128,7 +128,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     pincode = models.IntegerField(default=0, blank=True, null=True)
 
     date_of_birth = models.DateField(default=None, null=True)
-    year_of_birth = models.IntegerField(default=0, null=True)
+    year_of_birth = models.IntegerField(validators=[MinValueValidator(1900)], null=True)
+    death_datetime = models.DateTimeField(default=None, null=True)
 
     nationality = models.CharField(
         max_length=255, default="", verbose_name="Nationality of Patient"
@@ -199,6 +200,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     is_antenatal = models.BooleanField(
         default=None, verbose_name="Does the patient require Prenatal Care ?"
+    )
+    last_menstruation_start_date = models.DateField(
+        default=None, null=True, verbose_name="Last Menstruation Start Date"
+    )
+    date_of_delivery = models.DateField(
+        default=None, null=True, verbose_name="Date of Delivery"
     )
 
     ward_old = models.CharField(
@@ -420,7 +427,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
     objects = BaseManager()
 
     def __str__(self):
-        return "{} - {} - {}".format(self.name, self.age, self.get_gender_display())
+        return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
 
     @property
     def tele_consultation_history(self):
@@ -452,34 +459,22 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         if self.district is not None:
             self.state = self.district.state
 
-        self.year_of_birth = (
-            self.date_of_birth.year
-            if self.date_of_birth is not None
-            else datetime.datetime.now().year - self.age
-        )
-
-        today = datetime.date.today()
-
         if self.date_of_birth:
-            self.age = (
-                today.year
-                - self.date_of_birth.year
-                - (
-                    (today.month, today.day)
-                    < (self.date_of_birth.month, self.date_of_birth.day)
-                )
-            )
-        elif self.year_of_birth:
-            self.age = today.year - self.year_of_birth
+            self.year_of_birth = self.date_of_birth.year
 
         self.date_of_receipt_of_information = (
             self.date_of_receipt_of_information
             if self.date_of_receipt_of_information is not None
-            else datetime.datetime.now()
+            else timezone.now()
         )
 
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
+
+    def get_age(self) -> int:
+        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+        end = (self.death_datetime or timezone.now()).date()
+        return relativedelta(end, start).years
 
     def annotate_diagnosis_ids(*args, **kwargs):
         return ArrayAgg(
@@ -527,6 +522,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         # Last Consultation Details
         "last_consultation__suggestion": "Decision after consultation",
         "last_consultation__category": "Category",
+        "last_consultation__new_discharge_reason": "Reason for discharge",
         "last_consultation__discharge_date": "Date of discharge",
         "last_consultation__discharge_date__time": "Time of discharge",
     }
@@ -559,8 +555,8 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             lambda x: REVERSE_ROUTE_TO_FACILITY_CHOICES.get(x, "-")
         ),
         "last_consultation__category": lambda x: REVERSE_CATEGORY_CHOICES.get(x, "-"),
-        "last_consultation__discharge_reason": (
-            lambda x: REVERSE_DISCHARGE_REASON_CHOICES.get(x, "-")
+        "last_consultation__new_discharge_reason": (
+            lambda x: REVERSE_NEW_DISCHARGE_REASON_CHOICES.get(x, "-")
         ),
         "last_consultation__discharge_date": format_as_date,
         "last_consultation__discharge_date__time": format_as_time,
@@ -570,17 +566,42 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 class PatientMetaInfo(models.Model):
     class OccupationEnum(enum.Enum):
         STUDENT = 1
-        MEDICAL_WORKER = 2
-        GOVT_EMPLOYEE = 3
-        PRIVATE_EMPLOYEE = 4
-        HOME_MAKER = 5
-        WORKING_ABROAD = 6
-        OTHERS = 7
+        BUSINESSMAN = 2
+        HEALTH_CARE_WORKER = 3
+        HEALTH_CARE_LAB_WORKER = 4
+        ANIMAL_HANDLER = 5
+        OTHERS = 6
+        HEALTHCARE_PRACTITIONER = 7
+        PARADEMICS = 8
+        BUSINESS_RELATED = 9
+        ENGINEER = 10
+        TEACHER = 11
+        OTHER_PROFESSIONAL_OCCUPATIONS = 12
+        OFFICE_ADMINISTRATIVE = 13
+        CHEF = 14
+        PROTECTIVE_SERVICE = 15
+        HOSPITALITY = 16
+        CUSTODIAL = 17
+        CUSTOMER_SERVICE = 18
+        SALES_SUPERVISOR = 19
+        RETAIL_SALES_WORKER = 20
+        INSURANCE_SALES_AGENT = 21
+        SALES_REPRESENTATIVE = 22
+        REAL_ESTATE = 23
+        CONSTRUCTION_EXTRACTION = 24
+        AGRI_NATURAL = 25
+        PRODUCTION_OCCUPATION = 26
+        PILOT_FLIGHT = 27
+        VEHICLE_DRIVER = 28
+        MILITARY = 29
+        HOMEMAKER = 30
+        UNKNOWN = 31
+        NOT_APPLICABLE = 32
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
-    occupation = models.IntegerField(choices=OccupationChoices)
-    head_of_household = models.BooleanField()
+    occupation = models.IntegerField(choices=OccupationChoices, blank=True, null=True)
+    head_of_household = models.BooleanField(blank=True, null=True)
 
 
 class PatientContactDetails(models.Model):
@@ -733,3 +754,22 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
         return self
+
+
+class PatientNotesEdit(models.Model):
+    patient_note = models.ForeignKey(
+        PatientNotes,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="edits",
+    )
+    edited_date = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    note = models.TextField()
+
+    class Meta:
+        ordering = ["-edited_date"]

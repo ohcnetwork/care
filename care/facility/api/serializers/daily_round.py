@@ -6,7 +6,8 @@ from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
+
+from care.facility.events.handler import create_consultation_events
 
 # from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import (
@@ -22,9 +23,9 @@ from care.facility.models.patient_base import (
     SYMPTOM_CHOICES,
     SuggestionChoices,
 )
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
-from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_home_facility_queryset
 from config.serializers import ChoiceField
 
@@ -105,6 +106,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "glasgow_total_calculated",
             "total_intake_calculated",
             "total_output_calculated",
+            "consultation",
         )
         exclude = ("deleted",)
 
@@ -165,30 +167,30 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
+        consultation: PatientConsultation = validated_data["consultation"]
         # Authorisation Checks
-
-        # Skip check for asset user
-        if self.context["request"].user.asset_id is None:
-            allowed_facilities = get_home_facility_queryset(
-                self.context["request"].user
+        if (
+            not get_home_facility_queryset(self.context["request"].user)
+            .filter(id=consultation.facility_id)
+            .exists()
+        ):
+            raise ValidationError(
+                {"facility": "Daily Round creates are only allowed in home facility"}
             )
-            if not allowed_facilities.filter(
-                id=self.validated_data["consultation"].facility.id
-            ).exists():
-                raise ValidationError(
-                    {
-                        "facility": "Daily Round creates are only allowed in home facility"
-                    }
-                )
-
         # Authorisation Checks End
 
-        with transaction.atomic():
-            consultation = get_object_or_404(
-                get_consultation_queryset(self.context["request"].user).filter(
-                    id=validated_data["consultation"].id
-                )
+        # Patient needs to have a bed assigned for admission
+        if (
+            not consultation.current_bed
+            and consultation.suggestion == SuggestionChoices.A
+        ):
+            raise ValidationError(
+                {
+                    "bed": "Patient does not have a bed assigned. Please assign a bed first"
+                }
             )
+
+        with transaction.atomic():
             if (
                 validated_data.get("rounds_type")
                 == DailyRound.RoundsType.TELEMEDICINE.value
@@ -232,6 +234,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                             "rhythm",
                             "rhythm_detail",
                             "ventilator_spo2",
+                            "consciousness_level",
                         ]
                         cloned_daily_round_obj = DailyRound()
                         for field in fields_to_clone:
@@ -302,10 +305,18 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
             if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
                 self.update_last_daily_round(daily_round_obj)
+
+            create_consultation_events(
+                daily_round_obj.consultation_id,
+                daily_round_obj,
+                daily_round_obj.created_by_id,
+                daily_round_obj.created_date,
+            )
             return daily_round_obj
 
     def validate(self, attrs):
         validated = super().validate(attrs)
+        validated["consultation"] = self.context["consultation"]
 
         if validated["consultation"].discharge_date:
             raise ValidationError(

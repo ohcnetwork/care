@@ -2,7 +2,9 @@ name: Lint Code Base
 
 on:
   pull_request:
-    branches: [master]
+    branches:
+      - develop
+      - staging
   merge_group:
 
 jobs:
@@ -24,13 +26,13 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter/slim@v5
         env:
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: develop
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_PYTHON_BLACK: true
           VALIDATE_PYTHON_FLAKE8: true
           VALIDATE_PYTHON_ISORT: true
           LINTER_RULES_PATH: /
-          # PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
+          PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
           PYTHON_FLAKE8_CONFIG_FILE: ".flake8"
           PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"

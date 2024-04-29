@@ -4,7 +4,7 @@ Base settings to build other settings files upon.
 
 import base64
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import environ
@@ -14,6 +14,7 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
 from care.utils.jwks.generate_jwk import generate_encoded_jwks
+from plug_config import manager
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
@@ -58,13 +59,15 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
+
 # CACHES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_URL", default="redis://localhost:6379"),
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # Mimicing memcache behavior.
@@ -73,7 +76,6 @@ CACHES = {
         },
     }
 }
-
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -116,8 +118,15 @@ LOCAL_APPS = [
     "care.audit_log",
     "care.hcx",
 ]
+
+PLUGIN_APPS = manager.get_apps()
+
+# Plugin Section
+
+PLUGIN_CONFIGS = manager.get_config()
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -329,6 +338,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
 # drf-spectacular (schema generation)
@@ -383,7 +393,6 @@ CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # https://github.com/fabiocaccamo/django-maintenance-mode/tree/main#configuration-optional
 MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
-
 #  Password Reset
 # ------------------------------------------------------------------------------
 # https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
@@ -391,7 +400,6 @@ DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
-
 
 # Hardcopy settings (pdf generation)
 # ------------------------------------------------------------------------------
@@ -481,50 +489,95 @@ VAPID_PRIVATE_KEY = env(
 )
 SEND_SMS_NOTIFICATION = False
 
-
 # Cloud and Buckets
 # ------------------------------------------------------------------------------
-CLOUD_PROVIDER = env("CLOUD_PROVIDER", default="aws").upper()
 
-CLOUD_REGION = env("CLOUD_REGION", default="ap-south-1")
 
-if CLOUD_PROVIDER not in csp_config.CSProvider.__members__:
-    print(f"Warning Invalid CSP Found! {CLOUD_PROVIDER}")
+BUCKET_PROVIDER = env("BUCKET_PROVIDER", default="aws").upper()
+BUCKET_REGION = env("BUCKET_REGION", default="ap-south-1")
+BUCKET_KEY = env("BUCKET_KEY", default="")
+BUCKET_SECRET = env("BUCKET_SECRET", default="")
+BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
+BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
 
-if USE_S3 := env.bool("USE_S3", default=False):
-    # aws settings
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_DEFAULT_ACL = "public-read"
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
+    print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
-# FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default="care-patient-staging")
-FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default="")
-FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default="")
+FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
+FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default=BUCKET_KEY)
+FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default=BUCKET_SECRET)
 FILE_UPLOAD_BUCKET_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_ENDPOINT",
-    default=f"https://{FILE_UPLOAD_BUCKET}.s3.amazonaws.com",
+    "FILE_UPLOAD_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
+)
+FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
+    "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
+    default=BUCKET_EXTERNAL_ENDPOINT
+    if BUCKET_ENDPOINT
+    else FILE_UPLOAD_BUCKET_ENDPOINT,
+)
+
+ALLOWED_MIME_TYPES = env.list(
+    "ALLOWED_MIME_TYPES",
+    default=[
+        # Images
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/bmp",
+        "image/webp",
+        "image/svg+xml",
+        # Videos
+        "video/mp4",
+        "video/mpeg",
+        "video/x-msvideo",
+        "video/quicktime",
+        "video/x-ms-wmv",
+        "video/x-flv",
+        "video/webm",
+        # Audio
+        "audio/mpeg",
+        "audio/wav",
+        "audio/aac",
+        "audio/ogg",
+        "audio/midi",
+        "audio/x-midi",
+        "audio/webm",
+        # Documents
+        "text/plain",
+        "text/csv",
+        "application/rtf",
+        "application/msword",
+        "application/vnd.oasis.opendocument.text",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.oasis.opendocument.spreadsheet",
+    ],
 )
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
-FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default="ap-south-1")
-FACILITY_S3_KEY = env("FACILITY_S3_KEY", default="")
-FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default="")
+FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default=BUCKET_REGION)
+FACILITY_S3_KEY = env("FACILITY_S3_KEY", default=BUCKET_KEY)
+FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default=BUCKET_SECRET)
 FACILITY_S3_BUCKET_ENDPOINT = env(
-    "FACILITY_S3_BUCKET_ENDPOINT",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+    "FACILITY_S3_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
 )
-FACILITY_S3_STATIC_PREFIX = env(
-    "FACILITY_S3_STATIC_PREFIX",
-    default=f"https://{FACILITY_S3_BUCKET}.s3.{FACILITY_S3_REGION}.amazonaws.com",
+FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
+    "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
+    default=BUCKET_EXTERNAL_ENDPOINT
+    if BUCKET_ENDPOINT
+    else FACILITY_S3_BUCKET_ENDPOINT,
 )
-
 
 # for setting the shifting mode
 PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
+
+MIN_ENCOUNTER_DATE = env(
+    "MIN_ENCOUNTER_DATE",
+    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),
+    default=datetime(2020, 1, 1),
+)
 
 # for exporting csv
 CSV_REQUEST_PARAMETER = "csv"
@@ -545,10 +598,12 @@ ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
 HEALTH_SERVICE_API_URL = env(
     "HEALTH_SERVICE_API_URL", default="https://healthidsbx.abdm.gov.in/api"
 )
+ABDM_FACILITY_URL = env("ABDM_FACILITY_URL", default="https://facilitysbx.abdm.gov.in")
+HIP_NAME_PREFIX = env("HIP_NAME_PREFIX", default="")
+HIP_NAME_SUFFIX = env("HIP_NAME_SUFFIX", default="")
 ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
 X_CM_ID = env("X_CM_ID", default="sbx")
 FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
-
 
 IS_PRODUCTION = False
 
@@ -569,3 +624,14 @@ HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
 PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")
+
+# Disable summarization tasks
+TASK_SUMMARIZE_TRIAGE = env.bool("TASK_SUMMARIZE_TRIAGE", default=True)
+TASK_SUMMARIZE_TESTS = env.bool("TASK_SUMMARIZE_TESTS", default=True)
+TASK_SUMMARIZE_FACILITY_CAPACITY = env.bool(
+    "TASK_SUMMARIZE_FACILITY_CAPACITY", default=True
+)
+TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
+TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
+    "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
+)

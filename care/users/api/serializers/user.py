@@ -1,24 +1,20 @@
-from datetime import date
-
-from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.utils.timezone import now
 from rest_framework import exceptions, serializers
 
 from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
-from care.facility.models import READ_ONLY_USER_TYPES, Facility, FacilityUser
+from care.facility.models import Facility, FacilityUser
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
     StateSerializer,
 )
 from care.users.api.serializers.skill import UserSkillSerializer
-from care.users.models import GENDER_CHOICES
+from care.users.models import GENDER_CHOICES, User
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-
-User = get_user_model()
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -46,7 +42,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "phone_number",
             "alt_phone_number",
             "gender",
-            "age",
+            "date_of_birth",
         )
 
     def create(self, validated_data):
@@ -70,7 +66,7 @@ class SignUpSerializer(serializers.ModelSerializer):
                     },
                 )
 
-            if attrs["doctor_experience_commenced_on"] > date.today():
+            if attrs["doctor_experience_commenced_on"] > now().date():
                 raise serializers.ValidationError(
                     {
                         "doctor_experience_commenced_on": "Experience cannot be in the future",
@@ -115,6 +111,14 @@ class UserCreateSerializer(SignUpSerializer):
             "user_permissions",
             "created_by",
         )
+
+    date_of_birth = serializers.DateField(required=True)
+
+    def validate_date_of_birth(self, value):
+        if value and now().year - value.year < 16:
+            raise serializers.ValidationError("Age must be greater than 15 years")
+
+        return value
 
     def validate_facilities(self, facility_ids):
         if facility_ids:
@@ -186,8 +190,8 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in READ_ONLY_USER_TYPES:
-            if validated["user_type"] not in READ_ONLY_USER_TYPES:
+        if self.context["created_by"].user_type in User.READ_ONLY_TYPES:
+            if validated["user_type"] not in User.READ_ONLY_TYPES:
                 raise exceptions.ValidationError(
                     {
                         "user_type": [
@@ -197,7 +201,8 @@ class UserCreateSerializer(SignUpSerializer):
                 )
 
         if (
-            self.context["created_by"].user_type == User.TYPE_VALUE_MAP["Staff"]
+            self.context["created_by"].user_type
+            in (User.TYPE_VALUE_MAP["Staff"], User.TYPE_VALUE_MAP["Nurse"])
             and validated["user_type"] == User.TYPE_VALUE_MAP["Doctor"]
         ):
             pass
@@ -277,6 +282,8 @@ class UserSerializer(SignUpSerializer):
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
+    date_of_birth = serializers.DateField(required=True)
+
     class Meta:
         model = User
         fields = (
@@ -285,6 +292,7 @@ class UserSerializer(SignUpSerializer):
             "first_name",
             "last_name",
             "email",
+            "video_connect_link",
             "user_type",
             "doctor_qualification",
             "doctor_experience_commenced_on",
@@ -298,7 +306,7 @@ class UserSerializer(SignUpSerializer):
             "phone_number",
             "alt_phone_number",
             "gender",
-            "age",
+            "date_of_birth",
             "is_superuser",
             "verified",
             "home_facility_object",
@@ -323,6 +331,12 @@ class UserSerializer(SignUpSerializer):
         )
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
+
+    def validate_date_of_birth(self, value):
+        if value and now().year - value.year < 16:
+            raise serializers.ValidationError("Age must be greater than 15 years")
+
+        return value
 
     def validate(self, attrs):
         validated = super().validate(attrs)
@@ -377,6 +391,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "home_facility_object",
             "doctor_qualification",
             "doctor_experience_commenced_on",
+            "video_connect_link",
             "doctor_medical_council_registration",
             "skills",
         )
@@ -401,6 +416,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "username",
+            "date_of_birth",
             "local_body_object",
             "district_object",
             "state_object",
@@ -413,4 +429,5 @@ class UserListSerializer(serializers.ModelSerializer):
             "last_login",
             "home_facility_object",
             "home_facility",
+            "video_connect_link",
         )

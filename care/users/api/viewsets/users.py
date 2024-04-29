@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import F
 from django_filters import rest_framework as filters
@@ -15,16 +14,14 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
     UserListSerializer,
     UserSerializer,
 )
+from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
-
-User = get_user_model()
 
 
 def remove_facility_user_cache(user_id):
@@ -87,7 +84,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
@@ -240,11 +237,12 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related(
+        queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
         )
+        facilities = self.paginate_queryset(queryset)
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
-        return Response(facilities.data)
+        return self.get_paginated_response(facilities.data)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
@@ -284,7 +282,7 @@ class UserViewSet(
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or requesting_user.user_type in READ_ONLY_USER_TYPES
+            or requesting_user.user_type in User.READ_ONLY_TYPES
         ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 

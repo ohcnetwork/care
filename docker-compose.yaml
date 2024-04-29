@@ -7,31 +7,42 @@ networks:
 services:
   db:
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./docker/.prebuilt.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
 
   redis:
-    image: redis:alpine
-    restart: always
+    image: redis/redis-stack-server:6.2.6-v10
+    restart: unless-stopped
     volumes:
       - redis-data:/data
+    ports:
+      - "6380:6379"
 
   localstack:
     image: localstack/localstack:latest
+    restart: unless-stopped
     environment:
       - AWS_DEFAULT_REGION=ap-south-1
       - EDGE_PORT=4566
       - SERVICES=s3
+      - EXTRA_CORS_ALLOWED_ORIGINS=*
+      - EXTRA_CORS_ALLOWED_HEADERS=*
     volumes:
-      - "${TEMPDIR:-/tmp/localstack}:/tmp/localstack"
-      - "./docker/awslocal:/docker-entrypoint-initaws.d"
+      - "${TEMPDIR:-./care/media/localstack}:/var/lib/localstack"
+      - "./docker/awslocal:/etc/localstack/init/ready.d/"
+    ports:
+      - "4566:4566"
 
   fidelius:
-    image: khavinshankar/fidelius:v1.0
-    restart: always
+    image: khavinshankar/fidelius:latest
+    restart: unless-stopped
+    ports:
+      - "8092:8090"
 
 volumes:
   postgres-data:

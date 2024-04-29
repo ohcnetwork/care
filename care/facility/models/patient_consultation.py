@@ -11,6 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
+from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -25,6 +26,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -46,7 +48,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     patient_no = models.CharField(
         max_length=100,
-        default="",
+        default=None,
         null=True,
         blank=True,
         help_text=(
@@ -126,6 +128,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         default="", null=True, blank=True
     )
     referred_by_external = models.TextField(default="", null=True, blank=True)
+    previous_consultation = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+    )
     is_readmission = models.BooleanField(default=False)
     admitted = models.BooleanField(default=False)  # Deprecated
     encounter_date = models.DateTimeField(default=timezone.now, db_index=True)
@@ -166,6 +174,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         on_delete=models.SET_NULL,
         null=True,
         related_name="patient_assigned_to",
+    )
+
+    assigned_clinicians = models.ManyToManyField(
+        User,
+        related_name="patient_assigned_clinician",
+        through="ConsultationClinician",
     )
 
     medico_legal_case = models.BooleanField(default=False)
@@ -232,6 +246,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    consent_records = JSONField(
+        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -277,6 +295,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             self.patient.facility = self.referred_to or self.facility
             self.patient.save()
         """
+        if self.death_datetime and self.patient.death_datetime != self.death_datetime:
+            self.patient.death_datetime = self.death_datetime
+            self.patient.save(update_fields=["death_datetime"])
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
@@ -287,16 +308,18 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
             ),
+            models.UniqueConstraint(
+                fields=["patient_no", "facility"],
+                name="unique_patient_no_within_facility",
+                condition=models.Q(patient_no__isnull=False),
+            ),
         ]
 
     @staticmethod
     def has_write_permission(request):
-        if not ConsultationRelatedPermissionMixin.has_write_permission(request):
-            return False
-        return (
-            request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        return request.user.is_superuser or (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
         )
 
     def has_object_read_permission(self, request):
@@ -329,33 +352,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         )
 
     def has_object_update_permission(self, request):
-        if not super().has_object_update_permission(request):
-            return False
-        return (
-            request.user.is_superuser
-            or (
-                self.patient.facility
-                and request.user in self.patient.facility.users.all()
-            )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.district == self.patient.facility.district
-                )
-            )
-            or (
-                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-                and (
-                    self.patient.facility
-                    and request.user.state == self.patient.facility.state
-                )
-            )
-        )
+        return super().has_object_update_permission(
+            request
+        ) and self.has_object_read_permission(request)
 
     def has_object_discharge_patient_permission(self, request):
         return self.has_object_update_permission(request)
@@ -365,3 +364,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     def has_object_generate_discharge_summary_permission(self, request):
         return self.has_object_read_permission(request)
+
+
+class ConsultationClinician(models.Model):
+    consultation = models.ForeignKey(
+        PatientConsultation,
+        on_delete=models.PROTECT,
+    )
+    clinician = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+    )
