@@ -326,7 +326,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
         ):
             # Staff from the destination must not be able to mark the shift as complete.
             destination_facility = (
-                validated_data["assigned_facility"] or instance.assigned_facility
+                validated_data.get("assigned_facility") or instance.assigned_facility
             )
             if destination_facility and destination_facility.users.contains(user):
                 raise ValidationError(
