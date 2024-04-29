@@ -328,7 +328,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
             destination_facility = (
                 validated_data["assigned_facility"] or instance.assigned_facility
             )
-            if destination_facility and user in destination_facility.users.all():
+            if destination_facility and destination_facility.users.contains(user):
                 raise ValidationError(
                     {
                         "status": [
