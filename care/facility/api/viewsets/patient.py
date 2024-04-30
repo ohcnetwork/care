@@ -602,7 +602,45 @@ class PatientViewSet(
 
 
 class FacilityDischargedPatientFilterSet(filters.FilterSet):
+    disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
+    phone_number = filters.CharFilter(field_name="phone_number")
+    emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    gender = filters.NumberFilter(field_name="gender")
+    age = filters.NumberFilter(field_name="age")
+    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
+    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
+    created_date = filters.DateFromToRangeFilter(field_name="created_date")
+    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    srf_id = filters.CharFilter(field_name="srf_id")
+    is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
+    date_declared_positive = filters.DateFromToRangeFilter(
+        field_name="date_declared_positive"
+    )
+    date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
+    last_vaccinated_date = filters.DateFromToRangeFilter(
+        field_name="last_vaccinated_date"
+    )
+    is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    last_menstruation_start_date = filters.DateFromToRangeFilter(
+        field_name="last_menstruation_start_date"
+    )
+    date_of_delivery = filters.DateFromToRangeFilter(field_name="date_of_delivery")
+    # Location Based Filtering
+    district = filters.NumberFilter(field_name="district__id")
+    district_name = filters.CharFilter(
+        field_name="district__name", lookup_expr="icontains"
+    )
+    local_body = filters.NumberFilter(field_name="local_body__id")
+    local_body_name = filters.CharFilter(
+        field_name="local_body__name", lookup_expr="icontains"
+    )
+    state = filters.NumberFilter(field_name="state__id")
+    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    # Vaccination Filters
+    covin_id = filters.CharFilter(field_name="covin_id")
+    is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
+    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
 
 
 @extend_schema_view(tags=["patient"])
