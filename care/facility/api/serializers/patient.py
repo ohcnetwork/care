@@ -251,6 +251,16 @@ class PatientDetailSerializer(PatientListSerializer):
             value = [value]
         return value
 
+    def validate_date_of_birth(self, value):
+        if value and value > now().date():
+            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+        return value
+
+    def validate_year_of_birth(self, value):
+        if value and value > now().year:
+            raise serializers.ValidationError("Enter a valid year of birth")
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         if not self.partial and not (
