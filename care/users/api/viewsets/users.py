@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from django.db.models import F
+from django.db.models import F, Q, Subquery
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -123,33 +123,32 @@ class UserViewSet(
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
-        if (
-            self.request.user.user_type == User.TYPE_VALUE_MAP["StateAdmin"]
-            or self.request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-        ):
-            return self.queryset.filter(
+        query = Q(id=self.request.user.id)
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
+            query |= Q(
                 state=self.request.user.state,
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
                 is_superuser=False,
             )
-        if (
-            self.request.user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or self.request.user.user_type
-            == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+        elif (
+            self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
         ):
-            return self.queryset.filter(
+            query |= Q(
                 district=self.request.user.district,
                 user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
-            return self.queryset.filter(
-                facilityuser__facility_id__in=get_accessible_facilities(
-                    self.request.user
+            query |= Q(
+                id__in=Subquery(
+                    FacilityUser.objects.filter(
+                        facility_id__in=get_accessible_facilities(self.request.user)
+                    ).values("user_id")
                 ),
                 user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
-            ).distinct()
+            )
+        return self.queryset.filter(query)
 
     def get_serializer_class(self):
         if self.action == "list":
