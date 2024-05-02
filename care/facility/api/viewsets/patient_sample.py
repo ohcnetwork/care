@@ -124,8 +124,10 @@ class PatientSampleViewSet(
             raise PermissionDenied()
 
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *PatientSample.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**PatientSample.CSV_ANNOTATE_FIELDS)
+                .values(*PatientSample.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,
