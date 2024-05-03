@@ -4,7 +4,8 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import Case, F, Func, JSONField, Value, When
+from django.db.models.functions import Coalesce, Now
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
@@ -571,6 +572,32 @@ class PatientMetaInfo(models.Model):
         HEALTH_CARE_LAB_WORKER = 4
         ANIMAL_HANDLER = 5
         OTHERS = 6
+        HEALTHCARE_PRACTITIONER = 7
+        PARADEMICS = 8
+        BUSINESS_RELATED = 9
+        ENGINEER = 10
+        TEACHER = 11
+        OTHER_PROFESSIONAL_OCCUPATIONS = 12
+        OFFICE_ADMINISTRATIVE = 13
+        CHEF = 14
+        PROTECTIVE_SERVICE = 15
+        HOSPITALITY = 16
+        CUSTODIAL = 17
+        CUSTOMER_SERVICE = 18
+        SALES_SUPERVISOR = 19
+        RETAIL_SALES_WORKER = 20
+        INSURANCE_SALES_AGENT = 21
+        SALES_REPRESENTATIVE = 22
+        REAL_ESTATE = 23
+        CONSTRUCTION_EXTRACTION = 24
+        AGRI_NATURAL = 25
+        PRODUCTION_OCCUPATION = 26
+        PILOT_FLIGHT = 27
+        VEHICLE_DRIVER = 28
+        MILITARY = 29
+        HOMEMAKER = 30
+        UNKNOWN = 31
+        NOT_APPLICABLE = 32
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
@@ -747,3 +774,42 @@ class PatientNotesEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_date"]
+
+
+class PatientAgeFunc(Func):
+    """
+    Expression to calculate the age of a patient based on date of birth/year of
+    birth and death date time.
+
+    Eg:
+
+    ```
+    PatientSample.objects.annotate(patient_age=PatientAgeFunc())
+    ```
+    """
+
+    function = "date_part"
+
+    def __init__(self) -> None:
+        super().__init__(
+            Value("year"),
+            Func(
+                Case(
+                    When(patient__death_datetime__isnull=True, then=Now()),
+                    default=F("patient__death_datetime__date"),
+                ),
+                Coalesce(
+                    "patient__date_of_birth",
+                    Func(
+                        F("patient__year_of_birth"),
+                        Value(1),
+                        Value(1),
+                        function="MAKE_DATE",
+                        output_field=models.DateField(),
+                    ),
+                    output_field=models.DateField(),
+                ),
+                function="age",
+            ),
+            output_field=models.IntegerField(),
+        )
