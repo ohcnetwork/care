@@ -28,7 +28,6 @@ from care.facility.api.serializers.bed import (
 from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
-from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 
@@ -44,12 +43,12 @@ class BedFilter(filters.FilterSet):
     )
 
     def filter_bed_is_not_occupied_by_asset_type(self, queryset, name, value):
-        if value == AssetClasses.HL7MONITOR.name:
+        if value:
             return queryset.exclude(
                 id__in=Subquery(
                     AssetBed.objects.filter(
                         bed__id=OuterRef("id"),
-                        asset__asset_class=AssetClasses.HL7MONITOR.name,
+                        asset__asset_class=value,
                     ).values("bed__id")
                 )
             )
