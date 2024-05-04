@@ -39,12 +39,12 @@ class BedFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     location = filters.UUIDFilter(field_name="location__external_id")
     bed_type = CareChoiceFilter(choice_dict=inverse_bed_type)
-    not_occupied_by_hl7_monitor = filters.BooleanFilter(
-        method="filter_bed_is_not_occupied_by_hl7_monitor"
+    not_occupied_by_asset_type = filters.CharFilter(
+        method="filter_bed_is_not_occupied_by_asset_type"
     )
 
-    def filter_bed_is_not_occupied_by_hl7_monitor(self, queryset, name, value):
-        if value:
+    def filter_bed_is_not_occupied_by_asset_type(self, queryset, name, value):
+        if value == AssetClasses.HL7MONITOR.name:
             return queryset.exclude(
                 id__in=Subquery(
                     AssetBed.objects.filter(
