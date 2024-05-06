@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
+from care.abdm.api.serializers.abha_number import AbhaNumberSerializer
 from care.abdm.api.serializers.healthid import (
     AadharOtpGenerateRequestPayloadSerializer,
     AadharOtpResendRequestPayloadSerializer,
