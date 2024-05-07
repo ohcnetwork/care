@@ -171,7 +171,10 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
         return self.administrations.order_by("-administered_date").first()
 
     def has_object_write_permission(self, request):
-        return ConsultationRelatedPermissionMixin.has_write_permission(request)
+        return (
+            ConsultationRelatedPermissionMixin.has_write_permission(request)
+            and self.consultation.facility == request.user.home_facility
+        )
 
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
@@ -213,7 +216,10 @@ class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
         return self.prescription.consultation
 
     def has_object_write_permission(self, request):
-        return ConsultationRelatedPermissionMixin.has_write_permission(request)
+        return (
+            ConsultationRelatedPermissionMixin.has_write_permission(request)
+            and self.prescription.consultation.facility == request.user.home_facility
+        )
 
     def validate(self) -> None:
         if self.prescription.discontinued:

@@ -13,14 +13,19 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
-        cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.user = cls.create_user("nurse1", cls.district, home_facility=cls.facility)
+        cls.remote_facility = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body
+        )
+        cls.remote_user = cls.create_user(
+            "remote-nurse", cls.district, home_facility=cls.remote_facility
+        )
         cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(cls.patient, cls.facility)
 
     def setUp(self) -> None:
         super().setUp()
-        self.consultation = self.create_consultation(self.patient, self.facility)
         self.medicine = MedibaseMedicine.objects.first()
-
         self.normal_prescription_data = {
             "medicine": self.medicine.external_id,
             "prescription_type": "REGULAR",
@@ -29,12 +34,121 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             "dosage_type": "REGULAR",
         }
 
+    def prescription_data(self, **kwargs):
+        data = self.normal_prescription_data
+        data.update(**kwargs)
+        return data
+
     def test_create_normal_prescription(self):
         response = self.client.post(
             f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
             self.normal_prescription_data,
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_prescription_non_home_facility(self):
+        self.client.force_authenticate(self.remote_user)
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            self.normal_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_invalid_dosage(self):
+        data = self.prescription_data(base_dosage="abc")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Invalid Input, must be in the format: <amount> <unit>",
+        )
+
+    def test_dosage_out_of_range(self):
+        data = self.prescription_data(base_dosage="10000 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Input amount must be between 0.0001 and 5000",
+        )
+
+        data = self.prescription_data(base_dosage="-1 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Input amount must be between 0.0001 and 5000",
+        )
+
+    def test_dosage_precision(self):
+        data = self.prescription_data(base_dosage="0.300003 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Input amount must have at most 4 decimal places",
+        )
+
+    def test_dosage_unit_invalid(self):
+        data = self.prescription_data(base_dosage="1 abc")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(res.json()["base_dosage"][0].startswith("Unit must be one of"))
+
+    def test_dosage_leading_zero(self):
+        data = self.prescription_data(base_dosage="01 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Input amount must be a valid number without leading or trailing zeroes",
+        )
+
+    def test_dosage_trailing_zero(self):
+        data = self.prescription_data(base_dosage="1.0 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            res.json()["base_dosage"][0],
+            "Input amount must be a valid number without leading or trailing zeroes",
+        )
+
+    def test_dosage_validator_clean(self):
+        data = self.prescription_data(base_dosage=" 1 mg ")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_valid_dosage(self):
+        data = self.prescription_data(base_dosage="1 mg")
+        res = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_prescribe_duplicate_active_medicine_and_discontinue(self):
         """
