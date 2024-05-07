@@ -1,5 +1,5 @@
 # Importing Typst official Image
-FROM ghcr.io/typst/typst:latest as typstOfficialImage
+FROM ghcr.io/typst/typst:v0.11.0 as typstOfficialImage
 
 FROM python:3.11-slim-bullseye
 
@@ -11,7 +11,7 @@ ENV PATH /venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev \
-  libpq-dev gettext wget curl gnupg git \
+  libpq-dev gettext wget curl gnupg chromium git \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
