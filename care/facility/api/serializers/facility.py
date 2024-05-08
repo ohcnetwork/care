@@ -151,21 +151,6 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
 
-    def validate_hubs(self, value):
-        # check if hubs are array of valid facility external_ids
-        if not all(Facility.objects.filter(external_id__in=value).exists()):
-            raise serializers.ValidationError("Invalid hubs")
-
-        # check if hubs are not spoke of itself
-        if self.instance and self.instance.external_id in value:
-            raise serializers.ValidationError("Facility cannot be a spoke of itself")
-
-        # check if hubs are not any of the facility's spokes
-        if self.instance and Facility.objects.filter(pk__in=value, hubs=self.instance.external_id).exists():
-            raise serializers.ValidationError("Facility cannot be a spoke of its spoke")
-
-        return Facility.objects.filter(external_id__in=value)
-
 class FacilityHubSerializer(serializers.ModelSerializer):
     hub = FacilityBareMinimumSerializer(read_only=True)
     spoke = FacilityBareMinimumSerializer(read_only=True)
