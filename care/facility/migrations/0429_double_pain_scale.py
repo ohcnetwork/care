@@ -57,7 +57,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(double_pain_scale, reverse_code=halve_pain_scale),
         migrations.AlterField(
             model_name="dailyround",
             name="pain_scale_enhanced",
@@ -89,4 +88,5 @@ class Migration(migrations.Migration):
                 ],
             ),
         ),
+        migrations.RunPython(double_pain_scale, reverse_code=halve_pain_scale),
     ]
