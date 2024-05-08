@@ -187,6 +187,7 @@ class AllFacilityViewSet(
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
 
+
 class FacilityHubsViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,

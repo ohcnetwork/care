@@ -1,7 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care import facility
 from care.facility.models.facility import FacilityHubSpoke
 from care.utils.tests.test_utils import TestUtils
 
@@ -96,7 +95,9 @@ class FacilityTests(TestUtils, APITestCase):
 
     def test_add_hubs(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
-        facility2 = self.create_facility(self.super_user, self.district, self.local_body)
+        facility2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
 
         state_admin = self.create_user("state_admin", self.district, user_type=40)
         self.client.force_authenticate(user=state_admin)
@@ -108,7 +109,9 @@ class FacilityTests(TestUtils, APITestCase):
 
     def test_delete_hub(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
-        facility2 = self.create_facility(self.super_user, self.district, self.local_body)
+        facility2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
 
         state_admin = self.create_user("state_admin", self.district, user_type=40)
 
@@ -121,7 +124,9 @@ class FacilityTests(TestUtils, APITestCase):
 
     def test_add_hub_no_permission(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
-        facility2 = self.create_facility(self.super_user, self.district, self.local_body)
+        facility2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
 
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
@@ -132,7 +137,9 @@ class FacilityTests(TestUtils, APITestCase):
 
     def test_delete_hub_no_permission(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
-        facility2 = self.create_facility(self.super_user, self.district, self.local_body)
+        facility2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
 
         hub = FacilityHubSpoke.objects.create(hub=facility2, spoke=facility)
         self.client.force_authenticate(user=self.user)

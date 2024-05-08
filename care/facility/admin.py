@@ -92,6 +92,7 @@ class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_filter = [StateFilter, DistrictFilter]
     djangoql_completion_enabled_by_default = True
 
+
 class FacilityHubSpokeAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name"]
     djangoql_completion_enabled_by_default = True

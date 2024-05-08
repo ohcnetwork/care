@@ -1,4 +1,3 @@
-from uuid import UUID
 import boto3
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -85,6 +84,7 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "bed_count",
         )
 
+
 class FacilitySerializer(FacilityBasicInfoSerializer):
     """Serializer for facility.models.Facility."""
 
@@ -151,6 +151,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
 
+
 class FacilityHubSerializer(serializers.ModelSerializer):
     hub = FacilityBareMinimumSerializer(read_only=True)
     spoke = FacilityBareMinimumSerializer(read_only=True)
@@ -158,7 +159,15 @@ class FacilityHubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacilityHubSpoke
-        fields = ("external_id", "hub", "hub_id", "spoke", "relationship", "created_date", "modified_date")
+        fields = (
+            "external_id",
+            "hub",
+            "hub_id",
+            "spoke",
+            "relationship",
+            "created_date",
+            "modified_date",
+        )
         read_only_fields = ("external_id", "spoke", "created_date", "modified_date")
 
     def validate(self, data):
@@ -170,7 +179,9 @@ class FacilityHubSerializer(serializers.ModelSerializer):
         if data["hub"].external_id == data["spoke"].external_id:
             raise serializers.ValidationError("Hub and Spoke cannot be same")
 
-        if FacilityHubSpoke.objects.filter(hub=data["hub"], spoke=data["spoke"]).exists():
+        if FacilityHubSpoke.objects.filter(
+            hub=data["hub"], spoke=data["spoke"]
+        ).exists():
             raise serializers.ValidationError("Hub and Spoke already exists")
 
         return data
