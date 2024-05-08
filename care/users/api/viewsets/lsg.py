@@ -127,9 +127,9 @@ class LocalBodyViewSet(
 
 
 class WardFilterSet(filters.FilterSet):
-    state = filters.NumberFilter(field_name="district__state_id")
+    state = filters.NumberFilter(field_name="local_body__district__state_id")
     state_name = filters.CharFilter(
-        field_name="district__state__name", lookup_expr="icontains"
+        field_name="local_body__district__state__name", lookup_expr="icontains"
     )
     district = filters.NumberFilter(field_name="local_body__district_id")
     district_name = filters.CharFilter(
