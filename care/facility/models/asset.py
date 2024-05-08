@@ -292,4 +292,3 @@ class AssetServiceEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_on"]
-
