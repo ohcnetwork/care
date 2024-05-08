@@ -516,7 +516,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     thread = serializers.ChoiceField(
-        choices=PatientNoteThreadChoices, required=True, allow_null=False
+        choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
 
     def validate_empty_values(self, data):
@@ -525,6 +525,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data)
 
     def create(self, validated_data):
+        if "thread" not in validated_data:
+            raise serializers.ValidationError({"thread": "This field is required"})
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
