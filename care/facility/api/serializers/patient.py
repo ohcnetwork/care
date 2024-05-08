@@ -218,9 +218,6 @@ class PatientDetailSerializer(PatientListSerializer):
     )
     abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
-    date_of_birth = serializers.DateField(required=False, allow_null=True)
-    year_of_birth = serializers.IntegerField(default=0)
-
     class Meta:
         model = PatientRegistration
         exclude = (
