@@ -753,7 +753,7 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         on_delete=models.SET_NULL,
         null=True,
     )
-    thread = models.IntegerField(
+    thread = models.SmallIntegerField(
         choices=PatientNoteThreadChoices.choices,
         db_index=True,
         default=PatientNoteThreadChoices.DOCTORS,
