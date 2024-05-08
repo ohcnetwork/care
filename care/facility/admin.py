@@ -6,6 +6,7 @@ from djqscsv import render_to_csv_response
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed, Bed
+from care.facility.models.facility import FacilityHubSpoke
 from care.facility.models.patient_sample import PatientSample
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
@@ -89,6 +90,10 @@ class StateFilter(SimpleListFilter):
 class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name"]
     list_filter = [StateFilter, DistrictFilter]
+    djangoql_completion_enabled_by_default = True
+
+class FacilityHubSpokeAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    search_fields = ["name"]
     djangoql_completion_enabled_by_default = True
 
 
@@ -185,6 +190,7 @@ class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
 
 
 admin.site.register(Facility, FacilityAdmin)
+admin.site.register(FacilityHubSpoke, FacilityHubSpokeAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
 admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)

@@ -34,7 +34,7 @@ from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
 )
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
+from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityHubsViewSet, FacilityViewSet
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -189,6 +189,7 @@ facility_nested_router.register(r"inventory", FacilityInventoryLogViewSet)
 facility_nested_router.register(r"inventorysummary", FacilityInventorySummaryViewSet)
 facility_nested_router.register(r"min_quantity", FacilityInventoryMinQuantityViewSet)
 facility_nested_router.register(r"asset_location", AssetLocationViewSet)
+facility_nested_router.register(r"hubs", FacilityHubsViewSet)
 
 facility_location_nested_router = NestedSimpleRouter(
     facility_nested_router, r"asset_location", lookup="asset_location"

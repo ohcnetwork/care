@@ -1,10 +1,11 @@
+from uuid import UUID
 import boto3
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
 from care.facility.models.bed import Bed
-from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.facility import FEATURE_CHOICES, FacilityHubSpoke
 from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
@@ -84,7 +85,6 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
             "bed_count",
         )
 
-
 class FacilitySerializer(FacilityBasicInfoSerializer):
     """Serializer for facility.models.Facility."""
 
@@ -150,6 +150,45 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
+
+    def validate_hubs(self, value):
+        # check if hubs are array of valid facility external_ids
+        if not all(Facility.objects.filter(external_id__in=value).exists()):
+            raise serializers.ValidationError("Invalid hubs")
+
+        # check if hubs are not spoke of itself
+        if self.instance and self.instance.external_id in value:
+            raise serializers.ValidationError("Facility cannot be a spoke of itself")
+
+        # check if hubs are not any of the facility's spokes
+        if self.instance and Facility.objects.filter(pk__in=value, hubs=self.instance.external_id).exists():
+            raise serializers.ValidationError("Facility cannot be a spoke of its spoke")
+
+        return Facility.objects.filter(external_id__in=value)
+
+class FacilityHubSerializer(serializers.ModelSerializer):
+    hub = FacilityBareMinimumSerializer(read_only=True)
+    spoke = FacilityBareMinimumSerializer(read_only=True)
+    hub_id = serializers.UUIDField(write_only=True)
+
+    class Meta:
+        model = FacilityHubSpoke
+        fields = ("external_id", "hub", "hub_id", "spoke", "relationship", "created_date", "modified_date")
+        read_only_fields = ("external_id", "spoke", "created_date", "modified_date")
+
+    def validate(self, data):
+        hub = Facility.objects.get(external_id=data["hub_id"])
+        data["hub"] = hub
+        del data["hub_id"]
+        data["spoke"] = self.context["facility"]
+
+        if data["hub"].external_id == data["spoke"].external_id:
+            raise serializers.ValidationError("Hub and Spoke cannot be same")
+
+        if FacilityHubSpoke.objects.filter(hub=data["hub"], spoke=data["spoke"]).exists():
+            raise serializers.ValidationError("Hub and Spoke already exists")
+
+        return data
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):

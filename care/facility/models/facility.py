@@ -12,6 +12,7 @@ from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
@@ -45,6 +46,10 @@ FEATURE_CHOICES = [
     (4, "Neonatal care"),
     (5, "Operation theater"),
     (6, "Blood Bank"),
+]
+
+HUB_RELATIONSHIP = [
+    (1, "Tele ICU Hub")
 ]
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
@@ -140,6 +145,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         District, on_delete=models.SET_NULL, null=True, blank=True
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
+    hubs = models.ManyToManyField('self', through='FacilityHubSpoke', symmetrical=False, related_name='spokes')
 
     oxygen_capacity = models.IntegerField(default=0)
     type_b_cylinders = models.IntegerField(default=0)
@@ -213,6 +219,14 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name='hub_set')
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name='spoke_set')
+    relationship = models.IntegerField(choices=HUB_RELATIONSHIP, default=HUB_RELATIONSHIP[0][0])
+
+    def __str__(self):
+        return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"
 
 
 class FacilityLocalGovtBody(models.Model):
