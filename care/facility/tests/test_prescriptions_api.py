@@ -22,6 +22,10 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         )
         cls.patient = cls.create_patient(cls.district, cls.facility)
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+        cls.discharged_patient = cls.create_patient(cls.district, cls.facility)
+        cls.discharged_consultation = cls.create_consultation(
+            cls.patient, cls.facility, discharge_date="2002-04-01T16:30:00Z"
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -53,6 +57,13 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             self.normal_prescription_data,
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_prescription_on_discharged_consultation(self):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.discharged_consultation.external_id}/prescriptions/",
+            self.normal_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_dosage(self):
         data = self.prescription_data(base_dosage="abc")
