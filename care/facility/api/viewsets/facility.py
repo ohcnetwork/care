@@ -64,14 +64,7 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
         return queryset
 
 
-class FacilityViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
+class FacilityViewSet(viewsets.ModelViewSet):
     """Viewset for facility CRUD operations."""
 
     queryset = Facility.objects.all().select_related(
@@ -201,6 +194,9 @@ class FacilityHubsViewSet(
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     lookup_field = "external_id"
+
+    def get_queryset(self):
+        return self.queryset.filter(spoke=self.get_facility())
 
     def get_facility(self):
         facilities = get_facility_queryset(self.request.user)

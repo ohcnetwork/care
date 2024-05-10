@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import IntegerChoices
+from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
@@ -48,7 +50,10 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
-HUB_RELATIONSHIP = [(1, "Tele ICU Hub")]
+
+class HubRelationship(IntegerChoices):
+    TELE_ICU_HUB = 1, _("Tele ICU Hub")
+
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
@@ -227,8 +232,22 @@ class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
         Facility, on_delete=models.CASCADE, related_name="spoke_set"
     )
     relationship = models.IntegerField(
-        choices=HUB_RELATIONSHIP, default=HUB_RELATIONSHIP[0][0]
+        choices=HubRelationship.choices, default=HubRelationship.TELE_ICU_HUB
     )
+
+    def save(self, *args, **kwargs):
+        if self.hub == self.spoke:
+            raise ValueError("Hub and Spoke cannot be the same")
+
+        if (
+            not self.pk
+            and FacilityHubSpoke.objects.filter(
+                hub=self.spoke, spoke=self.hub, deleted=False
+            ).exists()
+        ):
+            raise ValueError("Hub and Spoke already exists")
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"

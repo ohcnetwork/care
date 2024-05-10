@@ -103,7 +103,7 @@ class FacilityTests(TestUtils, APITestCase):
         self.client.force_authenticate(user=state_admin)
         response = self.client.post(
             f"/api/v1/facility/{facility.external_id}/hubs/",
-            {"hub_id": facility2.external_id},
+            {"hub": facility2.external_id},
         )
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
 
@@ -131,7 +131,7 @@ class FacilityTests(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
             f"/api/v1/facility/{facility.external_id}/hubs/",
-            {"hub_id": facility2.external_id},
+            {"hub": facility2.external_id},
         )
         self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
 

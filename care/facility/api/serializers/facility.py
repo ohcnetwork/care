@@ -13,6 +13,7 @@ from care.users.api.serializers.lsg import (
     WardSerializer,
 )
 from care.utils.csp.config import BucketType, get_client_config
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
@@ -153,37 +154,28 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
 
 class FacilityHubSerializer(serializers.ModelSerializer):
-    hub = FacilityBareMinimumSerializer(read_only=True)
-    spoke = FacilityBareMinimumSerializer(read_only=True)
-    hub_id = serializers.UUIDField(write_only=True)
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    hub = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True, write_only=True
+    )
+    hub_object = FacilityBareMinimumSerializer(read_only=True, source="hub")
+    spoke_object = FacilityBareMinimumSerializer(read_only=True, source="spoke")
 
     class Meta:
         model = FacilityHubSpoke
         fields = (
-            "external_id",
+            "id",
             "hub",
-            "hub_id",
-            "spoke",
+            "hub_object",
+            "spoke_object",
             "relationship",
             "created_date",
             "modified_date",
         )
-        read_only_fields = ("external_id", "spoke", "created_date", "modified_date")
+        read_only_fields = ("id", "spoke", "created_date", "modified_date")
 
     def validate(self, data):
-        hub = Facility.objects.get(external_id=data["hub_id"])
-        data["hub"] = hub
-        del data["hub_id"]
         data["spoke"] = self.context["facility"]
-
-        if data["hub"].external_id == data["spoke"].external_id:
-            raise serializers.ValidationError("Hub and Spoke cannot be same")
-
-        if FacilityHubSpoke.objects.filter(
-            hub=data["hub"], spoke=data["spoke"]
-        ).exists():
-            raise serializers.ValidationError("Hub and Spoke already exists")
-
         return data
 
 
