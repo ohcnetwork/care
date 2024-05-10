@@ -2,7 +2,12 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import MedibaseMedicine, Prescription, PrescriptionDosageType
+from care.facility.models import (
+    MedibaseMedicine,
+    MedicineAdministration,
+    Prescription,
+    PrescriptionDosageType,
+)
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -34,11 +39,20 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.normal_prescription = self.create_prescription()
+        self.discharged_prescription = self.create_prescription(
+            consultation=self.discharged_consultation
+        )
+        self.discharged_administration = self.create_medicine_administration(
+            prescription=self.discharged_prescription
+        )
 
     def create_prescription(self, **kwargs):
         patient = kwargs.pop("patient", self.patient)
+        consultation = kwargs.pop(
+            "consultation", self.create_consultation(patient, self.facility)
+        )
         data = {
-            "consultation": self.create_consultation(patient, self.facility),
+            "consultation": consultation,
             "medicine": MedibaseMedicine.objects.first(),
             "prescription_type": "REGULAR",
             "base_dosage": "1 mg",
@@ -50,6 +64,24 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         return Prescription.objects.create(
             **{**data, **kwargs, "prescribed_by": self.user}
         )
+
+    def create_medicine_administration(self, prescription, **kwargs):
+        return MedicineAdministration.objects.create(
+            prescription=prescription, administered_by=self.user, **kwargs
+        )
+
+    def test_administer_for_discharged_consultations(self):
+        prescription = self.discharged_prescription
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_archive_for_discharged_consultations(self):
+        res = self.client.post(
+            f"/api/v1/consultation/{self.discharged_prescription.consultation.external_id}/prescription_administration/{self.discharged_administration.external_id}/archive/"
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_administer_and_archive(self):
         # test administer

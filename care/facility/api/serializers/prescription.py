@@ -57,6 +57,13 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
         return super().validate(attrs)
 
+    def create(self, validated_data):
+        if validated_data["prescription"].consultation.discharge_date:
+            raise serializers.ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
+        return super().create(validated_data)
+
     class Meta:
         model = MedicineAdministration
         exclude = ("deleted",)

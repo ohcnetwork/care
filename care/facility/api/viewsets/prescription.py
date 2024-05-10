@@ -8,6 +8,7 @@ from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
@@ -76,6 +77,10 @@ class MedicineAdministrationViewSet(
     @extend_schema(tags=["prescription_administration"])
     @action(methods=["POST"], detail=True)
     def archive(self, request, *args, **kwargs):
+        if self.get_consultation_obj().discharge_date:
+            raise ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
         instance = self.get_object()
         if instance.archived_on:
             return Response(
