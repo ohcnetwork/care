@@ -641,6 +641,13 @@ class FacilityDischargedPatientFilterSet(filters.FilterSet):
     covin_id = filters.CharFilter(field_name="covin_id")
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
     number_of_doses = filters.NumberFilter(field_name="number_of_doses")
+    last_consultation__new_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__new_discharge_reason",
+        choices=NewDischargeReasonEnum.choices,
+    )
+    last_consultation_discharge_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__discharge_date"
+    )
 
 
 @extend_schema_view(tags=["patient"])
@@ -654,21 +661,56 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         PatientCustomOrderingFilter,
     )
     filterset_class = FacilityDischargedPatientFilterSet
-    queryset = PatientRegistration.objects.select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    queryset = (
+        PatientRegistration.objects.select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            "last_consultation",
+            "last_consultation__assigned_to",
+            "last_edited",
+            "created_by",
+        )
+        .annotate(
+            coalesced_dob=Coalesce(
+                "date_of_birth",
+                Func(
+                    F("year_of_birth"),
+                    Value(1),
+                    Value(1),
+                    function="MAKE_DATE",
+                    output_field=models.DateField(),
+                ),
+                output_field=models.DateField(),
+            ),
+            age_end=Case(
+                When(death_datetime__isnull=True, then=Now()),
+                default=F("death_datetime__date"),
+            ),
+        )
+        .annotate(
+            age=Func(
+                Value("year"),
+                Func(
+                    F("age_end"),
+                    F("coalesced_dob"),
+                    function="age",
+                ),
+                function="date_part",
+                output_field=models.IntegerField(),
+            ),
+            age_days=ExpressionWrapper(
+                ExtractDay(F("age_end") - F("coalesced_dob")),
+                output_field=models.IntegerField(),
+            ),
+        )
     )
 
     ordering_fields = [
