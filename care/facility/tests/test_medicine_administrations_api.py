@@ -83,6 +83,21 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_administer_non_home_facility(self):
+        self.client.force_authenticate(self.remote_user)
+        prescription = self.discharged_prescription
+        res = self.client.post(
+            f"/api/v1/consultation/{prescription.consultation.external_id}/prescriptions/{prescription.external_id}/administer/",
+        )
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_archive_non_home_facility(self):
+        self.client.force_authenticate(self.remote_user)
+        res = self.client.post(
+            f"/api/v1/consultation/{self.discharged_prescription.consultation.external_id}/prescription_administration/{self.discharged_administration.external_id}/archive/"
+        )
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_administer_and_archive(self):
         # test administer
         prescription = self.normal_prescription
