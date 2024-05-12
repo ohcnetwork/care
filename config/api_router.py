@@ -17,6 +17,7 @@ from care.facility.api.viewsets.asset import (
     AssetLocationViewSet,
     AssetPublicQRViewSet,
     AssetPublicViewSet,
+    AssetRetrieveConfigViewSet,
     AssetServiceViewSet,
     AssetTransactionViewSet,
     AssetViewSet,
@@ -204,6 +205,8 @@ facility_nested_router.register(
 # facility_nested_router.register("burn_rate", FacilityInventoryBurnRateViewSet)
 
 router.register("asset", AssetViewSet)
+router.register("asset_config", AssetRetrieveConfigViewSet)
+
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
 asset_nested_router.register(r"availability", AvailabilityViewSet)
 asset_nested_router.register(r"service_records", AssetServiceViewSet)
