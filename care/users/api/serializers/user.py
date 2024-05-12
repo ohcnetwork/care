@@ -388,6 +388,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "alt_phone_number",
             "user_type",
             "last_login",
+            "gender",
             "home_facility_object",
             "doctor_qualification",
             "doctor_experience_commenced_on",

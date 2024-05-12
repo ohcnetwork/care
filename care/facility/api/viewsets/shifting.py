@@ -176,8 +176,10 @@ class ShiftingViewSet(
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *ShiftingRequest.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**ShiftingRequest.CSV_ANNOTATE_FIELDS)
+                .values(*ShiftingRequest.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,

@@ -268,8 +268,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     review_interval = validated_data.pop(
                         "consultation__review_interval"
                     )
+                    validated_data["consultation"].review_interval = review_interval
                     if review_interval >= 0:
-                        validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
                             minutes=review_interval
                         )
