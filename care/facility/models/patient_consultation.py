@@ -311,7 +311,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             models.UniqueConstraint(
                 fields=["patient_no", "facility"],
                 name="unique_patient_no_within_facility",
-                condition=models.Q(patient_no__isnull=False),
+                condition=models.Q(patient_no__isnull=False)
+                & models.Q(new_discharge_reason__isnull=False),
             ),
         ]
 
