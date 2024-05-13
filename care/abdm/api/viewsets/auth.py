@@ -1,13 +1,14 @@
-import json
 import logging
 from datetime import datetime, timedelta
 
-from django.core.cache import cache
+import pytz
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from care.abdm.models import AbhaNumber, ConsentArtefact, Status
 from care.abdm.utils.api_call import AbdmGateway
 from care.abdm.utils.cipher import Cipher
 from care.abdm.utils.fhir import Fhir
@@ -241,7 +242,49 @@ class NotifyView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        cache.set(data["notification"]["consentId"], json.dumps(data))
+        patient_abha_identifier = data["notification"]["consentDetail"]["patient"]["id"]
+        abha_object = AbhaNumber.objects.filter(
+            Q(abha_number=patient_abha_identifier)
+            | Q(health_id=patient_abha_identifier)
+        ).first()
+
+        if not abha_object:
+            return Response(
+                {"detail": "Patient with given id not found"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        ConsentArtefact.objects.create(
+            consent_id=data["notification"]["consentDetail"]["consentId"],
+            status=data["notification"]["status"],
+            patient_abha=abha_object,
+            care_contexts=data["notification"]["consentDetail"]["careContexts"],
+            purpose=data["notification"]["consentDetail"]["purpose"]["code"],
+            hip=data["notification"]["consentDetail"]["hip"]["id"],
+            cm=data["notification"]["consentDetail"]["consentManager"]["id"],
+            hi_types=data["notification"]["consentDetail"]["hiTypes"],
+            access_mode=data["notification"]["consentDetail"]["permission"][
+                "accessMode"
+            ],
+            from_time=data["notification"]["consentDetail"]["permission"]["dateRange"][
+                "from"
+            ],
+            to_time=data["notification"]["consentDetail"]["permission"]["dateRange"][
+                "to"
+            ],
+            expiry=data["notification"]["consentDetail"]["permission"]["dataEraseAt"],
+            frequency_unit=data["notification"]["consentDetail"]["permission"][
+                "frequency"
+            ]["unit"],
+            frequency_value=data["notification"]["consentDetail"]["permission"][
+                "frequency"
+            ]["value"],
+            frequency_repeats=data["notification"]["consentDetail"]["permission"][
+                "frequency"
+            ]["repeats"],
+            signature=data["notification"]["signature"],
+            key_material_private_key="",  # added to prevent key material generation on save
+        )
 
         AbdmGateway().on_notify(
             {
@@ -260,30 +303,38 @@ class RequestDataView(GenericAPIView):
         data = request.data
 
         consent_id = data["hiRequest"]["consent"]["id"]
-        consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+        consent = ConsentArtefact.objects.filter(consent_id=consent_id).last()
 
-        # TODO: check if from and to are in range and consent expiry is greater than today
-        # consent_from = datetime.fromisoformat(
-        #     consent["notification"]["permission"]["dateRange"]["from"][:-1]
-        # )
-        # consent_to = datetime.fromisoformat(
-        #     consent["notification"]["permission"]["dateRange"]["to"][:-1]
-        # )
-        # now = datetime.now()
-        # if not consent_from < now and now > consent_to:
-        #     return Response({}, status=status.HTTP_403_FORBIDDEN)
+        from_time = datetime.fromisoformat(data["hiRequest"]["dateRange"]["from"])
+        to_time = datetime.fromisoformat(data["hiRequest"]["dateRange"]["to"])
+
+        if (
+            not consent
+            or consent.status != Status.GRANTED
+            or datetime.now(pytz.utc) >= consent.expiry
+            or from_time < consent.from_time
+            or to_time > consent.to_time
+        ):
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         on_data_request_response = AbdmGateway().on_data_request(
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
         if not on_data_request_response.status_code == 202:
-            return Response({}, status=status.HTTP_202_ACCEPTED)
             return Response(
                 on_data_request_response, status=status.HTTP_400_BAD_REQUEST
             )
+
+        care_contexts = filter(
+            lambda care_context: PatientConsultation.objects.filter(
+                external_id=care_context["careContextReference"],
+                created_date__gte=from_time,
+                created_date__lte=to_time,
+            ).first()
+            is not None,
+            consent.care_contexts,
+        )
 
         cipher = Cipher(
             data["hiRequest"]["keyMaterial"]["dhPublicKey"]["keyValue"],
@@ -314,12 +365,10 @@ class RequestDataView(GenericAPIView):
                                             ).create_record(record)
                                         )["data"],
                                     },
-                                    consent["notification"]["consentDetail"]["hiTypes"],
+                                    consent.hi_types,
                                 )
                             ),
-                            consent["notification"]["consentDetail"]["careContexts"][
-                                :-2:-1
-                            ],
+                            care_contexts,
                         )
                     ),
                     [],
@@ -340,21 +389,19 @@ class RequestDataView(GenericAPIView):
         try:
             AbdmGateway().data_notify(
                 {
-                    "health_id": consent["notification"]["consentDetail"]["patient"][
-                        "id"
-                    ],
+                    "health_id": consent.patient_abha.health_id,
                     "consent_id": data["hiRequest"]["consent"]["id"],
                     "transaction_id": data["transactionId"],
-                    "session_status": "TRANSFERRED"
-                    if data_transfer_response
-                    and data_transfer_response.status_code == 202
-                    else "FAILED",
+                    "session_status": (
+                        "TRANSFERRED"
+                        if data_transfer_response
+                        and data_transfer_response.status_code == 202
+                        else "FAILED"
+                    ),
                     "care_contexts": list(
                         map(
                             lambda context: {"id": context["careContextReference"]},
-                            consent["notification"]["consentDetail"]["careContexts"][
-                                :-2:-1
-                            ],
+                            care_contexts,
                         )
                     ),
                 }
