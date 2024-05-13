@@ -520,6 +520,12 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     )
     reply_to = serializers.UUIDField(required=False, allow_null=True)
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if ret.get("reply_to"):
+            ret["reply_to"] = instance.reply_to.external_id
+        return ret
+
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
             raise serializers.ValidationError({"note": ["Note cannot be empty"]})
@@ -539,6 +545,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         else:
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
+
+        if validated_data.get("reply_to"):
+            validated_data["reply_to"] = PatientNotes.objects.get(
+                external_id=validated_data["reply_to"]
+            )
 
         user = self.context["request"].user
         note = validated_data.get("note")
