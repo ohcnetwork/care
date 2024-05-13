@@ -518,6 +518,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     thread = serializers.ChoiceField(
         choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
+    reply_to = serializers.UUIDField(required=False, allow_null=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -587,6 +588,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "modified_date",
             "last_edited_by",
             "last_edited_date",
+            "reply_to",
         )
         read_only_fields = (
             "id",
