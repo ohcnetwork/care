@@ -115,7 +115,7 @@ PAIN_SCALE_ENHANCED = {
             "type": "object",
             "properties": {
                 "region": {"type": "string"},
-                "scale": {"type": "number", "minimum": 1, "maximum": 5},
+                "scale": {"type": "number", "minimum": 1, "maximum": 10},
                 "description": {"type": "string"},
             },
             "additionalProperties": False,

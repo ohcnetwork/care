@@ -179,6 +179,17 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             )
         # Authorisation Checks End
 
+        # Patient needs to have a bed assigned for admission
+        if (
+            not consultation.current_bed
+            and consultation.suggestion == SuggestionChoices.A
+        ):
+            raise ValidationError(
+                {
+                    "bed": "Patient does not have a bed assigned. Please assign a bed first"
+                }
+            )
+
         with transaction.atomic():
             if (
                 validated_data.get("rounds_type")
@@ -257,8 +268,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     review_interval = validated_data.pop(
                         "consultation__review_interval"
                     )
+                    validated_data["consultation"].review_interval = review_interval
                     if review_interval >= 0:
-                        validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
                             minutes=review_interval
                         )

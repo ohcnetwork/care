@@ -3,12 +3,12 @@ name: Docs
 on:
   push:
     branches:
-      - master
+      - develop
     paths:
       - "docs/**"
   pull_request:
     branches:
-      - master
+      - develop
     paths:
       - "docs/**"
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
           retention-days: 30
 
   deploy-docs:
-    if: github.repository == 'coronasafe/care' && github.ref == 'refs/heads/master'
+    if: github.repository == 'coronasafe/care' && github.ref == 'refs/heads/develop'
     name: Deploy docs
     runs-on: ubuntu-latest
     needs: build-docs

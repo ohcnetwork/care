@@ -14,6 +14,7 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
 from care.utils.jwks.generate_jwk import generate_encoded_jwks
+from plug_config import manager
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
@@ -58,7 +59,6 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
 # CACHES
@@ -76,7 +76,6 @@ CACHES = {
         },
     }
 }
-
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -119,8 +118,15 @@ LOCAL_APPS = [
     "care.audit_log",
     "care.hcx",
 ]
+
+PLUGIN_APPS = manager.get_apps()
+
+# Plugin Section
+
+PLUGIN_CONFIGS = manager.get_config()
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -387,7 +393,6 @@ CELERY_TASK_SOFT_TIME_LIMIT = 1800
 # https://github.com/fabiocaccamo/django-maintenance-mode/tree/main#configuration-optional
 MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 
-
 #  Password Reset
 # ------------------------------------------------------------------------------
 # https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
@@ -395,7 +400,6 @@ DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
-
 
 # Hardcopy settings (pdf generation)
 # ------------------------------------------------------------------------------
@@ -485,7 +489,6 @@ VAPID_PRIVATE_KEY = env(
 )
 SEND_SMS_NOTIFICATION = False
 
-
 # Cloud and Buckets
 # ------------------------------------------------------------------------------
 
@@ -540,6 +543,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
+        "audio/mp4"
         # Documents
         "text/plain",
         "text/csv",
@@ -566,7 +570,6 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     if BUCKET_ENDPOINT
     else FACILITY_S3_BUCKET_ENDPOINT,
 )
-
 
 # for setting the shifting mode
 PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
@@ -602,7 +605,6 @@ HIP_NAME_SUFFIX = env("HIP_NAME_SUFFIX", default="")
 ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
 X_CM_ID = env("X_CM_ID", default="sbx")
 FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
-
 
 IS_PRODUCTION = False
 

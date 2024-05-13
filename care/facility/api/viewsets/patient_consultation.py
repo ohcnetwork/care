@@ -19,6 +19,7 @@ from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
+from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
 from care.facility.models.patient_consultation import PatientConsultation
@@ -95,9 +96,12 @@ class PatientConsultationViewSet(
                 patient__facility__district=self.request.user.district
             )
         allowed_facilities = get_accessible_facilities(self.request.user)
-        applied_filters = Q(patient__facility__id__in=allowed_facilities)
-        applied_filters |= Q(assigned_to=self.request.user)
-        applied_filters |= Q(patient__assigned_to=self.request.user)
+        # A user should be able to see all the consultations of a patient if the patient is active in an accessible facility
+        applied_filters = Q(
+            Q(patient__is_active=True) & Q(patient__facility__id__in=allowed_facilities)
+        )
+        # A user should be able to see all consultations part of their home facility
+        applied_filters |= Q(facility=self.request.user.home_facility)
         return self.queryset.filter(applied_filters)
 
     @extend_schema(tags=["consultation"])
@@ -225,11 +229,22 @@ class PatientConsultationViewSet(
     )
     @action(detail=False, methods=["GET"])
     def patient_from_asset(self, request):
-        consultation = (
-            PatientConsultation.objects.select_related("patient")
+        consultation_bed = (
+            ConsultationBed.objects.filter(
+                Q(assets=request.user.asset)
+                | Q(bed__in=request.user.asset.bed_set.all()),
+                end_date__isnull=True,
+            )
             .order_by("-id")
+            .first()
+        )
+        if not consultation_bed:
+            raise NotFound({"detail": "No consultation bed found for this asset"})
+
+        consultation = (
+            PatientConsultation.objects.order_by("-id")
             .filter(
-                current_bed__bed__in=request.user.asset.bed_set.all(),
+                current_bed=consultation_bed,
                 patient__is_active=True,
             )
             .only("external_id", "patient__external_id")
@@ -237,7 +252,25 @@ class PatientConsultationViewSet(
         )
         if not consultation:
             raise NotFound({"detail": "No consultation found for this asset"})
-        return Response(PatientConsultationIDSerializer(consultation).data)
+
+        asset_beds = []
+        if preset_name := request.query_params.get("preset_name", None):
+            asset_beds = AssetBed.objects.filter(
+                asset__current_location=request.user.asset.current_location,
+                bed=consultation_bed.bed,
+                meta__preset_name__icontains=preset_name,
+            ).select_related("bed", "asset")
+
+        return Response(
+            PatientConsultationIDSerializer(
+                {
+                    "patient_id": consultation.patient.external_id,
+                    "consultation_id": consultation.external_id,
+                    "bed_id": consultation_bed.bed.external_id,
+                    "asset_beds": asset_beds,
+                }
+            ).data
+        )
 
 
 def dev_preview_discharge_summary(request, consultation_id):

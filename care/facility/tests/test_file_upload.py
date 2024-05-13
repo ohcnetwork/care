@@ -1,6 +1,9 @@
+import json
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models.file_upload import FileUpload
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -46,3 +49,61 @@ class FileUploadApiTestCase(TestUtils, APITestCase):
                 },
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class ConsentFileUploadApiTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user("nurse", cls.district, home_facility=cls.facility)
+        cls.patient = cls.create_patient(
+            cls.district, cls.facility, local_body=cls.local_body
+        )
+        cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+
+    def test_consent_file_upload(self):
+        response = self.client.patch(
+            f"/api/v1/consultation/{self.consultation.external_id}/",
+            {
+                "consent_records": json.dumps(
+                    [
+                        {
+                            "id": "consent-12345",
+                            "type": 2,
+                            "patient_code_status": 1,
+                        }
+                    ]
+                )
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        upload_response = self.client.post(
+            "/api/v1/files/",
+            {
+                "original_name": "test.pdf",
+                "file_type": "CONSENT_RECORD",
+                "name": "Test File",
+                "associating_id": "consent-12345",
+                "file_category": "UNSPECIFIED",
+                "mime_type": "application/pdf",
+            },
+        )
+
+        self.assertEqual(upload_response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(
+            FileUpload.objects.filter(associating_id="consent-12345").count(), 1
+        )
+
+        all_files = self.client.get(
+            "/api/v1/files/?associating_id=consent-12345&file_type=CONSENT_RECORD&is_archived=false"
+        )
+
+        self.assertEqual(all_files.status_code, status.HTTP_200_OK)
+        self.assertEqual(all_files.data["count"], 1)
+        self.assertEqual(all_files.data["results"][0]["name"], "Test File")

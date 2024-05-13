@@ -25,15 +25,26 @@ jobs:
         with:
           load: true
           set: |
-              *.cache-from=type=local,src=/tmp/.buildx-cache
-              *.cache-to=type=local,dest=/tmp/.buildx-cache-new
+            *.cache-from=type=local,src=/tmp/.buildx-cache
+            *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
 
       - name: Start services
-        run: docker compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --wait --no-build
+        run: |
+          docker compose \
+            -f docker-compose.yaml \
+            -f docker-compose.local.yaml \
+            up -d --wait ||\
+          docker compose \
+            -f docker-compose.yaml \
+            -f docker-compose.local.yaml \
+            logs
 
       - name: Check migrations
         run: make checkmigration
+
+      - name: Validate integrity of fixtures
+        run: make load-dummy-data
 
       - name: Run tests
         run: make test-coverage
