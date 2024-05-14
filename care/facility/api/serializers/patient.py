@@ -551,9 +551,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
                 external_id=validated_data["reply_to"]
             )
             if reply_to_note.thread != validated_data["thread"]:
-                raise serializers.ValidationError("Reply to note should be in the same thread")
+                raise serializers.ValidationError(
+                    "Reply to note should be in the same thread"
+                )
             if reply_to_note.consultation != validated_data.get("consultation"):
-                raise serializers.ValidationError("Reply to note should be in the same consultation")
+                raise serializers.ValidationError(
+                    "Reply to note should be in the same consultation"
+                )
             validated_data["reply_to"] = reply_to_note
 
         user = self.context["request"].user
