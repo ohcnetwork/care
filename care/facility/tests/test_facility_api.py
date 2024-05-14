@@ -21,6 +21,24 @@ class FacilityTests(TestUtils, APITestCase):
         response = self.client.get("/api/v1/facility/")
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
+    def test_facility_search(self):
+        search_term = "test"
+        self.create_facility(
+            self.super_user, self.district, self.local_body, {"name": "test facility"}
+        )
+        self.create_facility(
+            self.super_user, self.district, self.local_body, {"name": "test"}
+        )
+        self.create_facility(
+            self.super_user, self.district, self.local_body, {"name": "test facility 1"}
+        )
+        response = self.client.get(
+            f"/api/v1/facility/?limit=3&page=1&offset=0&search_text={search_term}"
+        )
+        searched_data = response.json()["results"]
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(searched_data[0]["name"], search_term)
+
     def test_create(self):
         dist_admin = self.create_user("dist_admin", self.district, user_type=30)
         sample_data = {

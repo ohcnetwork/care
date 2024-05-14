@@ -1,4 +1,7 @@
+from functools import reduce
+
 from django.conf import settings
+from django.db.models import Case, Q, Value, When
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -47,6 +50,28 @@ class FacilityFilter(filters.FilterSet):
         return queryset
 
 
+class SearchFacilities(drf_filters.SearchFilter):
+    def filter_queryset(self, request, queryset, view):
+        search_fields = getattr(view, "search_fields", None)
+        search_term = request.query_params.get("search_text")
+        if search_fields and search_term:
+            queries = [
+                Q(**{f"{field}__iexact": search_term}) for field in search_fields
+            ]
+            or_queries = reduce(lambda x, y: x | y, queries)
+            queryset = (
+                super()
+                .filter_queryset(request, queryset, view)
+                .annotate(
+                    match_facilities=Case(
+                        When(or_queries, then=Value(0)), default=Value(1)
+                    )
+                )
+                .order_by("match_facilities")
+            )
+        return queryset
+
+
 class FacilityQSPermissions(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
         if request.user.is_superuser:
@@ -81,7 +106,7 @@ class FacilityViewSet(
     filter_backends = (
         FacilityQSPermissions,
         filters.DjangoFilterBackend,
-        drf_filters.SearchFilter,
+        SearchFacilities,
     )
     filterset_class = FacilityFilter
     lookup_field = "external_id"
