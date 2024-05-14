@@ -58,6 +58,15 @@ def create_consultation_event_entry(
     ).values_list("id", "fields")
     for group_id, group_fields in groups:
         if set(group_fields) & fields_to_store:
+            value = {}
+            for field in group_fields:
+                try:
+                    value[field] = data[field]
+                except KeyError:
+                    value[field] = getattr(object_instance, field, None)
+            # if all values in the group are Falsy, skip creating the event for this group
+            if all(not v for v in value.values()):
+                continue
             PatientConsultationEvent.objects.select_for_update().filter(
                 consultation_id=consultation_id,
                 event_type=group_id,
@@ -66,12 +75,6 @@ def create_consultation_event_entry(
                 object_id=object_instance.id,
                 created_date__lt=created_date,
             ).update(is_latest=False)
-            value = {}
-            for field in group_fields:
-                try:
-                    value[field] = data[field]
-                except KeyError:
-                    value[field] = getattr(object_instance, field, None)
             batch.append(
                 PatientConsultationEvent(
                     consultation_id=consultation_id,
@@ -99,7 +102,7 @@ def create_consultation_events(
     objects: list | QuerySet | Model,
     caused_by: int,
     created_date: datetime = None,
-    old: Model = None,
+    old: Model | None = None,
 ):
     if created_date is None:
         created_date = now()

@@ -62,6 +62,7 @@ from care.facility.models import (
     Facility,
     FacilityPatientStatsHistory,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
     ShiftingRequest,
 )
@@ -109,7 +110,7 @@ class PatientFilterSet(filters.FilterSet):
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     patient_no = filters.CharFilter(
-        field_name="last_consultation__patient_no", lookup_expr="icontains"
+        field_name="last_consultation__patient_no", lookup_expr="iexact"
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
@@ -893,6 +894,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
 
 
 class PatientNotesFilterSet(filters.FilterSet):
+    thread = filters.ChoiceFilter(choices=PatientNoteThreadChoices.choices)
     consultation = filters.CharFilter(field_name="consultation__external_id")
 
 
