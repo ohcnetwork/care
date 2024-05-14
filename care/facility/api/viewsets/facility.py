@@ -181,14 +181,7 @@ class AllFacilityViewSet(
     search_fields = ["name", "district__name", "state__name"]
 
 
-class FacilityHubsViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
+class FacilityHubsViewSet(viewsets.ModelViewSet):
     queryset = FacilityHubSpoke.objects.all().select_related("spoke")
     serializer_class = FacilityHubSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
