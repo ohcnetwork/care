@@ -26,7 +26,7 @@ def fix_duplicate_investigation_names(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0414_remove_bed_old_name"),
+        ("facility", "0432_alter_fileupload_file_type"),
     ]
 
     operations = [
