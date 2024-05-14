@@ -13,8 +13,11 @@ from care.abdm.api.viewsets.auth import (
     OnInitView,
     RequestDataView,
 )
+from care.abdm.api.viewsets.consent import ConsentCallbackViewSet
+from care.abdm.api.viewsets.health_information import HealthInformationCallbackViewSet
 from care.abdm.api.viewsets.hip import HipViewSet
 from care.abdm.api.viewsets.monitoring import HeartbeatView
+from care.abdm.api.viewsets.patients import PatientsCallbackViewSet
 from care.abdm.api.viewsets.status import NotifyView as PatientStatusNotifyView
 from care.abdm.api.viewsets.status import SMSOnNotifyView
 
@@ -31,6 +34,45 @@ abdm_router.register("profile/v1.0/patients/", HipViewSet, basename="hip")
 
 abdm_urlpatterns = [
     *abdm_router.urls,
+    path(
+        "v0.5/consent-requests/on-init",
+        ConsentCallbackViewSet.as_view({"post": "consent_request__on_init"}),
+        name="abdm__consent_request__on_init",
+    ),
+    path(
+        "v0.5/consent-requests/on-status",
+        ConsentCallbackViewSet.as_view({"post": "consent_request__on_status"}),
+        name="abdm__consent_request__on_status",
+    ),
+    path(
+        "v0.5/consents/hiu/notify",
+        ConsentCallbackViewSet.as_view({"post": "consents__hiu__notify"}),
+        name="abdm__consents__hiu__notify",
+    ),
+    path(
+        "v0.5/consents/on-fetch",
+        ConsentCallbackViewSet.as_view({"post": "consents__on_fetch"}),
+        name="abdm__consents__on_fetch",
+    ),
+    path(
+        "v0.5/health-information/hiu/on-request",
+        HealthInformationCallbackViewSet.as_view(
+            {"post": "health_information__hiu__on_request"}
+        ),
+        name="abdm__health_information__hiu__on_request",
+    ),
+    path(
+        "v0.5/health-information/transfer",
+        HealthInformationCallbackViewSet.as_view(
+            {"post": "health_information__transfer"}
+        ),
+        name="abdm__health_information__transfer",
+    ),
+    path(
+        "v0.5/patients/on-find",
+        PatientsCallbackViewSet.as_view({"post": "patients__on_find"}),
+        name="abdm__patients__on_find",
+    ),
     path(
         "v0.5/users/auth/on-fetch-modes",
         OnFetchView.as_view(),
