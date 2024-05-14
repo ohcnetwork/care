@@ -1,6 +1,10 @@
+import re
+
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Exists, OuterRef, Q, Subquery
+from django.db.models import CharField, Exists, F, OuterRef, Q, Subquery, Value
+from django.db.models.fields.json import KT
+from django.db.models.functions import Coalesce, NullIf
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -9,7 +13,7 @@ from django.utils import timezone
 from django_filters import rest_framework as filters
 from django_filters.constants import EMPTY_VALUES
 from djqscsv import render_to_csv_response
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions
 from rest_framework import filters as drf_filters
@@ -29,6 +33,7 @@ from rest_framework.serializers import UUIDField
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.asset import (
+    AssetConfigSerializer,
     AssetLocationSerializer,
     AssetSerializer,
     AssetServiceSerializer,
@@ -58,6 +63,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
+from config.authentication import MiddlewareAuthentication
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
@@ -411,6 +417,69 @@ class AssetViewSet(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
+    queryset = Asset.objects.all()
+    authentication_classes = [MiddlewareAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = AssetConfigSerializer
+
+    @extend_schema(
+        tags=["asset"],
+        parameters=[
+            OpenApiParameter(
+                name="middleware_hostname",
+                location=OpenApiParameter.QUERY,
+            )
+        ],
+    )
+    def list(self, request, *args, **kwargs):
+        """
+        This API is used by the middleware to retrieve assets and their configurations
+        for a given facility and middleware hostname.
+        """
+        middleware_hostname = request.query_params.get("middleware_hostname")
+        if not middleware_hostname:
+            return Response(
+                {"middleware_hostname": "Middleware hostname is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if match := re.match(r"^(https?://)?([^\s/]+)/?$", middleware_hostname):
+            middleware_hostname = match.group(2)  # extract the hostname from the URL
+        else:
+            return Response(
+                {"middleware_hostname": "Invalid middleware hostname"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        queryset = (
+            self.get_queryset()
+            .filter(
+                current_location__facility=self.request.user.facility,
+                asset_class__in=[
+                    AssetClasses.ONVIF.name,
+                    AssetClasses.HL7MONITOR.name,
+                ],
+            )
+            .annotate(
+                resolved_middleware_hostname=Coalesce(
+                    NullIf(KT("meta__middleware_hostname"), Value("")),
+                    NullIf(F("current_location__middleware_address"), Value("")),
+                    F("current_location__facility__middleware_address"),
+                    output_field=CharField(),
+                )
+            )
+            .filter(resolved_middleware_hostname=middleware_hostname)
+            .exclude(
+                Q(meta__local_ip_address__isnull=True)
+                | Q(meta__local_ip_address__exact=""),
+            )
+        ).only("external_id", "meta", "description", "name", "asset_class")
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class AssetTransactionFilter(filters.FilterSet):

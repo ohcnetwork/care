@@ -46,11 +46,17 @@
         <span class="text-sm text-gray-500">Gender:</span> {{patient.get_gender_display}}
       </p>
       <p>
-        <span class="text-sm text-gray-500">Age:</span> {{patient.age}}
+        <span class="text-sm text-gray-500">Age:</span> {{patient.get_age}}
       </p>
-      <p>
-        <span class="text-sm text-gray-500">Date of Birth:</span> {{patient.date_of_birth}}
-      </p>
+      {% if patient.date_of_birth %}
+        <p>
+          <span class="text-sm text-gray-500">Date of Birth:</span> {{patient.date_of_birth}}
+        </p>
+      {% else %}
+        <p>
+          <span class="text-sm text-gray-500">Year of Birth:</span> {{patient.year_of_birth}}
+        </p>
+      {% endif %}
       <p>
         <span class="text-sm text-gray-500">Blood Group:</span> {{patient.blood_group}}
       </p>
@@ -480,8 +486,12 @@
             <td class="p-1 whitespace-normal text-sm">
               {{ prescription.medicine_name }}
             </td>
-            <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+            <td class="p-1 whitespace-normal text-sm">
+              {{ prescription.base_dosage }}
+              {% if prescription.dosage_type == 'TITRATED' %}
+                to {{ prescription.target_dosage }}
+              <p class="text-xs mt-1"><span class="font-bold">Instruction on titration:</span> {{ prescription.instruction_on_titration }}</p>
+              {% endif %}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -538,7 +548,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}
@@ -885,7 +895,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.route }}
@@ -942,7 +952,7 @@
               {{ prescription.medicine_name }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{ prescription.dosage }}
+              {{ prescription.base_dosage }}
             </td>
             <td class="p-1 whitespace-no-wrap text-sm">
               {{ prescription.max_dosage }}

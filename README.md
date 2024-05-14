@@ -14,6 +14,7 @@
 [![Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)](https://github.com/pydanny/cookiecutter-django/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Chat](https://img.shields.io/badge/-Join%20us%20on%20slack-7b1c7d?logo=slack)](https://slack.coronasafe.in/)
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=&message=Open%20in%20Dev%20Containers&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/coronasafe/care)
 
 This is the backend for care. an open source platform for managing patients, health workers, and hospitals.
 
@@ -36,10 +37,11 @@ You can find the docs at https://care-be-docs.coronasafe.network
 
 ### Staging Deployments
 
-Staging instances for testing are automatically deployed on every commit to the `master` branch. The staging instances
-are available at:
+Dev and staging instances for testing are automatically deployed on every commit to the `develop` and `staging` branches.
+The staging instances are available at:
 
 - https://careapi.ohc.network
+- https://careapi-staging.ohc.network
 
 ### Self hosting
 

@@ -13,7 +13,7 @@ class UUIDValidator(object):
             raise serializers.ValidationError("invalid uuid")
 
 
-class ExternalIdSerializerField(serializers.Field):
+class ExternalIdSerializerField(serializers.UUIDField):
     def __init__(self, queryset=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = queryset

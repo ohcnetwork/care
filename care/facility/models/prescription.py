@@ -5,6 +5,9 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
 
+from care.facility.models.mixins.permissions.patient import (
+    ConsultationRelatedPermissionMixin,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import dosage_validator
@@ -37,6 +40,12 @@ class Routes(enum.Enum):
 class PrescriptionType(enum.Enum):
     DISCHARGE = "DISCHARGE"
     REGULAR = "REGULAR"
+
+
+class PrescriptionDosageType(models.TextChoices):
+    REGULAR = "REGULAR", "REGULAR"
+    TITRATED = "TITRATED", "TITRATED"
+    PRN = "PRN", "PRN"
 
 
 def generate_choices(enum_class):
@@ -87,7 +96,7 @@ class MedibaseMedicine(models.Model):
         self.save(update_fields=["deleted"])
 
 
-class Prescription(BaseModel):
+class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(
         PatientConsultation,
         on_delete=models.PROTECT,
@@ -112,11 +121,20 @@ class Prescription(BaseModel):
         blank=True,
         null=True,
     )
-    dosage = models.CharField(
+    base_dosage = models.CharField(
         max_length=100, blank=True, null=True, validators=[dosage_validator]
     )
+    dosage_type = models.CharField(
+        max_length=100,
+        choices=PrescriptionDosageType.choices,
+        default=PrescriptionDosageType.REGULAR.value,
+    )
 
-    is_prn = models.BooleanField(default=False)
+    # titrated fields
+    target_dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
+    )
+    instruction_on_titration = models.TextField(blank=True, null=True)
 
     # non prn fields
     frequency = models.CharField(
@@ -162,15 +180,25 @@ class Prescription(BaseModel):
     def medicine_name(self):
         return str(self.medicine) if self.medicine else self.medicine_old
 
+    @property
+    def last_administration(self):
+        return self.administrations.order_by("-administered_date").first()
+
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
+
     def __str__(self):
         return self.medicine + " - " + self.consultation.patient.name
 
 
-class MedicineAdministration(BaseModel):
+class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.PROTECT,
         related_name="administrations",
+    )
+    dosage = models.CharField(
+        max_length=100, blank=True, null=True, validators=[dosage_validator]
     )
     notes = models.TextField(default="", blank=True)
     administered_by = models.ForeignKey(
@@ -194,6 +222,12 @@ class MedicineAdministration(BaseModel):
             + " - "
             + self.prescription.consultation.patient.name
         )
+
+    def get_related_consultation(self):
+        return self.prescription.consultation
+
+    def has_object_write_permission(self, request):
+        return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
     def validate(self) -> None:
         if self.prescription.discontinued:

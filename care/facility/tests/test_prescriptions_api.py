@@ -20,13 +20,22 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         super().setUp()
         self.consultation = self.create_consultation(self.patient, self.facility)
         self.medicine = MedibaseMedicine.objects.first()
+        self.medicine2 = MedibaseMedicine.objects.all()[1]
 
         self.normal_prescription_data = {
             "medicine": self.medicine.id,
             "prescription_type": "REGULAR",
-            "dosage": "1 mg",
+            "base_dosage": "1 mg",
             "frequency": "OD",
-            "is_prn": False,
+            "dosage_type": "REGULAR",
+        }
+
+        self.normal_prescription_data2 = {
+            "medicine": self.medicine2.external_id,
+            "prescription_type": "REGULAR",
+            "base_dosage": "1 mg",
+            "frequency": "OD",
+            "dosage_type": "REGULAR",
         }
 
     def test_create_normal_prescription(self):
@@ -69,3 +78,74 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             self.normal_prescription_data,
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_titrated_prescription(self):
+        titrated_prescription_data = {
+            **self.normal_prescription_data,
+            "dosage_type": "TITRATED",
+            "target_dosage": "2 mg",
+        }
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            titrated_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        titrated_prescription_data = {
+            **self.normal_prescription_data,
+            "dosage_type": "TITRATED",
+        }
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            titrated_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_prn_prescription(self):
+        prn_prescription_data = {
+            **self.normal_prescription_data,
+            "dosage_type": "PRN",
+            "indicator": "Test Indicator",
+        }
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            prn_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        prn_prescription_data = {
+            **self.normal_prescription_data,
+            "dosage_type": "PRN",
+        }
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            prn_prescription_data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_medicine_filter_for_prescription(self):
+        # post 2 prescriptions with different medicines
+        self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            self.normal_prescription_data,
+        )
+        self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            self.normal_prescription_data2,
+        )
+
+        # get all prescriptions without medicine filter
+        response = self.client.get(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+        )
+        self.assertEqual(response.data["count"], 2)
+
+        # get all prescriptions with medicine filter
+        response = self.client.get(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/?medicine={self.medicine.external_id}",
+        )
+
+        for prescription in response.data["results"]:
+            self.assertEqual(
+                prescription["medicine_object"]["name"], self.medicine.name
+            )

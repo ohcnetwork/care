@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.facility.models import PatientNoteThreadChoices
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
@@ -22,6 +23,7 @@ class ExpectedPatientNoteKeys(Enum):
     MODIFIED_DATE = "modified_date"
     LAST_EDITED_BY = "last_edited_by"
     LAST_EDITED_DATE = "last_edited_date"
+    THREAD = "thread"
     USER_TYPE = "user_type"
 
 
@@ -131,6 +133,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         data = {
             "facility": patient.facility or self.facility,
             "note": note,
+            "thread": PatientNoteThreadChoices.DOCTORS,
         }
         data.update(kwargs)
         self.client.force_authenticate(user=created_by)
@@ -140,7 +143,11 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.state_admin)
         patientId = self.patient.external_id
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+            f"/api/v1/patient/{patientId}/notes/",
+            {
+                "consultation": self.consultation.external_id,
+                "thread": PatientNoteThreadChoices.DOCTORS,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.json()["results"], list)
@@ -409,6 +416,21 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         )
         self.assertNotContains(res, self.patient.external_id)
 
+    def test_filter_by_review_missed(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(self.get_base_url() + "?review_missed=true")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        for patient in res.json()["results"]:
+            self.assertLess(patient["review_time"], now())
+
+        res = self.client.get(self.get_base_url() + "?review_missed=false")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        for patient in res.json()["results"]:
+            if patient["review_time"]:
+                self.assertGreaterEqual(patient["review_time"], now())
+            else:
+                self.assertIsNone(patient["review_time"])
+
 
 class PatientTransferTestCase(TestUtils, APITestCase):
     @classmethod
@@ -448,7 +470,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.destination_facility.external_id,
             },
         )
@@ -477,7 +499,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.facility.external_id,
             },
         )
@@ -496,7 +518,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
             {
-                "date_of_birth": "1992-04-01",
+                "year_of_birth": 1992,
                 "facility": self.destination_facility.external_id,
             },
         )
