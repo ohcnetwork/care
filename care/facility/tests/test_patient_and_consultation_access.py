@@ -51,6 +51,7 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
             user_type=15,
         )
         cls.patient = cls.create_patient(cls.district, cls.remote_facility)
+        cls.patient1 = cls.create_patient(cls.district, cls.remote_facility)
 
     def list_patients(self, **kwargs):
         return self.client.get("/api/v1/patient/", data=kwargs)
@@ -77,6 +78,40 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
             },
             format="json",
         )
+
+    def test_discharge_patient_ordering_filter(self):
+        consultation1 = self.create_consultation(
+            self.patient,
+            self.home_facility,
+            suggestion="A",
+            encounter_date=make_aware(datetime.datetime(2024, 1, 3)),
+        )
+        consultation2 = self.create_consultation(
+            self.patient1,
+            self.home_facility,
+            suggestion="A",
+            encounter_date=make_aware(datetime.datetime(2024, 1, 1)),
+        )
+        self.discharge(consultation1, discharge_date="2024-01-04T00:00:00Z")
+        self.discharge(consultation2, discharge_date="2024-01-02T00:00:00Z")
+
+        # order by reverse modified date
+        patients_order = [self.patient1, self.patient]
+        response = self.client.get(
+            f"/api/v1/facility/{self.home_facility.external_id}/discharged_patients/?ordering=-modified_date",
+        )
+        response = response.json()["results"]
+        for i in range(len(response)):
+            self.assertEqual(str(patients_order[i].external_id), response[i]["id"])
+
+        # order by modified date
+        patients_order = patients_order[::-1]
+        response = self.client.get(
+            f"/api/v1/facility/{self.home_facility.external_id}/discharged_patients/?ordering=modified_date",
+        )
+        response = response.json()["results"]
+        for i in range(len(response)):
+            self.assertEqual(str(patients_order[i].external_id), response[i]["id"])
 
     def test_patient_consultation_access(self):
         # In this test, a patient is admitted to a remote facility and then later admitted to a home facility.
