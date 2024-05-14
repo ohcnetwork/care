@@ -293,7 +293,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         if not patient:
             raise ValidationError({"patient": "Not Found"})
 
-        if hasattr(patient, "abha_number") is False or patient.abha_number is None:
+        if getattr(patient, "abha_number", None) is None:
             raise ValidationError({"abha": "Patient hasn't linked thier abha"})
 
         if data["type"] == "png":
@@ -460,10 +460,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if (
-            hasattr(consultation.patient, "abha_number") is False
-            or consultation.patient.abha_number is None
-        ):
+        if getattr(consultation.patient, "abha_number", None) is None:
             return Response(
                 {"abha": "Patient hasn't linked thier abha"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -520,7 +517,7 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if hasattr(patient, "abha_number") is False or patient.abha_number is None:
+        if getattr(patient, "abha_number", None) is None:
             return Response(
                 {"abha": "Patient hasn't linked thier abha"},
                 status=status.HTTP_400_BAD_REQUEST,

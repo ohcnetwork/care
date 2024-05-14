@@ -9,7 +9,7 @@ from care.facility.models import PatientConsultation
 def create_care_context(sender, instance, created, **kwargs):
     patient = instance.patient
 
-    if created and hasattr(patient, "abha_number") and patient.abha_number is not None:
+    if created and getattr(patient, "abha_number", None) is not None:
         abha_number = patient.abha_number
 
         try:
