@@ -31,7 +31,7 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         }
 
         self.normal_prescription_data2 = {
-            "medicine": self.medicine2.external_id,
+            "medicine": self.medicine2.id,
             "prescription_type": "REGULAR",
             "base_dosage": "1 mg",
             "frequency": "OD",
@@ -142,7 +142,7 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
 
         # get all prescriptions with medicine filter
         response = self.client.get(
-            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/?medicine={self.medicine.external_id}",
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/?medicine={self.medicine.id}",
         )
 
         for prescription in response.data["results"]:
