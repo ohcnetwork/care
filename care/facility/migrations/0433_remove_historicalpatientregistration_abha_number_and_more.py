@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0427_alter_fileupload_file_type"),
+        ("facility", "0432_alter_fileupload_file_type"),
         ("abdm", "0013_abhanumber_patient"),
     ]
 
