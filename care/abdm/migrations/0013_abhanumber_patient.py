@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             abha_number.save()
 
     dependencies = [
-        ("facility", "0427_alter_fileupload_file_type"),
+        ("facility", "0432_alter_fileupload_file_type"),
         ("abdm", "0012_consentrequest_status"),
     ]
 
