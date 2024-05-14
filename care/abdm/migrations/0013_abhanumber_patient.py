@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     def reverse_patient_abhanumber_relation(apps, schema_editor):
         Patient = apps.get_model("facility", "PatientRegistration")
         AbhaNumber = apps.get_model("abdm", "AbhaNumber")

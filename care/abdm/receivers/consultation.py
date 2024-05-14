@@ -1,7 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from care.abdm.models import AbhaNumber
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.models import PatientConsultation
 
