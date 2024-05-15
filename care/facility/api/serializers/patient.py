@@ -518,13 +518,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     thread = serializers.ChoiceField(
         choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
-    reply_to = serializers.UUIDField(required=False, allow_null=True)
-
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        if ret.get("reply_to"):
-            ret["reply_to"] = instance.reply_to.external_id
-        return ret
+    reply_to = ExternalIdSerializerField(
+        queryset=PatientNotes.objects.all(),
+        required=False,
+        allow_null=True,
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -547,9 +545,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             validated_data["user_type"] = user_type
 
         if validated_data.get("reply_to"):
-            reply_to_note = PatientNotes.objects.get(
-                external_id=validated_data["reply_to"]
-            )
+            reply_to_note = validated_data["reply_to"]
             if reply_to_note.thread != validated_data["thread"]:
                 raise serializers.ValidationError(
                     "Reply to note should be in the same thread"
@@ -558,7 +554,6 @@ class PatientNotesSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "Reply to note should be in the same consultation"
                 )
-            validated_data["reply_to"] = reply_to_note
 
         user = self.context["request"].user
         note = validated_data.get("note")
