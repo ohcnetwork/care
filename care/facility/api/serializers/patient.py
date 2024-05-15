@@ -503,6 +503,20 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
         exclude = ("patient_note",)
 
 
+class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    class Meta:
+        model = PatientNotes
+        fields = (
+            "id",
+            "created_by_object",
+            "created_date",
+            "user_type",
+            "note",
+        )
+
+
 class PatientNotesSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
@@ -523,6 +537,12 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True,
     )
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if instance.reply_to:
+            ret["reply_to"] = ReplyToPatientNoteSerializer(instance.reply_to).data
+        return ret
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
