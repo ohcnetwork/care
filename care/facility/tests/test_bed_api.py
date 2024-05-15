@@ -46,18 +46,22 @@ class BedViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 3)
 
-        response = self.client.get("/api/v1/bed/?bed_type=ISOLATION")
+        response = self.client.get("/api/v1/bed/", {"bed_type": "ISOLATION"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["results"][0]["name"], self.bed2.name)
+        self.assertEqual(response.data["count"], 1)
 
         response = self.client.get(
-            f"/api/v1/bed/?facility={self.facility2.external_id}"
+            "/api/v1/bed/",
+            {"facility": self.facility2.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["results"][0]["name"], self.bed3.name)
+        self.assertEqual(response.data["count"], 1)
 
         response = self.client.get(
-            f"/api/v1/bed/?location={self.asset_location2.external_id}"
+            "/api/v1/bed/",
+            {"location": self.asset_location2.external_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
