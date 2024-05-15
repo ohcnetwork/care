@@ -25,6 +25,7 @@ from care.facility.models import (
     PatientContactDetails,
     PatientMetaInfo,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
 )
 from care.facility.models.bed import ConsultationBed
@@ -514,6 +515,9 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         allow_null=True,
         read_only=True,
     )
+    thread = serializers.ChoiceField(
+        choices=PatientNoteThreadChoices, required=False, allow_null=False
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -521,6 +525,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data)
 
     def create(self, validated_data):
+        if "thread" not in validated_data:
+            raise serializers.ValidationError({"thread": "This field is required"})
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
@@ -548,6 +554,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        validated_data.pop("thread", None)  # Disallow changing thread of the note.
+
         user = self.context["request"].user
         note = validated_data.get("note")
 
@@ -572,6 +580,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "note",
             "facility",
             "consultation",
+            "thread",
             "created_by_object",
             "user_type",
             "created_date",
@@ -583,6 +592,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "id",
             "created_date",
             "modified_date",
+            "user_type",
             "last_edited_by",
             "last_edited_date",
         )
