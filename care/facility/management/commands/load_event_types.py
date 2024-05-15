@@ -105,7 +105,7 @@ class Command(BaseCommand):
                     "children": (
                         {
                             "name": "ROUND_SYMPTOMS",  # todo resolve clash with consultation symptoms
-                            "fields": ("additional_symptoms"),
+                            "fields": ("additional_symptoms",),
                         },
                         {
                             "name": "PHYSICAL_EXAMINATION",
