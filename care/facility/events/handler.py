@@ -113,7 +113,7 @@ def create_consultation_events(
                     obj,
                     caused_by,
                     created_date,
-                    fields_to_store=set(fields_to_store),
+                    fields_to_store=set(fields_to_store) if fields_to_store else None,
                 )
         else:
             create_consultation_event_entry(
@@ -122,5 +122,5 @@ def create_consultation_events(
                 caused_by,
                 created_date,
                 old,
-                fields_to_store=set(fields_to_store),
+                fields_to_store=set(fields_to_store) if fields_to_store else None,
             )
