@@ -2,7 +2,8 @@ from datetime import datetime
 from json import JSONEncoder
 from logging import getLogger
 
-from django.db.models import Model
+from django.core.serializers import serialize
+from django.db.models import Field, Model
 from multiselectfield.db.fields import MSFList, MultiSelectField
 
 logger = getLogger(__name__)
@@ -25,6 +26,17 @@ def get_changed_fields(old: Model, new: Model) -> set[str]:
         if getattr(old, field_name, None) != getattr(new, field_name, None):
             changed_fields.add(field_name)
     return changed_fields
+
+
+def serialize_field(object: Model, field: Field):
+    value = getattr(object, field.name)
+    if isinstance(value, Model):
+        # serialize the fields of the related model
+        return serialize("python", [value])[0]["fields"]
+    if issubclass(field.__class__, Field) and field.choices:
+        # serialize choice fields with display value
+        return getattr(object, f"get_{field.name}_display", lambda: value)()
+    return value
 
 
 def model_diff(old, new):
