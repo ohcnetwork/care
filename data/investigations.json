@@ -1,0 +1,1830 @@
+[
+    {
+        "name": "Blood Group",
+        "type": "Choice",
+        "choices": "A-,A+,B+,B-,O+,O-,AB-,AB+",
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Total Count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Neutrophil count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Lymphocyte count Eosinophil count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Eosinophil count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Basophil count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Monocyte count",
+        "type": "Float",
+        "choices": null,
+        "unit": "cell/cumm",
+        "ideal": "4500-11000 cells/cumm",
+        "min": 4500,
+        "max": 11000,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "neutrophil",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "40-60 %",
+        "min": 40,
+        "max": 60,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "lymphocyte",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "20-4 %",
+        "min": 20,
+        "max": 4,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "eosinophil",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "1-3 %",
+        "min": 1,
+        "max": 3,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "basophile",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "0-1 %",
+        "min": 0,
+        "max": 1,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "monocyte",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "4-8 %",
+        "min": 4,
+        "max": 8,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Hb",
+        "type": "Float",
+        "choices": null,
+        "unit": "gm%",
+        "ideal": "men 14-17 gm% , woman 12-16 gm% ,children 12-14 gm%",
+        "min": 12,
+        "max": 17,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "PCV",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "Men 38-51 gm% , Woman 36-47%",
+        "min": 36,
+        "max": 51,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "RBC count",
+        "type": "Float",
+        "choices": null,
+        "unit": "million/cumm",
+        "ideal": "4.5-6.0 million/cumm",
+        "min": 4.5,
+        "max": 6,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "RDW",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "11.8 - 16.1%",
+        "min": 11.8,
+        "max": 16.1,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Platelets",
+        "type": "Float",
+        "choices": null,
+        "unit": "lakhs/cumm",
+        "ideal": "1.5-4.5 lakhs/cumm",
+        "min": 1.5,
+        "max": 4.5,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "MCV",
+        "type": "Float",
+        "choices": null,
+        "unit": "Fl",
+        "ideal": "80-96 Fl",
+        "min": 80,
+        "max": 96,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "MCH",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg",
+        "ideal": "27-33 pg",
+        "min": 27,
+        "max": 33,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "MCHC",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/dl",
+        "ideal": "33.4-35.5 g/dl",
+        "min": 33.4,
+        "max": 35.5,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "ESR",
+        "type": "Float",
+        "choices": null,
+        "unit": "mm/hr",
+        "ideal": "0-20 mm/hr",
+        "min": 0,
+        "max": 20,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Peripheral blood smear",
+        "type": "String",
+        "choices": null,
+        "unit": "",
+        "ideal": "",
+        "min": null,
+        "max": null,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Reticulocyte count",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "adults 0.5-1.5%, newborns 3-6%",
+        "min": 0.5,
+        "max": 6,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "M P smear",
+        "type": "String",
+        "choices": null,
+        "unit": "",
+        "ideal": "",
+        "min": null,
+        "max": null,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "FBS",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "70-110 mg/dl",
+        "min": 70,
+        "max": 110,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "PPBS",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "< 140 mg/dl",
+        "min": 0,
+        "max": 140,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "RBS",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "80-120 mg/dl",
+        "min": 80,
+        "max": 120,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "T. Cholestrol",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "150-220 mg/dl",
+        "min": 150,
+        "max": 220,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "LDL",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "< 130 mg/dl",
+        "min": 0,
+        "max": 130,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "HDL",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "male 35-80 mg/dl, female 40-88 mg/dl",
+        "min": 35,
+        "max": 88,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Triglycerides",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "male 60-165 mg/dl, female 40-140 mg/dl",
+        "min": 40,
+        "max": 165,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "VLDL",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "2-30 mg/dl",
+        "min": 2,
+        "max": 30,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Urea",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "10-50 mg/dl",
+        "min": 10,
+        "max": 50,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Uric Acid",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "male 3.5-7.2 mg/dl, female 2.6-6 mg/dl",
+        "min": 2.6,
+        "max": 7.2,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Creatinine",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "male 0.7-1.4 mg/dl, female 0.6-1.2 mg/dl",
+        "min": 0.6,
+        "max": 1.4,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CRP",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/l",
+        "ideal": "upto 6 mg/l",
+        "min": 0,
+        "max": 6,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Sodium (Na+)",
+        "type": "Float",
+        "choices": null,
+        "unit": "mmol/l",
+        "ideal": "135-155 mmol/l",
+        "min": 135,
+        "max": 155,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Potassium (K+)",
+        "type": "Float",
+        "choices": null,
+        "unit": "mmol/l",
+        "ideal": "3.5 - 5.5 mmol/l",
+        "min": 3.5,
+        "max": 5.5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Calcium",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "8.8-10.2 mg/dl",
+        "min": 8.8,
+        "max": 10.2,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Phosphorus",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "children 4-7 mg/dl, adult 2.5-4.5 mg/dl",
+        "min": 2.5,
+        "max": 7,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Chloride",
+        "type": "Float",
+        "choices": null,
+        "unit": "mmol/l",
+        "ideal": "96-109 mmol/l",
+        "min": 96,
+        "max": 109,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Megnesium",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "1.6-2.6 mg/dl",
+        "min": 1.6,
+        "max": 2.6,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Total Bilirubin",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "adult upto 1.2 mg/dl, infant 0.2-8 mg/dl",
+        "min": 0.2,
+        "max": 8,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Direct Bilirubin",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "upto 0.4 mg/dl",
+        "min": 0,
+        "max": 0.4,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "SGOT",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "upto 46 IU/L",
+        "min": 0,
+        "max": 46,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "SGPT",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "upto 49 IU/L",
+        "min": 0,
+        "max": 49,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "ALP",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "male 80-306 IU/L, female 64-306 IU/L",
+        "min": 64,
+        "max": 306,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Total Protein",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/dl",
+        "ideal": "6-8 g/dl",
+        "min": 6,
+        "max": 8,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Albumin",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/dl",
+        "ideal": "3.5-5.2 g/dl",
+        "min": 3.5,
+        "max": 5.2,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Globulin",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/dl",
+        "ideal": "1.5-2.5 g/dl",
+        "min": 1.5,
+        "max": 2.5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "PT",
+        "type": "Float",
+        "choices": null,
+        "unit": "sec",
+        "ideal": "9.1-12.1 seconds",
+        "min": 9.1,
+        "max": 12.1,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "INR",
+        "type": "Float",
+        "choices": null,
+        "unit": "sec",
+        "ideal": "0.8-1.1 seconds",
+        "min": 0.8,
+        "max": 1.1,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "APTT",
+        "type": "Float",
+        "choices": null,
+        "unit": "sec",
+        "ideal": "25.4-38.4 seconds",
+        "min": 25.4,
+        "max": 38.4,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "D-Dimer",
+        "type": "Float",
+        "choices": null,
+        "unit": "ug/l",
+        "ideal": "< 0.5 ug/l",
+        "min": 0,
+        "max": 0.5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Fibrinogen",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "200-400 mg/dl",
+        "min": 200,
+        "max": 400,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "GCT",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "< 140 mg/dl",
+        "min": 0,
+        "max": 140,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "GTT",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "140-200 mg/dl",
+        "min": 140,
+        "max": 200,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "GGT",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "8 - 61 U/L (male),5 - 36 U/L (female)",
+        "min": 3,
+        "max": 300,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "HbA1C",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "4-5.6 %",
+        "min": 4,
+        "max": 5.6,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Copper",
+        "type": "Float",
+        "choices": null,
+        "unit": "mcg/dl",
+        "ideal": "85-180 mcg/dl",
+        "min": 85,
+        "max": 180,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum Lead",
+        "type": "Float",
+        "choices": null,
+        "unit": "mcg/dl",
+        "ideal": "upto 10 mcg/dl",
+        "min": 0,
+        "max": 10,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Iron",
+        "type": "Float",
+        "choices": null,
+        "unit": "mcg/dl",
+        "ideal": "60-170 mcg/dl",
+        "min": 60,
+        "max": 170,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "TIBC",
+        "type": "Float",
+        "choices": null,
+        "unit": "mcg/dl",
+        "ideal": "250-450 mcg/dl",
+        "min": 250,
+        "max": 450,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Transferin Saturation",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "15-50 %",
+        "min": 15,
+        "max": 50,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "IL6",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "0-16.4 pg/ml",
+        "min": 0,
+        "max": 16.4,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Lactate",
+        "type": "Float",
+        "choices": null,
+        "unit": "mmol/l",
+        "ideal": "0.5-1 mmol/l",
+        "min": 0.5,
+        "max": 1,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Ceruloplasmin",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "14-40 mg/dl",
+        "min": 14,
+        "max": 40,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "ACP",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "0.13-0.63 U/L",
+        "min": 0.13,
+        "max": 0.63,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Protein C",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU dl 1",
+        "ideal": "65-135 IU dl 1",
+        "min": 65,
+        "max": 135,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Protein S",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "70-140 %",
+        "min": 70,
+        "max": 140,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "G6PD",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/g Hb",
+        "ideal": "neonate 10.15-14.71 U/g Hb, adult 6.75-11.95 U/g Hb",
+        "min": null,
+        "max": null,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "ACCP",
+        "type": "Float",
+        "choices": null,
+        "unit": "EU/ml",
+        "ideal": "< 20 EU/ml",
+        "min": 0,
+        "max": 20,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Ferritin",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "20-250 ng/ml",
+        "min": 20,
+        "max": 250,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "LDH",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "140-280 U/L",
+        "min": 140,
+        "max": 280,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Amylase",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "60-180 U/L",
+        "min": 60,
+        "max": 180,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Lipase",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "0-160 U/L",
+        "min": 0,
+        "max": 160,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Ammonia",
+        "type": "Float",
+        "choices": null,
+        "unit": "ug/dL",
+        "ideal": "15-45 ug/dL",
+        "min": 15,
+        "max": 45,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CKMB",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "5-25 IU/L",
+        "min": 5,
+        "max": 25,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CK NAC",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/L",
+        "ideal": "male < 171 U/L, female < 145 U/L",
+        "min": null,
+        "max": null,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "24hrs Urine Protein",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dl",
+        "ideal": "<10 mg/dl",
+        "min": 0,
+        "max": 10,
+        "category_id": [
+            7
+        ]
+    },
+    {
+        "name": "24hrs Urine Uric Acid",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/24hr",
+        "ideal": "250-750 mg/24hr",
+        "min": 250,
+        "max": 750,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "24 hrs Urine Oxalate",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/L",
+        "ideal": "<15 mg/L",
+        "min": 0,
+        "max": 15,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Urine Microalbumin",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg",
+        "ideal": "< 30 mg",
+        "min": 0,
+        "max": 30,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Urine Sodium",
+        "type": "Float",
+        "choices": null,
+        "unit": "mEq/day",
+        "ideal": "40-220 mEq/day",
+        "min": 40,
+        "max": 220,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "PCT",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "< 0.15 ng/ml",
+        "min": 0,
+        "max": 0.15,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "T3",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/dl",
+        "ideal": "80-220 ng/dl",
+        "min": 80,
+        "max": 220,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "T4",
+        "type": "Float",
+        "choices": null,
+        "unit": "ug/L",
+        "ideal": "5-12 ug/L",
+        "min": 5,
+        "max": 12,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "TSH",
+        "type": "Float",
+        "choices": null,
+        "unit": "mIU/L",
+        "ideal": "0.5-5 mIU/L",
+        "min": 0.5,
+        "max": 5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "FT3",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/dl",
+        "ideal": "60-180 ng/dl",
+        "min": 60,
+        "max": 180,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "FT4",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/dl",
+        "ideal": "0.7-1.9 ng/dl",
+        "min": 0.7,
+        "max": 1.9,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Estradiol",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "premenopausal women 30-400 pg/ml, post-menopausal women 0-30 pg/ml, men 10-50 pg/ml",
+        "min": null,
+        "max": null,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Growth Hormone",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "male 0.4-10 ng/ml, female 1-14 ng/ml",
+        "min": 0.4,
+        "max": 14,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Cortisol",
+        "type": "Float",
+        "choices": null,
+        "unit": "mcg/dl",
+        "ideal": "5-25 ng/ml",
+        "min": 5,
+        "max": 25,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "PTH",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "14-65 pg/ml",
+        "min": 14,
+        "max": 65,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Prolactine",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "male <20 ng/ml, female <25 ng/ml, pregnant women <300 ng/ml",
+        "min": null,
+        "max": null,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Pro BNP",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "< 300 pg/ml",
+        "min": 0,
+        "max": 300,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Vitamine D3",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "20-40 ng/ml",
+        "min": 20,
+        "max": 40,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Vitamine B12",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "160-950 pg/ml",
+        "min": 160,
+        "max": 950,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "FSH",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "before puberty 0-4 IU/L, during puberty 0.36-10 IU/L, ",
+        "min": 0,
+        "max": 10,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "LH",
+        "type": "Float",
+        "choices": null,
+        "unit": "IU/L",
+        "ideal": "before menopause 5-25 IU/L, after menopause 14.2-52.3 IU/L",
+        "min": 5,
+        "max": 52.3,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "PSA",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "<4 ng/ml",
+        "min": 0,
+        "max": 4,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "ACTH",
+        "type": "Float",
+        "choices": null,
+        "unit": "pg/ml",
+        "ideal": "10-60 pg/ml",
+        "min": 10,
+        "max": 60,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CEA",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "0-2.5 ng/ml",
+        "min": 0,
+        "max": 2.5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "AFP",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "10-20 ng/ml",
+        "min": 10,
+        "max": 20,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CA125",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/ml",
+        "ideal": "< 46 U/ml",
+        "min": 0,
+        "max": 46,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "CA19.9",
+        "type": "Float",
+        "choices": null,
+        "unit": "U/ml",
+        "ideal": "0-37 U/ml",
+        "min": 0,
+        "max": 37,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Testosterone ",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/dl",
+        "ideal": "270-1070 ng/dl",
+        "min": 270,
+        "max": 1070,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Progestrone",
+        "type": "Float",
+        "choices": null,
+        "unit": "ng/ml",
+        "ideal": "female pre ovulation, menupausal women, men <1 ng/ml, mid-cycle 5-20 ng/ml",
+        "min": null,
+        "max": null,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum IgG",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/L",
+        "ideal": "6-16 g/L",
+        "min": 6,
+        "max": 16,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum IgE",
+        "type": "Float",
+        "choices": null,
+        "unit": "UL/ml",
+        "ideal": "150-1000 UL/ml",
+        "min": 150,
+        "max": 1000,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum IgM",
+        "type": "Float",
+        "choices": null,
+        "unit": "g/L",
+        "ideal": "0.4-2.5 g/L",
+        "min": 0.4,
+        "max": 2.5,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Serum IgA",
+        "type": "Float",
+        "choices": null,
+        "unit": "G/L",
+        "ideal": "0.8-3 g/L",
+        "min": 0.8,
+        "max": 3,
+        "category_id": [
+            2
+        ]
+    },
+    {
+        "name": "Colour",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Appearence",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Ph",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Specific Gravity",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Nitrite",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Urobilinogen",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Bile Salt",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Bile Pigment",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Acetone",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Sugar",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Puscells",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Epithetical Cells",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "RBC ",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Cast",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Crystal",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "others",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "UPT",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Stool OB",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "Stool Microscopy",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3
+        ]
+    },
+    {
+        "name": "HBA1C",
+        "type": "Float",
+        "choices": "-",
+        "unit": "%",
+        "ideal": "4%- 5.6%",
+        "min": 0,
+        "max": 10,
+        "category_id": [
+            1
+        ]
+    },
+    {
+        "name": "Haemoglobin",
+        "type": "Float",
+        "choices": null,
+        "unit": "gm/dl",
+        "ideal": "Male 13-18,Female 11-16",
+        "min": 0,
+        "max": 25,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "PCV/HCT",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "Male: 38.8% - 50.0%,Female: 34.9% - 44.5%",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "White Blood Cell (WBC) Count",
+        "type": "Float",
+        "choices": null,
+        "unit": "thousands/\u03bcL ",
+        "ideal": "4.5 - 11.0",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "Neutrophils",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "40-60",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4,
+            5
+        ]
+    },
+    {
+        "name": "Lymphocytes",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "20% - 40%",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4,
+            5
+        ]
+    },
+    {
+        "name": "Monocytes",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "2% - 8%",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4,
+            5
+        ]
+    },
+    {
+        "name": "Eosinophils",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "1% - 4%",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4,
+            5
+        ]
+    },
+    {
+        "name": "Basophils",
+        "type": "Float",
+        "choices": null,
+        "unit": "%",
+        "ideal": "0% - 1%",
+        "min": 0,
+        "max": 100,
+        "category_id": [
+            4,
+            5
+        ]
+    },
+    {
+        "name": "Platelet Count",
+        "type": "Float",
+        "choices": null,
+        "unit": "thousands/\u03bcL ",
+        "ideal": "150,000 - 450,000 ",
+        "min": 0,
+        "max": 100000000,
+        "category_id": [
+            4
+        ]
+    },
+    {
+        "name": "Alanine Aminotransferase (ALT)",
+        "type": "Float",
+        "choices": null,
+        "unit": "u/l",
+        "ideal": "7 - 55 U/L (male),7 - 45 U/L (female)",
+        "min": 0,
+        "max": 1500,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Aspartate Aminotransferase (AST)",
+        "type": "Float",
+        "choices": null,
+        "unit": "u/l",
+        "ideal": "8 - 48 U/L ",
+        "min": 5,
+        "max": 300,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Alkaline Phosphatase (ALP)",
+        "type": "Float",
+        "choices": null,
+        "unit": "u/l",
+        "ideal": "Newborn (0-30 days) 150 - 420 U/L,Infants (1-11 months) 70 - 320 U/L,Children (1-3 years) 80 - 280 U/L,Children (4-6 years) 80 - 230 U/L,Children (7-9 years) 65 - 230 U/L,Children (10-13 years) 45 - 250 U/L,Children (14-17 years) 40 - 220 U/L,Adults (>18 years) 44 - 147 U/L",
+        "min": 30,
+        "max": 1200,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Indirect Bilirubin",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dL ",
+        "ideal": "0.2 - 0.8 mg/dL",
+        "min": 0,
+        "max": 1,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Prothrombin Time (PT)",
+        "type": "Float",
+        "choices": null,
+        "unit": "Seconds",
+        "ideal": "Newborn (0-2 days)- 14.0 - 20.5 seconds,Infant (3 days - 1 month)- 14.0 - 19.2 seconds,Infant (1 - 6 months)- 13.3 - 18.7 seconds,Infant (6 - 12 months)- 13.3 - 17.8 seconds,Toddler (1 - 2 years) -12.5 - 16.5 seconds,Child (2 - 6 years) - 11.5 - 15.5 seconds,Child (7 - 12 years) - 11.8 - 14.5 seconds,Adolescent (13 - 15 years) - 12.0 - 14.6 seconds,Adolescent (16 - 17 years) - 11.7 - 14.2 seconds,Adult (> 18 years) -11.0 - 13.0 seconds",
+        "min": 5,
+        "max": 30,
+        "category_id": [
+            6
+        ]
+    },
+    {
+        "name": "Serum Creatinine",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dL ",
+        "ideal": "Infants (0-11 months) 0.2 - 0.4 mg/dL,Children (1-17 years) 0.3 - 0.7 mg/dL (varies with age),Adult (18-60 years) 0.6 - 1.2 mg/dL,Adult (> 60 years) 0.6 - 1.3 mg/dL",
+        "min": 0,
+        "max": 2,
+        "category_id": [
+            7
+        ]
+    },
+    {
+        "name": "Blood Urea Nitrogen (BUN)",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dL ",
+        "ideal": "Newborn (0-2 days) 3 - 17 mg/dL,Infant (3 days - 1 month) 3 - 19 mg/dL,Infant (1 - 6 months) 5 - 20 mg/dL,Infant (6 - 12 months) 5 - 13 mg/dL,Toddler (1 - 2 years) 7 - 20 mg/dL,Child (3 - 5 years) 8 - 18 mg/dL,Child (6 - 11 years) 8 - 21 mg/dL,Adolescent (12 - 17 years) 7 - 20 mg/dL,Adult (> 18 years) 7 - 20 mg/dL",
+        "min": 0,
+        "max": 25,
+        "category_id": [
+            7
+        ]
+    },
+    {
+        "name": "Estimated Glomerular Filtration Rate (eGFR)",
+        "type": "Float",
+        "choices": null,
+        "unit": "mL/min/1.73m\u00b2 (milliliters per minute per 1.73 square meters)",
+        "ideal": "> 90 mL/min/1.73m\u00b2 ",
+        "min": 0,
+        "max": 90,
+        "category_id": [
+            7
+        ]
+    },
+    {
+        "name": "Blood Uric Acid",
+        "type": "Float",
+        "choices": null,
+        "unit": "mg/dL ",
+        "ideal": "3.5 - 7.2 mg/dL (males),2.6 - 6.0 mg/dL (females)",
+        "min": 2,
+        "max": 10,
+        "category_id": []
+    },
+    {
+        "name": "Urinalysis",
+        "type": "String",
+        "choices": null,
+        "unit": null,
+        "ideal": null,
+        "min": null,
+        "max": null,
+        "category_id": [
+            3,
+            7
+        ]
+    },
+    {
+        "name": "Serum Creatinine Clearance",
+        "type": "Float",
+        "choices": null,
+        "unit": "mL/min ",
+        "ideal": "110 to 150mL/min (males),100 to 130mL/min (females)",
+        "min": "Varies based on age, sex, and muscle mass",
+        "max": "55 - 105 mL/min (females)",
+        "category_id": [
+            7
+        ]
+    }
+]
