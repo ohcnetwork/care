@@ -14,7 +14,7 @@ def is_null(data):
 
 
 def get_changed_fields(old: Model, new: Model) -> set[str]:
-    changed_fields = set()
+    changed_fields: set[str] = set()
     for field in new._meta.fields:
         field_name = field.name
         if isinstance(field, MultiSelectField):
@@ -22,8 +22,7 @@ def get_changed_fields(old: Model, new: Model) -> set[str]:
             new_val = set(map(str, getattr(new, field_name, [])))
             if old_val != new_val:
                 changed_fields.add(field_name)
-            continue
-        if getattr(old, field_name, None) != getattr(new, field_name, None):
+        elif getattr(old, field_name, None) != getattr(new, field_name, None):
             changed_fields.add(field_name)
     return changed_fields
 
