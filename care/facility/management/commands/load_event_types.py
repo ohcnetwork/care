@@ -105,7 +105,6 @@ class Command(BaseCommand):
                             "fields": ("physical_examination_info",),
                         },
                         {"name": "PATIENT_CATEGORY", "fields": ("patient_category",)},
-                        {"name": "CURRENT_HEALTH", "fields": ("current_health",)},
                     ),
                 },
                 {
