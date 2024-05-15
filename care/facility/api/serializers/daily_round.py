@@ -139,6 +139,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             facility=instance.consultation.patient.facility,
         ).generate()
 
+        create_consultation_events(
+            instance.consultation_id,
+            instance,
+            instance.created_by_id,
+            instance.created_date,
+            fields_to_store=set(validated_data.keys()),
+        )
+
         return super().update(instance, validated_data)
 
     def update_last_daily_round(self, daily_round_obj):
