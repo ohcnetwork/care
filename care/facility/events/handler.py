@@ -47,7 +47,7 @@ def create_consultation_event_entry(
 
     batch = []
     groups = EventType.objects.filter(
-        model=object_instance.__class__.__name__, fields__len__gt=0
+        model=object_instance.__class__.__name__, fields__len__gt=0, is_active=True
     ).values_list("id", "fields")
     for group_id, group_fields in groups:
         if set(group_fields) & fields_to_store:

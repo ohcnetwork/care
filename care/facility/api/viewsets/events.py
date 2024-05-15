@@ -20,7 +20,7 @@ from care.utils.queryset.consultation import get_consultation_queryset
 
 class EventTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = EventTypeSerializer
-    queryset = EventType.objects.all()
+    queryset = EventType.objects.filter(is_active=True)
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[BaseSerializer]:

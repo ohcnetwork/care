@@ -235,6 +235,12 @@ class Command(BaseCommand):
         },
     )
 
+    inactive_event_types: Tuple[str, ...] = (
+        "RESPIRATORY",
+        "INTAKE_OUTPUT",
+        "VENTILATOR_MODES",
+    )
+
     def create_objects(
         self, types: Tuple[EventType, ...], model: str = None, parent: EventType = None
     ):
@@ -242,11 +248,11 @@ class Command(BaseCommand):
             model = event_type.get("model", model)
             obj, _ = EventType.objects.update_or_create(
                 name=event_type["name"],
-                fields=event_type.get("fields", []),
                 defaults={
                     "parent": parent,
                     "model": model,
                     "fields": event_type.get("fields", []),
+                    "is_active": True,
                 },
             )
             if children := event_type.get("children"):
@@ -254,6 +260,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Loading Event Types... ", ending="")
+
+        EventType.objects.filter(name__in=self.inactive_event_types).update(
+            is_active=False
+        )
 
         self.create_objects(self.consultation_event_types)
 
