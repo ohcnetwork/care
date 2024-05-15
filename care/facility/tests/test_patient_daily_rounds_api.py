@@ -40,7 +40,6 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.consultation_with_bed.save()
 
         cls.log_update = {
-            "clone_last": False,
             "rounds_type": "NORMAL",
             "patient_category": "Comfort",
             "action": "DISCHARGE_RECOMMENDED",
