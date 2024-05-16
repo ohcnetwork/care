@@ -112,7 +112,10 @@ class Command(BaseCommand):
                     "children": (
                         {
                             "name": "TEMPERATURE",
-                            "fields": ("temperature",),
+                            "fields": (
+                                "temperature",
+                                "temperature_measured_at",  # todo remove field
+                            ),
                         },
                         {"name": "SPO2", "fields": ("spo2",)},
                         {"name": "PULSE", "fields": ("pulse",)},
