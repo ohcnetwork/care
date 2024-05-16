@@ -534,15 +534,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     )
     reply_to = ExternalIdSerializerField(
         queryset=PatientNotes.objects.all(),
+        write_only=True,
         required=False,
         allow_null=True,
     )
-
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        if instance.reply_to:
-            ret["reply_to"] = ReplyToPatientNoteSerializer(instance.reply_to).data
-        return ret
+    reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -624,6 +620,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "last_edited_by",
             "last_edited_date",
             "reply_to",
+            "reply_to_object",
         )
         read_only_fields = (
             "id",
