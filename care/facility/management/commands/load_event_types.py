@@ -126,6 +126,7 @@ class Command(BaseCommand):
                         {"name": "BLOOD_PRESSURE", "fields": ("bp",)},
                         {"name": "RESPIRATORY_RATE", "fields": ("resp",)},
                         {"name": "RHYTHM", "fields": ("rhythm", "rhythm_details")},
+                        {"name": "PAIN_SCALE", "fields": ("pain_scale_enhanced",)},
                     ),
                 },
                 {
