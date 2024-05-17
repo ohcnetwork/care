@@ -13,7 +13,7 @@ from care.abdm.service.gateway import Gateway
 from care.utils.notification_handler import send_webpush
 from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
-from config.ratelimit import ratelimit
+from config.ratelimit import USER_READABLE_RATE_LIMIT_TIME, ratelimit
 
 
 class PatientsViewSet(GenericViewSet):
@@ -25,7 +25,10 @@ class PatientsViewSet(GenericViewSet):
 
         if ratelimit(request, "patients__find", [identifier]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
