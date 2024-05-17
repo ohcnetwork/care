@@ -78,9 +78,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
         blank=True,
         max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )
+    )  # Deprecated
     other_symptoms = models.TextField(default="", blank=True)
-    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    symptoms_onset_date = models.DateTimeField(null=True, blank=True)  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
