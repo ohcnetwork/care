@@ -16,7 +16,7 @@ from care.abdm.service.gateway import Gateway
 from care.utils.queryset.facility import get_facility_queryset
 from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
-from config.ratelimit import ratelimit
+from config.ratelimit import USER_READABLE_RATE_LIMIT_TIME, ratelimit
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,10 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
             request, "consent__create", [serializer.validated_data["patient_abha"]]
         ):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -91,7 +94,10 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     def status(self, request, pk):
         if ratelimit(request, "consent__status", [pk]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -112,7 +118,10 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     def fetch(self, request, pk):
         if ratelimit(request, "consent__fetch", [pk]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -134,7 +143,10 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     def list(self, request, *args, **kwargs):
         if ratelimit(request, "consent__list", [request.user.username]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -143,7 +155,10 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
     def retrieve(self, request, *args, **kwargs):
         if ratelimit(request, "consent__retrieve", [kwargs["pk"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
