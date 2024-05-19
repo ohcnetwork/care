@@ -44,12 +44,12 @@ class BedFilter(filters.FilterSet):
 
     def filter_bed_is_not_occupied_by_asset_type(self, queryset, name, value):
         if value:
-            return queryset.exclude(
-                id__in=Subquery(
+            return queryset.filter(
+                ~Exists(
                     AssetBed.objects.filter(
                         bed__id=OuterRef("id"),
                         asset__asset_class=value,
-                    ).values("bed__id")
+                    )
                 )
             )
         return queryset
