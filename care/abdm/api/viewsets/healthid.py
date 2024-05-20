@@ -30,7 +30,7 @@ from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.patient import PatientConsultation, PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
-from config.ratelimit import ratelimit
+from config.ratelimit import USER_READABLE_RATE_LIMIT_TIME, ratelimit
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "generate_aadhaar_otp", [data["aadhaar"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -75,7 +78,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "resend_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -97,7 +103,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "verify_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -121,7 +130,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "generate_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -143,7 +155,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "verify_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -207,7 +222,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "create_health_id", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -269,7 +287,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             request, "search_by_health_id", [data["healthId"]], increment=False
         ):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -284,7 +305,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "get_abha_card", [data["patient"]], increment=False):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -320,7 +344,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "link_via_qr", [data["hidn"]], increment=False):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -410,7 +437,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "get_new_linking_token", [data["patient"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -448,7 +478,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "add_care_context", [consultation_id]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -499,7 +532,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "patient_sms_notify", [patient_id]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -545,7 +581,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "auth_init", [data["healthid"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -567,7 +606,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -620,7 +662,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -672,7 +717,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_demographics", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -696,7 +744,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "check_and_generate_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
