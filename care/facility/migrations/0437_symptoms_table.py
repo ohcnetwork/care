@@ -32,6 +32,7 @@ def backfill_symptoms_table(apps, schema_editor):
                             created_date=consultation.created_date,
                             created_by=consultation.created_by,
                             consultation=consultation,
+                            is_migrated=True,
                         )
                     )
                 except ValueError:
@@ -57,6 +58,7 @@ def backfill_symptoms_table(apps, schema_editor):
                             created_date=daily_round.created_date,
                             created_by=daily_round.created_by,
                             consultation=daily_round.consultation,
+                            is_migrated=True,
                         )
                     )
                 except ValueError:
@@ -191,6 +193,13 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "is_migrated",
+                    models.BooleanField(
+                        default=False,
+                        help_text="This field is to throw caution to data that was previously ported over",
                     ),
                 ),
             ],

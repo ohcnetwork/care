@@ -60,6 +60,10 @@ class ConsultationSymptom(BaseModel, ConsultationRelatedPermissionMixin):
     updated_by = models.ForeignKey(
         "users.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
     )
+    is_migrated = models.BooleanField(
+        default=False,
+        help_text="This field is to throw caution to data that was previously ported over",
+    )
 
     def save(self, *args, **kwargs):
         if self.other_symptom and self.symptom != Symptom.OTHERS:
