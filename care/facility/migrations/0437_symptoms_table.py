@@ -15,20 +15,32 @@ def backfill_symptoms_table(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     DailyRound = apps.get_model("facility", "DailyRound")
 
-    paginator = Paginator(PatientConsultation.objects.all().order_by("id"), 400)
+    paginator = Paginator(PatientConsultation.objects.all().order_by("id"), 100)
     for page_number in paginator.page_range:
         bulk = []
         for consultation in paginator.page(page_number).object_list:
+            consultation_symptoms_set = set(consultation.deprecated_symptoms)
             for symptom in consultation.deprecated_symptoms:
                 try:
                     symptom_id = int(symptom)
+
+                    if symptom_id == 9:
+                        # Other symptom
+                        consultation_symptoms_set.remove(9)
+                        if not consultation.deprecated_other_symptoms:
+                            # invalid other symptom
+                            continue
+                        consultation_symptoms_set.add(
+                            consultation.deprecated_other_symptoms.lower()
+                        )
                     bulk.append(
                         ConsultationSymptom(
                             symptom=symptom_id,
                             other_symptom=consultation.deprecated_other_symptoms
                             if symptom_id == 9  # Other symptom
                             else "",
-                            onset_date=consultation.deprecated_symptoms_onset_date,
+                            onset_date=consultation.deprecated_symptoms_onset_date
+                            or consultation.encounter_date,
                             created_date=consultation.created_date,
                             created_by=consultation.created_by,
                             consultation=consultation,
@@ -39,30 +51,49 @@ def backfill_symptoms_table(apps, schema_editor):
                     print(
                         f"Invalid Symptom {symptom} for Consultation {consultation.id}"
                     )
-        ConsultationSymptom.objects.bulk_create(bulk)
 
-    paginator = Paginator(DailyRound.objects.all().order_by("id"), 800)
-    for page_number in paginator.page_range:
-        bulk = []
-        for daily_round in paginator.page(page_number).object_list:
-            for symptom in daily_round.deprecated_additional_symptoms:
-                try:
-                    symptom_id = int(symptom)
-                    bulk.append(
-                        ConsultationSymptom(
-                            symptom=symptom_id,
-                            other_symptom=daily_round.deprecated_other_symptoms
-                            if symptom_id == 9  # Other symptom
-                            else "",
-                            onset_date=daily_round.created_date,
-                            created_date=daily_round.created_date,
-                            created_by=daily_round.created_by,
-                            consultation=daily_round.consultation,
-                            is_migrated=True,
+            for daily_round in DailyRound.objects.filter(consultation=consultation):
+                for symptom in daily_round.deprecated_additional_symptoms:
+                    try:
+                        symptom_id = int(symptom)
+
+                        if symptom_id == 9:
+                            # Other symptom
+                            if not daily_round.deprecated_other_symptoms:
+                                # invalid other symptom
+                                continue
+                            if (
+                                daily_round.deprecated_other_symptoms.lower()
+                                in consultation_symptoms_set
+                            ):
+                                # Skip if symptom already exists
+                                continue
+                            consultation_symptoms_set.add(
+                                daily_round.deprecated_other_symptoms.lower()
+                            )
+                        elif symptom_id in consultation_symptoms_set:
+                            # Skip if symptom already exists
+                            continue
+                        else:
+                            consultation_symptoms_set.add(symptom_id)
+
+                        bulk.append(
+                            ConsultationSymptom(
+                                symptom=symptom_id,
+                                other_symptom=daily_round.deprecated_other_symptoms
+                                if symptom_id == 9  # Other symptom
+                                else "",
+                                onset_date=daily_round.created_date,
+                                created_date=daily_round.created_date,
+                                created_by=daily_round.created_by,
+                                consultation=daily_round.consultation,
+                                is_migrated=True,
+                            )
                         )
-                    )
-                except ValueError:
-                    print(f"Invalid Symptom {symptom} for DailyRound {daily_round.id}")
+                    except ValueError:
+                        print(
+                            f"Invalid Symptom {symptom} for DailyRound {daily_round.id}"
+                        )
         ConsultationSymptom.objects.bulk_create(bulk)
 
 
