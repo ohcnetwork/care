@@ -58,7 +58,8 @@ class BedViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.json()["count"], 4)
 
         response_with_not_occupied_bed = self.client.get(
-            "/api/v1/bed/?not_occupied_by_asset_type=HL7MONITOR"
+            "/api/v1/bed/",
+            { "not_occupied_by_asset_type": "HL7MONITOR" },
         )
 
         # Assert count of unoccupied beds is 3
