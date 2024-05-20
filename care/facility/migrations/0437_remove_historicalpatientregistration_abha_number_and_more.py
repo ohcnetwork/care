@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0432_alter_fileupload_file_type"),
+        ("facility", "0436_remove_dailyround_temperature_measured_at"),
         ("abdm", "0013_abhanumber_patient"),
     ]
 
