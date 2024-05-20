@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.consultation_symptom import (
-    ConsultationSymptomSerializers,
+    ConsultationSymptomSerializer,
 )
 from care.facility.models.consultation_symptom import ConsultationSymptom
 from care.utils.queryset.consultation import get_consultation_queryset
@@ -28,7 +28,7 @@ class ConsultationSymptomViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    serializer_class = ConsultationSymptomSerializers
+    serializer_class = ConsultationSymptomSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = ConsultationSymptom.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
