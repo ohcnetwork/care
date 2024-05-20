@@ -53,8 +53,8 @@ def check_location_status():
                 if result:
                     new_status = AvailabilityStatus.OPERATIONAL
 
-            except Exception:
-                logger.warn(f"Middleware {resolved_middleware} is down", exc_info=True)
+            except Exception as e:
+                logger.warn(f"Middleware {resolved_middleware} is down", e)
 
             # Fetching the last record of the location
             last_record = (
@@ -75,5 +75,5 @@ def check_location_status():
                     timestamp=timezone.now(),
                 )
             logger.info(f"Location {location.external_id} status: {new_status.value}")
-        except Exception:
-            logger.error("Error in Location Status Check", exc_info=True)
+        except Exception as e:
+            logger.error("Error in Location Status Check", e)
