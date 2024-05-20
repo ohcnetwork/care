@@ -9,10 +9,15 @@ class Migration(migrations.Migration):
         Patient = apps.get_model("facility", "PatientRegistration")
         AbhaNumber = apps.get_model("abdm", "AbhaNumber")
 
-        for patient in Patient.objects.filter(abha_number__isnull=False):
-            abha_number = AbhaNumber.objects.get(id=patient.abha_number.id)
+        patients = Patient.objects.filter(abha_number__isnull=False)
+        abha_numbers_to_update = []
+
+        for patient in patients:
+            abha_number = patient.abha_number
             abha_number.patient = patient
-            abha_number.save()
+            abha_numbers_to_update.append(abha_number)
+
+        AbhaNumber.objects.bulk_update(abha_numbers_to_update, ["patient"])
 
     dependencies = [
         ("facility", "0432_alter_fileupload_file_type"),
