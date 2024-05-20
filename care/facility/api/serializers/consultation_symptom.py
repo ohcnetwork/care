@@ -16,7 +16,6 @@ class ConsultationSymptomSerializers(serializers.ModelSerializer):
     class Meta:
         model = ConsultationSymptom
         exclude = (
-            "daily_round",
             "consultation",
             "external_id",
             "deleted",
