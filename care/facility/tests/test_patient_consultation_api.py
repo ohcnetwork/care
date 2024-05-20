@@ -37,7 +37,6 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def get_default_data(self):
         return {
             "route_to_facility": 10,
-            "symptoms": [1],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
@@ -419,9 +418,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        res = self.update_consultation(
-            consultation, symptoms=[1, 2], category="MILD", suggestion="A"
-        )
+        res = self.update_consultation(consultation, category="MILD", suggestion="A")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_diagnoses_and_duplicate_diagnoses(self):
