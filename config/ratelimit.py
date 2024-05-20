@@ -56,3 +56,27 @@ def ratelimit(
             return False
 
     return False
+
+
+def get_user_readable_rate_limit_time(rate_limit):
+    if not rate_limit:
+        return "1 second"
+
+    requests, time = rate_limit.split("/")
+
+    time_unit_map = {
+        "s": "second(s)",
+        "m": "minute(s)",
+        "h": "hour(s)",
+        "d": "day(s)",
+    }
+
+    time_value = time[:-1]
+    time_unit = time[-1]
+
+    return f"{time_value or 1} {time_unit_map.get(time_unit, 'second(s)')}"
+
+
+USER_READABLE_RATE_LIMIT_TIME = get_user_readable_rate_limit_time(
+    settings.DJANGO_RATE_LIMIT
+)

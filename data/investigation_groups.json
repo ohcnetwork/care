@@ -1,0 +1,30 @@
+[
+    {
+        "id": "1",
+        "name": "Haematology"
+    },
+    {
+        "id": "2",
+        "name": "Biochemistry test"
+    },
+    {
+        "id": "3",
+        "name": "Urine Test"
+    },
+    {
+        "id": "4",
+        "name": "CBC"
+    },
+    {
+        "id": "5",
+        "name": "Differential white blood cell count"
+    },
+    {
+        "id": "6",
+        "name": "Liver Function Test"
+    },
+    {
+        "id": "7",
+        "name": "Kidney Function test"
+    }
+]
