@@ -537,9 +537,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-            if (
-                suggestion == SuggestionChoices.A or patient_no
-            ) and PatientConsultation.objects.filter(
+            if (patient_no) and PatientConsultation.objects.filter(
                 patient_no=patient_no,
                 facility=(
                     self.instance.facility
