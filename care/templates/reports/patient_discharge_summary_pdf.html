@@ -133,18 +133,6 @@
           {{consultation.height}} cm
         </p>
       </div>
-      {% if consultation.route_to_facility %}
-      <div class="flex gap-6">
-        <p>
-          <span class="text-sm leading-5 font-medium text-gray-500">Symptoms at admission:</span>
-          {{consultation.get_symptoms_display|title}}
-        </p>
-        <p>
-          <span class="text-sm leading-5 font-medium text-gray-500">From:</span>
-          {{consultation.symptoms_onset_date.date}}
-        </p>
-      </div>
-      {% endif %}
     </div>
 
     {% if hcx %}
@@ -806,14 +794,6 @@
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900">
               {{daily_round.other_details}}
-            </dd>
-          </div>
-          <div class="mt-2">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Symptoms
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900">
-              {{daily_round.additional_symptoms}}
             </dd>
           </div>
         </div>
