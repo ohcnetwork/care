@@ -24,6 +24,7 @@ class ConsultationSymptomSerializers(serializers.ModelSerializer):
         read_only_fields = (
             "created_date",
             "modified_date",
+            "is_migrated",
         )
 
     def validate(self, attrs):
