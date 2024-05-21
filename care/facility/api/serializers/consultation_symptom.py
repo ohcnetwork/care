@@ -45,9 +45,8 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                     {"cure_date": "Cure date should be after onset date"}
                 )
 
-        if (
-            validated_data.get("other_symptom")
-            and validated_data.get("symptom") != Symptom.OTHERS
+        if validated_data.get("symptom") != Symptom.OTHERS and validated_data.get(
+            "other_symptom"
         ):
             raise serializers.ValidationError(
                 {
@@ -55,10 +54,19 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                 }
             )
 
+        if validated_data.get("symptom") == Symptom.OTHERS and not validated_data.get(
+            "other_symptom"
+        ):
+            raise serializers.ValidationError(
+                {
+                    "other_symptom": "Other symptom should not be empty when symptom is OTHERS"
+                }
+            )
+
         if ConsultationSymptom.objects.filter(
             consultation=consultation,
             symptom=validated_data.get("symptom"),
-            other_symptom=validated_data.get("other_symptom"),
+            other_symptom=validated_data.get("other_symptom") or "",
             cure_date__isnull=True,
         ).exists():
             raise serializers.ValidationError(
