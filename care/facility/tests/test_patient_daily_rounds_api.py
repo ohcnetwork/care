@@ -95,3 +95,10 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_doctors_log_update(self):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
+            data={**self.log_update, "rounds_type": "DOCTORS_LOG"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
