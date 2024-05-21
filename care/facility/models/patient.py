@@ -732,6 +732,11 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
+class PatientNoteThreadChoices(models.IntegerChoices):
+    DOCTORS = 10, "DOCTORS"
+    NURSES = 20, "NURSES"
+
+
 class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
@@ -747,6 +752,11 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         User,
         on_delete=models.SET_NULL,
         null=True,
+    )
+    thread = models.SmallIntegerField(
+        choices=PatientNoteThreadChoices.choices,
+        db_index=True,
+        default=PatientNoteThreadChoices.DOCTORS,
     )
     note = models.TextField(default="", blank=True)
 

@@ -543,6 +543,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
+        "audio/mp4"
         # Documents
         "text/plain",
         "text/csv",
@@ -584,6 +585,7 @@ CSV_REQUEST_PARAMETER = "csv"
 
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
 # open id connect
 JWKS = JsonWebKey.import_key_set(

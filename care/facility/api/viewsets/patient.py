@@ -62,6 +62,7 @@ from care.facility.models import (
     Facility,
     FacilityPatientStatsHistory,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
     ShiftingRequest,
 )
@@ -602,7 +603,52 @@ class PatientViewSet(
 
 
 class FacilityDischargedPatientFilterSet(filters.FilterSet):
+    disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
+    phone_number = filters.CharFilter(field_name="phone_number")
+    emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    gender = filters.NumberFilter(field_name="gender")
+    age = filters.NumberFilter(field_name="age")
+    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
+    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
+    created_date = filters.DateFromToRangeFilter(field_name="created_date")
+    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
+    srf_id = filters.CharFilter(field_name="srf_id")
+    is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
+    date_declared_positive = filters.DateFromToRangeFilter(
+        field_name="date_declared_positive"
+    )
+    date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
+    last_vaccinated_date = filters.DateFromToRangeFilter(
+        field_name="last_vaccinated_date"
+    )
+    is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
+    last_menstruation_start_date = filters.DateFromToRangeFilter(
+        field_name="last_menstruation_start_date"
+    )
+    date_of_delivery = filters.DateFromToRangeFilter(field_name="date_of_delivery")
+    # Location Based Filtering
+    district = filters.NumberFilter(field_name="district__id")
+    district_name = filters.CharFilter(
+        field_name="district__name", lookup_expr="icontains"
+    )
+    local_body = filters.NumberFilter(field_name="local_body__id")
+    local_body_name = filters.CharFilter(
+        field_name="local_body__name", lookup_expr="icontains"
+    )
+    state = filters.NumberFilter(field_name="state__id")
+    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    # Vaccination Filters
+    covin_id = filters.CharFilter(field_name="covin_id")
+    is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
+    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
+    last_consultation__new_discharge_reason = filters.ChoiceFilter(
+        field_name="last_consultation__new_discharge_reason",
+        choices=NewDischargeReasonEnum.choices,
+    )
+    last_consultation_discharge_date = filters.DateFromToRangeFilter(
+        field_name="last_consultation__discharge_date"
+    )
 
 
 @extend_schema_view(tags=["patient"])
@@ -616,21 +662,56 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         PatientCustomOrderingFilter,
     )
     filterset_class = FacilityDischargedPatientFilterSet
-    queryset = PatientRegistration.objects.select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    queryset = (
+        PatientRegistration.objects.select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            "last_consultation",
+            "last_consultation__assigned_to",
+            "last_edited",
+            "created_by",
+        )
+        .annotate(
+            coalesced_dob=Coalesce(
+                "date_of_birth",
+                Func(
+                    F("year_of_birth"),
+                    Value(1),
+                    Value(1),
+                    function="MAKE_DATE",
+                    output_field=models.DateField(),
+                ),
+                output_field=models.DateField(),
+            ),
+            age_end=Case(
+                When(death_datetime__isnull=True, then=Now()),
+                default=F("death_datetime__date"),
+            ),
+        )
+        .annotate(
+            age=Func(
+                Value("year"),
+                Func(
+                    F("age_end"),
+                    F("coalesced_dob"),
+                    function="age",
+                ),
+                function="date_part",
+                output_field=models.IntegerField(),
+            ),
+            age_days=ExpressionWrapper(
+                ExtractDay(F("age_end") - F("coalesced_dob")),
+                output_field=models.IntegerField(),
+            ),
+        )
     )
 
     ordering_fields = [
@@ -813,6 +894,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
 
 
 class PatientNotesFilterSet(filters.FilterSet):
+    thread = filters.ChoiceFilter(choices=PatientNoteThreadChoices.choices)
     consultation = filters.CharFilter(field_name="consultation__external_id")
 
 
