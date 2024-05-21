@@ -422,6 +422,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 symptom=obj.get("symptom"),
                 onset_date=localtime(obj.get("onset_date")),
                 other_symptom=obj.get("other_symptom"),
+                created_by=self.context["request"].user,
             )
             for obj in create_symptoms
         )
