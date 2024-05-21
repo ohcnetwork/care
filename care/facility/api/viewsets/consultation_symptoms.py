@@ -48,6 +48,12 @@ class ConsultationSymptomViewSet(ModelViewSet):
         return context
 
     def perform_destroy(self, instance):
-        instance.clinical_impression_status = ClinicalImpressionStatus.ENTERED_IN_ERROR
-        instance.updated_by = self.request.user
-        instance.save()
+        serializer = self.get_serializer(
+            instance,
+            data={
+                "clinical_impression_status": ClinicalImpressionStatus.ENTERED_IN_ERROR
+            },
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
