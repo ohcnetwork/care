@@ -12,6 +12,7 @@ from django.utils import timezone
 from hardcopy import bytestring_to_pdf
 
 from care.facility.models import (
+    ConsultationSymptom,
     DailyRound,
     Disease,
     InvestigationValue,
@@ -97,6 +98,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
+    symptoms = ConsultationSymptom.objects.filter(consultation=consultation)
     diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
@@ -133,6 +135,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
+        "symptoms": symptoms,
         "principal_diagnoses": diagnoses["principal"],
         "unconfirmed_diagnoses": diagnoses["unconfirmed"],
         "provisional_diagnoses": diagnoses["provisional"],

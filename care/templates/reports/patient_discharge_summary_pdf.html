@@ -193,7 +193,7 @@
     </div>
     {% endif %}
 
-    {% if consultation.symptoms.exists() %}
+    {% if symptoms %}
     <h4 class="mt-6 font-medium text-gray-500">
       Symptoms:
     </h4>
@@ -214,7 +214,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for symptom in consultation.symptoms.all() %}
+          {% for symptom in symptoms %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-no-wrap text-sm">
               {% if symptom.symptom == 9 %}
