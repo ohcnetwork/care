@@ -677,7 +677,6 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     ]
 
     ordering_fields = [
-        "facility__name",
         "id",
         "name",
         "created_date",
