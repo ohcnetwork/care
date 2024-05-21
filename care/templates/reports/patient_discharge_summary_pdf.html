@@ -193,6 +193,49 @@
     </div>
     {% endif %}
 
+    {% if consultation.symptoms.exists() %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Symptoms:
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              Name
+            </th>
+            <th class="p-2">
+              Onset Date
+            </th>
+            <th class="p-2">
+              Cure Date
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for symptom in consultation.symptoms.all() %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {% if symptom.symptom == 9 %}
+              {{symptom.other_symptom}}
+              {% else %}
+              {{symptom.get_symptom_display}}
+              {% endif %}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{symptom.onset_date.date}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{symptom.cure_date.date}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
     {% if principal_diagnosis %}
     <h4 class="mt-6 font-medium text-gray-500">
       Principal Diagnosis (as per ICD-11 recommended by WHO):
