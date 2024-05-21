@@ -45,7 +45,7 @@ class Symptom(models.IntegerChoices):
 class ConsultationSymptom(BaseModel, ConsultationRelatedPermissionMixin):
     symptom = models.SmallIntegerField(choices=Symptom.choices, null=False, blank=False)
     other_symptom = models.CharField(default="", blank=True, null=False)
-    onset_date = models.DateTimeField(null=True, blank=True)
+    onset_date = models.DateTimeField(null=False, blank=False)
     cure_date = models.DateTimeField(null=True, blank=True)
     consultation = models.ForeignKey(
         PatientConsultation,

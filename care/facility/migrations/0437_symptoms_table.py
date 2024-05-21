@@ -163,7 +163,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("other_symptom", models.CharField(blank=True, default="")),
-                ("onset_date", models.DateTimeField(blank=True, null=True)),
+                ("onset_date", models.DateTimeField(null=False, blank=False)),
                 ("cure_date", models.DateTimeField(blank=True, null=True)),
                 (
                     "consultation",
