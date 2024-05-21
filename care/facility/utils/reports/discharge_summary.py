@@ -1,4 +1,6 @@
+import json
 import logging
+import subprocess
 import tempfile
 from collections.abc import Iterable
 from uuid import uuid4
@@ -7,9 +9,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.db.models import Q
-from django.template.loader import render_to_string
 from django.utils import timezone
-from hardcopy import bytestring_to_pdf
 
 from care.facility.models import (
     DailyRound,
@@ -150,24 +150,44 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     }
 
 
-def generate_discharge_summary_pdf(data, file):
-    logger.info(
-        f"Generating Discharge Summary html for {data['consultation'].external_id}"
-    )
-    html_string = render_to_string("reports/patient_discharge_summary_pdf.html", data)
+def convert_discharge_summary_data_to_json(data):
+    # TODO: Update data to JSON
 
+    return json.dumps({"data": "data1"})
+
+
+def compile_typ(output_file, data):
+    json_data = convert_discharge_summary_data_to_json(data)
+    try:
+        source_file = settings.APPS_DIR / "templates" / "reports" / "example.typ"
+        command = [
+            "typst",
+            "compile",
+            source_file,
+            "--input",
+            "obj=" + json_data,
+            output_file,
+        ]
+
+        subprocess.run(command, check=True)
+        logger.info(
+            f"Successfully Compiled Summary pdf for {data['consultation'].external_id}"
+        )
+        return True
+    except Exception as e:
+        logger.error(
+            f"Error Compiling Summary pdf for {data['consultation'].external_id} : {e}"
+        )
+        return False
+
+
+def generate_discharge_summary_pdf(data, file):
     logger.info(
         f"Generating Discharge Summary pdf for {data['consultation'].external_id}"
     )
-    bytestring_to_pdf(
-        html_string.encode(),
-        file,
-        **{
-            "no-margins": None,
-            "disable-gpu": None,
-            "disable-dev-shm-usage": False,
-            "window-size": "2480,3508",
-        },
+    compile_typ(output_file=file.name, data=data)
+    logger.info(
+        f"Successfully Generated Discharge Summary pdf for {data['consultation'].external_id}"
     )
 
 
