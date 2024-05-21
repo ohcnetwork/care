@@ -19,20 +19,23 @@ def backfill_symptoms_table(apps, schema_editor):
     for page_number in paginator.page_range:
         bulk = []
         for consultation in paginator.page(page_number).object_list:
-            consultation_symptoms_set = set(consultation.deprecated_symptoms)
+            consultation_symptoms_set = set()
             for symptom in consultation.deprecated_symptoms:
                 try:
                     symptom_id = int(symptom)
-
+                    if symptom_id == 1:
+                        # Asymptomatic
+                        continue
                     if symptom_id == 9:
                         # Other symptom
-                        consultation_symptoms_set.remove(9)
                         if not consultation.deprecated_other_symptoms:
                             # invalid other symptom
                             continue
                         consultation_symptoms_set.add(
                             consultation.deprecated_other_symptoms.lower()
                         )
+                    else:
+                        consultation_symptoms_set.add(symptom_id)
                     bulk.append(
                         EncounterSymptom(
                             symptom=symptom_id,
@@ -56,7 +59,9 @@ def backfill_symptoms_table(apps, schema_editor):
                 for symptom in daily_round.deprecated_additional_symptoms:
                     try:
                         symptom_id = int(symptom)
-
+                        if symptom_id == 1:
+                            # Asymptomatic
+                            continue
                         if symptom_id == 9:
                             # Other symptom
                             if not daily_round.deprecated_other_symptoms:
