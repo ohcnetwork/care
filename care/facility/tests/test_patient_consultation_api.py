@@ -1,11 +1,12 @@
 import datetime
 from unittest.mock import patch
 
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
+from care.facility.models.consultation_symptom import Symptom
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
@@ -49,6 +50,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
                     "is_principal": False,
                     "verification_status": ConditionVerificationStatus.CONFIRMED,
                 }
+            ],
+            "create_symptoms": [
+                {
+                    "symptom": Symptom.FEVER,
+                    "onset_date": now(),
+                },
+                {
+                    "symptom": Symptom.OTHERS,
+                    "other_symptom": "Other Symptom",
+                    "onset_date": now(),
+                },
             ],
             "patient_no": datetime.datetime.now().timestamp(),
         }

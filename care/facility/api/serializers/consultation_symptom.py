@@ -8,7 +8,7 @@ from care.facility.models.consultation_symptom import ConsultationSymptom, Sympt
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
-class ConsultationSymptomSerializers(serializers.ModelSerializer):
+class ConsultationSymptomSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     updated_by = UserBaseMinimumSerializer(read_only=True)
@@ -101,7 +101,7 @@ class ConsultationSymptomSerializers(serializers.ModelSerializer):
             return instance
 
 
-class ConsultationCreateSymptomSerializers(serializers.ModelSerializer):
+class ConsultationCreateSymptomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConsultationSymptom
         fields = ("symptom", "other_symptom", "onset_date")

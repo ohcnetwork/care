@@ -19,7 +19,8 @@ from care.facility.api.serializers.consultation_diagnosis import (
     ConsultationDiagnosisSerializer,
 )
 from care.facility.api.serializers.consultation_symptom import (
-    ConsultationSymptomSerializers,
+    ConsultationCreateSymptomSerializer,
+    ConsultationSymptomSerializer,
 )
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
@@ -153,13 +154,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
-    create_symptoms = ConsultationSymptomSerializers(
+    create_symptoms = ConsultationCreateSymptomSerializer(
         many=True,
         write_only=True,
         required=False,
         help_text="Bulk create symptoms for the consultation upon creation",
     )
-    symptoms = ConsultationSymptomSerializers(many=True, read_only=True)
+    symptoms = ConsultationSymptomSerializer(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
@@ -420,8 +421,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ConsultationSymptom(
                 consultation=consultation,
                 symptom=obj.get("symptom"),
-                onset_date=localtime(obj.get("onset_date")),
-                other_symptom=obj.get("other_symptom"),
+                onset_date=obj.get("onset_date"),
+                cure_date=obj.get("cure_date"),
+                other_symptom=obj.get("other_symptom") or "",
                 created_by=self.context["request"].user,
             )
             for obj in create_symptoms
@@ -519,6 +521,40 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 "Only confirmed diagnosis can be set as principal diagnosis if it is present"
             )
+
+        return value
+
+    def validate_create_symptoms(self, value):
+        if self.instance:
+            raise ValidationError("Bulk create symptoms is not allowed on update")
+
+        if len(value) == 0:
+            raise ValidationError("Atleast one symptom is required")
+
+        counter: set[int | str] = set()
+        for obj in value:
+            item: int | str = obj["symptom"]
+            if obj["symptom"] == Symptom.OTHERS:
+                item: str = obj["other_symptom"].strip().lower()
+            if item in counter:
+                # Reject if duplicate symptoms are provided
+                raise ValidationError("Duplicate symptoms are not allowed")
+            counter.add(item)
+
+        current_time = now()
+        for obj in value:
+            if "onset_date" not in obj:
+                raise ValidationError(
+                    {"onset_date": "This field is required for all symptoms"}
+                )
+            if obj["onset_date"] > current_time:
+                raise ValidationError(
+                    {"onset_date": "Onset date cannot be in the future"}
+                )
+            if "cure_date" in obj and obj["cure_date"] < obj["onset_date"]:
+                raise ValidationError(
+                    {"cure_date": "Cure date should be after onset date"}
+                )
 
         return value
 
@@ -645,30 +681,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if not self.instance and "create_symptoms" not in validated:
             raise ValidationError({"create_symptoms": ["This field is required."]})
-        elif create_symptoms := validated.get("create_symptoms"):
-            # Validate create_diagnoses
-
-            if self.instance:
-                raise ValidationError("Bulk create symptoms is not allowed on update")
-
-            if len(create_symptoms) == 0:
-                raise ValidationError("Atleast one symptom is required")
-
-            counter: set[int | str] = set()
-            for obj in create_symptoms:
-                item: int | str = obj["symptom"]
-                if obj["symptom"] == Symptom.OTHERS:
-                    item: str = obj["other_symptom"].strip().lower()
-                if item in counter:
-                    # Reject if duplicate symptoms are provided
-                    raise ValidationError("Duplicate symptoms are not allowed")
-                counter.add(item)
-
-            for obj in create_symptoms:
-                if obj["cure_date"] and obj["cure_date"] < obj["onset_date"]:
-                    raise ValidationError(
-                        {"cure_date": "Cure date should be after onset date"}
-                    )
 
         return validated
 
