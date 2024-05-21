@@ -548,7 +548,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         current_time = now()
         for obj in value:
-            if "onset_date" not in obj:
+            if not obj.get("onset_date"):
                 raise ValidationError(
                     {"onset_date": "This field is required for all symptoms"}
                 )
@@ -558,8 +558,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"onset_date": "Onset date cannot be in the future"}
                 )
 
-            if "cure_date" in obj:
-                if obj["cure_date"] < obj["onset_date"]:
+            if cure_date := obj.get("cure_date"):
+                if cure_date < obj["onset_date"]:
                     raise ValidationError(
                         {"cure_date": "Cure date should be after onset date"}
                     )
