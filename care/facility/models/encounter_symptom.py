@@ -85,9 +85,10 @@ class EncounterSymptom(BaseModel, ConsultationRelatedPermissionMixin):
         if self.other_symptom and self.symptom != Symptom.OTHERS:
             raise ValueError("Other Symptom should be empty when Symptom is not OTHERS")
 
-        if self.onset_date and self.cure_date:
-            self.clinical_impression_status = ClinicalImpressionStatus.COMPLETED
-        elif self.onset_date and not self.cure_date:
-            self.clinical_impression_status = ClinicalImpressionStatus.IN_PROGRESS
+        if self.clinical_impression_status != ClinicalImpressionStatus.ENTERED_IN_ERROR:
+            if self.onset_date and self.cure_date:
+                self.clinical_impression_status = ClinicalImpressionStatus.COMPLETED
+            elif self.onset_date and not self.cure_date:
+                self.clinical_impression_status = ClinicalImpressionStatus.IN_PROGRESS
 
         super().save(*args, **kwargs)
