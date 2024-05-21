@@ -33,6 +33,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
             "doctor", cls.district, home_facility=cls.facility, user_type=15
         )
         cls.patient1 = cls.create_patient(cls.district, cls.facility)
+        cls.patient2 = cls.create_patient(cls.district, cls.facility)
 
     def get_default_data(self):
         return {
@@ -661,3 +662,40 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_patient_was_discharged_and_then_another_added_with_the_same_patient_number(
+        self,
+    ):
+        consultation = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            patient=self.patient1,
+            patient_no="OP1234",
+        )
+        same_op_number_test = False
+        try:
+            self.create_admission_consultation(
+                suggestion=SuggestionChoices.A,
+                encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+                patient=self.patient2,
+                patient_no="OP1234",
+            )
+        except Exception:
+            same_op_number_test = True
+
+        self.assertTrue(same_op_number_test)
+
+        res = self.discharge(
+            consultation,
+            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            discharge_date="2020-04-02T15:30:00Z",
+            discharge_notes="Discharged",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        consultation_2 = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            patient=self.patient1,
+            patient_no="OP1234",
+        )
+        self.assertEqual(consultation_2.patient_no, "OP1234")
