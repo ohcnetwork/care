@@ -32,6 +32,7 @@ from care.facility.models import (
 )
 from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.consultation_symptom import ConsultationSymptom
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
@@ -55,6 +56,29 @@ from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 
 MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
+
+
+class ConsultationSymptomsSerializers(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = ConsultationSymptom
+        exclude = (
+            "daily_round",
+            "consultation",
+            "external_id",
+            "deleted",
+        )
+        read_only_fields = (
+            "created_date",
+            "modified_date",
+        )
+
+
+class ConsultationCreateSymptomsSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ConsultationSymptom
+        fields = ("symptom", "other_symptom", "onset_date")
 
 
 class PatientConsultationSerializer(serializers.ModelSerializer):
@@ -151,7 +175,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
-
+    create_symptoms_timeline = ConsultationCreateSymptomsSerializers(
+        many=True, write_only=True, required=False
+    )
+    symptoms_timeline = ConsultationSymptomsSerializers(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
@@ -191,6 +218,23 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "deprecated_icd11_principal_diagnosis",
         )
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        sorted_representation = sorted(
+            representation["symptoms_timeline"],
+            key=lambda x: x.get("onset_date"),
+        )
+        sorted_representation = sorted(
+            sorted_representation, key=lambda x: x.get("cure_date") is not None
+        )
+        representation["symptoms_timeline"] = sorted_representation
+        syms = ConsultationSymptom.objects.filter(
+            consultation__external_id=instance.external_id
+        )
+        for sym in syms:
+            print((sym.symptom, localtime(sym.onset_date).strftime("%d-%m-%Y")))
+        return representation
+
     def validate_bed_number(self, bed_number):
         try:
             if not self.initial_data["admitted"]:
@@ -212,6 +256,32 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 instance.medico_legal_case = validated_data.pop("medico_legal_case")
                 instance.save()
                 return instance
+
+        if validated_data["create_symptoms_timeline"]:
+            existing_symptoms = ConsultationSymptom.objects.filter(
+                consultation__external_id=instance.external_id
+            )
+            for obj in validated_data["create_symptoms_timeline"]:
+                for existing_obj in existing_symptoms:
+                    if obj.get("symptom") == existing_obj.symptom and obj.get(
+                        "onset_date"
+                    ).strftime("%d-%m-%Y") == localtime(
+                        existing_obj.onset_date
+                    ).strftime(
+                        "%d-%m-%Y"
+                    ):
+                        if (
+                            obj.get("symptom") == "OTHERS"
+                            and obj.get("other_symptom").lower()
+                            == existing_obj.other_symptom.lower()
+                        ):
+                            raise ValidationError(
+                                f"other symptom {obj.get('other_symptom')} with onset date {obj.get('onset_date').strftime('%d-%m-%Y')} already exists"
+                            )
+                        elif obj.get("symptom") != "OTHERS":
+                            raise ValidationError(
+                                f"symptom {obj.get('symptom')} with onset date {obj.get('onset_date').strftime('%d-%m-%Y')} already exists"
+                            )
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())
@@ -248,13 +318,33 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         consultation = super().update(instance, validated_data)
 
-        create_consultation_events(
-            consultation.id,
-            consultation,
-            self.context["request"].user.id,
-            consultation.modified_date,
-            old_instance,
-        )
+        with transaction.atomic():
+            create_consultation_events(
+                consultation.id,
+                consultation,
+                self.context["request"].user.id,
+                consultation.modified_date,
+                old_instance,
+            )
+            if validated_data["create_symptoms_timeline"]:
+                sym_timeline = ConsultationSymptom.objects.bulk_create(
+                    [
+                        ConsultationSymptom(
+                            other_symptom=obj.get("other_symptom"),
+                            symptom=obj.get("symptom"),
+                            onset_date=localtime(obj.get("onset_date")),
+                            cure_date=None,
+                            consultation=consultation,
+                        )
+                        for obj in validated_data["create_symptoms_timeline"]
+                    ]
+                )
+                create_consultation_events(
+                    consultation.id,
+                    *sym_timeline,
+                    consultation.created_by.id,
+                    consultation.created_date,
+                )
 
         if "assigned_to" in validated_data:
             if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
@@ -332,6 +422,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError({"route_to_facility": "This field is required"})
 
         create_diagnosis = validated_data.pop("create_diagnoses")
+        create_symptoms_timeline = validated_data.pop("create_symptoms_timeline")
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -406,6 +497,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 for obj in create_diagnosis
             ]
         )
+        print(create_symptoms_timeline)
+        print(create_diagnosis)
 
         if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
@@ -442,12 +535,32 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             facility=patient.facility,
         ).generate()
 
-        create_consultation_events(
-            consultation.id,
-            (consultation, *diagnosis),
-            consultation.created_by.id,
-            consultation.created_date,
-        )
+        if create_symptoms_timeline:
+            sym_timeline = ConsultationSymptom.objects.bulk_create(
+                [
+                    ConsultationSymptom(
+                        other_symptom=obj.get("other_symptom"),
+                        symptom=obj.get("symptom"),
+                        onset_date=localtime(obj.get("onset_date")),
+                        cure_date=None,
+                        consultation=consultation,
+                    )
+                    for obj in create_symptoms_timeline
+                ]
+            )
+            create_consultation_events(
+                consultation.id,
+                (consultation, *diagnosis, *sym_timeline),
+                consultation.created_by.id,
+                consultation.created_date,
+            )
+        else:
+            create_consultation_events(
+                consultation.id,
+                (consultation, *diagnosis),
+                consultation.created_by.id,
+                consultation.created_date,
+            )
 
         if consultation.assigned_to:
             NotificationGenerator(
