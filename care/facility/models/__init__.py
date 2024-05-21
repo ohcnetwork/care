@@ -14,7 +14,6 @@ from .patient_consultation import *  # noqa
 from .patient_external_test import *  # noqa
 from .patient_investigation import *  # noqa
 from .patient_sample import *  # noqa
-from .patient_tele_consultation import *  # noqa
 from .prescription import *  # noqa
 from .resources import *  # noqa
 from .shifting import *  # noqa

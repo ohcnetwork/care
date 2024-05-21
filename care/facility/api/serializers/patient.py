@@ -39,7 +39,6 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.hcx.models.claim import Claim
 from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
@@ -160,11 +159,6 @@ class PatientDetailSerializer(PatientListSerializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
-    class PatientTeleConsultationSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = PatientTeleConsultation
-            fields = "__all__"
-
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
     )
@@ -173,7 +167,7 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True
+        child=PatientConsultationSerializer(), read_only=True
     )
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
