@@ -504,6 +504,7 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
 
 
 class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
 
     class Meta:

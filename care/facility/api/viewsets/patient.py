@@ -945,7 +945,7 @@ class PatientNotesViewSet(
 ):
     queryset = (
         PatientNotes.objects.all()
-        .select_related("facility", "patient", "created_by")
+        .select_related("facility", "patient", "created_by", "reply_to")
         .order_by("-created_date")
     )
     lookup_field = "external_id"
