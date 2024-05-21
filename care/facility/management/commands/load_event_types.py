@@ -225,7 +225,13 @@ class Command(BaseCommand):
         {
             "name": "SYMPTOMS",
             "model": "ConsultationSymptom",
-            "fields": ("symptom", "other_symptom", "onset_date", "cure_date"),
+            "fields": (
+                "symptom",
+                "other_symptom",
+                "onset_date",
+                "cure_date",
+                "clinical_impression_status",
+            ),
         },
     )
 

@@ -1,10 +1,21 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
+
+
+class ClinicalImpressionStatus(models.TextChoices):
+    """
+    See: https://fhir-ru.github.io/valueset-clinicalimpression-status.html
+    """
+
+    IN_PROGRESS = "in-progress", _("In Progress")
+    COMPLETED = "completed", _("Completed")
+    ENTERED_IN_ERROR = "entered-in-error", _("Entered in Error")
 
 
 class Symptom(models.IntegerChoices):
@@ -47,6 +58,11 @@ class ConsultationSymptom(BaseModel, ConsultationRelatedPermissionMixin):
     other_symptom = models.CharField(default="", blank=True, null=False)
     onset_date = models.DateTimeField(null=False, blank=False)
     cure_date = models.DateTimeField(null=True, blank=True)
+    clinical_impression_status = models.CharField(
+        max_length=255,
+        choices=ClinicalImpressionStatus.choices,
+        default=ClinicalImpressionStatus.IN_PROGRESS,
+    )
     consultation = models.ForeignKey(
         PatientConsultation,
         null=True,
@@ -68,5 +84,10 @@ class ConsultationSymptom(BaseModel, ConsultationRelatedPermissionMixin):
     def save(self, *args, **kwargs):
         if self.other_symptom and self.symptom != Symptom.OTHERS:
             raise ValueError("Other Symptom should be empty when Symptom is not OTHERS")
+
+        if self.onset_date and self.cure_date:
+            self.clinical_impression_status = ClinicalImpressionStatus.COMPLETED
+        elif self.onset_date and not self.cure_date:
+            self.clinical_impression_status = ClinicalImpressionStatus.IN_PROGRESS
 
         super().save(*args, **kwargs)
