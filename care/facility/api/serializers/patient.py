@@ -166,9 +166,6 @@ class PatientDetailSerializer(PatientListSerializer):
         child=MedicalHistorySerializer(), required=False
     )
 
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientConsultationSerializer(), read_only=True
-    )
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(

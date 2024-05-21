@@ -431,9 +431,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
 
     @property
-    def tele_consultation_history(self):
-        return self.patientteleconsultation_set.order_by("-id")
-
     def _alias_recovery_to_recovered(self) -> None:
         if self.disease_status == DiseaseStatusEnum.RECOVERY.value:
             self.disease_status = DiseaseStatusEnum.RECOVERED.value
