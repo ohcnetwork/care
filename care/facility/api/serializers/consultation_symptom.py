@@ -114,7 +114,7 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                 instance,
                 instance.updated_by_id,
                 instance.modified_date,
-                old_instance=old_instance,
+                old=old_instance,
             )
 
             return instance
