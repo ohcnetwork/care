@@ -53,7 +53,7 @@ class Symptom(models.IntegerChoices):
     NEW_LOSS_OF_SMELL = 34
 
 
-class ConsultationSymptom(BaseModel, ConsultationRelatedPermissionMixin):
+class EncounterSymptom(BaseModel, ConsultationRelatedPermissionMixin):
     symptom = models.SmallIntegerField(choices=Symptom.choices, null=False, blank=False)
     other_symptom = models.CharField(default="", blank=True, null=False)
     onset_date = models.DateTimeField(null=False, blank=False)

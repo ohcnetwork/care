@@ -4,17 +4,15 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from care.facility.api.serializers.consultation_symptom import (
-    ConsultationSymptomSerializer,
-)
-from care.facility.models.consultation_symptom import (
+from care.facility.api.serializers.encounter_symptom import EncounterSymptomSerializer
+from care.facility.models.encounter_symptom import (
     ClinicalImpressionStatus,
-    ConsultationSymptom,
+    EncounterSymptom,
 )
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
-class ConsultationSymptomFilter(filters.FilterSet):
+class EncounterSymptomFilter(filters.FilterSet):
     is_cured = filters.BooleanFilter(method="filter_is_cured")
 
     def filter_is_cured(self, queryset, name, value):
@@ -23,12 +21,12 @@ class ConsultationSymptomFilter(filters.FilterSet):
         return queryset.filter(cure_date__isnull=True)
 
 
-class ConsultationSymptomViewSet(ModelViewSet):
-    serializer_class = ConsultationSymptomSerializer
+class EncounterSymptomViewSet(ModelViewSet):
+    serializer_class = EncounterSymptomSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = ConsultationSymptom.objects.all()
+    queryset = EncounterSymptom.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = ConsultationSymptomFilter
+    filterset_class = EncounterSymptomFilter
     lookup_field = "external_id"
 
     def get_consultation_obj(self):

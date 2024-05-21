@@ -18,11 +18,11 @@ from care.facility.api.serializers.consultation_diagnosis import (
     ConsultationCreateDiagnosisSerializer,
     ConsultationDiagnosisSerializer,
 )
-from care.facility.api.serializers.consultation_symptom import (
-    ConsultationCreateSymptomSerializer,
-    ConsultationSymptomSerializer,
-)
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
+from care.facility.api.serializers.encounter_symptom import (
+    EncounterCreateSymptomSerializer,
+    EncounterSymptomSerializer,
+)
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
@@ -36,9 +36,9 @@ from care.facility.models import (
 )
 from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
-from care.facility.models.consultation_symptom import (
+from care.facility.models.encounter_symptom import (
     ClinicalImpressionStatus,
-    ConsultationSymptom,
+    EncounterSymptom,
     Symptom,
 )
 from care.facility.models.icd11_diagnosis import (
@@ -158,13 +158,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
-    create_symptoms = ConsultationCreateSymptomSerializer(
+    create_symptoms = EncounterCreateSymptomSerializer(
         many=True,
         write_only=True,
         required=False,
         help_text="Bulk create symptoms for the consultation upon creation",
     )
-    symptoms = ConsultationSymptomSerializer(many=True, read_only=True)
+    symptoms = EncounterSymptomSerializer(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
@@ -421,8 +421,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ]
         )
 
-        symptoms = ConsultationSymptom.objects.bulk_create(
-            ConsultationSymptom(
+        symptoms = EncounterSymptom.objects.bulk_create(
+            EncounterSymptom(
                 consultation=consultation,
                 symptom=obj.get("symptom"),
                 onset_date=obj.get("onset_date"),

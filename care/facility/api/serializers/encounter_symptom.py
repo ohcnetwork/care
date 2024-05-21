@@ -5,21 +5,21 @@ from django.utils.timezone import now
 from rest_framework import serializers
 
 from care.facility.events.handler import create_consultation_events
-from care.facility.models.consultation_symptom import (
+from care.facility.models.encounter_symptom import (
     ClinicalImpressionStatus,
-    ConsultationSymptom,
+    EncounterSymptom,
     Symptom,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
-class ConsultationSymptomSerializer(serializers.ModelSerializer):
+class EncounterSymptomSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     updated_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
-        model = ConsultationSymptom
+        model = EncounterSymptom
         exclude = (
             "consultation",
             "external_id",
@@ -73,7 +73,7 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if ConsultationSymptom.objects.filter(
+        if EncounterSymptom.objects.filter(
             consultation=consultation,
             symptom=validated_data.get("symptom"),
             other_symptom=validated_data.get("other_symptom") or "",
@@ -91,7 +91,7 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
         validated_data["created_by"] = self.context["request"].user
 
         with transaction.atomic():
-            instance: ConsultationSymptom = super().create(validated_data)
+            instance: EncounterSymptom = super().create(validated_data)
 
             create_consultation_events(
                 instance.consultation_id,
@@ -120,7 +120,7 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
             return instance
 
 
-class ConsultationCreateSymptomSerializer(serializers.ModelSerializer):
+class EncounterCreateSymptomSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ConsultationSymptom
+        model = EncounterSymptom
         fields = ("symptom", "other_symptom", "onset_date")

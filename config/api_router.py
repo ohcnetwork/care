@@ -32,8 +32,8 @@ from care.facility.api.viewsets.bed import (
 from care.facility.api.viewsets.consultation_diagnosis import (
     ConsultationDiagnosisViewSet,
 )
-from care.facility.api.viewsets.consultation_symptoms import ConsultationSymptomViewSet
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
+from care.facility.api.viewsets.encounter_symptom import EncounterSymptomViewSet
 from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
@@ -228,7 +228,7 @@ consultation_nested_router = NestedSimpleRouter(
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"diagnoses", ConsultationDiagnosisViewSet)
-consultation_nested_router.register(r"symptoms", ConsultationSymptomViewSet)
+consultation_nested_router.register(r"symptoms", EncounterSymptomViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
 consultation_nested_router.register(

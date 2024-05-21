@@ -11,7 +11,7 @@ import care.facility.models.mixins.permissions.patient
 
 
 def backfill_symptoms_table(apps, schema_editor):
-    ConsultationSymptom = apps.get_model("facility", "ConsultationSymptom")
+    EncounterSymptom = apps.get_model("facility", "EncounterSymptom")
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     DailyRound = apps.get_model("facility", "DailyRound")
 
@@ -34,7 +34,7 @@ def backfill_symptoms_table(apps, schema_editor):
                             consultation.deprecated_other_symptoms.lower()
                         )
                     bulk.append(
-                        ConsultationSymptom(
+                        EncounterSymptom(
                             symptom=symptom_id,
                             other_symptom=consultation.deprecated_other_symptoms
                             if symptom_id == 9  # Other symptom
@@ -78,7 +78,7 @@ def backfill_symptoms_table(apps, schema_editor):
                             consultation_symptoms_set.add(symptom_id)
 
                         bulk.append(
-                            ConsultationSymptom(
+                            EncounterSymptom(
                                 symptom=symptom_id,
                                 other_symptom=daily_round.deprecated_other_symptoms
                                 if symptom_id == 9  # Other symptom
@@ -94,7 +94,7 @@ def backfill_symptoms_table(apps, schema_editor):
                         print(
                             f"Invalid Symptom {symptom} for DailyRound {daily_round.id}"
                         )
-        ConsultationSymptom.objects.bulk_create(bulk)
+        EncounterSymptom.objects.bulk_create(bulk)
 
 
 class Migration(migrations.Migration):
@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
             new_name="deprecated_symptoms_onset_date",
         ),
         migrations.CreateModel(
-            name="ConsultationSymptom",
+            name="EncounterSymptom",
             fields=[
                 (
                     "id",
