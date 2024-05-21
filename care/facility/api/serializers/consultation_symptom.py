@@ -1,6 +1,7 @@
 from copy import copy
 
 from django.db import transaction
+from django.utils.timezone import now
 from rest_framework import serializers
 
 from care.facility.events.handler import create_consultation_events
@@ -29,6 +30,11 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
             "modified_date",
             "is_migrated",
         )
+
+    def validate_onset_date(self, value):
+        if value and value > now():
+            raise serializers.ValidationError("Onset date cannot be in the future")
+        return value
 
     def validate(self, attrs):
         validated_data = super().validate(attrs)
