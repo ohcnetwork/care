@@ -546,7 +546,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     if self.instance
                     else validated.get("patient").facility
                 ),
-                new_discharge_reason__isnull=True,
+                discharge_date__isnull=True,
             ).exists():
                 raise ValidationError(
                     {
