@@ -139,7 +139,6 @@ class DailyRound(PatientBaseModel):
     spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
     )
-    temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
