@@ -4,6 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    def rename_categories_in_events(apps, schema_editor):
+        PatientConsultationEvent = apps.get_model(
+            "facility", "PatientConsultationEvent"
+        )
+
+        PatientConsultationEvent.objects.filter(
+            event_type__name="CATEGORY", value__category="Stable"
+        ).update(value={"category": "Mild"})
+        PatientConsultationEvent.objects.filter(
+            event_type__name="CATEGORY", value__category="Abnormal"
+        ).update(value={"category": "Moderate"})
+
     dependencies = [
         ("facility", "0437_alter_dailyround_rounds_type"),
     ]
