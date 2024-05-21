@@ -4,7 +4,11 @@ from django.db import transaction
 from rest_framework import serializers
 
 from care.facility.events.handler import create_consultation_events
-from care.facility.models.consultation_symptom import ConsultationSymptom, Symptom
+from care.facility.models.consultation_symptom import (
+    ClinicalImpressionStatus,
+    ConsultationSymptom,
+    Symptom,
+)
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
@@ -63,12 +67,18 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if ConsultationSymptom.objects.filter(
-            consultation=consultation,
-            symptom=validated_data.get("symptom"),
-            other_symptom=validated_data.get("other_symptom") or "",
-            cure_date__isnull=True,
-        ).exists():
+        if (
+            ConsultationSymptom.objects.filter(
+                consultation=consultation,
+                symptom=validated_data.get("symptom"),
+                other_symptom=validated_data.get("other_symptom") or "",
+                cure_date__isnull=True,
+            )
+            .exclude(
+                clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
+            )
+            .exists()
+        ):
             raise serializers.ValidationError(
                 {"symptom": "An active symptom with the same details already exists"}
             )

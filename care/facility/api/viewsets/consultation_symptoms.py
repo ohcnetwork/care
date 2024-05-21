@@ -1,14 +1,16 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from care.facility.api.serializers.consultation_symptom import (
     ConsultationSymptomSerializer,
 )
-from care.facility.models.consultation_symptom import ConsultationSymptom
+from care.facility.models.consultation_symptom import (
+    ClinicalImpressionStatus,
+    ConsultationSymptom,
+)
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -21,13 +23,7 @@ class ConsultationSymptomFilter(filters.FilterSet):
         return queryset.filter(cure_date__isnull=True)
 
 
-class ConsultationSymptomViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.RetrieveModelMixin,
-    GenericViewSet,
-):
+class ConsultationSymptomViewSet(ModelViewSet):
     serializer_class = ConsultationSymptomSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = ConsultationSymptom.objects.all()
@@ -50,3 +46,7 @@ class ConsultationSymptomViewSet(
         context = super().get_serializer_context()
         context["consultation"] = self.get_consultation_obj()
         return context
+
+    def perform_destroy(self, instance):
+        instance.clinical_impression_status = ClinicalImpressionStatus.ENTERED_IN_ERROR
+        instance.save()

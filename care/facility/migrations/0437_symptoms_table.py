@@ -197,6 +197,18 @@ class Migration(migrations.Migration):
                 ("onset_date", models.DateTimeField(null=False, blank=False)),
                 ("cure_date", models.DateTimeField(blank=True, null=True)),
                 (
+                    "clinical_impression_status",
+                    models.CharField(
+                        choices=[
+                            ("in-progress", "In Progress"),
+                            ("completed", "Completed"),
+                            ("entered-in-error", "Entered in Error"),
+                        ],
+                        default="in-progress",
+                        max_length=255,
+                    ),
+                ),
+                (
                     "consultation",
                     models.ForeignKey(
                         blank=True,

@@ -36,7 +36,11 @@ from care.facility.models import (
 )
 from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
-from care.facility.models.consultation_symptom import ConsultationSymptom, Symptom
+from care.facility.models.consultation_symptom import (
+    ClinicalImpressionStatus,
+    ConsultationSymptom,
+    Symptom,
+)
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
@@ -423,6 +427,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 symptom=obj.get("symptom"),
                 onset_date=obj.get("onset_date"),
                 cure_date=obj.get("cure_date"),
+                clinical_impression_status=obj.get("clinical_impression_status"),
                 other_symptom=obj.get("other_symptom") or "",
                 created_by=self.context["request"].user,
             )
@@ -547,14 +552,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"onset_date": "This field is required for all symptoms"}
                 )
+
             if obj["onset_date"] > current_time:
                 raise ValidationError(
                     {"onset_date": "Onset date cannot be in the future"}
                 )
-            if "cure_date" in obj and obj["cure_date"] < obj["onset_date"]:
-                raise ValidationError(
-                    {"cure_date": "Cure date should be after onset date"}
-                )
+
+            if "cure_date" in obj:
+                if obj["cure_date"] < obj["onset_date"]:
+                    raise ValidationError(
+                        {"cure_date": "Cure date should be after onset date"}
+                    )
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.COMPLETED
+            else:
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.IN_PROGRESS
 
         return value
 
