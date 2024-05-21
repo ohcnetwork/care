@@ -224,7 +224,7 @@ class Command(BaseCommand):
         },
         {
             "name": "SYMPTOMS",
-            "model": "ConsultationSymptom",
+            "model": "EncounterSymptom",
             "fields": (
                 "symptom",
                 "other_symptom",

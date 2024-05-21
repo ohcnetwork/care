@@ -540,7 +540,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         for obj in value:
             item: int | str = obj["symptom"]
             if obj["symptom"] == Symptom.OTHERS:
-                item: str = obj["other_symptom"].strip().lower()
+                other_symptom = obj.get("other_symptom")
+                if not other_symptom:
+                    raise ValidationError(
+                        {
+                            "other_symptom": "Other symptom should not be empty when symptom type is OTHERS"
+                        }
+                    )
+                item: str = other_symptom.strip().lower()
             if item in counter:
                 # Reject if duplicate symptoms are provided
                 raise ValidationError("Duplicate symptoms are not allowed")
@@ -548,11 +555,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         current_time = now()
         for obj in value:
-            if not obj.get("onset_date"):
-                raise ValidationError(
-                    {"onset_date": "This field is required for all symptoms"}
-                )
-
             if obj["onset_date"] > current_time:
                 raise ValidationError(
                     {"onset_date": "Onset date cannot be in the future"}

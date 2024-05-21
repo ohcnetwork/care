@@ -60,7 +60,7 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
         ):
             raise serializers.ValidationError(
                 {
-                    "other_symptom": "Other symptom should be empty when symptom is not OTHERS"
+                    "other_symptom": "Other symptom should be empty when symptom type is not OTHERS"
                 }
             )
 
@@ -69,7 +69,7 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
         ):
             raise serializers.ValidationError(
                 {
-                    "other_symptom": "Other symptom should not be empty when symptom is OTHERS"
+                    "other_symptom": "Other symptom should not be empty when symptom type is OTHERS"
                 }
             )
 
@@ -123,4 +123,4 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
 class EncounterCreateSymptomSerializer(serializers.ModelSerializer):
     class Meta:
         model = EncounterSymptom
-        fields = ("symptom", "other_symptom", "onset_date")
+        fields = ("symptom", "other_symptom", "onset_date", "cure_date")
