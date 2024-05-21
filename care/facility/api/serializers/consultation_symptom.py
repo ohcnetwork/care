@@ -67,18 +67,13 @@ class ConsultationSymptomSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if (
-            ConsultationSymptom.objects.filter(
-                consultation=consultation,
-                symptom=validated_data.get("symptom"),
-                other_symptom=validated_data.get("other_symptom") or "",
-                cure_date__isnull=True,
-            )
-            .exclude(
-                clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
-            )
-            .exists()
-        ):
+        if ConsultationSymptom.objects.filter(
+            consultation=consultation,
+            symptom=validated_data.get("symptom"),
+            other_symptom=validated_data.get("other_symptom") or "",
+            cure_date__isnull=True,
+            clinical_impression_status=ClinicalImpressionStatus.IN_PROGRESS,
+        ).exists():
             raise serializers.ValidationError(
                 {"symptom": "An active symptom with the same details already exists"}
             )

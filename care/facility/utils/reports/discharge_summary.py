@@ -22,6 +22,7 @@ from care.facility.models import (
     PrescriptionDosageType,
     PrescriptionType,
 )
+from care.facility.models.consultation_symptom import ClinicalImpressionStatus
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ACTIVE_CONDITION_VERIFICATION_STATUSES,
@@ -98,7 +99,9 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
-    symptoms = ConsultationSymptom.objects.filter(consultation=consultation)
+    symptoms = ConsultationSymptom.objects.filter(consultation=consultation).exclude(
+        clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
+    )
     diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)

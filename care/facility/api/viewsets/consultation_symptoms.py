@@ -49,4 +49,5 @@ class ConsultationSymptomViewSet(ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.clinical_impression_status = ClinicalImpressionStatus.ENTERED_IN_ERROR
+        instance.updated_by = self.request.user
         instance.save()
