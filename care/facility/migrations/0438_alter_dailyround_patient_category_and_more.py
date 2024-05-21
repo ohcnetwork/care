@@ -13,8 +13,14 @@ class Migration(migrations.Migration):
             event_type__name="CATEGORY", value__category="Stable"
         ).update(value={"category": "Mild"})
         PatientConsultationEvent.objects.filter(
+            event_type__name="PATIENT_CATEGORY", value__category="Stable"
+        ).update(value={"patient_category": "Mild"})
+        PatientConsultationEvent.objects.filter(
             event_type__name="CATEGORY", value__category="Abnormal"
         ).update(value={"category": "Moderate"})
+        PatientConsultationEvent.objects.filter(
+            event_type__name="PATIENT_CATEGORY", value__category="Abnormal"
+        ).update(value={"patient_category": "Moderate"})
 
     dependencies = [
         ("facility", "0437_alter_dailyround_rounds_type"),
