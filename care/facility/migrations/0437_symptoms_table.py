@@ -15,7 +15,7 @@ def backfill_symptoms_table(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     DailyRound = apps.get_model("facility", "DailyRound")
 
-    paginator = Paginator(PatientConsultation.objects.all(), 400)
+    paginator = Paginator(PatientConsultation.objects.all().order_by("id"), 400)
     for page_number in paginator.page_range:
         bulk = []
         for consultation in paginator.page(page_number).object_list:
@@ -40,7 +40,7 @@ def backfill_symptoms_table(apps, schema_editor):
                     )
         ConsultationSymptom.objects.bulk_create(bulk)
 
-    paginator = Paginator(DailyRound.objects.all(), 800)
+    paginator = Paginator(DailyRound.objects.all().order_by("id"), 800)
     for page_number in paginator.page_range:
         bulk = []
         for daily_round in paginator.page(page_number).object_list:
