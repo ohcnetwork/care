@@ -123,11 +123,8 @@ class TestEncounterSymptomInConsultation(TestUtils, APITestCase):
             data,
             format="json",
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.json(),
-            {"create_symptoms": ["Atleast one symptom is required"]},
-        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(EncounterSymptom.objects.count(), 0)
 
     def test_create_consultation_with_invalid_symptom(self):
         data = self.consultation_data.copy()

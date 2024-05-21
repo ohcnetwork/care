@@ -533,9 +533,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if self.instance:
             raise ValidationError("Bulk create symptoms is not allowed on update")
 
-        if len(value) == 0:
-            raise ValidationError("Atleast one symptom is required")
-
         counter: set[int | str] = set()
         for obj in value:
             item: int | str = obj["symptom"]
