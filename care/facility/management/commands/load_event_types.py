@@ -62,9 +62,14 @@ class Command(BaseCommand):
                             "fields": ("course_in_facility",),
                         },
                         {
-                            "name": "TREATING_PHYSICIAN",
-                            "fields": ("treating_physician",),
+                            "name": "INVESTIGATION",
+                            "fields": ("investigation",),
                         },
+                        # disabling until we have a better way to serialize user objects
+                        # {
+                        #     "name": "TREATING_PHYSICIAN",
+                        #     "fields": ("treating_physician",),
+                        # },
                     ),
                 },
                 {
@@ -240,6 +245,7 @@ class Command(BaseCommand):
         "RESPIRATORY",
         "INTAKE_OUTPUT",
         "VENTILATOR_MODES",
+        "TREATING_PHYSICIAN",
     )
 
     def create_objects(
