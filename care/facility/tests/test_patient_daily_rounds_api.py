@@ -40,7 +40,6 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         cls.consultation_with_bed.save()
 
         cls.log_update = {
-            "clone_last": False,
             "rounds_type": "NORMAL",
             "patient_category": "Comfort",
             "action": "DISCHARGE_RECOMMENDED",
@@ -94,5 +93,12 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             f"/api/v1/consultation/{self.domiciliary_consultation_no_bed.external_id}/daily_rounds/",
             data=self.log_update,
             format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_doctors_log_update(self):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
+            data={**self.log_update, "rounds_type": "DOCTORS_LOG"},
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

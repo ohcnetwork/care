@@ -3,7 +3,8 @@ from datetime import datetime
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models import F, Value
-from django.db.models.functions import Cast, Coalesce, NullIf
+from django.db.models.fields.json import KT
+from django.db.models.functions import Coalesce, NullIf
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema_field
@@ -214,8 +215,8 @@ class AssetSerializer(ModelSerializer):
             raise ValidationError({"asset_class": "Cannot change asset class"})
 
         if meta := attrs.get("meta"):
-            current_location = attrs.get(
-                "current_location", self.instance.current_location
+            current_location = (
+                attrs.get("current_location") or self.instance.current_location
             )
             ip_address = meta.get("local_ip_address")
             middleware_hostname = (
@@ -227,12 +228,7 @@ class AssetSerializer(ModelSerializer):
                 asset_using_ip = (
                     Asset.objects.annotate(
                         resolved_middleware_hostname=Coalesce(
-                            NullIf(
-                                Cast(
-                                    F("meta__middleware_hostname"), models.CharField()
-                                ),
-                                Value('""'),
-                            ),
+                            NullIf(KT("meta__middleware_hostname"), Value("")),
                             NullIf(
                                 F("current_location__middleware_address"), Value("")
                             ),
