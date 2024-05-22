@@ -56,26 +56,6 @@ SYMPTOM_CHOICES = [
     (34, "NEW LOSS OF SMELL"),
 ]
 
-'''
-export const MEDICAL_HISTORY_CHOICES: Array<OptionsType> = [
-  { id: 1, text: "NO" },
-  { id: 2, text: "Diabetes" },
-  { id: 3, text: "Heart Disease" },
-  { id: 4, text: "HyperTension" },
-  { id: 5, text: "Chronic Renal Disease" },
-  { id: 6, text: "Asthma" },
-  { id: 7, text: "COPD" },
-  { id: 8, text: "Bronchitis" },
-  { id: 9, text: "Chronic Neurological Or Neuromuscular Disease" },
-  { id: 10, text: "Immunocompromised Condition" },
-  { id: 11, text: "Liver Disease" },
-  { id: 12, text: "TB" },
-  { id: 13, text: "Other Chronic Lung Diseases" },
-  { id: 14, text: "Cancer" },
-  { id: 15, text: "OTHER" },
-];
-'''
-
 DISEASE_CHOICES_MAP = {
     "NO": 1,
     "Diabetes": 2,
