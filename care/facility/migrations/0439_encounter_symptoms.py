@@ -105,7 +105,7 @@ def backfill_symptoms_table(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0437_alter_dailyround_rounds_type"),
+        ("facility", "0438_alter_dailyround_patient_category_and_more"),
     ]
 
     operations = [
