@@ -25,6 +25,7 @@ from care.facility.models import (
     PatientContactDetails,
     PatientMetaInfo,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
 )
 from care.facility.models.bed import ConsultationBed
@@ -121,13 +122,12 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "year_of_birth",
             "meta_info",
             "countries_travelled_old",
             "allergies",
             "external_id",
         )
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("death_datetime",)
 
 
 class PatientContactDetailsSerializer(serializers.ModelSerializer):
@@ -226,12 +226,16 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "year_of_birth",
             "countries_travelled_old",
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+            "death_datetime",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -251,15 +255,27 @@ class PatientDetailSerializer(PatientListSerializer):
             value = [value]
         return value
 
+    def validate_date_of_birth(self, value):
+        if value and value > now().date():
+            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+        return value
+
+    def validate_year_of_birth(self, value):
+        if value and value > now().year:
+            raise serializers.ValidationError("Enter a valid year of birth")
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if (
-            not self.partial
-            and not validated.get("age")
-            and not validated.get("date_of_birth")
+        if not self.partial and not (
+            validated.get("year_of_birth") or validated.get("date_of_birth")
         ):
             raise serializers.ValidationError(
-                {"non_field_errors": ["Either age or date_of_birth should be passed"]}
+                {
+                    "non_field_errors": [
+                        "Either year_of_birth or date_of_birth should be passed"
+                    ]
+                }
             )
 
         if validated.get("is_vaccinated"):
@@ -450,11 +466,11 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = ("facility", "date_of_birth", "patient", "facility_object")
+        fields = ("facility", "year_of_birth", "patient", "facility_object")
 
-    def validate_date_of_birth(self, value):
-        if self.instance and self.instance.date_of_birth != value:
-            raise serializers.ValidationError("Date of birth does not match")
+    def validate_year_of_birth(self, value):
+        if self.instance and self.instance.year_of_birth != value:
+            raise serializers.ValidationError("Year of birth does not match")
         return value
 
     def create(self, validated_data):
@@ -502,6 +518,9 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         allow_null=True,
         read_only=True,
     )
+    thread = serializers.ChoiceField(
+        choices=PatientNoteThreadChoices, required=False, allow_null=False
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -509,6 +528,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data)
 
     def create(self, validated_data):
+        if "thread" not in validated_data:
+            raise serializers.ValidationError({"thread": "This field is required"})
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
@@ -536,6 +557,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        validated_data.pop("thread", None)  # Disallow changing thread of the note.
+
         user = self.context["request"].user
         note = validated_data.get("note")
 
@@ -560,6 +583,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "note",
             "facility",
             "consultation",
+            "thread",
             "created_by_object",
             "user_type",
             "created_date",
@@ -571,6 +595,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "id",
             "created_date",
             "modified_date",
+            "user_type",
             "last_edited_by",
             "last_edited_date",
         )

@@ -62,9 +62,14 @@ class Command(BaseCommand):
                             "fields": ("course_in_facility",),
                         },
                         {
-                            "name": "TREATING_PHYSICIAN",
-                            "fields": ("treating_physician",),
+                            "name": "INVESTIGATION",
+                            "fields": ("investigation",),
                         },
+                        # disabling until we have a better way to serialize user objects
+                        # {
+                        #     "name": "TREATING_PHYSICIAN",
+                        #     "fields": ("treating_physician",),
+                        # },
                     ),
                 },
                 {
@@ -94,87 +99,39 @@ class Command(BaseCommand):
             "model": "DailyRound",
             "children": (
                 {
-                    "name": "HEALTH",
+                    "name": "DAILY_ROUND_DETAILS",
+                    "fields": (
+                        "taken_at",
+                        "round_type",
+                        "other_details",
+                        "action",
+                        "review_after",
+                    ),
                     "children": (
                         {
                             "name": "ROUND_SYMPTOMS",  # todo resolve clash with consultation symptoms
-                            "fields": ("additional_symptoms", "other_symptoms"),
+                            "fields": ("additional_symptoms",),
                         },
                         {
                             "name": "PHYSICAL_EXAMINATION",
                             "fields": ("physical_examination_info",),
                         },
-                        {"name": "PATIENT_CATEGORY", "fields": ("patient_category",)},
-                        {"name": "CURRENT_HEALTH", "fields": ("current_health",)},
+                        {
+                            "name": "PATIENT_CATEGORY",
+                            "fields": ("patient_category",),
+                        },
                     ),
                 },
                 {
                     "name": "VITALS",
                     "children": (
-                        {
-                            "name": "TEMPERATURE",
-                            "fields": (
-                                "temperature",
-                                "temperature_measured_at",  # todo remove field
-                            ),
-                        },
+                        {"name": "TEMPERATURE", "fields": ("temperature",)},
                         {"name": "SPO2", "fields": ("spo2",)},
                         {"name": "PULSE", "fields": ("pulse",)},
                         {"name": "BLOOD_PRESSURE", "fields": ("bp",)},
                         {"name": "RESPIRATORY_RATE", "fields": ("resp",)},
                         {"name": "RHYTHM", "fields": ("rhythm", "rhythm_details")},
-                    ),
-                },
-                {
-                    "name": "RESPIRATORY",
-                    "children": (
-                        {
-                            "name": "BILATERAL_AIR_ENTRY",
-                            "fields": ("bilateral_air_entry",),
-                        },
-                    ),
-                },
-                {
-                    "name": "INTAKE_OUTPUT",
-                    "children": (
-                        {"name": "INFUSIONS", "fields": ("infusions",)},
-                        {"name": "IV_FLUIDS", "fields": ("iv_fluids",)},
-                        {"name": "FEEDS", "fields": ("feeds",)},
-                        {
-                            "name": "TOTAL_INTAKE",
-                            "fields": ("total_intake_calculated",),
-                        },
-                        {"name": "OUTPUT", "fields": ("output",)},
-                        {
-                            "name": "TOTAL_OUTPUT",
-                            "fields": ("total_output_calculated",),
-                        },
-                    ),
-                },
-                {
-                    "name": "VENTILATOR_MODES",
-                    "fields": (
-                        "ventilator_interface",
-                        "ventilator_mode",
-                        "ventilator_peep",
-                        "ventilator_pip",
-                        "ventilator_mean_airway_pressure",
-                        "ventilator_resp_rate",
-                        "ventilator_pressure_support",
-                        "ventilator_tidal_volume",
-                        "ventilator_oxygen_modality",
-                        "ventilator_oxygen_modality_oxygen_rate",
-                        "ventilator_oxygen_modality_flow_rate",
-                        "ventilator_fi02",
-                        "ventilator_spo2",
-                    ),
-                },
-                {
-                    "name": "DIALYSIS",
-                    "fields": (
-                        "pressure_sore",
-                        "dialysis_fluid_balance",
-                        "dialysis_net_balance",
+                        {"name": "PAIN_SCALE", "fields": ("pain_scale_enhanced",)},
                     ),
                 },
                 {
@@ -192,40 +149,84 @@ class Command(BaseCommand):
                         "glasgow_verbal_response",
                         "glasgow_motor_response",
                         "glasgow_total_calculated",
-                        "limb_response_upper_extremity_right",
                         "limb_response_upper_extremity_left",
+                        "limb_response_upper_extremity_right",
                         "limb_response_lower_extremity_left",
                         "limb_response_lower_extremity_right",
                         "consciousness_level",
                         "consciousness_level_detail",
+                        "in_prone_position",
+                    ),
+                },
+                {
+                    "name": "RESPIRATORY_SUPPORT",
+                    "fields": (
+                        "bilateral_air_entry",
+                        "etco2",
+                        "ventilator_fi02",
+                        "ventilator_interface",
+                        "ventilator_mean_airway_pressure",
+                        "ventilator_mode",
+                        "ventilator_oxygen_modality",
+                        "ventilator_oxygen_modality_flow_rate",
+                        "ventilator_oxygen_modality_oxygen_rate",
+                        "ventilator_peep",
+                        "ventilator_pip",
+                        "ventilator_pressure_support",
+                        "ventilator_resp_rate",
+                        "ventilator_spo2",
+                        "ventilator_tidal_volume",
+                    ),
+                },
+                {
+                    "name": "ARTERIAL_BLOOD_GAS_ANALYSIS",
+                    "fields": (
+                        "base_excess",
+                        "hco3",
+                        "lactate",
+                        "pco2",
+                        "ph",
+                        "po2",
+                        "potassium",
+                        "sodium",
                     ),
                 },
                 {
                     "name": "BLOOD_GLUCOSE",
-                    "fields": ("blood_sugar_level",),
-                },
-                {
-                    "name": "DAILY_ROUND_DETAILS",
                     "fields": (
-                        "other_details",
-                        "medication_given",
-                        "in_prone_position",
-                        "etco2",
-                        "pain",
-                        "pain_scale_enhanced",
-                        "ph",
-                        "pco2",
-                        "po2",
-                        "hco3",
-                        "base_excess",
-                        "lactate",
-                        "sodium",
-                        "potassium",
+                        "blood_sugar_level",
                         "insulin_intake_dose",
                         "insulin_intake_frequency",
-                        "nursing",
                     ),
                 },
+                {
+                    "name": "IO_BALANCE",
+                    "children": (
+                        {"name": "INFUSIONS", "fields": ("infusions",)},
+                        {"name": "IV_FLUIDS", "fields": ("iv_fluids",)},
+                        {"name": "FEEDS", "fields": ("feeds",)},
+                        {"name": "OUTPUT", "fields": ("output",)},
+                        {
+                            "name": "TOTAL_INTAKE",
+                            "fields": ("total_intake_calculated",),
+                        },
+                        {
+                            "name": "TOTAL_OUTPUT",
+                            "fields": ("total_output_calculated",),
+                        },
+                    ),
+                },
+                {
+                    "name": "DIALYSIS",
+                    "fields": (
+                        "dialysis_fluid_balance",
+                        "dialysis_net_balance",
+                    ),
+                    "children": (
+                        {"name": "PRESSURE_SORE", "fields": ("pressure_sore",)},
+                    ),
+                },
+                {"name": "NURSING", "fields": ("nursing",)},
             ),
         },
         {
@@ -240,6 +241,13 @@ class Command(BaseCommand):
         },
     )
 
+    inactive_event_types: Tuple[str, ...] = (
+        "RESPIRATORY",
+        "INTAKE_OUTPUT",
+        "VENTILATOR_MODES",
+        "TREATING_PHYSICIAN",
+    )
+
     def create_objects(
         self, types: Tuple[EventType, ...], model: str = None, parent: EventType = None
     ):
@@ -251,6 +259,7 @@ class Command(BaseCommand):
                     "parent": parent,
                     "model": model,
                     "fields": event_type.get("fields", []),
+                    "is_active": True,
                 },
             )
             if children := event_type.get("children"):
@@ -258,6 +267,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Loading Event Types... ", ending="")
+
+        EventType.objects.filter(name__in=self.inactive_event_types).update(
+            is_active=False
+        )
 
         self.create_objects(self.consultation_event_types)
 
