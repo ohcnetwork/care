@@ -56,15 +56,42 @@ SYMPTOM_CHOICES = [
     (34, "NEW LOSS OF SMELL"),
 ]
 
+'''
+export const MEDICAL_HISTORY_CHOICES: Array<OptionsType> = [
+  { id: 1, text: "NO" },
+  { id: 2, text: "Diabetes" },
+  { id: 3, text: "Heart Disease" },
+  { id: 4, text: "HyperTension" },
+  { id: 5, text: "Chronic Renal Disease" },
+  { id: 6, text: "Asthma" },
+  { id: 7, text: "COPD" },
+  { id: 8, text: "Bronchitis" },
+  { id: 9, text: "Chronic Neurological Or Neuromuscular Disease" },
+  { id: 10, text: "Immunocompromised Condition" },
+  { id: 11, text: "Liver Disease" },
+  { id: 12, text: "TB" },
+  { id: 13, text: "Other Chronic Lung Diseases" },
+  { id: 14, text: "Cancer" },
+  { id: 15, text: "OTHER" },
+];
+'''
+
 DISEASE_CHOICES_MAP = {
     "NO": 1,
     "Diabetes": 2,
     "Heart Disease": 3,
     "HyperTension": 4,
-    "Kidney Diseases": 5,
-    "Lung Diseases/Asthma": 6,
-    "Cancer": 7,
-    "OTHER": 8,
+    "Chronic Renal Disease": 5,
+    "Asthma": 6,
+    "COPD": 7,
+    "Bronchitis": 8,
+    "Chronic Neurological Or Neuromuscular Disease": 9,
+    "Immunocompromised Condition": 10,
+    "Liver Disease": 11,
+    "TB": 12,
+    "Other Chronic Lung Diseases": 13,
+    "Cancer": 14,
+    "OTHER": 15,
 }
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 

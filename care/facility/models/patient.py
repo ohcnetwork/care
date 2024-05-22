@@ -661,6 +661,9 @@ class Disease(models.Model):
     )
     disease = models.IntegerField(choices=DISEASE_CHOICES)
     details = models.TextField(blank=True, null=True)
+    status=models.TextField(blank=True, null=True)
+    duration = models.IntegerField(blank=True, null=True)
+    type =models.TextField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
 
     objects = BaseManager()

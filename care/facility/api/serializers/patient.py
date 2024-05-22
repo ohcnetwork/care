@@ -159,6 +159,9 @@ class PatientDetailSerializer(PatientListSerializer):
     class MedicalHistorySerializer(serializers.Serializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
+        status = serializers.CharField(required=False, allow_blank=True)
+        duration = serializers.CharField(required=False, allow_blank=True)
+        type  = serializers.CharField(required=False, allow_blank=True)
 
     class PatientTeleConsultationSerializer(serializers.ModelSerializer):
         class Meta:
