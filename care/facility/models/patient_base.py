@@ -70,8 +70,8 @@ COVID_CATEGORY_CHOICES = [
 
 CATEGORY_CHOICES = [
     ("Comfort", "Comfort Care"),
-    ("Stable", "Stable"),
-    ("Moderate", "Abnormal"),
+    ("Stable", "Mild"),
+    ("Moderate", "Moderate"),
     ("Critical", "Critical"),
 ]
 
