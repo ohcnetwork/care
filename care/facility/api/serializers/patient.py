@@ -161,7 +161,7 @@ class PatientDetailSerializer(PatientListSerializer):
         details = serializers.CharField(required=False, allow_blank=True)
         status = serializers.CharField(required=False, allow_blank=True)
         duration = serializers.CharField(required=False, allow_blank=True)
-        type  = serializers.CharField(required=False, allow_blank=True)
+        type = serializers.CharField(required=False, allow_blank=True)
 
     class PatientTeleConsultationSerializer(serializers.ModelSerializer):
         class Meta:

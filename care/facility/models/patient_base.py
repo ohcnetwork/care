@@ -55,16 +55,17 @@ DISEASE_CHOICES_MAP = {
     "HyperTension": 4,
     "Chronic Renal Disease": 5,
     "Asthma": 6,
-    "COPD": 7,
-    "Bronchitis": 8,
-    "Chronic Neurological Or Neuromuscular Disease": 9,
-    "Immunocompromised Condition": 10,
-    "Liver Disease": 11,
-    "TB": 12,
-    "Other Chronic Lung Diseases": 13,
-    "Cancer": 14,
-    "OTHER": 15,
+    "Cancer": 7,
+    "OTHER": 8,
+    "COPD": 9,
+    "Bronchitis": 10,
+    "Chronic Neurological Or Neuromuscular Disease": 11,
+    "Immunocompromised Condition": 12,
+    "Liver Disease": 13,
+    "TB": 14,
+    "Other Chronic Lung Diseases": 15,
 }
+
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
 
 COVID_CATEGORY_CHOICES = [
