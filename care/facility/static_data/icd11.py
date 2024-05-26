@@ -19,7 +19,7 @@ class ICD11Object(TypedDict):
 
 class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
-    label: str = Field(index=True, full_text_search=True)
+    label: str
     chapter: str
     has_code: int = Field(index=True)
     search_vector: str = Field(index=True, full_text_search=True)
