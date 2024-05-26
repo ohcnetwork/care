@@ -48,13 +48,30 @@ SYMPTOM_CHOICES = [
     (34, "NEW LOSS OF SMELL"),
 ]
 
+CANCER_TYPE = {
+    "Breast": "1",
+    "Lung": "2",
+    "Skin": "3",
+    "Colorectal": "4",
+    "Uterus": "5",
+    "Leukaemia": "6",
+    "Bladder": "7",
+    "Prostate": "8",
+    "Melanoma": "9",
+    "Lymphoma": "10",
+    "Brain": "11",
+    "Liver": "12",
+    "Thyroid": "13",
+    "Others": "14"
+}
+
 DISEASE_CHOICES_MAP = {
     "NO": 1,
     "Diabetes": 2,
     "Heart Disease": 3,
     "HyperTension": 4,
     "Chronic Renal Disease": 5,
-    "Asthma": 6,
+    "Other Chronic Lung Diseases": 6,
     "Cancer": 7,
     "OTHER": 8,
     "COPD": 9,
@@ -63,7 +80,7 @@ DISEASE_CHOICES_MAP = {
     "Immunocompromised Condition": 12,
     "Liver Disease": 13,
     "TB": 14,
-    "Other Chronic Lung Diseases": 15,
+    "Asthma": 15,
 }
 
 DISEASE_CHOICES = [(v, k) for k, v in DISEASE_CHOICES_MAP.items()]
