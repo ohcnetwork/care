@@ -28,7 +28,7 @@ class ICDViewSet(ViewSet):
 
         query = [ICD11.has_code == 1]
         if q := request.query_params.get("query"):
-            query.append(ICD11.label % query_builder(q))
+            query.append(ICD11.search_vector % query_builder(q))
 
         result = FindQuery(expressions=query, model=ICD11, limit=limit).execute(
             exhaust_results=False

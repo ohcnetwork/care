@@ -22,6 +22,7 @@ class ICD11(BaseRedisModel):
     label: str = Field(index=True, full_text_search=True)
     chapter: str
     has_code: int = Field(index=True)
+    search_vector: str = Field(index=True, full_text_search=True)
 
     def get_representation(self) -> ICD11Object:
         return {
@@ -45,6 +46,7 @@ def load_icd11_diagnosis():
                 label=diagnosis[1],
                 chapter=diagnosis[2] or "",
                 has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
+                search_vector=diagnosis[1].replace(".", "\\.", 1),
             ).save()
     Migrator().run()
     print("Done")
