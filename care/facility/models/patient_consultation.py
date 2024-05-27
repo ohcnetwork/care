@@ -11,6 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.json_schema.consultation import CONSENT_RECORDS
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
@@ -298,6 +299,15 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         if self.death_datetime and self.patient.death_datetime != self.death_datetime:
             self.patient.death_datetime = self.death_datetime
             self.patient.save(update_fields=["death_datetime"])
+        for consent_record in self.consent_records:
+            if consent_record.get("deleted", None):
+                files = FileUpload.objects.filter(
+                    associating_id=consent_record["id"],
+                    is_archived=False,
+                )
+                for file in files:
+                    file.is_archived = True
+                    file.save()
         super(PatientConsultation, self).save(*args, **kwargs)
 
     class Meta:
