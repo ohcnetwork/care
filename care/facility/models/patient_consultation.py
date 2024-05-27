@@ -1,8 +1,11 @@
+from email.utils import localtime
+
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
+from django.utils.timezone import now
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
 
@@ -300,13 +303,16 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
             self.patient.death_datetime = self.death_datetime
             self.patient.save(update_fields=["death_datetime"])
         for consent_record in self.consent_records:
-            if consent_record.get("deleted", None):
+            if consent_record.get("deleted", False):
                 files = FileUpload.objects.filter(
                     associating_id=consent_record["id"],
                     is_archived=False,
                 )
                 for file in files:
                     file.is_archived = True
+                    file.archive_reason = "Consent Record Deleted"
+                    file.archived_datetime = localtime(now())
+                    file.archived_by = self.last_edited_by
                     file.save()
         super(PatientConsultation, self).save(*args, **kwargs)
 
