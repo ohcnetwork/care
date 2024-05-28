@@ -127,7 +127,7 @@ class UserViewSet(
         if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
             query |= Q(
                 state=self.request.user.state,
-                user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
+                user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"],
                 is_superuser=False,
             )
         elif (
@@ -135,7 +135,7 @@ class UserViewSet(
         ):
             query |= Q(
                 district=self.request.user.district,
-                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
