@@ -90,4 +90,4 @@ class TestFacilityUserApi(TestUtils, APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         res = self.client.get("/api/v1/users/", {"username": "stateadmin2"})
-        self.assertContains(res, "stateadmin1")
+        self.assertContains(res, "stateadmin2")
