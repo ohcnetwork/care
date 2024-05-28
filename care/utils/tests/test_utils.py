@@ -32,6 +32,7 @@ from care.facility.models.icd11_diagnosis import (
     ConsultationDiagnosis,
     ICD11Diagnosis,
 )
+from care.facility.models.patient import RationCardCategory
 from care.users.models import District, State
 
 
@@ -276,6 +277,7 @@ class TestUtils:
             "date_of_receipt_of_information": make_aware(
                 datetime(2020, 4, 1, 15, 30, 00)
             ),
+            "ration_card_category": RationCardCategory.NON_CARD_HOLDER,
         }
 
     @classmethod
