@@ -39,6 +39,9 @@ class TestICD11Api(TestUtils, APITestCase):
         res = self.search_icd11("ME24.A1")
         self.assertContains(res, "ME24.A1 Haemorrhage of anus and rectum")
 
+        res = self.search_icd11("CA22.Z")
+        self.assertContains(res, "CA22.Z Chronic obstructive pulmonary disease")
+
         res = self.search_icd11("1A00 Cholera")
         self.assertContains(res, "1A00 Cholera")
 
