@@ -2,6 +2,7 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
+from django.db.models.expressions import RawSQL
 
 
 class Migration(migrations.Migration):
@@ -9,7 +10,11 @@ class Migration(migrations.Migration):
         Patient = apps.get_model("facility", "PatientRegistration")
         AbhaNumber = apps.get_model("abdm", "AbhaNumber")
 
-        patients = Patient.objects.filter(abha_number__isnull=False)
+        patients = (
+            Patient.objects.annotate(removed_field=RawSQL("abha_number_id", ()))
+            .filter(abha_number__isnull=False)
+            .select_related("abha_number")
+        )
         abha_numbers_to_update = []
 
         for patient in patients:
