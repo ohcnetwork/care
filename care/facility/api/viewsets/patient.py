@@ -7,6 +7,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import (
     Case,
+    Exists,
     ExpressionWrapper,
     F,
     Func,
@@ -67,7 +68,7 @@ from care.facility.models import (
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
-from care.facility.models.bed import AssetBed
+from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.icd11_diagnosis import (
     INACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
@@ -599,6 +600,28 @@ class PatientViewSet(
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
+class DischargePatientFilterSet(PatientFilterSet):
+    def filter_by_bed_type(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        values = value.split(",")
+        filter_q = Q()
+
+        consultation_bed = ConsultationBed.objects.filter(
+            end_date__isnull=False,
+            consultation__in=queryset.values("last_consultation"),
+        )
+
+        if "None" in values:
+            filter_q |= ~Exists(consultation_bed)
+            values.remove("None")
+        if values:
+            filter_q |= Exists(consultation_bed.filter(bed__bed_type__in=values))
+
+        return queryset.filter(filter_q)
+
+
 @extend_schema_view(tags=["patient"])
 class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
@@ -609,7 +632,7 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         rest_framework_filters.OrderingFilter,
         PatientCustomOrderingFilter,
     )
-    filterset_class = PatientFilterSet
+    filterset_class = DischargePatientFilterSet
     queryset = (
         PatientRegistration.objects.select_related(
             "local_body",
