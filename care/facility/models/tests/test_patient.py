@@ -65,3 +65,123 @@ class PatientRegistrationTest(TestUtils, APITestCase):
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("year_of_birth", response.data)
+
+    def test_cancer_type_is_invalid(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "gender": 1,
+            "date_of_birth": None,
+            "year_of_birth": now().year - 2,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "medical_history": {
+                "disease": "Cancer",
+                "details": "",
+                "type": "not_cancer",
+            }
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("medical_history", response.data)
+
+    def test_cancer_type_wrong_for_gender(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "gender": 1,
+            "date_of_birth": None,
+            "year_of_birth": now().year - 2,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "medical_history": {
+                "disease": "Cancer",
+                "details": "",
+                "type": "Breast",
+            }
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("medical_history", response.data)
+
+    def test_tb_type_invalid(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "gender": 1,
+            "date_of_birth": None,
+            "year_of_birth": now().year - 2,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "medical_history": {
+                "disease": "TB",
+                "details": "",
+                "status": "not_tb",
+            }
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("medical_history", response.data)
+
+    def test_tb_duration_not_numeric(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "gender": 1,
+            "date_of_birth": None,
+            "year_of_birth": now().year - 2,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "medical_history": {
+                "disease": "TB",
+                "details": "",
+                "duration": "not_numeric",
+            }
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("medical_history", response.data)
+
+    def test_tb_duration_not_negative(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "gender": 1,
+            "date_of_birth": None,
+            "year_of_birth": now().year - 2,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "medical_history": {
+                "disease": "TB",
+                "details": "",
+                "duration": -1,
+            }
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("medical_history", response.data)
