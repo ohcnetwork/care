@@ -672,18 +672,19 @@ class TestPatientConsultation(TestUtils, APITestCase):
             patient=self.patient1,
             patient_no="OP1234",
         )
-        same_op_number_test = False
-        try:
-            self.create_admission_consultation(
-                suggestion=SuggestionChoices.A,
-                encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-                patient=self.patient2,
-                patient_no="OP1234",
-            )
-        except Exception:
-            same_op_number_test = True
 
-        self.assertTrue(same_op_number_test)
+        data = self.get_default_data().copy()
+        data.update(
+            {
+                "patient": self.patient2.external_id,
+                "facility": self.facility.external_id,
+                "suggestion": SuggestionChoices.A,
+                "encounter_date": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+                "patient_no": "OP1234",
+            }
+        )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
         res = self.discharge(
             consultation,
@@ -695,7 +696,20 @@ class TestPatientConsultation(TestUtils, APITestCase):
         consultation_2 = self.create_admission_consultation(
             suggestion=SuggestionChoices.A,
             encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-            patient=self.patient1,
+            patient=self.patient2,
             patient_no="OP1234",
         )
         self.assertEqual(consultation_2.patient_no, "OP1234")
+
+        data = self.get_default_data().copy()
+        data.update(
+            {
+                "patient": self.patient1.external_id,
+                "facility": self.facility.external_id,
+                "suggestion": SuggestionChoices.A,
+                "encounter_date": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+                "patient_no": "OP1234",
+            }
+        )
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
