@@ -34,6 +34,7 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 class DailyRound(PatientBaseModel):
     class RoundsType(enum.Enum):
         NORMAL = 0
+        DOCTORS_LOG = 50
         VENTILATOR = 100
         ICU = 200
         AUTOMATED = 300

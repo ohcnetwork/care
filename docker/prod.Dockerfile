@@ -57,7 +57,7 @@ HEALTHCHECK \
   --interval=30s \
   --timeout=5s \
   --start-period=10s \
-  --retries=6 \
+  --retries=12 \
   CMD ["/app/healthcheck.sh"]
 
 COPY . ${APP_HOME}
