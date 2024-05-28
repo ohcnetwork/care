@@ -133,18 +133,6 @@
           {{consultation.height}} cm
         </p>
       </div>
-      {% if consultation.route_to_facility %}
-      <div class="flex gap-6">
-        <p>
-          <span class="text-sm leading-5 font-medium text-gray-500">Symptoms at admission:</span>
-          {{consultation.get_symptoms_display|title}}
-        </p>
-        <p>
-          <span class="text-sm leading-5 font-medium text-gray-500">From:</span>
-          {{consultation.symptoms_onset_date.date}}
-        </p>
-      </div>
-      {% endif %}
     </div>
 
     {% if hcx %}
@@ -185,6 +173,49 @@
             </td>
             <td class="px-1 py-1 whitespace-no-wrap text-sm">
               {{policy.policy_id}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if symptoms %}
+    <h4 class="mt-6 font-medium text-gray-500">
+      Symptoms:
+    </h4>
+    <div class="">
+      <table class="min-w-full">
+        <thead>
+          <tr
+            class="border-b border-gray-200 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+            <th class="p-2">
+              Name
+            </th>
+            <th class="p-2">
+              Onset Date
+            </th>
+            <th class="p-2">
+              Cure Date
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for symptom in symptoms %}
+          <tr class="bg-white border-b">
+            <td class="p-1 whitespace-no-wrap text-sm">
+              {% if symptom.symptom == 9 %}
+              {{symptom.other_symptom}}
+              {% else %}
+              {{symptom.get_symptom_display}}
+              {% endif %}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{symptom.onset_date.date}}
+            </td>
+            <td class="p-1 whitespace-normal text-sm">
+              {{symptom.cure_date.date}}
             </td>
           </tr>
           {% endfor %}
@@ -763,14 +794,6 @@
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900">
               {{daily_round.other_details}}
-            </dd>
-          </div>
-          <div class="mt-2">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Symptoms
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900">
-              {{daily_round.additional_symptoms}}
             </dd>
           </div>
         </div>
