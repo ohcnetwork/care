@@ -9,9 +9,4 @@ class Migration(migrations.Migration):
         ("facility", "0367_prescription_medicine_and_more"),
     ]
 
-    operations = [
-        migrations.RunPython(
-            lambda apps, schema_editor: call_command("load_medicines_data"),
-            reverse_code=migrations.RunPython.noop,
-        )
-    ]
+    operations = []

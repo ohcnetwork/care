@@ -12,13 +12,10 @@ from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
 class MedibaseMedicineSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="external_id", read_only=True)
-
     class Meta:
         model = MedibaseMedicine
         exclude = ("deleted",)
         read_only_fields = (
-            "external_id",
             "created_date",
             "modified_date",
         )
@@ -76,7 +73,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
     last_administration = MedicineAdministrationSerializer(read_only=True)
     medicine_object = MedibaseMedicineSerializer(read_only=True, source="medicine")
-    medicine = serializers.UUIDField(write_only=True)
+    medicine = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Prescription
@@ -97,7 +94,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if "medicine" in attrs:
             attrs["medicine"] = get_object_or_404(
-                MedibaseMedicine, external_id=attrs["medicine"]
+                MedibaseMedicine, id=attrs["medicine"]
             )
 
         if not self.instance:

@@ -1,11 +1,15 @@
 import re
 from typing import TypedDict
 
-from django.core.paginator import Paginator
 from redis_om import Field, Migrator
 from redis_om.model.model import NotFoundError as RedisModelNotFoundError
 
-from care.facility.models.icd11_diagnosis import ICD11Diagnosis
+from care.facility.management.commands.load_icd11_diagnoses_data import icd11_id_to_int
+from care.facility.utils.icd.common_data import (
+    ICD11_GROUP_LABEL_PRETTY,
+    fetch_icd11_data,
+    find_roots,
+)
 from care.utils.static_data.models.base import BaseRedisModel
 
 DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
@@ -31,21 +35,33 @@ class ICD11(BaseRedisModel):
         }
 
 
+def get_meta_short_chapter(item, roots_lookup):
+    """
+    Get the meta short chapter for a given ICD11 ID.
+    """
+    roots = find_roots(item, roots_lookup)
+    mapped = ICD11_GROUP_LABEL_PRETTY.get(roots["chapter"], roots["chapter"])
+    return mapped
+
+
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
-    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
-        "id", "label", "meta_chapter_short"
-    )
-    paginator = Paginator(icd_objs, 5000)
-    for page_number in paginator.page_range:
-        for diagnosis in paginator.page(page_number).object_list:
-            ICD11(
-                id=diagnosis[0],
-                label=diagnosis[1],
-                chapter=diagnosis[2] or "",
-                has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
-            ).save()
+    icd_data = fetch_icd11_data()
+
+    roots_lookup = {}
+
+    for diagnosis in icd_data:
+        icd11_id = diagnosis.get("ID")
+        label = diagnosis.get("label")
+        meta_short_chapter = get_meta_short_chapter(diagnosis, roots_lookup)
+        ICD11(
+            id=icd11_id_to_int(icd11_id),
+            label=label,
+            chapter=meta_short_chapter if meta_short_chapter else "",
+            has_code=1 if re.match(DISEASE_CODE_PATTERN, label) else 0,
+        ).save()
+
     Migrator().run()
     print("Done")
 
