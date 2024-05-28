@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import PatientNoteThreadChoices
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
@@ -430,6 +431,72 @@ class PatientFilterTestCase(TestUtils, APITestCase):
                 self.assertGreaterEqual(patient["review_time"], now())
             else:
                 self.assertIsNone(patient["review_time"])
+
+
+class DischargePatientFilterTestCase(PatientFilterTestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.consultation.discharge_date = now()
+        self.consultation.save()
+
+        self.consultation_bed = ConsultationBed.objects.filter(
+            consultation=self.consultation,
+        ).first()
+
+        self.consultation_bed.end_date = now()
+        self.consultation_bed.save()
+
+    def get_base_url(self) -> str:
+        return (
+            "/api/v1/facility/"
+            + str(self.facility.external_id)
+            + "/discharged_patients/"
+        )
+
+    def test_filter_by_admitted_to_bed(self):
+        self.client.force_authenticate(user=self.user)
+        choices = ["1", "2", "6", "7", "None"]
+
+        self.consultation_bed.bed.bed_type = int(choices[1])
+        self.consultation_bed.bed.save()
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join([choices[1]])},
+        )
+
+        self.assertContains(res, self.patient.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join(choices[2:3])},
+        )
+
+        self.assertNotContains(res, self.patient.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join(choices)},
+        )
+
+        self.assertContains(res, self.patient.external_id)
+
+        self.consultation_bed.delete()
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join([choices[0]])},
+        )
+
+        self.assertNotContains(res, self.patient.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join([choices[4]])},
+        )
+
+        self.assertContains(res, self.patient.external_id)
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):
