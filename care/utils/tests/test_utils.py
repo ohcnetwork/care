@@ -12,7 +12,6 @@ from rest_framework import status
 from care.facility.models import (
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
-    SYMPTOM_CHOICES,
     Ambulance,
     Disease,
     DiseaseStatusEnum,
@@ -309,13 +308,8 @@ class TestUtils:
         return patient
 
     @classmethod
-    def get_consultation_data(cls):
+    def get_consultation_data(cls) -> dict:
         return {
-            "patient": cls.patient,
-            "facility": cls.facility,
-            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
-            "other_symptoms": "No other symptoms",
-            "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
@@ -323,14 +317,12 @@ class TestUtils:
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
                 0
             ],  # HOME ISOLATION
-            "referred_to": None,
             "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "created_date": mock_equal,
-            "modified_date": mock_equal,
             "patient_no": int(datetime.now().timestamp() * 1000),
+            "route_to_facility": 10,
         }
 
     @classmethod
@@ -338,6 +330,7 @@ class TestUtils:
         cls,
         patient: PatientRegistration,
         facility: Facility,
+        doctor: User | None = None,
         referred_to=None,
         **kwargs,
     ) -> PatientConsultation:
@@ -347,6 +340,7 @@ class TestUtils:
                 "patient": patient,
                 "facility": facility,
                 "referred_to": referred_to,
+                "treating_physician": doctor,
             }
         )
         data.update(kwargs)
