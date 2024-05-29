@@ -79,3 +79,10 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.json()["detail"], "Not found.")
+
+    def test_unlink_home_facility_by_nurse(self):
+        self.client.force_login(self.staff1)
+        response = self.client.delete(
+            f"/api/v1/users/{self.staff1.username}/clear_home_facility/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
