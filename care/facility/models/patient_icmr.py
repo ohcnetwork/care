@@ -10,6 +10,7 @@ from care.facility.models import (
     PatientContactDetails,
     PatientRegistration,
     PatientSample,
+    Symptom,
 )
 
 
@@ -187,19 +188,19 @@ class PatientSampleICMR(PatientSample):
 
     @property
     def symptoms(self):
-        return [
-            symptom
-            for symptom in self.consultation.symptoms
-            # if SYMPTOM_CHOICES[0][0] not in self.consultation.symptoms.choices.keys()
-        ]
+        symptoms = []
+        for symptom in self.consultation.symptoms:
+            if symptom == Symptom.OTHERS:
+                symptoms.append(self.consultation.other_symptoms)
+            else:
+                symptoms.append(symptom)
+
+        return symptoms
 
     @property
     def date_of_onset_of_symptoms(self):
-        return (
-            self.consultation.symptoms_onset_date.date()
-            if self.consultation and self.consultation.symptoms_onset_date
-            else None
-        )
+        if symptom := self.consultation.symptoms.first():
+            return symptom.onset_date.date()
 
 
 class PatientConsultationICMR(PatientConsultation):

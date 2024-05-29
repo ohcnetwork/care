@@ -10,12 +10,19 @@ from rest_framework.exceptions import ValidationError
 from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer
-from care.facility.api.serializers.bed import ConsultationBedSerializer
+from care.facility.api.serializers.bed import (
+    AssetBedSerializer,
+    ConsultationBedSerializer,
+)
 from care.facility.api.serializers.consultation_diagnosis import (
     ConsultationCreateDiagnosisSerializer,
     ConsultationDiagnosisSerializer,
 )
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
+from care.facility.api.serializers.encounter_symptom import (
+    EncounterCreateSymptomSerializer,
+    EncounterSymptomSerializer,
+)
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
@@ -29,13 +36,17 @@ from care.facility.models import (
 )
 from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.encounter_symptom import (
+    ClinicalImpressionStatus,
+    EncounterSymptom,
+    Symptom,
+)
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    SYMPTOM_CHOICES,
     NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
@@ -63,7 +74,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="suggestion",
     )
 
-    symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )
@@ -148,7 +158,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
-
+    create_symptoms = EncounterCreateSymptomSerializer(
+        many=True,
+        write_only=True,
+        required=False,
+        help_text="Bulk create symptoms for the consultation upon creation",
+    )
+    symptoms = EncounterSymptomSerializer(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
@@ -329,6 +345,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError({"route_to_facility": "This field is required"})
 
         create_diagnosis = validated_data.pop("create_diagnoses")
+        create_symptoms = validated_data.pop("create_symptoms")
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -404,6 +421,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ]
         )
 
+        symptoms = EncounterSymptom.objects.bulk_create(
+            EncounterSymptom(
+                consultation=consultation,
+                symptom=obj.get("symptom"),
+                onset_date=obj.get("onset_date"),
+                cure_date=obj.get("cure_date"),
+                clinical_impression_status=obj.get("clinical_impression_status"),
+                other_symptom=obj.get("other_symptom") or "",
+                created_by=self.context["request"].user,
+            )
+            for obj in create_symptoms
+        )
+
         if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
                 bed=bed,
@@ -441,7 +471,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         create_consultation_events(
             consultation.id,
-            (consultation, *diagnosis),
+            (consultation, *diagnosis, *symptoms),
             consultation.created_by.id,
             consultation.created_date,
         )
@@ -496,6 +526,45 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 "Only confirmed diagnosis can be set as principal diagnosis if it is present"
             )
+
+        return value
+
+    def validate_create_symptoms(self, value):
+        if self.instance:
+            raise ValidationError("Bulk create symptoms is not allowed on update")
+
+        counter: set[int | str] = set()
+        for obj in value:
+            item: int | str = obj["symptom"]
+            if obj["symptom"] == Symptom.OTHERS:
+                other_symptom = obj.get("other_symptom")
+                if not other_symptom:
+                    raise ValidationError(
+                        {
+                            "other_symptom": "Other symptom should not be empty when symptom type is OTHERS"
+                        }
+                    )
+                item: str = other_symptom.strip().lower()
+            if item in counter:
+                # Reject if duplicate symptoms are provided
+                raise ValidationError("Duplicate symptoms are not allowed")
+            counter.add(item)
+
+        current_time = now()
+        for obj in value:
+            if obj["onset_date"] > current_time:
+                raise ValidationError(
+                    {"onset_date": "Onset date cannot be in the future"}
+                )
+
+            if cure_date := obj.get("cure_date"):
+                if cure_date < obj["onset_date"]:
+                    raise ValidationError(
+                        {"cure_date": "Cure date should be after onset date"}
+                    )
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.COMPLETED
+            else:
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.IN_PROGRESS
 
         return value
 
@@ -619,6 +688,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if not self.instance and "create_diagnoses" not in validated:
             raise ValidationError({"create_diagnoses": ["This field is required."]})
+
+        if not self.instance and "create_symptoms" not in validated:
+            raise ValidationError({"create_symptoms": ["This field is required."]})
 
         return validated
 
@@ -765,14 +837,14 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         raise NotImplementedError
 
 
-class PatientConsultationIDSerializer(serializers.ModelSerializer):
-    consultation_id = serializers.UUIDField(source="external_id", read_only=True)
-    patient_id = serializers.UUIDField(source="patient.external_id", read_only=True)
-    bed_id = serializers.UUIDField(source="current_bed.bed.external_id", read_only=True)
+class PatientConsultationIDSerializer(serializers.Serializer):
+    consultation_id = serializers.UUIDField(read_only=True)
+    patient_id = serializers.UUIDField(read_only=True)
+    bed_id = serializers.UUIDField(read_only=True)
+    asset_beds = AssetBedSerializer(many=True, read_only=True)
 
     class Meta:
-        model = PatientConsultation
-        fields = ("consultation_id", "patient_id", "bed_id")
+        fields = ("consultation_id", "patient_id", "bed_id", "asset_beds")
 
 
 class EmailDischargeSummarySerializer(serializers.Serializer):

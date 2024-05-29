@@ -14,7 +14,7 @@ ARG BUILD_ENVIRONMENT=production
 ENV PATH /venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev libpq-dev
+  build-essential libjpeg-dev zlib1g-dev libpq-dev git
 
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
@@ -23,6 +23,9 @@ RUN pip install pipenv
 COPY Pipfile Pipfile.lock ./
 RUN pipenv sync --system --categories "packages"
 
+COPY . /app
+
+RUN python3 /app/install_plugins.py
 
 # ---
 FROM base as runtime
@@ -54,7 +57,7 @@ HEALTHCHECK \
   --interval=30s \
   --timeout=5s \
   --start-period=10s \
-  --retries=6 \
+  --retries=12 \
   CMD ["/app/healthcheck.sh"]
 
 COPY . ${APP_HOME}

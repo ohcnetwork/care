@@ -123,10 +123,17 @@ class TestUser(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+
         cls.data_2 = cls.get_user_data(cls.district)
         cls.data_2.update({"username": "user_2", "password": "password"})
         cls.user_2 = cls.create_user(**cls.data_2)
+
+        cls.data_3 = cls.get_user_data(cls.district)
+        cls.data_3.update({"username": "user_3", "password": "password"})
+        cls.user_3 = cls.create_user(**cls.data_3)
+        cls.link_user_with_facility(cls.user_3, cls.facility, cls.super_user)
 
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
@@ -134,18 +141,15 @@ class TestUser(TestUtils, APITestCase):
         response = self.client.get(f"/api/v1/users/{username}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_user_can_read_all(self):
-        """Test user can read all"""
+    def test_user_can_read_all_users_within_accessible_facility(self):
+        """Test user can read all users within the accessible facility"""
         response = self.client.get("/api/v1/users/")
-        # test response code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
-        # test total user count
         self.assertEqual(res_data_json["count"], 2)
         results = res_data_json["results"]
-        # test presence of usernames
         self.assertIn(self.user.id, {r["id"] for r in results})
-        self.assertIn(self.user_2.id, {r["id"] for r in results})
+        self.assertIn(self.user_3.id, {r["id"] for r in results})
 
     def test_user_can_modify_themselves(self):
         """Test user can modify the attributes for themselves"""
@@ -170,7 +174,8 @@ class TestUser(TestUtils, APITestCase):
         """Test 1 user can read the attributes of the other user"""
         username = self.data_2["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.json()["detail"], "Not found.")
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""
@@ -183,15 +188,14 @@ class TestUser(TestUtils, APITestCase):
                 "password": password,
             },
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.json()["detail"], "Not found.")
 
     def test_user_cannot_delete_others(self):
         """Test a user can't delete others"""
         field = "username"
         response = self.client.delete(f"/api/v1/users/{self.data_2[field]}/")
-        # test response code
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        # test backend response(user_2 still exists)
         self.assertEqual(
             self.data_2[field],
             User.objects.get(username=self.data_2[field]).username,
