@@ -10,6 +10,7 @@ from Crypto.PublicKey import RSA
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
+from rest_framework.exceptions import ValidationError
 
 from care.abdm.models import AbhaNumber
 from care.abdm.service.request import Request
@@ -354,11 +355,11 @@ class AbdmGateway:
             Q(abha_number=health_id) | Q(health_id=health_id)
         ).first()
         if not abha_number:
-            raise Exception("No ABHA Number found")
+            raise ValidationError(detail="No ABHA Number found")
 
         patient_facility = abha_number.patientregistration.last_consultation.facility
-        if not hasattr(patient_facility, "healthfacility"):
-            raise Exception("Health Facility not linked")
+        if not getattr(patient_facility, "healthfacility", None):
+            raise ValidationError(detail="Health Facility not linked")
 
         return patient_facility.healthfacility.hf_id
 

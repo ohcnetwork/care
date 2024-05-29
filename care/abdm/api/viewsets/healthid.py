@@ -205,9 +205,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return abha_object
 
     def add_abha_details_to_patient(self, abha_object, patient_object):
+        if abha_object.patient is not None:
+            raise ValidationError(detail="Abha Number is already linked to a patient")
+
+        if getattr(patient_object, "abha_number", None) is not None:
+            raise ValidationError(detail="Patient already has an Abha Number linked")
+
         abha_object.patient = patient_object
         abha_object.save()
-        return True
 
     @extend_schema(
         # /v1/registration/aadhaar/createHealthId
@@ -234,9 +239,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_profile = HealthIdGateway().create_health_id(data)
 
         if "token" not in abha_profile:
-            return Response(
-                abha_profile,
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                detail="\n\n".join(
+                    detail.get("message", "")
+                    for detail in abha_profile.get("details", [])
+                )
+                or abha_profile.get("message", "Error while fetching abha profile")
             )
 
         # have a serializer to verify data of abha_profile
@@ -254,16 +262,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
@@ -315,10 +316,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         allowed_patients = get_patient_queryset(request.user)
         patient = allowed_patients.filter(external_id=data["patient"]).first()
         if not patient:
-            raise ValidationError({"patient": "Not Found"})
+            raise ValidationError(detail="Patient not found")
 
         if getattr(patient, "abha_number", None) is None:
-            raise ValidationError({"abha": "Patient hasn't linked thier abha"})
+            raise ValidationError(detail="Patient hasn't linked thier abha")
 
         if data["type"] == "png":
             response = HealthIdGateway().get_abha_card_png(
@@ -381,28 +382,16 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 state=data["state name"],
             )
 
-            try:
-                AbdmGateway().fetch_modes(
-                    {
-                        "healthId": data["phr"] or data["hidn"],
-                        "name": data["name"],
-                        "gender": data["gender"],
-                        "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[
-                            0:10
-                        ],
-                    }
-                )
-            except Exception as e:
-                logger.warning(
-                    f"Error: ABDMHealthIDViewSet::link_via_qr failed to fetch modes. Reason: {e}",
-                    exc_info=True,
-                )
-                return Response(
-                    {
-                        "detail": "Failed to fetch modes",
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            AbdmGateway().fetch_modes(
+                {
+                    "healthId": data["phr"] or data["hidn"],
+                    "name": data["name"],
+                    "gender": data["gender"],
+                    "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[
+                        0:10
+                    ],
+                }
+            )
 
             abha_number.save()
 
@@ -488,16 +477,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         consultation = PatientConsultation.objects.get(external_id=consultation_id)
 
         if not consultation:
-            return Response(
-                {"consultation": "No matching records found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise ValidationError(detail="Consultation not found")
 
         if getattr(consultation.patient, "abha_number", None) is None:
-            return Response(
-                {"abha": "Patient hasn't linked thier abha"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError(detail="Patient hasn't linked thier abha")
 
         try:
             AbdmGateway().fetch_modes(
@@ -645,16 +628,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
@@ -701,16 +677,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
