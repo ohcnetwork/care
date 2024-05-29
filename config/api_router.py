@@ -4,8 +4,11 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.consent import ConsentViewSet
 from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
+from care.abdm.api.viewsets.health_information import HealthInformationViewSet
 from care.abdm.api.viewsets.healthid import ABDMHealthIDViewSet
+from care.abdm.api.viewsets.patients import PatientsViewSet
 from care.facility.api.viewsets.ambulance import (
     AmbulanceCreateViewSet,
     AmbulanceViewSet,
@@ -30,6 +33,7 @@ from care.facility.api.viewsets.consultation_diagnosis import (
     ConsultationDiagnosisViewSet,
 )
 from care.facility.api.viewsets.daily_round import DailyRoundsViewSet
+from care.facility.api.viewsets.encounter_symptom import EncounterSymptomViewSet
 from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
@@ -224,6 +228,7 @@ consultation_nested_router = NestedSimpleRouter(
 )
 consultation_nested_router.register(r"daily_rounds", DailyRoundsViewSet)
 consultation_nested_router.register(r"diagnoses", ConsultationDiagnosisViewSet)
+consultation_nested_router.register(r"symptoms", EncounterSymptomViewSet)
 consultation_nested_router.register(r"investigation", InvestigationValueViewSet)
 consultation_nested_router.register(r"prescriptions", ConsultationPrescriptionViewSet)
 consultation_nested_router.register(
@@ -248,9 +253,18 @@ router.register("public/asset_qr", AssetPublicQRViewSet)
 # ABDM endpoints
 if settings.ENABLE_ABDM:
     router.register("abdm/healthid", ABDMHealthIDViewSet, basename="abdm-healthid")
+    router.register("abdm/consent", ConsentViewSet, basename="abdm-consent")
+    router.register(
+        "abdm/health_information",
+        HealthInformationViewSet,
+        basename="abdm-healthinformation",
+    )
+    router.register("abdm/patients", PatientsViewSet, basename="abdm-patients")
+
 router.register(
     "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
 )
+
 
 app_name = "api"
 urlpatterns = [

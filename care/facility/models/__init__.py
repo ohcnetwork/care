@@ -5,6 +5,7 @@ from .ambulance import *  # noqa
 from .asset import *  # noqa
 from .bed import *  # noqa
 from .daily_round import *  # noqa
+from .encounter_symptom import *  # noqa
 from .events import *  # noqa
 from .facility import *  # noqa
 from .icd11_diagnosis import *  # noqa

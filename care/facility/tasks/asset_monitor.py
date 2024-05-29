@@ -69,8 +69,8 @@ def check_asset_status():
                     )
                 else:
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
-            except Exception:
-                logger.warn(f"Middleware {resolved_middleware} is down", exc_info=True)
+            except Exception as e:
+                logger.warn(f"Middleware {resolved_middleware} is down", e)
 
             # If no status is returned, setting default status as down
             if not result or "error" in result:
@@ -116,5 +116,5 @@ def check_asset_status():
                         status=new_status.value,
                         timestamp=status_record.get("time", timezone.now()),
                     )
-        except Exception:
-            logger.error("Error in Asset Status Check", exc_info=True)
+        except Exception as e:
+            logger.error("Error in Asset Status Check", e)

@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Case, F, Func, JSONField, Value, When
 from django.db.models.functions import Coalesce, Now
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from care.abdm.models import AbhaNumber
@@ -41,6 +42,12 @@ from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
 from care.users.models import GENDER_CHOICES, REVERSE_GENDER_CHOICES, User
 from care.utils.models.base import BaseManager, BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
+
+
+class RationCardCategory(models.TextChoices):
+    NON_CARD_HOLDER = "NO_CARD", _("Non-card holder")
+    BPL = "BPL", _("BPL")
+    APL = "APL", _("APL")
 
 
 class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
@@ -140,7 +147,9 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="",
         verbose_name="Passport Number of Foreign Patients",
     )
-    # aadhar_no = models.CharField(max_length=255, default="", verbose_name="Aadhar Number of Patient")
+    ration_card_category = models.CharField(
+        choices=RationCardCategory.choices, null=True, max_length=8
+    )
 
     is_medical_worker = models.BooleanField(
         default=False, verbose_name="Is the Patient a Medical Worker"
@@ -732,6 +741,11 @@ class PatientMobileOTP(BaseModel):
     otp = models.CharField(max_length=10)
 
 
+class PatientNoteThreadChoices(models.IntegerChoices):
+    DOCTORS = 10, "DOCTORS"
+    NURSES = 20, "NURSES"
+
+
 class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
     patient = models.ForeignKey(
         PatientRegistration, on_delete=models.PROTECT, null=False, blank=False
@@ -747,6 +761,11 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         User,
         on_delete=models.SET_NULL,
         null=True,
+    )
+    thread = models.SmallIntegerField(
+        choices=PatientNoteThreadChoices.choices,
+        db_index=True,
+        default=PatientNoteThreadChoices.DOCTORS,
     )
     note = models.TextField(default="", blank=True)
 

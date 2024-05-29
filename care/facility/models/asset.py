@@ -100,7 +100,7 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14,
+        max_length=15,
         validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))],
         default="",
     )
