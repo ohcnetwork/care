@@ -19,9 +19,11 @@ class ICD11Object(TypedDict):
 
 class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
-    label: str = Field(index=True, full_text_search=True)
+    label: str
     chapter: str
     has_code: int = Field(index=True)
+
+    vec: str = Field(index=True, full_text_search=True)
 
     def get_representation(self) -> ICD11Object:
         return {
@@ -45,6 +47,7 @@ def load_icd11_diagnosis():
                 label=diagnosis[1],
                 chapter=diagnosis[2] or "",
                 has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
+                vec=diagnosis[1].replace(".", "\\.", 1),
             ).save()
     Migrator().run()
     print("Done")
