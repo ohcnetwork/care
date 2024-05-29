@@ -357,7 +357,7 @@ class AbdmGateway:
         if not abha_number:
             raise ValidationError(detail="No ABHA Number found")
 
-        patient_facility = abha_number.patientregistration.last_consultation.facility
+        patient_facility = abha_number.patient.last_consultation.facility
         if not getattr(patient_facility, "healthfacility", None):
             raise ValidationError(detail="Health Facility not linked")
 
