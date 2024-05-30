@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
 
                 files.update(**kwargs)
 
-                new_consent.files.set(files)
+                new_consent.files.add(*files)
 
     def reverse_migrate(apps, schema_editor):
         PatientConsent: PatientConsentModel = apps.get_model(
