@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
 
             kwargs = {}
 
-            if consent.patient_code_status:
+            if type(consent.patient_code_status) == int:
                 kwargs = {
                     "patient_code_status": consent.patient_code_status,
                 }
