@@ -365,18 +365,18 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
 
 class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = (1,)
-    PATIENT_CODE_STATUS = (2,)
-    CONSENT_FOR_PROCEDURE = (3,)
-    HIGH_RISK_CONSENT = (4,)
-    OTHERS = 5
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
 
 
 class PatientCodeStatusType(models.IntegerChoices):
-    DNH = (1,)
-    DNR = (2,)
-    COMFORT_CARE = (3,)
-    ACTIVE_TREATMENT = 4
+    DNH = 1, "Do Not Hospitalize"
+    DNR = 2, "Do Not Resuscitate"
+    COMFORT_CARE = 3, "Comfort Care Only"
+    ACTIVE_TREATMENT = 4, "Active Treatment"
 
 
 class ConsultationClinician(models.Model):
@@ -401,6 +401,9 @@ class PatientConsent(BaseModel):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_consents"
     )
+
+    def __str__(self) -> str:
+        return f"{self.consultation.patient.name} - {ConsentType(self.type).label}"
 
     def save(self, *args, **kwargs):
         # archive existing patient code status consent

@@ -162,3 +162,6 @@ class FileUpload(BaseFileUpload):
     # TODO: switch to Choices.choices
     FileTypeChoices = [(x.value, x.name) for x in FileType]
     FileCategoryChoices = [(x.value, x.name) for x in BaseFileUpload.FileCategory]
+
+    def __str__(self):
+        return f"{self.FileTypeChoices[self.file_type][1]} - {self.name}"

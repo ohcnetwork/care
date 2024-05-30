@@ -5,13 +5,26 @@ import uuid
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
+from django.utils import timezone
+
+from care.facility.models.file_upload import FileUpload as FileUploadModel
+from care.facility.models.patient_consultation import (
+    PatientConsent as PatientConsentModel,
+)
+from care.facility.models.patient_consultation import (
+    PatientConsultation as PatientConsultationModel,
+)
 
 
 class Migration(migrations.Migration):
     def migrate_consents(apps, schema_editor):
-        PatientConsultation = apps.get_model("facility", "PatientConsultation")
-        PatientConsent = apps.get_model("facility", "PatientConsent")
-        FileUpload = apps.get_model("facility", "FileUpload")
+        PatientConsultation: PatientConsultationModel = apps.get_model(
+            "facility", "PatientConsultation"
+        )
+        PatientConsent: PatientConsentModel = apps.get_model(
+            "facility", "PatientConsent"
+        )
+        FileUpload: FileUploadModel = apps.get_model("facility", "FileUpload")
         consultations = PatientConsultation.objects.filter(
             consent_records__isnull=False
         )
@@ -20,23 +33,39 @@ class Migration(migrations.Migration):
                 new_consent = PatientConsent.objects.create(
                     consultation=consultation,
                     type=consent["type"],
-                    patient_code_status=consent["patient_code_status"],
+                    patient_code_status=consent.get("patient_code_status", None),
                     created_by=consultation.created_by,
-                    archived=consent["deleted"],
+                    archived=consent.get("deleted", False),
                 )
 
                 old_id = consent.get("id")
 
                 files = FileUpload.objects.filter(
-                    associating_id=old_id, file_type=FileUpload.FileType.CONSENT_RECORD
+                    associating_id=old_id,
+                    file_type=FileUploadModel.FileType.CONSENT_RECORD,
                 )
 
-                files.bulk_update(consent, {"associating_id": new_consent.external_id})
+                kwargs = {
+                    "associating_id": new_consent.external_id,
+                }
+
+                if consent.get("deleted", False):
+                    kwargs = {
+                        **kwargs,
+                        "is_archived": True,
+                        "archived_datetime": timezone.now(),
+                        "archive_reason": "Consent Record Archived",
+                        "archived_by": consultation.created_by,
+                    }
+
+                files.update(**kwargs)
 
                 new_consent.files.set(files)
 
     def reverse_migrate(apps, schema_editor):
-        PatientConsent = apps.get_model("facility", "PatientConsent")
+        PatientConsent: PatientConsentModel = apps.get_model(
+            "facility", "PatientConsent"
+        )
         for consent in PatientConsent.objects.all():
             consultation = consent.consultation
             consultation.consent_records.append(
@@ -44,7 +73,7 @@ class Migration(migrations.Migration):
                     "type": consent.type,
                     "patient_code_status": consent.patient_code_status,
                     "deleted": consent.archived,
-                    "id": consent.external_id,
+                    "id": str(consent.external_id),
                 }
             )
             consultation.save()
