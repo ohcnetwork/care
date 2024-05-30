@@ -14,6 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.file_upload import FileUploadRetrieveSerializer
 from care.facility.api.serializers.patient_consultation import (
     EmailDischargeSummarySerializer,
+    PatientConsentSerializer,
     PatientConsultationDischargeSerializer,
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
@@ -22,7 +23,10 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.facility.tasks.discharge_summary import (
     email_discharge_summary_task,
     generate_discharge_summary_task,
@@ -287,3 +291,21 @@ def dev_preview_discharge_summary(request, consultation_id):
         raise NotFound({"detail": "Consultation not found"})
     data = discharge_summary.get_discharge_summary_data(consultation)
     return render(request, "reports/patient_discharge_summary_pdf.html", data)
+
+
+class PatientConsentViewSet(
+    AssetUserAccessMixin,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
+):
+    lookup_field = "external_id"
+    serializer_class = PatientConsentSerializer
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+    queryset = PatientConsent.objects.all().select_related("consultation")
+    filter_backends = (filters.DjangoFilterBackend,)

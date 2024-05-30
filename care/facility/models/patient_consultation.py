@@ -11,7 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.json_schema.consultation import CONSENT_RECORDS
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -26,7 +26,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
-from care.utils.models.validators import JSONFieldSchemaValidator
+from care.utils.models.base import BaseModel
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -248,10 +248,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
-    consent_records = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
-    )
-
     def get_related_consultation(self):
         return self
 
@@ -368,6 +364,21 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self.has_object_read_permission(request)
 
 
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = (1,)
+    PATIENT_CODE_STATUS = (2,)
+    CONSENT_FOR_PROCEDURE = (3,)
+    HIGH_RISK_CONSENT = (4,)
+    OTHERS = 5
+
+
+class PatientCodeStatusType(models.IntegerChoices):
+    DNH = (1,)
+    DNR = (2,)
+    COMFORT_CARE = (3,)
+    ACTIVE_TREATMENT = 4
+
+
 class ConsultationClinician(models.Model):
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -377,3 +388,29 @@ class ConsultationClinician(models.Model):
         User,
         on_delete=models.PROTECT,
     )
+
+
+class PatientConsent(BaseModel):
+    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    type = models.IntegerField(choices=ConsentType.choices)
+    patient_code_status = models.IntegerField(
+        choices=PatientCodeStatusType.choices, null=True, blank=True
+    )
+    archived = models.BooleanField(default=False)
+    files = models.ManyToManyField(FileUpload, related_name="consents")
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="created_consents"
+    )
+
+    def save(self, *args, **kwargs):
+        # archive existing patient code status consent
+        if self.pk is None and self.type == ConsentType.PATIENT_CODE_STATUS:
+            existing_pcs = PatientConsent.objects.filter(
+                consultation=self.consultation,
+                type=ConsentType.PATIENT_CODE_STATUS,
+                archived=False,
+            )
+            if existing_pcs.exists():
+                existing_pcs.update(archived=True)
+
+        super().save(*args, **kwargs)

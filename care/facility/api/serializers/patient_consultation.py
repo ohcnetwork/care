@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -51,7 +52,10 @@ from care.facility.models.patient_base import (
     RouteToFacility,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -864,3 +868,41 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
     class Meta:
         model = PatientConsultation
         fields = ("email",)
+
+
+class PatientConsentSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientConsent
+
+        fields = (
+            "id",
+            "type",
+            "patient_code_status",
+            "archived",
+            "created_by",
+            "created_date",
+        )
+
+        read_only_fields = (
+            "id",
+            "created_by",
+            "created_date",
+        )
+
+        def update(self, instance, validated_data):
+            # check if the consent has been archived, if so, cascade archive all files
+            if instance.archived:
+                for file in instance.files.all():
+                    file.is_archived = True
+                    file.archive_reason = instance.archived_reason
+                    file.archive_datetime = timezone.now()
+                    file.save()
+
+            return super().update(instance, validated_data)
+
+        def create(self, validated_data):
+            validated_data["created_by"] = self.context["request"].user
+            return super().create(validated_data)
