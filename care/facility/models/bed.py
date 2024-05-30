@@ -67,6 +67,15 @@ class AssetBed(BaseModel):
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     meta = JSONField(default=dict, blank=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name="unique_together_asset_bed",
+                fields=("asset", "bed"),
+                condition=models.Q(deleted=False),
+            ),
+        ]
+
     def __str__(self):
         return f"{self.asset.name} - {self.bed.name}"
 

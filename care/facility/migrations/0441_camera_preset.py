@@ -18,7 +18,11 @@ class Migration(migrations.Migration):
         ("facility", "0440_merge_20240528_1613"),
     ]
 
-    def backfill_camera_presets_table(apps, schema_editor):
+    def delete_asset_beds_without_asset_class(apps, schema_editor):
+        AssetBed = apps.get_model("facility", "AssetBed")
+        AssetBed.objects.filter(asset__asset_class__isnull=True).delete()
+
+    def backfill_camera_presets(apps, schema_editor):
         AssetBed = apps.get_model("facility", "AssetBed")
         CameraPreset = apps.get_model("facility", "CameraPreset")
 
@@ -188,5 +192,20 @@ class Migration(migrations.Migration):
                 name="single_boundary_preset_for_assetbed",
             ),
         ),
-        migrations.RunPython(backfill_camera_presets_table, migrations.RunPython.noop),
+        migrations.RunPython(
+            delete_asset_beds_without_asset_class,
+            migrations.RunPython.noop,
+        ),
+        migrations.RunPython(
+            backfill_camera_presets,
+            migrations.RunPython.noop,
+        ),
+        migrations.AddConstraint(
+            model_name="assetbed",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(("deleted", False)),
+                fields=("asset", "bed"),
+                name="unique_together_asset_bed",
+            ),
+        ),
     ]
