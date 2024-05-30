@@ -309,3 +309,14 @@ class PatientConsentViewSet(
     )
     queryset = PatientConsent.objects.all().select_related("consultation")
     filter_backends = (filters.DjangoFilterBackend,)
+
+    filterset_fields = ("archived",)
+
+    def get_queryset(self):
+        consultation_id = self.kwargs.get("consultation_external_id", None)
+        return self.queryset.filter(consultation__external_id=consultation_id)
+
+    def perform_create(self, serializer):
+        consultation_id = self.kwargs.get("consultation_external_id", None)
+        consultation = PatientConsultation.objects.get(external_id=consultation_id)
+        serializer.save(consultation=consultation, created_by=self.request.user)

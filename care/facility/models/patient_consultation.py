@@ -390,30 +390,90 @@ class ConsultationClinician(models.Model):
     )
 
 
-class PatientConsent(BaseModel):
+class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
     consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
     type = models.IntegerField(choices=ConsentType.choices)
     patient_code_status = models.IntegerField(
         choices=PatientCodeStatusType.choices, null=True, blank=True
     )
     archived = models.BooleanField(default=False)
-    files = models.ManyToManyField(FileUpload, related_name="consents")
+    archived_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="archived_consents",
+    )
+    archived_date = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_consents"
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["consultation", "type"],
+                name="unique_consultation_consent",
+                condition=models.Q(archived=False),
+            )
+        ]
+
     def __str__(self) -> str:
-        return f"{self.consultation.patient.name} - {ConsentType(self.type).label}"
+        return f"{self.consultation.patient.name} - {ConsentType(self.type).label}{' (Archived)' if self.archived else ''}"
 
     def save(self, *args, **kwargs):
-        # archive existing patient code status consent
-        if self.pk is None and self.type == ConsentType.PATIENT_CODE_STATUS:
-            existing_pcs = PatientConsent.objects.filter(
-                consultation=self.consultation,
-                type=ConsentType.PATIENT_CODE_STATUS,
-                archived=False,
+        if self.archived:
+            files = FileUpload.objects.filter(
+                associating_id=self.external_id,
+                is_archived=False,
             )
-            if existing_pcs.exists():
-                existing_pcs.update(archived=True)
+            files.update(
+                is_archived=True,
+                archived_datetime=timezone.now(),
+                archive_reason="Consent Archived",
+                archived_by=self.archived_by,
+            )
 
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
+        )
+
+    def has_object_read_permission(self, request):
+        if not super().has_object_read_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or (
+                self.patient.facility
+                and request.user in self.consultation.patient.facility.users.all()
+            )
+            or (
+                self.consultation.assigned_to == request.user
+                or request.user == self.consultation.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.district
+                    == self.consultation.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.state == self.consultation.patient.facility.state
+                )
+            )
+        )
+
+    def has_object_update_permission(self, request):
+        return super().has_object_update_permission(
+            request
+        ) and self.has_object_read_permission(request)

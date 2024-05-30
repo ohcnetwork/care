@@ -164,4 +164,4 @@ class FileUpload(BaseFileUpload):
     FileCategoryChoices = [(x.value, x.name) for x in BaseFileUpload.FileCategory]
 
     def __str__(self):
-        return f"{self.FileTypeChoices[self.file_type][1]} - {self.name}"
+        return f"{self.FileTypeChoices[self.file_type][1]} - {self.name}{' (Archived)' if self.is_archived else ''}"

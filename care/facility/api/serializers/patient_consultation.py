@@ -873,6 +873,7 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
 class PatientConsentSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
 
     class Meta:
         model = PatientConsent
@@ -882,6 +883,8 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "type",
             "patient_code_status",
             "archived",
+            "archived_by",
+            "archived_date",
             "created_by",
             "created_date",
         )
@@ -890,19 +893,31 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "id",
             "created_by",
             "created_date",
+            "archived",
+            "archived_by",
+            "archived_date",
         )
 
-        def update(self, instance, validated_data):
-            # check if the consent has been archived, if so, cascade archive all files
-            if instance.archived:
-                for file in instance.files.all():
-                    file.is_archived = True
-                    file.archive_reason = instance.archived_reason
-                    file.archive_datetime = timezone.now()
-                    file.save()
+    def clear_existing_records(self, consultation, type, self_id=None):
+        consents = PatientConsent.objects.filter(
+            consultation=consultation, type=type
+        ).exclude(id=self_id)
 
-            return super().update(instance, validated_data)
+        # looping because .update does not call model save method
+        for consent in consents:
+            consent.archived = True
+            consent.archived_by = self.context["request"].user
+            consent.archived_date = timezone.now()
+            consent.save()
 
-        def create(self, validated_data):
-            validated_data["created_by"] = self.context["request"].user
-            return super().create(validated_data)
+    def create(self, validated_data):
+        self.clear_existing_records(
+            consultation=validated_data["consultation"], type=validated_data["type"]
+        )
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        self.clear_existing_records(
+            consultation=instance.consultation, type=instance.type, self_id=instance.id
+        )
+        return super().update(instance, validated_data)
