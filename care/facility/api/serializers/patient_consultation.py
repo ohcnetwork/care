@@ -53,6 +53,7 @@ from care.facility.models.patient_base import (
     SuggestionChoices,
 )
 from care.facility.models.patient_consultation import (
+    ConsentType,
     PatientConsent,
     PatientConsultation,
 )
@@ -897,6 +898,30 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "archived_by",
             "archived_date",
         )
+
+    def validate(self, attrs):
+        if attrs.get("type") == ConsentType.PATIENT_CODE_STATUS and not attrs.get(
+            "patient_code_status"
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is required for Patient Code Status Consent"
+                    ]
+                }
+            )
+
+        if attrs.get("type") != ConsentType.PATIENT_CODE_STATUS and attrs.get(
+            "patient_code_status"
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is not required for this type of Consent"
+                    ]
+                }
+            )
+        return attrs
 
     def clear_existing_records(self, consultation, type, self_id=None):
         consents = PatientConsent.objects.filter(

@@ -415,7 +415,17 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
                 fields=["consultation", "type"],
                 name="unique_consultation_consent",
                 condition=models.Q(archived=False),
-            )
+            ),
+            models.CheckConstraint(
+                name="patient_code_status_required",
+                check=~models.Q(type=ConsentType.PATIENT_CODE_STATUS)
+                | models.Q(patient_code_status__isnull=False),
+            ),
+            models.CheckConstraint(
+                name="patient_code_status_not_required",
+                check=models.Q(type=ConsentType.PATIENT_CODE_STATUS)
+                | models.Q(patient_code_status__isnull=True),
+            ),
         ]
 
     def __str__(self) -> str:
@@ -449,7 +459,7 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
         return (
             request.user.is_superuser
             or (
-                self.patient.facility
+                self.consultation.patient.facility
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (

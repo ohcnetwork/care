@@ -32,6 +32,11 @@ from care.facility.models.icd11_diagnosis import (
     ICD11Diagnosis,
 )
 from care.facility.models.patient import RationCardCategory
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
+)
 from care.users.models import District, State
 
 
@@ -447,6 +452,20 @@ class TestUtils:
         }
         data.update(kwargs)
         return ConsultationDiagnosis.objects.create(**data)
+
+    @classmethod
+    def create_patient_consent(
+        cls,
+        consultation: PatientConsultation,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "type": ConsentType.PATIENT_CODE_STATUS,
+            "patient_code_status": PatientCodeStatusType.COMFORT_CARE,
+        }
+        data.update(kwargs)
+        return PatientConsent.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):

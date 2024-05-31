@@ -182,6 +182,26 @@ class Migration(migrations.Migration):
                 name="unique_consultation_consent",
             ),
         ),
+        migrations.AddConstraint(
+            model_name="patientconsent",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    models.Q(("type", 2), _negated=True),
+                    ("patient_code_status__isnull", False),
+                    _connector="OR",
+                ),
+                name="patient_code_status_required",
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name="patientconsent",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    ("type", 2), ("patient_code_status__isnull", True), _connector="OR"
+                ),
+                name="patient_code_status_not_required",
+            ),
+        ),
         migrations.RunPython(migrate_consents, reverse_code=reverse_migrate),
         migrations.RemoveField(
             model_name="patientconsultation",
