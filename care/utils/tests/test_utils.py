@@ -463,6 +463,7 @@ class TestUtils:
             "consultation": consultation,
             "type": ConsentType.PATIENT_CODE_STATUS,
             "patient_code_status": PatientCodeStatusType.COMFORT_CARE,
+            "created_by": consultation.created_by,
         }
         data.update(kwargs)
         return PatientConsent.objects.create(**data)

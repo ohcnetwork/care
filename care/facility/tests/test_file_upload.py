@@ -62,7 +62,7 @@ class ConsentFileUploadApiTestCase(TestUtils, APITestCase):
             cls.district, cls.facility, local_body=cls.local_body
         )
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
-        cls.consent = cls.create_patient_consent(cls.consultation)
+        cls.consent = cls.create_patient_consent(cls.consultation, created_by=cls.user)
 
     def test_consent_file_upload(self):
         upload_response = self.client.post(
