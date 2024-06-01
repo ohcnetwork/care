@@ -936,13 +936,17 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             consent.save()
 
     def create(self, validated_data):
-        self.clear_existing_records(
-            consultation=validated_data["consultation"], type=validated_data["type"]
-        )
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=validated_data["consultation"], type=validated_data["type"]
+            )
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        self.clear_existing_records(
-            consultation=instance.consultation, type=instance.type, self_id=instance.id
-        )
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=instance.consultation,
+                type=instance.type,
+                self_id=instance.id,
+            )
         return super().update(instance, validated_data)

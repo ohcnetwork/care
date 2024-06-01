@@ -435,6 +435,7 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
         if self.archived:
             files = FileUpload.objects.filter(
                 associating_id=self.external_id,
+                file_type=FileUpload.FileType.CONSENT_RECORD,
                 is_archived=False,
             )
             files.update(

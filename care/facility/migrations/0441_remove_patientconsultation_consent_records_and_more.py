@@ -70,17 +70,12 @@ class Migration(migrations.Migration):
 
             kwargs = {}
 
-            if type(consent.patient_code_status) == int:
-                kwargs = {
-                    "patient_code_status": consent.patient_code_status,
-                }
-
             consultation.consent_records.append(
                 {
                     "type": consent.type,
                     "deleted": consent.archived,
                     "id": str(consent.external_id),
-                    **kwargs,
+                    "patient_code_status": consent.patient_code_status**kwargs,
                 }
             )
             consultation.save()
