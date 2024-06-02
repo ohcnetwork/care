@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -44,6 +44,7 @@ class AmbulanceViewSet(
     UserAccessMixin,
     RetrieveModelMixin,
     ListModelMixin,
+    CreateModelMixin,
     UpdateModelMixin,
     DestroyModelMixin,
     GenericViewSet,
@@ -91,12 +92,3 @@ class AmbulanceViewSet(
 
         driver.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@extend_schema_view(create=extend_schema(tags=["ambulance"]))
-class AmbulanceCreateViewSet(CreateModelMixin, GenericViewSet):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = AmbulanceSerializer
-    queryset = Ambulance.objects.filter(deleted=False)
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AmbulanceFilterSet
