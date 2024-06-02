@@ -40,7 +40,7 @@ pydantic = "==1.10.15" # fix for fhir.resources < 7.0.2
 pyjwt = "==2.8.0"
 python-slugify = "==8.0.4"
 pywebpush = "==1.14.0"
-redis = { extras = ["hiredis"], version = "==5.0.3" } # constraint for redis-om
+redis = { extras = ["hiredis"], version = "==5.0.4" } # constraint for redis-om
 redis-om = "==0.3.1"
 requests = "==2.32.3"
 sentry-sdk = "==2.3.1"
