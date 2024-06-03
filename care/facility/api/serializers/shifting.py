@@ -323,19 +323,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if (
             "status" in validated_data
             and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            and not has_facility_permission(user, instance.origin_facility)
         ):
-            # Staff from the destination must not be able to mark the shift as complete.
-            destination_facility = (
-                validated_data.get("assigned_facility") or instance.assigned_facility
+            raise ValidationError(
+                {
+                    "status": [
+                        "Permission Denied - Only staff from the origin facility can mark the shift as complete."
+                    ]
+                }
             )
-            if destination_facility and destination_facility.users.contains(user):
-                raise ValidationError(
-                    {
-                        "status": [
-                            "Permission Denied - Destination Facility cannot complete the shift"
-                        ]
-                    }
-                )
 
         old_status = instance.status
         new_instance = super().update(instance, validated_data)
