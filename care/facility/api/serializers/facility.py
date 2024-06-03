@@ -47,7 +47,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     patient_count = serializers.SerializerMethodField()
     bed_count = serializers.SerializerMethodField()
 
@@ -95,7 +98,10 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     # }
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     bed_count = serializers.SerializerMethodField()
 
     class Meta:
