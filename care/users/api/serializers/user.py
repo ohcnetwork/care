@@ -432,3 +432,26 @@ class UserListSerializer(serializers.ModelSerializer):
             "home_facility",
             "video_connect_link",
         )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        user = self.context["request"].user
+
+        if user.user_type < User.TYPE_VALUE_MAP["Reserved"]:
+            whitelisted_fields = (
+                "id",
+                "first_name",
+                "last_name",
+                "username",
+                "local_body_object",
+                "district_object",
+                "state_object",
+                "user_type",
+                "created_by",
+            )
+
+            for key in list(representation.keys()):
+                if key not in whitelisted_fields:
+                    representation.pop(key)
+
+        return representation
