@@ -1,9 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
@@ -160,11 +159,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(
-        choices=FEATURE_CHOICES,
-        null=True,
+    features = ArrayField(
+        models.SmallIntegerField(choices=FEATURE_CHOICES),
         blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
+        null=True,
     )
 
     longitude = models.DecimalField(
