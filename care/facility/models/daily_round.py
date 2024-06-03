@@ -141,14 +141,14 @@ class DailyRound(PatientBaseModel):
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
     )
     physical_examination_info = models.TextField(null=True, blank=True)
-    additional_symptoms = MultiSelectField(
+    deprecated_additional_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
         null=True,
         blank=True,
         max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )
-    other_symptoms = models.TextField(default="", blank=True)
+    )  # Deprecated
+    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
@@ -589,8 +589,7 @@ class DailyRound(PatientBaseModel):
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
                     self.consultation.patient.facility
-                    and request.user.state
-                    == self.consultation.patient.facility.district
+                    and request.user.state == self.consultation.patient.facility.state
                 )
             )
         )
