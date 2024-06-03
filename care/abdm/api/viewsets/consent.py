@@ -140,30 +140,6 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
             ConsentRequestSerializer(consent).data, status=status.HTTP_200_OK
         )
 
-    def list(self, request, *args, **kwargs):
-        if ratelimit(request, "consent__list", [request.user.username]):
-            raise CaptchaRequiredException(
-                detail={
-                    "status": 429,
-                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
-                },
-                code=status.HTTP_429_TOO_MANY_REQUESTS,
-            )
-
-        return super().list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        if ratelimit(request, "consent__retrieve", [kwargs["pk"]]):
-            raise CaptchaRequiredException(
-                detail={
-                    "status": 429,
-                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
-                },
-                code=status.HTTP_429_TOO_MANY_REQUESTS,
-            )
-
-        return super().retrieve(request, *args, **kwargs)
-
 
 class ConsentCallbackViewSet(GenericViewSet):
     permission_classes = (IsAuthenticated,)

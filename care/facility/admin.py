@@ -7,7 +7,6 @@ from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed, Bed
 from care.facility.models.patient_sample import PatientSample
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
 from .models import (
     Building,
@@ -198,7 +197,6 @@ admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration, PatientAdmin)
-admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
 admin.site.register(FacilityInventoryUnit)
