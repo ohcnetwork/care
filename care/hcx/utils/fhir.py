@@ -558,11 +558,9 @@ class Fhir:
                             category=codeableconcept.CodeableConcept(
                                 coding=[
                                     coding.Coding(
-                                        system=(
-                                            SYSTEM.claim_item_category_pmjy
-                                            if item["category"] == "HBP"
-                                            else SYSTEM.claim_item_category
-                                        ),
+                                        system=SYSTEM.claim_item_category_pmjy
+                                        if item["category"] == "HBP"
+                                        else SYSTEM.claim_item_category,
                                         code=item["category"],
                                     )
                                 ]
@@ -949,17 +947,15 @@ class Fhir:
                 map(
                     lambda content: (
                         communication.CommunicationPayload(
-                            contentString=(
-                                content["data"] if content["type"] == "text" else None
-                            ),
-                            contentAttachment=(
-                                attachment.Attachment(
-                                    url=content["data"],
-                                    title=content["name"] if content["name"] else None,
-                                )
-                                if content["type"] == "url"
-                                else None
-                            ),
+                            contentString=content["data"]
+                            if content["type"] == "text"
+                            else None,
+                            contentAttachment=attachment.Attachment(
+                                url=content["data"],
+                                title=content["name"] if content["name"] else None,
+                            )
+                            if content["type"] == "url"
+                            else None,
                         )
                     ),
                     payload,

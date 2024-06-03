@@ -108,11 +108,9 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             is_completed = validated_data.get("result") in [1, 2]
             new_status = validated_data.get(
                 "status",
-                (
-                    PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
-                    if is_completed
-                    else None
-                ),
+                PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
+                if is_completed
+                else None,
             )
             choice = PatientSample.SAMPLE_TEST_FLOW_CHOICES[new_status - 1][1]
             if is_completed:

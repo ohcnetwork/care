@@ -70,9 +70,9 @@ class Hcx:
             .replace(microsecond=0)
             .isoformat(),
             "x-hcx-sender_code": self.participantCode,
-            "x-hcx-correlation_id": (
-                correlationId if correlationId else str(uuid.uuid4())
-            ),
+            "x-hcx-correlation_id": correlationId
+            if correlationId
+            else str(uuid.uuid4()),
             # "x-hcx-workflow_id": str(uuid.uuid4()),
             "x-hcx-api_call_id": str(uuid.uuid4()),
             # "x-hcx-status": "response.complete",

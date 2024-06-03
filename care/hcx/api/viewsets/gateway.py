@@ -74,13 +74,11 @@ class HcxGatewayViewSet(GenericViewSet):
                 "7894561232",
                 policy["patient_object"]["id"],
                 policy["patient_object"]["name"],
-                (
-                    "male"
-                    if policy["patient_object"]["gender"] == 1
-                    else (
-                        "female" if policy["patient_object"]["gender"] == 2 else "other"
-                    )
-                ),
+                "male"
+                if policy["patient_object"]["gender"] == 1
+                else "female"
+                if policy["patient_object"]["gender"] == 2
+                else "other",
                 policy["subscriber_id"],
                 policy["policy_id"],
                 policy["id"],
@@ -127,23 +125,17 @@ class HcxGatewayViewSet(GenericViewSet):
                     lambda procedure: {
                         "id": str(uuid()),
                         "name": procedure["procedure"],
-                        "performed": (
-                            procedure["time"]
-                            if "time" in procedure
-                            else procedure["frequency"]
-                        ),
+                        "performed": procedure["time"]
+                        if "time" in procedure
+                        else procedure["frequency"],
                         "status": (
-                            (
-                                "completed"
-                                if datetime.strptime(
-                                    procedure["time"], "%Y-%m-%dT%H:%M"
-                                )
-                                < datetime.now()
-                                else "preparation"
-                            )
-                            if "time" in procedure
-                            else "in-progress"
-                        ),
+                            "completed"
+                            if datetime.strptime(procedure["time"], "%Y-%m-%dT%H:%M")
+                            < datetime.now()
+                            else "preparation"
+                        )
+                        if "time" in procedure
+                        else "in-progress",
                     },
                     consultation.procedure,
                 )
@@ -216,15 +208,11 @@ class HcxGatewayViewSet(GenericViewSet):
             "GICOFINDIA",
             claim["policy_object"]["patient_object"]["id"],
             claim["policy_object"]["patient_object"]["name"],
-            (
-                "male"
-                if claim["policy_object"]["patient_object"]["gender"] == 1
-                else (
-                    "female"
-                    if claim["policy_object"]["patient_object"]["gender"] == 2
-                    else "other"
-                )
-            ),
+            "male"
+            if claim["policy_object"]["patient_object"]["gender"] == 1
+            else "female"
+            if claim["policy_object"]["patient_object"]["gender"] == 2
+            else "other",
             claim["policy_object"]["subscriber_id"],
             claim["policy_object"]["policy_id"],
             claim["policy_object"]["id"],
@@ -249,11 +237,9 @@ class HcxGatewayViewSet(GenericViewSet):
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),
-            operation=(
-                HcxOperations.CLAIM_SUBMIT
-                if REVERSE_USE_CHOICES[claim["use"]] == "claim"
-                else HcxOperations.PRE_AUTH_SUBMIT
-            ),
+            operation=HcxOperations.CLAIM_SUBMIT
+            if REVERSE_USE_CHOICES[claim["use"]] == "claim"
+            else HcxOperations.PRE_AUTH_SUBMIT,
             recipientCode=claim["policy_object"]["insurer_id"],
         )
 
