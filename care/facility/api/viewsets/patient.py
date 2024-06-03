@@ -73,7 +73,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientNotesEdit
+from care.facility.models.patient import PatientNotesEdit, RationCardCategory
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
@@ -124,6 +124,7 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+    ration_card_category = filters.ChoiceFilter(choices=RationCardCategory.choices)
 
     def filter_by_category(self, queryset, name, value):
         if value:
@@ -177,9 +178,6 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__discharge_date"
-    )
-    last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__symptoms_onset_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
         method="filter_by_bed_type",
@@ -449,7 +447,6 @@ class PatientViewSet(
         "last_vaccinated_date",
         "last_consultation_encounter_date",
         "last_consultation_discharge_date",
-        "last_consultation_symptoms_onset_date",
     ]
     CSV_EXPORT_LIMIT = 7
 

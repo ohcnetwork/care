@@ -72,15 +72,17 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     deprecated_icd11_principal_diagnosis = models.CharField(
         max_length=100, default="", blank=True, null=True
     )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    symptoms = MultiSelectField(
+    deprecated_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
         null=True,
         blank=True,
         max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )
-    other_symptoms = models.TextField(default="", blank=True)
-    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    )  # Deprecated
+    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
+    deprecated_symptoms_onset_date = models.DateTimeField(
+        null=True, blank=True
+    )  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
@@ -256,8 +258,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "encounter_date": "Date of Admission",
-        "symptoms_onset_date": "Date of Onset of Symptoms",
-        "symptoms": "Symptoms at time of consultation",
+        "deprecated_symptoms_onset_date": "Date of Onset of Symptoms",
+        "deprecated_symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
         "category": "Category",
         "examination_details": "Examination Details",
@@ -276,8 +278,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     # CSV_DATATYPE_DEFAULT_MAPPING = {
     #     "encounter_date": (None, models.DateTimeField(),),
-    #     "symptoms_onset_date": (None, models.DateTimeField(),),
-    #     "symptoms": ("-", models.CharField(),),
+    #     "deprecated_symptoms_onset_date": (None, models.DateTimeField(),),
+    #     "deprecated_symptoms": ("-", models.CharField(),),
     #     "category": ("-", models.CharField(),),
     #     "examination_details": ("-", models.CharField(),),
     #     "suggestion": ("-", models.CharField(),),
