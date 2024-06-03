@@ -561,36 +561,6 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-    def test_create_consultations_with_duplicate_patient_no_within_facility(self):
-        patient2 = self.create_patient(self.district, self.facility)
-        data = self.get_default_data().copy()
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": patient2.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-                "suggestion": SuggestionChoices.A,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": self.patient1.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-        data.update({"suggestion": SuggestionChoices.A})
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_create_consultations_with_same_patient_no_in_different_facilities(self):
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body, name="bar"
@@ -662,54 +632,3 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-    def test_patient_was_discharged_and_then_another_added_with_the_same_patient_number(
-        self,
-    ):
-        consultation = self.create_admission_consultation(
-            suggestion=SuggestionChoices.A,
-            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-            patient=self.patient1,
-            patient_no="OP1234",
-        )
-
-        data = self.get_default_data().copy()
-        data.update(
-            {
-                "patient": self.patient2.external_id,
-                "facility": self.facility.external_id,
-                "suggestion": SuggestionChoices.A,
-                "encounter_date": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-                "patient_no": "OP1234",
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-        res = self.discharge(
-            consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
-            discharge_date="2020-04-02T15:30:00Z",
-            discharge_notes="Discharged",
-        )
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        consultation_2 = self.create_admission_consultation(
-            suggestion=SuggestionChoices.A,
-            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-            patient=self.patient2,
-            patient_no="OP1234",
-        )
-        self.assertEqual(consultation_2.patient_no, "OP1234")
-
-        data = self.get_default_data().copy()
-        data.update(
-            {
-                "patient": self.patient1.external_id,
-                "facility": self.facility.external_id,
-                "suggestion": SuggestionChoices.A,
-                "encounter_date": make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
-                "patient_no": "OP1234",
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

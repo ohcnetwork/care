@@ -537,26 +537,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-            if (
-                suggestion == SuggestionChoices.A
-                and patient_no
-                and PatientConsultation.objects.filter(
-                    patient_no=patient_no,
-                    facility=(
-                        self.instance.facility
-                        if self.instance
-                        else validated.get("patient").facility
-                    ),
-                    discharge_date__isnull=True,
-                    suggestion=SuggestionChoices.A,
-                ).exists()
-            ):
-                raise ValidationError(
-                    {
-                        "patient_no": "Consultation with this IP/OP number already exists within the facility."
-                    }
-                )
-
         if (
             "suggestion" in validated
             and validated["suggestion"] != SuggestionChoices.DD
