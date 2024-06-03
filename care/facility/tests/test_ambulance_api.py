@@ -98,9 +98,7 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
         """
 
         # Test with invalid data
-        res = self.client.post(
-            self.get_url(action="create"), data=self.get_create_representation()
-        )
+        res = self.client.post(self.get_url(), data=self.get_create_representation())
         self.assertEqual(res.status_code, 400)
         self.assertEqual(res.json()["drivers"][0], "This field is required.")
 
@@ -114,7 +112,7 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
             ],
         }
         data.update(self.get_create_representation())
-        res = self.client.post(self.get_url(action="create"), data=data, format="json")
+        res = self.client.post(self.get_url(), data=data, format="json")
         self.assertEqual(res.status_code, 400)
         self.assertEqual(
             res.json()["non_field_errors"][0],
@@ -123,7 +121,7 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
 
         # Test with valid data
         data.update({"price_per_km": 100})
-        res = self.client.post(self.get_url(action="create"), data=data, format="json")
+        res = self.client.post(self.get_url(), data=data, format="json")
         self.assertEqual(res.status_code, 201)
         self.assertTrue(
             Ambulance.objects.filter(vehicle_number=data["vehicle_number"]).exists()
@@ -136,9 +134,9 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
         res = self.client.get(self.get_url())
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json()["count"], 1)
-        self.assertDictContainsSubset(
-            self.get_list_representation(self.ambulance), res.json()["results"][0]
-        )
+        expected = self.get_list_representation(self.ambulance)
+        actual = res.json()["results"][0]
+        self.assertEqual(actual, actual | expected)
 
     def test_retrieve_ambulance(self):
         """
@@ -146,9 +144,9 @@ class AmbulanceViewSetTest(TestUtils, APITestCase):
         """
         res = self.client.get(f"/api/v1/ambulance/{self.ambulance.id}/")
         self.assertEqual(res.status_code, 200)
-        self.assertDictContainsSubset(
-            self.get_detail_representation(self.ambulance), res.json()
-        )
+        expected = self.get_detail_representation(self.ambulance)
+        actual = res.json()
+        self.assertEqual(actual, actual | expected)
 
     def test_update_ambulance(self):
         """
