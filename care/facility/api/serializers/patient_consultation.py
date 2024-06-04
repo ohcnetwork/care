@@ -942,7 +942,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             is_archived=True,
             archived_datetime=timezone.now(),
             archive_reason="Consent Archived",
-            archived_by=self.archived_by,
+            archived_by=self.context["request"].user,
         )
 
     def create(self, validated_data):
