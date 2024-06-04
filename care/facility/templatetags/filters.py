@@ -22,7 +22,8 @@ def suggestion_string(suggestion_code: str):
 
 @register.filter()
 def field_name_to_label(value):
-    return value.replace("_", " ").capitalize()
+    if value:
+        return value.replace("_", " ").capitalize()
 
 
 @register.filter(expects_localtime=True)
