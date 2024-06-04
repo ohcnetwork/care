@@ -935,7 +935,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             archived_date=timezone.now(),
         )
         FileUpload.objects.filter(
-            associating_id__in=consents.values_list("external_id", flat=True),
+            associating_id__in=list(consents.values_list("external_id", flat=True)),
             file_type=FileUpload.FileType.CONSENT_RECORD,
             is_archived=False,
         ).update(
