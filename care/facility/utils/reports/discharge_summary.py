@@ -14,6 +14,7 @@ from django.utils import timezone
 from care.facility.models import (
     DailyRound,
     Disease,
+    EncounterSymptom,
     InvestigationValue,
     PatientConsultation,
     PatientSample,
@@ -21,6 +22,7 @@ from care.facility.models import (
     PrescriptionDosageType,
     PrescriptionType,
 )
+from care.facility.models.encounter_symptom import ClinicalImpressionStatus
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ACTIVE_CONDITION_VERIFICATION_STATUSES,
@@ -97,6 +99,9 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
     daily_rounds = DailyRound.objects.filter(consultation=consultation)
+    symptoms = EncounterSymptom.objects.filter(consultation=consultation).exclude(
+        clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
+    )
     diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
@@ -133,6 +138,7 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
+        "symptoms": symptoms,
         "principal_diagnoses": diagnoses["principal"],
         "unconfirmed_diagnoses": diagnoses["unconfirmed"],
         "provisional_diagnoses": diagnoses["provisional"],

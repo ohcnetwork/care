@@ -1,15 +1,11 @@
 from datetime import timedelta
-from uuid import uuid4
 
 from django.db import transaction
-from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from care.facility.events.handler import create_consultation_events
-
-# from care.facility.api.serializers.bed import BedSerializer
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -18,11 +14,7 @@ from care.facility.models import (
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import (
-    CURRENT_HEALTH_CHOICES,
-    SYMPTOM_CHOICES,
-    SuggestionChoices,
-)
+from care.facility.models.patient_base import SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
@@ -32,14 +24,10 @@ from config.serializers import ChoiceField
 
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    additional_symptoms = serializers.MultipleChoiceField(
-        choices=SYMPTOM_CHOICES, required=False
-    )
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
@@ -87,10 +75,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     )
     insulin_intake_frequency = ChoiceField(
         choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
-    )
-
-    clone_last = serializers.BooleanField(
-        write_only=True, default=False, required=False
     )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
@@ -152,7 +136,17 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             facility=instance.consultation.patient.facility,
         ).generate()
 
-        return super().update(instance, validated_data)
+        instance = super().update(instance, validated_data)
+
+        create_consultation_events(
+            instance.consultation_id,
+            instance,
+            instance.created_by_id,
+            instance.created_date,
+            fields_to_store=set(validated_data.keys()),
+        )
+
+        return instance
 
     def update_last_daily_round(self, daily_round_obj):
         consultation = daily_round_obj.consultation
@@ -201,58 +195,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                         "rounds_type": "Telemedicine Rounds are only allowed for Domiciliary Care patients"
                     }
                 )
-            if "clone_last" in validated_data:
-                should_clone = validated_data.pop("clone_last")
-                if should_clone:
-                    last_objects = DailyRound.objects.filter(
-                        consultation=consultation
-                    ).order_by("-created_date")
-                    if not last_objects.exists():
-                        raise ValidationError(
-                            {"daily_round": "No Daily Round record available to copy"}
-                        )
-
-                    if "rounds_type" not in validated_data:
-                        raise ValidationError(
-                            {"daily_round": "Rounds type is required to clone"}
-                        )
-
-                    rounds_type = validated_data.get("rounds_type")
-                    if rounds_type == DailyRound.RoundsType.NORMAL.value:
-                        fields_to_clone = [
-                            "consultation_id",
-                            "patient_category",
-                            "taken_at",
-                            "additional_symptoms",
-                            "other_symptoms",
-                            "physical_examination_info",
-                            "other_details",
-                            "bp",
-                            "pulse",
-                            "resp",
-                            "temperature",
-                            "rhythm",
-                            "rhythm_detail",
-                            "ventilator_spo2",
-                            "consciousness_level",
-                        ]
-                        cloned_daily_round_obj = DailyRound()
-                        for field in fields_to_clone:
-                            value = getattr(last_objects[0], field)
-                            setattr(cloned_daily_round_obj, field, value)
-                    else:
-                        cloned_daily_round_obj = last_objects[0]
-
-                    cloned_daily_round_obj.pk = None
-                    cloned_daily_round_obj.rounds_type = rounds_type
-                    cloned_daily_round_obj.created_by = self.context["request"].user
-                    cloned_daily_round_obj.last_edited_by = self.context["request"].user
-                    cloned_daily_round_obj.created_date = timezone.now()
-                    cloned_daily_round_obj.modified_date = timezone.now()
-                    cloned_daily_round_obj.external_id = uuid4()
-                    cloned_daily_round_obj.save()
-                    self.update_last_daily_round(cloned_daily_round_obj)
-                    return self.update(cloned_daily_round_obj, validated_data)
 
             if (
                 "action" in validated_data

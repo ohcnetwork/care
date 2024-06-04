@@ -17,7 +17,7 @@ class PatientInvestigationGroup(BaseModel):
 
 
 class PatientInvestigation(BaseModel):
-    name = models.CharField(max_length=500, blank=False, null=False)
+    name = models.CharField(max_length=500, blank=False, null=False, unique=True)
     groups = models.ManyToManyField(PatientInvestigationGroup)
     unit = models.TextField(null=True, blank=True)
     ideal_value = models.TextField(blank=True, null=True)
@@ -29,7 +29,8 @@ class PatientInvestigation(BaseModel):
     choices = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.name + " in " + self.unit + " as " + self.investigation_type
+        unit_part = f" in {self.unit}" if self.unit else ""
+        return f"{self.name}{unit_part} as {self.investigation_type}"
 
 
 class InvestigationSession(BaseModel):

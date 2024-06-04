@@ -38,6 +38,21 @@ class BedFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     location = filters.UUIDFilter(field_name="location__external_id")
     bed_type = CareChoiceFilter(choice_dict=inverse_bed_type)
+    not_occupied_by_asset_type = filters.CharFilter(
+        method="filter_bed_is_not_occupied_by_asset_type"
+    )
+
+    def filter_bed_is_not_occupied_by_asset_type(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                ~Exists(
+                    AssetBed.objects.filter(
+                        bed__id=OuterRef("id"),
+                        asset__asset_class=value,
+                    )
+                )
+            )
+        return queryset
 
 
 class BedViewSet(
