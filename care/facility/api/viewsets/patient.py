@@ -7,7 +7,6 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 from django.db.models import (
     Case,
-    Exists,
     ExpressionWrapper,
     F,
     Func,
@@ -605,21 +604,16 @@ class DischargePatientFilterSet(PatientFilterSet):
         if not value:
             return queryset
 
-        values = value.split(",")
-        filter_q = Q()
-
-        consultation_bed = ConsultationBed.objects.filter(
+        last_consultation_bed = ConsultationBed.objects.filter(
+            consultation=OuterRef("last_consultation"),
             end_date__isnull=False,
-            consultation__in=queryset.values("last_consultation"),
+        ).order_by("-end_date")
+
+        q = queryset.annotate(
+            last_consultation__current_bed=Subquery(last_consultation_bed[:1])
         )
 
-        if "None" in values:
-            filter_q |= ~Exists(consultation_bed)
-            values.remove("None")
-        if values:
-            filter_q |= Exists(consultation_bed.filter(bed__bed_type__in=values))
-
-        return queryset.filter(filter_q)
+        return super().filter_by_bed_type(q, name, value)
 
 
 @extend_schema_view(tags=["patient"])
