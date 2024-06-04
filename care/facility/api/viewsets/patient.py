@@ -62,6 +62,7 @@ from care.facility.models import (
     Facility,
     FacilityPatientStatsHistory,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
     ShiftingRequest,
 )
@@ -72,7 +73,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientNotesEdit
+from care.facility.models.patient import PatientNotesEdit, RationCardCategory
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
@@ -109,7 +110,7 @@ class PatientFilterSet(filters.FilterSet):
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     patient_no = filters.CharFilter(
-        field_name="last_consultation__patient_no", lookup_expr="icontains"
+        field_name="last_consultation__patient_no", lookup_expr="iexact"
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
@@ -123,6 +124,7 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+    ration_card_category = filters.ChoiceFilter(choices=RationCardCategory.choices)
 
     def filter_by_category(self, queryset, name, value):
         if value:
@@ -176,9 +178,6 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__discharge_date"
-    )
-    last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__symptoms_onset_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
         method="filter_by_bed_type",
@@ -448,7 +447,6 @@ class PatientViewSet(
         "last_vaccinated_date",
         "last_consultation_encounter_date",
         "last_consultation_discharge_date",
-        "last_consultation_symptoms_onset_date",
     ]
     CSV_EXPORT_LIMIT = 7
 
@@ -601,10 +599,6 @@ class PatientViewSet(
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
-class FacilityDischargedPatientFilterSet(filters.FilterSet):
-    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-
-
 @extend_schema_view(tags=["patient"])
 class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
@@ -615,29 +609,78 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         rest_framework_filters.OrderingFilter,
         PatientCustomOrderingFilter,
     )
-    filterset_class = FacilityDischargedPatientFilterSet
-    queryset = PatientRegistration.objects.select_related(
-        "local_body",
-        "district",
-        "state",
-        "ward",
-        "assigned_to",
-        "facility",
-        "facility__ward",
-        "facility__local_body",
-        "facility__district",
-        "facility__state",
-        "last_consultation",
-        "last_consultation__assigned_to",
-        "last_edited",
-        "created_by",
+    filterset_class = PatientFilterSet
+    queryset = (
+        PatientRegistration.objects.select_related(
+            "local_body",
+            "district",
+            "state",
+            "ward",
+            "assigned_to",
+            "facility",
+            "facility__ward",
+            "facility__local_body",
+            "facility__district",
+            "facility__state",
+            "last_consultation",
+            "last_consultation__assigned_to",
+            "last_edited",
+            "created_by",
+        )
+        .annotate(
+            coalesced_dob=Coalesce(
+                "date_of_birth",
+                Func(
+                    F("year_of_birth"),
+                    Value(1),
+                    Value(1),
+                    function="MAKE_DATE",
+                    output_field=models.DateField(),
+                ),
+                output_field=models.DateField(),
+            ),
+            age_end=Case(
+                When(death_datetime__isnull=True, then=Now()),
+                default=F("death_datetime__date"),
+            ),
+        )
+        .annotate(
+            age=Func(
+                Value("year"),
+                Func(
+                    F("age_end"),
+                    F("coalesced_dob"),
+                    function="age",
+                ),
+                function="date_part",
+                output_field=models.IntegerField(),
+            ),
+            age_days=ExpressionWrapper(
+                ExtractDay(F("age_end") - F("coalesced_dob")),
+                output_field=models.IntegerField(),
+            ),
+        )
     )
+
+    date_range_fields = [
+        "created_date",
+        "modified_date",
+        "date_declared_positive",
+        "date_of_result",
+        "last_vaccinated_date",
+        "last_consultation_encounter_date",
+        "last_consultation_discharge_date",
+        "last_consultation_symptoms_onset_date",
+    ]
 
     ordering_fields = [
         "id",
         "name",
         "created_date",
         "modified_date",
+        "review_time",
+        "last_consultation__current_bed__bed__name",
+        "date_declared_positive",
     ]
 
     def get_queryset(self) -> QuerySet:
@@ -813,6 +856,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
 
 
 class PatientNotesFilterSet(filters.FilterSet):
+    thread = filters.ChoiceFilter(choices=PatientNoteThreadChoices.choices)
     consultation = filters.CharFilter(field_name="consultation__external_id")
 
 

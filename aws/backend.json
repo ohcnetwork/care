@@ -42,6 +42,10 @@
           "value": "https://care.ohc.network"
         },
         {
+          "name": "BACKEND_DOMAIN",
+          "value": "https://careapi.ohc.network"
+        },
+        {
           "name": "DJANGO_ADMIN_URL",
           "value": "w8BYTTYRkxqAsbS2iU9Yd2ZgQy6D3uws"
         },
