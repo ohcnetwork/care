@@ -33,8 +33,8 @@ from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
-    DISEASE_STATUS_CHOICES,
     CANCER_TYPE,
+    DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
     NewDischargeReasonEnum,
 )
@@ -306,7 +306,8 @@ class PatientDetailSerializer(PatientListSerializer):
                             (gender == 2 and CANCER_TYPE[cancer_type] == "8")
                         )
                         if invalid_gender_type:
-                            raise serializers.ValidationError("Invalid cancer type for specified gender")
+                            raise serializers.ValidationError(
+                                "Invalid cancer type for specified gender")
 
                 # Handle TB cases
                 if disease_id == 14:
@@ -319,9 +320,11 @@ class PatientDetailSerializer(PatientListSerializer):
                         try:
                             duration = float(duration)
                             if duration < 0:
-                                raise serializers.ValidationError("TB duration cannot be negative")
+                                raise serializers.ValidationError(
+                                    "TB duration cannot be negative")
                         except ValueError:
-                            raise serializers.ValidationError("Duration must be a number")
+                            raise serializers.ValidationError(
+                                "Duration must be a number")
 
         return validated
 
