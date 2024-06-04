@@ -2,15 +2,22 @@
 
 import django.contrib.postgres.fields
 from django.db import migrations, models
+from django.db.models import Q
 
 
 def convert_features_to_array(apps, schema_editor):
     Facility = apps.get_model("facility", "Facility")
 
-    for facility in Facility.objects.all():
-        if facility.old_features:
-            facility.features = list(map(int, facility.old_features))
-            facility.save()
+    facilities_to_update = Facility.objects.filter(old_features__isnull=False)
+
+    updated_facilities = []
+
+    for facility in facilities_to_update:
+        facility.features = list(map(int, facility.old_features.split(",")))
+        updated_facilities.append(facility)
+
+    if updated_facilities:
+        Facility.objects.bulk_update(updated_facilities, ["features"])
 
 
 class Migration(migrations.Migration):
@@ -44,8 +51,4 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(convert_features_to_array),
-        migrations.RemoveField(
-            model_name="facility",
-            name="old_features",
-        ),
     ]

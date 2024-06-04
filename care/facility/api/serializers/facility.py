@@ -153,6 +153,13 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         MiddlewareDomainAddressValidator()(value)
         return value
 
+    def validate_features(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                "Features should not contain duplicate values."
+            )
+        return value
+
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
