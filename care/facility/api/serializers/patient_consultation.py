@@ -42,6 +42,7 @@ from care.facility.models.encounter_symptom import (
     EncounterSymptom,
     Symptom,
 )
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
@@ -928,12 +929,21 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             consultation=consultation, type=type
         ).exclude(id=self_id)
 
-        # looping because .update does not call model save method
-        for consent in consents:
-            consent.archived = True
-            consent.archived_by = self.context["request"].user
-            consent.archived_date = timezone.now()
-            consent.save()
+        consents.update(
+            archived=True,
+            archived_by=self.context["request"].user,
+            archived_date=timezone.now(),
+        )
+        FileUpload.objects.filter(
+            associating_id__in=consents.values_list("external_id", flat=True),
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            is_archived=False,
+        ).update(
+            is_archived=True,
+            archived_datetime=timezone.now(),
+            archive_reason="Consent Archived",
+            archived_by=self.archived_by,
+        )
 
     def create(self, validated_data):
         with transaction.atomic():

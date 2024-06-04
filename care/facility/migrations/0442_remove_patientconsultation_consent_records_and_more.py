@@ -67,22 +67,19 @@ class Migration(migrations.Migration):
         )
         for consent in PatientConsent.objects.all():
             consultation = consent.consultation
-
-            kwargs = {}
-
             consultation.consent_records.append(
                 {
                     "type": consent.type,
                     "deleted": consent.archived,
                     "id": str(consent.external_id),
-                    "patient_code_status": consent.patient_code_status**kwargs,
+                    "patient_code_status": consent.patient_code_status,
                 }
             )
             consultation.save()
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0440_merge_20240528_1613"),
+        ("facility", "0441_delete_patientteleconsultation"),
     ]
 
     operations = [
