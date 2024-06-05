@@ -524,9 +524,9 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FILE_UPLOAD_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
+    ),
 )
 
 ALLOWED_MIME_TYPES = env.list(
@@ -578,9 +578,9 @@ FACILITY_S3_BUCKET_ENDPOINT = env(
 )
 FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FACILITY_S3_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
+    ),
 )
 
 # for setting the shifting mode
@@ -603,6 +603,8 @@ BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+APP_VERSION = env("APP_VERSION", default="unknown")
 
 # ABDM
 ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
