@@ -312,11 +312,45 @@ class PatientConsentViewSet(
 
     filterset_fields = ("archived",)
 
+    def get_consultation(self, consultation_id):
+        consultation = PatientConsultation.objects.filter(external_id=consultation_id)
+
+        consultation.prefetch_related(
+            "assigned_to",
+            Prefetch(
+                "assigned_to__skills",
+                queryset=Skill.objects.filter(userskill__deleted=False),
+            ),
+            "current_bed",
+            "current_bed__bed",
+            "current_bed__assets",
+            "current_bed__assets__current_location",
+        )
+
+        if self.request.user.is_superuser:
+            return consultation.first()
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+            return self.queryset.filter(
+                patient__facility__state=self.request.user.state
+            )
+        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            return self.queryset.filter(
+                patient__facility__district=self.request.user.district
+            )
+        allowed_facilities = get_accessible_facilities(self.request.user)
+        # A user should be able to see all the consultations of a patient if the patient is active in an accessible facility
+        applied_filters = Q(
+            Q(patient__is_active=True) & Q(patient__facility__id__in=allowed_facilities)
+        )
+        # A user should be able to see all consultations part of their home facility
+        applied_filters |= Q(facility=self.request.user.home_facility)
+        return consultation.filter(applied_filters).first()
+
     def get_queryset(self):
-        consultation_id = self.kwargs.get("consultation_external_id", None)
-        return self.queryset.filter(consultation__external_id=consultation_id)
+        return self.queryset.filter(
+            consultation=self.get_consultation(self.kwargs["consultation_id"])
+        )
 
     def perform_create(self, serializer):
-        consultation_id = self.kwargs.get("consultation_external_id", None)
-        consultation = PatientConsultation.objects.get(external_id=consultation_id)
+        consultation = self.get_consultation(self.kwargs["consultation_id"])
         serializer.save(consultation=consultation, created_by=self.request.user)

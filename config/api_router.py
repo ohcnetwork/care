@@ -292,8 +292,9 @@ consultation_nested_router.register(
     r"events", PatientConsultationEventViewSet, basename="consultation-events"
 )
 
-consultation_nested_router.register(r"consents", PatientConsentViewSet)
-consultation_nested_router.register(r"events", PatientConsultationEventViewSet)
+consultation_nested_router.register(
+    r"consents", PatientConsentViewSet, basename="consultation-consents"
+)
 
 router.register("event_types", EventTypeViewSet, basename="event-types")
 
