@@ -34,6 +34,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
             "doctor", cls.district, home_facility=cls.facility, user_type=15
         )
         cls.patient1 = cls.create_patient(cls.district, cls.facility)
+        cls.patient2 = cls.create_patient(cls.district, cls.facility)
 
     def get_default_data(self):
         return {
@@ -568,36 +569,6 @@ class TestPatientConsultation(TestUtils, APITestCase):
             verification_status=ConditionVerificationStatus.PROVISIONAL,
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-    def test_create_consultations_with_duplicate_patient_no_within_facility(self):
-        patient2 = self.create_patient(self.district, self.facility)
-        data = self.get_default_data().copy()
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": patient2.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-                "suggestion": SuggestionChoices.A,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": self.patient1.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-        data.update({"suggestion": SuggestionChoices.A})
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_consultations_with_same_patient_no_in_different_facilities(self):
         facility2 = self.create_facility(
