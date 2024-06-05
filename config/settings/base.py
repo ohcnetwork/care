@@ -9,6 +9,9 @@ from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
+from healthy_django.healthcheck.celery_queue_length import (
+    DjangoCeleryQueueLengthHealthCheck,
+)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -415,6 +418,15 @@ HEALTHY_DJANGO = [
         "Database", slug="main_database", connection_name="default"
     ),
     DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+    DjangoCeleryQueueLengthHealthCheck(
+        "Celery Queue Length",
+        slug="celery_queue_length",
+        broker=REDIS_URL,
+        queue_name="celery",
+        info_length=50,
+        warning_length=0,  # this skips the 300 status code
+        alert_length=200,
+    ),
 ]
 
 # Audit logs

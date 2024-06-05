@@ -103,7 +103,9 @@ if SENTRY_DSN := env("SENTRY_DSN", default=""):
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0),
         profiles_sample_rate=env.float("SENTRY_PROFILES_SAMPLE_RATE", default=0),
         integrations=[
-            LoggingIntegration(event_level=logging.WARNING),
+            LoggingIntegration(
+                event_level=env.int("SENTRY_EVENT_LEVEL", default=logging.ERROR)
+            ),
             DjangoIntegration(),
             CeleryIntegration(monitor_beat_tasks=True),
             RedisIntegration(),
