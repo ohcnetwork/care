@@ -347,10 +347,14 @@ class PatientConsentViewSet(
         return consultation.filter(applied_filters).first()
 
     def get_queryset(self):
-        return self.queryset.filter(
-            consultation=self.get_consultation(self.kwargs["consultation_id"])
-        )
+        consultation_id = self.kwargs.get("consultation_external_id", None)
+        if not consultation_id:
+            raise NotFound({"detail": "Consultation not found"})
+        return self.queryset.filter(consultation=self.get_consultation(consultation_id))
 
     def perform_create(self, serializer):
-        consultation = self.get_consultation(self.kwargs["consultation_id"])
+        consultation_id = self.kwargs.get("consultation_external_id", None)
+        if not consultation_id:
+            raise NotFound({"detail": "Consultation not found"})
+        consultation = self.get_consultation(consultation_id)
         serializer.save(consultation=consultation, created_by=self.request.user)
