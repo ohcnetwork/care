@@ -885,6 +885,15 @@ class PatientConsentSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        user = self.context["request"].user
+        if (
+            user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and self.context["consultation"].facility_id != user.home_facility_id
+        ):
+            raise ValidationError(
+                "Only Home Facility Staff can create consent for a Consultation"
+            )
+
         if attrs.get("type") == ConsentType.PATIENT_CODE_STATUS and not attrs.get(
             "patient_code_status"
         ):
@@ -908,14 +917,14 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             )
         return attrs
 
-    def clear_existing_records(self, consultation, type, self_id=None):
+    def clear_existing_records(self, consultation, type, user, self_id=None):
         consents = PatientConsent.objects.filter(
             consultation=consultation, type=type
         ).exclude(id=self_id)
 
         consents.update(
             archived=True,
-            archived_by=self.context["request"].user,
+            archived_by=user,
             archived_date=timezone.now(),
         )
         FileUpload.objects.filter(
@@ -926,21 +935,28 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             is_archived=True,
             archived_datetime=timezone.now(),
             archive_reason="Consent Archived",
-            archived_by=self.context["request"].user,
+            archived_by=user,
         )
 
     def create(self, validated_data):
         with transaction.atomic():
             self.clear_existing_records(
-                consultation=validated_data["consultation"], type=validated_data["type"]
+                consultation=self.context["consultation"],
+                type=validated_data["type"],
+                user=self.context["request"].user,
             )
-        return super().create(validated_data)
+            return super().create(
+                validated_data,
+                consultation=self.context["consultation"],
+                created_by=self.context["request"].user,
+            )
 
     def update(self, instance, validated_data):
         with transaction.atomic():
             self.clear_existing_records(
                 consultation=instance.consultation,
                 type=instance.type,
+                user=self.context["request"].user,
                 self_id=instance.id,
             )
-        return super().update(instance, validated_data)
+            return super().update(instance, validated_data)

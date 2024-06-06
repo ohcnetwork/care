@@ -323,7 +323,7 @@ class PatientConsentViewSet(
     def get_queryset(self):
         return self.queryset.filter(consultation=self.get_consultation_obj())
 
-    def perform_create(self, serializer):
-        serializer.save(
-            consultation=self.get_consultation_obj(), created_by=self.request.user
-        )
+    def get_serializer_context(self):
+        data = super().get_serializer_context()
+        data["consultation"] = self.get_consultation_obj()
+        return data
