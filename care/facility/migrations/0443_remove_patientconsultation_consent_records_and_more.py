@@ -79,7 +79,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0441_delete_patientteleconsultation"),
+        (
+            "facility",
+            "0442_remove_patientconsultation_unique_patient_no_within_facility",
+        ),
     ]
 
     operations = [
