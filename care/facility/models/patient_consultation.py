@@ -1,4 +1,3 @@
-from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
@@ -60,18 +59,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    deprecated_diagnosis = models.TextField(
-        default="", null=True, blank=True
-    )  # Deprecated
-    deprecated_icd11_provisional_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    deprecated_icd11_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    deprecated_icd11_principal_diagnosis = models.CharField(
-        max_length=100, default="", blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
     deprecated_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
@@ -155,12 +142,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
-    discharge_prescription = JSONField(
-        default=dict, null=True, blank=True
-    )  # Deprecated
-    discharge_prn_prescription = JSONField(
-        default=dict, null=True, blank=True
-    )  # Deprecated
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
@@ -244,10 +225,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     intubation_history = JSONField(default=list)
 
     # Deprecated Fields
-
-    prn_prescription = JSONField(default=dict)
-    discharge_advice = JSONField(default=dict)
-
     consent_records = JSONField(
         default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
     )
