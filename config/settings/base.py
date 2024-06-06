@@ -9,6 +9,9 @@ from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
+from healthy_django.healthcheck.celery_queue_length import (
+    DjangoCeleryQueueLengthHealthCheck,
+)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -415,6 +418,15 @@ HEALTHY_DJANGO = [
         "Database", slug="main_database", connection_name="default"
     ),
     DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+    DjangoCeleryQueueLengthHealthCheck(
+        "Celery Queue Length",
+        slug="celery_queue_length",
+        broker=REDIS_URL,
+        queue_name="celery",
+        info_length=50,
+        warning_length=0,  # this skips the 300 status code
+        alert_length=200,
+    ),
 ]
 
 # Audit logs
@@ -512,9 +524,9 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FILE_UPLOAD_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
+    ),
 )
 
 ALLOWED_MIME_TYPES = env.list(
@@ -566,9 +578,9 @@ FACILITY_S3_BUCKET_ENDPOINT = env(
 )
 FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FACILITY_S3_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
+    ),
 )
 
 # for setting the shifting mode
@@ -591,6 +603,8 @@ BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+APP_VERSION = env("APP_VERSION", default="unknown")
 
 # ABDM
 ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
