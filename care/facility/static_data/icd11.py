@@ -1,5 +1,5 @@
 import re
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 from django.core.paginator import Paginator
 from redis_om import Field, Migrator
@@ -19,7 +19,7 @@ class ICD11Object(TypedDict):
 class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
     label: str
-    chapter: str
+    chapter: Optional[str] = Field(index=True)
     has_code: int = Field(index=True)
 
     vec: str = Field(index=True, full_text_search=True)
@@ -28,17 +28,15 @@ class ICD11(BaseRedisModel):
         return {
             "id": self.id,
             "label": self.label,
-            "chapter": self.chapter,
+            "chapter": self.chapter or "",
         }
 
 
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
-    icd_objs = (
-        ICD11Diagnosis.objects.filter(meta_chapter_short__isnull=False)
-        .order_by("id")
-        .values_list("id", "label", "meta_chapter_short")
+    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
+        "id", "label", "meta_chapter_short"
     )
     paginator = Paginator(icd_objs, 5000)
     for page_number in paginator.page_range:
