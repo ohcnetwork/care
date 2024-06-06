@@ -1,6 +1,6 @@
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -34,6 +34,7 @@ from care.facility.tasks.discharge_summary import (
 from care.facility.utils.reports import discharge_summary
 from care.users.models import Skill, User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.queryset.consultation import get_consultation_queryset
 
 
 class PatientConsultationFilter(filters.FilterSet):
@@ -312,49 +313,17 @@ class PatientConsentViewSet(
 
     filterset_fields = ("archived",)
 
-    def get_consultation(self, consultation_id):
-        consultation = PatientConsultation.objects.filter(external_id=consultation_id)
-
-        consultation.prefetch_related(
-            "assigned_to",
-            Prefetch(
-                "assigned_to__skills",
-                queryset=Skill.objects.filter(userskill__deleted=False),
-            ),
-            "current_bed",
-            "current_bed__bed",
-            "current_bed__assets",
-            "current_bed__assets__current_location",
-        )
-
-        if self.request.user.is_superuser:
-            return consultation.first()
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            return self.queryset.filter(
-                patient__facility__state=self.request.user.state
+    def get_consultation_obj(self):
+        return get_object_or_404(
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return self.queryset.filter(
-                patient__facility__district=self.request.user.district
-            )
-        allowed_facilities = get_accessible_facilities(self.request.user)
-        # A user should be able to see all the consultations of a patient if the patient is active in an accessible facility
-        applied_filters = Q(
-            Q(patient__is_active=True) & Q(patient__facility__id__in=allowed_facilities)
         )
-        # A user should be able to see all consultations part of their home facility
-        applied_filters |= Q(facility=self.request.user.home_facility)
-        return consultation.filter(applied_filters).first()
 
     def get_queryset(self):
-        consultation_id = self.kwargs.get("consultation_external_id", None)
-        if not consultation_id:
-            raise NotFound({"detail": "Consultation not found"})
-        return self.queryset.filter(consultation=self.get_consultation(consultation_id))
+        return self.queryset.filter(consultation=self.get_consultation_obj())
 
     def perform_create(self, serializer):
-        consultation_id = self.kwargs.get("consultation_external_id", None)
-        if not consultation_id:
-            raise NotFound({"detail": "Consultation not found"})
-        consultation = self.get_consultation(consultation_id)
-        serializer.save(consultation=consultation, created_by=self.request.user)
+        serializer.save(
+            consultation=self.get_consultation_obj(), created_by=self.request.user
+        )
