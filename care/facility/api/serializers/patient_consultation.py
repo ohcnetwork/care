@@ -902,8 +902,10 @@ class PatientConsentSerializer(serializers.ModelSerializer):
                 "Only Home Facility Staff can create consent for a Consultation"
             )
 
-        if attrs.get("type") == ConsentType.PATIENT_CODE_STATUS and not attrs.get(
-            "patient_code_status"
+        if (
+            attrs.get("type", None)
+            and attrs.get("type") == ConsentType.PATIENT_CODE_STATUS
+            and not attrs.get("patient_code_status")
         ):
             raise ValidationError(
                 {
@@ -913,8 +915,10 @@ class PatientConsentSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if attrs.get("type") != ConsentType.PATIENT_CODE_STATUS and attrs.get(
-            "patient_code_status"
+        if (
+            attrs.get("type", None)
+            and attrs["type"] != ConsentType.PATIENT_CODE_STATUS
+            and attrs.get("patient_code_status")
         ):
             raise ValidationError(
                 {
