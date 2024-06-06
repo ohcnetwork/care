@@ -37,6 +37,7 @@ class Migration(migrations.Migration):
                     patient_code_status=consent.get("patient_code_status", None),
                     created_by=consultation.created_by,
                     archived=consent.get("deleted", False),
+                    is_migrated=True,
                 )
 
                 old_id = consent.get("id")
@@ -161,6 +162,13 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="created_consents",
                         to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "is_migrated",
+                    models.BooleanField(
+                        default=False,
+                        help_text="This field is to throw caution to data that was previously ported over",
                     ),
                 ),
             ],

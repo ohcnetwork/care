@@ -403,6 +403,10 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_consents"
     )
+    is_migrated = models.BooleanField(
+        default=False,
+        help_text="This field is to throw caution to data that was previously ported over",
+    )
 
     class Meta:
         constraints = [
