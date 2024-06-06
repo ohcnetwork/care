@@ -8,24 +8,13 @@ from django.db import migrations, models
 from django.utils import timezone
 
 import care.facility.models.mixins.permissions.patient
-from care.facility.models.file_upload import FileUpload as FileUploadModel
-from care.facility.models.patient_consultation import (
-    PatientConsent as PatientConsentModel,
-)
-from care.facility.models.patient_consultation import (
-    PatientConsultation as PatientConsultationModel,
-)
 
 
 class Migration(migrations.Migration):
     def migrate_consents(apps, schema_editor):
-        PatientConsultation: PatientConsultationModel = apps.get_model(
-            "facility", "PatientConsultation"
-        )
-        PatientConsent: PatientConsentModel = apps.get_model(
-            "facility", "PatientConsent"
-        )
-        FileUpload: FileUploadModel = apps.get_model("facility", "FileUpload")
+        PatientConsultation = apps.get_model("facility", "PatientConsultation")
+        PatientConsent = apps.get_model("facility", "PatientConsent")
+        FileUpload = apps.get_model("facility", "FileUpload")
         consultations = PatientConsultation.objects.filter(
             consent_records__isnull=False
         )
@@ -44,7 +33,7 @@ class Migration(migrations.Migration):
 
                 files = FileUpload.objects.filter(
                     associating_id=old_id,
-                    file_type=FileUploadModel.FileType.CONSENT_RECORD,
+                    file_type=7,
                 )
 
                 kwargs = {
@@ -63,9 +52,7 @@ class Migration(migrations.Migration):
                 files.update(**kwargs)
 
     def reverse_migrate(apps, schema_editor):
-        PatientConsent: PatientConsentModel = apps.get_model(
-            "facility", "PatientConsent"
-        )
+        PatientConsent = apps.get_model("facility", "PatientConsent")
         for consent in PatientConsent.objects.all():
             consultation = consent.consultation
             consultation.consent_records.append(
