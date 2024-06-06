@@ -887,7 +887,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         user = self.context["request"].user
         if (
-            user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
             and self.context["consultation"].facility_id != user.home_facility_id
         ):
             raise ValidationError(
