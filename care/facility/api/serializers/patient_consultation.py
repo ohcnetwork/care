@@ -55,6 +55,7 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import (
     ConsentType,
+    PatientCodeStatusType,
     PatientConsent,
     PatientConsultation,
 )
@@ -883,6 +884,13 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "archived_by",
             "archived_date",
         )
+
+    def validate_patient_code_status(self, value):
+        if value == PatientCodeStatusType.NOT_SPECIFIED:
+            raise ValidationError(
+                "Specify a correct Patient Code Status for the Consent"
+            )
+        return value
 
     def validate(self, attrs):
         user = self.context["request"].user
