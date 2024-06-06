@@ -56,7 +56,10 @@ from care.facility.api.viewsets.patient import (
     PatientSearchViewSet,
     PatientViewSet,
 )
-from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.api.viewsets.patient_consultation import (
+    PatientConsentViewSet,
+    PatientConsultationViewSet,
+)
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,
@@ -232,6 +235,7 @@ router.register("bed", BedViewSet, basename="bed")
 router.register("assetbed", AssetBedViewSet, basename="asset-bed")
 router.register("consultationbed", ConsultationBedViewSet, basename="consultation-bed")
 
+router.register("patient/search", PatientSearchViewSet, basename="patient-search")
 router.register("patient", PatientViewSet, basename="patient")
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 patient_nested_router.register(
@@ -250,8 +254,6 @@ patient_notes_nested_router.register(
     r"edits", PatientNotesEditViewSet, basename="patient-notes-edits"
 )
 patient_nested_router.register(r"abha", AbhaViewSet)
-
-router.register("patient/search", PatientSearchViewSet, basename="patient-search")
 
 router.register(
     "external_result", PatientExternalTestViewSet, basename="patient-external-result"
@@ -288,6 +290,10 @@ consultation_nested_router.register(
 )
 consultation_nested_router.register(
     r"events", PatientConsultationEventViewSet, basename="consultation-events"
+)
+
+consultation_nested_router.register(
+    r"consents", PatientConsentViewSet, basename="consultation-consents"
 )
 
 router.register("event_types", EventTypeViewSet, basename="event-types")
