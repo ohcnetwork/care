@@ -29,7 +29,8 @@ class PatientInvestigation(BaseModel):
     choices = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.name + " in " + self.unit + " as " + self.investigation_type
+        unit_part = f" in {self.unit}" if self.unit else ""
+        return f"{self.name}{unit_part} as {self.investigation_type}"
 
 
 class InvestigationSession(BaseModel):

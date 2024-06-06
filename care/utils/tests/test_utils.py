@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
-from pytz import unicode
 from rest_framework import status
 
 from care.facility.models import (
@@ -565,13 +564,7 @@ class TestUtils:
                 value, (type(None), EverythingEquals)
             ):
                 return_value = value
-                if isinstance(
-                    value,
-                    (
-                        str,
-                        unicode,
-                    ),
-                ):
+                if isinstance(value, str):
                     return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
                 return (
                     return_value.astimezone(tz=UTC)
