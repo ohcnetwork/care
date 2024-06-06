@@ -922,10 +922,11 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             consultation=consultation, type=type
         ).exclude(id=self_id)
 
+        archived_date = timezone.now()
         consents.update(
             archived=True,
             archived_by=user,
-            archived_date=timezone.now(),
+            archived_date=archived_date,
         )
         FileUpload.objects.filter(
             associating_id__in=list(consents.values_list("external_id", flat=True)),
@@ -933,7 +934,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             is_archived=False,
         ).update(
             is_archived=True,
-            archived_datetime=timezone.now(),
+            archived_datetime=archived_date,
             archive_reason="Consent Archived",
             archived_by=user,
         )
@@ -945,11 +946,9 @@ class PatientConsentSerializer(serializers.ModelSerializer):
                 type=validated_data["type"],
                 user=self.context["request"].user,
             )
-            return super().create(
-                validated_data,
-                consultation=self.context["consultation"],
-                created_by=self.context["request"].user,
-            )
+            validated_data["consultation"] = self.context["consultation"]
+            validated_data["created_by"] = self.context["request"].user
+            return super().create(validated_data)
 
     def update(self, instance, validated_data):
         with transaction.atomic():
