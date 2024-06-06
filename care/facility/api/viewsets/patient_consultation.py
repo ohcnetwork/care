@@ -1,6 +1,6 @@
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -14,6 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.file_upload import FileUploadRetrieveSerializer
 from care.facility.api.serializers.patient_consultation import (
     EmailDischargeSummarySerializer,
+    PatientConsentSerializer,
     PatientConsultationDischargeSerializer,
     PatientConsultationIDSerializer,
     PatientConsultationSerializer,
@@ -22,7 +23,10 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.asset import IsAssetUser
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.facility.tasks.discharge_summary import (
     email_discharge_summary_task,
     generate_discharge_summary_task,
@@ -30,6 +34,7 @@ from care.facility.tasks.discharge_summary import (
 from care.facility.utils.reports import discharge_summary
 from care.users.models import Skill, User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.queryset.consultation import get_consultation_queryset
 
 
 class PatientConsultationFilter(filters.FilterSet):
@@ -287,3 +292,38 @@ def dev_preview_discharge_summary(request, consultation_id):
         raise NotFound({"detail": "Consultation not found"})
     data = discharge_summary.get_discharge_summary_data(consultation)
     return render(request, "reports/patient_discharge_summary_pdf.html", data)
+
+
+class PatientConsentViewSet(
+    AssetUserAccessMixin,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
+):
+    lookup_field = "external_id"
+    serializer_class = PatientConsentSerializer
+    permission_classes = (
+        IsAuthenticated,
+        DRYPermissions,
+    )
+    queryset = PatientConsent.objects.all().select_related("consultation")
+    filter_backends = (filters.DjangoFilterBackend,)
+
+    filterset_fields = ("archived",)
+
+    def get_consultation_obj(self):
+        return get_object_or_404(
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
+
+    def get_queryset(self):
+        return self.queryset.filter(consultation=self.get_consultation_obj())
+
+    def get_serializer_context(self):
+        data = super().get_serializer_context()
+        data["consultation"] = self.get_consultation_obj()
+        return data
