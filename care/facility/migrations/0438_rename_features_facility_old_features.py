@@ -39,9 +39,9 @@ class Migration(migrations.Migration):
                     choices=[
                         (1, "CT Scan Facility"),
                         (2, "Maternity Care"),
-                        (3, "X-Ray facility"),
-                        (4, "Neonatal care"),
-                        (5, "Operation theater"),
+                        (3, "X-Ray Facility"),
+                        (4, "Neonatal Care"),
+                        (5, "Operation Theater"),
                         (6, "Blood Bank"),
                     ]
                 ),

@@ -39,6 +39,7 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+# to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
     (2, "Maternity Care"),
@@ -47,6 +48,16 @@ FEATURE_CHOICES = [
     (5, "Operation theater"),
     (6, "Blood Bank"),
 ]
+
+
+class FacilityFeature(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, "CT Scan Facility"
+    MATERNITY_CARE = 2, "Maternity Care"
+    X_RAY_FACILITY = 3, "X-Ray Facility"
+    NEONATAL_CARE = 4, "Neonatal Care"
+    OPERATION_THEATER = 5, "Operation Theater"
+    BLOOD_BANK = 6, "Blood Bank"
+
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
@@ -163,7 +174,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
     features = ArrayField(
-        models.SmallIntegerField(choices=FEATURE_CHOICES),
+        models.SmallIntegerField(choices=FacilityFeature.choices),
         blank=True,
         null=True,
     )
@@ -253,7 +264,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     def get_features_display(self):
         if not self.features:
             return []
-        return [REVERSE_FEATURE_CHOICES[f] for f in self.features]
+        return [FacilityFeature(f).label for f in self.features]
 
     CSV_MAPPING = {
         "name": "Facility Name",
