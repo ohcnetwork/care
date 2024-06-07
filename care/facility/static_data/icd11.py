@@ -3,7 +3,6 @@ from typing import TypedDict
 
 from django.core.paginator import Paginator
 from redis_om import Field, Migrator
-from redis_om.model.model import NotFoundError as RedisModelNotFoundError
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 from care.utils.static_data.models.base import BaseRedisModel
@@ -36,8 +35,10 @@ class ICD11(BaseRedisModel):
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
-    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
-        "id", "label", "meta_chapter_short"
+    icd_objs = (
+        ICD11Diagnosis.objects.filter(meta_chapter_short__isnull=False)
+        .order_by("id")
+        .values_list("id", "label", "meta_chapter_short")
     )
     paginator = Paginator(icd_objs, 5000)
     for page_number in paginator.page_range:
@@ -45,7 +46,7 @@ def load_icd11_diagnosis():
             ICD11(
                 id=diagnosis[0],
                 label=diagnosis[1],
-                chapter=diagnosis[2] or "",
+                chapter=diagnosis[2],
                 has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
                 vec=diagnosis[1].replace(".", "\\.", 1),
             ).save()
@@ -59,7 +60,7 @@ def get_icd11_diagnosis_object_by_id(
     try:
         diagnosis = ICD11.get(diagnosis_id)
         return diagnosis.get_representation() if as_dict else diagnosis
-    except RedisModelNotFoundError:
+    except Exception:
         return None
 
 

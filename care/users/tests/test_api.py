@@ -176,7 +176,7 @@ class TestUser(TestUtils, APITestCase):
         username = self.data_2["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.json()["detail"], "Not found.")
+        self.assertEqual(response.json()["detail"], "User not found")
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""
@@ -190,7 +190,7 @@ class TestUser(TestUtils, APITestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.json()["detail"], "Not found.")
+        self.assertEqual(response.json()["detail"], "User not found")
 
     def test_user_cannot_delete_others(self):
         """Test a user can't delete others"""
