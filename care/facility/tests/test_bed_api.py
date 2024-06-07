@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import Bed
+from care.facility.models import AssetBed, Bed
 from care.users.models import User
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -162,3 +163,29 @@ class BedViewSetTestCase(TestUtils, APITestCase):
         response = self.client.delete(f"/api/v1/bed/{self.bed1.external_id}/")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Bed.objects.filter(id=self.bed1.id).exists())
+
+    def test_list_non_occupied_beds(self):
+        linked_bed = Bed.objects.create(
+            name="linked_bed",
+            location=self.asset_location,
+            facility=self.facility,
+        )
+        asset = self.create_asset(
+            self.asset_location, asset_class=AssetClasses.HL7MONITOR.name
+        )
+        AssetBed.objects.create(bed=linked_bed, asset=asset)
+
+        # 3 beds 1 linked with HL7MONITOR and 2 created in setup [with same facility]
+
+        response = self.client.get("/api/v1/bed/")
+
+        # Assert list returns 3 beds
+        self.assertEqual(response.json()["count"], 3)
+
+        response_with_not_occupied_bed = self.client.get(
+            "/api/v1/bed/",
+            {"not_occupied_by_asset_type": "HL7MONITOR"},
+        )
+
+        # Assert count of unoccupied beds is 3
+        self.assertEqual(response_with_not_occupied_bed.json()["count"], 3)
