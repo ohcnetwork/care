@@ -34,14 +34,6 @@ class Command(BaseCommand):
                     "name": "CLINICAL",
                     "children": (
                         {
-                            "name": "SYMPTOMS",
-                            "fields": (
-                                "symptoms",
-                                "other_symptoms",
-                                "symptoms_onset_date",
-                            ),
-                        },
-                        {
                             "name": "DEATH",
                             "fields": ("death_datetime", "death_confirmed_doctor"),
                         },
@@ -62,9 +54,14 @@ class Command(BaseCommand):
                             "fields": ("course_in_facility",),
                         },
                         {
-                            "name": "TREATING_PHYSICIAN",
-                            "fields": ("treating_physician",),
+                            "name": "INVESTIGATION",
+                            "fields": ("investigation",),
                         },
+                        # disabling until we have a better way to serialize user objects
+                        # {
+                        #     "name": "TREATING_PHYSICIAN",
+                        #     "fields": ("treating_physician",),
+                        # },
                     ),
                 },
                 {
@@ -103,10 +100,6 @@ class Command(BaseCommand):
                         "review_after",
                     ),
                     "children": (
-                        {
-                            "name": "ROUND_SYMPTOMS",  # todo resolve clash with consultation symptoms
-                            "fields": ("additional_symptoms",),
-                        },
                         {
                             "name": "PHYSICAL_EXAMINATION",
                             "fields": ("physical_examination_info",),
@@ -234,12 +227,26 @@ class Command(BaseCommand):
             "model": "ConsultationDiagnosis",
             "fields": ("diagnosis", "verification_status", "is_principal"),
         },
+        {
+            "name": "SYMPTOMS",
+            "model": "EncounterSymptom",
+            "fields": (
+                "symptom",
+                "other_symptom",
+                "onset_date",
+                "cure_date",
+                "clinical_impression_status",
+            ),
+        },
     )
 
     inactive_event_types: Tuple[str, ...] = (
         "RESPIRATORY",
         "INTAKE_OUTPUT",
         "VENTILATOR_MODES",
+        "SYMPTOMS",
+        "ROUND_SYMPTOMS",
+        "TREATING_PHYSICIAN",
     )
 
     def create_objects(

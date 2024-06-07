@@ -23,15 +23,6 @@ class HealthInformationViewSet(GenericViewSet):
     permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, pk):
-        if ratelimit(request, "health_information__retrieve", [pk]):
-            raise CaptchaRequiredException(
-                detail={
-                    "status": 429,
-                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
-                },
-                code=status.HTTP_429_TOO_MANY_REQUESTS,
-            )
-
         files = FileUpload.objects.filter(
             Q(internal_name=f"{pk}.json") | Q(associating_id=pk),
             file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
