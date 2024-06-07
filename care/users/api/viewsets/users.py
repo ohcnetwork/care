@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.db.models import F, Q, Subquery
+from django.http import Http404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -156,6 +157,12 @@ class UserViewSet(
         if self.request.method == "POST" and self.request.path.endswith("profile_picture"):
             return [MultiPartParser()]
         return super().get_parsers()
+
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Http404:
+            raise Http404("User not found")
 
     def get_serializer_class(self):
         if self.action == "list":
