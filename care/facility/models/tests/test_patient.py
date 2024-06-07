@@ -83,7 +83,7 @@ class PatientRegistrationTest(TestUtils, APITestCase):
                 "disease": "Cancer",
                 "details": "",
                 "type": "not_cancer",
-            }
+            },
         }
         self.client.force_authenticate(user=dist_admin)
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
@@ -107,7 +107,7 @@ class PatientRegistrationTest(TestUtils, APITestCase):
                 "disease": "Cancer",
                 "details": "",
                 "type": "Breast",
-            }
+            },
         }
         self.client.force_authenticate(user=dist_admin)
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
@@ -131,7 +131,7 @@ class PatientRegistrationTest(TestUtils, APITestCase):
                 "disease": "TB",
                 "details": "",
                 "status": "not_tb",
-            }
+            },
         }
         self.client.force_authenticate(user=dist_admin)
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
@@ -155,7 +155,7 @@ class PatientRegistrationTest(TestUtils, APITestCase):
                 "disease": "TB",
                 "details": "",
                 "duration": "not_numeric",
-            }
+            },
         }
         self.client.force_authenticate(user=dist_admin)
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
@@ -179,7 +179,7 @@ class PatientRegistrationTest(TestUtils, APITestCase):
                 "disease": "TB",
                 "details": "",
                 "duration": -1,
-            }
+            },
         }
         self.client.force_authenticate(user=dist_admin)
         response = self.client.post("/api/v1/patient/", sample_data, format="json")

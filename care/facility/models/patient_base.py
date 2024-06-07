@@ -62,7 +62,7 @@ CANCER_TYPE = {
     "Brain": "11",
     "Liver": "12",
     "Thyroid": "13",
-    "Others": "14"
+    "Others": "14",
 }
 
 DISEASE_CHOICES_MAP = {
