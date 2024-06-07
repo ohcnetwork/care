@@ -19,7 +19,7 @@ class ICD11Object(TypedDict):
 class ICD11(BaseRedisModel):
     id: int = Field(primary_key=True)
     label: str
-    chapter: str
+    chapter: str = Field(index=True)
     has_code: int = Field(index=True)
 
     vec: str = Field(index=True, full_text_search=True)
@@ -28,17 +28,15 @@ class ICD11(BaseRedisModel):
         return {
             "id": self.id,
             "label": self.label,
-            "chapter": self.chapter,
+            "chapter": self.chapter if self.chapter != "null" else "",
         }
 
 
 def load_icd11_diagnosis():
     print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
 
-    icd_objs = (
-        ICD11Diagnosis.objects.filter(meta_chapter_short__isnull=False)
-        .order_by("id")
-        .values_list("id", "label", "meta_chapter_short")
+    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
+        "id", "label", "meta_chapter_short"
     )
     paginator = Paginator(icd_objs, 5000)
     for page_number in paginator.page_range:
@@ -46,7 +44,7 @@ def load_icd11_diagnosis():
             ICD11(
                 id=diagnosis[0],
                 label=diagnosis[1],
-                chapter=diagnosis[2],
+                chapter=diagnosis[2] or "null",
                 has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
                 vec=diagnosis[1].replace(".", "\\.", 1),
             ).save()
