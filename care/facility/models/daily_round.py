@@ -25,7 +25,7 @@ from care.facility.models.json_schema.daily_round import (
     PAIN_SCALE_ENHANCED,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -34,6 +34,7 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 class DailyRound(PatientBaseModel):
     class RoundsType(enum.Enum):
         NORMAL = 0
+        DOCTORS_LOG = 50
         VENTILATOR = 100
         ICU = 200
         AUTOMATED = 300
@@ -139,7 +140,6 @@ class DailyRound(PatientBaseModel):
     spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
     )
-    temperature_measured_at = models.DateTimeField(null=True, blank=True)
     physical_examination_info = models.TextField(null=True, blank=True)
     additional_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
@@ -158,9 +158,6 @@ class DailyRound(PatientBaseModel):
     )  # Deprecated
     patient_category = models.CharField(
         choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
-    )
-    current_health = models.IntegerField(
-        default=0, choices=CURRENT_HEALTH_CHOICES, blank=True
     )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on

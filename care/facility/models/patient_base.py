@@ -12,14 +12,6 @@ def reverse_choices(choices):
     return output
 
 
-CURRENT_HEALTH_CHOICES = [
-    (0, "NO DATA"),
-    (1, "REQUIRES VENTILATOR"),
-    (2, "WORSE"),
-    (3, "STATUS QUO"),
-    (4, "BETTER"),
-]
-
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
     (2, "FEVER"),
