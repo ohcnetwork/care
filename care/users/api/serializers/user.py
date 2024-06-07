@@ -451,7 +451,7 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
         user = self.instance
         image = self.validated_data["profile_picture_url"]
         image_extension = image.name.split(".")[-1]
-        config, bucket_name = get_client_config(BucketType.USER, True)
+        config, bucket_name = get_client_config(BucketType.USER)
         s3 = boto3.client("s3", **config)
         image_location = f"{user.external_id}/profile.{image_extension}"
         s3.put_object(
