@@ -1,3 +1,4 @@
+import boto3
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.utils.timezone import now
@@ -15,6 +16,7 @@ from care.users.models import GENDER_CHOICES, User
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from care.utils.csp.config import BucketType, get_client_config
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -279,6 +281,7 @@ class UserSerializer(SignUpSerializer):
         source="home_facility",
         read_only=True,
     )
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
@@ -316,6 +319,7 @@ class UserSerializer(SignUpSerializer):
             "pf_endpoint",
             "pf_p256dh",
             "pf_auth",
+            "read_profile_picture_url",
         )
         read_only_fields = (
             "is_superuser",
@@ -409,6 +413,7 @@ class UserListSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = User
@@ -431,4 +436,29 @@ class UserListSerializer(serializers.ModelSerializer):
             "home_facility_object",
             "home_facility",
             "video_connect_link",
+            "read_profile_picture_url",
         )
+
+class UserImageUploadSerializer(serializers.ModelSerializer):
+    profile_picture_url = serializers.ImageField(required=True, write_only=True)
+    read_profile_picture_url = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("profile_picture_url", "read_profile_picture_url")
+
+    def save(self, **kwargs):
+        user = self.instance
+        image = self.validated_data["profile_picture_url"]
+        image_extension = image.name.split(".")[-1]
+        config, bucket_name = get_client_config(BucketType.USER, True)
+        s3 = boto3.client("s3", **config)
+        image_location = f"{user.external_id}/profile.{image_extension}"
+        s3.put_object(
+            Bucket=bucket_name,
+            Key=image_location,
+            Body=image.file,
+        )
+        user.profile_picture_url = image_location
+        user.save()
+        return user

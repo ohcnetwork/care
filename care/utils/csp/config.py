@@ -24,6 +24,7 @@ class CSProvider(enum.Enum):
 class BucketType(enum.Enum):
     PATIENT = "PATIENT"
     FACILITY = "FACILITY"
+    USER = "USER"
 
 
 def get_facility_bucket_config(external) -> tuple[ClientConfig, BucketName]:
@@ -47,10 +48,21 @@ def get_patient_bucket_config(external) -> tuple[ClientConfig, BucketName]:
         else settings.FILE_UPLOAD_BUCKET_ENDPOINT,
     }, settings.FILE_UPLOAD_BUCKET
 
+def get_user_bucket_config(external) -> tuple[ClientConfig, BucketName]:
+    return {
+        "region_name": settings.USER_S3_REGION,
+        "aws_access_key_id": settings.USER_S3_KEY,
+        "aws_secret_access_key": settings.USER_S3_SECRET,
+        "endpoint_url": settings.USER_S3_BUCKET_EXTERNAL_ENDPOINT
+        if external
+        else settings.USER_S3_BUCKET_ENDPOINT,
+    }, settings.USER_S3_BUCKET
 
 def get_client_config(bucket_type: BucketType, external=False):
     if bucket_type == BucketType.FACILITY:
         return get_facility_bucket_config(external=external)
     elif bucket_type == BucketType.PATIENT:
         return get_patient_bucket_config(external=external)
+    elif bucket_type == BucketType.USER:
+        return get_user_bucket_config(external=external)
     raise ValueError("Invalid Bucket Type")

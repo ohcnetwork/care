@@ -247,6 +247,9 @@ class User(AbstractUser):
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     date_of_birth = models.DateField(null=True, blank=True)
+    profile_picture_url = models.CharField(
+        blank=True, null=True, default=None, max_length=500
+    )
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -310,6 +313,11 @@ class User(AbstractUser):
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
+
+    def read_profile_picture_url(self):
+        if self.profile_picture_url:
+            return f"{settings.USER_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.USER_S3_BUCKET}/{self.profile_picture_url}"
+        return None
 
     @staticmethod
     def has_read_permission(request):

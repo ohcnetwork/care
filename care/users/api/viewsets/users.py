@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.parsers import MultiPartParser
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.facility import Facility, FacilityUser
@@ -19,6 +20,7 @@ from care.users.api.serializers.user import (
     UserCreateSerializer,
     UserListSerializer,
     UserSerializer,
+    UserImageUploadSerializer,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -150,6 +152,11 @@ class UserViewSet(
             )
         return self.queryset.filter(query)
 
+    def get_parsers(self):
+        if self.request.method == "POST" and self.request.path.endswith("profile_picture"):
+            return [MultiPartParser()]
+        return super().get_parsers()
+
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
@@ -157,6 +164,8 @@ class UserViewSet(
             return UserCreateSerializer
         # elif self.action == "create":
         #     return SignUpSerializer
+        elif self.action == "profile_picture":
+            return UserImageUploadSerializer
         else:
             return UserSerializer
 
@@ -359,3 +368,20 @@ class UserViewSet(
         if User.check_username_exists(username):
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(tags=["users"])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def profile_picture(self, request, username):
+        user = self.get_object()
+        serializer = UserImageUploadSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(tags=["users"])
+    @profile_picture.mapping.delete
+    def profile_picture_delete(self, *args, **kwargs):
+        user = self.get_object()
+        user.profile_picture_url = None
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

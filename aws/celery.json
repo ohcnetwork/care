@@ -77,6 +77,14 @@
           "value": "https://egov-s3-patient-data-10bedicu.s3.amazonaws.com"
         },
         {
+          "name": "USER_S3_BUCKET",
+          "value": "egov-s3-user-10bedicu"
+        },
+        {
+          "name": "USER_S3_BUCKET_ENDPOINT",
+          "value": "https://egov-s3-user-10bedicu.s3.amazonaws.com"
+        },
+        {
           "name": "MAINTENANCE_MODE",
           "value": "0"
         },
@@ -356,6 +364,14 @@
           "value": "https://egov-s3-patient-data-10bedicu.s3.amazonaws.com"
         },
         {
+          "name": "USER_S3_BUCKET",
+          "value": "egov-s3-user-10bedicu"
+        },
+        {
+          "name": "USER_S3_BUCKET_ENDPOINT",
+          "value": "https://egov-s3-user-10bedicu.s3.amazonaws.com"
+        },
+        {
           "name": "MAINTENANCE_MODE",
           "value": "0"
         },
@@ -492,6 +508,14 @@
         {
           "valueFrom": "/care/backend/FACILITY_S3_SECRET",
           "name": "FACILITY_S3_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/USER_S3_KEY",
+          "name": "USER_S3_KEY"
+        },
+        {
+          "valueFrom": "/care/backend/USER_S3_SECRET",
+          "name": "USER_S3_SECRET"
         },
         {
           "valueFrom": "/care/backend/VAPID_PUBLIC_KEY",
