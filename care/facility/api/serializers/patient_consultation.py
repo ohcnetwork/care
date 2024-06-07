@@ -55,6 +55,7 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import (
     ConsentType,
+    PatientCodeStatusType,
     PatientConsent,
     PatientConsultation,
 )
@@ -884,6 +885,13 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "archived_date",
         )
 
+    def validate_patient_code_status(self, value):
+        if value == PatientCodeStatusType.NOT_SPECIFIED:
+            raise ValidationError(
+                "Specify a correct Patient Code Status for the Consent"
+            )
+        return value
+
     def validate(self, attrs):
         user = self.context["request"].user
         if (
@@ -894,8 +902,10 @@ class PatientConsentSerializer(serializers.ModelSerializer):
                 "Only Home Facility Staff can create consent for a Consultation"
             )
 
-        if attrs.get("type") == ConsentType.PATIENT_CODE_STATUS and not attrs.get(
-            "patient_code_status"
+        if (
+            attrs.get("type", None)
+            and attrs.get("type") == ConsentType.PATIENT_CODE_STATUS
+            and not attrs.get("patient_code_status")
         ):
             raise ValidationError(
                 {
@@ -905,8 +915,10 @@ class PatientConsentSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if attrs.get("type") != ConsentType.PATIENT_CODE_STATUS and attrs.get(
-            "patient_code_status"
+        if (
+            attrs.get("type", None)
+            and attrs["type"] != ConsentType.PATIENT_CODE_STATUS
+            and attrs.get("patient_code_status")
         ):
             raise ValidationError(
                 {
