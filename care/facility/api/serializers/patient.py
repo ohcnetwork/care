@@ -29,6 +29,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.bed import ConsultationBed
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
@@ -37,7 +38,10 @@ from care.facility.models.patient_base import (
     DiseaseStatusEnum,
     NewDischargeReasonEnum,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.hcx.models.claim import Claim
 from care.hcx.models.policy import Policy
@@ -75,6 +79,7 @@ class PatientListSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
 
     last_consultation = PatientConsultationSerializer(read_only=True)
+    has_consents = serializers.SerializerMethodField(read_only=True)
 
     blood_group = ChoiceField(choices=BLOOD_GROUP_CHOICES, required=True)
     disease_status = ChoiceField(
@@ -100,6 +105,16 @@ class PatientListSerializer(serializers.ModelSerializer):
     approved_claim_amount = serializers.SerializerMethodField(
         "get_approved_claim_amount", read_only=True
     )
+
+    def get_has_consents(self, patient: PatientRegistration):
+        consents = PatientConsent.objects.filter(
+            consultation=patient.last_consultation, archived=False
+        ).values_list("external_id", flat=True)
+        return FileUpload.objects.filter(
+            associating_id__in=list(consents),
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            is_archived=False,
+        ).exists()
 
     def get_approved_claim_amount(self, patient):
         if patient.last_consultation is not None:

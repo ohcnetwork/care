@@ -68,6 +68,7 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     INACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
@@ -78,7 +79,10 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -277,6 +281,53 @@ class PatientFilterSet(filters.FilterSet):
             filter_q &= Q(
                 last_consultation__diagnoses__verification_status=verification_status
             )
+        return queryset.filter(filter_q)
+
+    last_consultation__consent_types = MultiSelectFilter(
+        method="filter_by_has_consents"
+    )
+
+    def filter_by_has_consents(self, queryset, name, value: str):
+
+        if not value:
+            return queryset
+
+        values = value.split(",")
+
+        filter_q = Q()
+
+        consultation_consent_files = (
+            FileUpload.objects.filter(
+                file_type=FileUpload.FileType.CONSENT_RECORD,
+                is_archived=False,
+            )
+            .order_by("associating_id")
+            .distinct("associating_id")
+            .values_list("associating_id", flat=True)
+        )
+
+        consultations = PatientConsent.objects.filter(
+            external_id__in=[x for x in list(consultation_consent_files)],
+            archived=False,
+        )
+
+        if "None" in values:
+            filter_q |= ~Q(
+                last_consultation__id__in=list(
+                    consultations.values_list("consultation_id", flat=True)
+                )
+            )
+            values.remove("None")
+
+        if values:
+            filter_q |= Q(
+                last_consultation__id__in=list(
+                    consultations.filter(type__in=values).values_list(
+                        "consultation_id", flat=True
+                    )
+                )
+            )
+
         return queryset.filter(filter_q)
 
 
