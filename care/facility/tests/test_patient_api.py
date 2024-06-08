@@ -330,28 +330,42 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = response.data["results"][0]
-        patient_2_response = response.data["results"][1]
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
         self.assertEqual(patient_1_response["has_consents"], True)
         self.assertEqual(patient_2_response["has_consents"], False)
 
     def test_has_consents_archived(self):
         self.client.force_authenticate(user=self.user)
-        self.create_patient_consent(
-            self.consultation_2, created_by=self.user, is_archived=True
-        )
+        consent = self.create_patient_consent(self.consultation_2, created_by=self.user)
         file = FileUpload.objects.create(
             internal_name="test.pdf",
             file_type=FileUpload.FileType.CONSENT_RECORD,
             name="Test File",
-            associating_id=self.consultation_2.external_id,
+            associating_id=consent.external_id,
             file_category=FileUpload.FileCategory.UNSPECIFIED,
         )
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = response.data["results"][0]
-        patient_2_response = response.data["results"][1]
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
         self.assertEqual(patient_1_response["has_consents"], True)
         self.assertEqual(patient_2_response["has_consents"], True)
 
@@ -361,8 +375,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = response.data["results"][0]
-        patient_2_response = response.data["results"][1]
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
         self.assertEqual(patient_1_response["has_consents"], True)
         self.assertEqual(patient_2_response["has_consents"], False)
 
