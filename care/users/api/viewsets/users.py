@@ -287,12 +287,14 @@ class UserViewSet(
         if not user.home_facility:
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
+            requesting_user.id == user.id
+            and requesting_user.user_type == User.TYPE_VALUE_MAP["Nurse"]
+        ):
+            pass
+        elif (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-            and (
-                requesting_user.id != user.id
-                and requesting_user.user_type == User.TYPE_VALUE_MAP["Nurse"]
-            )
-        ) or requesting_user.user_type in User.READ_ONLY_TYPES:
+            or requesting_user.user_type in User.READ_ONLY_TYPES
+        ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 
         if not self.has_user_type_permission_elevation(requesting_user, user):
