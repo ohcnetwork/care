@@ -56,7 +56,10 @@ from care.facility.api.viewsets.patient import (
     PatientSearchViewSet,
     PatientViewSet,
 )
-from care.facility.api.viewsets.patient_consultation import PatientConsultationViewSet
+from care.facility.api.viewsets.patient_consultation import (
+    PatientConsentViewSet,
+    PatientConsultationViewSet,
+)
 from care.facility.api.viewsets.patient_external_test import PatientExternalTestViewSet
 from care.facility.api.viewsets.patient_investigation import (
     InvestigationGroupViewset,
@@ -287,6 +290,10 @@ consultation_nested_router.register(
 )
 consultation_nested_router.register(
     r"events", PatientConsultationEventViewSet, basename="consultation-events"
+)
+
+consultation_nested_router.register(
+    r"consents", PatientConsentViewSet, basename="consultation-consents"
 )
 
 router.register("event_types", EventTypeViewSet, basename="event-types")
