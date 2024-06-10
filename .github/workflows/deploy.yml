@@ -33,7 +33,7 @@ env:
 
 jobs:
   test:
-    uses: ./.github/workflows/test-base.yml
+    uses: ./.github/workflows/reusable-test.yml
 
   build:
     needs: test
