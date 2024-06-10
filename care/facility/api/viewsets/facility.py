@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Count, Q
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -71,8 +72,15 @@ class FacilityViewSet(
 ):
     """Viewset for facility CRUD operations."""
 
-    queryset = Facility.objects.all().select_related(
-        "ward", "local_body", "district", "state"
+    queryset = (
+        Facility.objects.all()
+        .select_related("ward", "local_body", "district", "state")
+        .annotate(
+            bed_count=Count("bed"),
+            patient_count=Count(
+                "patientregistration", filter=Q(patientregistration__is_active=True)
+            ),
+        )
     )
     permission_classes = (
         IsAuthenticated,
@@ -147,7 +155,6 @@ class FacilityViewSet(
             return render_to_csv_response(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
-
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     @extend_schema(tags=["facility"])

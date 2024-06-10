@@ -52,9 +52,13 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     bed_count = serializers.SerializerMethodField()
 
     def get_bed_count(self, facility):
+        if hasattr(facility, "bed_count"):
+            return facility.bed_count
         return Bed.objects.filter(facility=facility).count()
 
     def get_patient_count(self, facility):
+        if hasattr(facility, "patient_count"):
+            return facility.patient_count
         return PatientRegistration.objects.filter(
             facility=facility, is_active=True
         ).count()
