@@ -1,4 +1,3 @@
-import json
 import logging
 import subprocess
 import tempfile
@@ -9,6 +8,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.facility.models import (
@@ -156,34 +156,26 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     }
 
 
-def convert_discharge_summary_data_to_json(data):
-    # TODO: Update data to JSON
-
-    return json.dumps({"data": "data1"})
-
-
 def compile_typ(output_file, data):
-    json_data = convert_discharge_summary_data_to_json(data)
     try:
-        source_file = settings.APPS_DIR / "templates" / "reports" / "example.typ"
-        command = [
-            "typst",
-            "compile",
-            source_file,
-            "--input",
-            "obj=" + json_data,
-            output_file,
-        ]
-
-        subprocess.run(command, check=True)
-        logger.info(
+        content = render_to_string("reports/example.typ", context=data)
+        subprocess.run(
+            ["typst", "compile", "-", output_file],
+            input=content.encode("utf-8"),
+            capture_output=True,
+            check=True,
+        )
+        logging.info(
             f"Successfully Compiled Summary pdf for {data['consultation'].external_id}"
         )
         return True
-    except Exception as e:
-        logger.error(
-            f"Error Compiling Summary pdf for {data['consultation'].external_id} : {e}"
+    except subprocess.CalledProcessError as e:
+        logging.error(
+            f"Error compiling summary pdf for {data['consultation'].external_id}: {e.output.decode('utf-8')}"
         )
+        return False
+    except Exception as e:
+        logging.error(f"Unexpected error compiling summary pdf: {e}")
         return False
 
 
