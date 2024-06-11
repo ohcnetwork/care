@@ -12,3 +12,5 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    with:
+      event_name: ${{ github.event_name }}
