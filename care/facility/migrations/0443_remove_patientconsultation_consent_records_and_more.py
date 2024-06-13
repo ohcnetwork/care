@@ -22,11 +22,16 @@ class Migration(migrations.Migration):
             for consent in consultation.consent_records:
                 new_consent = PatientConsent.objects.create(
                     consultation=consultation,
-                    type=consent["type"],
-                    patient_code_status=consent.get("patient_code_status", None),
+                    type=consent.get("type", 5),
+                    patient_code_status=(
+                        consent.get("patient_code_status", 0)
+                        if consent.get("type", 5) == 2
+                        else None
+                    ),
                     created_by=consultation.created_by,
                     archived=consent.get("deleted", False),
                     is_migrated=True,
+                    created_date=consultation.modified_date,
                 )
 
                 old_id = consent.get("id")
@@ -116,6 +121,7 @@ class Migration(migrations.Migration):
                     models.IntegerField(
                         blank=True,
                         choices=[
+                            (0, "Not Specified"),
                             (1, "Do Not Hospitalize"),
                             (2, "Do Not Resuscitate"),
                             (3, "Comfort Care Only"),

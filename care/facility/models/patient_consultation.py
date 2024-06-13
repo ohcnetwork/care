@@ -368,6 +368,7 @@ class ConsentType(models.IntegerChoices):
 
 
 class PatientCodeStatusType(models.IntegerChoices):
+    NOT_SPECIFIED = 0, "Not Specified"
     DNH = 1, "Do Not Hospitalize"
     DNR = 2, "Do Not Resuscitate"
     COMFORT_CARE = 3, "Comfort Care Only"
