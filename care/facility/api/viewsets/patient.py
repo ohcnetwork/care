@@ -690,6 +690,15 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
                 output_field=models.IntegerField(),
             ),
         )
+        .annotate(
+            last_consultation=Subquery(
+                PatientConsultation.objects.filter(
+                    patient=OuterRef("pk"), discharge_date__isnull=False
+                )
+                .order_by("-discharge_date")
+                .values("id")[:1]
+            )
+        )
     )
 
     date_range_fields = [
