@@ -287,6 +287,11 @@ class UserViewSet(
         if not user.home_facility:
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
+            requesting_user.id == user.id
+            and requesting_user.user_type == User.TYPE_VALUE_MAP["Nurse"]
+        ):
+            pass
+        elif (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
             or requesting_user.user_type in User.READ_ONLY_TYPES
         ):
