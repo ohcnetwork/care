@@ -5,7 +5,7 @@ from djqscsv import render_to_csv_response
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
-from care.facility.models.bed import AssetBed, Bed
+from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient_consultation import (
     PatientConsent,
@@ -214,6 +214,7 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
+admin.site.register(ConsultationBed)
 admin.site.register(PatientConsent)
 admin.site.register(FileUpload)
 admin.site.register(PatientConsultation)
