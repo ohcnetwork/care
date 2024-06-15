@@ -414,10 +414,24 @@
           {% for disease in medical_history %}
           <tr class="bg-white border-b">
             <td class="p-1 whitespace-no-wrap text-sm">
-              {{disease.get_disease_display}}
+              {% if disease.get_disease_display == "Cancer" and disease.type %}
+                {{ disease.get_disease_display }} [ {{ disease.type }} ]
+              {% elif disease.get_disease_display == "TB" %}
+                {% if disease.status and disease.duration %}
+                  {{ disease.get_disease_display }} [ {{ disease.status }} - {{ disease.duration }} ]
+                {% elif disease.duration %}
+                  {{ disease.get_disease_display }} [ {{ disease.duration }} Day(s) ]
+                {% elif disease.status %}
+                  {{ disease.get_disease_display }} [ {{ disease.status }} ]
+                {% else %}
+                  {{ disease.get_disease_display }}
+                {% endif %}
+              {% else %}
+                {{ disease.get_disease_display }}
+              {% endif %}
             </td>
             <td class="p-1 whitespace-normal text-sm">
-              {{disease.details}}
+              {{ disease.details }}
             </td>
           </tr>
           {% endfor %}
