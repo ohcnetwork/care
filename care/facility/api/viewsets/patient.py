@@ -470,7 +470,7 @@ class PatientViewSet(
                 )
             ).order_by(
                 "-no_consultation_filed",
-                "modified_date",
+                "-modified_date",
             )
 
         return queryset
