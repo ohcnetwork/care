@@ -189,6 +189,7 @@ class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     lookup_field = "external_id"
+    permission_classes = []
 
     def retrieve(self, request, *args, **kwargs):
         key = "asset:" + kwargs["external_id"]
@@ -207,6 +208,7 @@ class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     lookup_field = "qr_code_id"
+    permission_classes = []
 
     def retrieve(self, request, *args, **kwargs):
         qr_code_id = kwargs["qr_code_id"]
@@ -227,7 +229,6 @@ class AssetPublicQRViewSet(GenericViewSet):
 class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AvailabilityRecord.objects.all()
     serializer_class = AvailabilityRecordSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         facility_queryset = get_facility_queryset(self.request.user)
@@ -280,7 +281,6 @@ class AssetViewSet(
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name", "serial_number", "qr_code_id"]
-    permission_classes = [IsAuthenticated]
     filterset_class = AssetFilter
 
     def get_queryset(self):
@@ -422,7 +422,6 @@ class AssetViewSet(
 class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
     queryset = Asset.objects.all()
     authentication_classes = [MiddlewareAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = AssetConfigSerializer
 
     @extend_schema(
@@ -548,8 +547,6 @@ class AssetServiceViewSet(
         .order_by("-created_date")
     )
     serializer_class = AssetServiceSerializer
-
-    permission_classes = (IsAuthenticated,)
 
     lookup_field = "external_id"
 

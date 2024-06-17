@@ -7,7 +7,6 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.hcx.api.serializers.policy import PolicySerializer
@@ -27,7 +26,6 @@ class PolicyViewSet(
     GenericViewSet,
 ):
     queryset = Policy.objects.all()
-    permission_classes = (IsAuthenticated,)
     serializer_class = PolicySerializer
     lookup_field = "external_id"
     search_fields = ["patient"]

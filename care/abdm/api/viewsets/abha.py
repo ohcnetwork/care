@@ -1,6 +1,5 @@
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -14,7 +13,6 @@ class AbhaViewSet(GenericViewSet):
     serializer_class = AbhaSerializer
     model = AbhaNumber
     queryset = AbhaNumber.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     def get_abha_object(self):
         queryset = get_patient_queryset(self.request.user)

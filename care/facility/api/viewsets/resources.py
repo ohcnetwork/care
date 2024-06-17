@@ -150,8 +150,6 @@ class ResourceRequestCommentViewSet(
     lookup_field = "external_id"
     queryset = ResourceRequestComment.objects.all().order_by("-created_date")
 
-    permission_classes = (IsAuthenticated,)
-
     def get_queryset(self):
         queryset = self.queryset.filter(
             request__external_id=self.kwargs.get("resource_external_id")

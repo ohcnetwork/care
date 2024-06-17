@@ -15,7 +15,6 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -71,7 +70,6 @@ class BedViewSet(
     serializer_class = BedSerializer
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
-    permission_classes = [IsAuthenticated]
     search_fields = ["name"]
     filterset_class = BedFilter
 
@@ -166,6 +164,7 @@ class AssetBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AssetBedFilter
     lookup_field = "external_id"
+    permission_classes = []
 
     def get_queryset(self):
         user = self.request.user
@@ -210,6 +209,7 @@ class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
         "bed__name",
         "created_date",
     ]
+    permission_classes = []
 
     def get_queryset(self):
         user = self.request.user
@@ -250,6 +250,7 @@ class ConsultationBedViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ConsultationBedFilter
     lookup_field = "external_id"
+    permission_classes = []
 
     def get_queryset(self):
         user = self.request.user

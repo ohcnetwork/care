@@ -7,7 +7,6 @@ from drf_spectacular.utils import extend_schema
 from redis_om import FindQuery
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -46,7 +45,6 @@ from care.utils.static_data.helpers import query_builder
 
 class HcxGatewayViewSet(GenericViewSet):
     queryset = Policy.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     @extend_schema(tags=["hcx"], request=CheckEligibilitySerializer())
     @action(detail=False, methods=["post"])
@@ -74,11 +72,13 @@ class HcxGatewayViewSet(GenericViewSet):
                 "7894561232",
                 policy["patient_object"]["id"],
                 policy["patient_object"]["name"],
-                "male"
-                if policy["patient_object"]["gender"] == 1
-                else "female"
-                if policy["patient_object"]["gender"] == 2
-                else "other",
+                (
+                    "male"
+                    if policy["patient_object"]["gender"] == 1
+                    else (
+                        "female" if policy["patient_object"]["gender"] == 2 else "other"
+                    )
+                ),
                 policy["subscriber_id"],
                 policy["policy_id"],
                 policy["id"],
@@ -125,17 +125,23 @@ class HcxGatewayViewSet(GenericViewSet):
                     lambda procedure: {
                         "id": str(uuid()),
                         "name": procedure["procedure"],
-                        "performed": procedure["time"]
-                        if "time" in procedure
-                        else procedure["frequency"],
+                        "performed": (
+                            procedure["time"]
+                            if "time" in procedure
+                            else procedure["frequency"]
+                        ),
                         "status": (
-                            "completed"
-                            if datetime.strptime(procedure["time"], "%Y-%m-%dT%H:%M")
-                            < datetime.now()
-                            else "preparation"
-                        )
-                        if "time" in procedure
-                        else "in-progress",
+                            (
+                                "completed"
+                                if datetime.strptime(
+                                    procedure["time"], "%Y-%m-%dT%H:%M"
+                                )
+                                < datetime.now()
+                                else "preparation"
+                            )
+                            if "time" in procedure
+                            else "in-progress"
+                        ),
                     },
                     consultation.procedure,
                 )
@@ -208,11 +214,15 @@ class HcxGatewayViewSet(GenericViewSet):
             "GICOFINDIA",
             claim["policy_object"]["patient_object"]["id"],
             claim["policy_object"]["patient_object"]["name"],
-            "male"
-            if claim["policy_object"]["patient_object"]["gender"] == 1
-            else "female"
-            if claim["policy_object"]["patient_object"]["gender"] == 2
-            else "other",
+            (
+                "male"
+                if claim["policy_object"]["patient_object"]["gender"] == 1
+                else (
+                    "female"
+                    if claim["policy_object"]["patient_object"]["gender"] == 2
+                    else "other"
+                )
+            ),
             claim["policy_object"]["subscriber_id"],
             claim["policy_object"]["policy_id"],
             claim["policy_object"]["id"],
@@ -237,9 +247,11 @@ class HcxGatewayViewSet(GenericViewSet):
 
         response = Hcx().generateOutgoingHcxCall(
             fhirPayload=json.loads(claim_fhir_bundle.json()),
-            operation=HcxOperations.CLAIM_SUBMIT
-            if REVERSE_USE_CHOICES[claim["use"]] == "claim"
-            else HcxOperations.PRE_AUTH_SUBMIT,
+            operation=(
+                HcxOperations.CLAIM_SUBMIT
+                if REVERSE_USE_CHOICES[claim["use"]] == "claim"
+                else HcxOperations.PRE_AUTH_SUBMIT
+            ),
             recipientCode=claim["policy_object"]["insurer_id"],
         )
 

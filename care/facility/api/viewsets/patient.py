@@ -868,7 +868,6 @@ class PatientNotesEditViewSet(
     queryset = PatientNotesEdit.objects.all().order_by("-edited_date")
     lookup_field = "external_id"
     serializer_class = PatientNotesEditSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user

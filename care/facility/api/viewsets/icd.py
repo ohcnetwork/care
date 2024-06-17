@@ -1,6 +1,5 @@
 from django.http import Http404
 from redis_om import FindQuery
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -9,7 +8,6 @@ from care.utils.static_data.helpers import query_builder
 
 
 class ICDViewSet(ViewSet):
-    permission_classes = (IsAuthenticated,)
 
     def serialize_data(self, objects: list[ICD11]):
         return [diagnosis.get_representation() for diagnosis in objects]

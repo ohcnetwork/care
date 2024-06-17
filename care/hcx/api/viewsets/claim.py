@@ -7,7 +7,6 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.hcx.api.serializers.claim import ClaimSerializer
@@ -32,7 +31,6 @@ class ClaimViewSet(
     queryset = Claim.objects.all().select_related(
         "policy", "created_by", "last_modified_by"
     )
-    permission_classes = (IsAuthenticated,)
     serializer_class = ClaimSerializer
     lookup_field = "external_id"
     search_fields = ["consultation", "policy"]

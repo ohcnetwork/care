@@ -158,7 +158,6 @@ class ConsultationPrescriptionViewSet(
 
 
 class MedibaseViewSet(ViewSet):
-    permission_classes = (IsAuthenticated,)
 
     def serialize_data(self, objects: list[MedibaseMedicine]):
         return [medicine.get_representation() for medicine in objects]

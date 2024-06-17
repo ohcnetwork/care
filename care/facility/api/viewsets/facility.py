@@ -183,3 +183,4 @@ class AllFacilityViewSet(
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
+    permission_classes = []
