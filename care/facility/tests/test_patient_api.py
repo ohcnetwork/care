@@ -527,3 +527,28 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             response.data["Patient"],
             "Patient transfer cannot be completed because the source facility does not permit it",
         )
+
+
+class PatientSearchTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.destination_facility = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body, name="Facility 2"
+        )
+        cls.location = cls.create_asset_location(cls.facility)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+
+    def test_patient_search(self):
+        response = self.client.get(
+            "/api/v1/patient/search/", {"phone_number": self.patient.phone_number}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)

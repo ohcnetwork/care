@@ -168,11 +168,6 @@ class PatientDetailSerializer(PatientListSerializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
-    class PatientTeleConsultationSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = PatientTeleConsultation
-            fields = "__all__"
-
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
     )
@@ -180,9 +175,6 @@ class PatientDetailSerializer(PatientListSerializer):
         child=MedicalHistorySerializer(), required=False
     )
 
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True
-    )
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(

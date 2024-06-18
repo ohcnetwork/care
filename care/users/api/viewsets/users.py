@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.db.models import F, Q, Subquery
+from django.http import Http404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -127,7 +128,7 @@ class UserViewSet(
         if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
             query |= Q(
                 state=self.request.user.state,
-                user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
+                user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"],
                 is_superuser=False,
             )
         elif (
@@ -135,7 +136,7 @@ class UserViewSet(
         ):
             query |= Q(
                 district=self.request.user.district,
-                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
@@ -149,6 +150,12 @@ class UserViewSet(
                 is_superuser=False,
             )
         return self.queryset.filter(query)
+
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Http404:
+            raise Http404("User not found")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -280,6 +287,11 @@ class UserViewSet(
         if not user.home_facility:
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
+            requesting_user.id == user.id
+            and requesting_user.user_type == User.TYPE_VALUE_MAP["Nurse"]
+        ):
+            pass
+        elif (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
             or requesting_user.user_type in User.READ_ONLY_TYPES
         ):

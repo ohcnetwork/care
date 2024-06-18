@@ -165,7 +165,7 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         facility = self.instance
         image = self.validated_data["cover_image"]
         image_extension = image.name.rsplit(".", 1)[-1]
-        config, bucket_name = get_client_config(BucketType.FACILITY, True)
+        config, bucket_name = get_client_config(BucketType.FACILITY)
         s3 = boto3.client("s3", **config)
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
         s3.put_object(
