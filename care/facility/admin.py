@@ -8,6 +8,7 @@ from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed, Bed
 from care.facility.models.patient_sample import PatientSample
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.facility.models.patient_vaccination import VaccineRegistration
 
 from .models import (
     Building,
@@ -151,6 +152,10 @@ class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+class VaccineAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    list_display = ("id", "name")
+
+
 class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
@@ -211,3 +216,4 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
+admin.site.register(VaccineRegistration, VaccineAdmin)

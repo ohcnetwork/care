@@ -16,6 +16,10 @@ from care.facility.api.serializers.facility import (
 from care.facility.api.serializers.patient_consultation import (
     PatientConsultationSerializer,
 )
+from care.facility.api.serializers.patient_vaccination import (
+    PatientCreateVaccinationSerializer,
+    PatientVaccinationSerializer,
+)
 from care.facility.models import (
     DISEASE_CHOICES,
     GENDER_CHOICES,
@@ -40,6 +44,10 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
 from care.facility.models.patient_tele_consultation import PatientTeleConsultation
+from care.facility.models.patient_vaccination import (
+    PatientVaccination,
+    VaccineRegistration,
+)
 from care.hcx.models.claim import Claim
 from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
@@ -218,6 +226,10 @@ class PatientDetailSerializer(PatientListSerializer):
         queryset=AbhaNumber.objects.all(), required=False, allow_null=True
     )
     abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
+    create_vaccination_details = PatientCreateVaccinationSerializer(
+        many=True, write_only=True, required=False
+    )
+    vaccination_details = PatientVaccinationSerializer(read_only=True, many=True)
 
     class Meta:
         model = PatientRegistration
@@ -244,6 +256,15 @@ class PatientDetailSerializer(PatientListSerializer):
     #     if value is not None and Facility.objects.filter(external_id=value).first() is None:
     #         raise serializers.ValidationError("facility not found")
     #     return value
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data["vaccination_details"]:
+            sorted_vaccination_details = sorted(
+                data["vaccination_details"], key=lambda x: x.get("last_vaccinated_date")
+            )
+            data["vaccination_details"] = sorted_vaccination_details
+        return data
 
     def validate_countries_travelled(self, value):
         if not value:
@@ -275,12 +296,6 @@ class PatientDetailSerializer(PatientListSerializer):
                 }
             )
 
-        if validated.get("is_vaccinated"):
-            if validated.get("number_of_doses") == 0:
-                raise serializers.ValidationError("Number of doses cannot be 0")
-            if validated.get("vaccine_name") is None:
-                raise serializers.ValidationError("Vaccine name cannot be null")
-
         return validated
 
     def check_external_entry(self, srf_id):
@@ -294,10 +309,15 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
-
+            vaccination_details = validated_data.pop("create_vaccination_details", [])
             if "facility" not in validated_data:
                 raise serializers.ValidationError(
                     {"facility": "Facility is required to register a patient"}
+                )
+
+            if validated_data["is_vaccinated"] and not vaccination_details:
+                raise serializers.ValidationError(
+                    "Atleast one vaccine must be selected for a vaccinated patient"
                 )
 
             # Authorization checks
@@ -338,6 +358,30 @@ class PatientDetailSerializer(PatientListSerializer):
                 ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
 
+            if vaccination_details:
+                vaccination_details_objs = []
+                for data in vaccination_details:
+                    vaccine = VaccineRegistration.objects.filter(
+                        name=data["vaccine_name"]
+                    )
+                    if vaccine:
+                        vaccination_obj = PatientVaccination(
+                            vaccine_name=vaccine[0],
+                            dose_number=data["dose_number"],
+                            batch_number=data["batch_number"],
+                            last_vaccinated_date=data["last_vaccinated_date"],
+                            vaccination_center=data["vaccination_center"],
+                            patient=patient,
+                            created_by=self.context["request"].user,
+                            last_edited_by=self.context["request"].user,
+                        )
+                        vaccination_details_objs.append(vaccination_obj)
+                    else:
+                        raise serializers.ValidationError(
+                            f"{data['vaccine_name']} is removed from vaccines list"
+                        )
+                PatientVaccination.objects.bulk_create(vaccination_details_objs)
+
             patient.last_edited = self.context["request"].user
             patient.save()
 
@@ -355,6 +399,7 @@ class PatientDetailSerializer(PatientListSerializer):
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
             contacted_patients = validated_data.pop("contacted_patients", [])
+            vaccination_details = validated_data.pop("create_vaccination_details")
 
             if "facility" in validated_data:
                 external_id = validated_data.pop("facility")["external_id"]
@@ -362,6 +407,11 @@ class PatientDetailSerializer(PatientListSerializer):
                     validated_data["facility_id"] = Facility.objects.get(
                         external_id=external_id
                     ).id
+
+            if validated_data["is_vaccinated"] and not vaccination_details:
+                raise serializers.ValidationError(
+                    "Add atleast one vaccine for a vaccinated patient "
+                )
 
             if "srf_id" in validated_data:
                 if instance.srf_id != validated_data["srf_id"]:
@@ -393,6 +443,35 @@ class PatientDetailSerializer(PatientListSerializer):
                     for data in contacted_patients
                 ]
                 PatientContactDetails.objects.bulk_create(contacted_patient_objs)
+
+            if not validated_data["is_vaccinated"]:
+                patient_vaccines = PatientVaccination.objects.filter(patient=patient)
+                if patient_vaccines:
+                    patient_vaccines.delete()
+            elif vaccination_details:
+                PatientVaccination.objects.filter(patient=patient).delete()
+                vaccination_details_objs = []
+                for data in vaccination_details:
+                    vaccine = VaccineRegistration.objects.filter(
+                        name=data["vaccine_name"]
+                    )
+                    if vaccine:
+                        vaccination_obj = PatientVaccination(
+                            vaccine_name=vaccine[0],
+                            dose_number=data["dose_number"],
+                            batch_number=data["batch_number"],
+                            last_vaccinated_date=data["last_vaccinated_date"],
+                            vaccination_center=data["vaccination_center"],
+                            patient=patient,
+                            created_by=self.context["request"].user,
+                            last_edited_by=self.context["request"].user,
+                        )
+                        vaccination_details_objs.append(vaccination_obj)
+                    else:
+                        raise serializers.ValidationError(
+                            f"{data['vaccine_name']} is removed from vaccines list"
+                        )
+                PatientVaccination.objects.bulk_create(vaccination_details_objs)
 
             patient.last_edited = self.context["request"].user
             patient.save()

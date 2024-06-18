@@ -69,6 +69,7 @@ from care.facility.api.viewsets.patient_investigation import (
 from care.facility.api.viewsets.patient_otp import PatientMobileOTPViewSet
 from care.facility.api.viewsets.patient_otp_data import OTPPatientDataViewSet
 from care.facility.api.viewsets.patient_sample import PatientSampleViewSet
+from care.facility.api.viewsets.patient_vaccination import VaccineRegistrationViewset
 from care.facility.api.viewsets.prescription import (
     ConsultationPrescriptionViewSet,
     MedibaseViewSet,
@@ -182,6 +183,7 @@ resource_nested_router.register(r"comment", ResourceRequestCommentViewSet)
 router.register("investigation/group", InvestigationGroupViewset)
 router.register("investigation", PatientInvestigationViewSet)
 
+router.register("vaccine/names", VaccineRegistrationViewset)
 # Ref: https://github.com/alanjds/drf-nested-routers
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(r"get_users", FacilityUserViewSet)
