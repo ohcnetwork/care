@@ -12,11 +12,7 @@ from care.facility.models.patient_consultation import (
     PatientConsultation,
 )
 from care.facility.models.patient_sample import PatientSample
-<<<<<<< HEAD
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.facility.models.patient_vaccination import VaccineRegistration
-=======
->>>>>>> cda75bb5985e5dc380f5b1e9356fd1ee8c38db5b
 
 from .models import (
     Building,
@@ -223,10 +219,7 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
-<<<<<<< HEAD
 admin.site.register(VaccineRegistration, VaccineAdmin)
-=======
 admin.site.register(PatientConsent)
 admin.site.register(FileUpload)
 admin.site.register(PatientConsultation)
->>>>>>> cda75bb5985e5dc380f5b1e9356fd1ee8c38db5b
