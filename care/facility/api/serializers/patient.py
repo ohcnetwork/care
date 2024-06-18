@@ -43,7 +43,6 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.facility.models.patient_vaccination import (
     PatientVaccination,
     VaccineRegistration,

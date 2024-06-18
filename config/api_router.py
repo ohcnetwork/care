@@ -168,13 +168,13 @@ router.register(
 )
 router.register("investigation", PatientInvestigationViewSet, basename="investigation")
 
-<<<<<<< HEAD
+
 router.register("vaccine/names", VaccineRegistrationViewset)
 # Ref: https://github.com/alanjds/drf-nested-routers
-=======
+
 router.register("facility", FacilityViewSet, basename="facility")
 router.register("getallfacilities", AllFacilityViewSet, basename="getallfacilities")
->>>>>>> cda75bb5985e5dc380f5b1e9356fd1ee8c38db5b
+
 facility_nested_router = NestedSimpleRouter(router, r"facility", lookup="facility")
 facility_nested_router.register(
     r"get_users", FacilityUserViewSet, basename="facility-users"
