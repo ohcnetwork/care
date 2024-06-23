@@ -432,6 +432,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
     )
 
+    has_consents = models.BooleanField(
+        default=False, verbose_name="Patient has consent files"
+    )
+
     history = HistoricalRecords(excluded_fields=["meta_info"])
 
     objects = BaseManager()

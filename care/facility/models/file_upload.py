@@ -163,5 +163,24 @@ class FileUpload(BaseFileUpload):
     FileTypeChoices = [(x.value, x.name) for x in FileType]
     FileCategoryChoices = [(x.value, x.name) for x in BaseFileUpload.FileCategory]
 
+    def save(self, *args, **kwargs):
+        from care.facility.models import PatientConsent  # here to avoid circular import
+
+        if self.file_type == self.FileType.CONSENT_RECORD:
+            other_files = FileUpload.objects.filter(
+                associating_id=self.associating_id,
+                file_type=self.FileType.CONSENT_RECORD,
+                is_archived=False,
+            )
+            if self.pk:
+                other_files = other_files.exclude(pk=self.pk)
+            consent = PatientConsent.objects.get(external_id=self.associating_id)
+            patient_registration = consent.consultation.patient
+            patient_registration.has_consents = (
+                not self.is_archived or other_files.exists()
+            )
+            patient_registration.save()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.FileTypeChoices[self.file_type][1]} - {self.name}{' (Archived)' if self.is_archived else ''}"
