@@ -248,6 +248,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    has_consents = models.BooleanField(
+        default=False, verbose_name="Patient has consent files"
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -387,7 +391,9 @@ class ConsultationClinician(models.Model):
 
 
 class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.CASCADE, related_name="consents"
+    )
     type = models.IntegerField(choices=ConsentType.choices)
     patient_code_status = models.IntegerField(
         choices=PatientCodeStatusType.choices, null=True, blank=True

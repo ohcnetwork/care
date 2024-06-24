@@ -175,11 +175,9 @@ class FileUpload(BaseFileUpload):
             if self.pk:
                 other_files = other_files.exclude(pk=self.pk)
             consent = PatientConsent.objects.get(external_id=self.associating_id)
-            patient_registration = consent.consultation.patient
-            patient_registration.has_consents = (
-                not self.is_archived or other_files.exists()
-            )
-            patient_registration.save()
+            consultation = consent.consultation
+            consultation.has_consents = not self.is_archived or other_files.exists()
+            consultation.save()
         return super().save(*args, **kwargs)
 
     def __str__(self):

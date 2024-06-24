@@ -302,12 +302,11 @@ class PatientFilterSet(filters.FilterSet):
                 is_archived=False,
             )
             .order_by("associating_id")
-            .distinct("associating_id")
             .values_list("associating_id", flat=True)
         )
 
         consultations = PatientConsent.objects.filter(
-            external_id__in=[x for x in list(consultation_consent_files)],
+            external_id__in=[x for x in consultation_consent_files],
             archived=False,
         )
 
