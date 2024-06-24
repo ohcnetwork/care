@@ -340,8 +340,8 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["has_consents"], True)
-        self.assertEqual(patient_2_response["has_consents"], False)
+        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], False)
 
     def test_has_consents_archived(self):
         self.client.force_authenticate(user=self.user)
@@ -366,8 +366,8 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["has_consents"], True)
-        self.assertEqual(patient_2_response["has_consents"], True)
+        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], True)
 
         file.is_archived = True
         file.save()
@@ -385,8 +385,8 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["has_consents"], True)
-        self.assertEqual(patient_2_response["has_consents"], False)
+        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], False)
 
 
 class PatientFilterTestCase(TestUtils, APITestCase):
