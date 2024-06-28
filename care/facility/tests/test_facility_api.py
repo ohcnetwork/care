@@ -18,6 +18,18 @@ class FacilityTests(TestUtils, APITestCase):
         self.assertIs(response.status_code, status.HTTP_200_OK)
 
     def test_listing(self):
+        facility1 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        facility2 = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        location1 = self.create_asset_location(facility1)
+        location2 = self.create_asset_location(facility2)
+        self.create_bed(facility1, location1)
+        self.create_bed(facility2, location2)
+        self.create_patient(self.district, facility1)
+        self.create_patient(self.district, facility2)
         with self.assertNumQueries(3):
             response = self.client.get("/api/v1/facility/")
         self.assertIs(response.status_code, status.HTTP_200_OK)
