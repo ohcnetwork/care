@@ -2,6 +2,7 @@ import logging
 import subprocess
 import tempfile
 from collections.abc import Iterable
+from pathlib import Path
 from uuid import uuid4
 
 from django.conf import settings
@@ -158,24 +159,44 @@ def get_discharge_summary_data(consultation: PatientConsultation):
 
 def compile_typ(output_file, data):
     try:
-        content = render_to_string("reports/example.typ", context=data)
+        logo_path = (
+            Path(settings.BASE_DIR)
+            / "staticfiles"
+            / "images"
+            / "logos"
+            / "black-logo.svg"
+        )
+        font_folder = Path(settings.BASE_DIR) / "staticfiles" / "fonts"
+
+        data["logo_path"] = str(logo_path)
+
+        content = render_to_string(
+            "reports/patient_discharge_summary_pdf_template.typ", context=data
+        )
+
         subprocess.run(
-            ["typst", "compile", "-", output_file],
+            [
+                "typst",
+                "compile",
+                "-",
+                str(output_file),
+                "--font-path",
+                str(font_folder),
+            ],
             input=content.encode("utf-8"),
             capture_output=True,
             check=True,
         )
+
         logging.info(
             f"Successfully Compiled Summary pdf for {data['consultation'].external_id}"
         )
         return True
+
     except subprocess.CalledProcessError as e:
         logging.error(
-            f"Error compiling summary pdf for {data['consultation'].external_id}: {e.output.decode('utf-8')}"
+            f"Error compiling summary pdf for {data['consultation'].external_id}: {e.stderr.decode('utf-8')}"
         )
-        return False
-    except Exception as e:
-        logging.error(f"Unexpected error compiling summary pdf: {e}")
         return False
 
 
