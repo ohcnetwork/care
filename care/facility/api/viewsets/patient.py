@@ -306,7 +306,7 @@ class PatientFilterSet(filters.FilterSet):
         )
 
         consultations = PatientConsent.objects.filter(
-            external_id__in=consultation_consent_files,
+            external_id__in=[x for x in consultation_consent_files],
             archived=False,
         )
 
