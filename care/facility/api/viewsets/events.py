@@ -49,9 +49,11 @@ class EventTypeViewSet(ReadOnlyModelViewSet):
 class PatientConsultationEventFilterSet(filters.FilterSet):
     class Meta:
         model = PatientConsultationEvent
-        fields = {
-            "event_type": ["exact"],
-        }
+        fields = [
+            "event_type",
+            "caused_by",
+            "is_latest",
+        ]
 
 
 class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
@@ -60,8 +62,9 @@ class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
         "event_type", "caused_by"
     )
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = PatientConsultationEventFilterSet
+    ordering_fields = ("created_date", "taken_at")
     # lookup_field = "external_id"
     # lookup_url_kwarg = "external_id"
 
