@@ -510,7 +510,7 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         )
 
     def test_filter_by_admitted_to_bed(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.super_user)
         choices = ["1", "2", "6", "7", "None"]
 
         res = self.client.get(
@@ -558,7 +558,7 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         self.assertContains(res, self.patient_nb.external_id)
 
     def test_admitted_to_bed_after_readmission(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.super_user)
         self.create_consultation_bed(
             self.consultation_icu, self.iso_bed, end_date=now() + timedelta(days=1)
         )
