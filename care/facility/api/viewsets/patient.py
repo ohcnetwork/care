@@ -306,13 +306,13 @@ class PatientFilterSet(filters.FilterSet):
         )
 
         consultations = PatientConsent.objects.filter(
-            external_id__in=[x for x in consultation_consent_files],
+            external_id__in=consultation_consent_files,
             archived=False,
         )
 
         if "None" in values:
             filter_q |= ~Q(
-                last_consultation__id__in=list(
+                last_consultation__id__in=(
                     consultations.values_list("consultation_id", flat=True)
                 )
             )
@@ -320,7 +320,7 @@ class PatientFilterSet(filters.FilterSet):
 
         if values:
             filter_q |= Q(
-                last_consultation__id__in=list(
+                last_consultation__id__in=(
                     consultations.filter(type__in=values).values_list(
                         "consultation_id", flat=True
                     )
