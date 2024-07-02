@@ -36,6 +36,7 @@ def create_consultation_event_entry(
     object_instance: Model,
     caused_by: int,
     created_date: datetime,
+    taken_at: datetime,
     old_instance: Model | None = None,
     fields_to_store: set[str] | None = None,
 ):
@@ -65,7 +66,7 @@ def create_consultation_event_entry(
                 is_latest=True,
                 object_model=object_instance.__class__.__name__,
                 object_id=object_instance.id,
-                created_date__lt=created_date,
+                taken_at__lt=taken_at,
             ).update(is_latest=False)
             batch.append(
                 PatientConsultationEvent(
@@ -74,6 +75,7 @@ def create_consultation_event_entry(
                     event_type_id=group_id,
                     is_latest=True,
                     created_date=created_date,
+                    taken_at=taken_at,
                     object_model=object_instance.__class__.__name__,
                     object_id=object_instance.id,
                     value=value,
@@ -94,11 +96,15 @@ def create_consultation_events(
     objects: list | QuerySet | Model,
     caused_by: int,
     created_date: datetime = None,
+    taken_at: datetime = None,
     old: Model | None = None,
     fields_to_store: list[str] | set[str] | None = None,
 ):
     if created_date is None:
         created_date = now()
+
+    if taken_at is None:
+        taken_at = created_date
 
     with transaction.atomic():
         if isinstance(objects, (QuerySet, list, tuple)):
@@ -112,6 +118,7 @@ def create_consultation_events(
                     obj,
                     caused_by,
                     created_date,
+                    taken_at,
                     fields_to_store=set(fields_to_store) if fields_to_store else None,
                 )
         else:
@@ -120,6 +127,7 @@ def create_consultation_events(
                 objects,
                 caused_by,
                 created_date,
+                taken_at,
                 old,
                 fields_to_store=set(fields_to_store) if fields_to_store else None,
             )
