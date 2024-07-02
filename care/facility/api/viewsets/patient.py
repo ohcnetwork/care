@@ -643,6 +643,7 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
     filter_backends = (
+        PatientDRYFilter,
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
         PatientCustomOrderingFilter,
