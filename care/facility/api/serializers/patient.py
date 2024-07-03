@@ -549,6 +549,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if "thread" not in validated_data:
             raise serializers.ValidationError({"thread": "This field is required"})
+        if "consultation" not in validated_data:
+            raise serializers.ValidationError({"consultation": "This field is required"})
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
