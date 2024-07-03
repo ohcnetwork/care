@@ -205,7 +205,10 @@ class TestPasswordReset(TestUtils, APITestCase):
             {"token": "invalid_token", "password": "test@123"},
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["detail"], "Not found.")
+        self.assertEqual(
+            response.json()["detail"],
+            "The OTP password entered is not valid. Please check and try again.",
+        )
 
     def test_reset_password_with_expired_token(self):
         token = self.create_reset_password_token(user=self.user, expired=True)
@@ -214,4 +217,4 @@ class TestPasswordReset(TestUtils, APITestCase):
             {"token": token.key, "password": "test@123"},
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["detail"], "Not found.")
+        self.assertEqual(response.json()["detail"], "The token has expired")

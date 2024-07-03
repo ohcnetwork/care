@@ -589,8 +589,7 @@ class DailyRound(PatientBaseModel):
                 request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
                 and (
                     self.consultation.patient.facility
-                    and request.user.state
-                    == self.consultation.patient.facility.district
+                    and request.user.state == self.consultation.patient.facility.state
                 )
             )
         )
