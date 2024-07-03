@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
-from pytz import unicode
 from rest_framework import status
 
 from care.facility.models import (
@@ -32,6 +31,11 @@ from care.facility.models.icd11_diagnosis import (
     ICD11Diagnosis,
 )
 from care.facility.models.patient import RationCardCategory
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
+)
 from care.users.models import District, State
 
 
@@ -449,6 +453,21 @@ class TestUtils:
         return ConsultationDiagnosis.objects.create(**data)
 
     @classmethod
+    def create_patient_consent(
+        cls,
+        consultation: PatientConsultation,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "type": ConsentType.PATIENT_CODE_STATUS,
+            "patient_code_status": PatientCodeStatusType.COMFORT_CARE,
+            "created_by": consultation.created_by,
+        }
+        data.update(kwargs)
+        return PatientConsent.objects.create(**data)
+
+    @classmethod
     def clone_object(cls, obj, save=True):
         new_obj = obj._meta.model.objects.get(pk=obj.id)
         new_obj.pk = None
@@ -565,13 +584,7 @@ class TestUtils:
                 value, (type(None), EverythingEquals)
             ):
                 return_value = value
-                if isinstance(
-                    value,
-                    (
-                        str,
-                        unicode,
-                    ),
-                ):
+                if isinstance(value, str):
                     return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
                 return (
                     return_value.astimezone(tz=UTC)

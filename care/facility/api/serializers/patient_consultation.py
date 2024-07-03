@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -41,6 +42,7 @@ from care.facility.models.encounter_symptom import (
     EncounterSymptom,
     Symptom,
 )
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
@@ -51,7 +53,12 @@ from care.facility.models.patient_base import (
     RouteToFacility,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
+    PatientConsultation,
+)
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -603,22 +610,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-            if (
-                suggestion == SuggestionChoices.A or patient_no
-            ) and PatientConsultation.objects.filter(
-                patient_no=patient_no,
-                facility=(
-                    self.instance.facility
-                    if self.instance
-                    else validated.get("patient").facility
-                ),
-            ).exists():
-                raise ValidationError(
-                    {
-                        "patient_no": "Consultation with this IP/OP number already exists within the facility."
-                    }
-                )
-
         if (
             "suggestion" in validated
             and validated["suggestion"] != SuggestionChoices.DD
@@ -864,3 +855,119 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
     class Meta:
         model = PatientConsultation
         fields = ("email",)
+
+
+class PatientConsentSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientConsent
+
+        fields = (
+            "id",
+            "type",
+            "patient_code_status",
+            "archived",
+            "archived_by",
+            "archived_date",
+            "created_by",
+            "created_date",
+        )
+
+        read_only_fields = (
+            "id",
+            "created_by",
+            "created_date",
+            "archived",
+            "archived_by",
+            "archived_date",
+        )
+
+    def validate_patient_code_status(self, value):
+        if value == PatientCodeStatusType.NOT_SPECIFIED:
+            raise ValidationError(
+                "Specify a correct Patient Code Status for the Consent"
+            )
+        return value
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        if (
+            user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and self.context["consultation"].facility_id != user.home_facility_id
+        ):
+            raise ValidationError(
+                "Only Home Facility Staff can create consent for a Consultation"
+            )
+
+        if (
+            attrs.get("type", None)
+            and attrs.get("type") == ConsentType.PATIENT_CODE_STATUS
+            and not attrs.get("patient_code_status")
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is required for Patient Code Status Consent"
+                    ]
+                }
+            )
+
+        if (
+            attrs.get("type", None)
+            and attrs["type"] != ConsentType.PATIENT_CODE_STATUS
+            and attrs.get("patient_code_status")
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is not required for this type of Consent"
+                    ]
+                }
+            )
+        return attrs
+
+    def clear_existing_records(self, consultation, type, user, self_id=None):
+        consents = PatientConsent.objects.filter(
+            consultation=consultation, type=type
+        ).exclude(id=self_id)
+
+        archived_date = timezone.now()
+        consents.update(
+            archived=True,
+            archived_by=user,
+            archived_date=archived_date,
+        )
+        FileUpload.objects.filter(
+            associating_id__in=list(consents.values_list("external_id", flat=True)),
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            is_archived=False,
+        ).update(
+            is_archived=True,
+            archived_datetime=archived_date,
+            archive_reason="Consent Archived",
+            archived_by=user,
+        )
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=self.context["consultation"],
+                type=validated_data["type"],
+                user=self.context["request"].user,
+            )
+            validated_data["consultation"] = self.context["consultation"]
+            validated_data["created_by"] = self.context["request"].user
+            return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=instance.consultation,
+                type=instance.type,
+                user=self.context["request"].user,
+                self_id=instance.id,
+            )
+            return super().update(instance, validated_data)
