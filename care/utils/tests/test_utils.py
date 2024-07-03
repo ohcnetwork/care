@@ -6,13 +6,11 @@ from uuid import uuid4
 
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
-from pytz import unicode
 from rest_framework import status
 
 from care.facility.models import (
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
-    SYMPTOM_CHOICES,
     Ambulance,
     Disease,
     DiseaseStatusEnum,
@@ -31,6 +29,12 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
     ICD11Diagnosis,
+)
+from care.facility.models.patient import RationCardCategory
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
 )
 from care.users.models import District, State
 
@@ -276,6 +280,7 @@ class TestUtils:
             "date_of_receipt_of_information": make_aware(
                 datetime(2020, 4, 1, 15, 30, 00)
             ),
+            "ration_card_category": RationCardCategory.NON_CARD_HOLDER,
         }
 
     @classmethod
@@ -307,13 +312,8 @@ class TestUtils:
         return patient
 
     @classmethod
-    def get_consultation_data(cls):
+    def get_consultation_data(cls) -> dict:
         return {
-            "patient": cls.patient,
-            "facility": cls.facility,
-            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
-            "other_symptoms": "No other symptoms",
-            "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
@@ -321,14 +321,12 @@ class TestUtils:
             "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
                 0
             ],  # HOME ISOLATION
-            "referred_to": None,
             "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "created_date": mock_equal,
-            "modified_date": mock_equal,
             "patient_no": int(datetime.now().timestamp() * 1000),
+            "route_to_facility": 10,
         }
 
     @classmethod
@@ -336,6 +334,7 @@ class TestUtils:
         cls,
         patient: PatientRegistration,
         facility: Facility,
+        doctor: User | None = None,
         referred_to=None,
         **kwargs,
     ) -> PatientConsultation:
@@ -345,6 +344,7 @@ class TestUtils:
                 "patient": patient,
                 "facility": facility,
                 "referred_to": referred_to,
+                "treating_physician": doctor,
             }
         )
         data.update(kwargs)
@@ -451,6 +451,21 @@ class TestUtils:
         }
         data.update(kwargs)
         return ConsultationDiagnosis.objects.create(**data)
+
+    @classmethod
+    def create_patient_consent(
+        cls,
+        consultation: PatientConsultation,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "type": ConsentType.PATIENT_CODE_STATUS,
+            "patient_code_status": PatientCodeStatusType.COMFORT_CARE,
+            "created_by": consultation.created_by,
+        }
+        data.update(kwargs)
+        return PatientConsent.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):
@@ -569,13 +584,7 @@ class TestUtils:
                 value, (type(None), EverythingEquals)
             ):
                 return_value = value
-                if isinstance(
-                    value,
-                    (
-                        str,
-                        unicode,
-                    ),
-                ):
+                if isinstance(value, str):
                     return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
                 return (
                     return_value.astimezone(tz=UTC)

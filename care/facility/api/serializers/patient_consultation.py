@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -18,6 +19,10 @@ from care.facility.api.serializers.consultation_diagnosis import (
     ConsultationDiagnosisSerializer,
 )
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
+from care.facility.api.serializers.encounter_symptom import (
+    EncounterCreateSymptomSerializer,
+    EncounterSymptomSerializer,
+)
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
@@ -31,18 +36,28 @@ from care.facility.models import (
 )
 from care.facility.models.asset import AssetLocation
 from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.encounter_symptom import (
+    ClinicalImpressionStatus,
+    EncounterSymptom,
+    Symptom,
+)
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ConsultationDiagnosis,
 )
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    SYMPTOM_CHOICES,
     NewDischargeReasonEnum,
     RouteToFacility,
     SuggestionChoices,
 )
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
+    PatientConsultation,
+)
 from care.users.api.serializers.user import (
     UserAssignedSerializer,
     UserBaseMinimumSerializer,
@@ -65,7 +80,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         source="suggestion",
     )
 
-    symptoms = serializers.MultipleChoiceField(choices=SYMPTOM_CHOICES)
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )
@@ -150,7 +164,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         help_text="Bulk create diagnoses for the consultation upon creation",
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
-
+    create_symptoms = EncounterCreateSymptomSerializer(
+        many=True,
+        write_only=True,
+        required=False,
+        help_text="Bulk create symptoms for the consultation upon creation",
+    )
+    symptoms = EncounterSymptomSerializer(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
 
     def get_discharge_prescription(self, consultation):
@@ -331,6 +351,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError({"route_to_facility": "This field is required"})
 
         create_diagnosis = validated_data.pop("create_diagnoses")
+        create_symptoms = validated_data.pop("create_symptoms")
         action = -1
         review_interval = -1
         if "action" in validated_data:
@@ -406,6 +427,19 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ]
         )
 
+        symptoms = EncounterSymptom.objects.bulk_create(
+            EncounterSymptom(
+                consultation=consultation,
+                symptom=obj.get("symptom"),
+                onset_date=obj.get("onset_date"),
+                cure_date=obj.get("cure_date"),
+                clinical_impression_status=obj.get("clinical_impression_status"),
+                other_symptom=obj.get("other_symptom") or "",
+                created_by=self.context["request"].user,
+            )
+            for obj in create_symptoms
+        )
+
         if bed and consultation.suggestion == SuggestionChoices.A:
             consultation_bed = ConsultationBed(
                 bed=bed,
@@ -443,7 +477,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         create_consultation_events(
             consultation.id,
-            (consultation, *diagnosis),
+            (consultation, *diagnosis, *symptoms),
             consultation.created_by.id,
             consultation.created_date,
         )
@@ -501,6 +535,45 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_create_symptoms(self, value):
+        if self.instance:
+            raise ValidationError("Bulk create symptoms is not allowed on update")
+
+        counter: set[int | str] = set()
+        for obj in value:
+            item: int | str = obj["symptom"]
+            if obj["symptom"] == Symptom.OTHERS:
+                other_symptom = obj.get("other_symptom")
+                if not other_symptom:
+                    raise ValidationError(
+                        {
+                            "other_symptom": "Other symptom should not be empty when symptom type is OTHERS"
+                        }
+                    )
+                item: str = other_symptom.strip().lower()
+            if item in counter:
+                # Reject if duplicate symptoms are provided
+                raise ValidationError("Duplicate symptoms are not allowed")
+            counter.add(item)
+
+        current_time = now()
+        for obj in value:
+            if obj["onset_date"] > current_time:
+                raise ValidationError(
+                    {"onset_date": "Onset date cannot be in the future"}
+                )
+
+            if cure_date := obj.get("cure_date"):
+                if cure_date < obj["onset_date"]:
+                    raise ValidationError(
+                        {"cure_date": "Cure date should be after onset date"}
+                    )
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.COMPLETED
+            else:
+                obj["clinical_impression_status"] = ClinicalImpressionStatus.IN_PROGRESS
+
+        return value
+
     def validate_encounter_date(self, value):
         if value < MIN_ENCOUNTER_DATE:
             raise ValidationError(
@@ -534,22 +607,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if suggestion == SuggestionChoices.A and not patient_no:
                 raise ValidationError(
                     {"patient_no": "This field is required for admission."}
-                )
-
-            if (
-                suggestion == SuggestionChoices.A or patient_no
-            ) and PatientConsultation.objects.filter(
-                patient_no=patient_no,
-                facility=(
-                    self.instance.facility
-                    if self.instance
-                    else validated.get("patient").facility
-                ),
-            ).exists():
-                raise ValidationError(
-                    {
-                        "patient_no": "Consultation with this IP/OP number already exists within the facility."
-                    }
                 )
 
         if (
@@ -621,6 +678,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         if not self.instance and "create_diagnoses" not in validated:
             raise ValidationError({"create_diagnoses": ["This field is required."]})
+
+        if not self.instance and "create_symptoms" not in validated:
+            raise ValidationError({"create_symptoms": ["This field is required."]})
 
         return validated
 
@@ -779,3 +839,119 @@ class EmailDischargeSummarySerializer(serializers.Serializer):
     class Meta:
         model = PatientConsultation
         fields = ("email",)
+
+
+class PatientConsentSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    created_by = UserBaseMinimumSerializer(read_only=True)
+    archived_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientConsent
+
+        fields = (
+            "id",
+            "type",
+            "patient_code_status",
+            "archived",
+            "archived_by",
+            "archived_date",
+            "created_by",
+            "created_date",
+        )
+
+        read_only_fields = (
+            "id",
+            "created_by",
+            "created_date",
+            "archived",
+            "archived_by",
+            "archived_date",
+        )
+
+    def validate_patient_code_status(self, value):
+        if value == PatientCodeStatusType.NOT_SPECIFIED:
+            raise ValidationError(
+                "Specify a correct Patient Code Status for the Consent"
+            )
+        return value
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        if (
+            user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and self.context["consultation"].facility_id != user.home_facility_id
+        ):
+            raise ValidationError(
+                "Only Home Facility Staff can create consent for a Consultation"
+            )
+
+        if (
+            attrs.get("type", None)
+            and attrs.get("type") == ConsentType.PATIENT_CODE_STATUS
+            and not attrs.get("patient_code_status")
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is required for Patient Code Status Consent"
+                    ]
+                }
+            )
+
+        if (
+            attrs.get("type", None)
+            and attrs["type"] != ConsentType.PATIENT_CODE_STATUS
+            and attrs.get("patient_code_status")
+        ):
+            raise ValidationError(
+                {
+                    "patient_code_status": [
+                        "This field is not required for this type of Consent"
+                    ]
+                }
+            )
+        return attrs
+
+    def clear_existing_records(self, consultation, type, user, self_id=None):
+        consents = PatientConsent.objects.filter(
+            consultation=consultation, type=type
+        ).exclude(id=self_id)
+
+        archived_date = timezone.now()
+        consents.update(
+            archived=True,
+            archived_by=user,
+            archived_date=archived_date,
+        )
+        FileUpload.objects.filter(
+            associating_id__in=list(consents.values_list("external_id", flat=True)),
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            is_archived=False,
+        ).update(
+            is_archived=True,
+            archived_datetime=archived_date,
+            archive_reason="Consent Archived",
+            archived_by=user,
+        )
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=self.context["consultation"],
+                type=validated_data["type"],
+                user=self.context["request"].user,
+            )
+            validated_data["consultation"] = self.context["consultation"]
+            validated_data["created_by"] = self.context["request"].user
+            return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            self.clear_existing_records(
+                consultation=instance.consultation,
+                type=instance.type,
+                user=self.context["request"].user,
+                self_id=instance.id,
+            )
+            return super().update(instance, validated_data)

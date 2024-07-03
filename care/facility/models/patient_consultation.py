@@ -11,7 +11,7 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.json_schema.consultation import CONSENT_RECORDS
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
 )
@@ -26,7 +26,7 @@ from care.facility.models.patient_base import (
     reverse_choices,
 )
 from care.users.models import User
-from care.utils.models.validators import JSONFieldSchemaValidator
+from care.utils.models.base import BaseModel
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -72,15 +72,17 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     deprecated_icd11_principal_diagnosis = models.CharField(
         max_length=100, default="", blank=True, null=True
     )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    symptoms = MultiSelectField(
+    deprecated_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
         default=1,
         null=True,
         blank=True,
         max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )
-    other_symptoms = models.TextField(default="", blank=True)
-    symptoms_onset_date = models.DateTimeField(null=True, blank=True)
+    )  # Deprecated
+    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
+    deprecated_symptoms_onset_date = models.DateTimeField(
+        null=True, blank=True
+    )  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
@@ -246,18 +248,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
-    consent_records = JSONField(
-        default=list, validators=[JSONFieldSchemaValidator(CONSENT_RECORDS)]
-    )
-
     def get_related_consultation(self):
         return self
 
     CSV_MAPPING = {
         "consultation_created_date": "Date of Consultation",
         "encounter_date": "Date of Admission",
-        "symptoms_onset_date": "Date of Onset of Symptoms",
-        "symptoms": "Symptoms at time of consultation",
+        "deprecated_symptoms_onset_date": "Date of Onset of Symptoms",
+        "deprecated_symptoms": "Symptoms at time of consultation",
         "deprecated_covid_category": "Covid Category",
         "category": "Category",
         "examination_details": "Examination Details",
@@ -276,8 +274,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     # CSV_DATATYPE_DEFAULT_MAPPING = {
     #     "encounter_date": (None, models.DateTimeField(),),
-    #     "symptoms_onset_date": (None, models.DateTimeField(),),
-    #     "symptoms": ("-", models.CharField(),),
+    #     "deprecated_symptoms_onset_date": (None, models.DateTimeField(),),
+    #     "deprecated_symptoms": ("-", models.CharField(),),
     #     "category": ("-", models.CharField(),),
     #     "examination_details": ("-", models.CharField(),),
     #     "suggestion": ("-", models.CharField(),),
@@ -307,11 +305,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 check=~models.Q(suggestion=SuggestionChoices.R)
                 | models.Q(referred_to__isnull=False)
                 | models.Q(referred_to_external__isnull=False),
-            ),
-            models.UniqueConstraint(
-                fields=["patient_no", "facility"],
-                name="unique_patient_no_within_facility",
-                condition=models.Q(patient_no__isnull=False),
             ),
         ]
 
@@ -366,6 +359,22 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self.has_object_read_permission(request)
 
 
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
+
+
+class PatientCodeStatusType(models.IntegerChoices):
+    NOT_SPECIFIED = 0, "Not Specified"
+    DNH = 1, "Do Not Hospitalize"
+    DNR = 2, "Do Not Resuscitate"
+    COMFORT_CARE = 3, "Comfort Care Only"
+    ACTIVE_TREATMENT = 4, "Active Treatment"
+
+
 class ConsultationClinician(models.Model):
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -375,3 +384,107 @@ class ConsultationClinician(models.Model):
         User,
         on_delete=models.PROTECT,
     )
+
+
+class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
+    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    type = models.IntegerField(choices=ConsentType.choices)
+    patient_code_status = models.IntegerField(
+        choices=PatientCodeStatusType.choices, null=True, blank=True
+    )
+    archived = models.BooleanField(default=False)
+    archived_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="archived_consents",
+    )
+    archived_date = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="created_consents"
+    )
+    is_migrated = models.BooleanField(
+        default=False,
+        help_text="This field is to throw caution to data that was previously ported over",
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["consultation", "type"],
+                name="unique_consultation_consent",
+                condition=models.Q(archived=False),
+            ),
+            models.CheckConstraint(
+                name="patient_code_status_required",
+                check=~models.Q(type=ConsentType.PATIENT_CODE_STATUS)
+                | models.Q(patient_code_status__isnull=False),
+            ),
+            models.CheckConstraint(
+                name="patient_code_status_not_required",
+                check=models.Q(type=ConsentType.PATIENT_CODE_STATUS)
+                | models.Q(patient_code_status__isnull=True),
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.consultation.patient.name} - {ConsentType(self.type).label}{' (Archived)' if self.archived else ''}"
+
+    def save(self, *args, **kwargs):
+        if self.archived:
+            files = FileUpload.objects.filter(
+                associating_id=self.external_id,
+                file_type=FileUpload.FileType.CONSENT_RECORD,
+                is_archived=False,
+            )
+            files.update(
+                is_archived=True,
+                archived_datetime=timezone.now(),
+                archive_reason="Consent Archived",
+                archived_by=self.archived_by,
+            )
+
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def has_write_permission(request):
+        return request.user.is_superuser or (
+            request.user.verified
+            and ConsultationRelatedPermissionMixin.has_write_permission(request)
+        )
+
+    def has_object_read_permission(self, request):
+        if not super().has_object_read_permission(request):
+            return False
+        return (
+            request.user.is_superuser
+            or (
+                self.consultation.patient.facility
+                and request.user in self.consultation.patient.facility.users.all()
+            )
+            or (
+                self.consultation.assigned_to == request.user
+                or request.user == self.consultation.patient.assigned_to
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.district
+                    == self.consultation.patient.facility.district
+                )
+            )
+            or (
+                request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
+                and (
+                    self.consultation.patient.facility
+                    and request.user.state == self.consultation.patient.facility.state
+                )
+            )
+        )
+
+    def has_object_update_permission(self, request):
+        return super().has_object_update_permission(
+            request
+        ) and self.has_object_read_permission(request)
