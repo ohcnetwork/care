@@ -440,8 +440,10 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         cls.local_body = cls.create_local_body(cls.district)
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user(
+            "user", cls.district, user_type=15, home_facility=cls.facility
+        )
         cls.location = cls.create_asset_location(cls.facility)
-        cls.user = cls.create_user("user", cls.district, user_type=15)
 
         cls.iso_bed = cls.create_bed(cls.facility, cls.location, bed_type=1, name="ISO")
         cls.icu_bed = cls.create_bed(cls.facility, cls.location, bed_type=2, name="ICU")
@@ -510,7 +512,7 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         )
 
     def test_filter_by_admitted_to_bed(self):
-        self.client.force_authenticate(user=self.super_user)
+        self.client.force_authenticate(user=self.user)
         choices = ["1", "2", "6", "7", "None"]
 
         res = self.client.get(
@@ -558,7 +560,7 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         self.assertContains(res, self.patient_nb.external_id)
 
     def test_admitted_to_bed_after_readmission(self):
-        self.client.force_authenticate(user=self.super_user)
+        self.client.force_authenticate(user=self.user)
         self.create_consultation_bed(
             self.consultation_icu, self.iso_bed, end_date=now() + timedelta(days=1)
         )
