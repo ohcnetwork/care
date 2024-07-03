@@ -22,9 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConsentRequestFilter(filters.FilterSet):
-    patient = filters.UUIDFilter(
-        field_name="patient_abha__patientregistration__external_id"
-    )
+    patient = filters.UUIDFilter(field_name="patient_abha__patient__external_id")
     health_id = filters.CharFilter(field_name="patient_abha__health_id")
     ordering = filters.OrderingFilter(
         fields=(
@@ -33,7 +31,7 @@ class ConsentRequestFilter(filters.FilterSet):
         )
     )
     facility = filters.UUIDFilter(
-        field_name="patient_abha__patientregistration__facility__external_id"
+        field_name="patient_abha__patient__facility__external_id"
     )
 
     class Meta:
