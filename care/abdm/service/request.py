@@ -78,7 +78,7 @@ class Request:
         response = requests.get(url, headers=headers, params=params)
         logger.info(f"{response.status_code} Response: {response.text}")
 
-        return response
+        return self._handle_response(response)
 
     def post(self, path, data=None, headers=None, auth=None):
         url = self.url + path
@@ -89,4 +89,18 @@ class Request:
         response = requests.post(url, data=payload, headers=headers)
         logger.info(f"{response.status_code} Response: {response.text}")
 
+        return self._handle_response(response)
+
+    def _handle_response(self, response: requests.Response):
+        def custom_json():
+            try:
+                return response.json()
+            except ValueError as json_err:
+                logger.error(f"JSON Decode error: {json_err}")
+                return {"error": response.text}
+            except Exception as err:
+                logger.error(f"Unknown error while decoding json: {err}")
+                return {}
+
+        response.json = custom_json
         return response
