@@ -95,7 +95,7 @@ class Request:
         def custom_json():
             try:
                 return response.json()
-            except ValueError as json_err:
+            except json.JSONDecodeError as json_err:
                 logger.error(f"JSON Decode error: {json_err}")
                 return {"error": response.text}
             except Exception as err:
