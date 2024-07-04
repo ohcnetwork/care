@@ -1,4 +1,5 @@
 import time
+import uuid
 from uuid import uuid4
 
 import boto3
@@ -164,20 +165,43 @@ class FileUpload(BaseFileUpload):
     FileCategoryChoices = [(x.value, x.name) for x in BaseFileUpload.FileCategory]
 
     def save(self, *args, **kwargs):
-        from care.facility.models import PatientConsent  # here to avoid circular import
+        from care.facility.models import PatientConsent
 
         if self.file_type == self.FileType.CONSENT_RECORD:
-            other_files = FileUpload.objects.filter(
-                associating_id=self.associating_id,
-                file_type=self.FileType.CONSENT_RECORD,
-                is_archived=False,
-            )
-            if self.pk:
-                other_files = other_files.exclude(pk=self.pk)
-            consent = PatientConsent.objects.get(external_id=self.associating_id)
+            new_consent = False
+            if not self.pk and not self.is_archived:
+                new_consent = True
+            consent = PatientConsent.objects.filter(
+                external_id=uuid.UUID(self.associating_id), archived=False
+            ).first()
             consultation = consent.consultation
-            consultation.has_consents = not self.is_archived or other_files.exists()
+            consent_types = (
+                PatientConsent.objects.filter(consultation=consultation, archived=False)
+                .annotate(
+                    str_external_id=models.functions.Cast(
+                        "external_id", models.CharField()
+                    )
+                )
+                .annotate(
+                    has_files=(
+                        models.Exists(
+                            FileUpload.objects.filter(
+                                associating_id=models.OuterRef("str_external_id"),
+                                file_type=self.FileType.CONSENT_RECORD,
+                                is_archived=False,
+                            ).exclude(pk=self.pk if self.is_archived else None)
+                        )
+                        if not new_consent
+                        else models.Value(True)
+                    )
+                )
+                .filter(has_files=True)
+                .distinct("type")
+                .values_list("type", flat=True)
+            )
+            consultation.has_consents = list(consent_types)
             consultation.save()
+
         return super().save(*args, **kwargs)
 
     def __str__(self):

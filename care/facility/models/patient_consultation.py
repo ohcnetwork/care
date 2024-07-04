@@ -29,6 +29,14 @@ from care.users.models import User
 from care.utils.models.base import BaseModel
 
 
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
+
+
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
@@ -248,8 +256,9 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
-    has_consents = models.BooleanField(
-        default=False, verbose_name="Patient has consent files"
+    has_consents = ArrayField(
+        models.IntegerField(choices=ConsentType.choices),
+        default=list,
     )
 
     def get_related_consultation(self):
@@ -361,14 +370,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     def has_object_generate_discharge_summary_permission(self, request):
         return self.has_object_read_permission(request)
-
-
-class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
-    PATIENT_CODE_STATUS = 2, "Patient Code Status"
-    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
-    HIGH_RISK_CONSENT = 4, "High Risk Consent"
-    OTHERS = 5, "Others"
 
 
 class PatientCodeStatusType(models.IntegerChoices):

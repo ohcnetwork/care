@@ -68,7 +68,6 @@ from care.facility.models import (
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
-from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     INACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
@@ -79,10 +78,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
-from care.facility.models.patient_consultation import (
-    PatientConsent,
-    PatientConsultation,
-)
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -296,35 +292,15 @@ class PatientFilterSet(filters.FilterSet):
 
         filter_q = Q()
 
-        consultation_consent_files = (
-            FileUpload.objects.filter(
-                file_type=FileUpload.FileType.CONSENT_RECORD,
-                is_archived=False,
-            )
-            .order_by("associating_id")
-            .values_list("associating_id", flat=True)
-        )
-
-        consultations = PatientConsent.objects.filter(
-            external_id__in=[x for x in consultation_consent_files],
-            archived=False,
-        )
-
         if "None" in values:
             filter_q |= ~Q(
-                last_consultation__id__in=(
-                    consultations.values_list("consultation_id", flat=True)
-                )
+                last_consultation__has_consents__len__gt=0,
             )
             values.remove("None")
 
         if values:
             filter_q |= Q(
-                last_consultation__id__in=(
-                    consultations.filter(type__in=values).values_list(
-                        "consultation_id", flat=True
-                    )
-                )
+                last_consultation__has_consents__overlap=values,
             )
 
         return queryset.filter(filter_q)

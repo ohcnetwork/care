@@ -11,6 +11,7 @@ from care.facility.models.icd11_diagnosis import (
     ICD11Diagnosis,
 )
 from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_consultation import ConsentType, PatientCodeStatusType
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -313,12 +314,17 @@ class PatientTestCase(TestUtils, APITestCase):
             encounter_date=now(),
         )
 
-        cls.consent = cls.create_patient_consent(cls.consultation, created_by=cls.user)
-        FileUpload.objects.create(
+        cls.consent = cls.create_patient_consent(
+            cls.consultation,
+            created_by=cls.user,
+            type=ConsentType.CONSENT_FOR_ADMISSION,
+            patient_code_status=None,
+        )
+        cls.file = FileUpload.objects.create(
             internal_name="test.pdf",
             file_type=FileUpload.FileType.CONSENT_RECORD,
             name="Test File",
-            associating_id=cls.consent.external_id,
+            associating_id=str(cls.consent.external_id),
             file_category=FileUpload.FileCategory.UNSPECIFIED,
         )
 
@@ -340,17 +346,41 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
-        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], False)
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], [])
+
+    def test_consent_edit(self):
+        self.file.name = "Test File 1 Edited"
+        self.file.save()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
 
     def test_has_consents_archived(self):
         self.client.force_authenticate(user=self.user)
-        consent = self.create_patient_consent(self.consultation_2, created_by=self.user)
+        consent = self.create_patient_consent(
+            self.consultation_2,
+            created_by=self.user,
+            type=ConsentType.HIGH_RISK_CONSENT,
+            patient_code_status=None,
+        )
         file = FileUpload.objects.create(
             internal_name="test.pdf",
             file_type=FileUpload.FileType.CONSENT_RECORD,
             name="Test File",
-            associating_id=consent.external_id,
+            associating_id=str(consent.external_id),
             file_category=FileUpload.FileCategory.UNSPECIFIED,
         )
         response = self.client.get(self.get_base_url())
@@ -366,8 +396,14 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
-        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], True)
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(
+            patient_2_response["last_consultation"]["has_consents"],
+            [ConsentType.HIGH_RISK_CONSENT],
+        )
 
         file.is_archived = True
         file.save()
@@ -385,8 +421,11 @@ class PatientTestCase(TestUtils, APITestCase):
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
         ][0]
-        self.assertEqual(patient_1_response["last_consultation"]["has_consents"], True)
-        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], False)
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], [])
 
 
 class PatientFilterTestCase(TestUtils, APITestCase):
@@ -439,7 +478,10 @@ class PatientFilterTestCase(TestUtils, APITestCase):
         )
 
         cls.consent = cls.create_patient_consent(
-            cls.consultation, created_by=cls.user, type=1, patient_code_status=None
+            cls.consultation,
+            created_by=cls.user,
+            type=1,
+            patient_code_status=None,
         )
 
         cls.patient_2 = cls.create_patient(cls.district, cls.facility)
@@ -452,7 +494,10 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             encounter_date=now(),
         )
         cls.consent2 = cls.create_patient_consent(
-            cls.consultation_2, created_by=cls.user
+            cls.consultation_2,
+            created_by=cls.user,
+            type=ConsentType.PATIENT_CODE_STATUS,
+            patient_code_status=PatientCodeStatusType.ACTIVE_TREATMENT,
         )
 
         cls.patient_3 = cls.create_patient(cls.district, cls.facility)
