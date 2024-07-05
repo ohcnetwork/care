@@ -53,6 +53,7 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
+from care.facility.models.file_upload import FileUpload
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
@@ -509,6 +510,15 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     thread = serializers.ChoiceField(
         choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
+    files = serializers.SerializerMethodField()
+
+    def get_files(self, obj):
+        return FileUpload.objects.filter(
+            associating_id=obj.id,
+            file_type=FileUpload.FileType.NOTES.value,
+            upload_completed=True,
+            is_archived=False,
+        ).values()
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -578,6 +588,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "modified_date",
             "last_edited_by",
             "last_edited_date",
+            "files",
         )
         read_only_fields = (
             "id",

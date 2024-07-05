@@ -113,6 +113,8 @@ def check_permissions(file_type, associating_id, user, action="create"):
             return associating_id
         elif file_type == FileUpload.FileType.COMMUNICATION.value:
             return associating_id
+        elif file_type == FileUpload.FileType.NOTES.value:
+            return associating_id
         else:
             raise Exception("Undefined File Type")
 
