@@ -276,8 +276,7 @@ class PatientDetailSerializer(PatientListSerializer):
             if validated.get("vaccine_name") is None:
                 raise serializers.ValidationError("Vaccine name cannot be null")
 
-        if validated.get("medical_history"):
-            medical_history = validated["medical_history"]
+        if medical_history := validated.get("medical_history"):
 
             for disease in medical_history:
                 disease_id = disease.get("disease")
@@ -292,22 +291,20 @@ class PatientDetailSerializer(PatientListSerializer):
                         if cancer_type not in CANCER_TYPE:
                             raise serializers.ValidationError("Invalid cancer type")
 
-                        invalid_gender_type = (
-                            gender == 1 and CANCER_TYPE[cancer_type] in {"1", "5"}
-                        ) or (gender == 2 and CANCER_TYPE[cancer_type] == "8")
-                        if invalid_gender_type:
+                        if (gender == 1 and CANCER_TYPE[cancer_type] in {"1", "5"}) or (
+                            gender == 2 and CANCER_TYPE[cancer_type] == "8"
+                        ):
                             raise serializers.ValidationError(
                                 "Invalid cancer type for specified gender"
                             )
 
                 # Handle TB cases
-                if disease_id == 14:
+                elif disease_id == 14:
                     status = disease.get("status")
                     if status and status not in {"Active", "Old"}:
                         raise serializers.ValidationError("Invalid TB status")
 
-                    duration = disease.get("duration")
-                    if duration:
+                    if duration := disease.get("duration"):
                         try:
                             duration = float(duration)
                             if duration < 0:
