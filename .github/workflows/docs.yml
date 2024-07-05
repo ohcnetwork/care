@@ -19,14 +19,12 @@ jobs:
     name: Build docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: 'pipenv'
-          cache-dependency-path: |
-            Pipfile.lock
 
       - name: Install pipenv
         run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
@@ -39,7 +37,7 @@ jobs:
           make -C ./docs html
 
       - name: Upload sphinx documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sphinx-docs
           path: ./docs/_build/html
@@ -53,7 +51,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download sphinx documentation
         uses: actions/download-artifact@v3
@@ -66,7 +64,7 @@ jobs:
           touch build/.nojekyll
 
       - name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: build
