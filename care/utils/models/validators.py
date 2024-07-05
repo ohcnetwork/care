@@ -190,7 +190,7 @@ class DenominationValidator:
 dosage_validator = DenominationValidator(
     min_amount=0.0001,
     max_amount=5000,
-    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp"},
+    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp", "mcg", "unit(s)"},
     allow_floats=True,
     precision=4,
 )
