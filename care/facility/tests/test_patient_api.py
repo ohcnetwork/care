@@ -514,7 +514,7 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             internal_name="test.pdf",
             file_type=FileUpload.FileType.CONSENT_RECORD,
             name="Test File",
-            associating_id=cls.consent.external_id,
+            associating_id=str(cls.consent.external_id),
             file_category=FileUpload.FileCategory.UNSPECIFIED,
         )
 
@@ -522,7 +522,7 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             internal_name="test.pdf",
             file_type=FileUpload.FileType.CONSENT_RECORD,
             name="Test File",
-            associating_id=cls.consent2.external_id,
+            associating_id=str(cls.consent2.external_id),
             file_category=FileUpload.FileCategory.UNSPECIFIED,
         )
 
