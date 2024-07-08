@@ -559,6 +559,8 @@ class DischargePatientFilterTestCase(TestUtils, APITestCase):
         self.assertContains(res, self.patient_nor.external_id)
         self.assertContains(res, self.patient_nb.external_id)
 
+    # if patient is readmitted to another bed type, only the latest admission should be considered
+
     def test_admitted_to_bed_after_readmission(self):
         self.client.force_authenticate(user=self.user)
         self.create_consultation_bed(
