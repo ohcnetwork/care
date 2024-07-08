@@ -612,26 +612,30 @@ class DischargePatientFilterSet(PatientFilterSet):
 
         values = value.split(",")
         filter_q = Q()
-        last_consultation_bed = (
+        last_consultation_bed_ids = (
             ConsultationBed.objects.filter(end_date__isnull=False)
             .order_by("consultation__patient_id", "-end_date")
             .distinct("consultation__patient_id")
-            .values_list("id", "consultation_id")
         )
+
         if "None" in values:
             filter_q |= ~Q(
-                last_discharge_consultation__id__in=[
-                    x[1] for x in last_consultation_bed
-                ]
+                last_discharge_consultation__id__in=Subquery(
+                    last_consultation_bed_ids.values_list("consultation_id", flat=True)
+                )
             )
             values.remove("None")
 
-        if values:
+        if type(values) == list and len(values) > 0:
             filter_q |= Q(
-                last_discharge_consultation__id__in=ConsultationBed.objects.filter(
-                    id__in=[x[0] for x in last_consultation_bed],
-                    bed__bed_type__in=values,
-                ).values("consultation_id")
+                last_discharge_consultation__id__in=Subquery(
+                    ConsultationBed.objects.filter(
+                        id__in=Subquery(
+                            last_consultation_bed_ids.values_list("id", flat=True)
+                        ),
+                        bed__bed_type__in=values,
+                    ).values_list("consultation_id", flat=True)
+                )
             )
 
         return queryset.filter(filter_q)
