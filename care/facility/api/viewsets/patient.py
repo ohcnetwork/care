@@ -603,7 +603,6 @@ class PatientViewSet(
 
 
 class DischargePatientFilterSet(PatientFilterSet):
-
     last_consultation_field = "last_discharge_consultation"
 
     def filter_by_bed_type(self, queryset, name, value):
