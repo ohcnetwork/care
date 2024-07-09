@@ -531,7 +531,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
         self.assertEqual(
             response.data["Patient"],
-            "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
+            "Patient transfer cannot be completed because the patient is expired",
         )
 
     def test_transfer_disallowed_by_facility(self):
