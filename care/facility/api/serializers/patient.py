@@ -533,6 +533,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     )
     reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
     files = serializers.SerializerMethodField()
+    replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
 
     def get_files(self, obj):
         return FileUpload.objects.filter(
@@ -628,6 +629,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "reply_to",
             "reply_to_object",
             "files",
+            "replies",
         )
         read_only_fields = (
             "id",
