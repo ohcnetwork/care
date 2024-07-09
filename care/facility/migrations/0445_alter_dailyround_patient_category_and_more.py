@@ -5,6 +5,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
+    def reverse_migration(apps, schema_editor):
+        PatientConsultation = apps.get_model("facility", "PatientConsultation")
+        DailyRound = apps.get_model("facility", "DailyRound")
+        PatientConsultation.objects.filter(category="ActivelyDying").update(
+            category="Comfort"
+        )
+        DailyRound.objects.filter(patient_category="ActivelyDying").update(
+            patient_category="Comfort"
+        )
+
     dependencies = [
         ("facility", "0444_alter_medicineadministration_dosage_and_more"),
     ]
@@ -19,7 +29,7 @@ class Migration(migrations.Migration):
                     ("Stable", "Mild"),
                     ("Moderate", "Moderate"),
                     ("Critical", "Critical"),
-                    ("ActivelyDying", "ActivelyDying"),
+                    ("ActivelyDying", "Actively Dying"),
                 ],
                 max_length=13,
                 null=True,
@@ -34,10 +44,11 @@ class Migration(migrations.Migration):
                     ("Stable", "Mild"),
                     ("Moderate", "Moderate"),
                     ("Critical", "Critical"),
-                    ("ActivelyDying", "ActivelyDying"),
+                    ("ActivelyDying", "Actively Dying"),
                 ],
                 max_length=13,
                 null=True,
             ),
         ),
+        migrations.RunPython(migrations.RunPython.noop, reverse_migration),
     ]
