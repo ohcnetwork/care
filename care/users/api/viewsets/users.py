@@ -380,6 +380,18 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def profile_picture(self, request, username):
         user = self.get_object()
+        allowed_user_types = [
+            User.TYPE_VALUE_MAP["WardAdmin"],
+            User.TYPE_VALUE_MAP["LocalBodyAdmin"],
+            User.TYPE_VALUE_MAP["DistrictAdmin"],
+            User.TYPE_VALUE_MAP["StateAdmin"],
+        ]
+        has_write_permission = request.user.is_superuser or request.user.id == user.id or (
+            request.user.user_type in allowed_user_types
+            and self.facility.has_object_write_permission(request)
+        )
+        if not has_write_permission:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = UserImageUploadSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
