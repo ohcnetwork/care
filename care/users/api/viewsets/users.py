@@ -9,19 +9,19 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.parsers import MultiPartParser
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
+    UserImageUploadSerializer,
     UserListSerializer,
     UserSerializer,
-    UserImageUploadSerializer,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
@@ -154,7 +154,11 @@ class UserViewSet(
         return self.queryset.filter(query)
 
     def get_parsers(self):
-        if self.request and self.request.method == "POST" and self.request.path.endswith("profile_picture"):
+        if (
+            self.request
+            and self.request.method == "POST"
+            and self.request.path.endswith("profile_picture")
+        ):
             return [MultiPartParser()]
         return super().get_parsers()
 

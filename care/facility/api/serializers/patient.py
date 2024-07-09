@@ -29,6 +29,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.bed import ConsultationBed
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
@@ -53,7 +54,6 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-from care.facility.models.file_upload import FileUpload
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
