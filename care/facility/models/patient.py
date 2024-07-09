@@ -36,7 +36,6 @@ from care.facility.models.patient_base import (
     REVERSE_CATEGORY_CHOICES,
     REVERSE_NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_ROUTE_TO_FACILITY_CHOICES,
-    NewDischargeReasonEnum,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
@@ -439,11 +438,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     @property
     def is_expired(self) -> bool:
-        return (
-            self.last_consultation.new_discharge_reason
-            == NewDischargeReasonEnum.EXPIRED.value
-            or self.last_consultation.discharge_reason == "EXP"
-        )
+        return self.death_datetime is not None
 
     def __str__(self):
         return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
