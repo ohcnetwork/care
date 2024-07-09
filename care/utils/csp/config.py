@@ -47,7 +47,6 @@ def get_patient_bucket_config(external) -> tuple[ClientConfig, BucketName]:
         else settings.FILE_UPLOAD_BUCKET_ENDPOINT,
     }, settings.FILE_UPLOAD_BUCKET
 
-
 def get_client_config(bucket_type: BucketType, external=False):
     if bucket_type == BucketType.FACILITY:
         return get_facility_bucket_config(external=external)
