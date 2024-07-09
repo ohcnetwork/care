@@ -82,14 +82,6 @@
           "value": "https://egov-s3-facility-10bedicu.s3.ap-south-1.amazonaws.com/egov-s3-facility-10bedicu"
         },
         {
-          "name": "USER_S3_BUCKET",
-          "value": "egov-s3-user-10bedicu"
-        },
-        {
-          "name": "USER_S3_BUCKET_ENDPOINT",
-          "value": "https://egov-s3-user-10bedicu.s3.amazonaws.com"
-        },
-        {
           "name": "FILE_UPLOAD_BUCKET",
           "value": "egov-s3-patient-data-10bedicu"
         },
