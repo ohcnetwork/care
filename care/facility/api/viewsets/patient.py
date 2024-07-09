@@ -625,7 +625,7 @@ class DischargePatientFilterSet(PatientFilterSet):
             )
             values.remove("None")
 
-        if type(values) == list and len(values) > 0:
+        if isinstance(values, list) and len(values) > 0:
             filter_q |= Q(
                 last_discharge_consultation__id__in=Subquery(
                     ConsultationBed.objects.filter(
