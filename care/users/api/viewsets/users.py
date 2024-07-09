@@ -154,7 +154,7 @@ class UserViewSet(
         return self.queryset.filter(query)
 
     def get_parsers(self):
-        if self.request.method == "POST" and self.request.path.endswith("profile_picture"):
+        if self.request and self.request.method == "POST" and self.request.path.endswith("profile_picture"):
             return [MultiPartParser()]
         return super().get_parsers()
 
