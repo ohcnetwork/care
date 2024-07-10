@@ -158,7 +158,7 @@ class DenominationValidator:
 
             if len(amount) != len(str(amount_number)):
                 raise ValidationError(
-                    f"Input amount must be a valid number without leading{ ' or trailing ' if self.allow_floats else ' ' }zeroes"
+                    f"Input amount must be a valid number without leading{' or trailing ' if self.allow_floats else ' '}zeroes"
                 )
 
             if self.min_amount > amount_number or amount_number > self.max_amount:
@@ -190,7 +190,7 @@ class DenominationValidator:
 dosage_validator = DenominationValidator(
     min_amount=0.0001,
     max_amount=5000,
-    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp"},
+    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp", "mcg", "unit(s)"},
     allow_floats=True,
     precision=4,
 )
