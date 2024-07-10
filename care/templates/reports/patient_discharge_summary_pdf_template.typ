@@ -17,25 +17,16 @@
   stroke: frame(rgb("21222C")),
 )
 
-// Heading
 #align(center, text(24pt)[= {{patient.facility.name}}])
 
 #line(length: 100%, stroke: mygray)
 
-// Section 1
 #grid(
     columns: (auto, 1fr),
     row-gutter: 1em,
     align: (left, right),
-
-    // Name
     text(size: 15pt)[= Patient Discharge Summary],
-
-    // Logo
     grid.cell(align: right, rowspan: 2)[#scale(x:90%, y:90%, reflow: true)[#image("{{ logo_path }}")]],
-
-
-    // Created on Date
     [#text(fill: mygray, weight: 500)[*Created on #datetime.today().display("[day]/[month]/[year]")*]]
 )
 
@@ -72,7 +63,7 @@
   align: (left),
   [Route to Facility:], [{{consultation.get_route_to_facility_display|field_name_to_label}}],
   [Decision after consultation:], [{{consultation.get_suggestion_display|field_name_to_label}}],
-  [Date of Admission:], [March 18, 2024, 1:06 p.m.],
+  [Date of Admission:], [{{consultation.icu_admission_date}}],
   {% if consultation.icu_admission_date %}
   [ICU Admission Date & Time:], [{{consultation.icu_admission_date}}],
   {% endif %}

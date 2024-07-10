@@ -8,6 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 # ---
 FROM base as builder
+FROM ghcr.io/typst/typst:v0.11.0 as typstOfficialImage
 
 ARG BUILD_ENVIRONMENT=production
 
@@ -19,6 +20,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
 RUN pip install pipenv
+
+COPY --from=typstOfficialImage /bin/typst /bin/typst
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv sync --system --categories "packages"
@@ -44,7 +47,7 @@ ENV PATH /venv/bin:$PATH
 WORKDIR ${APP_HOME}
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  libpq-dev gettext wget curl gnupg chromium \
+  libpq-dev gettext wget curl gnupg \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 

@@ -166,7 +166,6 @@ def compile_typ(output_file, data):
             / "logos"
             / "black-logo.svg"
         )
-        font_folder = Path(settings.BASE_DIR) / "staticfiles" / "fonts"
 
         data["logo_path"] = str(logo_path)
 
@@ -180,12 +179,11 @@ def compile_typ(output_file, data):
                 "compile",
                 "-",
                 str(output_file),
-                "--font-path",
-                str(font_folder),
             ],
             input=content.encode("utf-8"),
             capture_output=True,
             check=True,
+            cwd="/",
         )
 
         logging.info(
