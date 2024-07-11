@@ -26,6 +26,8 @@ class ExpectedPatientNoteKeys(Enum):
     THREAD = "thread"
     USER_TYPE = "user_type"
     REPLY_TO_OBJECT = "reply_to_object"
+    REPLIES = "replies"
+    FILES = "files"
 
 
 class ExpectedFacilityKeys(Enum):
