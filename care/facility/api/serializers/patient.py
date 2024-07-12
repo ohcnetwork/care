@@ -537,7 +537,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
 
     def get_files(self, obj):
         return FileUpload.objects.filter(
-            associating_id=obj.id,
+            associating_id=obj.external_id,
             file_type=FileUpload.FileType.NOTES.value,
             upload_completed=True,
             is_archived=False,
