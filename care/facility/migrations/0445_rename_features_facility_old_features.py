@@ -2,7 +2,6 @@
 
 import django.contrib.postgres.fields
 from django.db import migrations, models
-from django.db.models import Q
 
 
 def convert_features_to_array(apps, schema_editor):
@@ -13,8 +12,11 @@ def convert_features_to_array(apps, schema_editor):
     updated_facilities = []
 
     for facility in facilities_to_update:
-        facility.features = list(map(int, facility.old_features.split(",")))
-        updated_facilities.append(facility)
+        try:
+            facility.features = list(facility.old_features)
+            updated_facilities.append(facility)
+        except ValueError:
+            print(f"facility '{facility.name}' has invalid facility features")
 
     if updated_facilities:
         Facility.objects.bulk_update(updated_facilities, ["features"])
