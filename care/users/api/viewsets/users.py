@@ -416,7 +416,7 @@ class UserViewSet(
             User.TYPE_VALUE_MAP["StateAdmin"],
         ]
         user = self.get_object()
-        has_write_permission = user.is_superuser or user.id == user.id or (
+        has_write_permission = user.is_superuser or user.id == self.request.user.id or (
             user.user_type in allowed_user_types
             and self.facility.has_object_write_permission(self.request)
         )
@@ -428,7 +428,7 @@ class UserViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# def has_profile_image_write_permission(self, user, request):
+#      def has_profile_image_write_permission(self, user, request):
 #         allowed_user_types = [
 #             User.TYPE_VALUE_MAP["WardAdmin"],
 #             User.TYPE_VALUE_MAP["LocalBodyAdmin"],
@@ -438,7 +438,7 @@ class UserViewSet(
 #         return user.is_superuser or (
 #             user.user_type in allowed_user_types
 #             and self.facility.has_object_write_permission(request)
-#         )
+#         ) or user.id == request.user.id
 
 #     @extend_schema(tags=["users"])
 #     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
