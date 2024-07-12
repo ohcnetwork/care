@@ -8,7 +8,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 # ---
 FROM base as builder
-FROM ghcr.io/typst/typst:v0.11.0 as typstOfficialImage
 
 ARG BUILD_ENVIRONMENT=production
 
@@ -21,7 +20,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN python -m venv /venv
 RUN pip install pipenv
 
-COPY --from=typstOfficialImage /bin/typst /bin/typst
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv sync --system --categories "packages"
@@ -32,6 +30,8 @@ RUN python3 /app/install_plugins.py
 
 # ---
 FROM base as runtime
+FROM ghcr.io/typst/typst:v0.11.0 as typstOfficialImage
+
 
 ARG BUILD_ENVIRONMENT=production
 ARG APP_HOME=/app
@@ -53,6 +53,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 # copy in Python environment
 COPY --from=builder /venv /venv
+
+# copy typst binary from typst official image to bin
+COPY --from=typstOfficialImage /bin/typst /bin/typst
 
 COPY --chmod=0755 ./scripts/*.sh ./
 
