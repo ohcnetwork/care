@@ -509,6 +509,31 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
         )
 
+    def test_transfer_with_expired_patient(self):
+        # Mocking discharged as expired
+        self.consultation.new_discharge_reason = NewDischargeReasonEnum.EXPIRED
+        self.consultation.death_datetime = now()
+        self.consultation.save()
+
+        # Set the patient's facility to allow transfers
+        self.patient.allow_transfer = True
+        self.patient.save()
+
+        # Ensure transfer fails if the patient has an active consultation
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the patient is expired",
+        )
+
     def test_transfer_disallowed_by_facility(self):
         # Set the patient's facility to disallow transfers
         self.patient.allow_transfer = False

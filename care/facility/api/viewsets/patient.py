@@ -565,6 +565,14 @@ class PatientViewSet(
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
         facility = Facility.objects.get(external_id=request.data["facility"])
 
+        if patient.is_expired:
+            return Response(
+                {
+                    "Patient": "Patient transfer cannot be completed because the patient is expired"
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         if patient.is_active and facility == patient.facility:
             return Response(
                 {
