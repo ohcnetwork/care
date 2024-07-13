@@ -279,6 +279,32 @@ class PatientFilterSet(filters.FilterSet):
             )
         return queryset.filter(filter_q)
 
+    last_consultation__consent_types = MultiSelectFilter(
+        method="filter_by_has_consents"
+    )
+
+    def filter_by_has_consents(self, queryset, name, value: str):
+
+        if not value:
+            return queryset
+
+        values = value.split(",")
+
+        filter_q = Q()
+
+        if "None" in values:
+            filter_q |= ~Q(
+                last_consultation__has_consents__len__gt=0,
+            )
+            values.remove("None")
+
+        if values:
+            filter_q |= Q(
+                last_consultation__has_consents__overlap=values,
+            )
+
+        return queryset.filter(filter_q)
+
 
 class PatientDRYFilter(DRYPermissionFiltersBase):
     def filter_queryset(self, request, queryset, view):
