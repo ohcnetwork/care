@@ -633,6 +633,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 and self.instance.facility
                 or validated["patient"].facility
             )
+            # Check if the Doctor is associated with the Facility (.facilities)
+            if (
+                not validated["treating_physician"]
+                .facilities.filter(id=facility.id)
+                .exists()
+            ):
+                raise ValidationError(
+                    "Oops! The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
+                )
+
             if (
                 validated["treating_physician"].home_facility
                 and validated["treating_physician"].home_facility != facility
