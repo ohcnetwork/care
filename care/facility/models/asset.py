@@ -178,6 +178,26 @@ class Asset(BaseModel):
         AssetBed.objects.filter(asset=self).update(deleted=True)
         super().delete(*args, **kwargs)
 
+    @staticmethod
+    def has_write_permission(request):
+        if request.user.asset or request.user.user_type in User.READ_ONLY_TYPES:
+            return False
+        return (
+            request.user.is_superuser
+            or request.user.verified
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    def has_object_write_permission(self, request):
+        return self.has_write_permission(request)
+
+    @staticmethod
+    def has_read_permission(request):
+        return request.user.is_superuser or request.user.verified
+
+    def has_object_read_permission(self, request):
+        return self.has_read_permission(request)
+
     def __str__(self):
         return self.name
 
