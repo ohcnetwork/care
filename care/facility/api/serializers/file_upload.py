@@ -8,7 +8,10 @@ from care.facility.models.facility import Facility
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientRegistration
-from care.facility.models.patient_consultation import PatientConsultation
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
@@ -55,9 +58,9 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 raise Exception("No Permission")
             return consultation.id
         elif file_type == FileUpload.FileType.CONSENT_RECORD.value:
-            consultation = PatientConsultation.objects.get(
-                consent_records__contains=[{"id": associating_id}]
-            )
+            consultation = PatientConsent.objects.get(
+                external_id=associating_id
+            ).consultation
             if consultation.discharge_date and not action == "read":
                 raise serializers.ValidationError(
                     {
@@ -194,6 +197,7 @@ class FileUploadListSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "associating_id",
             "uploaded_by",
             "archived_by",
             "archived_datetime",

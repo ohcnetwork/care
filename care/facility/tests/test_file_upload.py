@@ -1,5 +1,3 @@
-import json
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -64,31 +62,16 @@ class ConsentFileUploadApiTestCase(TestUtils, APITestCase):
             cls.district, cls.facility, local_body=cls.local_body
         )
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
+        cls.consent = cls.create_patient_consent(cls.consultation, created_by=cls.user)
 
     def test_consent_file_upload(self):
-        response = self.client.patch(
-            f"/api/v1/consultation/{self.consultation.external_id}/",
-            {
-                "consent_records": json.dumps(
-                    [
-                        {
-                            "id": "consent-12345",
-                            "type": 2,
-                            "patient_code_status": 1,
-                        }
-                    ]
-                )
-            },
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         upload_response = self.client.post(
             "/api/v1/files/",
             {
                 "original_name": "test.pdf",
                 "file_type": "CONSENT_RECORD",
                 "name": "Test File",
-                "associating_id": "consent-12345",
+                "associating_id": self.consent.external_id,
                 "file_category": "UNSPECIFIED",
                 "mime_type": "application/pdf",
             },
@@ -97,11 +80,12 @@ class ConsentFileUploadApiTestCase(TestUtils, APITestCase):
         self.assertEqual(upload_response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
-            FileUpload.objects.filter(associating_id="consent-12345").count(), 1
+            FileUpload.objects.filter(associating_id=self.consent.external_id).count(),
+            1,
         )
 
         all_files = self.client.get(
-            "/api/v1/files/?associating_id=consent-12345&file_type=CONSENT_RECORD&is_archived=false"
+            f"/api/v1/files/?associating_id={self.consent.external_id}&file_type=CONSENT_RECORD&is_archived=false"
         )
 
         self.assertEqual(all_files.status_code, status.HTTP_200_OK)

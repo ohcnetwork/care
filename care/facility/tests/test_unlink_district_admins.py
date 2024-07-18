@@ -49,11 +49,8 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
         response = self.client.delete(
             "/api/v1/users/" + username + "/clear_home_facility/"
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.json()["facility"],
-            "Cannot unlink User's Home Facility from other district",
-        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.json()["detail"], "User not found")
 
     def test_unlink_faciltity_admin_same_district(self):
         self.client.force_login(self.admin1)
@@ -80,5 +77,12 @@ class UnlinkDistrictAdmin(TestUtils, APITestCase):
             "/api/v1/users/" + username + "/delete_facility/",
             {"facility": self.facility2.external_id},
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()["facility"], "Facility Access not Present")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.json()["detail"], "User not found")
+
+    def test_unlink_home_facility_by_nurse(self):
+        self.client.force_login(self.staff1)
+        response = self.client.delete(
+            f"/api/v1/users/{self.staff1.username}/clear_home_facility/"
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

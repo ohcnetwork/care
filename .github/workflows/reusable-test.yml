@@ -2,6 +2,14 @@ name: Test
 
 on:
   workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
+    inputs:
+      event_name:
+        required: false
+        type: string
+        default: 'pull_request'
 
 jobs:
   test:
@@ -12,8 +20,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+      - name: Restore Docker layers cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
@@ -50,9 +59,18 @@ jobs:
         run: make test-coverage
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Move cache
+      - name: Move new cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Save Docker layers cache
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
