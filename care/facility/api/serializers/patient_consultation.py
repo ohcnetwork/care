@@ -640,7 +640,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 .exists()
             ):
                 raise ValidationError(
-                    "Oops! The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
+                    "The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
                 )
 
             if (
