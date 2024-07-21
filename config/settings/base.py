@@ -116,7 +116,6 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "care.facility",
-    "care.abdm",
     "care.users",
     "care.audit_log",
     "care.hcx",
