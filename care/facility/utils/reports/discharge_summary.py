@@ -13,7 +13,6 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.facility.models import (
-    DailyRound,
     Disease,
     EncounterSymptom,
     InvestigationValue,
@@ -99,7 +98,6 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         patient=consultation.patient, consultation=consultation
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
-    daily_rounds = DailyRound.objects.filter(consultation=consultation)
     symptoms = EncounterSymptom.objects.filter(consultation=consultation).exclude(
         clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
     )
@@ -150,7 +148,6 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         "prn_prescriptions": prn_prescriptions,
         "discharge_prescriptions": discharge_prescriptions,
         "discharge_prn_prescriptions": discharge_prn_prescriptions,
-        "dailyrounds": daily_rounds,
         "medical_history": medical_history,
         "investigations": investigations,
         "files": files,

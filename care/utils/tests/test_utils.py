@@ -14,11 +14,18 @@ from care.facility.models import (
     Ambulance,
     Disease,
     DiseaseStatusEnum,
+    EncounterSymptom,
     Facility,
+    InvestigationSession,
+    InvestigationValue,
     LocalBody,
     PatientConsultation,
     PatientExternalTest,
+    PatientInvestigation,
+    PatientInvestigationGroup,
     PatientRegistration,
+    PatientSample,
+    Prescription,
     User,
     Ward,
 )
@@ -36,6 +43,7 @@ from care.facility.models.patient_consultation import (
     PatientCodeStatusType,
     PatientConsent,
 )
+from care.hcx.models.policy import Policy
 from care.users.models import District, State
 
 
@@ -502,6 +510,218 @@ class TestUtils:
         data = cls.get_ambulance_data(district, user)
         data.update(**kwargs)
         return Ambulance.objects.create(**data)
+
+    @classmethod
+    def get_patient_sample_data(cls, patient, consultation, facility, user) -> dict:
+        return {
+            "patient": patient,
+            "consultation": consultation,
+            "sample_type": 1,
+            "sample_type_other": "sample sample type other field",
+            "has_sari": False,
+            "has_ari": False,
+            "doctor_name": "Sample Doctor",
+            "diagnosis": "Sample diagnosis",
+            "diff_diagnosis": "Sample different diagnosis",
+            "etiology_identified": "Sample etiology identified",
+            "is_atypical_presentation": False,
+            "atypical_presentation": "Sample atypical presentation",
+            "is_unusual_course": False,
+            "icmr_category": 10,
+            "icmr_label": "Sample ICMR",
+            "date_of_sample": date(2020, 4, 1),
+            "date_of_result": date(2020, 4, 5),
+            "testing_facility": facility,
+            "created_by": user,
+            "last_edited_by": user,
+        }
+
+    @classmethod
+    def create_patient_sample(
+        cls,
+        patient: PatientRegistration,
+        consultation: PatientConsultation,
+        facility: Facility,
+        user: User,
+        **kwargs,
+    ) -> PatientSample:
+        data = cls.get_patient_sample_data(patient, consultation, facility, user)
+        data.update(**kwargs)
+        return PatientSample.objects.create(**data)
+
+    @classmethod
+    def get_policy_data(cls, patient, user) -> dict:
+        return {
+            "patient": patient,
+            "subscriber_id": "sample_subscriber_id",
+            "policy_id": "sample_policy_id",
+            "insurer_id": "sample_insurer_id",
+            "insurer_name": "Sample Insurer",
+            "status": "active",
+            "priority": "normal",
+            "purpose": "discovery",
+            "outcome": "complete",
+            "error_text": "No errors",
+            "created_by": user,
+            "last_modified_by": user,
+        }
+
+    @classmethod
+    def create_policy(
+        cls, patient: PatientRegistration, user: User, **kwargs
+    ) -> Policy:
+        data = cls.get_policy_data(patient, user)
+        data.update(**kwargs)
+        return Policy.objects.create(**data)
+
+    @classmethod
+    def get_encounter_symptom_data(cls, consultation, user) -> dict:
+        return {
+            "symptom": 2,
+            "onset_date": date(2020, 4, 1),
+            "cure_date": date(2020, 5, 5),
+            "clinical_impression_status": 3,
+            "consultation": consultation,
+            "created_by": user,
+            "updated_by": user,
+            "is_migrated": False,
+        }
+
+    @classmethod
+    def create_encounter_symptom(
+        cls, consultation: PatientConsultation, user: User, **kwargs
+    ) -> EncounterSymptom:
+        data = cls.get_encounter_symptom_data(consultation, user)
+        data.update(**kwargs)
+        return EncounterSymptom.objects.create(**data)
+
+    @classmethod
+    def get_patient_investigation_data(cls) -> dict:
+        return {
+            "name": "Sample Investigation",
+            "unit": "mg/dL",
+            "ideal_value": "50-100",
+            "min_value": 50.0,
+            "max_value": 100.0,
+            "investigation_type": "Choice",
+            "choices": "Option1,Option2,Option3",
+        }
+
+    @classmethod
+    def create_patient_investigation(
+        cls, patient_investigation_group: PatientInvestigationGroup, **kwargs
+    ) -> PatientInvestigation:
+        data = cls.get_patient_investigation_data()
+        data.update(**kwargs)
+        investigation = PatientInvestigation.objects.create(**data)
+        if "groups" in kwargs:
+            investigation.groups.set(kwargs["groups"])
+        else:
+            investigation.groups.set([patient_investigation_group])
+        return investigation
+
+    @classmethod
+    def get_patient_investigation_group_data(cls) -> dict:
+        return {
+            "name": "Sample Investigation group",
+        }
+
+    @classmethod
+    def create_patient_investigation_group(cls, **kwargs) -> PatientInvestigationGroup:
+        data = cls.get_patient_investigation_group_data()
+        data.update(**kwargs)
+        investigation_group = PatientInvestigationGroup.objects.create(**data)
+        return investigation_group
+
+    @classmethod
+    def get_patient_investigation_session_data(cls, user) -> dict:
+        return {
+            "created_by": user,
+        }
+
+    @classmethod
+    def create_patient_investigation_session(
+        cls, user: User, **kwargs
+    ) -> InvestigationSession:
+        data = cls.get_patient_investigation_session_data(user)
+        data.update(**kwargs)
+        investigation_session = InvestigationSession.objects.create(**data)
+        return investigation_session
+
+    @classmethod
+    def get_investigation_value_data(
+        cls, investigation, consultation, session, group
+    ) -> dict:
+        return {
+            "investigation": investigation,
+            "group": group,
+            "value": 5.0,
+            "notes": "Sample notes",
+            "consultation": consultation,
+            "session": session,
+        }
+
+    @classmethod
+    def create_investigation_value(
+        cls,
+        investigation: PatientInvestigation,
+        consultation: PatientConsultation,
+        session: InvestigationSession,
+        group: PatientInvestigationGroup,
+        **kwargs,
+    ) -> InvestigationValue:
+        data = cls.get_investigation_value_data(
+            investigation, consultation, session, group
+        )
+        data.update(**kwargs)
+        return InvestigationValue.objects.create(**data)
+
+    @classmethod
+    def get_disease_data(cls, patient) -> dict:
+        return {
+            "patient": patient,
+            "disease": 4,
+            "details": "Sample disease details",
+        }
+
+    @classmethod
+    def create_disease(cls, patient: PatientRegistration, **kwargs) -> Disease:
+        data = cls.get_disease_data(patient)
+        data.update(**kwargs)
+        return Disease.objects.create(**data)
+
+    @classmethod
+    def get_prescription_data(cls, consultation, user) -> dict:
+        return {
+            "consultation": consultation,
+            "prescription_type": "REGULAR",
+            "medicine": None,  # TODO : Create medibase medicine
+            "medicine_old": "Sample old Medicine",
+            "route": "Oral",
+            "base_dosage": "500mg",
+            "dosage_type": "REGULAR",
+            "target_dosage": "1000mg",
+            "instruction_on_titration": "Sample Instruction for titration",
+            "frequency": "8th hourly",
+            "days": 7,
+            # prn fields
+            "indicator": "Sample indicator",
+            "max_dosage": "2000mg",
+            "min_hours_between_doses": 6,
+            "notes": "Take with food",
+            "prescribed_by": user,
+            "discontinued": False,
+            "discontinued_reason": "sample discontinued reason",
+            "discontinued_date": date(2020, 4, 1),
+        }
+
+    @classmethod
+    def create_prescription(
+        cls, consultation: PatientConsultation, user: User, **kwargs
+    ) -> Prescription:
+        data = cls.get_prescription_data(consultation, user)
+        data.update(**kwargs)
+        return Prescription.objects.create(**data)
 
     def get_list_representation(self, obj) -> dict:
         """

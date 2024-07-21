@@ -17,7 +17,7 @@
   stroke: frame(rgb("21222C")),
 )
 
-#align(center, text(24pt)[= {{patient.facility.name}}])
+#align(center, text(24pt,weight: "bold")[= {{patient.facility.name}}])  // Todo : Convert it to not use content mode
 
 #line(length: 100%, stroke: mygray)
 
@@ -38,18 +38,18 @@
 #grid(
   columns: (1fr, 1fr, 1fr, 1fr),
   row-gutter: 1.5em,
-  [Full name:], [{{patient.name}}],
-  [Gender:], [{{patient.get_gender_display}}],
-  [Age:], [{{patient.get_age}}],
+  [Full name:], "{{patient.name}}",
+  [Gender:], "{{patient.get_gender_display}}",
+  [Age:], "{{patient.get_age}}",
   {% if patient.date_of_birth %}
-  [Date of Birth:], [{{patient.date_of_birth}}],
+  [Date of Birth:], "{{patient.date_of_birth}}",
   {% else %}
-  [Date of Birth:], [{{patient.year_of_birth}}],
+  [Date of Birth:], "{{patient.year_of_birth}}",
   {% endif %}
-  [Blood Group:], [{{patient.blood_group}}],
-  [Phone Number:], [{{patient.phone_number}}],
-  [Ration Card Category:], [{{patient.get_ration_card_category_display}}], [], [],
-  [Address:], grid.cell(colspan: 3, [{{patient.address}}]),
+  [Blood Group:], "{{patient.blood_group}}",
+  [Phone Number:], "{{patient.phone_number}}",
+  [Ration Card Category:], "{{patient.get_ration_card_category_display}}", [], [],
+  [Address:], grid.cell(colspan: 3, "{{patient.address}}"),
 )
 
 #line(length: 100%, stroke: mygray)
@@ -61,22 +61,22 @@
   columns: (1.1fr, 2fr),
   row-gutter: 1.2em,
   align: (left),
-  [Route to Facility:], [{{consultation.get_route_to_facility_display|field_name_to_label}}],
-  [Decision after consultation:], [{{consultation.get_suggestion_display|field_name_to_label}}],
-  [Date of Admission:], [{{consultation.icu_admission_date}}],
+  [Route to Facility:], "{{consultation.get_route_to_facility_display|field_name_to_label}}",
+  [Decision after consultation:], "{{consultation.get_suggestion_display|field_name_to_label}}",
+  [Date of Admission:], "{{consultation.icu_admission_date}}",
   {% if consultation.icu_admission_date %}
-  [ICU Admission Date & Time:], [{{consultation.icu_admission_date}}],
+  [ICU Admission Date & Time:], "{{consultation.icu_admission_date}}",
   {% endif %}
   {% if consultation.suggestion == 'A' %}
-  [Date of admission:], [{{consultation.encounter_date}}],
+  [Date of admission:], "{{consultation.encounter_date}}",
   {% elif consultation.suggestion == 'R' %}
-  [Referred to:], [{{consultation.referred_to.name}}],
+  [Referred to:], "{{consultation.referred_to.name}}",
   {% elif consultation.suggestion == 'DD' %}
-  [Cause of death:], [{{consultation.discharge_notes}}],
-  [Date and time of death:], [{{consultation.death_datetime}}],
-  [Death Confirmed by:], [{{consultation.death_confirmed_by}}],
+  [Cause of death:], "{{consultation.discharge_notes}}",
+  [Date and time of death:], "{{consultation.death_datetime}}",
+  [Death Confirmed by:], "{{consultation.death_confirmed_by}}",
   {% endif %}
-  [IP No:], [{{consultation.patient_no}}],
+  [IP No:], "{{consultation.patient_no}}",
   [Weight:], [{{consultation.weight}} kg],
   [Height:], [{{consultation.height}} cm],
   [Symptoms at admission:], [Sore Throat, Cough],
@@ -96,7 +96,7 @@
     [*INSURER NAME*], [*ISSUER ID*], [*MEMBER ID*], [*POLICY ID*],
   ),
   {% for policy in hcx %}
-  [{{policy.insurer_name}}], [{{policy.insurer_id}}], [{{policy.subscriber_id}}], [{{policy.policy_id}}],
+  "{{policy.insurer_name}}", "{{policy.insurer_id}}", "{{policy.subscriber_id}}", "{{policy.policy_id}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -118,8 +118,8 @@
   {% else %}
   {{symptom.get_symptom_display}}
   {% endif %}],
-  [{{symptom.onset_date.date}}],
-  [{{symptom.cure_date.date}}],
+  "{{symptom.onset_date.date}}",
+  "{{symptom.cure_date.date}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -136,7 +136,7 @@
     [*ID*], [*NAME*],
   ),
   {% for disease in principal_diagnosis %}
-  [{{disease.id}}], [{{disease.label}}],
+  "{{disease.id}}", "{{disease.label}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -153,7 +153,7 @@
     [*ID*], [*NAME*],
   ),
   {% for disease in unconfirmed_diagnoses %}
-  [{{disease.id}}], [{{disease.label}}],
+  "{{disease.id}}", "{{disease.label}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -170,7 +170,7 @@
     [*ID*], [*NAME*],
   ),
   {% for disease in provisional_diagnoses %}
-  [{{disease.id}}], [{{disease.label}}],
+  "{{disease.id}}", "{{disease.label}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -187,7 +187,7 @@
     [*ID*], [*NAME*],
   ),
   {% for disease in differential_diagnoses %}
-  [{{disease.id}}], [{{disease.label}}],
+  "{{disease.id}}", "{{disease.label}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -204,7 +204,7 @@
     [*ID*], [*NAME*],
   ),
   {% for disease in confirmed_diagnoses %}
-  [{{disease.id}}], [{{disease.label}}],
+  "{{disease.id}}", "{{disease.label}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -222,7 +222,7 @@
     [*COMORBIDITY*], [*DETAILS*],
   ),
   {% for disease in medical_history %}
-  [{{disease.get_disease_display}}], [{{disease.details}}],
+  "{{disease.get_disease_display}}", "{{disease.details}}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray,)])
@@ -235,13 +235,13 @@
   columns: (1fr, 2fr),
   gutter: 1.4em,
   align: (left),
-  [Present health condition:], [{{patient.present_health}}],
-  [Ongoing Medication:], [{{patient.ongoing_medication}}],
+  [Present health condition:], "{{patient.present_health}}",
+  [Ongoing Medication:], "{{patient.ongoing_medication}}",
   {% if consultation.route_to_facility %}
-  [History of present illness:], [{{consultation.history_of_present_illness}}],
+  [History of present illness:], "{{consultation.history_of_present_illness}}",
   {% endif %}
-  [Allergies:], [{{patient.allergies}}],
-  [Examination details and Clinical conditions:], [{{consultation.examination_details}}],
+  [Allergies:], "{{patient.allergies}}",
+  [Examination details and Clinical conditions:], "{{consultation.examination_details}}",
 )
 
 #text("")
@@ -259,7 +259,7 @@
       align: (left),
       [COVID Disease Status:], [Positive],
       {% if patient.date_of_result %}
-        [Test Result Date:], [{{ patient.date_of_result.date }}],
+        [Test Result Date:], "{{ patient.date_of_result.date }}",
       {% endif %}
       [Vaccinated against COVID:], [
         {% if patient.is_vaccinated %}
@@ -286,15 +286,15 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Medicine:], [{{ prescription.medicine_name }}],
+      [Medicine:], "{{ prescription.medicine_name }}",
       [Dosage:], [{{ prescription.base_dosage }}{% if prescription.dosage_type == 'TITRATED' %} to {{ prescription.target_dosage }}{% endif %}],
       {% if prescription.dosage_type == 'TITRATED' %}
-      [Instruction on titration:], [{{ prescription.instruction_on_titration }}],
+      [Instruction on titration:], "{{ prescription.instruction_on_titration }}",
       {% endif %}
-      [Route:], [{{ prescription.route }}],
-      [Frequency:], [{{ prescription.frequency }}],
-      [Days:], [{{ prescription.days }}],
-      [Notes:], [{{ prescription.notes }}],
+      [Route:], "{{ prescription.route }}",
+      [Frequency:], "{{ prescription.frequency }}",
+      [Days:], "{{ prescription.days }}",
+      [Notes:], "{{ prescription.notes }}",
     )],
     {% endfor %}
   )
@@ -317,12 +317,12 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Medicine:], [{{ prescription.medicine_name }}],
-      [Dosage:], [{{ prescription.base_dosage }}],
-      [Max Dosage:], [{{ prescription.max_dosage }}],
-      [Min Time btwn. 2 doses:], [{{ prescription.min_hours_between_doses }}],
-      [Route:], [{{ prescription.route }}],
-      [Indicator:], [{{ prescription.indicator }}],
+      [Medicine:], "{{ prescription.medicine_name }}",
+      [Dosage:], "{{ prescription.base_dosage }}",
+      [Max Dosage:], "{{ prescription.max_dosage }}",
+      [Min Time btwn. 2 doses:], "{{ prescription.min_hours_between_doses }}",
+      [Route:], "{{ prescription.route }}",
+      [Indicator:], "{{ prescription.indicator }}",
     )],
     {% endfor %}
   )
@@ -334,16 +334,16 @@
   #align(left, text(14pt,weight: "bold",)[=== Investigations Suggestions:])
 
   #table(
-    columns: (1fr, 1fr, 2fr),
+    columns: (1.5fr, 1fr, 1.5fr),
     inset: 10pt,
     align: horizon,
     table.header(
       [*TYPE*], [*TIME*], [*NOTES*]
     ),
     {% for investigation in consultation.investigation %}
-    [{{ investigation.type|join:", " }}],
+    "{{ investigation.type|join:", " }}",
     [{% if investigation.repetitive %}every {{ investigation.frequency }}{% else %}{{ investigation.time|date:"DATETIME_FORMAT" }}{% endif %}],
-    [{{ investigation.notes }}],
+    "{{ investigation.notes }}",
     {% endfor %}
   )
 
@@ -361,7 +361,7 @@
       [*PROCEDURE*], [*TIME*], [*NOTES*]
     ),
     {% for procedure in consultation.procedure %}
-    [{{ procedure.procedure }}], [{% if procedure.repetitive %} every {{procedure.frequency}} {% else %} {{procedure.time|parse_datetime}} {% endif %}], [{{ procedure.notes }}],
+    "{{ procedure.procedure }}", [{% if procedure.repetitive %} every {{procedure.frequency}} {% else %} {{procedure.time|parse_datetime}} {% endif %}], "{{ procedure.notes }}",
     {% endfor %}
   )
 
@@ -369,7 +369,7 @@
   {% endif %}
 
   {% if consultation.treatment_plan %}
-  #align(left, text(14pt,weight: "bold")[=== Prescribed Medication:])
+  #align(left, text(14pt,weight: "bold")[=== Treatment Plan:])
   #text("{{consultation.treatment_plan}}")
   {% endif %}
 
@@ -398,7 +398,7 @@
       [*REQUESTED ON*], [*SAMPLE TYPE*], [*LABEL*],[*RESULT*],
     ),
     {% for sample in samples %}
-    [{{ sample.created_date }}], [{{ sample.get_sample_type_display }}], [{{ sample.icmr_label }}],[{{ sample.get_result_display }}],
+    "{{ sample.created_date }}", "{{ sample.get_sample_type_display }}", "{{ sample.icmr_label }}","{{ sample.get_result_display }}",
     {% endfor %}
   )
 
@@ -421,8 +421,8 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Group:], [{{ investigation.investigation.groups.first }}],
-      [Name:], [{{ investigation.investigation.name }}],
+      [Group:], "{{ investigation.investigation.groups.first }}",
+      [Name:], "{{ investigation.investigation.name }}",
       [Result:], [{% if investigation.value %}{{ investigation.value }}{% else %}{{ investigation.notes }}{% endif %}],
       [Range:], [{% if investigation.investigation.min_value and investigation.investigation.max_value %}
         {{ investigation.investigation.min_value }} - {{ investigation.investigation.max_value }}
@@ -433,7 +433,7 @@
         {{ investigation.investigation.unit }}
         {% endif %}
       ],
-      [Date:], [{{ investigation.created_date }}],
+      [Date:], "{{ investigation.created_date }}",
     )],
     {% endfor %}
   )
@@ -448,8 +448,8 @@
   columns: (1fr,3fr),
   row-gutter: 1.2em,
   align: (left),
-  [Discharge Date:], [{{consultation.discharge_date}}],
-  [Discharge Reason:], [{{consultation.get_discharge_reason_display}}],
+  [Discharge Date:], "{{consultation.discharge_date}}",
+  [Discharge Reason:], "{{consultation.get_discharge_reason_display}}",
 )
 
 {% if consultation.new_discharge_reason == 1 %}
@@ -468,12 +468,12 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Medicine:], [{{ prescription.medicine_name }}],
-      [Dosage:], [{{ prescription.base_dosage }}],
-      [Route:], [{{ prescription.route }}],
-      [Frequency:], [{{ prescription.frequency }}],
-      [Days:], [{{ prescription.days }}],
-      [Notes:], [{{ prescription.notes }}],
+      [Medicine:], "{{ prescription.medicine_name }}",
+      [Dosage:], "{{ prescription.base_dosage }}",
+      [Route:], "{{ prescription.route }}",
+      [Frequency:], "{{ prescription.frequency }}",
+      [Days:], "{{ prescription.days }}",
+      [Notes:], "{{ prescription.notes }}",
     )],
     {% endfor %}
   )
@@ -496,12 +496,12 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Medicine:], [{{ prescription.medicine_name }}],
-      [Dosage:], [{{ prescription.base_dosage }}],
-      [Max Dosage:], [{{ prescription.max_dosage }}],
-      [Min Time btwn. 2 doses:], [{{ prescription.min_hours_between_doses }}],
-      [Route:], [{{ prescription.route }}],
-      [Indicator:], [{{ prescription.indicator }}],
+      [Medicine:], "{{ prescription.medicine_name }}",
+      [Dosage:], "{{ prescription.base_dosage }}",
+      [Max Dosage:], "{{ prescription.max_dosage }}",
+      [Min Time btwn. 2 doses:], "{{ prescription.min_hours_between_doses }}",
+      [Route:], "{{ prescription.route }}",
+      [Indicator:], "{{ prescription.indicator }}",
     )],
     {% endfor %}
   )
@@ -519,7 +519,7 @@
   columns: (1fr,3fr),
   row-gutter: 1.2em,
   align: (left),
-  [Discharge Notes:], [{{consultation.discharge_notes}}],
+  [Discharge Notes:], "{{consultation.discharge_notes}}",
 )
 
 #align(center, [#line(length: 40%, stroke: mygray,)])
@@ -537,7 +537,7 @@
     [*UPLOADED AT*], [*NAME*],
   ),
   {% for file in files %}
-  [{{file.modified_date}}], [{{file.name}}],
+  "{{file.modified_date}}", "{{file.name}}",
   {% endfor %}
 )
 
