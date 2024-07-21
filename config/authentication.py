@@ -1,10 +1,8 @@
-import json
 import logging
 from datetime import datetime
 
 import jwt
 import requests
-from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -194,57 +192,6 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
             )
             asset_user.save()
         return asset_user
-
-
-class ABDMAuthentication(JWTAuthentication):
-    def open_id_authenticate(self, url, token):
-        public_key = requests.get(url)
-        jwk = public_key.json()["keys"][0]
-        public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
-        return jwt.decode(
-            token, key=public_key, audience="account", algorithms=["RS256"]
-        )
-
-    def authenticate_header(self, request):
-        return "Bearer"
-
-    def authenticate(self, request):
-        jwt_token = request.META.get("HTTP_AUTHORIZATION")
-        if jwt_token is None:
-            return None
-        jwt_token = self.get_jwt_token(jwt_token)
-
-        abdm_cert_url = f"{settings.ABDM_URL}/gateway/v0.5/certs"
-        validated_token = self.get_validated_token(abdm_cert_url, jwt_token)
-
-        return self.get_user(validated_token), validated_token
-
-    def get_jwt_token(self, token):
-        return token.replace("Bearer", "").replace(" ", "")
-
-    def get_validated_token(self, url, token):
-        try:
-            return self.open_id_authenticate(url, token)
-        except Exception as e:
-            logger.info(e, "Token: ", token)
-            raise InvalidToken({"detail": f"Invalid Authorization token: {e}"})
-
-    def get_user(self, validated_token):
-        user = User.objects.filter(username=settings.ABDM_USERNAME).first()
-        if not user:
-            password = User.objects.make_random_password()
-            user = User(
-                username=settings.ABDM_USERNAME,
-                email="hcx@coronasafe.network",
-                password=f"{password}123",
-                gender=3,
-                phone_number="917777777777",
-                user_type=User.TYPE_VALUE_MAP["Volunteer"],
-                verified=True,
-                date_of_birth=datetime.now().date(),
-            )
-            user.save()
-        return user
 
 
 class CustomJWTAuthenticationScheme(OpenApiAuthenticationExtension):
