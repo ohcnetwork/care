@@ -292,7 +292,9 @@ class TestUtils:
         }
 
     @classmethod
-    def create_patient(cls, district: District, facility: Facility, **kwargs):
+    def create_patient(
+        cls, district: District, facility: Facility, **kwargs
+    ) -> PatientRegistration:
         patient_data = cls.get_patient_data(district, district.state).copy()
         medical_history = patient_data.pop("medical_history", [])
 
@@ -529,8 +531,8 @@ class TestUtils:
             "is_unusual_course": False,
             "icmr_category": 10,
             "icmr_label": "Sample ICMR",
-            "date_of_sample": date(2020, 4, 1),
-            "date_of_result": date(2020, 4, 5),
+            "date_of_sample": make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_result": make_aware(datetime(2020, 4, 5, 15, 30, 00)),
             "testing_facility": facility,
             "created_by": user,
             "last_edited_by": user,
@@ -547,7 +549,12 @@ class TestUtils:
     ) -> PatientSample:
         data = cls.get_patient_sample_data(patient, consultation, facility, user)
         data.update(**kwargs)
-        return PatientSample.objects.create(**data)
+        sample = PatientSample.objects.create(**data)
+
+        # To make date static updating the object here for pdf testing
+        sample.created_date = make_aware(datetime(2020, 4, 1, 15, 30, 00))
+        sample.save()
+        return sample
 
     @classmethod
     def get_policy_data(cls, patient, user) -> dict:
@@ -578,8 +585,8 @@ class TestUtils:
     def get_encounter_symptom_data(cls, consultation, user) -> dict:
         return {
             "symptom": 2,
-            "onset_date": date(2020, 4, 1),
-            "cure_date": date(2020, 5, 5),
+            "onset_date": make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+            "cure_date": make_aware(datetime(2020, 5, 1, 15, 30, 00)),
             "clinical_impression_status": 3,
             "consultation": consultation,
             "created_by": user,
@@ -674,7 +681,11 @@ class TestUtils:
             investigation, consultation, session, group
         )
         data.update(**kwargs)
-        return InvestigationValue.objects.create(**data)
+        investigation_value = InvestigationValue.objects.create(**data)
+        # To make created date static updating the object here for pdf testing
+        investigation_value.created_date = make_aware(datetime(2020, 4, 1, 15, 30, 00))
+        investigation_value.save()
+        return investigation_value
 
     @classmethod
     def get_disease_data(cls, patient) -> dict:
