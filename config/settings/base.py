@@ -605,21 +605,6 @@ JWKS = JsonWebKey.import_key_set(
 
 APP_VERSION = env("APP_VERSION", default="unknown")
 
-# ABDM
-ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
-ABDM_CLIENT_ID = env("ABDM_CLIENT_ID", default="")
-ABDM_CLIENT_SECRET = env("ABDM_CLIENT_SECRET", default="")
-ABDM_URL = env("ABDM_URL", default="https://dev.abdm.gov.in")
-HEALTH_SERVICE_API_URL = env(
-    "HEALTH_SERVICE_API_URL", default="https://healthidsbx.abdm.gov.in/api"
-)
-ABDM_FACILITY_URL = env("ABDM_FACILITY_URL", default="https://facilitysbx.abdm.gov.in")
-HIP_NAME_PREFIX = env("HIP_NAME_PREFIX", default="")
-HIP_NAME_SUFFIX = env("HIP_NAME_SUFFIX", default="")
-ABDM_USERNAME = env("ABDM_USERNAME", default="abdm_user_internal")
-X_CM_ID = env("X_CM_ID", default="sbx")
-FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
-
 IS_PRODUCTION = False
 
 # HCX
