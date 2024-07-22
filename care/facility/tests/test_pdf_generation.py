@@ -18,11 +18,9 @@ from care.utils.tests.test_utils import TestUtils
 def compare_pngs(png_path1, png_path2):
     with Image.open(png_path1) as img1, Image.open(png_path2) as img2:
         if img1.mode != img2.mode:
-            print("PNG files differ in mode.")
             return False
 
         if img1.size != img2.size:
-            print("PNG files differ in size.")
             return False
 
         img1_data = list(img1.getdata())
@@ -75,10 +73,7 @@ def test_compile_typ(data):
                 Path(current_sample_file_path), Path(current_test_output_file_path)
             ):
                 return False
-
         return True
-    except subprocess.CalledProcessError:
-        return False
     except Exception:
         return False
     finally:
@@ -141,9 +136,9 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         )
         cls.create_disease(cls.patient)
         cls.create_prescription(cls.consultation, cls.user)
-        # Todo : prn and prn prescriptions
-        # TODO: create few values with titration for prescription
-        # Todo: Create diagnoses
+        # Todo : add prn and prn prescriptions
+        # TODO : create few values with titration for prescription
+        # Todo  : Create diagnoses
 
     def setUp(self) -> None:
         self.client = APIClient()
