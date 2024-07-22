@@ -280,7 +280,7 @@ class AssetViewSet(
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name", "serial_number", "qr_code_id"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filterset_class = AssetFilter
 
     def get_queryset(self):
