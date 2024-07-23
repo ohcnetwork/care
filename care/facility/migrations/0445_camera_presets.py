@@ -15,7 +15,7 @@ import care.utils.models.validators
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0443_remove_patientconsultation_consent_records_and_more"),
+        ("facility", "0444_alter_medicineadministration_dosage_and_more"),
     ]
 
     def delete_asset_beds_without_asset_class(apps, schema_editor):
