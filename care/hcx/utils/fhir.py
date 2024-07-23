@@ -258,7 +258,7 @@ class Fhir:
         return f"{resource.resource_type}/{resource.id}"
 
     def create_patient_profile(
-        self, id: str, name: str, gender: str, identifier_value: str
+        self, id: str, name: str, gender: str, phone: str, identifier_value: str
     ):
         return patient.Patient(
             id=id,
@@ -280,6 +280,7 @@ class Fhir:
             ],
             name=[{"text": name}],
             gender=gender,
+            telecom=[{"system": "phone", "value": phone}],
         )
 
     def create_provider_profile(self, id: str, name: str, identifier_value: str):
@@ -558,9 +559,11 @@ class Fhir:
                             category=codeableconcept.CodeableConcept(
                                 coding=[
                                     coding.Coding(
-                                        system=SYSTEM.claim_item_category_pmjy
-                                        if item["category"] == "HBP"
-                                        else SYSTEM.claim_item_category,
+                                        system=(
+                                            SYSTEM.claim_item_category_pmjy
+                                            if item["category"] == "HBP"
+                                            else SYSTEM.claim_item_category
+                                        ),
                                         code=item["category"],
                                     )
                                 ]
@@ -695,6 +698,7 @@ class Fhir:
         coverage_id: str,
         eligibility_request_id: str,
         eligibility_request_identifier_value: str,
+        patient_phone: str,
         status="active",
         priority="normal",
         purpose="validation",
@@ -709,7 +713,7 @@ class Fhir:
             insurer_id, insurer_name, insurer_identifier_value
         )
         patient = self.create_patient_profile(
-            patient_id, pateint_name, patient_gender, subscriber_id
+            patient_id, pateint_name, patient_gender, patient_phone, subscriber_id
         )
         enterer = self.create_practitioner_role_profile(
             enterer_id, enterer_identifier_value, enterer_speciality, enterer_phone
@@ -792,6 +796,7 @@ class Fhir:
         claim_id: str,
         claim_identifier_value: str,
         items: list[IClaimItem],
+        patient_phone: str,
         use="claim",
         status="active",
         type="institutional",
@@ -810,7 +815,7 @@ class Fhir:
             insurer_id, insurer_name, insurer_identifier_value
         )
         patient = self.create_patient_profile(
-            patient_id, pateint_name, patient_gender, subscriber_id
+            patient_id, pateint_name, patient_gender, patient_phone, subscriber_id
         )
         coverage = self.create_coverage_profile(
             coverage_id,
@@ -947,15 +952,17 @@ class Fhir:
                 map(
                     lambda content: (
                         communication.CommunicationPayload(
-                            contentString=content["data"]
-                            if content["type"] == "text"
-                            else None,
-                            contentAttachment=attachment.Attachment(
-                                url=content["data"],
-                                title=content["name"] if content["name"] else None,
-                            )
-                            if content["type"] == "url"
-                            else None,
+                            contentString=(
+                                content["data"] if content["type"] == "text" else None
+                            ),
+                            contentAttachment=(
+                                attachment.Attachment(
+                                    url=content["data"],
+                                    title=content["name"] if content["name"] else None,
+                                )
+                                if content["type"] == "url"
+                                else None
+                            ),
                         )
                     ),
                     payload,
