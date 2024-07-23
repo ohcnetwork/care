@@ -280,7 +280,7 @@ class Fhir:
             ],
             name=[{"text": name}],
             gender=gender,
-            telecom=[{"system": "phone", "value": phone}],
+            telecom=[{"system": "phone", "use": "mobile", "value": phone}],
         )
 
     def create_provider_profile(self, id: str, name: str, identifier_value: str):
