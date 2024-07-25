@@ -555,7 +555,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
-        "audio/mp4"
+        "audio/mp4",
         # Documents
         "text/plain",
         "text/csv",
