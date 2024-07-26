@@ -322,7 +322,7 @@ class HcxGatewayViewSet(GenericViewSet):
     def payors(self, request):
         payors = Hcx().searchRegistry("roles", "payor")["participants"]
 
-        result = list(filter(lambda payor: payor["status"] == "Active", payors))
+        result = filter(lambda payor: payor["status"] == "Active", payors)
 
         if query := request.query_params.get("query"):
             query = query.lower()
