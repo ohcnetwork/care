@@ -1,34 +1,14 @@
+from contextlib import suppress
 from datetime import datetime
 
+from django.core.exceptions import FieldDoesNotExist
 from django.db import transaction
-from django.db.models import Field, Model
+from django.db.models import Model
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 
 from care.facility.models.events import ChangeType, EventType, PatientConsultationEvent
 from care.utils.event_utils import get_changed_fields, serialize_field
-
-
-def transform(
-    object_instance: Model,
-    old_instance: Model,
-    fields_to_store: set[str] | None = None,
-) -> dict[str, any]:
-    fields: set[Field] = set()
-    if old_instance:
-        changed_fields = get_changed_fields(old_instance, object_instance)
-        fields = {
-            field
-            for field in object_instance._meta.fields
-            if field.name in changed_fields
-        }
-    else:
-        fields = set(object_instance._meta.fields)
-
-    if fields_to_store:
-        fields = {field for field in fields if field.name in fields_to_store}
-
-    return {field.name: serialize_field(object_instance, field) for field in fields}
 
 
 def create_consultation_event_entry(
@@ -41,24 +21,28 @@ def create_consultation_event_entry(
 ):
     change_type = ChangeType.UPDATED if old_instance else ChangeType.CREATED
 
-    data = transform(object_instance, old_instance, fields_to_store)
-    fields_to_store = fields_to_store or set(data.keys())
+    fields: set[str] = (
+        get_changed_fields(old_instance, object_instance)
+        if old_instance
+        else {field.name for field in object_instance._meta.fields}
+    )
+
+    fields_to_store = fields_to_store & fields if fields_to_store else fields
 
     batch = []
     groups = EventType.objects.filter(
         model=object_instance.__class__.__name__, fields__len__gt=0, is_active=True
     ).values_list("id", "fields")
     for group_id, group_fields in groups:
-        if set(group_fields) & fields_to_store:
+        if fields_to_store & {field.split("__", 1)[0] for field in group_fields}:
             value = {}
             for field in group_fields:
-                try:
-                    value[field] = data[field]
-                except KeyError:
-                    value[field] = getattr(object_instance, field, None)
-            # if all values in the group are Falsy, skip creating the event for this group
+                with suppress(FieldDoesNotExist):
+                    value[field] = serialize_field(object_instance, field)
+
             if all(not v for v in value.values()):
                 continue
+
             PatientConsultationEvent.objects.select_for_update().filter(
                 consultation_id=consultation_id,
                 event_type=group_id,
