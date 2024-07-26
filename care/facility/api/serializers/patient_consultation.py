@@ -273,7 +273,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation,
             self.context["request"].user.id,
             consultation.modified_date,
-            old_instance,
+            old=old_instance,
         )
 
         if "assigned_to" in validated_data:
@@ -819,7 +819,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 instance,
                 self.context["request"].user.id,
                 instance.modified_date,
-                old_instance,
+                old=old_instance,
             )
 
             return instance
