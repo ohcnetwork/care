@@ -71,7 +71,9 @@ class SYSTEM:
     claim_bundle_identifier = "https://www.tmh.in/bundle"
     coverage_eligibility_request_bundle_identifier = "https://www.tmh.in/bundle"
     practitioner_speciality = "http://snomed.info/sct"
-    claim_supporting_info_category = "https://ig.hcxprotocol.io/v0.7.1/ValueSet-claim-supporting-info-categories.html"
+    claim_supporting_info_category = (
+        "http://hcxprotocol.io/codes/claim-supporting-info-categories"
+    )
     related_claim_relationship = (
         "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship"
     )
