@@ -8,7 +8,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import EmailMessage
-from django.db.models import Q
+from django.db.models import Case, IntegerField, Q, Value, When
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -107,24 +107,34 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         & (Q(value__isnull=False) | Q(notes__isnull=False))
     )
     medical_history = Disease.objects.filter(patient=consultation.patient)
-    prescriptions = Prescription.objects.filter(
-        consultation=consultation,
-        prescription_type=PrescriptionType.REGULAR.value,
-    ).exclude(dosage_type=PrescriptionDosageType.PRN.value)
-    prn_prescriptions = Prescription.objects.filter(
-        consultation=consultation,
-        prescription_type=PrescriptionType.REGULAR.value,
-        dosage_type=PrescriptionDosageType.PRN.value,
+    prescriptions = (
+        Prescription.objects.filter(
+            consultation=consultation, prescription_type=PrescriptionType.REGULAR.value
+        )
+        .annotate(
+            order_priority=Case(
+                When(dosage_type=PrescriptionDosageType.PRN.value, then=Value(2)),
+                When(dosage_type=PrescriptionDosageType.TITRATED.value, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by("order_priority", "id")
     )
-    discharge_prescriptions = Prescription.objects.filter(
-        consultation=consultation,
-        prescription_type=PrescriptionType.DISCHARGE.value,
-    ).exclude(dosage_type=PrescriptionDosageType.PRN.value)
-
-    discharge_prn_prescriptions = Prescription.objects.filter(
-        consultation=consultation,
-        prescription_type=PrescriptionType.DISCHARGE.value,
-        dosage_type=PrescriptionDosageType.PRN.value,
+    discharge_prescriptions = (
+        Prescription.objects.filter(
+            consultation=consultation,
+            prescription_type=PrescriptionType.DISCHARGE.value,
+        )
+        .annotate(
+            order_priority=Case(
+                When(dosage_type=PrescriptionDosageType.PRN.value, then=Value(2)),
+                When(dosage_type=PrescriptionDosageType.TITRATED.value, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by("order_priority", "id")
     )
     files = FileUpload.objects.filter(
         associating_id=consultation.id,
@@ -132,22 +142,19 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         upload_completed=True,
         is_archived=False,
     )
-
     return {
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
         "symptoms": symptoms,
-        "principal_diagnoses": diagnoses["principal"],
-        "unconfirmed_diagnoses": diagnoses["unconfirmed"],
-        "provisional_diagnoses": diagnoses["provisional"],
-        "differential_diagnoses": diagnoses["differential"],
-        "confirmed_diagnoses": diagnoses["confirmed"],
+        "diagnoses": diagnoses["confirmed"]
+        + diagnoses["provisional"]
+        + diagnoses["unconfirmed"]
+        + diagnoses["differential"],
+        "primary_diagnoses": diagnoses["principal"],
         "consultation": consultation,
         "prescriptions": prescriptions,
-        "prn_prescriptions": prn_prescriptions,
         "discharge_prescriptions": discharge_prescriptions,
-        "discharge_prn_prescriptions": discharge_prn_prescriptions,
         "medical_history": medical_history,
         "investigations": investigations,
         "files": files,
