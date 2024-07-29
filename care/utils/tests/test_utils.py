@@ -172,6 +172,8 @@ class TestUtils:
             username = f"user{now().timestamp()}"
 
         data = {
+            "first_name": "Foo",
+            "last_name": "Bar",
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
             "date_of_birth": date(1992, 4, 1),

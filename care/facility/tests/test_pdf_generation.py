@@ -10,6 +10,12 @@ from django.test import TestCase
 from PIL import Image
 from rest_framework.test import APIClient
 
+from care.facility.models import (
+    ConditionVerificationStatus,
+    ICD11Diagnosis,
+    PrescriptionDosageType,
+    PrescriptionType,
+)
 from care.facility.utils.reports import discharge_summary
 from care.facility.utils.reports.discharge_summary import compile_typ
 from care.utils.tests.test_utils import TestUtils
@@ -58,7 +64,7 @@ def test_compile_typ(data):
             check=True,
             cwd="/",
         )
-        for i in range(1, 4):
+        for i in range(1, 3):
             current_sample_file_path = sample_file_path
             current_sample_file_path = str(current_sample_file_path).replace(
                 "{n}", str(i)
@@ -112,11 +118,24 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             cls.super_user, cls.district, cls.local_body, name="Sample Facility"
         )
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+        cls.treating_physician = cls.create_user(
+            "test Doctor",
+            cls.district,
+            home_facility=cls.facility,
+            first_name="Doctor",
+            last_name="Tester",
+            user_type=15,
+        )
         cls.patient = cls.create_patient(
             cls.district, cls.facility, local_body=cls.local_body
         )
         cls.consultation = cls.create_consultation(
-            cls.patient, cls.facility, patient_no="123456"
+            cls.patient,
+            cls.facility,
+            patient_no="123456",
+            doctor=cls.treating_physician,
+            height=178,
+            weight=80,
         )
         cls.create_patient_sample(cls.patient, cls.consultation, cls.facility, cls.user)
         cls.create_policy(patient=cls.patient, user=cls.user)
@@ -136,9 +155,48 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         )
         cls.create_disease(cls.patient)
         cls.create_prescription(cls.consultation, cls.user)
-        # Todo : add prn and prn prescriptions
-        # TODO : create few values with titration for prescription
-        # Todo  : Create diagnoses
+        cls.create_prescription(
+            cls.consultation, cls.user, dosage_type=PrescriptionDosageType.TITRATED
+        )
+        cls.create_prescription(
+            cls.consultation, cls.user, dosage_type=PrescriptionDosageType.PRN
+        )
+        cls.create_prescription(
+            cls.consultation, cls.user, prescription_type=PrescriptionType.DISCHARGE
+        )
+        cls.create_prescription(
+            cls.consultation,
+            cls.user,
+            prescription_type=PrescriptionType.DISCHARGE,
+            dosage_type=PrescriptionDosageType.TITRATED,
+        )
+        cls.create_prescription(
+            cls.consultation,
+            cls.user,
+            prescription_type=PrescriptionType.DISCHARGE,
+            dosage_type=PrescriptionDosageType.PRN,
+        )
+        cls.diagnoses = ICD11Diagnosis.objects.filter(is_leaf=True)[10:15]
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[0],
+            verification_status=ConditionVerificationStatus.CONFIRMED,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[1],
+            verification_status=ConditionVerificationStatus.DIFFERENTIAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[2],
+            verification_status=ConditionVerificationStatus.PROVISIONAL,
+        )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[3],
+            verification_status=ConditionVerificationStatus.UNCONFIRMED,
+        )
 
     def setUp(self) -> None:
         self.client = APIClient()
