@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7d926299b4a6a70b52ff723433da0406c26cf2a6faeee3ec7432368be663f120"
+            "sha256": "634cfd314da079c8c49486be7cf17fc3767b1f74f893d3ea3e631e6183917601"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -121,11 +121,11 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:3cd43f1c6fa7dedc5899d69d3ad0398fd018ad1a17fba83ddaf78aa46c747516",
-                "sha256:ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"
+                "sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b",
+                "sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2024.6.2"
+            "version": "==2024.7.4"
         },
         "cffi": {
             "hashes": [
@@ -1248,12 +1248,12 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:1f87acdce4a43a523ae5aa21a3fc37522d73ebd9ec04b1dbf01aa3d173852def",
-                "sha256:fbc40a78a8a9c6675133031116144f0d0940376fa6e4e1acd5624c90b0aaf58b"
+                "sha256:4ca16e9f5c7c6bc2fb2d5c956219f4926b148e511fffdbbde711dc94f1e0468f",
+                "sha256:d964710e2dbe015d9dc4ff0ad16225d68c3b36936b742a6fe0504565b760a3b7"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.6'",
-            "version": "==2.5.1"
+            "version": "==2.11.0"
         },
         "six": {
             "hashes": [
@@ -1342,11 +1342,11 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d",
-                "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"
+                "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+                "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.2.1"
+            "version": "==2.2.2"
         },
         "vine": {
             "hashes": [

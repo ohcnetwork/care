@@ -43,7 +43,7 @@ pywebpush = "==1.14.0"
 redis = { extras = ["hiredis"], version = "==5.0.5" } # constraint for redis-om
 redis-om = "==0.3.1"
 requests = "==2.32.3"
-sentry-sdk = "==2.5.1"
+sentry-sdk = "==2.11.0"
 whitenoise = "==6.6.0"
 
 [dev-packages]
