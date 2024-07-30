@@ -29,7 +29,7 @@
     align: (left, right),
     text(size: 15pt)[= Patient Discharge Summary],
     grid.cell(align: right, rowspan: 2)[#scale(x:90%, y:90%, reflow: true)[#image("{{ logo_path }}")]],
-    [#text(fill: mygray, weight: 500)[*Created on #datetime.today().display("[day]/[month]/[year]")*]]
+    [#text(fill: mygray, weight: 500)[*Created on {{date}}*]]
 )
 
 
@@ -74,8 +74,8 @@
   [Death Confirmed by:], "{{ consultation.death_confirmed_by }}",
   {% endif %}
   [IP No:], "{{ consultation.patient_no }}",
-  [Weight:], [{{ consultation.weight }} kg],
-  [Height:], [{{ consultation.height }} cm],
+  [Weight:], "{{ consultation.weight }} kg",
+  [Height:], "{{ consultation.height }} cm",
   [Diagnosis at admission:],[#stack(
     dir: ttb,
     spacing: 10pt,
@@ -190,7 +190,7 @@
     ),
     {% for investigation in consultation.investigation %}
     "{{ investigation.type|join:", " }}",
-    [{% if investigation.repetitive %}every {{ investigation.frequency }}{% else %}{{ investigation.time|date:"DATETIME_FORMAT" }}{% endif %}],
+    "{% if investigation.repetitive %}every {{ investigation.frequency }}{% else %}{{ investigation.time|date:"DATETIME_FORMAT" }}{% endif %}",
     "{{ investigation.notes }}",
     {% endfor %}
   )
@@ -209,7 +209,7 @@
       [*PROCEDURE*], [*TIME*], [*NOTES*]
     ),
     {% for procedure in consultation.procedure %}
-    "{{ procedure.procedure }}", [{% if procedure.repetitive %} every {{procedure.frequency}} {% else %} {{procedure.time|parse_datetime}} {% endif %}], "{{ procedure.notes }}",
+    "{{ procedure.procedure }}", "{% if procedure.repetitive %} every {{procedure.frequency}} {% else %} {{procedure.time|parse_datetime}} {% endif %}", "{{ procedure.notes }}",
     {% endfor %}
   )
 
