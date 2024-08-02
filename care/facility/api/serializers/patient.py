@@ -521,6 +521,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
             "facility",
             "allow_transfer",
             "is_active",
+            "is_expired",
         )
 
 

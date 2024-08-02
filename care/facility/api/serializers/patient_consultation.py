@@ -861,6 +861,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     archived_by = UserBaseMinimumSerializer(read_only=True)
+    files = serializers.SerializerMethodField()
 
     class Meta:
         model = PatientConsent
@@ -869,6 +870,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             "id",
             "type",
             "patient_code_status",
+            "files",
             "archived",
             "archived_by",
             "archived_date",
@@ -878,12 +880,30 @@ class PatientConsentSerializer(serializers.ModelSerializer):
 
         read_only_fields = (
             "id",
+            "files",
             "created_by",
             "created_date",
             "archived",
             "archived_by",
             "archived_date",
         )
+
+    def get_files(self, obj):
+        from care.facility.api.serializers.file_upload import (
+            FileUploadListSerializer,
+            check_permissions,
+        )
+
+        user = self.context["request"].user
+        file_type = FileUpload.FileType.CONSENT_RECORD
+        if check_permissions(file_type, obj.external_id, user, "read"):
+            return FileUploadListSerializer(
+                FileUpload.objects.filter(
+                    associating_id=obj.external_id, file_type=file_type
+                ),
+                many=True,
+            ).data
+        return None
 
     def validate_patient_code_status(self, value):
         if value == PatientCodeStatusType.NOT_SPECIFIED:
