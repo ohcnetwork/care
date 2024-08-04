@@ -57,9 +57,13 @@ class UserFilterSet(filters.FilterSet):
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
-    home_facility = filters.UUIDFilter(
-        field_name="home_facility__external_id", lookup_expr="exact"
-    )
+    home_facility = filters.CharFilter(method="filter_home_facility")
+
+    def filter_home_facility(self, queryset, name, value):
+        if value == "NONE":
+            return queryset.filter(home_facility__isnull=True)
+        return queryset.filter(home_facility__external_id=value)
+
     last_active_days = filters.CharFilter(method="last_active_after")
 
     def get_user_type(
