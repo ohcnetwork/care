@@ -304,7 +304,7 @@
   align: (left),
   [Discharge Date:], "{{consultation.discharge_date|format_empty_data }}",
   [Discharge Reason:], "{{consultation.get_discharge_reason_display|format_empty_data }}",
-  [Discharge Notes:], "{{consultation.discharge_notes|format_empty_data }}",
+  [Discharge Advice:], "{{consultation.discharge_notes|format_empty_data }}",
 )
 
 {% if consultation.new_discharge_reason == 1 %}
