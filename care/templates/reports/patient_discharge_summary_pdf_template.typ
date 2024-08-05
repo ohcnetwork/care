@@ -1,7 +1,7 @@
 {% load static %}
 {% load filters static %}
 {% load prescription_tags %}
-
+{% load data_formatting_tags %}
 
 #set page("a4",margin: 40pt)
 #set text(font: "DejaVu Sans",size: 10pt,hyphenate: true)
@@ -19,19 +19,20 @@
   stroke: frame(rgb("21222C")),
 )
 
-#align(center, text(24pt,weight: "bold")[= {{patient.facility.name}}])  // Todo : Convert it to not use content mode
+#let facility_name="{{patient.facility.name}}"
+
+#align(center, text(24pt,weight: "bold")[= #facility_name])
 
 #line(length: 100%, stroke: mygray)
 
 #grid(
-    columns: (auto, 1fr),
-    row-gutter: 1em,
-    align: (left, right),
-    text(size: 15pt)[= Patient Discharge Summary],
-    grid.cell(align: right, rowspan: 2)[#scale(x:90%, y:90%, reflow: true)[#image("{{ logo_path }}")]],
-    [#text(fill: mygray, weight: 500)[*Created on {{date}}*]]
+  columns: (auto, 1fr),
+  row-gutter: 1em,
+  align: (left, right),
+  text(size: 15pt)[= Patient Discharge Summary],
+  grid.cell(align: right, rowspan: 2)[#scale(x:90%, y:90%, reflow: true)[#image("{{ logo_path }}")]],
+  [#text(fill: mygray, weight: 500)[*Created on {{date}}*]]
 )
-
 
 #line(length: 100%, stroke: mygray)
 
@@ -42,12 +43,12 @@
   columns: (1fr, 1fr, 1fr, 1fr),
   row-gutter: 1.5em,
   [Full name:], "{{patient.name}}",
-  [Gender:], "{{patient.get_gender_display}}",
-  [Age:], "{{patient.get_age}}",
-  [Blood Group:], "{{patient.blood_group}}",
-  [Phone Number:], "{{patient.phone_number}}",
-  [Ration Card Category:], "{{patient.get_ration_card_category_display}}",
-  [Address:], grid.cell(colspan: 3, "{{patient.address}}"),
+  [Gender:], "{{patient.get_gender_display }}",
+  [Age:], "{{patient.get_age }}",
+  [Blood Group:], "{{patient.blood_group }}",
+  [Phone Number:], "{{patient.phone_number }}",
+  [Ration Card Category:], "{{patient.get_ration_card_category_display|format_empty_data }}",
+  [Address:], grid.cell(colspan: 3, "{{patient.address }}"),
 )
 
 #line(length: 100%, stroke: mygray)
@@ -58,61 +59,67 @@
   columns: (1.1fr, 2fr),
   row-gutter: 1.2em,
   align: (left),
-  [Route to Facility:], "{{ consultation.get_route_to_facility_display | field_name_to_label }}",
-  [Decision after consultation:], "{{ consultation.get_suggestion_display | field_name_to_label }}",
-  [Duration of Admission:], "temp",  // TODO : need to add it
+  [Route to Facility:], "{{ consultation.get_route_to_facility_display | field_name_to_label  }}",
+  [Admitted To:], "{{ admitted_to|format_empty_data }}",
+  [Duration of Admission:], "{{admission_duration|format_empty_data}}",
   {% if consultation.icu_admission_date %}
-  [ICU Admission Date & Time:], "{{ consultation.icu_admission_date }}",
+  [ICU Admission Date & Time:], "{{ consultation.icu_admission_date  }}",
   {% endif %}
   {% if consultation.suggestion == 'A' %}
-  [Date of admission:], "{{ consultation.encounter_date }}",
+  [Date of admission:], "{{ consultation.encounter_date  }}",
   {% elif consultation.suggestion == 'R' %}
-  [Referred to:], "{{ consultation.referred_to.name }}",
+  [Referred to:], "{{ consultation.referred_to.name  }}",
   {% elif consultation.suggestion == 'DD' %}
-  [Cause of death:], "{{ consultation.discharge_notes }}",
-  [Date and time of death:], "{{ consultation.death_datetime }}",
-  [Death Confirmed by:], "{{ consultation.death_confirmed_by }}",
+  [Cause of death:], "{{ consultation.discharge_notes  }}",
+  [Date and time of death:], "{{ consultation.death_datetime  }}",
+  [Death Confirmed by:], "{{ consultation.death_confirmed_by  }}",
   {% endif %}
-  [IP No:], "{{ consultation.patient_no }}",
-  [Weight:], "{{ consultation.weight }} kg",
-  [Height:], "{{ consultation.height }} cm",
+  [IP No:], "{{ consultation.patient_no  }}",
+  [Weight:], "{{ consultation.weight |format_empty_data }} kg",
+  [Height:], "{{ consultation.height |format_empty_data }} cm",
   [Diagnosis at admission:],[#stack(
     dir: ttb,
     spacing: 10pt,
     {% for diagnose in diagnoses %}
-      "{{ diagnose.label }}",
+      "{{ diagnose.label  }} ({{diagnose.status }})",
     {% endfor %}
   )
   ],
   [Reason for admission:],[#stack(
     dir: ttb,
     spacing: 10pt,
+    {% if primary_diagnoses %}
     {% for diagnose in primary_diagnoses %}
       "{{ diagnose.label }}",
     {% endfor %}
+    {% else %}
+  "N/A"
+  {% endif %}
   )
   ],
-  [Symptoms at admission],[#stack(
+  [Symptoms at admission], [#stack(
     dir: ttb,
     spacing: 10pt,
-    {% for symptom in symptoms %}
-      {% if symptom.symptom == 9 %}
-        "{{ symptom.other_symptom }}",
-      {% else %}
-        "{{ symptom.get_symptom_display }}",
-      {% endif %}
-    {% endfor %}
-  )
-  ],
-  [Reported Allergies:], "{{ patient.allergies }}",
+    {% if symptoms %}
+        {% for symptom in symptoms %}
+            {% if symptom.symptom == 9 %}
+                "{{ symptom.other_symptom }}",
+            {% else %}
+                "{{ symptom.get_symptom_display }}",
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        "N/A"
+    {% endif %}
+  )],
+  [Reported Allergies:], "{{ patient.allergies |format_empty_data }}",
 )
 
 #text("\n")
 
 #align(center, [#line(length: 40%, stroke: mygray)])
 
-
-{% if medical_history %}
+{% if medical_history.0.get_disease_display != "NO" %}
 
 #align(left, text(14pt,weight: "bold",)[=== Medication History:])
 
@@ -124,16 +131,17 @@
     [*COMORBIDITY*], [*DETAILS*],
   ),
   {% for disease in medical_history %}
-  "{{disease.get_disease_display}}", "{{disease.details}}",
+  "{{disease.get_disease_display }}", "{{disease.details|format_empty_data }}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray,)])
 {% endif %}
 
-
 {% if consultation.suggestion != 'DD' %}
-  #align(left, text(18pt,)[== Treatment Summary])
-  #text("")
+  {% if patient.disease_status == 2 or prescriptions or consultation.investigation or consultation.procedure or investigations or samples %}
+    #align(left, text(18pt,)[== Treatment Summary])
+    #text("")
+  {% endif %}
 
   {% if patient.disease_status == 2 %}
     #grid(
@@ -142,7 +150,7 @@
       align: (left),
       [COVID Disease Status:], [Positive],
       {% if patient.date_of_result %}
-        [Test Result Date:], "{{ patient.date_of_result.date }}",
+        [Test Result Date:], "{{ patient.date_of_result.date  }}",
       {% endif %}
       [Vaccinated against COVID:], [
         {% if patient.is_vaccinated %}
@@ -169,8 +177,8 @@
       columns: (0.5fr, 9.5fr),
       row-gutter: 1.2em,
       align: (left),
-      "{{ forloop.counter }}",
-      "{{ prescription|format_prescription }}",
+      "{{ forloop.counter  }}",
+      "{{ prescription|format_prescription  }}",
     )],
     {% endfor %}
   )
@@ -189,9 +197,9 @@
       [*TYPE*], [*TIME*], [*NOTES*]
     ),
     {% for investigation in consultation.investigation %}
-    "{{ investigation.type|join:", " }}",
-    "{% if investigation.repetitive %}every {{ investigation.frequency }}{% else %}{{ investigation.time|date:"DATETIME_FORMAT" }}{% endif %}",
-    "{{ investigation.notes }}",
+    "{{ investigation.type|join:", "  }}",
+    "{% if investigation.repetitive %}every {{ investigation.frequency  }}{% else %}{{ investigation.time|date:"DATETIME_FORMAT"  }}{% endif %}",
+    "{{ investigation.notes |format_empty_data }}",
     {% endfor %}
   )
 
@@ -209,13 +217,12 @@
       [*PROCEDURE*], [*TIME*], [*NOTES*]
     ),
     {% for procedure in consultation.procedure %}
-    "{{ procedure.procedure }}", "{% if procedure.repetitive %} every {{procedure.frequency}} {% else %} {{procedure.time|parse_datetime}} {% endif %}", "{{ procedure.notes }}",
+    "{{ procedure.procedure  }}", "{% if procedure.repetitive %} every {{procedure.frequency }} {% else %} {{procedure.time|parse_datetime }} {% endif %}", "{{ procedure.notes |format_empty_data }}",
     {% endfor %}
   )
 
   #align(center, [#line(length: 40%, stroke: mygray,)])
   {% endif %}
-
 
   {% if samples %}
   #align(left, text(14pt,weight: "bold",)[=== Lab Reports:])
@@ -228,13 +235,12 @@
       [*REQUESTED ON*], [*SAMPLE TYPE*], [*LABEL*],[*RESULT*],
     ),
     {% for sample in samples %}
-    "{{ sample.created_date }}", "{{ sample.get_sample_type_display }}", "{{ sample.icmr_label }}","{{ sample.get_result_display }}",
+    "{{ sample.created_date  }}", "{{ sample.get_sample_type_display  }}", "{{ sample.icmr_label  }}","{{ sample.get_result_display  }}",
     {% endfor %}
   )
 
   #align(center, [#line(length: 40%, stroke: mygray,)])
   {% endif %}
-
 
   {% if investigations %}
   #align(left, text(14pt,weight: "bold")[=== Investigation History:])
@@ -251,19 +257,19 @@
       columns: (1fr, 3fr),
       row-gutter: 1.2em,
       align: (left),
-      [Group:], "{{ investigation.investigation.groups.first }}",
-      [Name:], "{{ investigation.investigation.name }}",
-      [Result:], [{% if investigation.value %}{{ investigation.value }}{% else %}{{ investigation.notes }}{% endif %}],
+      [Group:], "{{ investigation.investigation.groups.first  }}",
+      [Name:], "{{ investigation.investigation.name  }}",
+      [Result:], [{% if investigation.value %}{{ investigation.value  }}{% else %}{{ investigation.notes  }}{% endif %}],
       [Range:], [{% if investigation.investigation.min_value and investigation.investigation.max_value %}
-        {{ investigation.investigation.min_value }} - {{ investigation.investigation.max_value }}
+        {{ investigation.investigation.min_value  }} - {{ investigation.investigation.max_value  }}
         {% else %}
         -
         {% endif %}
         {% if investigation.investigation.unit %}
-        {{ investigation.investigation.unit }}
+        {{ investigation.investigation.unit  }}
         {% endif %}
       ],
-      [Date:], "{{ investigation.created_date }}",
+      [Date:], "{{ investigation.created_date  }}",
     )],
     {% endfor %}
   )
@@ -284,7 +290,7 @@
     [*INSURER NAME*], [*ISSUER ID*], [*MEMBER ID*], [*POLICY ID*],
   ),
   {% for policy in hcx %}
-  "{{policy.insurer_name}}", "{{policy.insurer_id}}", "{{policy.subscriber_id}}", "{{policy.policy_id}}",
+  "{{policy.insurer_name|format_empty_data }}", "{{policy.insurer_id|format_empty_data }}", "{{policy.subscriber_id }}", "{{policy.policy_id }}",
   {% endfor %}
 )
 #align(center, [#line(length: 40%, stroke: mygray)])
@@ -296,8 +302,9 @@
   columns: (1fr,3fr),
   row-gutter: 1.2em,
   align: (left),
-  [Discharge Date:], "{{consultation.discharge_date}}",
-  [Discharge Reason:], "{{consultation.get_discharge_reason_display}}",
+  [Discharge Date:], "{{consultation.discharge_date|format_empty_data }}",
+  [Discharge Reason:], "{{consultation.get_discharge_reason_display|format_empty_data }}",
+  [Discharge Notes:], "{{consultation.discharge_notes|format_empty_data }}",
 )
 
 {% if consultation.new_discharge_reason == 1 %}
@@ -316,8 +323,8 @@
       columns: (0.5fr, 9.5fr),
       row-gutter: 1.2em,
       align: (left),
-      "{{ forloop.counter }}",
-      "{{ prescription|format_prescription }}",
+      "{{ forloop.counter  }}",
+      "{{ prescription|format_prescription  }}",
     )],
     {% endfor %}
   )
@@ -331,15 +338,8 @@
 
 {%endif%}
 
-#grid(
-  columns: (1fr,3fr),
-  row-gutter: 1.2em,
-  align: (left),
-  [Discharge Notes:], "{{consultation.discharge_notes}}",
-)
-
 #align(right)[#text(12pt,fill: mygray)[*Treating Physician* :] #text(10pt,weight: "bold")[{% if consultation.treating_physician %}
-    {{ consultation.treating_physician.first_name }} {{ consultation.treating_physician.last_name }}
+    {{ consultation.treating_physician.first_name  }} {{ consultation.treating_physician.last_name  }}
   {% else %}
     -
   {% endif %}]]
@@ -360,7 +360,7 @@
     [*UPLOADED AT*], [*NAME*],
   ),
   {% for file in files %}
-  "{{file.modified_date}}", "{{file.name}}",
+  "{{file.modified_date }}", "{{file.name }}",
   {% endfor %}
 )
 

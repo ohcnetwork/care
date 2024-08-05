@@ -115,7 +115,7 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         cls.local_body = cls.create_local_body(cls.district, name="sample_local_body")
         cls.super_user = cls.create_super_user("su", cls.district)
         cls.facility = cls.create_facility(
-            cls.super_user, cls.district, cls.local_body, name="Sample Facility"
+            cls.super_user, cls.district, cls.local_body, name="_Sample_Facility"
         )
         cls.user = cls.create_user("staff1", cls.district, home_facility=cls.facility)
         cls.treating_physician = cls.create_user(
@@ -197,6 +197,12 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             cls.diagnoses[3],
             verification_status=ConditionVerificationStatus.UNCONFIRMED,
         )
+        cls.create_consultation_diagnosis(
+            cls.consultation,
+            cls.diagnoses[4],
+            verification_status=ConditionVerificationStatus.CONFIRMED,
+            is_principal=True,
+        )
 
     def setUp(self) -> None:
         self.client = APIClient()
@@ -213,4 +219,7 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
     def test_pdf_generation(self):
         data = discharge_summary.get_discharge_summary_data(self.consultation)
         data["date"] = date(2020, 1, 1)
+
+        # This sorting is test's specific and done in order to keep the values in order
+        data["diagnoses"] = sorted(data["diagnoses"], key=lambda x: x["label"])
         self.assertTrue(test_compile_typ(data))

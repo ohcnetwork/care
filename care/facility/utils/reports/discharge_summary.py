@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.facility.models import (
+    BedTypeChoices,
     Disease,
     EncounterSymptom,
     InvestigationValue,
@@ -72,6 +73,7 @@ def get_diagnoses_data(consultation: PatientConsultation):
 
     for diagnosis, record in zip(diagnoses, entries):
         _, verification_status, is_principal = record
+        diagnosis["status"] = record[1]
         if is_principal:
             principal.append(diagnosis)
         if verification_status == ConditionVerificationStatus.UNCONFIRMED:
@@ -90,6 +92,17 @@ def get_diagnoses_data(consultation: PatientConsultation):
         "differential": differential,
         "confirmed": confirmed,
     }
+
+
+def format_duration(duration):
+    if not duration:
+        return ""
+
+    days = duration.days
+    hours, remainder = divmod(duration.seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+
+    return f"{days} days, {hours}:{minutes:02d} hours"
 
 
 def get_discharge_summary_data(consultation: PatientConsultation):
@@ -142,11 +155,22 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         upload_completed=True,
         is_archived=False,
     )
+    admitted_to = None
+    if consultation.current_bed:
+        admitted_to = f"{consultation.current_bed.bed} ({BedTypeChoices[consultation.current_bed.bed.bed_type][1]})"
+    admission_duration = (
+        format_duration(consultation.discharge_date - consultation.encounter_date)
+        if consultation.discharge_date
+        else None
+    )
+
     return {
         "patient": consultation.patient,
         "samples": samples,
         "hcx": hcx,
         "symptoms": symptoms,
+        "admitted_to": admitted_to,
+        "admission_duration": admission_duration,
         "diagnoses": diagnoses["confirmed"]
         + diagnoses["provisional"]
         + diagnoses["unconfirmed"]
