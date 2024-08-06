@@ -64,7 +64,11 @@ def test_compile_typ(data):
             check=True,
             cwd="/",
         )
-        for i in range(1, 3):
+
+        number_of_pngs_generated = 2
+        # To be updated only if the number of sample png increase in future
+
+        for i in range(1, number_of_pngs_generated + 1):
             current_sample_file_path = sample_file_path
             current_sample_file_path = str(current_sample_file_path).replace(
                 "{n}", str(i)
