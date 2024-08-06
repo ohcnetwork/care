@@ -180,32 +180,33 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             prescription_type=PrescriptionType.DISCHARGE,
             dosage_type=PrescriptionDosageType.PRN,
         )
-        cls.diagnoses = ICD11Diagnosis.objects.filter(is_leaf=True)[10:15]
         cls.create_consultation_diagnosis(
             cls.consultation,
-            cls.diagnoses[0],
+            ICD11Diagnosis.objects.filter(
+                label="SG31 Conception vessel pattern (TM1)"
+            ).first(),
             verification_status=ConditionVerificationStatus.CONFIRMED,
         )
         cls.create_consultation_diagnosis(
             cls.consultation,
-            cls.diagnoses[1],
+            ICD11Diagnosis.objects.filter(
+                label="SG2B Liver meridian pattern (TM1)"
+            ).first(),
             verification_status=ConditionVerificationStatus.DIFFERENTIAL,
         )
         cls.create_consultation_diagnosis(
             cls.consultation,
-            cls.diagnoses[2],
+            ICD11Diagnosis.objects.filter(
+                label="SG29 Triple energizer meridian pattern (TM1)"
+            ).first(),
             verification_status=ConditionVerificationStatus.PROVISIONAL,
         )
         cls.create_consultation_diagnosis(
             cls.consultation,
-            cls.diagnoses[3],
+            ICD11Diagnosis.objects.filter(
+                label="SG60 Early yang stage pattern (TM1)"
+            ).first(),
             verification_status=ConditionVerificationStatus.UNCONFIRMED,
-        )
-        cls.create_consultation_diagnosis(
-            cls.consultation,
-            cls.diagnoses[4],
-            verification_status=ConditionVerificationStatus.CONFIRMED,
-            is_principal=True,
         )
 
     def setUp(self) -> None:
