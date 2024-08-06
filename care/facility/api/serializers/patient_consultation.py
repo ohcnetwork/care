@@ -799,7 +799,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
-            if patient.abha_number:
+            if settings.ENABLE_ABDM and patient.abha_number:
                 abha_number = patient.abha_number
                 try:
                     AbdmGateway().fetch_modes(
