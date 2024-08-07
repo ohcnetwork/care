@@ -634,7 +634,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="dailyround",
-            name="ventilator_fi02",
+            name="ventilator_fio2",
             field=models.IntegerField(
                 default=None,
                 null=True,

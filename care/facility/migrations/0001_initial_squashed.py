@@ -1524,7 +1524,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "ventilator_fi02",
+                    "ventilator_fio2",
                     models.IntegerField(
                         default=None,
                         null=True,

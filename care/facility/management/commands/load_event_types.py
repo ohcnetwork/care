@@ -151,7 +151,7 @@ class Command(BaseCommand):
                     "fields": (
                         "bilateral_air_entry",
                         "etco2",
-                        "ventilator_fi02",
+                        "ventilator_fio2",
                         "ventilator_interface",
                         "ventilator_mean_airway_pressure",
                         "ventilator_mode",
