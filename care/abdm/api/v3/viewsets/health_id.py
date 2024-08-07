@@ -1,17 +1,23 @@
+from datetime import datetime
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
 from care.abdm.api.v3.serializers.health_id import (
-    AbhaAddressSuggestionSerializer,
-    EnrolAbhaAddressSerializer,
-    LinkMobileNumberSerializer,
-    SendAadhaarOtpSerializer,
-    VerifyAadhaarOtpSerializer,
-    VerifyMobileOtpSerializer,
+    AbhaCreateAbhaAddressSuggestionSerializer,
+    AbhaCreateEnrolAbhaAddressSerializer,
+    AbhaCreateLinkMobileNumberSerializer,
+    AbhaCreateSendAadhaarOtpSerializer,
+    AbhaCreateVerifyAadhaarOtpSerializer,
+    AbhaCreateVerifyMobileOtpSerializer,
+    AbhaLoginSendOtpSerializer,
+    AbhaLoginVerifyOtpSerializer,
 )
+from care.abdm.models import AbhaNumber
 from care.abdm.service.v3.health_id import HealthIdService
 
 
@@ -19,12 +25,14 @@ class HealthIdViewSet(GenericViewSet):
     permission_classes = (IsAuthenticated,)
 
     serializer_action_classes = {
-        "abha_create__send_aadhaar_otp": SendAadhaarOtpSerializer,
-        "abha_create__verify_aadhaar_otp": VerifyAadhaarOtpSerializer,
-        "abha_create__link_mobile_number": LinkMobileNumberSerializer,
-        "abha_create__verify_mobile_otp": VerifyMobileOtpSerializer,
-        "abha_create__abha_address_suggestion": AbhaAddressSuggestionSerializer,
-        "abha_create__enrol_abha_address": EnrolAbhaAddressSerializer,
+        "abha_create__send_aadhaar_otp": AbhaCreateSendAadhaarOtpSerializer,
+        "abha_create__verify_aadhaar_otp": AbhaCreateVerifyAadhaarOtpSerializer,
+        "abha_create__link_mobile_number": AbhaCreateLinkMobileNumberSerializer,
+        "abha_create__verify_mobile_otp": AbhaCreateVerifyMobileOtpSerializer,
+        "abha_create__abha_address_suggestion": AbhaCreateAbhaAddressSuggestionSerializer,
+        "abha_create__enrol_abha_address": AbhaCreateEnrolAbhaAddressSerializer,
+        "abha_login__send_otp": AbhaLoginSendOtpSerializer,
+        "abha_login__verify_otp": AbhaLoginVerifyOtpSerializer,
     }
 
     def get_serializer_class(self):
@@ -38,6 +46,38 @@ class HealthIdViewSet(GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         return serializer.validated_data
+
+    def create_or_update_abha_number(
+        self, data: HealthIdService.ProfileAccountResponse, token: dict
+    ):
+        return AbhaNumber.objects.update_or_create(
+            abha_number=data.get("ABHANumber"),
+            defaults={
+                "abha_number": data.get("ABHANumber"),
+                "health_id": data.get("preferredAbhaAddress"),
+                "name": data.get("name"),
+                "first_name": data.get("firstName"),
+                "middle_name": data.get("middleName"),
+                "last_name": data.get("lastName"),
+                "gender": data.get("gender"),
+                "date_of_birth": str(
+                    datetime.strptime(
+                        f"{data.get('yearOfBirth')}-{data.get('monthOfBirth')}-{data.get('dayOfBirth')}",
+                        "%Y-%m-%d",
+                    )
+                )[0:10],
+                "address": data.get("address"),
+                "district": data.get("districtName"),
+                "state": data.get("stateName"),
+                "pincode": data.get("pincode"),
+                "email": data.get("email"),
+                "profile_photo": data.get("profilePhoto"),
+                "new": data.get("new", False),
+                "txn_id": token.get("txn_id"),
+                "access_token": token.get("access_token"),
+                "refresh_token": token.get("refresh_token"),
+            },
+        )
 
     @action(detail=False, methods=["post"])
     def abha_create__send_aadhaar_otp(self, request):
@@ -56,8 +96,8 @@ class HealthIdViewSet(GenericViewSet):
             result: HealthIdService.EnrollmentRequestOtpResponse = response.json()
             return Response(
                 {
-                    "transaction_id": result["txnId"],
-                    "detail": result["message"],
+                    "transaction_id": result.get("txnId"),
+                    "detail": result.get("message"),
                 },
                 status=status.HTTP_200_OK,
             )
@@ -90,7 +130,11 @@ class HealthIdViewSet(GenericViewSet):
             # TODO: create abha address here
 
             return Response(
-                {"transaction_id": result["txnId"], "detail": result["message"]},
+                {
+                    "transaction_id": result.get("txnId"),
+                    "detail": result.get("message"),
+                    "is_new": result.get("isNew"),
+                },
                 status=status.HTTP_200_OK,
             )
 
@@ -121,8 +165,8 @@ class HealthIdViewSet(GenericViewSet):
             result: HealthIdService.EnrollmentRequestOtpResponse = response.json()
             return Response(
                 {
-                    "transaction_id": result["txnId"],
-                    "detail": result["message"],
+                    "transaction_id": result.get("txnId"),
+                    "detail": result.get("message"),
                 },
                 status=status.HTTP_200_OK,
             )
@@ -153,8 +197,8 @@ class HealthIdViewSet(GenericViewSet):
             result: HealthIdService.EnrollmentAuthByAbdmResponse = response.json()
             return Response(
                 {
-                    "transaction_id": result["txnId"],
-                    "detail": result["message"],
+                    "transaction_id": result.get("txnId"),
+                    "detail": result.get("message"),
                 },
                 status=status.HTTP_200_OK,
             )
@@ -183,8 +227,8 @@ class HealthIdViewSet(GenericViewSet):
             result: HealthIdService.EnrollmentEnrolSuggestionResponse = response.json()
             return Response(
                 {
-                    "transaction_id": result["txnId"],
-                    "abha_addresses": result["abhaAddressList"],
+                    "transaction_id": result.get("txnId"),
+                    "abha_addresses": result.get("abhaAddressList"),
                 },
                 status=status.HTTP_200_OK,
             )
@@ -218,9 +262,9 @@ class HealthIdViewSet(GenericViewSet):
 
             return Response(
                 {
-                    "transaction_id": result["txnId"],
-                    "health_id": result["healthIdNumber"],
-                    "preferred_abha_address": result["preferredAbhaAddress"],
+                    "transaction_id": result.get("txnId"),
+                    "health_id": result.get("healthIdNumber"),
+                    "preferred_abha_address": result.get("preferredAbhaAddress"),
                 },
                 status=status.HTTP_200_OK,
             )
@@ -229,6 +273,192 @@ class HealthIdViewSet(GenericViewSet):
         return Response(
             {
                 "detail": error.get("error", {"message": "Something went wrong"})[
+                    "message"
+                ],
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["post"])
+    def abha_login__send_otp(self, request):
+        validated_data = self.validate_request(request)
+
+        otp_system = validated_data.get("otp_system")
+        type = validated_data.get("type")
+
+        scope = []
+
+        if otp_system == "aadhaar":
+            scope.append("aadhaar-verify")
+        elif otp_system == "abdm":
+            scope.append("mobile-verify")
+
+        if type == "abha-address":
+            scope.insert(0, "abha-address-login")
+            response = HealthIdService.phr__web__login__abha__request__otp(
+                {
+                    "scope": scope,
+                    "type": "abha-address",
+                    "otp_system": otp_system,
+                    "value": validated_data.get("value"),
+                }
+            )
+        else:
+            scope.insert(0, "abha-login")
+            response = HealthIdService.profile__login__request__otp(
+                {
+                    "scope": scope,
+                    "type": type,
+                    "value": validated_data.get("value"),
+                    "otp_system": otp_system,
+                }
+            )
+
+        if response.ok:
+            result: HealthIdService.ProfileLoginRequestOtpResponse = response.json()
+            return Response(
+                {
+                    "transaction_id": result.get("txnId"),
+                    "detail": result.get("message"),
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        error: HealthIdService.ErrorResponse = response.json()
+        return Response(
+            {
+                "detail": error.get("error", {"message": "Something went wrong"})[
+                    "message"
+                ],
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["post"])
+    def abha_login__verify_otp(self, request):
+        validated_data = self.validate_request(request)
+
+        type = validated_data.get("type")
+        otp_system = validated_data.get("otp_system")
+
+        scope = []
+
+        if otp_system == "aadhaar":
+            scope.append("aadhaar-verify")
+        elif otp_system == "abdm":
+            scope.append("mobile-verify")
+
+        token = None
+
+        if type == "abha-address":
+            scope.insert(0, "abha-address-login")
+            response = HealthIdService.phr__web__login__abha__verify(
+                {
+                    "scope": scope,
+                    "transaction_id": str(validated_data.get("transaction_id")),
+                    "otp": validated_data.get("otp"),
+                }
+            )
+
+            if response.ok:
+                result: HealthIdService.PhrWebLoginAbhaVerifyResponse = response.json()
+                token = {
+                    "txn_id": result.get("txnId"),
+                    "access_token": result.get("token"),
+                    "refresh_token": result.get("refreshToken"),
+                }
+        else:
+            scope.insert(0, "abha-login")
+            response = HealthIdService.profile__login__verify(
+                {
+                    "scope": scope,
+                    "transaction_id": str(validated_data.get("transaction_id")),
+                    "otp": validated_data.get("otp"),
+                }
+            )
+
+            if response.ok:
+                result: HealthIdService.ProfileLoginVerifyResponse = response.json()
+
+                # TODO: if type == "mobile" then verify the user here
+                if type == "mobile":
+                    user_verification_response = (
+                        HealthIdService.profile__login__verify__user(
+                            {
+                                "t_token": result.get("token"),
+                                "abha_number": result.get("accounts")[0].get(
+                                    "ABHANumber"
+                                ),
+                                "transaction_id": result.get("txnId"),
+                            }
+                        )
+                    )
+
+                    if user_verification_response.ok:
+                        user_verification_result: (
+                            HealthIdService.ProfileLoginVerifyUserResponse
+                        ) = user_verification_response.json()
+                        token = {
+                            "txn_id": result.get("txnId"),
+                            "access_token": user_verification_result.get("token"),
+                            "refresh_token": user_verification_result.get(
+                                "refreshToken"
+                            ),
+                        }
+                    else:
+                        error: HealthIdService.ErrorResponse = (
+                            user_verification_response.json()
+                        )
+                        return Response(
+                            {
+                                "detail": error.get(
+                                    "error", {"message": "Unable to verify user"}
+                                )["message"],
+                            },
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                else:
+                    token = {
+                        "txn_id": result.get("txnId"),
+                        "access_token": result.get("token"),
+                        "refresh_token": result.get("refreshToken"),
+                    }
+
+        if token:
+            profile_response = HealthIdService.profile__account(
+                {"x_token": token.get("access_token")}
+            )
+
+            if profile_response.ok:
+                profile_result: HealthIdService.ProfileAccountResponse = (
+                    profile_response.json()
+                )
+
+                (abha_number, created) = self.create_or_update_abha_number(
+                    profile_result, token
+                )
+
+                serialized_data = AbhaNumberSerializer(abha_number).data
+
+                return Response(
+                    {"abha_number": serialized_data, "created": created},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                error: HealthIdService.ErrorResponse = profile_response.json()
+                return Response(
+                    {
+                        "detail": error.get(
+                            "error", {"message": "Unable to get profile"}
+                        )["message"],
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        error: HealthIdService.ErrorResponse = response.json()
+        return Response(
+            {
+                "detail": error.get("error", {"message": "Unable to verify otp"})[
                     "message"
                 ],
             },

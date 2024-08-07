@@ -1,7 +1,48 @@
-from typing import List, Literal, Optional, TypedDict
+from typing import Dict, List, Literal, Optional, TypedDict
 
 from care.abdm.service.helper import encrypt_message, timestamp, uuid
 from care.abdm.service.request import Request
+
+
+class LocalizedDetails(TypedDict):
+    name: str
+    stateName: str
+    districtName: str
+    villageName: str
+    wardName: str
+    townName: str
+    gender: str
+    localizedLabels: Dict[str, str]
+
+
+class ABHAProfileFull(TypedDict):
+    ABHANumber: str
+    preferredAbhaAddress: str
+    mobile: str
+    firstName: str
+    middleName: str
+    lastName: str
+    name: str
+    yearOfBirth: str
+    dayOfBirth: str
+    monthOfBirth: str
+    gender: str
+    profilePhoto: str
+    status: str
+    stateCode: str
+    districtCode: str
+    pincode: str
+    address: str
+    kycPhoto: str
+    stateName: str
+    districtName: str
+    subdistrictName: str
+    townName: str
+    authMethods: List[str]
+    tags: Dict[str, str]
+    kycVerified: bool
+    localizedDetails: LocalizedDetails
+    createdDate: str
 
 
 class ABHAProfile(TypedDict):
@@ -24,15 +65,30 @@ class ABHAProfile(TypedDict):
     stateName: str
 
 
-class Tokens(TypedDict):
+class Token(TypedDict):
     expiresIn: int
     refreshExpiresIn: int
     refreshToken: str
     token: str
 
 
-class Accounts(TypedDict):
+class Account(TypedDict):
     ABHANumber: str
+    preferredAbhaAddress: Optional[str]
+    name: Optional[str]
+    gender: Optional[Literal["M", "F", "O"]]
+    dob: Optional[str]
+    status: Optional[Literal["ACTIVE"]]
+    profilePhoto: Optional[str]
+    kycVerified: Optional[bool]
+
+
+class User(TypedDict):
+    abhaAddress: str
+    fullName: str
+    abhaNumber: str
+    status: str
+    kycStatus: str
 
 
 class Error(TypedDict):
@@ -87,7 +143,7 @@ class HealthIdService:
         ABHAProfile: ABHAProfile
         isNew: bool
         message: str
-        tokens: Tokens
+        tokens: Token
         txnId: str
 
     @staticmethod
@@ -121,7 +177,7 @@ class HealthIdService:
         otp: str
 
     class EnrollmentAuthByAbdmResponse(TypedDict):
-        accounts: List[Accounts]
+        accounts: List[Account]
         message: str
         authResult: Literal["success", "failure"]
         txnId: str
@@ -158,7 +214,7 @@ class HealthIdService:
         txnId: str
 
     @staticmethod
-    def enrollment__enrol_suggestion(data: EnrollmentEnrolSuggestionBody):
+    def enrollment__enrol__suggestion(data: EnrollmentEnrolSuggestionBody):
         path = "/enrollment/enrol/suggestion"
         return HealthIdService.request.get(
             path,
@@ -180,7 +236,7 @@ class HealthIdService:
         txnId: str
 
     @staticmethod
-    def enrollment__enrol_abha_address(data: EnrollmentEnrolAbhaAddressBody):
+    def enrollment__enrol__abha_address(data: EnrollmentEnrolAbhaAddressBody):
         payload = {
             "txnId": data.get("transaction_id", ""),
             "abhaAddress": data.get("abha_address", ""),
@@ -190,4 +246,205 @@ class HealthIdService:
         path = "/enrollment/enrol/abha-address"
         return HealthIdService.request.post(
             path, payload, headers={"REQUEST-ID": uuid(), "TIMESTAMP": timestamp()}
+        )
+
+    class ProfileLoginRequestOtpBody(TypedDict):
+        scope: List[
+            Literal[
+                "abha-login",
+                "aadhaar-verify",
+                "mobile-verify",
+            ]
+        ]
+        type: Literal["aadhaar", "mobile", "abha-number"]
+        value: str
+        otp_system: Literal["aadhaar", "abdm"]
+
+    class ProfileLoginRequestOtpResponse(TypedDict):
+        txnId: str
+        message: str
+
+    @staticmethod
+    def profile__login__request__otp(data: ProfileLoginRequestOtpBody):
+        payload = {
+            "scope": data.get("scope", []),
+            "loginHint": data.get("type", ""),
+            "loginId": encrypt_message(data.get("value", "")),
+            "otpSystem": data.get("otp_system", ""),
+        }
+
+        path = "/profile/login/request/otp"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+            },
+        )
+
+    class ProfileLoginVerifyBody(TypedDict):
+        scope: List[
+            Literal[
+                "abha-login",
+                "aadhaar-verify",
+                "mobile-verify",
+            ]
+        ]
+        transaction_id: str
+        otp: str
+
+    class ProfileLoginVerifyResponse(TypedDict):
+        txnId: str
+        authResult: Literal["success", "failure"]
+        message: str
+        token: str
+        expiresIn: int
+        refreshToken: str
+        refreshExpiresIn: int
+        accounts: List[Account]
+
+    @staticmethod
+    def profile__login__verify(data: ProfileLoginVerifyBody):
+        payload = {
+            "scope": data.get("scope", []),
+            "authData": {
+                "authMethods": ["otp"],
+                "otp": {
+                    "txnId": data.get("transaction_id", ""),
+                    "otpValue": encrypt_message(data.get("otp", "")),
+                },
+            },
+        }
+
+        path = "/profile/login/verify"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+            },
+        )
+
+    class PhrWebLoginAbhaRequestOtpBody(TypedDict):
+        scope: List[
+            Literal[
+                "abha-address-login",
+                "aadhaar-verify",
+                "mobile-verify",
+            ]
+        ]
+        type: Literal["abha-address"]
+        value: str
+        otp_system: Literal["aadhaar", "abdm"]
+
+    class PhrWebLoginAbhaRequestOtpResponse(TypedDict):
+        txnId: str
+        message: str
+
+    @staticmethod
+    def phr__web__login__abha__request__otp(data: PhrWebLoginAbhaRequestOtpBody):
+        payload = {
+            "scope": data.get("scope", []),
+            "loginHint": data.get("type", ""),
+            "loginId": encrypt_message(data.get("value", "")),
+            "otpSystem": data.get("otp_system", ""),
+        }
+
+        path = "/phr/web/login/abha/request/otp"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+            },
+        )
+
+    class PhrWebLoginAbhaVerifyBody(TypedDict):
+        scope: List[
+            Literal[
+                "abha-address-login",
+                "aadhaar-verify",
+                "mobile-verify",
+            ]
+        ]
+        transaction_id: str
+        otp: str
+
+    class PhrWebLoginAbhaVerifyResponse(TypedDict):
+        message: str
+        authResult: Literal["success", "failure"]
+        users: List[User]
+        tokens: Token
+
+    @staticmethod
+    def phr__web__login__abha__verify(data: PhrWebLoginAbhaVerifyBody):
+        payload = {
+            "scope": data.get("scope", []),
+            "authData": {
+                "authMethods": ["otp"],
+                "otp": {
+                    "txnId": data.get("transaction_id", ""),
+                    "otpValue": encrypt_message(data.get("otp", "")),
+                },
+            },
+        }
+
+        path = "/phr/web/login/abha/verify"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+            },
+        )
+
+    class ProfileLoginVerifyUserBody(TypedDict):
+        abha_number: str
+        transaction_id: str
+        t_token: str
+
+    class ProfileLoginVerifyUserResponse(TypedDict):
+        token: str
+        expiresIn: int
+        refreshToken: str
+        refreshExpiresIn: int
+
+    @staticmethod
+    def profile__login__verify__user(data: ProfileLoginVerifyUserBody):
+        payload = {
+            "abhaNumber": data.get("abha_number", ""),
+            "txnId": data.get("transaction_id", ""),
+        }
+
+        path = "/profile/login/verify/user"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "T-TOKEN": f"Bearer {data.get('t_token', '')}",
+            },
+        )
+
+    class ProfileAccountBody(TypedDict):
+        x_token: str
+
+    class ProfileAccountResponse(TypedDict, ABHAProfileFull):
+        pass
+
+    @staticmethod
+    def profile__account(data: ProfileAccountBody):
+        path = "/profile/account"
+        return HealthIdService.request.get(
+            path,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-TOKEN": f"Bearer {data.get('x_token', '')}",
+            },
         )
