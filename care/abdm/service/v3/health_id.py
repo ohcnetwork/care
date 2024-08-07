@@ -43,6 +43,7 @@ class ABHAProfileFull(TypedDict):
     kycVerified: bool
     localizedDetails: LocalizedDetails
     createdDate: str
+    phrAddress: Optional[List[str]]
 
 
 class ABHAProfile(TypedDict):
@@ -393,6 +394,35 @@ class HealthIdService:
         }
 
         path = "/phr/web/login/abha/verify"
+        return HealthIdService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+            },
+        )
+
+    class PhrWebLoginAbhaSearchBody(TypedDict):
+        abha_address: str
+
+    class PhrWebLoginAbhaSearchResponse(TypedDict):
+        healthIdNumber: str
+        abhaAddress: str
+        authMethods: List[Literal["AADHAAR_OTP", "MOBILE_OTP", "DEMOGRAPHICS"]]
+        blockedAuthMethods: List[Literal["AADHAAR_OTP", "MOBILE_OTP", "DEMOGRAPHICS"]]
+        status: Literal["ACTIVE"]
+        message: str | None
+        fullName: str
+        mobile: str
+
+    @staticmethod
+    def phr__web__login__abha__search(data: PhrWebLoginAbhaSearchBody):
+        payload = {
+            "abhaAddress": data.get("abha_address", ""),
+        }
+
+        path = "/phr/web/login/abha/search"
         return HealthIdService.request.post(
             path,
             payload,

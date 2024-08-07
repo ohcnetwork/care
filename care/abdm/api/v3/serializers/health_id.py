@@ -65,3 +65,7 @@ class AbhaLoginVerifyOtpSerializer(Serializer):
     otp = CharField(max_length=6, min_length=6, required=True)
     otp_system = ChoiceField(choices=OTP_SYSTEM_CHOICES, required=True)
     transaction_id = UUIDField(required=True)
+
+
+class AbhaLoginCheckAuthMethodsSerializer(Serializer):
+    abha_address = CharField(max_length=20, min_length=3, required=True)

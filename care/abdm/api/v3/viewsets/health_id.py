@@ -14,6 +14,7 @@ from care.abdm.api.v3.serializers.health_id import (
     AbhaCreateSendAadhaarOtpSerializer,
     AbhaCreateVerifyAadhaarOtpSerializer,
     AbhaCreateVerifyMobileOtpSerializer,
+    AbhaLoginCheckAuthMethodsSerializer,
     AbhaLoginSendOtpSerializer,
     AbhaLoginVerifyOtpSerializer,
 )
@@ -33,6 +34,7 @@ class HealthIdViewSet(GenericViewSet):
         "abha_create__enrol_abha_address": AbhaCreateEnrolAbhaAddressSerializer,
         "abha_login__send_otp": AbhaLoginSendOtpSerializer,
         "abha_login__verify_otp": AbhaLoginVerifyOtpSerializer,
+        "abha_login__check_auth_methods": AbhaLoginCheckAuthMethodsSerializer,
     }
 
     def get_serializer_class(self):
@@ -48,13 +50,14 @@ class HealthIdViewSet(GenericViewSet):
         return serializer.validated_data
 
     def create_or_update_abha_number(
-        self, data: HealthIdService.ProfileAccountResponse, token: dict
+        self, data: HealthIdService.ProfileAccountResponse, token: dict, is_new=False
     ):
         return AbhaNumber.objects.update_or_create(
             abha_number=data.get("ABHANumber"),
             defaults={
                 "abha_number": data.get("ABHANumber"),
-                "health_id": data.get("preferredAbhaAddress"),
+                "health_id": data.get("preferredAbhaAddress")
+                or data.get("phrAddress", [None])[0],
                 "name": data.get("name"),
                 "first_name": data.get("firstName"),
                 "middle_name": data.get("middleName"),
@@ -72,7 +75,7 @@ class HealthIdViewSet(GenericViewSet):
                 "pincode": data.get("pincode"),
                 "email": data.get("email"),
                 "profile_photo": data.get("profilePhoto"),
-                "new": data.get("new", False),
+                "new": is_new,
                 "txn_id": token.get("txn_id"),
                 "access_token": token.get("access_token"),
                 "refresh_token": token.get("refresh_token"),
@@ -127,13 +130,22 @@ class HealthIdViewSet(GenericViewSet):
         if response.ok:
             result: HealthIdService.EnrollmentEnrolByAadhaarResponse = response.json()
 
-            # TODO: create abha address here
+            (abha_number, created) = self.create_or_update_abha_number(
+                result.get("ABHAProfile"),
+                {
+                    "txn_id": result.get("txnId"),
+                    "access_token": result.get("tokens").get("token"),
+                    "refresh_token": result.get("tokens").get("refreshToken"),
+                },
+                result.get("isNew"),
+            )
 
             return Response(
                 {
                     "transaction_id": result.get("txnId"),
                     "detail": result.get("message"),
-                    "is_new": result.get("isNew"),
+                    "abha_number": AbhaNumberSerializer(abha_number).data,
+                    "created": created,
                 },
                 status=status.HTTP_200_OK,
             )
@@ -258,7 +270,41 @@ class HealthIdViewSet(GenericViewSet):
         if response.ok:
             result: HealthIdService.EnrollmentEnrolAbhaAddressResponse = response.json()
 
-            # TODO: update the abha address here or make an api call to profile and update the abha address
+            abha_number = AbhaNumber.objects.filter(
+                abha_number=result.get("healthIdNumber")
+            ).first()
+
+            if abha_number:
+                profile_response = HealthIdService.profile__account(
+                    {"x_token": abha_number.access_token}
+                )
+
+                if profile_response.ok:
+                    profile_result: HealthIdService.ProfileAccountResponse = (
+                        profile_response.json()
+                    )
+
+                    (abha_number, _) = self.create_or_update_abha_number(
+                        profile_result,
+                        {
+                            "txn_id": result.get("txnId"),
+                            "access_token": abha_number.access_token,
+                            "refresh_token": abha_number.refresh_token,
+                        },
+                    )
+                else:
+                    abha_number.health_id = result.get("preferredAbhaAddress")
+                    abha_number.save()
+
+                return Response(
+                    {
+                        "transaction_id": result.get("txnId"),
+                        "health_id": result.get("healthIdNumber"),
+                        "preferred_abha_address": result.get("preferredAbhaAddress"),
+                        "abha_number": AbhaNumberSerializer(abha_number).data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
             return Response(
                 {
@@ -380,7 +426,6 @@ class HealthIdViewSet(GenericViewSet):
             if response.ok:
                 result: HealthIdService.ProfileLoginVerifyResponse = response.json()
 
-                # TODO: if type == "mobile" then verify the user here
                 if type == "mobile":
                     user_verification_response = (
                         HealthIdService.profile__login__verify__user(
@@ -459,6 +504,38 @@ class HealthIdViewSet(GenericViewSet):
         return Response(
             {
                 "detail": error.get("error", {"message": "Unable to verify otp"})[
+                    "message"
+                ],
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(detail=False, methods=["post"])
+    def abha_login__check_auth_methods(self, request):
+        validated_data = self.validate_request(request)
+
+        response = HealthIdService.profile__login__check_auth_methods(
+            {
+                "abha_number": validated_data.get("abha_number"),
+            }
+        )
+
+        if response.ok:
+            result: HealthIdService.ProfileLoginCheckAuthMethodsResponse = (
+                response.json()
+            )
+            return Response(
+                {
+                    "abha_number": result.get("abhaNumber"),
+                    "auth_methods": result.get("authMethods"),
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        error: HealthIdService.ErrorResponse = response.json()
+        return Response(
+            {
+                "detail": error.get("error", {"message": "Unable to get auth methods"})[
                     "message"
                 ],
             },
