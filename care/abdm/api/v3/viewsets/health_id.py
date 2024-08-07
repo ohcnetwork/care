@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -17,9 +18,12 @@ from care.abdm.api.v3.serializers.health_id import (
     AbhaLoginCheckAuthMethodsSerializer,
     AbhaLoginSendOtpSerializer,
     AbhaLoginVerifyOtpSerializer,
+    LinkAbhaNumberAndPatientSerializer,
 )
 from care.abdm.models import AbhaNumber
 from care.abdm.service.v3.health_id import HealthIdService
+from care.facility.api.serializers.patient import PatientDetailSerializer
+from care.utils.queryset.patient import get_patient_queryset
 
 
 class HealthIdViewSet(GenericViewSet):
@@ -35,6 +39,7 @@ class HealthIdViewSet(GenericViewSet):
         "abha_login__send_otp": AbhaLoginSendOtpSerializer,
         "abha_login__verify_otp": AbhaLoginVerifyOtpSerializer,
         "abha_login__check_auth_methods": AbhaLoginCheckAuthMethodsSerializer,
+        "link_abha_number_and_patient": LinkAbhaNumberAndPatientSerializer,
     }
 
     def get_serializer_class(self):
@@ -63,7 +68,8 @@ class HealthIdViewSet(GenericViewSet):
                 "middle_name": data.get("middleName"),
                 "last_name": data.get("lastName"),
                 "gender": data.get("gender"),
-                "date_of_birth": str(
+                "date_of_birth": data.get("dob")
+                or str(
                     datetime.strptime(
                         f"{data.get('yearOfBirth')}-{data.get('monthOfBirth')}-{data.get('dayOfBirth')}",
                         "%Y-%m-%d",
@@ -80,6 +86,67 @@ class HealthIdViewSet(GenericViewSet):
                 "access_token": token.get("access_token"),
                 "refresh_token": token.get("refresh_token"),
             },
+        )
+
+    @action(detail=False, methods=["post"])
+    def link_abha_number_and_patient(self, request):
+        validated_data = self.validate_request(request)
+
+        patient_queryset = get_patient_queryset(request.user)
+        patient = patient_queryset.filter(
+            external_id=validated_data.get("patient")
+        ).first()
+
+        if not patient:
+            return Response(
+                {
+                    "detail": "Patient not found or you do not have permission to access the patient",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if patient.abha_number:
+            return Response(
+                {
+                    "detail": "Patient already linked to an ABHA Number",
+                    "patient": PatientDetailSerializer(patient).data,
+                    "abha_number": AbhaNumberSerializer(patient.abha_number).data,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        abha_number = AbhaNumber.objects.filter(
+            external_id=validated_data.get("abha_number")
+        ).first()
+
+        if not abha_number:
+            return Response(
+                {
+                    "detail": "ABHA Number not found",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if hasattr(abha_number, "patient"):
+            return Response(
+                {
+                    "detail": "ABHA Number already linked to a patient",
+                    "patient": PatientDetailSerializer(abha_number.patient).data,
+                    "abha_number": AbhaNumberSerializer(abha_number).data,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        patient.abha_number = abha_number
+        patient.save()
+
+        return Response(
+            {
+                "detail": "Patient linked successfully",
+                "patient": PatientDetailSerializer(patient).data,
+                "abha_number": AbhaNumberSerializer(abha_number).data,
+            },
+            status=status.HTTP_200_OK,
         )
 
     @action(detail=False, methods=["post"])
@@ -229,7 +296,7 @@ class HealthIdViewSet(GenericViewSet):
     def abha_create__abha_address_suggestion(self, request):
         validated_data = self.validate_request(request)
 
-        response = HealthIdService.enrollment__enrol_suggestion(
+        response = HealthIdService.enrollment__enrol__suggestion(
             {
                 "transaction_id": str(validated_data.get("transaction_id")),
             }
@@ -259,7 +326,7 @@ class HealthIdViewSet(GenericViewSet):
     def abha_create__enrol_abha_address(self, request):
         validated_data = self.validate_request(request)
 
-        response = HealthIdService.enrollment__enrol_abha_address(
+        response = HealthIdService.enrollment__enrol__abha_address(
             {
                 "transaction_id": str(validated_data.get("transaction_id")),
                 "abha_address": validated_data.get("abha_address"),
@@ -514,19 +581,22 @@ class HealthIdViewSet(GenericViewSet):
     def abha_login__check_auth_methods(self, request):
         validated_data = self.validate_request(request)
 
-        response = HealthIdService.profile__login__check_auth_methods(
+        abha_address = validated_data.get("abha_address")
+
+        if not abha_address.endswith(f"@{settings.X_CM_ID}"):
+            abha_address = f"{abha_address}@{settings.X_CM_ID}"
+
+        response = HealthIdService.phr__web__login__abha__search(
             {
-                "abha_number": validated_data.get("abha_number"),
+                "abha_address": abha_address,
             }
         )
 
         if response.ok:
-            result: HealthIdService.ProfileLoginCheckAuthMethodsResponse = (
-                response.json()
-            )
+            result: HealthIdService.PhrWebLoginAbhaSearchResponse = response.json()
             return Response(
                 {
-                    "abha_number": result.get("abhaNumber"),
+                    "abha_number": result.get("healthIdNumber"),
                     "auth_methods": result.get("authMethods"),
                 },
                 status=status.HTTP_200_OK,

@@ -27,7 +27,7 @@ class AbhaCreateAbhaAddressSuggestionSerializer(Serializer):
 
 class AbhaCreateEnrolAbhaAddressSerializer(Serializer):
     transaction_id = UUIDField(required=True)
-    abha_address = CharField(min_length=3, max_length=14, required=True)
+    abha_address = CharField(min_length=3, max_length=20, required=True)
 
 
 class AbhaLoginSendOtpSerializer(Serializer):
@@ -69,3 +69,8 @@ class AbhaLoginVerifyOtpSerializer(Serializer):
 
 class AbhaLoginCheckAuthMethodsSerializer(Serializer):
     abha_address = CharField(max_length=20, min_length=3, required=True)
+
+
+class LinkAbhaNumberAndPatientSerializer(Serializer):
+    patient = UUIDField(required=True)
+    abha_number = UUIDField(required=True)

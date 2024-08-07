@@ -446,7 +446,7 @@ class HealthIdService:
     @staticmethod
     def profile__login__verify__user(data: ProfileLoginVerifyUserBody):
         payload = {
-            "abhaNumber": data.get("abha_number", ""),
+            "ABHANumber": data.get("abha_number", ""),
             "txnId": data.get("transaction_id", ""),
         }
 
