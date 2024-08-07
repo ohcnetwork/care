@@ -172,6 +172,7 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
             Bucket=bucket_name,
             Key=image_location,
             Body=image.file,
+            ACL="public-read",
         )
         facility.cover_image_url = image_location
         facility.save()
