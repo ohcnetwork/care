@@ -2,7 +2,7 @@ from datetime import datetime
 from json import JSONEncoder
 from logging import getLogger
 
-from django.core.serializers import serialize
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Field, Model
 from multiselectfield.db.fields import MSFList, MultiSelectField
 
@@ -27,11 +27,23 @@ def get_changed_fields(old: Model, new: Model) -> set[str]:
     return changed_fields
 
 
-def serialize_field(object: Model, field: Field):
-    value = getattr(object, field.name)
-    if isinstance(value, Model):
-        # serialize the fields of the related model
-        return serialize("python", [value])[0]["fields"]
+def serialize_field(object: Model, field_name: str):
+    if "__" in field_name:
+        field_name, sub_field = field_name.split("__", 1)
+        related_object = getattr(object, field_name)
+        return serialize_field(related_object, sub_field)
+
+    field = None
+    try:
+        field = object._meta.get_field(field_name)
+    except FieldDoesNotExist as e:
+        try:
+            # try to get property field
+            return getattr(object, field_name)
+        except AttributeError:
+            raise e
+
+    value = getattr(object, field.name, None)
     if issubclass(field.__class__, Field) and field.choices:
         # serialize choice fields with display value
         return getattr(object, f"get_{field.name}_display", lambda: value)()
