@@ -81,7 +81,7 @@
     dir: ttb,
     spacing: 10pt,
     {% for diagnose in diagnoses %}
-      "{{ diagnose.label  }} ({{diagnose.verification_status }})",
+      "{{ diagnose.label  }} ({{diagnose.status }})",
     {% endfor %}
   )
   ],
@@ -109,7 +109,7 @@
             {% endif %}
         {% endfor %}
     {% else %}
-        "N/A"
+        "Asymptomatic"
     {% endif %}
   )],
   [Reported Allergies:], "{{ patient.allergies |format_empty_data }}",

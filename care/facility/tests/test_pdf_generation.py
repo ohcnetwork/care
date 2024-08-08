@@ -226,5 +226,4 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         data["date"] = date(2020, 1, 1)
 
         # This sorting is test's specific and done in order to keep the values in order
-        data["diagnoses"] = sorted(data["diagnoses"], key=lambda x: x["label"])
         self.assertTrue(test_compile_typ(data))

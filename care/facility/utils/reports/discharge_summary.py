@@ -74,6 +74,8 @@ def get_diagnoses_data(consultation: PatientConsultation):
     for diagnosis, record in zip(diagnoses, entries):
         _, verification_status, is_principal = record
 
+        diagnosis.status = verification_status
+
         if is_principal:
             principal.append(diagnosis)
         if verification_status == ConditionVerificationStatus.UNCONFIRMED:

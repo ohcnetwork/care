@@ -66,12 +66,10 @@ def get_icd11_diagnoses_objects_by_ids(diagnoses_ids: list[int]) -> list[ICD11Ob
     if not diagnoses_ids:
         return []
 
-    query = None
+    diagnoses_objects = []
     for diagnosis_id in diagnoses_ids:
-        if query is None:
-            query = ICD11.id == diagnosis_id
-        else:
-            query |= ICD11.id == diagnosis_id
+        diagnoses = get_icd11_diagnosis_object_by_id(diagnosis_id)
+        if diagnoses:
+            diagnoses_objects.append(diagnoses)
 
-    diagnosis_objects: list[ICD11] = list(ICD11.find(query))
-    return [diagnosis.get_representation() for diagnosis in diagnosis_objects]
+    return diagnoses_objects
