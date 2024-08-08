@@ -81,7 +81,7 @@
     dir: ttb,
     spacing: 10pt,
     {% for diagnose in diagnoses %}
-      "{{ diagnose.label  }} ({{diagnose.status }})",
+      "{{ diagnose.label  }} ({{diagnose.verification_status }})",
     {% endfor %}
   )
   ],
@@ -303,7 +303,7 @@
   row-gutter: 1.2em,
   align: (left),
   [Discharge Date:], "{{consultation.discharge_date|format_empty_data }}",
-  [Discharge Reason:], "{{consultation.get_discharge_reason_display|format_empty_data }}",
+  [Discharge Reason:], "{{consultation.get_new_discharge_reason_display|format_empty_data }}",
   [Discharge Advice:], "{{consultation.discharge_notes|format_empty_data }}",
 )
 
@@ -329,7 +329,6 @@
     {% endfor %}
   )
 
-  #align(center, [#line(length: 40%, stroke: mygray,)])
   {% endif %}
 
   {% elif consultation.new_discharge_reason == 2 %}
