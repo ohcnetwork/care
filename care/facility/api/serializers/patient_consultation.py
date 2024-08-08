@@ -273,7 +273,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             consultation,
             self.context["request"].user.id,
             consultation.modified_date,
-            old_instance,
+            old=old_instance,
         )
 
         if "assigned_to" in validated_data:
@@ -799,7 +799,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
-            if patient.abha_number:
+            if settings.ENABLE_ABDM and patient.abha_number:
                 abha_number = patient.abha_number
                 try:
                     AbdmGateway().fetch_modes(
@@ -819,7 +819,7 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
                 instance,
                 self.context["request"].user.id,
                 instance.modified_date,
-                old_instance,
+                old=old_instance,
             )
 
             return instance
