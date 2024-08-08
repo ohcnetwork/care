@@ -1,7 +1,9 @@
+from contextlib import suppress
 from datetime import datetime
 
+from django.core.exceptions import FieldDoesNotExist
 from django.db import transaction
-from django.db.models import Field, Model
+from django.db.models import Model
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 
@@ -9,63 +11,46 @@ from care.facility.models.events import ChangeType, EventType, PatientConsultati
 from care.utils.event_utils import get_changed_fields, serialize_field
 
 
-def transform(
-    object_instance: Model,
-    old_instance: Model,
-    fields_to_store: set[str] | None = None,
-) -> dict[str, any]:
-    fields: set[Field] = set()
-    if old_instance:
-        changed_fields = get_changed_fields(old_instance, object_instance)
-        fields = {
-            field
-            for field in object_instance._meta.fields
-            if field.name in changed_fields
-        }
-    else:
-        fields = set(object_instance._meta.fields)
-
-    if fields_to_store:
-        fields = {field for field in fields if field.name in fields_to_store}
-
-    return {field.name: serialize_field(object_instance, field) for field in fields}
-
-
 def create_consultation_event_entry(
     consultation_id: int,
     object_instance: Model,
     caused_by: int,
     created_date: datetime,
+    taken_at: datetime,
     old_instance: Model | None = None,
     fields_to_store: set[str] | None = None,
 ):
     change_type = ChangeType.UPDATED if old_instance else ChangeType.CREATED
 
-    data = transform(object_instance, old_instance, fields_to_store)
-    fields_to_store = fields_to_store or set(data.keys())
+    fields: set[str] = (
+        get_changed_fields(old_instance, object_instance)
+        if old_instance
+        else {field.name for field in object_instance._meta.fields}
+    )
+
+    fields_to_store = fields_to_store & fields if fields_to_store else fields
 
     batch = []
     groups = EventType.objects.filter(
         model=object_instance.__class__.__name__, fields__len__gt=0, is_active=True
     ).values_list("id", "fields")
     for group_id, group_fields in groups:
-        if set(group_fields) & fields_to_store:
+        if fields_to_store & {field.split("__", 1)[0] for field in group_fields}:
             value = {}
             for field in group_fields:
-                try:
-                    value[field] = data[field]
-                except KeyError:
-                    value[field] = getattr(object_instance, field, None)
-            # if all values in the group are Falsy, skip creating the event for this group
+                with suppress(FieldDoesNotExist):
+                    value[field] = serialize_field(object_instance, field)
+
             if all(not v for v in value.values()):
                 continue
+
             PatientConsultationEvent.objects.select_for_update().filter(
                 consultation_id=consultation_id,
                 event_type=group_id,
                 is_latest=True,
                 object_model=object_instance.__class__.__name__,
                 object_id=object_instance.id,
-                created_date__lt=created_date,
+                taken_at__lt=taken_at,
             ).update(is_latest=False)
             batch.append(
                 PatientConsultationEvent(
@@ -74,6 +59,7 @@ def create_consultation_event_entry(
                     event_type_id=group_id,
                     is_latest=True,
                     created_date=created_date,
+                    taken_at=taken_at,
                     object_model=object_instance.__class__.__name__,
                     object_id=object_instance.id,
                     value=value,
@@ -94,11 +80,15 @@ def create_consultation_events(
     objects: list | QuerySet | Model,
     caused_by: int,
     created_date: datetime = None,
+    taken_at: datetime = None,
     old: Model | None = None,
     fields_to_store: list[str] | set[str] | None = None,
 ):
     if created_date is None:
         created_date = now()
+
+    if taken_at is None:
+        taken_at = created_date
 
     with transaction.atomic():
         if isinstance(objects, (QuerySet, list, tuple)):
@@ -112,6 +102,7 @@ def create_consultation_events(
                     obj,
                     caused_by,
                     created_date,
+                    taken_at,
                     fields_to_store=set(fields_to_store) if fields_to_store else None,
                 )
         else:
@@ -120,6 +111,7 @@ def create_consultation_events(
                 objects,
                 caused_by,
                 created_date,
+                taken_at,
                 old,
                 fields_to_store=set(fields_to_store) if fields_to_store else None,
             )
