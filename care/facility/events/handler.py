@@ -79,8 +79,8 @@ def create_consultation_events(
     consultation_id: int,
     objects: list | QuerySet | Model,
     caused_by: int,
-    created_date: datetime = None,
-    taken_at: datetime = None,
+    created_date: datetime | None = None,
+    taken_at: datetime | None = None,
     old: Model | None = None,
     fields_to_store: list[str] | set[str] | None = None,
 ):
