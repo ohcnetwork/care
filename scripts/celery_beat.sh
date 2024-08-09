@@ -29,6 +29,7 @@ done
 
 python manage.py migrate --noinput
 python manage.py load_redis_index
+python manage.py load_event_types
 
 touch /tmp/healthy
 
