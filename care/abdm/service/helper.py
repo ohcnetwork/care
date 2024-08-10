@@ -5,8 +5,16 @@ from uuid import uuid4
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Hash import SHA1
 from Crypto.PublicKey import RSA
+from django.conf import settings
+from rest_framework.exceptions import APIException
 
 from care.abdm.service.request import Request
+
+
+class ABDMAPIException(APIException):
+    status_code = 400
+    default_code = "ABDM_ERROR"
+    default_detail = "An error occured while trying to communicate with ABDM"
 
 
 def encrypt_message(message: str):
@@ -26,3 +34,11 @@ def timestamp():
 
 def uuid():
     return str(uuid4())
+
+
+def hip_id_from_abha_number(abha_number: str):
+    return "HIP-ABDM"
+
+
+def cm_id():
+    return settings.X_CM_ID

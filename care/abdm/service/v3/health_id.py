@@ -1,120 +1,63 @@
-from typing import Dict, List, Literal, Optional, TypedDict
+from typing import Any, Dict
 
-from care.abdm.service.helper import encrypt_message, timestamp, uuid
+from care.abdm.service.helper import ABDMAPIException, encrypt_message, timestamp, uuid
 from care.abdm.service.request import Request
-
-
-class LocalizedDetails(TypedDict):
-    name: str
-    stateName: str
-    districtName: str
-    villageName: str
-    wardName: str
-    townName: str
-    gender: str
-    localizedLabels: Dict[str, str]
-
-
-class ABHAProfileFull(TypedDict):
-    ABHANumber: str
-    preferredAbhaAddress: str
-    mobile: str
-    firstName: str
-    middleName: str
-    lastName: str
-    name: str
-    yearOfBirth: str
-    dayOfBirth: str
-    monthOfBirth: str
-    gender: str
-    profilePhoto: str
-    status: str
-    stateCode: str
-    districtCode: str
-    pincode: str
-    address: str
-    kycPhoto: str
-    stateName: str
-    districtName: str
-    subdistrictName: str
-    townName: str
-    authMethods: List[str]
-    tags: Dict[str, str]
-    kycVerified: bool
-    localizedDetails: LocalizedDetails
-    createdDate: str
-    phrAddress: Optional[List[str]]
-
-
-class ABHAProfile(TypedDict):
-    ABHANumber: str
-    abhaStatus: Literal["ACTIVE"]
-    abhaType: Literal["STANDARD"]
-    address: str
-    districtCode: str
-    districtName: str
-    dob: str
-    firstName: str
-    gender: Literal["M", "F", "O"]
-    lastName: str
-    middleName: str
-    mobile: str
-    photo: str
-    phrAddress: List[str]
-    pinCode: str
-    stateCode: str
-    stateName: str
-
-
-class Token(TypedDict):
-    expiresIn: int
-    refreshExpiresIn: int
-    refreshToken: str
-    token: str
-
-
-class Account(TypedDict):
-    ABHANumber: str
-    preferredAbhaAddress: Optional[str]
-    name: Optional[str]
-    gender: Optional[Literal["M", "F", "O"]]
-    dob: Optional[str]
-    status: Optional[Literal["ACTIVE"]]
-    profilePhoto: Optional[str]
-    kycVerified: Optional[bool]
-
-
-class User(TypedDict):
-    abhaAddress: str
-    fullName: str
-    abhaNumber: str
-    status: str
-    kycStatus: str
-
-
-class Error(TypedDict):
-    message: str
-    code: str
+from care.abdm.service.v3.types.health_id import (
+    EnrollmentAuthByAbdmBody,
+    EnrollmentAuthByAbdmResponse,
+    EnrollmentEnrolAbhaAddressBody,
+    EnrollmentEnrolAbhaAddressResponse,
+    EnrollmentEnrolByAadhaarBody,
+    EnrollmentEnrolByAadhaarResponse,
+    EnrollmentEnrolSuggestionBody,
+    EnrollmentEnrolSuggestionResponse,
+    EnrollmentRequestOtpBody,
+    EnrollmentRequestOtpResponse,
+    PhrWebLoginAbhaRequestOtpBody,
+    PhrWebLoginAbhaRequestOtpResponse,
+    PhrWebLoginAbhaSearchBody,
+    PhrWebLoginAbhaSearchResponse,
+    PhrWebLoginAbhaVerifyBody,
+    PhrWebLoginAbhaVerifyResponse,
+    ProfileAccountBody,
+    ProfileAccountResponse,
+    ProfileLoginRequestOtpBody,
+    ProfileLoginRequestOtpResponse,
+    ProfileLoginVerifyBody,
+    ProfileLoginVerifyResponse,
+    ProfileLoginVerifyUserBody,
+    ProfileLoginVerifyUserResponse,
+)
 
 
 class HealthIdService:
     request = Request("https://abhasbx.abdm.gov.in/abha/api/v3")
 
-    class ErrorResponse(TypedDict):
-        error: Error
+    @staticmethod
+    def handle_error(error: Dict[str, Any] | str) -> str:
+        if isinstance(error, str):
+            return error
 
-    class EnrollmentRequestOtpBody(TypedDict):
-        transaction_id: Optional[str]
-        scope: List[Literal["abha-enrol", "dl-flow", "mobile-verify", "email-verify"]]
-        type: Literal["aadhaar", "mobile"]
-        value: str
+        # { error: { message: "error message" } }
+        if "error" in error:
+            return HealthIdService.handle_error(error["error"])
 
-    class EnrollmentRequestOtpResponse(TypedDict):
-        txnId: str
-        message: str
+        # { message: "error message" }
+        if "message" in error:
+            return error["message"]
+
+        # { field_name: "error message" }
+        if len(error) == 1:
+            error.pop("code")
+            error.pop("timestamp")
+            return "".join(list(map(lambda x: str(x), list(error.values()))))
+
+        return "Unknown error occurred at ABDM's end while processing the request. Please try again later."
 
     @staticmethod
-    def enrollment__request__otp(data: EnrollmentRequestOtpBody):
+    def enrollment__request__otp(
+        data: EnrollmentRequestOtpBody,
+    ) -> EnrollmentRequestOtpResponse:
         payload = {
             "txnId": data.get("transaction_id", ""),
             "scope": data.get("scope", []),
@@ -126,7 +69,7 @@ class HealthIdService:
         }
 
         path = "/enrollment/request/otp"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -135,20 +78,15 @@ class HealthIdService:
             },
         )
 
-    class EnrollmentEnrolByAadhaarBody(TypedDict):
-        transaction_id: str
-        otp: str
-        mobile: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class EnrollmentEnrolByAadhaarResponse(TypedDict):
-        ABHAProfile: ABHAProfile
-        isNew: bool
-        message: str
-        tokens: Token
-        txnId: str
+        return response.json()
 
     @staticmethod
-    def enrollment__enrol__byAadhaar(data: EnrollmentEnrolByAadhaarBody):
+    def enrollment__enrol__byAadhaar(
+        data: EnrollmentEnrolByAadhaarBody,
+    ) -> EnrollmentEnrolByAadhaarResponse:
         payload = {
             "authData": {
                 "authMethods": ["otp"],
@@ -163,7 +101,7 @@ class HealthIdService:
         }
 
         path = "/enrollment/enrol/byAadhaar"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -172,19 +110,15 @@ class HealthIdService:
             },
         )
 
-    class EnrollmentAuthByAbdmBody(TypedDict):
-        scope: List[Literal["abha-enrol", "dl-flow", "mobile-verify", "email-verify"]]
-        transaction_id: str
-        otp: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class EnrollmentAuthByAbdmResponse(TypedDict):
-        accounts: List[Account]
-        message: str
-        authResult: Literal["success", "failure"]
-        txnId: str
+        return response.json()
 
     @staticmethod
-    def enrollment__auth__byAbdm(data: EnrollmentAuthByAbdmBody):
+    def enrollment__auth__byAbdm(
+        data: EnrollmentAuthByAbdmBody,
+    ) -> EnrollmentAuthByAbdmResponse:
         payload = {
             "scope": data.get("scope", []),
             "authData": {
@@ -198,7 +132,7 @@ class HealthIdService:
         }
 
         path = "/enrollment/auth/byAbdm"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -207,17 +141,17 @@ class HealthIdService:
             },
         )
 
-    class EnrollmentEnrolSuggestionBody(TypedDict):
-        transaction_id: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class EnrollmentEnrolSuggestionResponse(TypedDict):
-        abhaAddressList: List[str]
-        txnId: str
+        return response.json()
 
     @staticmethod
-    def enrollment__enrol__suggestion(data: EnrollmentEnrolSuggestionBody):
+    def enrollment__enrol__suggestion(
+        data: EnrollmentEnrolSuggestionBody,
+    ) -> EnrollmentEnrolSuggestionResponse:
         path = "/enrollment/enrol/suggestion"
-        return HealthIdService.request.get(
+        response = HealthIdService.request.get(
             path,
             headers={
                 "TRANSACTION_ID": data.get("transaction_id"),
@@ -226,18 +160,15 @@ class HealthIdService:
             },
         )
 
-    class EnrollmentEnrolAbhaAddressBody(TypedDict):
-        transaction_id: str
-        abha_address: str
-        preferred: int
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class EnrollmentEnrolAbhaAddressResponse(TypedDict):
-        healthIdNumber: str
-        preferredAbhaAddress: str
-        txnId: str
+        return response.json()
 
     @staticmethod
-    def enrollment__enrol__abha_address(data: EnrollmentEnrolAbhaAddressBody):
+    def enrollment__enrol__abha_address(
+        data: EnrollmentEnrolAbhaAddressBody,
+    ) -> EnrollmentEnrolAbhaAddressResponse:
         payload = {
             "txnId": data.get("transaction_id", ""),
             "abhaAddress": data.get("abha_address", ""),
@@ -245,28 +176,19 @@ class HealthIdService:
         }
 
         path = "/enrollment/enrol/abha-address"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path, payload, headers={"REQUEST-ID": uuid(), "TIMESTAMP": timestamp()}
         )
 
-    class ProfileLoginRequestOtpBody(TypedDict):
-        scope: List[
-            Literal[
-                "abha-login",
-                "aadhaar-verify",
-                "mobile-verify",
-            ]
-        ]
-        type: Literal["aadhaar", "mobile", "abha-number"]
-        value: str
-        otp_system: Literal["aadhaar", "abdm"]
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class ProfileLoginRequestOtpResponse(TypedDict):
-        txnId: str
-        message: str
+        return response.json()
 
     @staticmethod
-    def profile__login__request__otp(data: ProfileLoginRequestOtpBody):
+    def profile__login__request__otp(
+        data: ProfileLoginRequestOtpBody,
+    ) -> ProfileLoginRequestOtpResponse:
         payload = {
             "scope": data.get("scope", []),
             "loginHint": data.get("type", ""),
@@ -275,7 +197,7 @@ class HealthIdService:
         }
 
         path = "/profile/login/request/otp"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -284,29 +206,15 @@ class HealthIdService:
             },
         )
 
-    class ProfileLoginVerifyBody(TypedDict):
-        scope: List[
-            Literal[
-                "abha-login",
-                "aadhaar-verify",
-                "mobile-verify",
-            ]
-        ]
-        transaction_id: str
-        otp: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class ProfileLoginVerifyResponse(TypedDict):
-        txnId: str
-        authResult: Literal["success", "failure"]
-        message: str
-        token: str
-        expiresIn: int
-        refreshToken: str
-        refreshExpiresIn: int
-        accounts: List[Account]
+        return response.json()
 
     @staticmethod
-    def profile__login__verify(data: ProfileLoginVerifyBody):
+    def profile__login__verify(
+        data: ProfileLoginVerifyBody,
+    ) -> ProfileLoginVerifyResponse:
         payload = {
             "scope": data.get("scope", []),
             "authData": {
@@ -319,7 +227,7 @@ class HealthIdService:
         }
 
         path = "/profile/login/verify"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -328,24 +236,15 @@ class HealthIdService:
             },
         )
 
-    class PhrWebLoginAbhaRequestOtpBody(TypedDict):
-        scope: List[
-            Literal[
-                "abha-address-login",
-                "aadhaar-verify",
-                "mobile-verify",
-            ]
-        ]
-        type: Literal["abha-address"]
-        value: str
-        otp_system: Literal["aadhaar", "abdm"]
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class PhrWebLoginAbhaRequestOtpResponse(TypedDict):
-        txnId: str
-        message: str
+        return response.json()
 
     @staticmethod
-    def phr__web__login__abha__request__otp(data: PhrWebLoginAbhaRequestOtpBody):
+    def phr__web__login__abha__request__otp(
+        data: PhrWebLoginAbhaRequestOtpBody,
+    ) -> PhrWebLoginAbhaRequestOtpResponse:
         payload = {
             "scope": data.get("scope", []),
             "loginHint": data.get("type", ""),
@@ -354,7 +253,7 @@ class HealthIdService:
         }
 
         path = "/phr/web/login/abha/request/otp"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -363,25 +262,15 @@ class HealthIdService:
             },
         )
 
-    class PhrWebLoginAbhaVerifyBody(TypedDict):
-        scope: List[
-            Literal[
-                "abha-address-login",
-                "aadhaar-verify",
-                "mobile-verify",
-            ]
-        ]
-        transaction_id: str
-        otp: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class PhrWebLoginAbhaVerifyResponse(TypedDict):
-        message: str
-        authResult: Literal["success", "failure"]
-        users: List[User]
-        tokens: Token
+        return response.json()
 
     @staticmethod
-    def phr__web__login__abha__verify(data: PhrWebLoginAbhaVerifyBody):
+    def phr__web__login__abha__verify(
+        data: PhrWebLoginAbhaVerifyBody,
+    ) -> PhrWebLoginAbhaVerifyResponse:
         payload = {
             "scope": data.get("scope", []),
             "authData": {
@@ -394,7 +283,7 @@ class HealthIdService:
         }
 
         path = "/phr/web/login/abha/verify"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -403,27 +292,21 @@ class HealthIdService:
             },
         )
 
-    class PhrWebLoginAbhaSearchBody(TypedDict):
-        abha_address: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class PhrWebLoginAbhaSearchResponse(TypedDict):
-        healthIdNumber: str
-        abhaAddress: str
-        authMethods: List[Literal["AADHAAR_OTP", "MOBILE_OTP", "DEMOGRAPHICS"]]
-        blockedAuthMethods: List[Literal["AADHAAR_OTP", "MOBILE_OTP", "DEMOGRAPHICS"]]
-        status: Literal["ACTIVE"]
-        message: str | None
-        fullName: str
-        mobile: str
+        return response.json()
 
     @staticmethod
-    def phr__web__login__abha__search(data: PhrWebLoginAbhaSearchBody):
+    def phr__web__login__abha__search(
+        data: PhrWebLoginAbhaSearchBody,
+    ) -> PhrWebLoginAbhaSearchResponse:
         payload = {
             "abhaAddress": data.get("abha_address", ""),
         }
 
         path = "/phr/web/login/abha/search"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -432,26 +315,22 @@ class HealthIdService:
             },
         )
 
-    class ProfileLoginVerifyUserBody(TypedDict):
-        abha_number: str
-        transaction_id: str
-        t_token: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class ProfileLoginVerifyUserResponse(TypedDict):
-        token: str
-        expiresIn: int
-        refreshToken: str
-        refreshExpiresIn: int
+        return response.json()
 
     @staticmethod
-    def profile__login__verify__user(data: ProfileLoginVerifyUserBody):
+    def profile__login__verify__user(
+        data: ProfileLoginVerifyUserBody,
+    ) -> ProfileLoginVerifyUserResponse:
         payload = {
             "ABHANumber": data.get("abha_number", ""),
             "txnId": data.get("transaction_id", ""),
         }
 
         path = "/profile/login/verify/user"
-        return HealthIdService.request.post(
+        response = HealthIdService.request.post(
             path,
             payload,
             headers={
@@ -461,16 +340,15 @@ class HealthIdService:
             },
         )
 
-    class ProfileAccountBody(TypedDict):
-        x_token: str
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
 
-    class ProfileAccountResponse(TypedDict, ABHAProfileFull):
-        pass
+        return response.json()
 
     @staticmethod
-    def profile__account(data: ProfileAccountBody):
+    def profile__account(data: ProfileAccountBody) -> ProfileAccountResponse:
         path = "/profile/account"
-        return HealthIdService.request.get(
+        response = HealthIdService.request.get(
             path,
             headers={
                 "REQUEST-ID": uuid(),
@@ -478,3 +356,8 @@ class HealthIdService:
                 "X-TOKEN": f"Bearer {data.get('x_token', '')}",
             },
         )
+
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=HealthIdService.handle_error(response.json()))
+
+        return response.json()
