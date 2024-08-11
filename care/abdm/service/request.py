@@ -78,6 +78,12 @@ class Request:
         response = requests.get(url, headers=headers, params=params)
         logger.info(f"{response.status_code} Response: {response.text}")
 
+        if response.status_code == 400:
+            result = response.json()
+            if "code" in result and result["code"] == "900901":
+                cache.delete(ABDM_TOKEN_CACHE_KEY)
+                return self.post(path, params, headers, auth)
+
         return response
 
     def post(self, path, data=None, headers=None, auth=None):
@@ -89,4 +95,24 @@ class Request:
         response = requests.post(url, data=payload, headers=headers)
         logger.info(f"{response.status_code} Response: {response.text}")
 
+        if response.status_code == 400:
+            result = response.json()
+            if "code" in result and result["code"] == "900901":
+                cache.delete(ABDM_TOKEN_CACHE_KEY)
+                return self.post(path, data, headers, auth)
+
+        return response
+
+    def _handle_response(self, response: requests.Response):
+        def custom_json():
+            try:
+                return response.json()
+            except json.JSONDecodeError as json_err:
+                logger.error(f"JSON Decode error: {json_err}")
+                return {"error": response.text}
+            except Exception as err:
+                logger.error(f"Unknown error while decoding json: {err}")
+                return {}
+
+        response.json = custom_json
         return response

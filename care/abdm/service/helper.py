@@ -6,8 +6,10 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Hash import SHA1
 from Crypto.PublicKey import RSA
 from django.conf import settings
+from django.db.models import Q
 from rest_framework.exceptions import APIException
 
+from care.abdm.models import AbhaNumber
 from care.abdm.service.request import Request
 
 
@@ -15,6 +17,12 @@ class ABDMAPIException(APIException):
     status_code = 400
     default_code = "ABDM_ERROR"
     default_detail = "An error occured while trying to communicate with ABDM"
+
+
+class ABDMInternalException(APIException):
+    status_code = 400
+    default_code = "ABDM_INTERNAL_ERROR"
+    default_detail = "An internal error occured while trying to communicate with ABDM"
 
 
 def encrypt_message(message: str):
@@ -36,8 +44,25 @@ def uuid():
     return str(uuid4())
 
 
-def hip_id_from_abha_number(abha_number: str):
-    return "HIP-ABDM"
+def hip_id_from_abha_number(health_id: str):
+    abha_number = AbhaNumber.objects.filter(
+        Q(abha_number=health_id) | Q(health_id=health_id)
+    ).first()
+
+    if not abha_number:
+        ABDMInternalException(detail="Given ABHA Number does not exist in the system")
+
+    if not hasattr(abha_number, "patientregistration"):
+        ABDMInternalException(detail="Given ABHA Number is not linked to any patient")
+
+    patient_facility = abha_number.patientregistration.last_consultation.facility
+
+    if not hasattr(patient_facility, "healthfacility"):
+        raise ABDMInternalException(
+            detail="The facility to which the patient is linked does not have a health facility linked"
+        )
+
+    return patient_facility.healthfacility.hf_id
 
 
 def cm_id():
