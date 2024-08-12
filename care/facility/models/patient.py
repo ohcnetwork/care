@@ -1,4 +1,5 @@
 import enum
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -481,10 +482,20 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
 
-    def get_age(self) -> int:
-        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+    def get_age(self) -> str:
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.death_datetime or timezone.now()).date()
-        return relativedelta(end, start).years
+
+        delta = relativedelta(end, start)
+
+        if delta.years > 0:
+            return f"{delta.years} years"
+        elif delta.months > 0:
+            return f"{delta.months} months"
+        elif delta.days > 0:
+            return f"{delta.days} days"
+        else:
+            return "0 days"
 
     def annotate_diagnosis_ids(*args, **kwargs):
         return ArrayAgg(
