@@ -163,7 +163,7 @@ jobs:
           image: ${{env.IMAGE_VALUE}}
 
       - name: Deploy Backend Api
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def-api.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE_BACKEND }}
@@ -187,7 +187,7 @@ jobs:
           image: ${{env.IMAGE_VALUE}}
 
       - name: Deploy Backend Celery
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def-celery-worker.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE_CELERY }}
