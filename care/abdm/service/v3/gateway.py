@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from django.core.cache import cache
@@ -16,6 +16,12 @@ from care.abdm.service.v3.types.gateway import (
     LinkCarecontextResponse,
     TokenGenerateTokenBody,
     TokenGenerateTokenResponse,
+    UserInitiatedLinkingPatientCareContextOnConfirmBody,
+    UserInitiatedLinkingPatientCareContextOnConfirmResponse,
+    UserInitiatedLinkingPatientCareContextOnDiscoverBody,
+    UserInitiatedLinkingPatientCareContextOnDiscoverResponse,
+    UserInitiatedLinkingPatientCareContextOnInitBody,
+    UserInitiatedLinkingPatientCareContextOnInitResponse,
 )
 
 
@@ -134,7 +140,7 @@ class GatewayService:
                         )
                     ),
                     "hiType": "DischargeSummary",
-                    "count": 1,
+                    "count": len(consultations),
                 }
             ],
         }
@@ -149,6 +155,150 @@ class GatewayService:
                 "X-CM-ID": cm_id(),
                 "X-HIP-ID": hip_id_from_abha_number(abha_number.abha_number),
                 "X-LINK-TOKEN": data.get("link_token"),
+            },
+        )
+
+        if response.status_code != 202:
+            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def user_initiated_linking__patient__care_context__on_discover(
+        data: UserInitiatedLinkingPatientCareContextOnDiscoverBody,
+    ) -> UserInitiatedLinkingPatientCareContextOnDiscoverResponse:
+        payload: Dict = {
+            "transactionId": data.get("transaction_id"),
+            "response": {
+                "requestId": data.get("request_id"),
+            },
+        }
+
+        patient = data.get("patient")
+        if patient:
+            consultations = []
+
+            if hasattr(patient, "consultations"):
+                consultations = patient.consultations.all()
+
+            payload["patient"] = {
+                "referenceNumber": str(patient.external_id),
+                "display": patient.name,
+                "careContexts": list(
+                    map(
+                        lambda x: {
+                            "referenceNumber": str(x.external_id),
+                            "display": f"Encounter on {str(x.created_date.date())}",
+                        },
+                        consultations,
+                    )
+                ),
+                "hiType": "DischargeSummary",
+                "count": len(consultations),
+            }
+            payload["matchedBy"] = data.get("matched_by", [])
+        else:
+            payload["error"] = {
+                "code": "ABDM-1010",
+                "message": "Patient not found",
+            }
+
+        path = "/user-initiated-linking/patient/care-context/on-discover"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def user_initiated_linking__patient__care_context__on_init(
+        data: UserInitiatedLinkingPatientCareContextOnInitBody,
+    ) -> UserInitiatedLinkingPatientCareContextOnInitResponse:
+        payload = {
+            "transactionId": data.get("transaction_id"),
+            "link": {
+                "referenceNumber": data.get("reference_id"),
+                "authenticationType": "DIRECT",
+                "meta": {
+                    "communicationMedium": "MOBILE",
+                    "communicationHint": "OTP",
+                    "communicationExpiry": (
+                        datetime.now() + timedelta(minutes=5)
+                    ).isoformat(),
+                },
+            },
+            "response": {
+                "requestId": data.get("request_id"),
+            },
+        }
+
+        path = "/user-initiated-linking/patient/care-context/on-init"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def user_initiated_linking__patient__care_context__on_confirm(
+        data: UserInitiatedLinkingPatientCareContextOnConfirmBody,
+    ) -> UserInitiatedLinkingPatientCareContextOnConfirmResponse:
+        payload: Dict = {
+            "transactionId": data.get("transaction_id"),
+            "response": {
+                "requestId": data.get("request_id"),
+            },
+        }
+
+        patient = data.get("patient")
+        if patient:
+            consultations = []
+
+            if hasattr(patient, "consultations"):
+                consultations = patient.consultations.all()
+
+            payload["patient"] = {
+                "referenceNumber": str(patient.external_id),
+                "display": patient.name,
+                "careContexts": list(
+                    map(
+                        lambda x: {
+                            "referenceNumber": str(x.external_id),
+                            "display": f"Encounter on {str(x.created_date.date())}",
+                        },
+                        consultations,
+                    )
+                ),
+                "hiType": "DischargeSummary",
+                "count": len(consultations),
+            }
+
+        path = "/user-initiated-linking/patient/care-context/on-confirm"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
             },
         )
 

@@ -21,6 +21,7 @@ class AbhaNumber(BaseModel):
     pincode = models.TextField(null=True, blank=True)
 
     email = models.EmailField(null=True, blank=True)
+    mobile = models.TextField(null=True, blank=True)
     profile_photo = models.TextField(null=True, blank=True)
 
     new = models.BooleanField(default=False)
