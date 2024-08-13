@@ -264,6 +264,8 @@ class TestUserFilter(TestUtils, APITestCase):
 
     def test_home_facility_filter(self):
         """Test home facility filter"""
+        response = self.client.get("/api/v1/users/?home_facility=NOT_A_VALID_UUID")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response = self.client.get(
             f"/api/v1/users/?home_facility={self.facility.external_id}"
         )
