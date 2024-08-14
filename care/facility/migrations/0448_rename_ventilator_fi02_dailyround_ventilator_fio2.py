@@ -11,7 +11,11 @@ class Migration(migrations.Migration):
             "facility", "PatientConsultationEvent"
         )
 
-        event_type_id = EventType.objects.get(name="RESPIRATORY_SUPPORT").id
+        event_type = EventType.objects.filter(name="RESPIRATORY_SUPPORT")
+        if not event_type.exists():
+            return
+        event_type_id = event_type.first().id
+
         paginator = Paginator(
             PatientConsultationEvent.objects.filter(
                 object_model="DailyRound",
@@ -36,7 +40,11 @@ class Migration(migrations.Migration):
             "facility", "PatientConsultationEvent"
         )
 
-        event_type_id = EventType.objects.get(name="RESPIRATORY_SUPPORT").id
+        event_type = EventType.objects.filter(name="RESPIRATORY_SUPPORT")
+        if not event_type.exists():
+            return
+        event_type_id = event_type.first().id
+
         paginator = Paginator(
             PatientConsultationEvent.objects.filter(
                 object_model="DailyRound",
