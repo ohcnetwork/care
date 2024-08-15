@@ -13,10 +13,10 @@ from care.users.api.serializers.lsg import (
 )
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import GENDER_CHOICES, User
+from care.utils.csp.config import BucketType, get_client_config
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
-from care.utils.csp.config import BucketType, get_client_config
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -438,6 +438,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "video_connect_link",
             "read_profile_picture_url",
         )
+
 
 class UserImageUploadSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.ImageField(required=True, write_only=True)
