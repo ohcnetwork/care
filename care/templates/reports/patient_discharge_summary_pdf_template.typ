@@ -60,28 +60,28 @@
   row-gutter: 1.2em,
   align: (left),
   [Route to Facility:], "{{ consultation.get_route_to_facility_display | field_name_to_label  }}",
-  [Admitted To:], "{{ admitted_to|format_empty_data }}",
+  [Admitted To:], "{{ admitted_to|format_to_sentence_case|format_empty_data }}",
   [Duration of Admission:], "{{admission_duration|format_empty_data}}",
-  {% if consultation.icu_admission_date %}
-  [ICU Admission Date & Time:], "{{ consultation.icu_admission_date  }}",
-  {% endif %}
-  {% if consultation.suggestion == 'A' %}
   [Date of admission:], "{{ consultation.encounter_date  }}",
-  {% elif consultation.suggestion == 'R' %}
-  [Referred to:], "{{ consultation.referred_to.name  }}",
-  {% elif consultation.suggestion == 'DD' %}
-  [Cause of death:], "{{ consultation.discharge_notes  }}",
-  [Date and time of death:], "{{ consultation.death_datetime  }}",
-  [Death Confirmed by:], "{{ consultation.death_confirmed_by  }}",
-  {% endif %}
   [IP No:], "{{ consultation.patient_no  }}",
-  [Weight:], "{{ consultation.weight |format_empty_data }} kg",
-  [Height:], "{{ consultation.height |format_empty_data }} cm",
+    [Weight:],
+  {% if consultation.weight == 0.0 %}
+      "N/A"
+  {% else %}
+      "{{ consultation.weight }} kg"
+  {% endif %},
+
+  [Height:],
+  {% if consultation.height == 0.0 %}
+      "N/A"
+  {% else %}
+      "{{ consultation.height }} cm"
+  {% endif %},
   [Diagnosis at admission:],[#stack(
     dir: ttb,
     spacing: 10pt,
     {% for diagnose in diagnoses %}
-      "{{ diagnose.label  }} ({{diagnose.status }})",
+      "{{ diagnose.label  }} ({{diagnose.verification_status }})",
     {% endfor %}
   )
   ],
@@ -163,7 +163,7 @@
   {% endif %}
 
   {% if prescriptions %}
-  #align(left, text(14pt,weight: "bold",)[=== Prescription Medication:])
+  #align(left, text(14pt,weight: "bold",)[=== Medication Administered:])
   #table(
     columns: (1fr,),
     inset: 10pt,
@@ -279,37 +279,19 @@
 
 {% endif %}
 
-{% if hcx %}
-#align(left, text(14pt,weight: "bold")[=== Health Insurance Details])
-
-#table(
-  columns: (1fr, 1fr, 1fr, 1fr),
-  inset: 10pt,
-  align: horizon,
-  table.header(
-    [*INSURER NAME*], [*ISSUER ID*], [*MEMBER ID*], [*POLICY ID*],
-  ),
-  {% for policy in hcx %}
-  "{{policy.insurer_name|format_empty_data }}", "{{policy.insurer_id|format_empty_data }}", "{{policy.subscriber_id }}", "{{policy.policy_id }}",
-  {% endfor %}
-)
-#align(center, [#line(length: 40%, stroke: mygray)])
-
-{% endif %}
-
 #align(left, text(18pt,)[== Discharge Summary])
 #grid(
   columns: (1fr,3fr),
   row-gutter: 1.2em,
   align: (left),
   [Discharge Date:], "{{consultation.discharge_date|format_empty_data }}",
-  [Discharge Reason:], "{{consultation.get_new_discharge_reason_display|format_empty_data }}",
+  [Discharge Reason:], "{{consultation.get_new_discharge_reason_display|format_to_sentence_case|format_empty_data }}",
   [Discharge Advice:], "{{consultation.discharge_notes|format_empty_data }}",
 )
 
 {% if consultation.new_discharge_reason == 1 %}
   {% if discharge_prescriptions %}
-  #align(left, text(14pt,weight: "bold",)[=== Discharge Prescription Medication:])
+  #align(left, text(14pt,weight: "bold",)[=== Discharge Prescription :])
   #table(
     columns: (1fr,),
     inset: 10pt,
@@ -337,6 +319,8 @@
 
 {%endif%}
 
+#text("")
+
 #align(right)[#text(12pt,fill: mygray)[*Treating Physician* :] #text(10pt,weight: "bold")[{% if consultation.treating_physician %}
     {{ consultation.treating_physician.first_name  }} {{ consultation.treating_physician.last_name  }}
   {% else %}
@@ -344,11 +328,32 @@
   {% endif %}]]
 
 
+
+{% if hcx %}
+
+#align(center, [#line(length: 40%, stroke: mygray,)])
+
+#align(left, text(14pt,weight: "bold")[=== Health Insurance Details])
+
+#table(
+  columns: (1fr, 1fr, 1fr, 1fr),
+  inset: 10pt,
+  align: horizon,
+  table.header(
+    [*INSURER NAME*], [*ISSUER ID*], [*MEMBER ID*], [*POLICY ID*],
+  ),
+  {% for policy in hcx %}
+  "{{policy.insurer_name|format_empty_data }}", "{{policy.insurer_id|format_empty_data }}", "{{policy.subscriber_id }}", "{{policy.policy_id }}",
+  {% endfor %}
+)
+
+{% endif %}
+
+
 {% if files %}
 #align(center, [#line(length: 40%, stroke: mygray,)])
 
 #align(left, text(18pt,)[== Annexes])
-#text("")
 #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])
 
 #table(

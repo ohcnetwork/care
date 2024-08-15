@@ -13,7 +13,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.facility.models import (
-    BedTypeChoices,
+    BedType,
+    ConsultationBed,
     Disease,
     EncounterSymptom,
     InvestigationValue,
@@ -29,7 +30,7 @@ from care.facility.models.icd11_diagnosis import (
     ACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
 )
-from care.facility.static_data.icd11 import get_icd11_diagnoses_objects_by_ids
+from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
 from care.hcx.models.policy import Policy
 
 logger = logging.getLogger(__name__)
@@ -66,15 +67,19 @@ def get_diagnoses_data(consultation: PatientConsultation):
         )
     )
 
-    # retrieve diagnosis objects from in-memory table
-    diagnoses = get_icd11_diagnoses_objects_by_ids([entry[0] for entry in entries])
-
+    # retrieve diagnosis objects
+    diagnoses = []
+    for entry in entries:
+        diagnose = get_icd11_diagnosis_object_by_id(entry[0])
+        if diagnose:
+            diagnoses.append(diagnose)
+    print(diagnoses)
     principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
 
     for diagnosis, record in zip(diagnoses, entries):
         _, verification_status, is_principal = record
 
-        diagnosis.status = verification_status
+        diagnosis.verification_status = verification_status
 
         if is_principal:
             principal.append(diagnosis)
@@ -101,10 +106,11 @@ def format_duration(duration):
         return ""
 
     days = duration.days
+    if days > 0:
+        return f"{days} days"
     hours, remainder = divmod(duration.seconds, 3600)
     minutes, _ = divmod(remainder, 60)
-
-    return f"{days} days, {hours}:{minutes:02d} hours"
+    return f"{hours:02}:{minutes:02}"
 
 
 def get_discharge_summary_data(consultation: PatientConsultation):
@@ -113,9 +119,9 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         patient=consultation.patient, consultation=consultation
     )
     hcx = Policy.objects.filter(patient=consultation.patient)
-    symptoms = EncounterSymptom.objects.filter(consultation=consultation).exclude(
-        clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR
-    )
+    symptoms = EncounterSymptom.objects.filter(
+        consultation=consultation, onset_date__lt=consultation.encounter_date
+    ).exclude(clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR)
     diagnoses = get_diagnoses_data(consultation)
     investigations = InvestigationValue.objects.filter(
         Q(consultation=consultation.id)
@@ -157,9 +163,15 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         upload_completed=True,
         is_archived=False,
     )
-    admitted_to = None
-    if consultation.current_bed:
-        admitted_to = f"{consultation.current_bed.bed} ({BedTypeChoices[consultation.current_bed.bed.bed_type][1]})"
+    admitted_to = []
+    if ConsultationBed.objects.filter(consultation=consultation).exists():
+        for bed in ConsultationBed.objects.filter(consultation=consultation).order_by(
+            "-created_date"
+        ):
+            admitted_to.append(BedType(bed.bed.bed_type).name)
+    if not admitted_to:
+        admitted_to = None
+
     admission_duration = (
         format_duration(consultation.discharge_date - consultation.encounter_date)
         if consultation.discharge_date
