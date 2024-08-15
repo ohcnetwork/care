@@ -1,6 +1,8 @@
+import json
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
+import requests
 from django.core.cache import cache
 
 from care.abdm.service.helper import (
@@ -12,6 +14,14 @@ from care.abdm.service.helper import (
 )
 from care.abdm.service.request import Request
 from care.abdm.service.v3.types.gateway import (
+    ConsentRequestHipOnNotifyBody,
+    ConsentRequestHipOnNotifyResponse,
+    DataFlowHealthInformationHipOnRequestBody,
+    DataFlowHealthInformationHipOnRequestResponse,
+    DataFlowHealthInformationNotifyBody,
+    DataFlowHealthInformationNotifyResponse,
+    DataFlowHealthInformationTransferBody,
+    DataFlowHealthInformationTransferResponse,
     LinkCarecontextBody,
     LinkCarecontextResponse,
     TokenGenerateTokenBody,
@@ -23,6 +33,8 @@ from care.abdm.service.v3.types.gateway import (
     UserInitiatedLinkingPatientCareContextOnInitBody,
     UserInitiatedLinkingPatientCareContextOnInitResponse,
 )
+from care.abdm.utils.cipher import Cipher
+from care.abdm.utils.fhir import Fhir
 
 
 class GatewayService:
@@ -159,7 +171,7 @@ class GatewayService:
         )
 
         if response.status_code != 202:
-            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
 
         return {}
 
@@ -215,7 +227,7 @@ class GatewayService:
         )
 
         if response.status_code != 202:
-            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
 
         return {}
 
@@ -253,7 +265,7 @@ class GatewayService:
         )
 
         if response.status_code != 202:
-            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
 
         return {}
 
@@ -303,6 +315,179 @@ class GatewayService:
         )
 
         if response.status_code != 202:
-            ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def consent__request__hip__on_notify(
+        data: ConsentRequestHipOnNotifyBody,
+    ) -> ConsentRequestHipOnNotifyResponse:
+        payload = {
+            "acknowledgement": {
+                "status": "ok",
+                "consentId": data.get("consent_id"),
+            },
+            "response": {"requestId": data.get("request_id")},
+        }
+
+        path = "/consent/request/hip/on-notify"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def data_flow__health_information__hip__on_request(
+        data: DataFlowHealthInformationHipOnRequestBody,
+    ) -> DataFlowHealthInformationHipOnRequestResponse:
+        payload = {
+            "hiRequest": [
+                {
+                    "transactionId": data.get("transaction_id"),
+                    "sessionStatus": "ACKNOWLEDGED",
+                }
+            ],
+            "response": {"requestId": data.get("request_id")},
+        }
+
+        path = "/data-flow/health-information/hip/on-request"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def data_flow__health_information__transfer(
+        data: DataFlowHealthInformationTransferBody,
+    ) -> DataFlowHealthInformationTransferResponse:
+        consultations = data.get("consultations", [])
+        consent = data.get("consent")
+
+        cipher = Cipher(
+            external_public_key=data.get("key_material__public_key"),
+            external_nonce=data.get("key_material__nonce"),
+        )
+
+        entries = []
+        for consultation in consultations:
+            if consent:
+                for hi_type in consent.hi_types:
+                    fhir_data = Fhir(consultation=consultation).create_record(hi_type)
+
+                    encrypted_data = cipher.encrypt(fhir_data)["data"]
+
+                    entry = {
+                        "content": encrypted_data,
+                        "media": "application/fhir+json",
+                        "checksum": "",  # TODO: look into generating checksum
+                        "careContextReference": str(consultation.external_id),
+                    }
+                    entries.append(entry)
+
+        payload = {
+            "pageNumber": 1,
+            "pageCount": 1,
+            "transactionId": data.get("transaction_id"),
+            "entries": entries,
+            "keyMaterial": {
+                "cryptoAlg": data.get("key_material__crypto_algorithm"),
+                "curve": data.get("key_material__curve"),
+                "dhPublicKey": {
+                    "expiry": (datetime.now() + timedelta(days=2)).isoformat(),
+                    "parameters": "Curve25519/32byte random key",
+                    "keyValue": cipher.key_to_share,
+                },
+                "nonce": cipher.internal_nonce,
+            },
+        }
+
+        auth_header = Request("").auth_header()
+        headers = {
+            "Content-Type": "application/json",
+            **auth_header,
+        }
+
+        path = data.get("url", "")
+        response = requests.post(
+            path,
+            json=json.dumps(payload),
+            headers=headers,
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def data_flow__health_information__notify(
+        data: DataFlowHealthInformationNotifyBody,
+    ) -> DataFlowHealthInformationNotifyResponse:
+        consultations = data.get("consultations", [])
+
+        payload = {
+            "notification": {
+                "consentId": data.get("consent_id"),
+                "transactionId": data.get("transaction_id"),
+                "doneAt": timestamp(),
+                "notifier": {
+                    "type": data.get("notifier__type"),
+                    "id": data.get("notifier__id"),
+                },
+                "statusNotification": {
+                    "sessionStatus": data.get("status"),
+                    "hipId": data.get("hip_id"),
+                    "statusResponses": list(
+                        map(
+                            lambda x: {
+                                "careContextReference": str(x.external_id),
+                                "hiStatus": (
+                                    "DELIVERED"
+                                    if data.get("status") == "TRANSFERRED"
+                                    else "FAILED"
+                                ),
+                                "description": data.get("status"),
+                            },
+                            consultations,
+                        )
+                    ),
+                },
+            }
+        }
+
+        path = "/data-flow/health-information/notify"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
 
         return {}

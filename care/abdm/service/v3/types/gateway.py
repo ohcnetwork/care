@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional, TypedDict
 
-from care.abdm.models import AbhaNumber
+from care.abdm.models import AbhaNumber, ConsentArtefact
 from care.facility.models import PatientConsultation, PatientRegistration
 
 
@@ -51,4 +51,51 @@ class UserInitiatedLinkingPatientCareContextOnConfirmBody(TypedDict):
 
 
 class UserInitiatedLinkingPatientCareContextOnConfirmResponse(TypedDict):
+    pass
+
+
+class ConsentRequestHipOnNotifyBody(TypedDict):
+    consent_id: str
+    request_id: str
+
+
+class ConsentRequestHipOnNotifyResponse(TypedDict):
+    pass
+
+
+class DataFlowHealthInformationHipOnRequestBody(TypedDict):
+    transaction_id: str
+    request_id: str
+
+
+class DataFlowHealthInformationHipOnRequestResponse(TypedDict):
+    pass
+
+
+class DataFlowHealthInformationTransferBody(TypedDict):
+    url: str
+    consultations: List[PatientConsultation]
+    consent: ConsentArtefact
+    transaction_id: str
+    key_material__crypto_algorithm: str
+    key_material__curve: str
+    key_material__public_key: str
+    key_material__nonce: str
+
+
+class DataFlowHealthInformationTransferResponse(TypedDict):
+    pass
+
+
+class DataFlowHealthInformationNotifyBody(TypedDict):
+    transaction_id: str
+    consent_id: str
+    notifier__type: Literal["HIP", "HIU"]
+    notifier__id: str
+    status: Literal["TRANSFERRED", "FAILED"]
+    hip_id: str
+    consultations: List[PatientConsultation]
+
+
+class DataFlowHealthInformationNotifyResponse(TypedDict):
     pass

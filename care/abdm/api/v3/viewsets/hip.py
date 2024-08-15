@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.v3.serializers.hip import (
+    HealthInformationHipRequestSerializer,
+    HipConsentRequestNotifySerializer,
     HipLinkCareContextConfirmSerializer,
     HipLinkCareContextInitSerializer,
     HipPatientCareContextDiscoverSerializer,
@@ -17,7 +19,7 @@ from care.abdm.api.v3.serializers.hip import (
     LinkOnCarecontextSerializer,
     TokenOnGenerateTokenSerializer,
 )
-from care.abdm.models import AbhaNumber
+from care.abdm.models import AbhaNumber, ConsentArtefact
 from care.abdm.service.helper import uuid
 from care.abdm.service.v3.gateway import GatewayService
 from care.facility.models import PatientConsultation, PatientRegistration
@@ -72,7 +74,20 @@ class HIPCallbackViewSet(GenericViewSet):
         "hip__patient__care_context__discover": HipPatientCareContextDiscoverSerializer,
         "hip__link__care_context__init": HipLinkCareContextInitSerializer,
         "hip__link__care_context__confirm": HipLinkCareContextConfirmSerializer,
+        "hip__consent__request__notify": HipConsentRequestNotifySerializer,
+        "health_information__hip__request": HealthInformationHipRequestSerializer,
     }
+
+    def get_patient_by_abha_id(self, abha_id: str):
+        patient = PatientRegistration.objects.filter(
+            Q(abha_number__abha_number=abha_id) | Q(abha_number__health_id=abha_id)
+        ).first()
+
+        if not patient and "@" in abha_id:
+            # TODO: get abha number using gateway api and search patient
+            pass
+
+        return patient
 
     def get_serializer_class(self):
         if self.action in self.serializer_action_classes:
@@ -254,3 +269,127 @@ class HIPCallbackViewSet(GenericViewSet):
         )
 
         Response(status=status.HTTP_202_ACCEPTED)
+
+    def hip__consent__request__notify(self, request):
+        validated_data = self.validate_request(request)
+
+        notification = validated_data.get("notification")
+        consent_detail = notification.get("consentDetail")
+        permission = consent_detail.get("permission")
+        frequency = permission.get("frequency")
+
+        patient = self.get_patient_by_abha_id(consent_detail.get("patient").get("id"))
+
+        if not patient:
+            logger.warning(
+                f"Patient with ABHA ID: {consent_detail.get('patient').get('id')} not found in the database"
+            )
+
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        ConsentArtefact.objects.update_or_create(
+            consent_id=notification.get("consentId"),
+            defaults={
+                "patient_abha": patient.abha_number,
+                "care_contexts": consent_detail.get("careContexts"),
+                "status": notification.get("status"),
+                "purpose": consent_detail.get("purpose").get("code"),
+                "hi_types": consent_detail.get("hiTypes"),
+                "hip": consent_detail.get("hip").get("id"),
+                "cm": consent_detail.get("consentManager").get("id"),
+                "requester": request.user,
+                "access_mode": permission.get("accessMode"),
+                "from_time": permission.get("dateRange").get("fromTime"),
+                "to_time": permission.get("dateRange").get("toTime"),
+                "expiry": permission.get("dataEraseAt"),
+                "frequency_unit": frequency.get("unit"),
+                "frequency_value": frequency.get("value"),
+                "frequency_repeats": frequency.get("repeats"),
+                "signature": notification.get("signature"),
+            },
+        )
+
+        GatewayService.consent__request__hip__on_notify(
+            {
+                "consent_id": str(notification.get("consentId")),
+                "request_id": request.headers.get("REQUEST-ID"),
+            }
+        )
+
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    def health_information__hip__request(self, request):
+        validated_data = self.validate_request(request)
+
+        hi_request = validated_data.get("hiRequest")
+        key_material = hi_request.get("keyMaterial")
+
+        consent = ConsentArtefact.objects.filter(
+            consent_id=hi_request.get("consent").get("id")
+        ).first()
+
+        if not consent:
+            logger.warning(
+                f"Consent with ID: {hi_request.get('consent').get('id')} not found in the database"
+            )
+
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        GatewayService.data_flow__health_information__hip__on_request(
+            {
+                "request_id": request.headers.get("REQUEST-ID"),
+                "transaction_id": str(validated_data.get("transactionId")),
+            }
+        )
+
+        consultations = PatientConsultation.objects.filter(
+            external_id__in=list(
+                map(lambda x: x.get("careContextReference"), consent.care_contexts)
+            )
+        )
+
+        try:
+            GatewayService.data_flow__health_information__transfer(
+                {
+                    "transaction_id": str(validated_data.get("transactionId")),
+                    "consultations": consultations,
+                    "consent": consent,
+                    "url": hi_request.get("dataPushUrl"),
+                    "key_material__crypto_algorithm": key_material.get("cryptoAlg"),
+                    "key_material__curve": key_material.get("curve"),
+                    "key_material__public_key": key_material.get("dhPublicKey").get(
+                        "keyValue"
+                    ),
+                    "key_material__nonce": key_material.get("nonce"),
+                }
+            )
+
+            GatewayService.data_flow__health_information__notify(
+                {
+                    "consent_id": str(consent.consent_id),
+                    "transaction_id": str(validated_data.get("transactionId")),
+                    "notifier__type": "HIP",
+                    "notifier__id": request.headers.get("X-HIP-ID"),
+                    "status": "TRANSFERRED",
+                    "hip_id": request.headers.get("X-HIP-ID"),
+                    "consultations": consultations,
+                }
+            )
+        except Exception as exception:
+            logger.error(
+                f"Error occurred while transferring health information: {str(exception)}"
+            )
+
+            GatewayService.data_flow__health_information__notify(
+                {
+                    "consent_id": str(consent.consent_id),
+                    "transaction_id": str(validated_data.get("transactionId")),
+                    "notifier__type": "HIP",
+                    "notifier__id": request.headers.get("X-HIP-ID"),
+                    "status": "FAILED",
+                    "hip_id": request.headers.get("X-HIP-ID"),
+                    "consultations": consultations,
+                }
+            )
+
+        return Response(status=status.HTTP_202_ACCEPTED)
