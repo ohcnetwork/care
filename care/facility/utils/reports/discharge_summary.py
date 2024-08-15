@@ -73,7 +73,6 @@ def get_diagnoses_data(consultation: PatientConsultation):
         diagnose = get_icd11_diagnosis_object_by_id(entry[0])
         if diagnose:
             diagnoses.append(diagnose)
-    print(diagnoses)
     principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
 
     for diagnosis, record in zip(diagnoses, entries):
