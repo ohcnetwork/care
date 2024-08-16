@@ -24,7 +24,7 @@ def convert_features_to_array(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0446_alter_notification_event"),
+        ("facility", "0447_patientconsultationevent_taken_at"),
     ]
 
     operations = [
