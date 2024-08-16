@@ -1,4 +1,5 @@
 import boto3
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -181,11 +182,14 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         config, bucket_name = get_client_config(BucketType.FACILITY)
         s3 = boto3.client("s3", **config)
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
-        s3.put_object(
-            Bucket=bucket_name,
-            Key=image_location,
-            Body=image.file,
-        )
+        boto_params = {
+            "Bucket": bucket_name,
+            "Key": image_location,
+            "Body": image.file,
+        }
+        if settings.BUCKET_HAS_FINE_ACL:
+            boto_params["ACL"] = "public-read"
+        s3.put_object(**boto_params)
         facility.cover_image_url = image_location
         facility.save()
         return facility
