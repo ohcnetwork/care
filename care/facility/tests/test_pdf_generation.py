@@ -40,10 +40,10 @@ def compare_pngs(png_path1, png_path2):
 
 def test_compile_typ(data):
     sample_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "utils", "reports", "sample{n}.png"
+        os.getcwd(), "care", "facility", "tests", "sample_reports", "sample{n}.png"
     )
     test_output_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "utils", "reports", "test_output{n}.png"
+        os.getcwd(), "care", "facility", "tests", "sample_reports", "test_output{n}.png"
     )
     try:
         logo_path = (
