@@ -140,6 +140,7 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             doctor=cls.treating_physician,
             height=178,
             weight=80,
+            suggestion="A",
         )
         cls.create_patient_sample(cls.patient, cls.consultation, cls.facility, cls.user)
         cls.create_policy(patient=cls.patient, user=cls.user)
