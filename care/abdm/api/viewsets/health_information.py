@@ -24,35 +24,34 @@ class HealthInformationViewSet(GenericViewSet):
 
     def retrieve(self, request, pk):
         files = FileUpload.objects.filter(
-            Q(internal_name=f"{pk}.json") | Q(associating_id=pk),
+            Q(internal_name__contains=f"{pk}.json") | Q(associating_id=pk),
             file_type=FileUpload.FileType.ABDM_HEALTH_INFORMATION.value,
+            upload_completed=True,
         )
 
-        if files.count() == 0 or all([not file.upload_completed for file in files]):
+        if files.count() == 0:
             return Response(
-                {"detail": "No Health Information found with the given id"},
+                {"detail": "No Health Information found for the given id"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if files.count() == 1:
-            file = files.first()
+        if files.count() == 1 and files.first().is_archived:
+            return Response(
+                {
+                    "is_archived": True,
+                    "archived_reason": files.first().archive_reason,
+                    "archived_time": files.first().archived_datetime,
+                    "detail": f"This file has been archived as { files.first().archive_reason} at { files.first().archived_datetime}",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
-            if file.is_archived:
-                return Response(
-                    {
-                        "is_archived": True,
-                        "archived_reason": file.archive_reason,
-                        "archived_time": file.archived_datetime,
-                        "detail": f"This file has been archived as {file.archive_reason} at {file.archived_datetime}",
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
+        files = files.filter(is_archived=False)
 
         contents = []
         for file in files:
-            if file.upload_completed:
-                content_type, content = file.file_contents()
-                contents.extend(content)
+            _, content = file.file_contents()
+            contents.extend(content)
 
         return Response({"data": json.loads(content)}, status=status.HTTP_200_OK)
 

@@ -44,7 +44,7 @@ def uuid():
     return str(uuid4())
 
 
-def hip_id_from_abha_number(health_id: str):
+def hf_id_from_abha_id(health_id: str):
     abha_number = AbhaNumber.objects.filter(
         Q(abha_number=health_id) | Q(health_id=health_id)
     ).first()

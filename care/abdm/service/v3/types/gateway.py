@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional, TypedDict
 
-from care.abdm.models import AbhaNumber, ConsentArtefact
+from care.abdm.models import AbhaNumber, ConsentArtefact, ConsentRequest
 from care.facility.models import PatientConsultation, PatientRegistration
 
 
@@ -94,8 +94,64 @@ class DataFlowHealthInformationNotifyBody(TypedDict):
     notifier__id: str
     status: Literal["TRANSFERRED", "FAILED"]
     hip_id: str
-    consultations: List[PatientConsultation]
+    consultation_ids: List[str]
 
 
 class DataFlowHealthInformationNotifyResponse(TypedDict):
+    pass
+
+
+class IdentityAuthenticationBody(TypedDict):
+    abha_number: AbhaNumber
+
+
+class Response(TypedDict):
+    requestId: str
+
+
+class IdentityAuthenticationResponse(TypedDict):
+    authenticated: bool
+    transactionId: str
+    abhaAddress: str
+    response: Response
+
+
+class ConsentRequestInitBody(TypedDict):
+    consent: ConsentRequest
+
+
+class ConsentRequestInitResponse(TypedDict):
+    pass
+
+
+class ConsentRequestStatusBody(TypedDict):
+    consent: ConsentRequest
+
+
+class ConsentRequestStatusResponse(TypedDict):
+    pass
+
+
+class ConsentRequestHiuOnNotifyBody(TypedDict):
+    consent: ConsentRequest
+    request_id: str
+
+
+class ConsentRequestHiuOnNotifyResponse(TypedDict):
+    pass
+
+
+class ConsentRequestFetchBody(TypedDict):
+    artefact: ConsentArtefact
+
+
+class ConsentRequestFetchResponse(TypedDict):
+    pass
+
+
+class DataFlowHealthInformationRequestBody(TypedDict):
+    artefact: ConsentArtefact
+
+
+class DataFlowHealthInformationRequestResponse(TypedDict):
     pass

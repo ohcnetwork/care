@@ -13,6 +13,7 @@ from care.abdm.api.viewsets.health_information import HealthInformationViewSet
 from care.abdm.models.base import Status
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.abdm.service.gateway import Gateway
+from care.abdm.service.v3.gateway import GatewayService
 from care.utils.queryset.facility import get_facility_queryset
 from config.auth_views import CaptchaRequiredException
 from config.authentication import ABDMAuthentication
@@ -70,22 +71,13 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
             )
 
         consent = ConsentRequest(**serializer.validated_data, requester=request.user)
-
-        try:
-            response = Gateway().consent_requests__init(consent)
-            if response.status_code != 202:
-                return Response(response.json(), status=response.status_code)
-        except Exception as e:
-            logger.warning(
-                f"Error: ConsentViewSet::create failed to notify (consent_requests__init). Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {"detail": "Failed to initialize consent request"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+        GatewayService.consent__request__init(
+            {
+                "consent": consent,
+            }
+        )
         consent.save()
+
         return Response(
             ConsentRequestSerializer(consent).data, status=status.HTTP_201_CREATED
         )

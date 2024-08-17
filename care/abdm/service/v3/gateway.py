@@ -1,27 +1,41 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
 
 import requests
+from django.conf import settings
 from django.core.cache import cache
 
+from care.abdm.models.base import Purpose
 from care.abdm.service.helper import (
     ABDMAPIException,
     cm_id,
-    hip_id_from_abha_number,
+    hf_id_from_abha_id,
     timestamp,
     uuid,
 )
 from care.abdm.service.request import Request
 from care.abdm.service.v3.types.gateway import (
+    ConsentRequestFetchBody,
+    ConsentRequestFetchResponse,
     ConsentRequestHipOnNotifyBody,
     ConsentRequestHipOnNotifyResponse,
+    ConsentRequestHiuOnNotifyBody,
+    ConsentRequestHiuOnNotifyResponse,
+    ConsentRequestInitBody,
+    ConsentRequestInitResponse,
+    ConsentRequestStatusBody,
+    ConsentRequestStatusResponse,
     DataFlowHealthInformationHipOnRequestBody,
     DataFlowHealthInformationHipOnRequestResponse,
     DataFlowHealthInformationNotifyBody,
     DataFlowHealthInformationNotifyResponse,
+    DataFlowHealthInformationRequestBody,
+    DataFlowHealthInformationRequestResponse,
     DataFlowHealthInformationTransferBody,
     DataFlowHealthInformationTransferResponse,
+    IdentityAuthenticationBody,
+    IdentityAuthenticationResponse,
     LinkCarecontextBody,
     LinkCarecontextResponse,
     TokenGenerateTokenBody,
@@ -98,7 +112,7 @@ class GatewayService:
             headers={
                 "REQUEST-ID": request_id,
                 "TIMESTAMP": timestamp(),
-                "X-HIP-ID": hip_id_from_abha_number(abha_number.abha_number),
+                "X-HIP-ID": hf_id_from_abha_id(abha_number.abha_number),
                 "X-CM-ID": cm_id(),
             },
         )
@@ -165,7 +179,7 @@ class GatewayService:
                 "REQUEST-ID": uuid(),
                 "TIMESTAMP": timestamp(),
                 "X-CM-ID": cm_id(),
-                "X-HIP-ID": hip_id_from_abha_number(abha_number.abha_number),
+                "X-HIP-ID": hf_id_from_abha_id(abha_number.abha_number),
                 "X-LINK-TOKEN": data.get("link_token"),
             },
         )
@@ -444,7 +458,7 @@ class GatewayService:
     def data_flow__health_information__notify(
         data: DataFlowHealthInformationNotifyBody,
     ) -> DataFlowHealthInformationNotifyResponse:
-        consultations = data.get("consultations", [])
+        consultation_ids = data.get("consultation_ids", [])
 
         payload = {
             "notification": {
@@ -461,7 +475,7 @@ class GatewayService:
                     "statusResponses": list(
                         map(
                             lambda x: {
-                                "careContextReference": str(x.external_id),
+                                "careContextReference": x,
                                 "hiStatus": (
                                     "DELIVERED"
                                     if data.get("status") == "TRANSFERRED"
@@ -469,7 +483,7 @@ class GatewayService:
                                 ),
                                 "description": data.get("status"),
                             },
-                            consultations,
+                            consultation_ids,
                         )
                     ),
                 },
@@ -484,6 +498,261 @@ class GatewayService:
                 "REQUEST-ID": uuid(),
                 "TIMESTAMP": timestamp(),
                 "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def identity__authentication(
+        data: IdentityAuthenticationBody,
+    ) -> IdentityAuthenticationResponse:
+        abha_number = data.get("abha_number")
+
+        if not abha_number:
+            raise ABDMAPIException(detail="Provide an ABHA number to authenticate")
+
+        payload = {
+            "scope": "DEMO",
+            "parameters": {
+                "abhaNumber": abha_number.abha_number.replace("-", ""),
+                "abhaAddress": abha_number.health_id,
+                "name": abha_number.name,
+                "gender": abha_number.gender,
+                "yearOfBirth": datetime.strptime(
+                    abha_number.date_of_birth, "%Y-%m-%d"
+                ).year,
+            },
+        }
+
+        path = "/identity/authentication"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+                "REQUESTER-ID": hf_id_from_abha_id(abha_number.abha_number),
+            },
+        )
+
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return response.json()
+
+    @staticmethod
+    def consent__request__init(
+        data: ConsentRequestInitBody,
+    ) -> ConsentRequestInitResponse:
+        consent = data.get("consent")
+
+        if not consent:
+            raise ABDMAPIException(detail="Provide a consent to initiate")
+
+        hiu_id = hf_id_from_abha_id(consent.patient_abha.health_id)
+
+        payload = {
+            "consent": {
+                "purpose": {
+                    "text": Purpose(consent.purpose).label,
+                    "code": Purpose(consent.purpose).value,
+                },
+                "patient": {"id": consent.patient_abha.health_id},
+                "hiu": {"id": hiu_id},
+                "requester": {
+                    "name": f"{consent.requester.REVERSE_TYPE_MAP[consent.requester.user_type]}, {consent.requester.first_name} {consent.requester.last_name}",
+                    "identifier": {
+                        "type": "CARE Username",
+                        "value": consent.requester.username,
+                        "system": settings.CURRENT_DOMAIN,
+                    },
+                },
+                "hiTypes": consent.hi_types,
+                "permission": {
+                    "accessMode": consent.access_mode,
+                    "dateRange": {
+                        "from": consent.from_time.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
+                        "to": consent.to_time.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
+                    },
+                    "dataEraseAt": consent.expiry.astimezone(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.000Z"
+                    ),
+                    "frequency": {
+                        "unit": consent.frequency_unit,
+                        "value": consent.frequency_value,
+                        "repeats": consent.frequency_repeats,
+                    },
+                },
+            },
+        }
+
+        path = "/consent/request/init"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": str(consent.external_id),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+                "X-HIU-ID": hiu_id,
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def consent__request__status(
+        data: ConsentRequestStatusBody,
+    ) -> ConsentRequestStatusResponse:
+        consent = data.get("consent")
+
+        if not consent:
+            raise ABDMAPIException(detail="Provide a consent to check status")
+
+        payload = {
+            "consentRequestId": consent.consent_id,
+        }
+
+        response = GatewayService.request.post(
+            "/consent/request/status",
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+                "X-HIU-ID": hf_id_from_abha_id(consent.patient_abha.health_id),
+            },
+        )
+
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def consent__request__hiu__on_notify(
+        data: ConsentRequestHiuOnNotifyBody,
+    ) -> ConsentRequestHiuOnNotifyResponse:
+        consent = data.get("consent")
+
+        if not consent:
+            raise ABDMAPIException(detail="Provide a consent to notify")
+
+        payload = {
+            "acknowledgement": list(
+                map(
+                    lambda x: {
+                        "consentId": str(x.artefact_id),
+                        "status": "OK",
+                    },
+                    consent.consent_artefacts.all() or [],
+                )
+            ),
+            "response": {"requestId": data.get("request_id")},
+        }
+
+        path = "/consent/request/hiu/on-notify"
+        response = GatewayService.request.post(
+            path,
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+            },
+        )
+
+        if response.status_code != 202:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def consent__request__fetch(
+        data: ConsentRequestFetchBody,
+    ) -> ConsentRequestFetchResponse:
+        artefact = data.get("artefact")
+
+        if not artefact:
+            raise ABDMAPIException(detail="Provide a consent to check status")
+
+        payload = {
+            "consentId": artefact.consent_id,
+        }
+
+        response = GatewayService.request.post(
+            "/consent/request/status",
+            payload,
+            headers={
+                "REQUEST-ID": uuid(),
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+                "X-HIU-ID": hf_id_from_abha_id(artefact.patient_abha.health_id),
+            },
+        )
+
+        if response.status_code != 200:
+            raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
+
+        return {}
+
+    @staticmethod
+    def data_flow__health_information__request(
+        data: DataFlowHealthInformationRequestBody,
+    ) -> DataFlowHealthInformationRequestResponse:
+        artefact = data.get("artefact")
+
+        if not artefact:
+            raise ABDMAPIException(detail="Provide a consent artefact to request")
+
+        request_id = uuid()
+        artefact.consent_id = request_id
+        artefact.save()
+
+        payload = {
+            "hiRequest": {
+                "consent": {"id": artefact.artefact_id},
+                "dateRange": {
+                    "from": artefact.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                    "to": artefact.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                },
+                "dataPushUrl": settings.BACKEND_DOMAIN
+                + "/v3/health-information/transfer",
+                "keyMaterial": {
+                    "cryptoAlg": artefact.key_material_algorithm,
+                    "curve": artefact.key_material_curve,
+                    "dhPublicKey": {
+                        "expiry": artefact.expiry.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.000Z"
+                        ),
+                        "parameters": f"{artefact.key_material_curve}/{artefact.key_material_algorithm}",
+                        "keyValue": artefact.key_material_public_key,
+                    },
+                    "nonce": artefact.key_material_nonce,
+                },
+            }
+        }
+
+        response = GatewayService.request.post(
+            "/data-flow/health-information/request",
+            payload,
+            headers={
+                "REQUEST-ID": request_id,
+                "TIMESTAMP": timestamp(),
+                "X-CM-ID": cm_id(),
+                "X-HIU-ID": hf_id_from_abha_id(artefact.patient_abha.health_id),
             },
         )
 

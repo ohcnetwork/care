@@ -372,7 +372,9 @@ class HIPCallbackViewSet(GenericViewSet):
                     "notifier__id": request.headers.get("X-HIP-ID"),
                     "status": "TRANSFERRED",
                     "hip_id": request.headers.get("X-HIP-ID"),
-                    "consultations": consultations,
+                    "consultation_ids": map(
+                        lambda x: str(x.external_id), consultations
+                    ),
                 }
             )
         except Exception as exception:
@@ -388,7 +390,9 @@ class HIPCallbackViewSet(GenericViewSet):
                     "notifier__id": request.headers.get("X-HIP-ID"),
                     "status": "FAILED",
                     "hip_id": request.headers.get("X-HIP-ID"),
-                    "consultations": consultations,
+                    "consultation_ids": map(
+                        lambda x: str(x.external_id), consultations
+                    ),
                 }
             )
 
