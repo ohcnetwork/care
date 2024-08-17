@@ -31,22 +31,22 @@ class IdentityAuthenticationSerializer(Serializer):
 class HiuConsentRequestOnInitSerializer(Serializer):
     class ConsentSerializer(Serializer):
         class PurposeSerializer(Serializer):
-            text = CharField(required=True)
+            text = CharField(max_length=50, required=False)
             code = ChoiceField(choices=Purpose.choices, required=True)
-            refUri = CharField(required=True)
+            refUri = CharField(max_length=50, allow_null=True)
 
         class PatientSerializer(Serializer):
             id = CharField(required=True, max_length=50)
 
         class HipSerializer(Serializer):
-            id = CharField()
+            id = CharField(required=False)
 
         class CareContextSerializer(Serializer):
-            patientReference = CharField()
-            careContextReference = CharField()
+            patientReference = CharField(required=True)
+            careContextReference = CharField(required=True)
 
         class HiuSerializer(Serializer):
-            id = CharField()
+            id = CharField(required=False)
 
         class RequesterSerializer(Serializer):
             class IdentifierSerializer(Serializer):
@@ -74,9 +74,9 @@ class HiuConsentRequestOnInitSerializer(Serializer):
 
         purpose = PurposeSerializer(required=True)
         patient = PatientSerializer(required=True)
-        hip = HipSerializer()
+        hip = HipSerializer(required=False)
         careContexts = ListField(child=CareContextSerializer())
-        hiu = HiuSerializer()
+        hiu = HiuSerializer(required=False)
         requester = RequesterSerializer(required=True)
         hiTypes = ListField(
             child=ChoiceField(choices=HealthInformationTypes.choices), required=True
@@ -111,8 +111,8 @@ class HiuConsentRequestNotifySerializer(HiuConsentRequestOnStatusSerializer):
 
 
 class ConsentRequestFetchSerializer(Serializer):
-    consent_request = UUIDField()
-    consent_artefact = UUIDField()
+    consent_request = UUIDField(required=False)
+    consent_artefact = UUIDField(required=False)
 
     def validate(self, data):
         consent_request = data.get("consent_request")
@@ -130,25 +130,25 @@ class HiuConsentOnFetchSerializer(Serializer):
     class ConsentSerializer(Serializer):
         class ConsentDetailSerializer(Serializer):
             class PurposeSerializer(Serializer):
-                text = CharField(required=True)
+                text = CharField(max_length=50, required=False)
                 code = ChoiceField(choices=Purpose.choices, required=True)
-                refUri = CharField(required=True)
+                refUri = CharField(max_length=50, allow_null=True)
 
             class PatientSerializer(Serializer):
                 id = CharField(required=True, max_length=50)
 
             class HipSerializer(Serializer):
-                id = CharField()
+                id = CharField(required=False)
 
             class ConsentManagerSerializer(Serializer):
-                id = CharField()
+                id = CharField(required=False)
 
             class CareContextSerializer(Serializer):
-                patientReference = CharField()
-                careContextReference = CharField()
+                patientReference = CharField(required=True)
+                careContextReference = CharField(required=True)
 
             class HiuSerializer(Serializer):
-                id = CharField()
+                id = CharField(required=False)
 
             class RequesterSerializer(Serializer):
                 class IdentifierSerializer(Serializer):
@@ -175,7 +175,7 @@ class HiuConsentOnFetchSerializer(Serializer):
                 frequency = FrequencySerializer(required=True)
 
             consentId = UUIDField(required=True)
-            hip = HipSerializer()
+            hip = HipSerializer(required=False)
             hiu = HiuSerializer(required=True)
             hiTypes = ListField(
                 child=ChoiceField(choices=HealthInformationTypes.choices), required=True
@@ -185,10 +185,10 @@ class HiuConsentOnFetchSerializer(Serializer):
             requester = RequesterSerializer(required=True)
             permission = PermissionSerializer(required=True)
             careContexts = ListField(child=CareContextSerializer())
-            consentManager = ConsentManagerSerializer()
-            createdAt = DateTimeField()
-            lastUpdated = DateTimeField()
-            schemaVersion = CharField()
+            consentManager = ConsentManagerSerializer(required=False)
+            createdAt = DateTimeField(required=False)
+            lastUpdated = DateTimeField(required=False)
+            schemaVersion = CharField(required=False)
 
         status = ChoiceField(choices=Status.choices, required=True)
         consentDetail = ConsentDetailSerializer(required=True)
@@ -214,13 +214,13 @@ class HealthInformationOnRequestSerializer(Serializer):
 
     class ErrorSerializer(Serializer):
         code = CharField(max_length=20)
-        message = CharField()
+        message = CharField(required=False)
 
     class ResponseSerializer(Serializer):
         requestId = UUIDField(required=True)
 
-    hiRequest = HiRequestSerializer()
-    error = ErrorSerializer()
+    hiRequest = HiRequestSerializer(required=False)
+    error = ErrorSerializer(required=False)
     response = ResponseSerializer(required=True)
 
 
@@ -228,7 +228,7 @@ class HiuHealthInformationTransferSerializer(Serializer):
     class KeyMaterialSerializer(Serializer):
         class DhPublicKeySerializer(Serializer):
             expiry = DateTimeField(required=True)
-            parameters = CharField(max_length=50)
+            parameters = CharField(max_length=50, required=False)
             keyValue = CharField(max_length=500, required=True)
 
         cryptoAlg = CharField(max_length=50, required=True)
@@ -237,10 +237,10 @@ class HiuHealthInformationTransferSerializer(Serializer):
         nonce = CharField(max_length=50, required=True)
 
     class EntrySerializer(Serializer):
-        content = CharField()
-        link = CharField()
-        media = CharField()
-        checksum = CharField()
+        content = CharField(required=False)
+        link = CharField(required=False)
+        media = CharField(required=False)
+        checksum = CharField(required=False)
         careContextReference = CharField(required=True)
 
     transactionId = UUIDField(required=True)

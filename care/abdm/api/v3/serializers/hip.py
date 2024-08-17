@@ -12,7 +12,13 @@ from rest_framework.serializers import (
     UUIDField,
 )
 
-from care.abdm.models import AccessMode, FrequencyUnit, HealthInformationTypes, Status
+from care.abdm.models import (
+    AccessMode,
+    FrequencyUnit,
+    HealthInformationTypes,
+    Purpose,
+    Status,
+)
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -35,7 +41,7 @@ class LinkCarecontextSerializer(Serializer):
 
 class TokenOnGenerateTokenSerializer(Serializer):
     class ResponseSerializer(Serializer):
-        requestId = UUIDField()
+        requestId = UUIDField(required=True)
 
     abhaAddress = CharField(max_length=50, required=True)
     linkToken = CharField(max_length=1000, required=True)
@@ -43,11 +49,17 @@ class TokenOnGenerateTokenSerializer(Serializer):
 
 
 class LinkOnCarecontextSerializer(Serializer):
+
+    class ErrorSerializer(Serializer):
+        code = CharField(max_length=50, required=True)
+        message = CharField(max_length=1000, required=True)
+
     class ResponseSerializer(Serializer):
-        requestId = UUIDField()
+        requestId = UUIDField(required=True)
 
     abhaAddress = CharField(max_length=50, required=True)
-    status = CharField(max_length=1000, required=True)
+    status = CharField(max_length=1000, required=False)
+    error = ErrorSerializer(required=False)
     response = ResponseSerializer(required=True)
 
 
@@ -107,8 +119,8 @@ class HipConsentRequestNotifySerializer(Serializer):
                 careContextReference = CharField(max_length=50, required=True)
 
             class PurposeSerializer(Serializer):
-                text = CharField(max_length=50)
-                code = CharField(max_length=50, required=True)
+                text = CharField(max_length=50, required=False)
+                code = ChoiceField(choices=Purpose.choices, required=True)
                 refUri = CharField(max_length=50, allow_null=True)
 
             class HipSerializer(Serializer):
@@ -166,7 +178,7 @@ class HealthInformationHipRequestSerializer(Serializer):
         class KeyMaterialSerializer(Serializer):
             class DhPublicKeySerializer(Serializer):
                 expiry = DateTimeField(required=True)
-                parameters = CharField(max_length=50)
+                parameters = CharField(max_length=50, required=False)
                 keyValue = CharField(max_length=500, required=True)
 
             cryptoAlg = CharField(max_length=50, required=True)
