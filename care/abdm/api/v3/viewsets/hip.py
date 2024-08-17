@@ -1,4 +1,5 @@
 import logging
+from functools import reduce
 
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.cache import cache
@@ -158,36 +159,38 @@ class HIPCallbackViewSet(GenericViewSet):
     def hip__patient__care_context__discover(self, request):
         validated_data = self.validate_request(request)
 
-        patient = validated_data.get("patient")
+        patient_data = validated_data.get("patient")
         identifiers = [
-            *patient.get("verifiedIdentifiers"),
-            *patient.get("unverifiedIdentifiers"),
+            *patient_data.get("verifiedIdentifiers"),
+            *patient_data.get("unverifiedIdentifiers"),
         ]
 
-        health_id_number = filter(lambda x: x.get("type") == "ABHA_NUMBER", identifiers)
-        mobile = filter(lambda x: x.get("type") == "MOBILE", identifiers)
-        medical_record_id = filter(lambda x: x.get("type") == "MR", identifiers)  # noqa
-
+        health_id_number = next(
+            filter(lambda x: x.get("type") == "ABHA_NUMBER", identifiers), {}
+        ).get("value")
         patient = PatientRegistration.objects.filter(
             Q(abha_number__abha_number=health_id_number)
-            | Q(abha_number__health_id=patient.get("id"))
+            | Q(abha_number__health_id=patient_data.get("id"))
         ).first()
         matched_by = "ABHA_NUMBER"
 
         if not patient:
+            mobile = next(
+                filter(lambda x: x.get("type") == "MOBILE", identifiers), {}
+            ).get("value")
             patient = (
                 PatientRegistration.objects.annotate(
-                    similarity=TrigramSimilarity("name", patient.get("name"))
+                    similarity=TrigramSimilarity("name", patient_data.get("name"))
                 )
                 .filter(
                     Q(phone_number=mobile) | Q(phone_number="+91" + mobile),
                     Q(
-                        date_of_birth__year__gte=patient.get("yearOfBirth") - 5,
-                        date_of_birth__year__lte=patient.get("yearOfBirth") + 5,
+                        date_of_birth__year__gte=patient_data.get("yearOfBirth") - 5,
+                        date_of_birth__year__lte=patient_data.get("yearOfBirth") + 5,
                     )
-                    | Q(year_of_birth__gte=patient.get("yearOfBirth")) - 5,
-                    year_of_birth__lte=patient.get("yearOfBirth") + 5,
-                    gender={"M": 1, "F": 2, "O": 3}.get(patient.get("gender"), 3),
+                    | Q(year_of_birth__gte=patient_data.get("yearOfBirth")) - 5,
+                    year_of_birth__lte=patient_data.get("yearOfBirth") + 5,
+                    gender={"M": 1, "F": 2, "O": 3}.get(patient_data.get("gender"), 3),
                     similarity__gt=0.3,
                 )
                 .order_by("-similarity")
@@ -212,6 +215,19 @@ class HIPCallbackViewSet(GenericViewSet):
 
     def hip__link__care_context__init(self, request):
         validated_data = self.validate_request(request)
+        care_contexts = reduce(
+            lambda acc, patient: acc
+            + [
+                {
+                    "patient_reference": patient.get("referenceNumber"),
+                    "care_context_reference": context.get("referenceNumber"),
+                    "hi_type": patient.get("hiType"),
+                }
+                for context in patient.get("careContexts", [])
+            ],
+            validated_data.get("patient", []),
+            [],
+        )
 
         reference_id = uuid()
         cache.set(
@@ -220,12 +236,12 @@ class HIPCallbackViewSet(GenericViewSet):
                 "reference_id": reference_id,
                 # TODO: generate OTP and send it to the patient
                 "otp": "000000",
-                # TODO: consider abha_address is not the preferred abha address
                 "abha_address": validated_data.get("abhaAddress"),
+                "care_contexts": care_contexts,
             },
         )
 
-        GatewayService.user_initiated_linking__patient__care_context__on_init(
+        GatewayService.user_initiated_linking__link__care_context__on_init(
             {
                 "transaction_id": str(validated_data.get("transactionId")),
                 "request_id": request.headers.get("REQUEST-ID"),
@@ -250,25 +266,33 @@ class HIPCallbackViewSet(GenericViewSet):
 
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if not cached_data.get("otp") == validated_data.get("confirmation").get("otp"):
+        if not cached_data.get("otp") == validated_data.get("confirmation").get(
+            "token"
+        ):
             logger.warning(
-                f"Invalid OTP: {validated_data.get('confirmation').get('otp')} for Reference ID: {validated_data.get('confirmation').get('linkRefNumber')}"
+                f"Invalid OTP: {validated_data.get('confirmation').get('token')} for Reference ID: {validated_data.get('confirmation').get('linkRefNumber')}"
             )
 
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        patient = PatientRegistration.objects.filter(
-            abha_number__health_id=cached_data.get("abha_address")
-        ).first()
-        GatewayService.user_initiated_linking__patient__care_context__on_confirm(
+        consultation_ids = list(
+            map(
+                lambda x: x.get("care_context_reference"),
+                cached_data.get("care_contexts"),
+            )
+        )
+        consultations = PatientConsultation.objects.filter(
+            external_id__in=consultation_ids,
+        )
+
+        GatewayService.user_initiated_linking__link__care_context__on_confirm(
             {
-                "transaction_id": str(validated_data.get("transactionId")),
                 "request_id": request.headers.get("REQUEST-ID"),
-                "patient": patient,
+                "consultations": consultations,
             }
         )
 
-        Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     def hip__consent__request__notify(self, request):
         validated_data = self.validate_request(request)
@@ -372,8 +396,8 @@ class HIPCallbackViewSet(GenericViewSet):
                     "notifier__id": request.headers.get("X-HIP-ID"),
                     "status": "TRANSFERRED",
                     "hip_id": request.headers.get("X-HIP-ID"),
-                    "consultation_ids": map(
-                        lambda x: str(x.external_id), consultations
+                    "consultation_ids": list(
+                        map(lambda x: str(x.external_id), consultations)
                     ),
                 }
             )
@@ -390,8 +414,8 @@ class HIPCallbackViewSet(GenericViewSet):
                     "notifier__id": request.headers.get("X-HIP-ID"),
                     "status": "FAILED",
                     "hip_id": request.headers.get("X-HIP-ID"),
-                    "consultation_ids": map(
-                        lambda x: str(x.external_id), consultations
+                    "consultation_ids": list(
+                        map(lambda x: str(x.external_id), consultations)
                     ),
                 }
             )

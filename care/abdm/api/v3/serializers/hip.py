@@ -12,6 +12,7 @@ from rest_framework.serializers import (
     UUIDField,
 )
 
+from care.abdm.models import AccessMode, FrequencyUnit, HealthInformationTypes, Status
 from care.utils.queryset.consultation import get_consultation_queryset
 
 
@@ -53,7 +54,9 @@ class LinkOnCarecontextSerializer(Serializer):
 class HipPatientCareContextDiscoverSerializer(Serializer):
     class PatientSerializer(Serializer):
         class IdentifierSerializer(Serializer):
-            type = ChoiceField(choices=["MOBILE", "ABHA_NUMBER", "MR"], required=True)
+            type = ChoiceField(
+                choices=["MOBILE", "ABHA_NUMBER", "MR", "abhaAddress"], required=True
+            )
             value = CharField(max_length=255, required=True)
 
         id = CharField(max_length=50, required=True)
@@ -63,7 +66,7 @@ class HipPatientCareContextDiscoverSerializer(Serializer):
         verifiedIdentifiers = IdentifierSerializer(many=True, required=True)
         unverifiedIdentifiers = IdentifierSerializer(many=True, required=True)
 
-    transanctionId = UUIDField(required=True)
+    transactionId = UUIDField(required=True)
     patient = PatientSerializer(required=True)
 
 
@@ -75,20 +78,12 @@ class HipLinkCareContextInitSerializer(Serializer):
         referenceNumber = CharField(max_length=50, required=True)
         careContexts = CareContextSerializer(many=True, required=True)
         hiType = ChoiceField(
-            choices=[
-                "PRESCRIPTION",
-                "DIAGNOSTIC_REPORT",
-                "OP_CONSULTATION",
-                "DISCHARGE_SUMMARY",
-                "IMMUNIZATION_RECORD",
-                "RECORD_ARTIFACT",
-                "WELLNESS_RECORD",
-            ],
+            choices=HealthInformationTypes.choices,
             required=True,
         )
         count = IntegerField(required=True)
 
-    transanctionId = UUIDField(required=True)
+    transactionId = UUIDField(required=True)
     abhaAddress = CharField(max_length=50, required=True)
     patient = PatientSerializer(many=True, required=True)
 
@@ -129,15 +124,11 @@ class HipConsentRequestNotifySerializer(Serializer):
                     toTime = DateTimeField(source="to", required=True)
 
                 class FrequencySerializer(Serializer):
-                    unit = ChoiceField(
-                        choices=["HOUR", "DAY", "WEEK", "MONTH"], required=True
-                    )
+                    unit = ChoiceField(choices=FrequencyUnit.choices, required=True)
                     value = IntegerField(required=True)
                     repeats = IntegerField(required=True)
 
-                accessMode = ChoiceField(
-                    choices=["VIEW", "STORE", "QUERY", "STREAM"], required=True
-                )
+                accessMode = ChoiceField(choices=AccessMode.choices, required=True)
                 dateRange = DataRangeSerializer(required=True)
                 frequency = FrequencySerializer(required=True)
 
@@ -150,24 +141,12 @@ class HipConsentRequestNotifySerializer(Serializer):
             hip = HipSerializer(required=True)
             consentManager = ConsentManagerSerializer(required=True)
             hiTypes = ListField(
-                child=ChoiceField(
-                    choices=[
-                        "DiagnosticReport",
-                        "Prescription",
-                        "ImmunizationRecord",
-                        "DischargeSummary",
-                        "OPConsultation",
-                        "HealthDocumentRecord",
-                        "WellnessRecord",
-                    ]
-                ),
+                child=ChoiceField(choices=HealthInformationTypes.choices),
                 required=True,
             )
             permission = PermissionSerializer(required=True)
 
-        status = ChoiceField(
-            choices=["GRANTED", "DENIED", "REVOKED", "EXPIRED"], required=True
-        )
+        status = ChoiceField(choices=Status.choices, required=True)
         consentId = UUIDField(required=True)
         consentDetail = ConsentDetailSerializer(required=True)
         signature = CharField(max_length=500, required=True)

@@ -40,12 +40,12 @@ from care.abdm.service.v3.types.gateway import (
     LinkCarecontextResponse,
     TokenGenerateTokenBody,
     TokenGenerateTokenResponse,
-    UserInitiatedLinkingPatientCareContextOnConfirmBody,
-    UserInitiatedLinkingPatientCareContextOnConfirmResponse,
+    UserInitiatedLinkingLinkCareContextOnConfirmBody,
+    UserInitiatedLinkingLinkCareContextOnConfirmResponse,
+    UserInitiatedLinkingLinkCareContextOnInitBody,
+    UserInitiatedLinkingLinkCareContextOnInitResponse,
     UserInitiatedLinkingPatientCareContextOnDiscoverBody,
     UserInitiatedLinkingPatientCareContextOnDiscoverResponse,
-    UserInitiatedLinkingPatientCareContextOnInitBody,
-    UserInitiatedLinkingPatientCareContextOnInitResponse,
 )
 from care.abdm.utils.cipher import Cipher
 from care.abdm.utils.fhir import Fhir
@@ -56,6 +56,9 @@ class GatewayService:
 
     @staticmethod
     def handle_error(error: Dict[str, Any] | str) -> str:
+        if isinstance(error, list):
+            return GatewayService.handle_error(error[0])
+
         if isinstance(error, str):
             return error
 
@@ -68,7 +71,7 @@ class GatewayService:
             return error["message"]
 
         # { field_name: "error message" }
-        if len(error) == 1:
+        if isinstance(error, dict) and len(error) == 1:
             error.pop("code")
             error.pop("timestamp")
             return "".join(list(map(lambda x: str(x), list(error.values()))))
@@ -207,21 +210,23 @@ class GatewayService:
             if hasattr(patient, "consultations"):
                 consultations = patient.consultations.all()
 
-            payload["patient"] = {
-                "referenceNumber": str(patient.external_id),
-                "display": patient.name,
-                "careContexts": list(
-                    map(
-                        lambda x: {
-                            "referenceNumber": str(x.external_id),
-                            "display": f"Encounter on {str(x.created_date.date())}",
-                        },
-                        consultations,
-                    )
-                ),
-                "hiType": "DischargeSummary",
-                "count": len(consultations),
-            }
+            payload["patient"] = [
+                {
+                    "referenceNumber": str(patient.external_id),
+                    "display": patient.name,
+                    "careContexts": list(
+                        map(
+                            lambda x: {
+                                "referenceNumber": str(x.external_id),
+                                "display": f"Encounter on {str(x.created_date.date())}",
+                            },
+                            consultations,
+                        )
+                    ),
+                    "hiType": "DischargeSummary",
+                    "count": len(consultations),
+                }
+            ]
             payload["matchedBy"] = data.get("matched_by", [])
         else:
             payload["error"] = {
@@ -246,9 +251,9 @@ class GatewayService:
         return {}
 
     @staticmethod
-    def user_initiated_linking__patient__care_context__on_init(
-        data: UserInitiatedLinkingPatientCareContextOnInitBody,
-    ) -> UserInitiatedLinkingPatientCareContextOnInitResponse:
+    def user_initiated_linking__link__care_context__on_init(
+        data: UserInitiatedLinkingLinkCareContextOnInitBody,
+    ) -> UserInitiatedLinkingLinkCareContextOnInitResponse:
         payload = {
             "transactionId": data.get("transaction_id"),
             "link": {
@@ -259,7 +264,7 @@ class GatewayService:
                     "communicationHint": "OTP",
                     "communicationExpiry": (
                         datetime.now() + timedelta(minutes=5)
-                    ).isoformat(),
+                    ).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 },
             },
             "response": {
@@ -267,7 +272,7 @@ class GatewayService:
             },
         }
 
-        path = "/user-initiated-linking/patient/care-context/on-init"
+        path = "/user-initiated-linking/link/care-context/on-init"
         response = GatewayService.request.post(
             path,
             payload,
@@ -284,40 +289,37 @@ class GatewayService:
         return {}
 
     @staticmethod
-    def user_initiated_linking__patient__care_context__on_confirm(
-        data: UserInitiatedLinkingPatientCareContextOnConfirmBody,
-    ) -> UserInitiatedLinkingPatientCareContextOnConfirmResponse:
+    def user_initiated_linking__link__care_context__on_confirm(
+        data: UserInitiatedLinkingLinkCareContextOnConfirmBody,
+    ) -> UserInitiatedLinkingLinkCareContextOnConfirmResponse:
         payload: Dict = {
-            "transactionId": data.get("transaction_id"),
             "response": {
                 "requestId": data.get("request_id"),
             },
         }
 
-        patient = data.get("patient")
-        if patient:
-            consultations = []
+        consultations = data.get("consultations", [])
+        if len(consultations) > 0:
+            patient = consultations[0].patient
+            payload["patient"] = [
+                {
+                    "referenceNumber": str(patient.external_id),
+                    "display": patient.name,
+                    "careContexts": list(
+                        map(
+                            lambda x: {
+                                "referenceNumber": str(x.external_id),
+                                "display": f"Encounter on {str(x.created_date.date())}",
+                            },
+                            consultations,
+                        )
+                    ),
+                    "hiType": "DischargeSummary",
+                    "count": len(consultations),
+                }
+            ]
 
-            if hasattr(patient, "consultations"):
-                consultations = patient.consultations.all()
-
-            payload["patient"] = {
-                "referenceNumber": str(patient.external_id),
-                "display": patient.name,
-                "careContexts": list(
-                    map(
-                        lambda x: {
-                            "referenceNumber": str(x.external_id),
-                            "display": f"Encounter on {str(x.created_date.date())}",
-                        },
-                        consultations,
-                    )
-                ),
-                "hiType": "DischargeSummary",
-                "count": len(consultations),
-            }
-
-        path = "/user-initiated-linking/patient/care-context/on-confirm"
+        path = "/user-initiated-linking/link/care-context/on-confirm"
         response = GatewayService.request.post(
             path,
             payload,
@@ -428,7 +430,9 @@ class GatewayService:
                 "cryptoAlg": data.get("key_material__crypto_algorithm"),
                 "curve": data.get("key_material__curve"),
                 "dhPublicKey": {
-                    "expiry": (datetime.now() + timedelta(days=2)).isoformat(),
+                    "expiry": (datetime.now() + timedelta(days=2)).strftime(
+                        "%Y-%m-%dT%H:%M:%S.000Z"
+                    ),
                     "parameters": "Curve25519/32byte random key",
                     "keyValue": cipher.key_to_share,
                 },

@@ -34,23 +34,22 @@ class UserInitiatedLinkingPatientCareContextOnDiscoverResponse(TypedDict):
     pass
 
 
-class UserInitiatedLinkingPatientCareContextOnInitBody(TypedDict):
+class UserInitiatedLinkingLinkCareContextOnInitBody(TypedDict):
     transaction_id: str
     request_id: str
     reference_id: str
 
 
-class UserInitiatedLinkingPatientCareContextOnInitResponse(TypedDict):
+class UserInitiatedLinkingLinkCareContextOnInitResponse(TypedDict):
     pass
 
 
-class UserInitiatedLinkingPatientCareContextOnConfirmBody(TypedDict):
-    transaction_id: str
+class UserInitiatedLinkingLinkCareContextOnConfirmBody(TypedDict):
     request_id: str
-    patient: PatientRegistration
+    consultations: List[PatientConsultation]
 
 
-class UserInitiatedLinkingPatientCareContextOnConfirmResponse(TypedDict):
+class UserInitiatedLinkingLinkCareContextOnConfirmResponse(TypedDict):
     pass
 
 

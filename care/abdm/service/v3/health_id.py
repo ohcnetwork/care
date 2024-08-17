@@ -35,6 +35,9 @@ class HealthIdService:
 
     @staticmethod
     def handle_error(error: Dict[str, Any] | str) -> str:
+        if isinstance(error, list):
+            return HealthIdService.handle_error(error[0])
+
         if isinstance(error, str):
             return error
 
@@ -47,7 +50,7 @@ class HealthIdService:
             return error["message"]
 
         # { field_name: "error message" }
-        if len(error) == 1:
+        if isinstance(error, dict) and len(error) == 1:
             error.pop("code")
             error.pop("timestamp")
             return "".join(list(map(lambda x: str(x), list(error.values()))))
