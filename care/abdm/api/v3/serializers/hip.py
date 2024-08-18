@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from rest_framework.exceptions import APIException
@@ -108,7 +109,7 @@ class HipLinkCareContextConfirmSerializer(Serializer):
     confirmation = ConfirmationSerializer(required=True)
 
 
-class HipConsentRequestNotifySerializer(Serializer):
+class ConsentRequestHipNotifySerializer(Serializer):
     class NotificationSerializer(Serializer):
         class ConsentDetailSerializer(Serializer):
             class PatientSerializer(Serializer):
@@ -121,19 +122,32 @@ class HipConsentRequestNotifySerializer(Serializer):
             class PurposeSerializer(Serializer):
                 text = CharField(max_length=50, required=False)
                 code = ChoiceField(choices=Purpose.choices, required=True)
-                refUri = CharField(max_length=50, allow_null=True)
+                refUri = CharField(max_length=100, allow_null=True)
 
             class HipSerializer(Serializer):
                 id = CharField(max_length=50, required=True)
-                name = CharField(max_length=50, required=True)
+                name = CharField(max_length=50, required=False)
 
             class ConsentManagerSerializer(Serializer):
                 id = CharField(max_length=50, required=True)
 
             class PermissionSerializer(Serializer):
-                class DataRangeSerializer(Serializer):
+
+                class DateRangeSerializer(Serializer):
                     fromTime = DateTimeField(source="from", required=True)
                     toTime = DateTimeField(source="to", required=True)
+
+                    def to_internal_value(self, data):
+                        return super().to_internal_value(
+                            {
+                                "fromTime": datetime.strptime(
+                                    data.get("from"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                                ),
+                                "toTime": datetime.strptime(
+                                    data.get("to"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                                ),
+                            }
+                        )
 
                 class FrequencySerializer(Serializer):
                     unit = ChoiceField(choices=FrequencyUnit.choices, required=True)
@@ -141,7 +155,7 @@ class HipConsentRequestNotifySerializer(Serializer):
                     repeats = IntegerField(required=True)
 
                 accessMode = ChoiceField(choices=AccessMode.choices, required=True)
-                dateRange = DataRangeSerializer(required=True)
+                dateRange = DateRangeSerializer(required=True)
                 frequency = FrequencySerializer(required=True)
 
             schemaVersion = CharField(max_length=50, required=True)
@@ -166,7 +180,7 @@ class HipConsentRequestNotifySerializer(Serializer):
     notification = NotificationSerializer(required=True)
 
 
-class HealthInformationHipRequestSerializer(Serializer):
+class HipHealthInformationRequestSerializer(Serializer):
     class HiRequestSerializer(Serializer):
         class ConsentSerializer(Serializer):
             id = UUIDField(required=True)
@@ -174,6 +188,18 @@ class HealthInformationHipRequestSerializer(Serializer):
         class DateRangeSerializer(Serializer):
             fromTime = DateTimeField(source="from", required=True)
             toTime = DateTimeField(source="to", required=True)
+
+            def to_internal_value(self, data):
+                return super().to_internal_value(
+                    {
+                        "fromTime": datetime.strptime(
+                            data.get("from"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ),
+                        "toTime": datetime.strptime(
+                            data.get("to"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ),
+                    }
+                )
 
         class KeyMaterialSerializer(Serializer):
             class DhPublicKeySerializer(Serializer):

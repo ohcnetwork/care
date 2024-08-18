@@ -5,13 +5,12 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.serializers.consent import ConsentRequestSerializer
 from care.abdm.api.v3.serializers.hiu import (
-    ConsentRequestFetchSerializer,
+    ConsentFetchSerializer,
     ConsentRequestStatusSerializer,
     DataFlowHealthInformationRequestSerializer,
     HealthInformationOnRequestSerializer,
@@ -25,7 +24,6 @@ from care.abdm.api.v3.serializers.hiu import (
 from care.abdm.api.viewsets.consent import ConsentViewSet
 from care.abdm.models import AbhaNumber, ConsentArtefact, ConsentRequest
 from care.abdm.models.base import Status
-from care.abdm.service.helper import uuid
 from care.abdm.service.v3.gateway import GatewayService
 from care.abdm.utils.cipher import Cipher
 from care.facility.models import FileUpload
@@ -41,7 +39,7 @@ class HIUViewSet(GenericViewSet):
         "identity__authentication": IdentityAuthenticationSerializer,
         "consent__request__init": ConsentRequestSerializer,
         "consent__request__status": ConsentRequestStatusSerializer,
-        "consent__request__fetch": ConsentRequestFetchSerializer,
+        "consent__fetch": ConsentFetchSerializer,
         "data_flow__health_information__request": DataFlowHealthInformationRequestSerializer,
     }
 
@@ -63,7 +61,7 @@ class HIUViewSet(GenericViewSet):
 
         abha_number = AbhaNumber.objects.filter(
             Q(abha_number=validated_data.get("abha_number"))
-            | Q(patientregistration=validated_data.get("patient"))
+            | Q(patientregistration__external_id=validated_data.get("patient"))
         ).first()
 
         if not abha_number:
@@ -114,7 +112,7 @@ class HIUViewSet(GenericViewSet):
         )
 
     @action(detail=False, methods=["POST"])
-    def consent__request__fetch(self, request):
+    def consent__fetch(self, request):
         validated_data = self.validate_request(request)
 
         artefacts = ConsentArtefact.objects.filter(
@@ -129,7 +127,7 @@ class HIUViewSet(GenericViewSet):
             )
 
         for artefact in artefacts:
-            GatewayService.consent__request__fetch(
+            GatewayService.consent__fetch(
                 {
                     "artefact": artefact,
                 }
@@ -154,7 +152,11 @@ class HIUViewSet(GenericViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        GatewayService.data_flow__health_information__request(artefact)
+        GatewayService.data_flow__health_information__request(
+            {
+                "artefact": artefact,
+            }
+        )
 
         return Response(
             {"detail": "Health Information Request Initiated"},
@@ -198,8 +200,8 @@ class HIUCallbackViewSet(GenericViewSet):
         return serializer.validated_data
 
     def hiu__consent__request__on_init(self, request):
-        self.validate_request(request)
-        request_id = request.headers.get("REQUEST-ID")
+        validated_data = self.validate_request(request)
+        request_id = validated_data.get("response").get("requestId")
 
         consent = ConsentRequest.objects.filter(external_id=request_id).first()
 
@@ -208,21 +210,18 @@ class HIUCallbackViewSet(GenericViewSet):
 
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        consent_id = uuid()
+        if "consentRequest" in validated_data and validated_data.get("consentRequest"):
+            consent_id = validated_data.get("consentRequest").get("id")
 
-        consent.consent_id = consent_id
-        consent.save()
+            consent.consent_id = consent_id
+            consent.save()
 
-        payload = {
-            "consentRequest": {
-                "id": consent_id,
-            },
-            "response": {
-                "requestId": request_id,
-            },
-        }
+        if "error" in validated_data and validated_data.get("error"):
+            logger.warning(
+                f"Consent Request: {request_id}, Error in Consent Request while On Init: {validated_data.get('error').get('message')}"
+            )
+
         return Response(
-            payload,
             status=status.HTTP_202_ACCEPTED,
         )
 
@@ -268,17 +267,17 @@ class HIUCallbackViewSet(GenericViewSet):
     def hiu__consent__request__notify(self, request):
         validated_data = self.validate_request(request)
 
-        consent_request = validated_data.get("consentRequest")
-        consent_status = consent_request.get("status")
-        consent_artefacts = consent_request.get("consentArtefacts")
+        notification = validated_data.get("notification")
+        consent_status = notification.get("status")
+        consent_artefacts = notification.get("consentArtefacts")
 
         consent = ConsentRequest.objects.filter(
-            consent_id=consent_request.get("id")
+            consent_id=notification.get("consentRequestId")
         ).first()
 
         if not consent:
             logger.warning(
-                f"Consent Request: {consent_request.get('id')} not found in the database"
+                f"Consent Request: {notification.get('consentRequestId')} not found in the database"
             )
 
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -309,12 +308,12 @@ class HIUCallbackViewSet(GenericViewSet):
             }
         )
 
-        fetch_request = Request(
-            request._request, data={"consent_request": consent.external_id}
-        )
-        HIUViewSet().consent__request__fetch(
-            request=fetch_request,
-        )
+        for artefact in consent.consent_artefacts.all():
+            GatewayService.consent__fetch(
+                {
+                    "artefact": artefact,
+                }
+            )
 
         return Response(status=status.HTTP_200_OK)
 
@@ -326,21 +325,19 @@ class HIUCallbackViewSet(GenericViewSet):
 
         # updating an existing consent artefact
         (artefact, _) = ConsentArtefact.objects.update_or_create(
-            external_id=consent_detail.get("consentId"),
+            consent_id=consent_detail.get("consentId"),
             defaults={
                 "hip": consent_detail.get("hip", {}).get("id"),
-                "hiu": consent.get("hiu", {}).get("id"),
+                "hiu": consent_detail.get("hiu", {}).get("id"),
                 "cm": consent_detail.get("consentManager", {}).get("id"),
                 "care_contexts": consent_detail.get("careContexts", []),
-                "hi_types": consent.get("hiTypes", []),
+                "hi_types": consent_detail.get("hiTypes", []),
                 "status": consent.get("status"),
                 "access_mode": consent_detail.get("permission").get("accessMode"),
                 "from_time": consent_detail.get("permission")
                 .get("dateRange")
-                .get("fromTime"),
-                "to_time": consent_detail.get("permission")
-                .get("dateRange")
-                .get("toTime"),
+                .get("from"),
+                "to_time": consent_detail.get("permission").get("dateRange").get("to"),
                 "expiry": consent_detail.get("permission").get("dataEraseAt"),
                 "frequency_unit": consent_detail.get("permission")
                 .get("frequency")

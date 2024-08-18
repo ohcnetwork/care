@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.abdm.api.v3.serializers.hip import (
-    HealthInformationHipRequestSerializer,
-    HipConsentRequestNotifySerializer,
+    ConsentRequestHipNotifySerializer,
+    HipHealthInformationRequestSerializer,
     HipLinkCareContextConfirmSerializer,
     HipLinkCareContextInitSerializer,
     HipPatientCareContextDiscoverSerializer,
@@ -75,8 +75,8 @@ class HIPCallbackViewSet(GenericViewSet):
         "hip__patient__care_context__discover": HipPatientCareContextDiscoverSerializer,
         "hip__link__care_context__init": HipLinkCareContextInitSerializer,
         "hip__link__care_context__confirm": HipLinkCareContextConfirmSerializer,
-        "hip__consent__request__notify": HipConsentRequestNotifySerializer,
-        "health_information__hip__request": HealthInformationHipRequestSerializer,
+        "consent__request__hip__notify": ConsentRequestHipNotifySerializer,
+        "hip__health_information__request": HipHealthInformationRequestSerializer,
     }
 
     def get_patient_by_abha_id(self, abha_id: str):
@@ -294,7 +294,7 @@ class HIPCallbackViewSet(GenericViewSet):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    def hip__consent__request__notify(self, request):
+    def consent__request__hip__notify(self, request):
         validated_data = self.validate_request(request)
 
         notification = validated_data.get("notification")
@@ -342,7 +342,7 @@ class HIPCallbackViewSet(GenericViewSet):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    def health_information__hip__request(self, request):
+    def hip__health_information__request(self, request):
         validated_data = self.validate_request(request)
 
         hi_request = validated_data.get("hiRequest")

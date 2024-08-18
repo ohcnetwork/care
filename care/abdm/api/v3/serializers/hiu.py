@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework.serializers import (
     CharField,
     ChoiceField,
@@ -29,61 +31,20 @@ class IdentityAuthenticationSerializer(Serializer):
 
 
 class HiuConsentRequestOnInitSerializer(Serializer):
-    class ConsentSerializer(Serializer):
-        class PurposeSerializer(Serializer):
-            text = CharField(max_length=50, required=False)
-            code = ChoiceField(choices=Purpose.choices, required=True)
-            refUri = CharField(max_length=50, allow_null=True)
 
-        class PatientSerializer(Serializer):
-            id = CharField(required=True, max_length=50)
+    class ConsentRequestSerializer(Serializer):
+        id = UUIDField(required=True)
 
-        class HipSerializer(Serializer):
-            id = CharField(required=False)
+    class ResponseSerializer(Serializer):
+        requestId = UUIDField(required=True)
 
-        class CareContextSerializer(Serializer):
-            patientReference = CharField(required=True)
-            careContextReference = CharField(required=True)
+    class ErrorSerializer(Serializer):
+        code = CharField(max_length=50)
+        message = CharField()
 
-        class HiuSerializer(Serializer):
-            id = CharField(required=False)
-
-        class RequesterSerializer(Serializer):
-            class IdentifierSerializer(Serializer):
-                type = CharField(required=True)
-                value = CharField(required=True)
-                system = CharField(required=True)
-
-            name = CharField(required=True)
-            identifier = IdentifierSerializer(required=True)
-
-        class PermissionSerializer(Serializer):
-            class DateRangeSerializer(Serializer):
-                fromTime = DateTimeField(source="from", required=True)
-                toTime = DateTimeField(source="to", required=True)
-
-            class FrequencySerializer(Serializer):
-                unit = CharField(required=True)
-                value = IntegerField(required=True)
-                repeats = IntegerField(required=True)
-
-            accessMode = ChoiceField(choices=AccessMode.choices, required=True)
-            dateRange = DateRangeSerializer(required=True)
-            dataEraseAt = DateTimeField(required=True)
-            frequency = FrequencySerializer(required=True)
-
-        purpose = PurposeSerializer(required=True)
-        patient = PatientSerializer(required=True)
-        hip = HipSerializer(required=False)
-        careContexts = ListField(child=CareContextSerializer())
-        hiu = HiuSerializer(required=False)
-        requester = RequesterSerializer(required=True)
-        hiTypes = ListField(
-            child=ChoiceField(choices=HealthInformationTypes.choices), required=True
-        )
-        permission = PermissionSerializer(required=True)
-
-    consent = ConsentSerializer(required=True)
+    consentRequest = ConsentRequestSerializer(required=False)
+    error = ErrorSerializer(required=False, allow_null=True)
+    response = ResponseSerializer(required=True)
 
 
 class ConsentRequestStatusSerializer(Serializer):
@@ -106,11 +67,19 @@ class HiuConsentRequestOnStatusSerializer(Serializer):
     response = ResponseSerializer(required=True)
 
 
-class HiuConsentRequestNotifySerializer(HiuConsentRequestOnStatusSerializer):
-    pass
+class HiuConsentRequestNotifySerializer(Serializer):
+    class NotificationSerializer(Serializer):
+        class ConsentArtefactSerializer(Serializer):
+            id = UUIDField(required=True)
+
+        consentRequestId = UUIDField(required=True)
+        status = ChoiceField(choices=Status.choices, required=True)
+        consentArtefacts = ListField(child=ConsentArtefactSerializer(), required=True)
+
+    notification = NotificationSerializer(required=True)
 
 
-class ConsentRequestFetchSerializer(Serializer):
+class ConsentFetchSerializer(Serializer):
     consent_request = UUIDField(required=False)
     consent_artefact = UUIDField(required=False)
 
@@ -132,7 +101,7 @@ class HiuConsentOnFetchSerializer(Serializer):
             class PurposeSerializer(Serializer):
                 text = CharField(max_length=50, required=False)
                 code = ChoiceField(choices=Purpose.choices, required=True)
-                refUri = CharField(max_length=50, allow_null=True)
+                refUri = CharField(max_length=100, allow_null=True)
 
             class PatientSerializer(Serializer):
                 id = CharField(required=True, max_length=50)
@@ -163,6 +132,18 @@ class HiuConsentOnFetchSerializer(Serializer):
                 class DateRangeSerializer(Serializer):
                     fromTime = DateTimeField(source="from", required=True)
                     toTime = DateTimeField(source="to", required=True)
+
+                    def to_internal_value(self, data):
+                        return super().to_internal_value(
+                            {
+                                "fromTime": datetime.strptime(
+                                    data.get("from"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                                ),
+                                "toTime": datetime.strptime(
+                                    data.get("to"), "%Y-%m-%dT%H:%M:%S.%fZ"
+                                ),
+                            }
+                        )
 
                 class FrequencySerializer(Serializer):
                     unit = CharField(required=True)

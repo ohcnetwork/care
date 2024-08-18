@@ -16,8 +16,8 @@ from care.abdm.service.helper import (
 )
 from care.abdm.service.request import Request
 from care.abdm.service.v3.types.gateway import (
-    ConsentRequestFetchBody,
-    ConsentRequestFetchResponse,
+    ConsentFetchBody,
+    ConsentFetchResponse,
     ConsentRequestHipOnNotifyBody,
     ConsentRequestHipOnNotifyResponse,
     ConsentRequestHiuOnNotifyBody,
@@ -368,12 +368,10 @@ class GatewayService:
         data: DataFlowHealthInformationHipOnRequestBody,
     ) -> DataFlowHealthInformationHipOnRequestResponse:
         payload = {
-            "hiRequest": [
-                {
-                    "transactionId": data.get("transaction_id"),
-                    "sessionStatus": "ACKNOWLEDGED",
-                }
-            ],
+            "hiRequest": {
+                "transactionId": data.get("transaction_id"),
+                "sessionStatus": "ACKNOWLEDGED",
+            },
             "response": {"requestId": data.get("request_id")},
         }
 
@@ -565,6 +563,7 @@ class GatewayService:
                 "purpose": {
                     "text": Purpose(consent.purpose).label,
                     "code": Purpose(consent.purpose).value,
+                    "refUri": "http://terminology.hl7.org/ValueSet/v3-PurposeOfUse",
                 },
                 "patient": {"id": consent.patient_abha.health_id},
                 "hiu": {"id": hiu_id},
@@ -626,7 +625,7 @@ class GatewayService:
             raise ABDMAPIException(detail="Provide a consent to check status")
 
         payload = {
-            "consentRequestId": consent.consent_id,
+            "consentRequestId": str(consent.consent_id),
         }
 
         response = GatewayService.request.post(
@@ -658,7 +657,7 @@ class GatewayService:
             "acknowledgement": list(
                 map(
                     lambda x: {
-                        "consentId": str(x.artefact_id),
+                        "consentId": str(x.external_id),
                         "status": "OK",
                     },
                     consent.consent_artefacts.all() or [],
@@ -684,20 +683,20 @@ class GatewayService:
         return {}
 
     @staticmethod
-    def consent__request__fetch(
-        data: ConsentRequestFetchBody,
-    ) -> ConsentRequestFetchResponse:
+    def consent__fetch(
+        data: ConsentFetchBody,
+    ) -> ConsentFetchResponse:
         artefact = data.get("artefact")
 
         if not artefact:
             raise ABDMAPIException(detail="Provide a consent to check status")
 
         payload = {
-            "consentId": artefact.consent_id,
+            "consentId": str(artefact.artefact_id),
         }
 
         response = GatewayService.request.post(
-            "/consent/request/status",
+            "/consent/fetch",
             payload,
             headers={
                 "REQUEST-ID": uuid(),
@@ -707,7 +706,7 @@ class GatewayService:
             },
         )
 
-        if response.status_code != 200:
+        if response.status_code != 202:
             raise ABDMAPIException(detail=GatewayService.handle_error(response.json()))
 
         return {}
@@ -727,13 +726,13 @@ class GatewayService:
 
         payload = {
             "hiRequest": {
-                "consent": {"id": artefact.artefact_id},
+                "consent": {"id": str(artefact.artefact_id)},
                 "dateRange": {
                     "from": artefact.from_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                     "to": artefact.to_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 },
                 "dataPushUrl": settings.BACKEND_DOMAIN
-                + "/v3/health-information/transfer",
+                + "/api/v3/hiu/health-information/transfer",
                 "keyMaterial": {
                     "cryptoAlg": artefact.key_material_algorithm,
                     "curve": artefact.key_material_curve,
@@ -746,7 +745,7 @@ class GatewayService:
                     },
                     "nonce": artefact.key_material_nonce,
                 },
-            }
+            },
         }
 
         response = GatewayService.request.post(

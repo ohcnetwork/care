@@ -140,11 +140,11 @@ class ConsentRequestHiuOnNotifyResponse(TypedDict):
     pass
 
 
-class ConsentRequestFetchBody(TypedDict):
+class ConsentFetchBody(TypedDict):
     artefact: ConsentArtefact
 
 
-class ConsentRequestFetchResponse(TypedDict):
+class ConsentFetchResponse(TypedDict):
     pass
 
 
