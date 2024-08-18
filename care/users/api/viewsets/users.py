@@ -385,21 +385,27 @@ class UserViewSet(
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
 
-    @extend_schema(tags=["users"])
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-    def profile_picture(self, request, username):
-        user = self.get_object()
+    def has_profile_image_write_permission(self, user, request):
         allowed_user_types = [
             User.TYPE_VALUE_MAP["WardAdmin"],
             User.TYPE_VALUE_MAP["LocalBodyAdmin"],
             User.TYPE_VALUE_MAP["DistrictAdmin"],
             User.TYPE_VALUE_MAP["StateAdmin"],
         ]
-        has_write_permission = request.user.is_superuser or request.user.id == user.id or (
-            request.user.user_type in allowed_user_types
-            and self.facility.has_object_write_permission(request)
+        return (
+            user.is_superuser
+            or (user.id == request.user.id)
+            or (
+                user.user_type in allowed_user_types
+                and self.facility.has_object_write_permission(request)
+            )
         )
-        if not has_write_permission:
+
+    @extend_schema(tags=["users"])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def profile_picture(self, request, username):
+        user = self.get_object()
+        if not self.has_profile_image_write_permission(user, request):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = UserImageUploadSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -409,54 +415,9 @@ class UserViewSet(
     @extend_schema(tags=["users"])
     @profile_picture.mapping.delete
     def profile_picture_delete(self, *args, **kwargs):
-        allowed_user_types = [
-            User.TYPE_VALUE_MAP["WardAdmin"],
-            User.TYPE_VALUE_MAP["LocalBodyAdmin"],
-            User.TYPE_VALUE_MAP["DistrictAdmin"],
-            User.TYPE_VALUE_MAP["StateAdmin"],
-        ]
         user = self.get_object()
-        has_write_permission = user.is_superuser or user.id == self.request.user.id or (
-            user.user_type in allowed_user_types
-            and self.facility.has_object_write_permission(self.request)
-        )
-        if not has_write_permission:
+        if not self.has_profile_image_write_permission(user, self.request):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        user = self.get_object()
         user.profile_picture_url = None
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-#      def has_profile_image_write_permission(self, user, request):
-#         allowed_user_types = [
-#             User.TYPE_VALUE_MAP["WardAdmin"],
-#             User.TYPE_VALUE_MAP["LocalBodyAdmin"],
-#             User.TYPE_VALUE_MAP["DistrictAdmin"],
-#             User.TYPE_VALUE_MAP["StateAdmin"],
-#         ]
-#         return user.is_superuser or (
-#             user.user_type in allowed_user_types
-#             and self.facility.has_object_write_permission(request)
-#         ) or user.id == request.user.id
-
-#     @extend_schema(tags=["users"])
-#     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-#     def profile_picture(self, request, username):
-#         user = self.get_object()
-#         if not self.has_profile_image_write_permission(user, request):
-#             return Response(status=status.HTTP_403_FORBIDDEN)
-#         serializer = UserImageUploadSerializer(user, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response(status=status.HTTP_200_OK)
-
-#     @extend_schema(tags=["users"])
-#     @profile_picture.mapping.delete
-#     def profile_picture_delete(self, *args, **kwargs):
-#         user = self.get_object()
-#         if not self.has_profile_image_write_permission(user, self.request):
-#             return Response(status=status.HTTP_403_FORBIDDEN)
-#         user.profile_picture_url = None
-#         user.save()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
