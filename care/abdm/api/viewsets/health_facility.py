@@ -22,6 +22,9 @@ from care.utils.queryset.facility import get_facility_queryset
 
 @shared_task
 def register_health_facility_as_service(facility_external_id):
+    if settings.ENABLE_ABDM:
+        return [False, "ABDM Services are currently disabled"]
+
     health_facility = HealthFacility.objects.filter(
         facility__external_id=facility_external_id
     ).first()

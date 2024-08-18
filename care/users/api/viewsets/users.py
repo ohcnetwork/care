@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.core.cache import cache
 from django.db.models import F, Q, Subquery
 from django.http import Http404
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -59,6 +62,7 @@ class UserFilterSet(filters.FilterSet):
     home_facility = filters.UUIDFilter(
         field_name="home_facility__external_id", lookup_expr="exact"
     )
+    last_active_days = filters.CharFilter(method="last_active_after")
 
     def get_user_type(
         self,
@@ -72,6 +76,14 @@ class UserFilterSet(filters.FilterSet):
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
+
+    def last_active_after(self, queryset, name, value):
+        if value == "never":
+            return queryset.filter(last_login__isnull=True)
+        # convert days to date
+        date = timezone.now() - timedelta(days=int(value))
+
+        return queryset.filter(last_login__gte=date)
 
 
 class UserViewSet(

@@ -24,7 +24,7 @@ class EncounterSymptomFilter(filters.FilterSet):
 class EncounterSymptomViewSet(ModelViewSet):
     serializer_class = EncounterSymptomSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = EncounterSymptom.objects.all()
+    queryset = EncounterSymptom.objects.select_related("created_by", "updated_by")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EncounterSymptomFilter
     lookup_field = "external_id"

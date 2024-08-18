@@ -511,6 +511,7 @@ BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
 BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
+BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
@@ -555,7 +556,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
-        "audio/mp4"
+        "audio/mp4",
         # Documents
         "text/plain",
         "text/csv",

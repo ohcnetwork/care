@@ -319,6 +319,9 @@ class User(AbstractUser):
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
         return None
 
+    def full_name(self):
+        return self.get_full_name()
+
     @staticmethod
     def has_read_permission(request):
         return True
