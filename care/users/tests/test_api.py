@@ -240,7 +240,6 @@ class TestUserFilter(TestUtils, APITestCase):
         response = self.client.get("/api/v1/users/?last_active_days=10")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
-        print(res_data_json)
         self.assertEqual(res_data_json["count"], 2)
         self.assertIn(
             self.user_2.username, {r["username"] for r in res_data_json["results"]}
