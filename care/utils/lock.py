@@ -15,14 +15,8 @@ class Lock:
         self.timeout = timeout
 
     def acquire(self):
-        try:
-            if not cache.set(self.key, True, self.timeout, nx=True):
-                raise ObjectLocked()
-        # handle nx not supported
-        except TypeError:
-            if cache.get(self.key):
-                raise ObjectLocked()
-            cache.set(self.key, True, self.timeout)
+        if not cache.set(self.key, True, self.timeout, nx=True):
+            raise ObjectLocked()
 
     def release(self):
         return cache.delete(self.key)
