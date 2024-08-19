@@ -162,12 +162,13 @@ def get_discharge_summary_data(consultation: PatientConsultation):
         upload_completed=True,
         is_archived=False,
     )
-    admitted_to = []
+    admitted_to = set()
     if ConsultationBed.objects.filter(consultation=consultation).exists():
         for bed in ConsultationBed.objects.filter(consultation=consultation).order_by(
             "-created_date"
         ):
-            admitted_to.append(BedType(bed.bed.bed_type).name)
+            admitted_to.add(BedType(bed.bed.bed_type).name)
+        admitted_to = list(admitted_to)
     if not admitted_to:
         admitted_to = None
 

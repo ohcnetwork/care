@@ -17,6 +17,8 @@ def format_to_sentence_case(data):
         return
 
     def convert_to_sentence_case(s):
+        if s == "ICU":
+            return "ICU"
         s = s.lower()
         s = s.replace("_", " ")
         return s.capitalize()

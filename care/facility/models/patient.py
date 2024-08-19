@@ -7,6 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Case, F, Func, JSONField, Value, When
 from django.db.models.functions import Coalesce, Now
+from django.template.defaultfilters import pluralize
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
@@ -489,16 +490,20 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         delta = relativedelta(end, start)
 
         if delta.years > 0:
-            return f"{delta.years} years"
+            year_str = f"{delta.years} year{pluralize(delta.years)}"
+            return f"{year_str}"
+
         elif delta.months > 0:
-            age_str = f"{delta.months} months"
-            if delta.days == 1:
-                age_str += " 1 day"
-            elif delta.days > 1:
-                age_str += f" {delta.days} days"
-            return age_str
+            month_str = f"{delta.months} month{pluralize(delta.months)}"
+            day_str = (
+                f" {delta.days} day{pluralize(delta.days)}" if delta.days > 0 else ""
+            )
+            return f"{month_str}{day_str}"
+
         elif delta.days > 0:
-            return f"{delta.days} days"
+            day_str = f"{delta.days} day{pluralize(delta.days)}"
+            return day_str
+
         else:
             return "0 days"
 
