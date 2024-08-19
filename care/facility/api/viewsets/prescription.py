@@ -142,12 +142,16 @@ class ConsultationPrescriptionViewSet(
         detail=True,
     )
     def discontinue(self, request, *args, **kwargs):
+        consultation_obj = self.get_consultation_obj()
+        if consultation_obj.discharge_date:
+            raise ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
         prescription_obj.discontinued_reason = request.data.get(
             "discontinued_reason", None
         )
-        consultation_obj = self.get_consultation_obj()
         NotificationGenerator(
             event=Notification.Event.PATIENT_PRESCRIPTION_UPDATED,
             caused_by=self.request.user,
@@ -165,6 +169,11 @@ class ConsultationPrescriptionViewSet(
         serializer_class=MedicineAdministrationSerializer,
     )
     def administer(self, request, *args, **kwargs):
+        consultation_obj = self.get_consultation_obj()
+        if consultation_obj.discharge_date:
+            raise ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
         prescription_obj = self.get_object()
         if prescription_obj.discontinued:
             return Response(
