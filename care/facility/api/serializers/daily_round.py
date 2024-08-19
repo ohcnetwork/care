@@ -253,6 +253,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 daily_round_obj,
                 daily_round_obj.created_by_id,
                 daily_round_obj.created_date,
+                taken_at=daily_round_obj.taken_at,
             )
             return daily_round_obj
 
