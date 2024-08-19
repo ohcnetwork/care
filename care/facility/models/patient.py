@@ -491,7 +491,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         if delta.years > 0:
             return f"{delta.years} years"
         elif delta.months > 0:
-            return f"{delta.months} months"
+            age_str = f"{delta.months} months"
+            if delta.days == 1:
+                age_str += " 1 day"
+            elif delta.days > 1:
+                age_str += f" {delta.days} days"
+            return age_str
         elif delta.days > 0:
             return f"{delta.days} days"
         else:
