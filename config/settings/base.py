@@ -62,6 +62,9 @@ DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# timeout for setnx lock
+LOCK_TIMEOUT = env.int("LOCK_TIMEOUT", default=32)
+
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
 # CACHES

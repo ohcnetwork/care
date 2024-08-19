@@ -374,9 +374,10 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         # End Authorisation Checks
 
-        with Lock(
-            self._lock_key(validated_data["patient"].id), 30
-        ), transaction.atomic():
+        with (
+            Lock(self._lock_key(validated_data["patient"].id)),
+            transaction.atomic(),
+        ):
             patient = validated_data["patient"]
             if patient.last_consultation:
                 if patient.last_consultation.assigned_to == user:

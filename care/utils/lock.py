@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from rest_framework.exceptions import APIException
 
@@ -9,7 +10,7 @@ class ObjectLocked(APIException):
 
 
 class Lock:
-    def __init__(self, key, timeout=None):
+    def __init__(self, key, timeout=settings.LOCK_TIMEOUT):
         self.key = f"lock:{key}"
         self.timeout = timeout
 
