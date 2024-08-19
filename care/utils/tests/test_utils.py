@@ -58,7 +58,7 @@ class override_cache(override_settings):
         super().__init__(
             CACHES={
                 "default": {
-                    "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                    "BACKEND": "config.caches.LocMemCache",
                     "LOCATION": f"care-test-{uuid.uuid4()}",
                 }
             },

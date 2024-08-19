@@ -1,5 +1,6 @@
 import tempfile
 
+from django.db import transaction
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
@@ -112,6 +113,10 @@ class PatientConsultationViewSet(
         # A user should be able to see all consultations part of their home facility
         applied_filters |= Q(facility=self.request.user.home_facility)
         return self.queryset.filter(applied_filters)
+
+    @transaction.non_atomic_requests
+    def create(self, request, *args, **kwargs) -> Response:
+        return super().create(request, *args, **kwargs)
 
     @extend_schema(tags=["consultation"])
     @action(detail=True, methods=["POST"])
