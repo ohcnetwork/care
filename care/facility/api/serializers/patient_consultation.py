@@ -64,6 +64,7 @@ from care.users.api.serializers.user import (
     UserBaseMinimumSerializer,
 )
 from care.users.models import User
+from care.utils.lock import Lock
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
@@ -190,6 +191,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             prescription_type=PrescriptionType.DISCHARGE.value,
             dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
+
+    def _lock_key(self, patient_id):
+        return f"patient_consultation__patient_registration__{patient_id}"
 
     class Meta:
         model = PatientConsultation
@@ -353,18 +357,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         create_diagnosis = validated_data.pop("create_diagnoses")
         create_symptoms = validated_data.pop("create_symptoms")
-        action = -1
-        review_interval = -1
-        if "action" in validated_data:
-            action = validated_data.pop("action")
-        if "review_interval" in validated_data:
-            review_interval = validated_data.pop("review_interval")
+
+        action = validated_data.pop("action", -1)
+        review_interval = validated_data.get("review_interval", -1)
 
         # Authorisation Check
 
-        allowed_facilities = get_home_facility_queryset(self.context["request"].user)
+        user = self.context["request"].user
+        allowed_facilities = get_home_facility_queryset(user)
         if not allowed_facilities.filter(
-            id=self.validated_data["patient"].facility.id
+            id=self.validated_data["patient"].facility_id
         ).exists():
             raise ValidationError(
                 {"facility": "Consultation creates are only allowed in home facility"}
@@ -372,130 +374,128 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         # End Authorisation Checks
 
-        if validated_data["patient"].last_consultation:
-            if (
-                self.context["request"].user
-                == validated_data["patient"].last_consultation.assigned_to
-            ):
-                raise ValidationError(
-                    {
-                        "Permission Denied": "Only Facility Staff can create consultation for a Patient"
-                    },
-                )
-
-        if validated_data["patient"].last_consultation:
-            if not validated_data["patient"].last_consultation.discharge_date:
-                raise ValidationError(
-                    {"consultation": "Exists please Edit Existing Consultation"}
-                )
-
-        if "is_kasp" in validated_data:
-            if validated_data["is_kasp"]:
-                validated_data["kasp_enabled_date"] = localtime(now())
-
-        bed = validated_data.pop("bed", None)
-
-        validated_data["facility_id"] = validated_data[
-            "patient"
-        ].facility_id  # Coercing facility as the patient's facility
-        consultation = super().create(validated_data)
-        consultation.created_by = self.context["request"].user
-        consultation.last_edited_by = self.context["request"].user
-        patient = consultation.patient
-        consultation.previous_consultation = patient.last_consultation
-        last_consultation = patient.last_consultation
-        if (
-            last_consultation
-            and consultation.suggestion == SuggestionChoices.A
-            and last_consultation.suggestion == SuggestionChoices.A
-            and last_consultation.discharge_date
-            and last_consultation.discharge_date + timedelta(days=30)
-            > consultation.encounter_date
+        with (
+            Lock(self._lock_key(validated_data["patient"].id)),
+            transaction.atomic(),
         ):
-            consultation.is_readmission = True
-        consultation.save()
+            patient = validated_data["patient"]
+            if patient.last_consultation:
+                if patient.last_consultation.assigned_to == user:
+                    raise ValidationError(
+                        {
+                            "Permission Denied": "Only Facility Staff can create consultation for a Patient"
+                        },
+                    )
 
-        diagnosis = ConsultationDiagnosis.objects.bulk_create(
-            [
-                ConsultationDiagnosis(
+                if not patient.last_consultation.discharge_date:
+                    raise ValidationError(
+                        {"consultation": "Exists please Edit Existing Consultation"}
+                    )
+
+            if "is_kasp" in validated_data:
+                if validated_data["is_kasp"]:
+                    validated_data["kasp_enabled_date"] = now()
+
+            # Coercing facility as the patient's facility
+            validated_data["facility_id"] = patient.facility_id
+
+            consultation: PatientConsultation = super().create(validated_data)
+            consultation.created_by = user
+            consultation.last_edited_by = user
+            consultation.previous_consultation = patient.last_consultation
+            last_consultation = patient.last_consultation
+            if (
+                last_consultation
+                and consultation.suggestion == SuggestionChoices.A
+                and last_consultation.suggestion == SuggestionChoices.A
+                and last_consultation.discharge_date
+                and last_consultation.discharge_date + timedelta(days=30)
+                > consultation.encounter_date
+            ):
+                consultation.is_readmission = True
+
+            diagnosis = ConsultationDiagnosis.objects.bulk_create(
+                [
+                    ConsultationDiagnosis(
+                        consultation=consultation,
+                        diagnosis_id=obj["diagnosis"].id,
+                        is_principal=obj["is_principal"],
+                        verification_status=obj["verification_status"],
+                        created_by=user,
+                    )
+                    for obj in create_diagnosis
+                ]
+            )
+
+            symptoms = EncounterSymptom.objects.bulk_create(
+                EncounterSymptom(
                     consultation=consultation,
-                    diagnosis_id=obj["diagnosis"].id,
-                    is_principal=obj["is_principal"],
-                    verification_status=obj["verification_status"],
-                    created_by=self.context["request"].user,
+                    symptom=obj.get("symptom"),
+                    onset_date=obj.get("onset_date"),
+                    cure_date=obj.get("cure_date"),
+                    clinical_impression_status=obj.get("clinical_impression_status"),
+                    other_symptom=obj.get("other_symptom") or "",
+                    created_by=user,
                 )
-                for obj in create_diagnosis
-            ]
-        )
-
-        symptoms = EncounterSymptom.objects.bulk_create(
-            EncounterSymptom(
-                consultation=consultation,
-                symptom=obj.get("symptom"),
-                onset_date=obj.get("onset_date"),
-                cure_date=obj.get("cure_date"),
-                clinical_impression_status=obj.get("clinical_impression_status"),
-                other_symptom=obj.get("other_symptom") or "",
-                created_by=self.context["request"].user,
+                for obj in create_symptoms
             )
-            for obj in create_symptoms
-        )
 
-        if bed and consultation.suggestion == SuggestionChoices.A:
-            consultation_bed = ConsultationBed(
-                bed=bed,
-                consultation=consultation,
-                start_date=consultation.created_date,
-            )
-            consultation_bed.save()
-            consultation.current_bed = consultation_bed
-            consultation.save(update_fields=["current_bed"])
+            bed = validated_data.pop("bed", None)
+            if bed and consultation.suggestion == SuggestionChoices.A:
+                consultation_bed = ConsultationBed(
+                    bed=bed,
+                    consultation=consultation,
+                    start_date=consultation.created_date,
+                )
+                consultation_bed.save()
+                consultation.current_bed = consultation_bed
 
-        if consultation.suggestion == SuggestionChoices.OP:
-            consultation.discharge_date = localtime(now())
+            if consultation.suggestion == SuggestionChoices.OP:
+                consultation.discharge_date = now()
+                patient.is_active = False
+                patient.allow_transfer = True
+            else:
+                patient.is_active = True
+            patient.last_consultation = consultation
+
+            if action != -1:
+                patient.action = action
+
+            if review_interval > 0:
+                patient.review_time = now() + timedelta(minutes=review_interval)
+            else:
+                patient.review_time = None
+
             consultation.save()
-            patient.is_active = False
-            patient.allow_transfer = True
-        else:
-            patient.is_active = True
-        patient.last_consultation = consultation
+            patient.save()
 
-        if action != -1:
-            patient.action = action
-        consultation.review_interval = review_interval
-        if review_interval > 0:
-            patient.review_time = localtime(now()) + timedelta(minutes=review_interval)
-        else:
-            patient.review_time = None
+            create_consultation_events(
+                consultation.id,
+                (consultation, *diagnosis, *symptoms),
+                consultation.created_by.id,
+                consultation.created_date,
+            )
 
-        patient.save()
-        NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_CREATED,
-            caused_by=self.context["request"].user,
-            caused_object=consultation,
-            facility=patient.facility,
-        ).generate()
-
-        create_consultation_events(
-            consultation.id,
-            (consultation, *diagnosis, *symptoms),
-            consultation.created_by.id,
-            consultation.created_date,
-        )
-
-        if consultation.assigned_to:
             NotificationGenerator(
-                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
-                caused_by=self.context["request"].user,
+                event=Notification.Event.PATIENT_CONSULTATION_CREATED,
+                caused_by=user,
                 caused_object=consultation,
-                facility=consultation.patient.facility,
-                notification_mediums=[
-                    Notification.Medium.SYSTEM,
-                    Notification.Medium.WHATSAPP,
-                ],
+                facility=patient.facility,
             ).generate()
 
-        return consultation
+            if consultation.assigned_to:
+                NotificationGenerator(
+                    event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                    caused_by=user,
+                    caused_object=consultation,
+                    facility=consultation.patient.facility,
+                    notification_mediums=[
+                        Notification.Medium.SYSTEM,
+                        Notification.Medium.WHATSAPP,
+                    ],
+                ).generate()
+
+            return consultation
 
     def validate_create_diagnoses(self, value):
         # Reject if create_diagnoses is present for edits
