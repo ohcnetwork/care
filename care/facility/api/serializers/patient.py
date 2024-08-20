@@ -499,6 +499,12 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
 class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    reply_to_object = serializers.SerializerMethodField()
+
+    def get_reply_to_object(self, obj):
+        if obj.reply_to:
+            return ReplyToPatientNoteSerializer(obj.reply_to).data
+        return None
 
     class Meta:
         model = PatientNotes
@@ -508,6 +514,7 @@ class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
             "created_date",
             "user_type",
             "note",
+            "reply_to_object",
         )
 
 
@@ -535,6 +542,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
     files = serializers.SerializerMethodField()
     replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
+    parent_note_object = serializers.SerializerMethodField()
+
+    def get_parent_note_object(self, obj):
+        parent_note = obj
+        while parent_note.reply_to is not None:
+            parent_note = parent_note.reply_to
+        return ReplyToPatientNoteSerializer(parent_note).data if parent_note != obj else None
 
     def get_files(self, obj):
         return FileUpload.objects.filter(
@@ -631,6 +645,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "reply_to_object",
             "files",
             "replies",
+            "parent_note_object",
         )
         read_only_fields = (
             "id",
