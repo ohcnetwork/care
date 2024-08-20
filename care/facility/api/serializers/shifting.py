@@ -344,6 +344,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if (
             "status" in validated_data
+            and new_instance.shifting_approving_facility is not None
             and validated_data["status"] != old_status
             and validated_data["status"] == 40
         ):
