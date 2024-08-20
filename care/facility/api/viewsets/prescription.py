@@ -169,11 +169,6 @@ class ConsultationPrescriptionViewSet(
         serializer_class=MedicineAdministrationSerializer,
     )
     def administer(self, request, *args, **kwargs):
-        consultation_obj = self.get_consultation_obj()
-        if consultation_obj.discharge_date:
-            raise ValidationError(
-                {"consultation": "Not allowed for discharged consultations"}
-            )
         prescription_obj = self.get_object()
         if prescription_obj.discontinued:
             return Response(
