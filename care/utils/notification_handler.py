@@ -208,6 +208,14 @@ class NotificationGenerator:
                 message = "Prescription for Patient {} was updated by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
+            if self.event == Notification.Event.PATIENT_NOTE_ADDED.value:
+                message = "Notes for Patient {} was added by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            elif self.event == Notification.Event.PATIENT_NOTE_MENTIONED.value:
+                message = "{} just mentioned you in a note for Patient {}".format(
+                    self.caused_by.get_full_name(), self.caused_object.patient.name
+                )
         elif isinstance(self.caused_object, InvestigationSession):
             if self.event == Notification.Event.INVESTIGATION_SESSION_CREATED.value:
                 message = (
@@ -248,16 +256,6 @@ class NotificationGenerator:
                     self.caused_object.patient.name,
                     self.caused_by.get_full_name(),
                 )
-        elif isinstance(self.caused_object, PatientNotes):
-            if self.event == Notification.Event.PATIENT_NOTE_ADDED.value:
-                message = "Notes for Patient {} was added by {}".format(
-                    self.caused_object.patient.name,
-                    self.caused_by.get_full_name(),
-                )
-            elif self.event == Notification.Event.PATIENT_NOTE_MENTIONED.value:
-                    message = "{} just mentioned you in a note for Patient {}".format(
-                        self.caused_by.get_full_name(), self.caused_object.patient.name
-                    )
 
         return message
 
