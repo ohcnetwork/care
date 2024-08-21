@@ -555,7 +555,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             if item in counter:
                 # Reject if duplicate symptoms are provided
                 raise ValidationError("Duplicate symptoms are not allowed")
-            counter.add(item)
+            if not obj.get("cure_date"):
+                # skip duplicate symptom check for ones that has cure date
+                counter.add(item)
 
         current_time = now()
         for obj in value:
