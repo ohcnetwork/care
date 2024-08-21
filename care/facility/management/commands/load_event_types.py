@@ -57,11 +57,13 @@ class Command(BaseCommand):
                             "name": "INVESTIGATION",
                             "fields": ("investigation",),
                         },
-                        # disabling until we have a better way to serialize user objects
-                        # {
-                        #     "name": "TREATING_PHYSICIAN",
-                        #     "fields": ("treating_physician",),
-                        # },
+                        {
+                            "name": "TREATING_PHYSICIAN",
+                            "fields": (
+                                "treating_physician__username",
+                                "treating_physician__full_name",
+                            ),
+                        },
                     ),
                 },
                 {
@@ -225,7 +227,7 @@ class Command(BaseCommand):
         {
             "name": "DIAGNOSIS",
             "model": "ConsultationDiagnosis",
-            "fields": ("diagnosis", "verification_status", "is_principal"),
+            "fields": ("diagnosis__label", "verification_status", "is_principal"),
         },
         {
             "name": "SYMPTOMS",
@@ -246,7 +248,6 @@ class Command(BaseCommand):
         "VENTILATOR_MODES",
         "SYMPTOMS",
         "ROUND_SYMPTOMS",
-        "TREATING_PHYSICIAN",
     )
 
     def create_objects(
