@@ -39,6 +39,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+import re
 
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
@@ -1030,6 +1031,22 @@ class PatientNotesViewSet(
             caused_object=instance,
             facility=patient.facility,
             generate_for_facility=True,
+        ).generate()
+
+
+        pattern = r"!\[mention_user\]\(user_id:(\d+), username:([^)]+)\)"
+        mentioned_users = set()
+        for mention in re.findall(pattern, instance.note):
+            mentioned_users.add(mention[1])
+
+        users = User.objects.filter(username__in=mentioned_users)
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_NOTE_MENTIONED,
+            caused_by=self.request.user,
+            caused_object=instance,
+            facility=patient.facility,
+            mentioned_users=users,
         ).generate()
 
         return instance
