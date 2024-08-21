@@ -87,9 +87,9 @@ class Command(BaseCommand):
         "21 Symptoms, signs or clinical findings, not elsewhere classified": "Others",
         "22 Injury, poisoning or certain other consequences of external causes": "Injury, Poisoning",
         "23 External causes of morbidity or mortality": "External Causes of Injury",
-        "24 Factors influencing health status or contact with health services": None,
+        "24 Factors influencing health status or contact with health services": "Reason for contact with Health Services",
         "25 Codes for special purposes": "Codes for special purposes",
-        "26 Supplementary Chapter Traditional Medicine Conditions - Module I": None,
+        "26 Supplementary Chapter Traditional Medicine Conditions - Module I": "Supplementary chapter",
         "V Supplementary section for functioning assessment": "Functioning assessment",
     }
 
