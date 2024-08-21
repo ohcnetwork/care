@@ -5,6 +5,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils.timezone import make_aware, now
 from rest_framework import serializers
+import re
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
 from care.abdm.models import AbhaNumber
@@ -543,6 +544,18 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     files = serializers.SerializerMethodField()
     replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
     parent_note_object = serializers.SerializerMethodField()
+    mentioned_users = serializers.SerializerMethodField()
+
+    def get_mentioned_users(self, obj):
+        pattern = r"!\[mention_user\]\(user_id:(\d+), username:([^)]+)\)"
+        mentioned_users = set()
+
+        for mention in re.findall(pattern, obj.note):
+            mentioned_users.add(mention[1])
+
+        users = User.objects.filter(username__in=mentioned_users)
+
+        return [UserBaseMinimumSerializer(user).data for user in users]
 
     def get_parent_note_object(self, obj):
         parent_note = obj
@@ -646,6 +659,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "files",
             "replies",
             "parent_note_object",
+            "mentioned_users",
         )
         read_only_fields = (
             "id",
