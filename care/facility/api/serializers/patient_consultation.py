@@ -396,6 +396,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 if validated_data["is_kasp"]:
                     validated_data["kasp_enabled_date"] = now()
 
+            bed = validated_data.pop("bed", None)
+
             # Coercing facility as the patient's facility
             validated_data["facility_id"] = patient.facility_id
 
@@ -440,7 +442,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 for obj in create_symptoms
             )
 
-            bed = validated_data.pop("bed", None)
             if bed and consultation.suggestion == SuggestionChoices.A:
                 consultation_bed = ConsultationBed(
                     bed=bed,
