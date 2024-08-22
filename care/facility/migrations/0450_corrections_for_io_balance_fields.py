@@ -27,12 +27,9 @@ class Migration(migrations.Migration):
         for page_number in paginator.page_range:
             bulk = []
             for instance in paginator.page(page_number).object_list:
-                updated = []
                 for entry in instance.output:
                     if entry["name"] == "Rules Tube Aspiration":
                         entry["name"] = "Ryles Tube Aspiration"
-                    updated.append(entry)
-                instance.output = updated
                 bulk.append(instance)
             DailyRound.objects.bulk_update(bulk, ["output"])
 
@@ -49,12 +46,9 @@ class Migration(migrations.Migration):
         for page_number in paginator.page_range:
             bulk = []
             for instance in paginator.page(page_number).object_list:
-                updated = []
                 for entry in instance.output:
                     if entry["name"] == "Ryles Tube Aspiration":
                         entry["name"] = "Rules Tube Aspiration"
-                    updated.append(entry)
-                instance.output = updated
                 bulk.append(instance)
             DailyRound.objects.bulk_update(bulk, ["output"])
 
