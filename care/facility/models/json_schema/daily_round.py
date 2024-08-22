@@ -2,10 +2,23 @@ BLOOD_PRESSURE = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "systolic": {"type": "number"},
-        "diastolic": {"type": "number"},
-        "mean": {"type": "number"},
+        "systolic": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 250,
+        },
+        "diastolic": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 250,
+        },
+        "mean": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 250,
+        },
     },
+    "required": ["systolic", "diastolic", "mean"],
     "additionalProperties": False,
 }
 
@@ -16,10 +29,19 @@ INFUSIONS = {
         {
             "type": "object",
             "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
-                "concentration": {"type": "number"},
-                "conc_unit": {"type": "string"},
+                "name": {
+                    "enum": [
+                        "Adrenalin",
+                        "Nor-adrenalin",
+                        "Vasopressin",
+                        "Dopamine",
+                        "Dobutamine",
+                    ],
+                },
+                "quantity": {
+                    "type": "number",
+                    "minimum": 0,
+                },
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -34,8 +56,17 @@ IV_FLUID = {
         {
             "type": "object",
             "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
+                "name": {
+                    "enum": [
+                        "RL",
+                        "NS",
+                        "DNS",
+                    ],
+                },
+                "quantity": {
+                    "type": "number",
+                    "minimum": 0,
+                },
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -50,9 +81,16 @@ FEED = {
         {
             "type": "object",
             "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
-                "calories": {"type": "number"},
+                "name": {
+                    "enum": [
+                        "Ryles Tube",
+                        "Normal Feed",
+                    ],
+                },
+                "quantity": {
+                    "type": "number",
+                    "minimum": 0,
+                },
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -67,14 +105,67 @@ OUTPUT = {
         {
             "type": "object",
             "properties": {
-                "name": {"type": "string"},
-                "quantity": {"type": "number"},
+                "name": {
+                    "enum": [
+                        "Urine",
+                        "Ryles Tube Aspiration",
+                        "ICD",
+                        "Abdominal Drain",
+                    ],
+                },
+                "quantity": {
+                    "type": "number",
+                    "minimum": 0,
+                },
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
         }
     ],
 }
+
+HUMAN_BODY_REGIONS = [
+    "AnteriorHead",
+    "AnteriorNeck",
+    "AnteriorRightShoulder",
+    "AnteriorRightChest",
+    "AnteriorRightArm",
+    "AnteriorRightForearm",
+    "AnteriorRightHand",
+    "AnteriorLeftHand",
+    "AnteriorLeftChest",
+    "AnteriorLeftShoulder",
+    "AnteriorLeftArm",
+    "AnteriorLeftForearm",
+    "AnteriorRightFoot",
+    "AnteriorLeftFoot",
+    "AnteriorRightLeg",
+    "AnteriorLowerChest",
+    "AnteriorAbdomen",
+    "AnteriorLeftLeg",
+    "AnteriorRightThigh",
+    "AnteriorLeftThigh",
+    "AnteriorGroin",
+    "PosteriorHead",
+    "PosteriorNeck",
+    "PosteriorLeftChest",
+    "PosteriorRightChest",
+    "PosteriorAbdomen",
+    "PosteriorLeftShoulder",
+    "PosteriorRightShoulder",
+    "PosteriorLeftArm",
+    "PosteriorLeftForearm",
+    "PosteriorLeftHand",
+    "PosteriorRightArm",
+    "PosteriorRightForearm",
+    "PosteriorRightHand",
+    "PosteriorLeftThighAndButtock",
+    "PosteriorRightThighAndButtock",
+    "PosteriorLeftLeg",
+    "PosteriorRightLeg",
+    "PosteriorLeftFoot",
+    "PosteriorRightFoot",
+]
 
 PRESSURE_SORE = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -84,9 +175,22 @@ PRESSURE_SORE = {
             "type": "object",
             "properties": {
                 "base_score": {"type": "number"},
-                "length": {"type": "number"},
-                "width": {"type": "number"},
-                "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
+                "length": {
+                    "type": "number",
+                    "minimum": 0,
+                },
+                "width": {
+                    "type": "number",
+                    "minimum": 0,
+                },
+                "exudate_amount": {
+                    "enum": [
+                        "None",
+                        "Light",
+                        "Moderate",
+                        "Heavy",
+                    ],
+                },
                 "tissue_type": {
                     "enum": [
                         "Closed",
@@ -97,9 +201,17 @@ PRESSURE_SORE = {
                     ]
                 },
                 "description": {"type": "string"},
-                "push_score": {"type": "number"},
-                "region": {"type": "string"},
-                "scale": {"type": "number", "minimum": 1, "maximum": 5},
+                "push_score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 19,
+                },
+                "region": {"enum": HUMAN_BODY_REGIONS},
+                "scale": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5,
+                },
             },
             "additionalProperties": False,
             "required": [],
@@ -114,8 +226,12 @@ PAIN_SCALE_ENHANCED = {
         {
             "type": "object",
             "properties": {
-                "region": {"type": "string"},
-                "scale": {"type": "number", "minimum": 1, "maximum": 10},
+                "region": {"enum": HUMAN_BODY_REGIONS},
+                "scale": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 10,
+                },
                 "description": {"type": "string"},
             },
             "additionalProperties": False,
@@ -131,7 +247,23 @@ NURSING_PROCEDURE = {
         {
             "type": "object",
             "properties": {
-                "procedure": {"type": "string"},
+                "procedure": {
+                    "enum": [
+                        "personal_hygiene",
+                        "positioning",
+                        "suctioning",
+                        "ryles_tube_care",
+                        "iv_sitecare",
+                        "nubulisation",
+                        "dressing",
+                        "dvt_pump_stocking",
+                        "restrain",
+                        "chest_tube_care",
+                        "tracheostomy_care",
+                        "stoma_care",
+                        "catheter_care",
+                    ],
+                },
                 "description": {"type": "string"},
             },
             "additionalProperties": False,
