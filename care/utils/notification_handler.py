@@ -177,6 +177,10 @@ class NotificationGenerator:
                 message = "Patient {} was deleted by {}".format(
                     self.caused_object.name, self.caused_by.get_full_name()
                 )
+            if self.event == Notification.Event.PATIENT_FILE_UPLOAD_CREATED.value:
+                message = "A file for patient {} was uploaded by {}".format(
+                    self.caused_object.name, self.caused_by.get_full_name()
+                )
         elif isinstance(self.caused_object, PatientConsultation):
             if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
                 message = "Consultation for Patient {} was created by {}".format(
@@ -188,6 +192,18 @@ class NotificationGenerator:
                 )
             if self.event == Notification.Event.PATIENT_CONSULTATION_DELETED.value:
                 message = "Consultation for Patient {} was deleted by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            if self.event == Notification.Event.CONSULTATION_FILE_UPLOAD_CREATED.value:
+                message = "Consultation file for Patient {} was uploaded by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            if self.event == Notification.Event.PATIENT_PRESCRIPTION_CREATED.value:
+                message = "Prescription for Patient {} was created by {}".format(
+                    self.caused_object.patient.name, self.caused_by.get_full_name()
+                )
+            if self.event == Notification.Event.PATIENT_PRESCRIPTION_UPDATED.value:
+                message = "Prescription for Patient {} was updated by {}".format(
                     self.caused_object.patient.name, self.caused_by.get_full_name()
                 )
         elif isinstance(self.caused_object, InvestigationSession):
