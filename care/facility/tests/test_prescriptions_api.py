@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import MedibaseMedicine
+from care.facility.models import MedibaseMedicine, Prescription
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -44,6 +44,10 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             "frequency": "OD",
             "dosage_type": "REGULAR",
         }
+        self.discharged_consultation_prescription = Prescription.objects.create(
+            consultation=self.discharged_consultation,
+            medicine=self.medicine,
+        )
 
     def prescription_data(self, **kwargs):
         data = self.normal_prescription_data
@@ -71,6 +75,15 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             self.normal_prescription_data,
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_discontinue_prescription_on_discharged_consultation(self):
+        res = self.client.post(
+            f"/api/v1/consultation/{self.discharged_consultation.external_id}/prescriptions/{self.discharged_consultation_prescription.external_id}/discontinue/",
+            {
+                "discontinued_reason": "Test Reason",
+            },
+        )
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_dosage(self):
         data = self.prescription_data(base_dosage="abc")
