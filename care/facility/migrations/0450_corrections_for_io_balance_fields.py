@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ("facility", "0447_patientconsultationevent_taken_at"),
+        ("facility", "0449_merge_20240822_1343"),
     ]
 
     def forward_rename_dailyround_entries(apps, schema_editor):
