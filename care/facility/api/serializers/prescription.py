@@ -127,7 +127,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
                 )
-            if attrs.get("max_dosage") is None or attrs.get("max_dosage") < attrs.get("base_dosage"):
+            if attrs.get("max_dosage") and attrs.get("max_dosage") < attrs.get("base_dosage"):
                 raise serializers.ValidationError(
                     {"max_dosage": "Max dosage cannot be less than base dosage."}
                 )
