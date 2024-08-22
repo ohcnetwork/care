@@ -28,7 +28,6 @@ class ICDViewSet(ViewSet):
 
         query = [
             ICD11.has_code == 1,
-            ICD11.chapter != "null",  # noqa: E711
         ]
         if q := request.query_params.get("query"):
             query.append(ICD11.vec % query_builder(q))
