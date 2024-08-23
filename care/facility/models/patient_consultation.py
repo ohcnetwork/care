@@ -73,7 +73,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
