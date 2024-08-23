@@ -347,16 +347,8 @@ test_db
 celerybeat-schedule
 
 secrets.sh
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/.gitignore
-/.idea/aws.xml
-/.idea/backend.iml
-/.idea/git_toolbox_prj.xml
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/vcs.xml
-/.idea/ruff.xml
 
+/.idea/*
 
 # Redis
 *.rdb
