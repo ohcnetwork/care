@@ -9,7 +9,6 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import PublicJWKsView
 from care.facility.api.viewsets.patient_consultation import (
     dev_preview_discharge_summary,
@@ -102,9 +101,6 @@ urlpatterns = [
     # TODO: Remove the config url as its not a standard implementation
     path(".well-known/openid-configuration", PublicJWKsView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if settings.ENABLE_ABDM:
-    urlpatterns += abdm_urlpatterns
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
