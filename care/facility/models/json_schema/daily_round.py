@@ -5,20 +5,19 @@ BLOOD_PRESSURE = {
         "systolic": {
             "type": "number",
             "minimum": 0,
-            "maximum": 250,
+            "maximum": 400,
         },
         "diastolic": {
             "type": "number",
             "minimum": 0,
-            "maximum": 250,
+            "maximum": 400,
         },
         "mean": {
             "type": "number",
             "minimum": 0,
-            "maximum": 250,
+            "maximum": 400,
         },
     },
-    "required": ["systolic", "diastolic", "mean"],
     "additionalProperties": False,
 }
 
@@ -174,7 +173,6 @@ PRESSURE_SORE = {
         {
             "type": "object",
             "properties": {
-                "base_score": {"type": "number"},
                 "length": {
                     "type": "number",
                     "minimum": 0,
@@ -214,7 +212,7 @@ PRESSURE_SORE = {
                 },
             },
             "additionalProperties": False,
-            "required": [],
+            "required": ["region", "width", "length"],
         }
     ],
 }

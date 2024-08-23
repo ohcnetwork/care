@@ -455,7 +455,7 @@ class DailyRound(PatientBaseModel):
 
     def cztn(self, value):
         """
-        Cast Zero to null values
+        Cast null to zero values
         """
         if not value:
             return 0
