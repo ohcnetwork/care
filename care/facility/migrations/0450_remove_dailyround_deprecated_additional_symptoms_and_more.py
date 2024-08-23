@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0440_merge_20240528_1613"),
+        ("facility", "0449_merge_20240822_1343"),
     ]
 
     operations = [
