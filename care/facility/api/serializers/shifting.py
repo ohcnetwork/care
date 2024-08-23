@@ -24,8 +24,11 @@ from care.facility.models import (
 )
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
-from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_CHOICES,
+    DiseaseStatusEnum,
+    NewDischargeReasonEnum,
+)
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.lsg import StateSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
