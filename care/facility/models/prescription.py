@@ -35,6 +35,7 @@ class Routes(enum.Enum):
     INTRATHECAL = "intrathecal injection"
     TRANSDERMAL = "Transdermal"
     RECTAL = "Rectal"
+    SUBLINGUAL = "Sublingual"
 
 
 class PrescriptionType(enum.Enum):
