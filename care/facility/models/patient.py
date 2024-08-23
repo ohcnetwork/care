@@ -436,12 +436,12 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     objects = BaseManager()
 
+    @property
+    def is_expired(self) -> bool:
+        return self.death_datetime is not None
+
     def __str__(self):
         return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
-
-    @property
-    def tele_consultation_history(self):
-        return self.patientteleconsultation_set.order_by("-id")
 
     def _alias_recovery_to_recovered(self) -> None:
         if self.disease_status == DiseaseStatusEnum.RECOVERY.value:

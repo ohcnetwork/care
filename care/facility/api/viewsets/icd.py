@@ -26,7 +26,9 @@ class ICDViewSet(ViewSet):
         except (ValueError, TypeError):
             limit = 20
 
-        query = [ICD11.has_code == 1]
+        query = [
+            ICD11.has_code == 1,
+        ]
         if q := request.query_params.get("query"):
             query.append(ICD11.vec % query_builder(q))
 

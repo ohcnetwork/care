@@ -21,9 +21,11 @@ from care.facility.models import (
     PrescriptionType,
     generate_choices,
 )
+from care.facility.models.notification import Notification
 from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.static_data.helpers import query_builder, token_escaper
 
@@ -120,6 +122,13 @@ class ConsultationPrescriptionViewSet(
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_PRESCRIPTION_CREATED,
+            caused_by=self.request.user,
+            caused_object=consultation_obj,
+            facility=consultation_obj.facility,
+            generate_for_facility=True,
+        ).generate()
         serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
 
     @extend_schema(tags=["prescriptions"])
@@ -133,6 +142,14 @@ class ConsultationPrescriptionViewSet(
         prescription_obj.discontinued_reason = request.data.get(
             "discontinued_reason", None
         )
+        consultation_obj = self.get_consultation_obj()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_PRESCRIPTION_UPDATED,
+            caused_by=self.request.user,
+            caused_object=consultation_obj,
+            facility=consultation_obj.facility,
+            generate_for_facility=True,
+        ).generate()
         prescription_obj.save()
         return Response({}, status=status.HTTP_200_OK)
 

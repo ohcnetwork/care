@@ -5,11 +5,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import PatientNoteThreadChoices
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
 )
 from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_consultation import ConsentType, PatientCodeStatusType
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -282,6 +284,150 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         self.assertEqual(data[1]["note"], note_content)
 
 
+class PatientTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+        cls.consultation = cls.create_consultation(
+            patient_no="IP5678",
+            patient=cls.patient,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            encounter_date=now(),
+        )
+        cls.patient_2 = cls.create_patient(cls.district, cls.facility)
+        cls.consultation_2 = cls.create_consultation(
+            patient_no="IP5679",
+            patient=cls.patient_2,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            encounter_date=now(),
+        )
+
+        cls.consent = cls.create_patient_consent(
+            cls.consultation,
+            created_by=cls.user,
+            type=ConsentType.CONSENT_FOR_ADMISSION,
+            patient_code_status=None,
+        )
+        cls.file = FileUpload.objects.create(
+            internal_name="test.pdf",
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            name="Test File",
+            associating_id=str(cls.consent.external_id),
+            file_category=FileUpload.FileCategory.UNSPECIFIED,
+        )
+
+    def get_base_url(self) -> str:
+        return "/api/v1/patient/"
+
+    def test_has_consent(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], [])
+
+    def test_consent_edit(self):
+        self.file.name = "Test File 1 Edited"
+        self.file.save()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+
+    def test_has_consents_archived(self):
+        self.client.force_authenticate(user=self.user)
+        consent = self.create_patient_consent(
+            self.consultation_2,
+            created_by=self.user,
+            type=ConsentType.HIGH_RISK_CONSENT,
+            patient_code_status=None,
+        )
+        file = FileUpload.objects.create(
+            internal_name="test.pdf",
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            name="Test File",
+            associating_id=str(consent.external_id),
+            file_category=FileUpload.FileCategory.UNSPECIFIED,
+        )
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(
+            patient_2_response["last_consultation"]["has_consents"],
+            [ConsentType.HIGH_RISK_CONSENT],
+        )
+
+        file.is_archived = True
+        file.save()
+
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 2)
+        patient_1_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient.external_id)
+        ][0]
+        patient_2_response = [
+            x
+            for x in response.data["results"]
+            if x["id"] == str(self.patient_2.external_id)
+        ][0]
+        self.assertEqual(
+            patient_1_response["last_consultation"]["has_consents"],
+            [ConsentType.CONSENT_FOR_ADMISSION],
+        )
+        self.assertEqual(patient_2_response["last_consultation"]["has_consents"], [])
+
+
 class PatientFilterTestCase(TestUtils, APITestCase):
     @classmethod
     def setUpTestData(cls):
@@ -331,6 +477,55 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             verification_status=ConditionVerificationStatus.UNCONFIRMED,
         )
 
+        cls.consent = cls.create_patient_consent(
+            cls.consultation,
+            created_by=cls.user,
+            type=1,
+            patient_code_status=None,
+        )
+
+        cls.patient_2 = cls.create_patient(cls.district, cls.facility)
+        cls.consultation_2 = cls.create_consultation(
+            patient_no="IP5679",
+            patient=cls.patient_2,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            encounter_date=now(),
+        )
+        cls.consent2 = cls.create_patient_consent(
+            cls.consultation_2,
+            created_by=cls.user,
+            type=ConsentType.PATIENT_CODE_STATUS,
+            patient_code_status=PatientCodeStatusType.ACTIVE_TREATMENT,
+        )
+
+        cls.patient_3 = cls.create_patient(cls.district, cls.facility)
+        cls.consultation_3 = cls.create_consultation(
+            patient_no="IP5680",
+            patient=cls.patient_3,
+            facility=cls.facility,
+            created_by=cls.user,
+            suggestion="A",
+            encounter_date=now(),
+        )
+
+        FileUpload.objects.create(
+            internal_name="test.pdf",
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            name="Test File",
+            associating_id=str(cls.consent.external_id),
+            file_category=FileUpload.FileCategory.UNSPECIFIED,
+        )
+
+        FileUpload.objects.create(
+            internal_name="test.pdf",
+            file_type=FileUpload.FileType.CONSENT_RECORD,
+            name="Test File",
+            associating_id=str(cls.consent2.external_id),
+            file_category=FileUpload.FileCategory.UNSPECIFIED,
+        )
+
     def get_base_url(self) -> str:
         return "/api/v1/patient/"
 
@@ -353,10 +548,8 @@ class PatientFilterTestCase(TestUtils, APITestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(
-            response.data["results"][0]["id"], str(self.patient.external_id)
-        )
+        self.assertEqual(response.data["count"], 3)
+        self.assertContains(response, str(self.patient.external_id))
 
     def test_filter_by_diagnoses(self):
         self.client.force_authenticate(user=self.user)
@@ -430,6 +623,44 @@ class PatientFilterTestCase(TestUtils, APITestCase):
                 self.assertGreaterEqual(patient["review_time"], now())
             else:
                 self.assertIsNone(patient["review_time"])
+
+    def test_filter_by_has_consents(self):
+
+        choices = ["1", "2", "3", "4", "5", "None"]
+
+        self.client.force_authenticate(user=self.user)
+        res = self.client.get(
+            self.get_base_url(), {"last_consultation__consent_types": choices[5]}
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()["count"], 1)
+        self.assertContains(res, self.patient_3.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation__consent_types": ",".join(choices[:4])},
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()["count"], 2)
+        self.assertContains(res, self.patient.external_id)
+        self.assertContains(res, self.patient_2.external_id)
+
+        res = self.client.get(
+            self.get_base_url(), {"last_consultation__consent_types": choices[0]}
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()["count"], 1)
+        self.assertContains(res, self.patient.external_id)
+
+        res = self.client.get(
+            self.get_base_url(), {"last_consultation__consent_types": ",".join(choices)}
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()["count"], 3)
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):
@@ -509,6 +740,31 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
         )
 
+    def test_transfer_with_expired_patient(self):
+        # Mocking discharged as expired
+        self.consultation.new_discharge_reason = NewDischargeReasonEnum.EXPIRED
+        self.consultation.death_datetime = now()
+        self.consultation.save()
+
+        # Set the patient's facility to allow transfers
+        self.patient.allow_transfer = True
+        self.patient.save()
+
+        # Ensure transfer fails if the patient has an active consultation
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the patient is expired",
+        )
+
     def test_transfer_disallowed_by_facility(self):
         # Set the patient's facility to disallow transfers
         self.patient.allow_transfer = False
@@ -527,3 +783,28 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             response.data["Patient"],
             "Patient transfer cannot be completed because the source facility does not permit it",
         )
+
+
+class PatientSearchTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.destination_facility = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body, name="Facility 2"
+        )
+        cls.location = cls.create_asset_location(cls.facility)
+        cls.user = cls.create_user(
+            "doctor1", cls.district, home_facility=cls.facility, user_type=15
+        )
+        cls.patient = cls.create_patient(cls.district, cls.facility)
+
+    def test_patient_search(self):
+        response = self.client.get(
+            "/api/v1/patient/search/", {"phone_number": self.patient.phone_number}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)

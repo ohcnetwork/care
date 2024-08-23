@@ -311,6 +311,10 @@ class User(AbstractUser):
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
 
+    @property
+    def full_name(self):
+        return self.get_full_name()
+
     @staticmethod
     def has_read_permission(request):
         return True

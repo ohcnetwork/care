@@ -55,6 +55,7 @@ class PatientConsultationEvent(models.Model):
     )
     caused_by = models.ForeignKey(User, on_delete=models.PROTECT)
     created_date = models.DateTimeField(db_index=True)
+    taken_at = models.DateTimeField(db_index=True)
     object_model = models.CharField(
         max_length=50, db_index=True, null=False, blank=False
     )
