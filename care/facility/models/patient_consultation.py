@@ -3,8 +3,6 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -20,7 +18,6 @@ from care.facility.models.patient_base import (
     NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
-    SYMPTOM_CHOICES,
     RouteToFacility,
     SuggestionChoices,
     reverse_choices,
@@ -68,17 +65,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    deprecated_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES,
-        default=1,
-        null=True,
-        blank=True,
-        max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )  # Deprecated
-    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
-    deprecated_symptoms_onset_date = models.DateTimeField(
-        null=True, blank=True
-    )  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
