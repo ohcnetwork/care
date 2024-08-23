@@ -1,0 +1,2395 @@
+[33mcommit 1b5d77c08d94a9e7cea0d9d2fea0f6e63c360211[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m)[m
+Author: dumstertruck23 <jackronn555@gmail.com>
+Date:   Tue Aug 13 13:46:55 2024 +0530
+
+    add delete old backup to backup.sh script
+
+[33mcommit 1ec7fc9d7f3dfd59f978d79698483a57953899c6[m
+Author: dumstertruck23 <jackronn555@gmail.com>
+Date:   Wed Aug 7 19:57:24 2024 +0530
+
+    add backup script
+
+[33mcommit e80d0089b900da73cc9e7ab0aa3fc44b7b0e0d52[m[33m ([m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Muneer <103816437+dumbstertruck3@users.noreply.github.com>
+Date:   Tue Jul 30 22:33:50 2024 +0530
+
+    Update CONTRIBUTING.md
+    
+    fixed a typo
+
+[33mcommit eab3290e447737dbce056e4979215d41a9f620b5[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Fri Jul 26 13:34:46 2024 +0530
+
+    HCX: Fix payor search filtering and claim supporting info category URL (#2325)
+
+[33mcommit cc1185c990c243b539a442d357f4f24752c1a1fc[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Fri Jul 26 13:29:42 2024 +0530
+
+    Fix Scribe on iOS (#2323)
+
+[33mcommit 32bf01b0fc9d3a4a8489e2ba76044fb7cbaf52c9[m
+Merge: 14f1fe3c 7e6e862a
+Author: Vignesh Hari <14056798+vigneshhari@users.noreply.github.com>
+Date:   Wed Jul 24 14:44:51 2024 +0530
+
+    Merge pull request #2310 from coronasafe/last-active-filter
+
+[33mcommit 14f1fe3ce6570c7af90fa2d79f1b8e6f65a75e0c[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue Jul 23 22:03:52 2024 +0530
+
+    HCX: Adds "use" in patient profile's telecom (#2321)
+
+[33mcommit d42e76963a966b42630682ca469e7719cfcfc8c1[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue Jul 23 16:47:31 2024 +0530
+
+    Adds support for phone number in HCX Create Patient Profile (#2319)
+
+[33mcommit d085c2a235bcc4afee79de4145f23188c02c7867[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Thu Jul 18 15:52:07 2024 +0530
+
+    add notifications for file upload , prescription  (#2070)
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 7e6e862a3f07c779af62d06aa1e56d9ba357f796[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed Jul 17 23:05:59 2024 +0530
+
+    Adds a last online filter for users
+
+[33mcommit ac7f6960ee44f6883e809baaaacc2d15252d320a[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed Jul 17 11:28:07 2024 +0530
+
+    Merge migrations (#2303)
+
+[33mcommit c9caff84803d45f2fcabb926e06bbc9d830436a8[m
+Merge: 24d18425 5b743016
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:46:00 2024 +0530
+
+    Merge pull request #2255 from coronasafe/consent-filters
+    
+    Return files with consent lists and consent filters
+
+[33mcommit 24d18425ac4bfe529fbad84e0448a7f1d65093f1[m
+Merge: 5aca29ef f5638c70
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:36:21 2024 +0530
+
+    Merge pull request #2297 from coronasafe/rithviknishad/fix/encounter-symptoms-n+1
+    
+    Prevent N+1 queries in Encounter Symptoms ViewSet
+
+[33mcommit f5638c70bbde03842e4ba2c7b31715199cfc4dd6[m
+Merge: 02b4f971 5aca29ef
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:36:12 2024 +0530
+
+    Merge branch 'develop' into rithviknishad/fix/encounter-symptoms-n+1
+
+[33mcommit 5aca29efaa71553e2c035f5cc84276c3ad60d71a[m
+Merge: f89e730d f23128db
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:35:08 2024 +0530
+
+    Merge pull request #2293 from coronasafe/fix-6022
+    
+    Block expired patients from being transfered
+
+[33mcommit f89e730d0ab301b2119f602d4b513a89d4f9b7a9[m
+Merge: b30aee6e 3034030b
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:34:20 2024 +0530
+
+    Merge pull request #2252 from coronasafe/rithviknishad/fix/disable-asset-create-for-ro-users
+    
+    Disallow read only users from performing writes to asset
+
+[33mcommit 3034030b0a088a397b641ea87e1c1c1d1ae9b831[m
+Merge: 77110e27 b30aee6e
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Jul 13 19:34:09 2024 +0530
+
+    Merge branch 'develop' into rithviknishad/fix/disable-asset-create-for-ro-users
+
+[33mcommit b30aee6eecb04ba987bc6f778799503df6fff6d0[m
+Merge: 7d756d64 b4dbc465
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Fri Jul 12 20:14:49 2024 +0530
+
+    Merge pull request #2104 from DraKen0009/bed-test-cases
+    
+    added tests for beds endpoints
+
+[33mcommit b4dbc465ea485487995b6ad63887e332ed6c24e8[m
+Merge: 07f0cd30 7d756d64
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Jul 10 15:49:15 2024 +0530
+
+    Merge branch 'develop' into bed-test-cases
+
+[33mcommit 02b4f971dbebcc6025a76ebbc9402e18abbc8189[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Tue Jul 9 16:29:18 2024 +0530
+
+    Select related created_by and updated_by users for encounter symptoms to prevent N+1 queries
+
+[33mcommit f23128dbecd5047497a9839b2e2d1f10571cc1c3[m
+Merge: fdbf135b 7d756d64
+Author: Mohammed Nihal <57055998+nihal467@users.noreply.github.com>
+Date:   Tue Jul 9 12:45:37 2024 +0530
+
+    Merge branch 'develop' into fix-6022
+
+[33mcommit fdbf135bf736d1a0cb620f7c32d9080ecaa5ec9c[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Tue Jul 9 10:18:32 2024 +0530
+
+    fixed the tests
+
+[33mcommit 841e89b04479245f3aa9d719054ff8852bdd203f[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Tue Jul 9 10:09:36 2024 +0530
+
+    added test `test_transfer_with_expired_patient`
+
+[33mcommit 155875d37fb3e6ce66b093bf62b8b1a0fa62801b[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Tue Jul 9 09:42:26 2024 +0530
+
+    use death_datetime to check if patient is expired or not
+
+[33mcommit 7d756d64537db088e3f9546ed1fe45e5a1ea6be2[m
+Merge: 19126622 9f27b7ca
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Mon Jul 8 22:03:55 2024 +0530
+
+    Merge pull request #2290 from coronasafe/rithviknishad/feat/expand-prescription-units-and-routes
+    
+    Adds additional units and route to prescriptions
+
+[33mcommit 1787dc5e24651da216b086bb8d78728dbf3f5371[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Mon Jul 8 15:15:06 2024 +0530
+
+    added is_expired validation in patient/transfer
+
+[33mcommit ceed9cf3790c42987cb9c8539d54c391d2233991[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Mon Jul 8 15:14:39 2024 +0530
+
+    added is_expired property on patient model and PatientSearchSerializer
+
+[33mcommit 9f27b7ca4f20d7c225e938d3c48ee4a5a93110b6[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Jul 5 16:45:24 2024 +0530
+
+    fix lint
+
+[33mcommit e262ff0fc9097f25423b65031b847083bd61fb1a[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Jul 5 16:37:19 2024 +0530
+
+    fix lint
+
+[33mcommit 22453652138ed657feb19f3d59b28b74aeeeddb3[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Jul 5 16:18:45 2024 +0530
+
+    adds more units to dosage validator
+
+[33mcommit c649e1410c851efc264e379f73e698bbe437a9b6[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Jul 5 16:08:05 2024 +0530
+
+    Adds choice 'Sublingual' to prescription routes
+
+[33mcommit 5b743016077c21fb0ced672a7196d0767cf41b72[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Fri Jul 5 05:43:11 2024 +0530
+
+    fix
+
+[33mcommit 02a2170d8c9cf7ae36f46264374a81667d865025[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Fri Jul 5 05:28:59 2024 +0530
+
+    switched to array for inexpensive queries
+
+[33mcommit e45b4306e07a2d5786d5468557e6db4c14bf92b6[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Tue Jul 2 18:29:57 2024 +0530
+
+    revert change
+
+[33mcommit fada1368a2c3eb735d04be7e726f9c09f4e0e292[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Tue Jul 2 17:18:06 2024 +0530
+
+    minor fixes
+
+[33mcommit 19126622af5df82d042e2864c076b3339692582b[m
+Author: Ashesh <3626859+Ashesh3@users.noreply.github.com>
+Date:   Mon Jun 24 23:48:18 2024 +0530
+
+    Prevent destination facility from marking shift as complete (#2114)
+    
+    * Prevent destination facility from marking shift as complete
+    
+    * Update care/facility/api/serializers/shifting.py
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    
+    * Update care/facility/api/serializers/shifting.py
+    
+    * allow only origin facility user to mark shifting request as completed
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+    Co-authored-by: Khavin Shankar <khavinshankar@gmail.com>
+
+[33mcommit f15a6fbff31722811e9d87c971d08754fb3af38f[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Mon Jun 24 23:26:15 2024 +0530
+
+    fixed tests
+
+[33mcommit bafa39c27cb8b848324907b11b17b7b26c1574f9[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Mon Jun 24 23:15:06 2024 +0530
+
+    made changes
+
+[33mcommit 80f1d1372e4a3120eee39d2cfd20b4e19d311440[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Mon Jun 24 02:20:56 2024 +0530
+
+    used boolean field
+
+[33mcommit f0908c3dc6517e1bb3db2399e44bd50a1d4445a8[m
+Merge: c3015bc9 cda75bb5
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Mon Jun 24 00:26:31 2024 +0530
+
+    Merge branch 'develop' of https://github.com/coronasafe/care into consent-filters
+
+[33mcommit 77110e27baa4a1c51ba99316b5db6a68ddee967a[m
+Merge: fdcc40c1 cda75bb5
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Thu Jun 13 15:48:45 2024 +0530
+
+    Merge branch 'develop' into rithviknishad/fix/disable-asset-create-for-ro-users
+
+[33mcommit cda75bb5985e5dc380f5b1e9356fd1ee8c38db5b[m
+Author: Pranshu Aggarwal <70687348+Pranshu1902@users.noreply.github.com>
+Date:   Thu Jun 13 15:48:02 2024 +0530
+
+    Allow Nurses to clear their home facility (#2206)
+
+[33mcommit d49e4e11bb6ea3e2ed280b0a75b192d0bdff7337[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Thu Jun 13 13:52:02 2024 +0530
+
+    Bump redis from 5.0.3 to 5.0.5 (#2262)
+    
+    Bumps [redis](https://github.com/redis/redis-py) from 5.0.3 to 5.0.5.
+    - [Release notes](https://github.com/redis/redis-py/releases)
+    - [Changelog](https://github.com/redis/redis-py/blob/master/CHANGES)
+    - [Commits](https://github.com/redis/redis-py/compare/v5.0.3...v5.0.5)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: redis
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+[33mcommit 8a0aa3034057e90e7a0801f5b6ce1c77fa0c080e[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Thu Jun 13 13:16:41 2024 +0530
+
+    Bump sentry-sdk from 2.3.1 to 2.5.1 (#2261)
+    
+    Bumps [sentry-sdk](https://github.com/getsentry/sentry-python) from 2.3.1 to 2.5.1.
+    - [Release notes](https://github.com/getsentry/sentry-python/releases)
+    - [Changelog](https://github.com/getsentry/sentry-python/blob/master/CHANGELOG.md)
+    - [Commits](https://github.com/getsentry/sentry-python/compare/2.3.1...2.5.1)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: sentry-sdk
+      dependency-type: direct:production
+      update-type: version-update:semver-minor
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 1313433695b710e2ee6750726478b9a8742535e9[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Jun 13 13:15:36 2024 +0530
+
+    Fix facility cover upload for local setups (#2264)
+    
+    fix facility cover upload for local setups
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 6e9757cf96a839c812ea98134e8a900d58b02e70[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Jun 13 13:09:20 2024 +0530
+
+    Update test workflow and upload artifacts version (#2265)
+    
+    * pass codecov token to reusable workflow
+    
+    * save test cache only on push runs
+    
+    * update upload artifacts version
+
+[33mcommit c3015bc9ec12e7719d7c4310d73d0f8337efcd7c[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Sun Jun 9 05:22:40 2024 +0530
+
+    fix tests
+
+[33mcommit 931e61c0835b794b469cdb613d8164a2fdf73e4d[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Sun Jun 9 05:00:02 2024 +0530
+
+    Return files with consent lists and consent filters
+
+[33mcommit 07f0cd30ccb5b910ebb1226ad6f915a02d86211b[m
+Author: prafful <praffulsharma1230@gmail.com>
+Date:   Fri Jun 7 19:39:24 2024 +0530
+
+    fixed the test cases
+
+[33mcommit ee11cb418679d7f8caddbc3297a9b7613d79964d[m
+Merge: d68c9b19 37ab9260
+Author: prafful <praffulsharma1230@gmail.com>
+Date:   Fri Jun 7 13:41:31 2024 +0530
+
+    merging
+
+[33mcommit d68c9b19cafad6b075bdc40e8298d57f1c3127f7[m
+Author: prafful <praffulsharma1230@gmail.com>
+Date:   Fri Jun 7 13:25:02 2024 +0530
+
+    fixed conflicts
+
+[33mcommit d9f04fc5a96be18d90d7aaab84a51c211718e3b4[m
+Merge: e7799c9a 5c715f86
+Author: prafful <praffulsharma1230@gmail.com>
+Date:   Fri Jun 7 13:00:43 2024 +0530
+
+    Merge branch 'refs/heads/master' into bed-test-cases
+
+[33mcommit 37ab92604034fff6c9b710a79eec0225c0c99846[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Fri Jun 7 12:39:02 2024 +0530
+
+    Exclude ICD11 entries that does not have a `meta_chapter_short` from search instead for not loading in redis table (#2248)
+
+[33mcommit a4d24b6555c7d011df981c42ee0ddb575673b067[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Fri Jun 7 10:13:24 2024 +0530
+
+    Dont allow users to set patient code status as not specified for consent (#2251)
+    
+    * dont allow users to set patient code status as not specified for consent
+    
+    * update serializer validation
+    
+    ---------
+    
+    Co-authored-by: Shivank Kacker <kacker.shivank@gmail.com>
+
+[33mcommit fdcc40c12220c9f12d3033210235e5d5bf67db3d[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Thu Jun 6 21:37:38 2024 +0530
+
+    Disallow read only users from performing writes to asset
+
+[33mcommit 85a9cb1ac4280a87d637fb10937b6de273e0a2d4[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Jun 6 19:52:18 2024 +0530
+
+    Fix consent records migration (#2250)
+
+[33mcommit 1e962ec73f8693d17bfcd311547daa1c3b59227f[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Thu Jun 6 15:52:38 2024 +0530
+
+    Add Consent Model (#2209)
+    
+    * added migrations
+    
+    * updates
+    
+    * updates
+    
+    * v-comparision
+    
+    * fixing files
+    
+    * complete?
+    
+    * added tests
+    
+    * fixed test
+    
+    * made changes
+    
+    * updated migrations and used bulk updates
+    
+    * Update care/facility/api/serializers/patient_consultation.py
+    
+    * fixed
+    
+    * fixed permissions and router
+    
+    * fixes
+    
+    * cleanup queryset
+    
+    * rebase migrations
+    
+    * allow only home facility users to create or update consent
+    
+    * fixes
+    
+    * add is_migrated field
+    
+    * fix permission
+    
+    * remove types from migrations
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 369b9dfd1731f4e0a2fa17b00e418458659821ec[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Jun 5 23:17:10 2024 +0530
+
+    Add endpoint to get version info (#2242)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 8790cde5a1450fc6c3f877ee2ab8a8e7b4266820[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Jun 5 23:12:56 2024 +0530
+
+    Add health check for celery queue length (#2244)
+    
+    add health check for celery queue length
+
+[33mcommit 8b160e994b96401c380a77e143430ae71ec62f45[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Jun 5 23:12:46 2024 +0530
+
+    Make sentry event level configurable and use error by default (#2243)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 396e7ed7aaeb7d3ec13a04490b33d4b1b55005d4[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed Jun 5 23:10:11 2024 +0530
+
+    Fix op number constraint for readmitted patients (#2147)
+    
+    * fix op number constraint for readmitted patients
+    
+    * .
+    
+    * changed conditions
+    
+    * constraint for all suggestion
+    
+    * added tests
+    
+    * remade migrations
+    
+    * removed checks for OP number
+    
+    * updated tests
+    
+    * removed all validations
+    
+    * create migration
+    
+    * linting issues
+    
+    * revert
+    
+    * linting
+    
+    * linting
+    
+    * Revert "Merge branch 'op-number-constraint' of https://github.com/coronasafe/care into op-number-constraint"
+    
+    This reverts commit cfe99629c4b65b7d5c46f17aa246f739c3b88d81, reversing
+    changes made to 4e80be91a2554d1f5eab00369155a1419b41ca4f.
+    
+    * revert
+    
+    * remove unwanted commits
+    
+    ---------
+    
+    Co-authored-by: Shivank Kacker <shivank@Shivanks-MacBook-Air.local>
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 6b2e8087da4dec81c0f97ef9af3acb7d15f57edf[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Wed Jun 5 23:07:57 2024 +0530
+
+    ICD11: gracefully return `None` if issues with redis (#2231)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 7b4fdc8920d11acb9267958c90fa297dc22b8ac7[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Jun 5 23:06:28 2024 +0530
+
+    update default patient list to show recently_modified first after no_consultation_filed (#2232)
+    
+    fix patient list default sorting
+
+[33mcommit 2472d0e3e8e0efc31c2c3d0ea902e1281c5c2402[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Jun 3 22:02:43 2024 +0530
+
+    Fix patient search API (#2224)
+
+[33mcommit a9f8d3d7ee6f090cc531bec6f2bcecb872dc9eff[m
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Mon Jun 3 12:17:25 2024 +0530
+
+    fixed data seeding issue (#2221)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 7b90428708553377f7fd34e89a350dc6755d50da[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Jun 3 11:45:57 2024 +0530
+
+    Update actions dependencies and remove unused workflows (#2220)
+    
+    * bump actions dependencies
+    
+    * remove unused workflows
+    
+    * fix super linter
+    
+    * use slim variant of super linter
+    
+    * bump actions/checkout action
+    
+    * cleanup linter workflow
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit be5711f795cec2221fb8056892ebaff68512a4f5[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Sun Jun 2 18:39:09 2024 +0530
+
+    Exclude ICD11 entries from redis that does not have a `meta_chapter_short` (#2207)
+    
+    * ICD11: Fallback to meta_chapter if meta_chapter_short is null
+    
+    * Exclude icd11 diagnosis that does not have meta_chapter_short from redis
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit ee311a150ee86a57f895a394ca01f6b3efb6359e[m
+Author: Jason Mok <106209849+jasonmokk@users.noreply.github.com>
+Date:   Sun Jun 2 08:06:48 2024 -0500
+
+    Remove `PatientTeleConsultation` model (#2184)
+    
+    * Remove PatientTeleConsultation model
+    
+    * Remove tele_consultation_history
+    
+    * Remove @property annotation
+    
+    * update migrations
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 2a8a7837d20a87fcb764b506e22db993eb3eebfc[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sun Jun 2 18:24:59 2024 +0530
+
+    Bump Dependencies (#2212)
+    
+    * Update Pipfile
+    
+    * fix breaking changes in drf
+    
+    * fix test case
+    
+    * more dependency updates
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 59c05b95d098b6718531e01fd3f745e784c28d66[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Sat Jun 1 17:25:24 2024 +0530
+
+    Fix discharge summary filters (#2210)
+
+[33mcommit 51235a952ee5b0fb1aee4c353c93050f11946ec0[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue May 28 21:29:57 2024 +0530
+
+    fix state admin access to daily rounds (#2203)
+
+[33mcommit 5c88ca146088f75e028b563172ab38cfb65cc654[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue May 28 16:14:53 2024 +0530
+
+    merge migrations (#2202)
+
+[33mcommit 28bedb1c07b48ecc11d5e4f177532e7567ad24f3[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue May 28 16:12:09 2024 +0530
+
+    Fixes state and district admin not able to see users of same user type level (#2200)
+    
+    * Fixes state and district admin not able to see users of same user type level
+    
+    * correct test
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 0e947b8142978860a3d350c2549e360aa297cb36[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue May 28 16:11:37 2024 +0530
+
+    fix redis tokenization for icd11 ids (#2193)
+    
+    * fix redis tokenization for icd11 ids
+    
+    * remove index on the default label field
+    
+    * rename search vector field to be consistent with other models
+    
+    * add test case
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 9edfed086129f06b1e668e8e25d3d7d44b38be48[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue May 28 16:10:39 2024 +0530
+
+    Adds support to specify and filter ration card category of a patient (#2201)
+    
+    * Adds support to specify and filter ration card category of a patient
+    
+    * Show ration card category in discharge summary
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit de22042e23741c8725dead138cd611405c3520a9[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue May 28 16:08:40 2024 +0530
+
+    Symptoms table (#2186)
+    
+    * consultation depth backend
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    
+    * refactor
+    
+    * fix migrations
+    
+    * fix test and dummy data
+    
+    * add is_migrated field
+    
+    * add created by to symptoms bulk create
+    
+    * fix discharge summary
+    
+    * make onset date non nullable
+    
+    * fixes unknown field excluded
+    
+    * fix tests
+    
+    * fix validations
+    
+    * update bulk migration to exclude symptom if already created earlier for a consultation
+    
+    * add clinical_impression_status to indicate symptom status
+    
+    * update migrations
+    
+    * review suggestions
+    
+    * add trigger for marked as errors
+    
+    * fix validation
+    
+    * fix updates
+    
+    * rename consultation symptom to encounter symptom
+    
+    * fix unable to mark as entered in error
+    
+    * update discharge summary pdf
+    
+    * add test cases and minor fixes
+    
+    * allow create symptoms to be empty
+    
+    * update migration to ignore asymptomatic symptom
+    
+    * rebase migrations
+    
+    ---------
+    
+    Co-authored-by: Hritesh Shanty <shanty.hritesh@gmail.com>
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    Co-authored-by: rithviknishad <mail@rithviknishad.dev>
+
+[33mcommit f051cabeadf880f02ca79491d3260afef8a6fb04[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Sat May 25 19:24:36 2024 +0530
+
+    bump docker healthcheck retries (#2192)
+
+[33mcommit e7799c9aa0aeb1e00f470d104e94288068f3a03b[m
+Author: Prafful <praffulsharma1230@gmail.com>
+Date:   Thu May 23 12:49:25 2024 +0530
+
+    updated list bed testcase
+
+[33mcommit bafac12fe03d8044c4c9c450a16c32e307db144d[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed May 22 23:12:43 2024 +0530
+
+    add investigations and disable treating physician from consultation events (#2189)
+
+[33mcommit 62c436442918a9fe4c71c44983c720df3699b302[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Wed May 22 13:08:18 2024 +0530
+
+    Remove ratelimit for internal get apis (#2177)
+    
+    remove ratelimit for internal get apis
+    
+    Co-authored-by: Khavin Shankar <khavinshankar@Khavins-MacBook-Air.local>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 5670c81e07763bcc155dc555cf87decf0d257127[m
+Author: Ankur Prabhu <85862184+AnkurPrabhu@users.noreply.github.com>
+Date:   Wed May 22 13:07:21 2024 +0530
+
+    Disable the Bed List of Already occupied Beds (back-end change) (#2116)
+    
+    * backend changes
+    
+    * adding suggested changes
+    
+    * adding suggested change
+    
+    * add suggested changes
+    
+    * add tets
+    
+    * Update care/facility/tests/test_bed_api.py
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    
+    * fix lint
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    Co-authored-by: rithviknishad <mail@rithviknishad.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 0214e4e6580bf1178fa3225199dac15a4c4eff65[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed May 22 13:06:21 2024 +0530
+
+    Removed Discharge Filters, reused patient filters (#2176)
+    
+    * Removed Discharge Filters, reused patient filters
+    
+    * Update patient.py
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit ba986563e8d5de1c3470cf2b5a5b6df1c0cbe191[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Wed May 22 13:05:02 2024 +0530
+
+    Renamed patient category labels (#2187)
+    
+    * rename patient category labels
+    
+    * rename the categories in the events
+    
+    * rename categories for patient_category events
+
+[33mcommit 5c715f86a74844033586b7c970a389d5fa766565[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon May 20 22:38:33 2024 +0530
+
+    Fix: Log only error messages in uptime monitor tasks (#2181)
+
+[33mcommit 01c4aa0eecc7ac997d52e42de24ed63683a70a59[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Mon May 20 21:45:08 2024 +0530
+
+    Adds support for "Doctors Log Update" round type (#2173)
+    
+    * Adds support for "Doctors Log Update" round type
+    
+    * add tests
+
+[33mcommit 89078bc9ba0ff65a0a6629b698355d1661591627[m[33m ([m[1;33mtag: [m[1;33mv24.21.0[m[33m)[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Fri May 17 19:51:47 2024 +0530
+
+    make rate limit messages user friendly (#2174)
+
+[33mcommit 57986ead0acc7e1da8b5d22626e43af260149be5[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Thu May 16 20:47:56 2024 +0530
+
+    Removes unused field `temperature_measured_at` from Daily Rounds (#2171)
+
+[33mcommit 653c079e2195bd78288a306619176e43427ae446[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu May 16 20:46:38 2024 +0530
+
+    Store critical care daily round changes in events (#2170)
+    
+    Co-authored-by: rithviknishad <mail@rithviknishad.dev>
+
+[33mcommit a2052f2f4a0384be57555eb2cffda4e47e1cbe54[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Wed May 15 13:16:51 2024 +0530
+
+    adds missing merge migrations (#2169)
+    
+    merge migrations
+
+[33mcommit 23abce0acc1fc4363c0a9cce40c12824ac93cb14[m
+Author: Gokulram A <gokulram2010418@ssn.edu.in>
+Date:   Wed May 15 12:31:43 2024 +0530
+
+    Display users list based on user access limitation (#1742)
+    
+    * Refactor get_queryset method in UserViewSet
+    
+    * Used get_accessible_facilities instead of subquery
+    to fetch the facilities linked to the user
+    
+    * fixed failing tests
+    
+    * fix queryset
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: khavinshankar <khavinshankar@gmail.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit ae7ef828caf348b552ca10e98592518ed06a1a16[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Wed May 15 12:29:26 2024 +0530
+
+    Removes unused `current_health` field from Daily Rounds (#2162)
+    
+    Removes unused `current_health` from Daily Rounds
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 50b2a12d7531ec20478673abbaba81e991c624eb[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed May 15 12:28:15 2024 +0530
+
+    Change devcontainer make up command to run after start (#2146)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 7726678fad5d424a0afe74f153f806b4b6a23945[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Wed May 15 12:27:47 2024 +0530
+
+    Drops support for cloning previous log update (#2127)
+    
+    * Drop support for cloning previous log update
+    
+    * undo unrelated changes
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit a5171a8a44379a7aa36fa944cf42727baa844ca3[m
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Wed May 15 12:27:20 2024 +0530
+
+    converted investigation and investigation group data into JSON (#1912)
+    
+    * converted investigation and investigation group data into JSON
+    
+    * created json files for investigations and investigation_groups
+    
+    * updated investigations.json
+    
+    * fixed json data,command and migrations
+    
+    * fixing migrations
+    
+    * fixing lint issue
+    
+    * update migrations
+    
+    * update migrations
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 7e877e18b4d009920d3bcf3ff863590a6341354e[m
+Merge: b7899864 6ed4494d
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Wed May 15 08:40:03 2024 +0530
+
+    Merge branch 'develop' into bed-test-cases
+
+[33mcommit b7899864e601e68e20cbff6a0842551f396e3cb6[m
+Author: Prafful <praffulsharma1230@gmail.com>
+Date:   Wed May 15 08:38:03 2024 +0530
+
+    added count check
+
+[33mcommit 6ed4494dfdf96b450d2ef0beebbbe1bca5ff01a7[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Tue May 14 21:43:35 2024 +0530
+
+    Added discharge patient filters (#2124)
+    
+    * added discharge patient filters
+    
+    * updated filters
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit b46c9d47d40d3dd972792acf2e6e7965ab623915[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Tue May 14 21:42:25 2024 +0530
+
+    Increase area of specialisation in doctors (#2102)
+    
+    * update doctor types
+    
+    * Add Migration
+    
+    ---------
+    
+    Co-authored-by: Rithvik Nishad <rithvik.nishad@egovernments.org>
+    Co-authored-by: Gigin George <mail.gigin@gmail.com>
+
+[33mcommit 4a5bacbfba10b77e6d0e5a2d7a40a6cf7d980505[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Mon May 13 19:37:18 2024 +0530
+
+    ABDM M3 (#1829)
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Gigin George <mail.gigin@gmail.com>
+
+[33mcommit 5be2e008a1a8c5b6f11ec74e96176741651b48bb[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon May 13 19:01:25 2024 +0530
+
+    Skip creating event group if all fields are null (#2134)
+
+[33mcommit f86293f5368435a3ddf9037ee176bcb1e0b5129b[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sun May 12 16:41:07 2024 +0530
+
+    Vigneshhari/bump dependencies (#2145)
+    
+    * Bump Dependencies
+    
+    * Bump Dependencies
+    
+    * Bump Dependencies
+    
+    * Bump Dependencies
+
+[33mcommit 3d7933363844601a04e86f61ae024972ce2e47f0[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sun May 12 14:05:36 2024 +0530
+
+    Bump Dependencies (#2143)
+
+[33mcommit 32531946a6238a72798663fd64f83051feedcb2c[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Sun May 12 14:03:41 2024 +0530
+
+    Allow `audio/mp4` by default (#2094)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit cc0413acbe5f1b5df17dbeeb596a941be19d0206[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Sun May 12 12:48:33 2024 +0530
+
+    Adds support for doctors and nurses discussions threads in Discussion Notes (#2137)
+    
+    * Adds support for doctors and nurses discussions threads in Discussion Notes
+    
+    * switch to using small integer field
+    
+    * updated and fixes based on test cases
+    
+    * rebase migrations
+    
+    * Remake migrations
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit ee2f148e7b902f5eb0bd45e6626e1d0dcf94b753[m
+Author: Bodhish Thomas <bodhish@gmail.com>
+Date:   Sun May 12 12:30:23 2024 +0530
+
+    Update max_length for phone numbers to adhere to ITU-T E.164 standard (#2138)
+    
+    * Update max_length for phone numbers to adhere to ITU-T E.164 standard
+    
+    * Clean up an empty line
+    
+    * Adds missing migrations
+    
+    ---------
+    
+    Co-authored-by: rithviknishad <mail@rithviknishad.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 1cb7a29779cfa2a55530deabe50939997f64448c[m
+Merge: 52985adb a57add01
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Fri May 10 18:39:37 2024 +0530
+
+    Merge pull request #2140 from coronasafe/issues/7789/fix-review-after-not-updating-for-no-review
+    
+    fixes review interval not being updated for "no review"
+
+[33mcommit a57add01a85dfa174f12f4e0d28b5986b267bfe9[m[33m ([m[1;33mtag: [m[1;33mv24.20.0[m[33m)[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri May 10 18:07:16 2024 +0530
+
+    fixes review_interval not being updated for "no review"
+
+[33mcommit 52985adbc8619715b8466bf181ac559da079ebe2[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed May 8 14:23:47 2024 +0530
+
+    Painscale changed from 0 - 5 to 0 - 10 (#1967)
+    
+    * changes to painscale
+    
+    * reverted pipfile
+    
+    * optimized
+    
+    * Update care/facility/migrations/0420_auto_20240312_2318.py
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    
+    * Update care/facility/migrations/0420_auto_20240312_2318.py
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    
+    * correct indentations
+    
+    * update migrations
+    
+    * fix migrations
+    
+    * merged migrations
+    
+    * squashed migrations
+    
+    * Update 0429_double_pain_scale.py
+    
+    ---------
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 0bf4d1d604df7f170caf1a562fa27b54d6e98222[m
+Author: Pranshu Aggarwal <70687348+Pranshu1902@users.noreply.github.com>
+Date:   Wed May 8 14:21:48 2024 +0530
+
+    Add medicine filter to prescriptions (#2068)
+    
+    * Log Prescriptions
+    
+    * pass medicine object instead of just id
+    
+    * refactor
+    
+    * add tests
+    
+    * update tests
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 848117569f9f8df0eb13576644152d0ec88b20d2[m
+Author: Devdeep Ghosh <63492939+thedevildude@users.noreply.github.com>
+Date:   Wed May 8 14:21:07 2024 +0530
+
+    Serialized gender into UserAssignedSerializer (#2118)
+    
+    serialized gender into UserAssignedSerializer
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 059b8efcd714aa1efd9fe0c5357fe6b48235c9e0[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Wed May 8 14:20:10 2024 +0530
+
+    Exact patient no. in filters (#2136)
+    
+    exact patient no for search
+
+[33mcommit bdb5173988803a62f33cb998b8af338e88bf45d0[m
+Merge: 36f3a36f cf6902ba
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Fri May 3 19:35:47 2024 +0530
+
+    Merge branch 'develop' into bed-test-cases
+
+[33mcommit cf6902ba60491d3849754c603745072c1b8394d2[m[33m ([m[1;33mtag: [m[1;33mv24.19.0[m[33m)[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Fri May 3 00:11:29 2024 +0530
+
+    Annotate CSV export fields with patient age for sample test and shifting (#2101)
+    
+    * Annotate CSV export fields with patient age for sample test and shifting
+    
+    * use consistent naming
+
+[33mcommit 1ed6c07d68a8bb49f9fbeffb42a81203ea179a2d[m[33m ([m[1;33mtag: [m[1;33mv24.18.0[m[33m)[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Sun Apr 28 22:39:02 2024 +0530
+
+    Add workflow to combine dependency update prs (#2093)
+
+[33mcommit d2d1d2c6405b22efd4b8db62cb116fac73d43d86[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Sun Apr 28 20:25:45 2024 +0530
+
+    Bump gunicorn from 21.2.0 to 22.0.0 (#2097)
+    
+    Bumps [gunicorn](https://github.com/benoitc/gunicorn) from 21.2.0 to 22.0.0.
+    - [Release notes](https://github.com/benoitc/gunicorn/releases)
+    - [Commits](https://github.com/benoitc/gunicorn/compare/21.2.0...22.0.0)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: gunicorn
+      dependency-type: direct:production
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 10f2edd6cc926ae4ecab5bb259334d1779c95075[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue Apr 23 22:16:19 2024 +0530
+
+    Remove defining `date_of_birth` and `year_of_birth` serializer fields (#2112)
+    
+    * fixes https://github.com/coronasafe/care_fe/issues/7693
+    
+    * update tests
+
+[33mcommit eda893133b084820919b013d2acaa8aec66926ba[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue Apr 23 18:31:10 2024 +0530
+
+    avoid using distinct in patient list filters (#2111)
+
+[33mcommit 1205f51e345adcb759d401368eb358ecc0b88212[m
+Author: Pranshu Aggarwal <70687348+Pranshu1902@users.noreply.github.com>
+Date:   Tue Apr 23 00:25:08 2024 +0530
+
+    Add Ordering Filter for Discharge Patients Viewset Class (#2074)
+    
+    * Add Ordering Filter for Discharge Patients Viewset Class
+    
+    * add all fields
+    
+    * add tests
+    
+    * reduce the filter fields
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 690b8610919f901250a84c9a5eeefcf376ce2470[m
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Tue Apr 23 00:23:37 2024 +0530
+
+    Fix ward filters and add tests for places APIs (#2029)
+    
+    * tests for places api
+    
+    * minor update
+    
+    * updated tests
+    
+    * updated ward list endpoint
+    
+    * updated local_body list endpoint
+    
+    * updated district list endpoint
+    
+    * minor updates in state tests
+    
+    * fixed bug for filtering wards usign state and state_name
+    
+    * updated district tests
+    
+    * fixing lint issue
+    
+    * Update care/utils/tests/test_utils.py
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit ca6b55852e811f466bafc5654c5dfc90029f5f85[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Tue Apr 23 00:22:47 2024 +0530
+
+    upgrade user skills (#2096)
+    
+    * upgrade user skills
+    
+    * add custom migration
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 8b7baf5dde8daded949773c5b1aa21a2f5e6713b[m
+Author: hrit2773 <128292557+hrit2773@users.noreply.github.com>
+Date:   Tue Apr 23 00:20:31 2024 +0530
+
+    Occupation dropdown backend (#2055)
+    
+    * Occupation dropdown backend
+    
+    * added migrations
+    
+    * fixed
+    
+    * capitalized the names
+    
+    * changed back
+    
+    * changed to other professional occupations
+    
+    * changed other professional occupations
+    
+    * updated migrations
+    
+    * changed finally
+    
+    * changed others
+    
+    * migration issue fix
+    
+    * changed
+    
+    ---------
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit b85b74b6d7833d0eff1b2b411c269f040f3232c9[m
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Tue Apr 23 00:19:30 2024 +0530
+
+    test for Ambulance  module (#2056)
+    
+    * added tests for ambulance endpoints
+    
+    * added tests for ambulance endpoints
+    
+    * Update care/facility/tests/test_ambulance_api.py
+    
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    
+    * Apply suggestions from code review
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Rithvik Nishad <rithvikn2001@gmail.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit fe0423e1930670cc4cf15aa318499d22b604cb04[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Tue Apr 23 00:18:49 2024 +0530
+
+    Add age validation in PatientDetailSerializer (#1929)
+    
+    * Add age validation in PatientDetailSerializer
+    
+    * Change error msg
+    
+    * Add test for age validation
+    
+    * remove try error check
+    
+    * Add validation for is_antenatal
+    
+    * Add api test
+    
+    * fix lint errors
+    
+    * Apply suggestions from code review
+    
+    * add test to verify age and dob
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 164351d762fda6fd0e51dfaafbdc5c1e0bb080ac[m
+Author: Gokulram A <gokulram2010418@ssn.edu.in>
+Date:   Tue Apr 23 00:17:57 2024 +0530
+
+    Sort "No Consultation Filed" patients to the top of Patient List page  (#1718)
+    
+    * Add annotation and ordering to PatientViewSet
+    queryset
+    
+    * Refactor PatientViewSet queryset annotation
+    
+    * cleanup
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 36f3a36f33808b4f249dfc9ab7ea14daf432dfd1[m
+Author: Prafful <praffulsharma1230@gmail.com>
+Date:   Sat Apr 20 22:27:43 2024 +0530
+
+    added tests for beds endpoints
+
+[33mcommit 2c023e1d06c694157a32fcecc11f9b6d051e1d75[m[33m ([m[1;33mtag: [m[1;33mv24.17.0[m[33m)[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Apr 18 14:56:57 2024 +0530
+
+    fix query bugs while resolving asset hostname (#2099)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 338b510d6ea681825f878e1593487b180b2b7dc9[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Apr 18 14:56:02 2024 +0530
+
+    fix patient sorting filters (#2086)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit eff9687d4bd81f033b88da86a07830c8fd2272b1[m
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Tue Apr 16 15:31:30 2024 +0530
+
+    Update deployment.yaml | Switch to Double Quotes
+
+[33mcommit 56eb29361677b6931eba3f6a7f1c25ac5719b128[m
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Tue Apr 16 15:30:30 2024 +0530
+
+    Update deployment.yaml | Add Quotes
+
+[33mcommit babadb35ec360592086337495979a32e15059011[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Tue Apr 16 09:06:12 2024 +0530
+
+    Remove deploy jobs from GitHub workflows (#2058)
+
+[33mcommit ee3052f54bf3b26cbc24f329f52b56a7ed646b32[m
+Author: Ashesh <3626859+Ashesh3@users.noreply.github.com>
+Date:   Mon Apr 15 18:21:35 2024 +0530
+
+    Fix: Handle missing resolved_middleware in asset_updates.py (#2087)
+
+[33mcommit 830a82bdd253ba023b5bd2e4487c4210bd889482[m
+Author: Ashesh <3626859+Ashesh3@users.noreply.github.com>
+Date:   Mon Apr 15 14:42:29 2024 +0530
+
+    Handle missing instance.resolved_middleware in asset_updates (#2084)
+
+[33mcommit 32a9b0b496fcb398ddd84be871976df88a6961ee[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon Apr 15 12:45:57 2024 +0530
+
+    Bump the boto group with 2 updates (#2076)
+    
+    Bumps the boto group with 2 updates: [boto3](https://github.com/boto/boto3) and [boto3-stubs](https://github.com/youtype/mypy_boto3_builder).
+    
+    
+    Updates `boto3` from 1.34.75 to 1.34.84
+    - [Release notes](https://github.com/boto/boto3/releases)
+    - [Changelog](https://github.com/boto/boto3/blob/develop/CHANGELOG.rst)
+    - [Commits](https://github.com/boto/boto3/compare/1.34.75...1.34.84)
+    
+    Updates `boto3-stubs` from 1.34.75 to 1.34.84
+    - [Release notes](https://github.com/youtype/mypy_boto3_builder/releases)
+    - [Commits](https://github.com/youtype/mypy_boto3_builder/commits)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: boto3
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    - dependency-name: boto3-stubs
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+[33mcommit 40e7aa41bc14441917a3462f83d76896a1ab6399[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Apr 15 00:32:56 2024 +0530
+
+    update devcontainer config (#2051)
+    
+    * update devcontainer config
+    
+    * remove chromium from devcontainer build
+    
+    * avoid rebuilds on restart
+    
+    * add badge
+    
+    * print docker logs in case of failure in test workflow
+
+[33mcommit 5e666ca580ad7c5af11c3d276cd7f4fd1f31c5a1[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Apr 15 00:31:58 2024 +0530
+
+    update plugin docs (#2075)
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 87cd40c367b2daf614cb8ea41d85452286d54346[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Apr 15 00:15:46 2024 +0530
+
+    Make care single source of truth for asset config on middleware (#2000)
+    
+    * add routes for middleware to fetch asset config
+    
+    * cache middleware jwks
+    
+    * allow asset authentication for assetbed
+    
+    * squash migrations
+    
+    * fix key cache issue
+    
+    * fix assetbed filter for middlewares
+    
+    * return asset presets from patient_from_asset route itself
+    
+    * add is_parsed_by_ocr flag to indicate ocr use for automated round
+    
+    * improve regex match for hostname query
+    
+    * squash migrations
+    
+    * Discard changes to config/settings/local.py
+    
+    * update migrations
+    
+    * add permission classes to test views
+    
+    * take jwks as kwarg for jwt generation
+    
+    * split open id auth response for easier mocking
+    
+    * test middleware auth
+    
+    * remove indexes
+    
+    * remove unnessary comments
+    
+    * use request mocks to test openid auth
+    
+    * make push config logic async
+    
+    * improve query
+    
+    * fix inconsistent validation
+    
+    * fix signal
+    
+    * Relock dependencies
+    
+    * update migrations
+    
+    ---------
+    
+    Co-authored-by: vigneshhari <vichuhari100@gmail.com>
+
+[33mcommit 9e02579017dbc26db4c3e691c8c74fe3487cabb7[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Apr 13 00:45:27 2024 +0530
+
+    Bump Dependencies (#2073)
+
+[33mcommit e31c08404e030610c704f7e08dbd27eaf6e7c2ad[m
+Author: Prafful Sharma <115104695+DraKen0009@users.noreply.github.com>
+Date:   Sat Apr 13 00:32:36 2024 +0530
+
+    test for various endpoints in the external_result module (#2034)
+    
+    * added test for external result api
+    
+    * updated external test result tests
+    
+    * added filtering test in list endpoint
+    
+    * updated upsert-endpoint tests
+    
+    * removed print statement
+    
+    * fixing lint issue
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit fc1f37578c8545f47f5b5aa039d95518d122d66c[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Sat Apr 13 00:24:12 2024 +0530
+
+    Add Plugin Support (#2036)
+    
+    * Add Plugin Support
+    
+    * fix lint
+    
+    * make care installable
+    
+    install using `pip install  /path/to/care/`
+    
+    * change root url of apps from / to /api to make the accessible via reverse proxy
+    
+    * crete abstract file upload model
+    
+    * fix file upload api
+    
+    * add care_scribe config vars
+    
+    * fix plug class
+    
+    * Add check before installing plugs
+    
+    * make file choice labels compatible with previous enums to avoid issues
+    
+    * add docs to configure plugins
+    
+    * Remove unused vars.
+    
+    * update docs
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit da834229c756be124e6a8dd197610a1646cd26a0[m
+Author: Vedant Jain <129421822+jainvedant392@users.noreply.github.com>
+Date:   Tue Apr 9 16:37:37 2024 +0530
+
+    Add django filter for patient review missed (#1938)
+    
+    * Add django filter for patient review missed
+    
+    * re-commit
+    
+    * Update care/facility/tests/test_patient_api.py
+    
+    * fix lint issues
+    
+    * fix test cases
+    
+    * handle review_missed = False
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 76a72d8df1ed1a6da29dcca5a5e6094896ec8765[m[33m ([m[1;33mtag: [m[1;33mv24.15.0[m[33m)[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Mon Apr 8 20:41:10 2024 +0530
+
+    Switch to using year of birth for patient transfer confirmation (#2061)
+    
+    * Switch to using year of birth for patient transfer confirmation
+    
+    * update tests
+
+[33mcommit cda2db978ded57d6ec3b0a8d73a177165e40c0c6[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Apr 8 16:46:40 2024 +0530
+
+    fix custom user authentication (#2059)
+
+[33mcommit 8dee3d92dc9d7f3b872c452be6b3ca4410c699e4[m
+Merge: 397695dd 03bef57e
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Thu Apr 4 22:14:39 2024 +0530
+
+    Merge branch 'staging' into develop
+
+[33mcommit 397695dd4faee85377071bac893204248b5c54e6[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Thu Apr 4 21:15:16 2024 +0530
+
+    Update discharge summary to reflect age and year of birth (#2053)
+    
+    * Update discharge summary to reflect age and year of birth
+    
+    fixes #2052
+    
+    * suggestions from codereview
+
+[33mcommit 03bef57e891341a91f410be80e0190d7109d2576[m
+Merge: c2496927 ef53bec2
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Wed Apr 3 22:16:08 2024 +0530
+
+    Merge pull request #2050 from coronasafe/develop
+    
+    Staging release 2 for v24.15.0
+
+[33mcommit ef53bec2dd44ce78588980ef76767c4a41086d79[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Apr 3 21:48:10 2024 +0530
+
+    Fixed race condition that caused service to be unhealthy and merge migrations (#2048)
+
+[33mcommit 7aa73b9f5c624c4dca0e680b0b92bf71d9718bdb[m
+Author: Khavin Shankar <khavinshankar@gmail.com>
+Date:   Wed Apr 3 19:47:48 2024 +0530
+
+    Added github workflow for automated release (#2045)
+
+[33mcommit c2496927c2c568c738d21c8078f5b76829e20354[m
+Merge: 6d66b449 ce619ef5
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Wed Apr 3 18:48:28 2024 +0530
+
+    Merge pull request #2046 from coronasafe/develop
+    
+    Staging Release for v24.15.0
+
+[33mcommit ce619ef580c596bbee7423e69b0c90bc78471569[m
+Author: Pranshu Aggarwal <70687348+Pranshu1902@users.noreply.github.com>
+Date:   Wed Apr 3 14:05:27 2024 +0530
+
+    Add validations for negative values in inventory and min quanityt (#2005)
+    
+    Add validations for negative values in inventory
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 182b43fcc15e1d61328d7b5284de39734f5c3296[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Apr 3 11:12:52 2024 +0530
+
+    Bump the boto group with 2 updates (#2044)
+    
+    Bumps the boto group with 2 updates: [boto3](https://github.com/boto/boto3) and [boto3-stubs](https://github.com/youtype/mypy_boto3_builder).
+    
+    
+    Updates `boto3` from 1.34.65 to 1.34.75
+    - [Release notes](https://github.com/boto/boto3/releases)
+    - [Changelog](https://github.com/boto/boto3/blob/develop/CHANGELOG.rst)
+    - [Commits](https://github.com/boto/boto3/compare/1.34.65...1.34.75)
+    
+    Updates `boto3-stubs` from 1.34.65 to 1.34.75
+    - [Release notes](https://github.com/youtype/mypy_boto3_builder/releases)
+    - [Commits](https://github.com/youtype/mypy_boto3_builder/commits)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: boto3
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    - dependency-name: boto3-stubs
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 1115a8fe9a4de6be090b34fec42872abf9c89fa6[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Tue Apr 2 22:37:20 2024 +0530
+
+    Dropped `age` column from patient registration and annotated age in patient viewset (#1966)
+    
+    * drop field `age` and compute age on demand
+    
+    * Update filters and related usages
+    
+    * add min value validator for year of birth
+    
+    * remove age from test utils
+    
+    * remove unnecessary default
+    
+    * Add field `death_datetime` in patient registration
+    
+    * annotate age in days
+    
+    * suggestion from code review
+    
+    * revert unintended changes
+    
+    * skip serializing age
+    
+    * rebase migrations
+    
+    * rebase migrations
+    
+    * drop age from dummy data
+    
+    * Revert "drop age from dummy data"
+    
+    This reverts commit 9964b853e24e30ff332a8c38128cd484510f8c6f.
+    
+    * drop patient registration's age from dummy data
+    
+    * select only `last_consultation` in custom migration
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    
+    * format code
+    
+    * rebase migrations
+    
+    * rebase migrations
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 6d66b449ee0d42c713824934f8bdd6acc804253a[m
+Merge: 12c645d7 e97177b1
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Mon Apr 1 23:21:03 2024 +0530
+
+    Merge pull request #2041 from coronasafe/develop
+    
+    Staging release for v24.14.0
+
+[33mcommit e97177b1bcd8c7d811e3ed0bc871286153300960[m[33m ([m[1;33mtag: [m[1;33mv24.14.0[m[33m)[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Apr 1 23:19:50 2024 +0530
+
+    Fix build tagging for production (#2040)
+
+[33mcommit dac2ee3f23b0eaac2ad62eabd72583e2a45846ea[m
+Author: Ashraf Mohammed <98876115+AshrafMd-1@users.noreply.github.com>
+Date:   Mon Apr 1 13:52:09 2024 +0530
+
+    Map nurse logins to facility. (#2012)
+    
+    map nurse logins
+    
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit fa46f2f50bbc2f03053688cca6b2365f459c5860[m
+Author: Shivank Kacker <kacker.shivank@gmail.com>
+Date:   Thu Mar 28 19:46:25 2024 +0530
+
+    Added consent records to patient consultation (#2006)
+    
+    * added consent records to patient consultation
+    
+    * fix migrations
+    
+    * fix warning
+    
+    * updated perms
+    
+    * fix permission-error
+    
+    * merged migrations
+    
+    * updates
+    
+    * added migration
+    
+    * lint
+    
+    * tests and migrations
+    
+    * refactor associating id logic
+    
+    * remove archive logic
+    
+    ---------
+    
+    Co-authored-by: Rithvik Nishad <rithvik.nishad@egovernments.org>
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 12c645d7c65d5c74f23c7b00b418e1464798ef81[m[33m ([m[1;33mtag: [m[1;33mv24.13.0[m[33m)[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Mon Mar 25 21:14:41 2024 +0530
+
+    Adds support for validating integrity of fixtures in tests workflow (#2013)
+
+[33mcommit ce7073e4d789dd19272d257cc79c2500d3d53e75[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Mon Mar 25 19:07:04 2024 +0530
+
+    Fixes discharged patients CSV export (#2010)
+    
+    * Fixes discharged patients CSV export
+    
+    * default `is_active` to False
+
+[33mcommit e73b454f133b1b4ad4e7a783aa59c28fdb6e70a6[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Mon Mar 25 14:17:52 2024 +0530
+
+    Adds missing merge migrations (#2011)
+
+[33mcommit 55a75811ba05b11338bb3621b2366b87a02144ed[m
+Author: Onkar Jadhav <56870381+Omkar76@users.noreply.github.com>
+Date:   Sun Mar 24 22:01:46 2024 +0530
+
+    track previous consultation (#1907)
+    
+    * update facility.json with more consultations for same patient
+    
+    * track previous consulation
+    
+    * use Aakashs's suggestion - sort queryset by created_date descending
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    
+    * Lint
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 535f6a5b0df2257f974dde024c4bfd21acda6c5d[m
+Author: Ankur Prabhu <85862184+AnkurPrabhu@users.noreply.github.com>
+Date:   Sun Mar 24 22:00:31 2024 +0530
+
+    [BUG] fix Location/ Bed Management issue ( District Lab Admin Account) (#1959)
+    
+    * fixing permission issue
+    
+    * added tests
+
+[33mcommit f4824be4913a5a32701a8382d7fcd4b9d9d2c59c[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Sun Mar 24 21:59:34 2024 +0530
+
+    Replace age field with DOB in users model (#1935)
+    
+    * Replace age field with DOB in users model
+    
+    * Add custom migrations
+    
+    * Add imports
+    
+    * squash migrations and add dummy data
+    
+    * Add reverse function
+    
+    * fix lint errors
+    
+    * Update dummy data and DOB field
+    
+    * update tests
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 0f321b014fd67b25f074d29c5ae9414cb6515c68[m
+Author: Soumyaranjan Pradhan <72642534+itxsoumya@users.noreply.github.com>
+Date:   Sun Mar 24 21:20:13 2024 +0530
+
+    reset password schema for API docs swagger updated #1434 (#1934)
+    
+    * reset password schema for API docs swagger updated
+    
+    * removed unused libs
+    
+    * fixed parameters
+    
+    * lint
+    
+    * use serializers to correctly generate schema
+    
+    * fix test cases
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 5e750a45789da56e21a4fd7ea36689a7596209ad[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Fri Mar 22 18:01:45 2024 +0530
+
+    fixes issues with patient annotate + distinct not implemented for csv export (#2002)
+
+[33mcommit 0ecbad0ed9d5fdd0b5c3d3eff6f25614639f9506[m
+Author: Vignesh Hari <vichuhari100@gmail.com>
+Date:   Wed Mar 20 12:30:43 2024 +0530
+
+    Resolve Dependencies (#1992)
+    
+    Refresh Lockfile with upgraded dependencies
+
+[33mcommit 9aa1bbbe62f444eb6b9048ef6f8d6fab7485a0fb[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Mar 20 11:59:25 2024 +0530
+
+    Bump the boto group with 2 updates (#1986)
+    
+    Bumps the boto group with 2 updates: [boto3](https://github.com/boto/boto3) and [boto3-stubs](https://github.com/youtype/mypy_boto3_builder).
+    
+    
+    Updates `boto3` from 1.34.64 to 1.34.65
+    - [Release notes](https://github.com/boto/boto3/releases)
+    - [Changelog](https://github.com/boto/boto3/blob/develop/CHANGELOG.rst)
+    - [Commits](https://github.com/boto/boto3/compare/1.34.64...1.34.65)
+    
+    Updates `boto3-stubs` from 1.34.64 to 1.34.65
+    - [Release notes](https://github.com/youtype/mypy_boto3_builder/releases)
+    - [Commits](https://github.com/youtype/mypy_boto3_builder/commits)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: boto3
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    - dependency-name: boto3-stubs
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+    Co-authored-by: Vignesh Hari <vichuhari100@gmail.com>
+
+[33mcommit 0ff895a257b7e083e017be265674cfc33578ab1e[m
+Author: Karolina Krassowska <39529572+krassowska@users.noreply.github.com>
+Date:   Wed Mar 20 06:28:31 2024 +0000
+
+    Duplicated .pdf in the discharge summary file names (#1978)
+    
+    * Add test for discharge summary file name
+    
+    * Remove .pdf from discharge summary file name
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 02804ec3f1848244a98aaf59ed32f745f72f18f1[m
+Author: Ashraf Mohammed <98876115+AshrafMd-1@users.noreply.github.com>
+Date:   Tue Mar 19 15:42:20 2024 +0530
+
+    Add nurse logins for cypress testing (#1985)
+
+[33mcommit 3e3b65d04c8da4e9f3bb57131f23cf75d05b1bb8[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Mar 18 15:02:01 2024 +0530
+
+    update branch names in docs and workflows (#1981)
+
+[33mcommit 99ab4e0e938c0e528c42b57fa48203b50290c91e[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Mon Mar 18 14:51:40 2024 +0530
+
+    merge migrations (#1980)
+
+[33mcommit 29cf6d8c7e8a66d875f6cf3007c5080af00335cc[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Sun Mar 17 11:16:47 2024 +0530
+
+    Bump the boto group with 2 updates (#1979)
+    
+    Bumps the boto group with 2 updates: [boto3](https://github.com/boto/boto3) and [boto3-stubs](https://github.com/youtype/mypy_boto3_builder).
+    
+    
+    Updates `boto3` from 1.34.27 to 1.34.64
+    - [Release notes](https://github.com/boto/boto3/releases)
+    - [Changelog](https://github.com/boto/boto3/blob/develop/CHANGELOG.rst)
+    - [Commits](https://github.com/boto/boto3/compare/1.34.27...1.34.64)
+    
+    Updates `boto3-stubs` from 1.34.27 to 1.34.64
+    - [Release notes](https://github.com/youtype/mypy_boto3_builder/releases)
+    - [Commits](https://github.com/youtype/mypy_boto3_builder/commits)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: boto3
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    - dependency-name: boto3-stubs
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+      dependency-group: boto
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+[33mcommit c0e66fd0df437e338bf517c0b99b810536729dfc[m
+Author: Ashesh <3626859+Ashesh3@users.noreply.github.com>
+Date:   Sun Mar 17 11:14:39 2024 +0530
+
+    Add assigned_clinicians field to PatientConsultation model (#1900)
+    
+    * Add assigned_clinicians field to PatientConsultation model
+    
+    * Make related_name more intuitive
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    
+    * Fix lint and migration
+    
+    * use a through model
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 7f3bb9379edfee43cd282792ea987fe8ee2abca5[m
+Author: Rashmik <146672184+rash-27@users.noreply.github.com>
+Date:   Sun Mar 17 11:13:46 2024 +0530
+
+    Add validation checks in ResourceRequestSerializer (#1928)
+    
+    * Add validation checks in ResourceRequestSerializer
+    
+    * add test for resource
+    
+    * Fix lint errors in Contributing.md
+    
+    * Discard changes to CONTRIBUTING.md
+    
+    * lint fix
+    
+    ---------
+    
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+
+[33mcommit 114c643252f68456551ee9cfcc731b9de307a3f4[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Sun Mar 17 11:11:50 2024 +0530
+
+    ExternalIDSerializerField to be UUID Field instead of Field (#1958)
+
+[33mcommit 257abe61bf496a3e4fc0ba2cb50a6a83acdfe96c[m
+Author: Abhiuday Gupta <77210185+aeswibon@users.noreply.github.com>
+Date:   Sun Mar 17 11:10:09 2024 +0530
+
+    fix: Custom Migration to clean no input values as null in Daily Rounds table (#1839)
+    
+    * fix(daily_rounds): migrated all fields that has zero values to  null
+    
+    * fix(daily_rounds): migrated blood pressure field
+    
+    * fix: resolved comments
+    
+    * fix: updated migrations
+    
+    * fix(daily_round): resolved comments
+
+[33mcommit 5545aa4200b5e55c430dae0611d73f65d3b780bc[m
+Author: Gokulram A <gokulram2010418@ssn.edu.in>
+Date:   Sun Mar 17 11:08:50 2024 +0530
+
+    Prescription: Titrated drug dose (#1692)
+    
+    * adds titrated prescription
+    
+    * fix linting
+    
+    * optimize prn copy query in migration
+    
+    * fix reverse migration
+    
+    * added tests and implemented suggested changes
+    
+    * fix lint errors
+    
+    * Add titration dosage information to patient
+    discharge summary
+    
+    * Refactor prescription serializer validation
+    
+    * Merge two facility migrations
+    
+    * Fix validation for titrated prescriptions in
+    MedicineAdministrationSerializer
+    
+    * recreated migrations
+    
+    * Refactor prescription serializers and models
+    
+    * fix migrations
+    
+    * update tests and redo migration
+    
+    * fix: imports that are incorrectly sorted and/or formatted
+    
+    * rebase migrations
+    
+    * Rename dosage field to base_dosage and add dosage_type field in dummy data
+    
+    * update migrations
+    
+    * Rebase migrations and adds missing custom migration for setting dosage_type for existing prn prescriptions
+    
+    ---------
+    
+    Co-authored-by: Ashesh <3626859+Ashesh3@users.noreply.github.com>
+    Co-authored-by: Aakash Singh <mail@singhaakash.dev>
+    Co-authored-by: Rithvik Nishad <rithvik.nishad@egovernments.org>
+    Co-authored-by: rithviknishad <mail@rithviknishad.dev>
+
+[33mcommit 93b85edd01b6f77e45c82233df1f28d96b24a7aa[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Sun Mar 17 11:05:48 2024 +0530
+
+    Bump jwcrypto from 1.5.1 to 1.5.6 (#1969)
+    
+    Bumps [jwcrypto](https://github.com/latchset/jwcrypto) from 1.5.1 to 1.5.6.
+    - [Release notes](https://github.com/latchset/jwcrypto/releases)
+    - [Commits](https://github.com/latchset/jwcrypto/compare/v1.5.1...v1.5.6)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: jwcrypto
+      dependency-type: direct:production
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+[33mcommit 3db7a9ec6ed9da81586e2fe10f333ba637ea3830[m
+Merge: 8616f5c9 51ce81e9
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Fri Mar 15 17:01:21 2024 +0530
+
+    Merge pull request #1974 from coronasafe/fix-patient-no-error-msg
+
+[33mcommit 51ce81e9ca6897e4f0283f967bb242b60022f2bd[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Mar 15 15:08:17 2024 +0530
+
+    minor fix
+
+[33mcommit 55b7bff1b85868f29776bb5efe27123a46d87809[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Mar 15 14:20:28 2024 +0530
+
+    treat all non admission consultations as OP consultations
+
+[33mcommit 15abfe1a9cdd47f604767b9aab01768a082f450a[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Mar 15 11:05:59 2024 +0530
+
+    update tests
+
+[33mcommit 379cf51b5bd97e2ec6b317ea9280b0e333dcfc46[m
+Author: rithviknishad <mail@rithviknishad.dev>
+Date:   Fri Mar 15 10:50:01 2024 +0530
+
+    fixes https://github.com/coronasafe/care_fe/issues/7410
+
+[33mcommit 8616f5c956f0ee8f252ea5f0581bb1fd2dff986f[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Mar 14 16:17:27 2024 +0530
+
+    Fix assigned_facility_type migration (#1972)
+    
+    add missing migrate shifting assigned_facility_type
+
+[33mcommit e435d9e5eed9847ae8515a58296c83c2584d8cfb[m
+Merge: 90565c2d 140f0bc1
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Wed Mar 13 13:49:05 2024 +0530
+
+    Merge pull request #1968 from coronasafe/sainak/feat/staging-builds
+    
+    Add builds for staging branches
+
+[33mcommit 140f0bc187fe40a78cad8cb06b6405eb6927b404[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Mar 13 13:04:12 2024 +0530
+
+    update branch names
+
+[33mcommit 9ecf566a7f93a960d92245005fc5242dd81de2d2[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Mar 13 12:58:17 2024 +0530
+
+    add builds for staging branches
+
+[33mcommit 90565c2dfeff64601ab9f70bbb0346ee5f1259db[m
+Merge: bd161efc a5bdee23
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Mon Mar 11 19:41:50 2024 +0530
+
+    Merge pull request #1951 from coronasafe/staging
+    
+    Merge Staging into Master
+
+[33mcommit a5bdee23a77fa05c086e16a46a9c3389b1ba2521[m
+Merge: bcaaa339 bd161efc
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Mar 7 21:49:46 2024 +0530
+
+    Merge branch 'master' into staging
+
+[33mcommit bd161efc5d86f2d65a0d0b7ca7f670216fe7a055[m
+Author: Rithvik Nishad <rithvik.nishad@egovernments.org>
+Date:   Thu Mar 7 20:00:06 2024 +0530
+
+    Fix patient viewset distinct issue (#1953)
+    
+    * Distinct on the ordering field if ordering present for Patient Viewset Queryset
+    
+    * Add tests
+    
+    * fix typo
+
+[33mcommit 56f2357b943c41c18ceecf70b4be302fc96614cf[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Thu Mar 7 19:58:59 2024 +0530
+
+    Allow empty op number (#1954)
+    
+    * allow empty op number
+    
+    * update migrations
+
+[33mcommit 7c854645da979bcb35af3e3fabafd5b995aac20c[m
+Author: Aakash Singh <mail@singhaakash.dev>
+Date:   Wed Mar 6 22:56:31 2024 +0530
+
+    Merge migrations (#1946)
+    
+    * Merge migrations
+    
+    * update migrations
+
+[33mcommit bcaaa339b7df01693586d3cd22c1330841a4aafc[m
+Merge: aba08494 d37985ab
+Author: Gigin George <mail.gigin@gmail.com>
+Date:   Tue Mar 5 19:00:44 2024 +0530
+
+    Merge pull request #1945 from coronasafe/fix-bed-check
+    
+    Fix bed assignment validation for admission
+
+[33mcommit d37985abf2f404bc4429a5d664737d3ac87e0770[m
+Author: Ashesh3 <3626859+Ashesh3@users.noreply.github.com>
+Date:   Tue Mar 5 18:56:07 2024 +0530
+
+    add comments for suggestion choices
+
+[33mcommit 89f9749a386ab8f932c897d44afc7b29f9bdcbfe[m
+Author: Ashesh3 <3626859+Ashesh3@users.noreply.github.com>
+Date:   Tue Mar 5 18:11:27 2024 +0530
+
+    add tests
+
+[33mcommit 16b7cbbe6b47e4e834c66622f23db265434dfdac[m
+Author: Ashesh3 <3626859+Ashesh3@users.noreply.github.com>
+Date:   Tue Mar 5 18:11:03 2024 +0530
+
+    Fix bed assignment validation for admission
