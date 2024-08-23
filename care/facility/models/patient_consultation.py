@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
@@ -26,6 +27,14 @@ from care.facility.models.patient_base import (
 )
 from care.users.models import User
 from care.utils.models.base import BaseModel
+
+
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -224,6 +233,11 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     intubation_history = JSONField(default=list)
 
+    has_consents = ArrayField(
+        models.IntegerField(choices=ConsentType.choices),
+        default=list,
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -335,14 +349,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self.has_object_read_permission(request)
 
 
-class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
-    PATIENT_CODE_STATUS = 2, "Patient Code Status"
-    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
-    HIGH_RISK_CONSENT = 4, "High Risk Consent"
-    OTHERS = 5, "Others"
-
-
 class PatientCodeStatusType(models.IntegerChoices):
     NOT_SPECIFIED = 0, "Not Specified"
     DNH = 1, "Do Not Hospitalize"
@@ -363,7 +369,9 @@ class ConsultationClinician(models.Model):
 
 
 class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.CASCADE, related_name="consents"
+    )
     type = models.IntegerField(choices=ConsentType.choices)
     patient_code_status = models.IntegerField(
         choices=PatientCodeStatusType.choices, null=True, blank=True

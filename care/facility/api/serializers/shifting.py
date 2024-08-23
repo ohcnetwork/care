@@ -323,8 +323,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if (
             "status" in validated_data
             and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            and not has_facility_permission(user, instance.origin_facility)
         ):
-            discharge_patient(instance.patient)
+            raise ValidationError(
+                {
+                    "status": [
+                        "Permission Denied - Only staff from the origin facility can mark the shift as complete."
+                    ]
+                }
+            )
 
         old_status = instance.status
         new_instance = super().update(instance, validated_data)
@@ -337,6 +344,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if (
             "status" in validated_data
+            and new_instance.shifting_approving_facility is not None
             and validated_data["status"] != old_status
             and validated_data["status"] == 40
         ):
