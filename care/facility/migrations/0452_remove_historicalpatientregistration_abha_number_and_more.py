@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0443_remove_patientconsultation_consent_records_and_more"),
+        ("facility", "0451_merge_20240823_1642"),
         ("abdm", "0013_abhanumber_patient"),
     ]
 
