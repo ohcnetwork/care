@@ -149,9 +149,13 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_systolic_below_diastolic_blood_pressure(self):
         response = self.create_log_update(
             rounds_type="VENTILATOR",
-            bp={"systolic": 100, "diastolic": 200},
+            bp={"systolic": 100, "diastolic": 200, "mean": "100"},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_log_update_with_blood_pressure_empty(self):
+        response = self.create_log_update(rounds_type="VENTILATOR", bp={})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_log_update_with_valid_blood_pressure(self):
         response = self.create_log_update(
