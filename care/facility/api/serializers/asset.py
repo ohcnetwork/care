@@ -320,6 +320,32 @@ class AssetSerializer(ModelSerializer):
         return updated_instance
 
 
+class AssetPublicSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    status = ChoiceField(choices=StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=AssetTypeChoices)
+    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = (
+            "id",
+            "name",
+            "location_object",
+            "serial_number",
+            "warranty_details",
+            "warranty_amc_end_of_validity",
+            "asset_type",
+            "asset_class",
+            "vendor_name",
+            "support_name",
+            "support_email",
+            "support_phone",
+            "is_working",
+            "status",
+        )
+
+
 class AssetConfigSerializer(ModelSerializer):
     id = UUIDField(source="external_id")
     type = CharField(source="asset_class")

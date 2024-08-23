@@ -12,7 +12,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "1,2,3,4,5,6",
+      "features": [1, 2, 3, 4, 5, 6],
       "longitude": null,
       "latitude": null,
       "pincode": 670000,
@@ -49,7 +49,7 @@
       "verified": false,
       "facility_type": 1300,
       "kasp_empanelled": false,
-      "features": "1,6",
+      "features": [1, 6],
       "longitude": null,
       "latitude": null,
       "pincode": 670112,
@@ -86,7 +86,7 @@
       "verified": false,
       "facility_type": 1500,
       "kasp_empanelled": false,
-      "features": "1,4,6",
+      "features": [1, 4, 6],
       "longitude": "78.6757364624373000",
       "latitude": "21.4009146842158660",
       "pincode": 670000,
@@ -123,7 +123,7 @@
       "verified": false,
       "facility_type": 1510,
       "kasp_empanelled": false,
-      "features": "1,3,5",
+      "features": [1, 3, 5],
       "longitude": "75.2139014820876600",
       "latitude": "18.2774285038890340",
       "pincode": 670000,
@@ -160,7 +160,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -197,7 +197,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -234,7 +234,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -271,7 +271,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -308,7 +308,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -345,7 +345,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -382,7 +382,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -419,7 +419,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -456,7 +456,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -493,7 +493,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -530,7 +530,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -567,7 +567,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -604,7 +604,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -641,7 +641,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -678,7 +678,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -715,7 +715,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": "",
+      "features": [],
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -4201,14 +4201,8 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 150.0,
-      "allowed_units": [
-        1,
-        2
-      ],
-      "tags": [
-        1,
-        2
-      ]
+      "allowed_units": [1, 2],
+      "tags": [1, 2]
     }
   },
   {
@@ -4219,13 +4213,8 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 2.0,
-      "allowed_units": [
-        1,
-        2
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [1, 2],
+      "tags": [2]
     }
   },
   {
@@ -4236,12 +4225,8 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [
-        7
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [7],
+      "tags": [2]
     }
   },
   {
@@ -4252,9 +4237,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4266,9 +4249,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4280,9 +4261,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4294,12 +4273,8 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [
-        7
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [7],
+      "tags": [2]
     }
   },
   {

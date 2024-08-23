@@ -29,6 +29,14 @@ from care.users.models import User
 from care.utils.models.base import BaseModel
 
 
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
+
+
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
         (SuggestionChoices.HI, "HOME ISOLATION"),
@@ -91,7 +99,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -248,6 +256,11 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     prn_prescription = JSONField(default=dict)
     discharge_advice = JSONField(default=dict)
 
+    has_consents = ArrayField(
+        models.IntegerField(choices=ConsentType.choices),
+        default=list,
+    )
+
     def get_related_consultation(self):
         return self
 
@@ -359,14 +372,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self.has_object_read_permission(request)
 
 
-class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
-    PATIENT_CODE_STATUS = 2, "Patient Code Status"
-    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
-    HIGH_RISK_CONSENT = 4, "High Risk Consent"
-    OTHERS = 5, "Others"
-
-
 class PatientCodeStatusType(models.IntegerChoices):
     NOT_SPECIFIED = 0, "Not Specified"
     DNH = 1, "Do Not Hospitalize"
@@ -387,7 +392,9 @@ class ConsultationClinician(models.Model):
 
 
 class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.CASCADE, related_name="consents"
+    )
     type = models.IntegerField(choices=ConsentType.choices)
     patient_code_status = models.IntegerField(
         choices=PatientCodeStatusType.choices, null=True, blank=True

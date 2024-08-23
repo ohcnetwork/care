@@ -1,5 +1,6 @@
-from datetime import date
+from datetime import date, timedelta
 
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -199,4 +200,94 @@ class TestUser(TestUtils, APITestCase):
         self.assertEqual(
             self.data_2[field],
             User.objects.get(username=self.data_2[field]).username,
+        )
+
+
+class TestUserFilter(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.facility_2 = cls.create_facility(
+            cls.super_user, cls.district, cls.local_body
+        )
+
+        cls.user_1 = cls.create_user("staff1", cls.district, home_facility=cls.facility)
+
+        cls.user_2 = cls.create_user("staff2", cls.district, home_facility=cls.facility)
+
+        cls.user_3 = cls.create_user("staff3", cls.district, home_facility=cls.facility)
+
+        cls.user_4 = cls.create_user(
+            "staff4", cls.district, home_facility=cls.facility_2
+        )
+
+        cls.user_5 = cls.create_user("doctor", cls.district)
+
+    def setUp(self):
+        self.client.force_authenticate(self.super_user)
+        self.user_1.last_login = timezone.now() - timedelta(hours=1)
+        self.user_1.save()
+        self.user_2.last_login = timezone.now() - timedelta(days=5)
+        self.user_2.save()
+        self.user_3.last_login = None
+        self.user_3.save()
+
+    def test_last_active_filter(self):
+        """Test last active filter"""
+        response = self.client.get("/api/v1/users/?last_active_days=1")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 1)
+        self.assertIn(
+            self.user_1.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+        response = self.client.get("/api/v1/users/?last_active_days=10")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 2)
+        self.assertIn(
+            self.user_2.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+        response = self.client.get("/api/v1/users/?last_active_days=never")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 3)
+        self.assertIn(
+            self.user_3.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+    def test_home_facility_filter(self):
+        """Test home facility filter"""
+        response = self.client.get("/api/v1/users/?home_facility=NOT_A_VALID_UUID")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.get(
+            f"/api/v1/users/?home_facility={self.facility.external_id}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 3)
+        self.assertIn(
+            self.user_1.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+        response = self.client.get(
+            f"/api/v1/users/?home_facility={self.facility_2.external_id}"
+        )
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 1)
+        self.assertIn(
+            self.user_4.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+        response = self.client.get("/api/v1/users/?home_facility=NONE")
+        res_data_json = response.json()
+        self.assertEqual(res_data_json["count"], 1)
+        self.assertIn(
+            self.user_5.username, {r["username"] for r in res_data_json["results"]}
         )
