@@ -157,7 +157,7 @@ class DailyRound(PatientBaseModel):
         null=True,
     )  # Deprecated
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     other_details = models.TextField(null=True, blank=True)
     medication_given = JSONField(default=dict)  # To be Used Later on
