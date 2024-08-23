@@ -41,4 +41,24 @@ class Migration(migrations.Migration):
             model_name="patientconsultation",
             name="prn_prescription",
         ),
+        migrations.RemoveField(
+            model_name="dailyround",
+            name="deprecated_additional_symptoms",
+        ),
+        migrations.RemoveField(
+            model_name="dailyround",
+            name="deprecated_other_symptoms",
+        ),
+        migrations.RemoveField(
+            model_name="patientconsultation",
+            name="deprecated_other_symptoms",
+        ),
+        migrations.RemoveField(
+            model_name="patientconsultation",
+            name="deprecated_symptoms",
+        ),
+        migrations.RemoveField(
+            model_name="patientconsultation",
+            name="deprecated_symptoms_onset_date",
+        ),
     ]
