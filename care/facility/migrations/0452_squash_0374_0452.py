@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     replaces = [
         ("facility", "0374_historicalpatientregistration_abha_number_and_more"),
-        ("facility", "0444_remove_historicalpatientregistration_abha_number_and_more"),
+        ("facility", "0452_remove_historicalpatientregistration_abha_number_and_more"),
     ]
 
     operations = []
