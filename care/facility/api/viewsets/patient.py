@@ -73,7 +73,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.models.notification import Notification
-from care.facility.models.patient import PatientNotesEdit
+from care.facility.models.patient import PatientNotesEdit, RationCardCategory
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
@@ -124,6 +124,7 @@ class PatientFilterSet(filters.FilterSet):
         method="filter_by_category",
         choices=CATEGORY_CHOICES,
     )
+    ration_card_category = filters.ChoiceFilter(choices=RationCardCategory.choices)
 
     def filter_by_category(self, queryset, name, value):
         if value:
@@ -177,9 +178,6 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
         field_name="last_consultation__discharge_date"
-    )
-    last_consultation_symptoms_onset_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__symptoms_onset_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
         method="filter_by_bed_type",
@@ -279,6 +277,32 @@ class PatientFilterSet(filters.FilterSet):
             filter_q &= Q(
                 last_consultation__diagnoses__verification_status=verification_status
             )
+        return queryset.filter(filter_q)
+
+    last_consultation__consent_types = MultiSelectFilter(
+        method="filter_by_has_consents"
+    )
+
+    def filter_by_has_consents(self, queryset, name, value: str):
+
+        if not value:
+            return queryset
+
+        values = value.split(",")
+
+        filter_q = Q()
+
+        if "None" in values:
+            filter_q |= ~Q(
+                last_consultation__has_consents__len__gt=0,
+            )
+            values.remove("None")
+
+        if values:
+            filter_q |= Q(
+                last_consultation__has_consents__overlap=values,
+            )
+
         return queryset.filter(filter_q)
 
 
@@ -449,7 +473,6 @@ class PatientViewSet(
         "last_vaccinated_date",
         "last_consultation_encounter_date",
         "last_consultation_discharge_date",
-        "last_consultation_symptoms_onset_date",
     ]
     CSV_EXPORT_LIMIT = 7
 
@@ -473,7 +496,7 @@ class PatientViewSet(
                 )
             ).order_by(
                 "-no_consultation_filed",
-                "modified_date",
+                "-modified_date",
             )
 
         return queryset
@@ -568,6 +591,14 @@ class PatientViewSet(
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
         facility = Facility.objects.get(external_id=request.data["facility"])
 
+        if patient.is_expired:
+            return Response(
+                {
+                    "Patient": "Patient transfer cannot be completed because the patient is expired"
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+
         if patient.is_active and facility == patient.facility:
             return Response(
                 {
@@ -602,55 +633,6 @@ class PatientViewSet(
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
-class FacilityDischargedPatientFilterSet(filters.FilterSet):
-    disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
-    phone_number = filters.CharFilter(field_name="phone_number")
-    emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
-    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    gender = filters.NumberFilter(field_name="gender")
-    age = filters.NumberFilter(field_name="age")
-    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
-    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
-    created_date = filters.DateFromToRangeFilter(field_name="created_date")
-    modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
-    srf_id = filters.CharFilter(field_name="srf_id")
-    is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
-    date_declared_positive = filters.DateFromToRangeFilter(
-        field_name="date_declared_positive"
-    )
-    date_of_result = filters.DateFromToRangeFilter(field_name="date_of_result")
-    last_vaccinated_date = filters.DateFromToRangeFilter(
-        field_name="last_vaccinated_date"
-    )
-    is_antenatal = filters.BooleanFilter(field_name="is_antenatal")
-    last_menstruation_start_date = filters.DateFromToRangeFilter(
-        field_name="last_menstruation_start_date"
-    )
-    date_of_delivery = filters.DateFromToRangeFilter(field_name="date_of_delivery")
-    # Location Based Filtering
-    district = filters.NumberFilter(field_name="district__id")
-    district_name = filters.CharFilter(
-        field_name="district__name", lookup_expr="icontains"
-    )
-    local_body = filters.NumberFilter(field_name="local_body__id")
-    local_body_name = filters.CharFilter(
-        field_name="local_body__name", lookup_expr="icontains"
-    )
-    state = filters.NumberFilter(field_name="state__id")
-    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
-    # Vaccination Filters
-    covin_id = filters.CharFilter(field_name="covin_id")
-    is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
-    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
-    last_consultation__new_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__new_discharge_reason",
-        choices=NewDischargeReasonEnum.choices,
-    )
-    last_consultation_discharge_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__discharge_date"
-    )
-
-
 @extend_schema_view(tags=["patient"])
 class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
@@ -661,7 +643,7 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         rest_framework_filters.OrderingFilter,
         PatientCustomOrderingFilter,
     )
-    filterset_class = FacilityDischargedPatientFilterSet
+    filterset_class = PatientFilterSet
     queryset = (
         PatientRegistration.objects.select_related(
             "local_body",
@@ -714,11 +696,25 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         )
     )
 
+    date_range_fields = [
+        "created_date",
+        "modified_date",
+        "date_declared_positive",
+        "date_of_result",
+        "last_vaccinated_date",
+        "last_consultation_encounter_date",
+        "last_consultation_discharge_date",
+        "last_consultation_symptoms_onset_date",
+    ]
+
     ordering_fields = [
         "id",
         "name",
         "created_date",
         "modified_date",
+        "review_time",
+        "last_consultation__current_bed__bed__name",
+        "date_declared_positive",
     ]
 
     def get_queryset(self) -> QuerySet:

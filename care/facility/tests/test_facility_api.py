@@ -24,7 +24,9 @@ class FacilityTests(TestUtils, APITestCase):
 
     def test_create(self):
         dist_admin = self.create_user("dist_admin", self.district, user_type=30)
-        sample_data = {
+        self.client.force_authenticate(user=dist_admin)
+
+        sample_data_with_empty_feature_list = {
             "name": "Hospital X",
             "district": self.district.pk,
             "state": self.state.pk,
@@ -34,7 +36,61 @@ class FacilityTests(TestUtils, APITestCase):
             "pincode": 390024,
             "features": [],
         }
-        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post(
+            "/api/v1/facility/", sample_data_with_empty_feature_list
+        )
+        self.assertIs(response.status_code, status.HTTP_201_CREATED)
+
+        sample_data_with_invalid_choice = {
+            "name": "Hospital X",
+            "district": self.district.pk,
+            "state": self.state.pk,
+            "local_body": self.local_body.pk,
+            "facility_type": "Educational Inst",
+            "address": "Nearby",
+            "pincode": 390024,
+            "features": [1020, 2, 4, 5],
+        }
+        response = self.client.post(
+            "/api/v1/facility/", sample_data_with_invalid_choice
+        )
+
+        self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["features"][0][0].code, "invalid_choice")
+        self.assertEqual(
+            response.data["features"][0][0], '"1020" is not a valid choice.'
+        )
+
+        sample_data_with_duplicate_choices = {
+            "name": "Hospital X",
+            "district": self.district.pk,
+            "state": self.state.pk,
+            "local_body": self.local_body.pk,
+            "facility_type": "Educational Inst",
+            "address": "Nearby",
+            "pincode": 390024,
+            "features": [1, 1],
+        }
+        response = self.client.post(
+            "/api/v1/facility/", sample_data_with_duplicate_choices
+        )
+
+        self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["features"][0],
+            "Features should not contain duplicate values.",
+        )
+
+        sample_data = {
+            "name": "Hospital X",
+            "district": self.district.pk,
+            "state": self.state.pk,
+            "local_body": self.local_body.pk,
+            "facility_type": "Educational Inst",
+            "address": "Nearby",
+            "pincode": 390024,
+            "features": [1, 2],
+        }
         response = self.client.post("/api/v1/facility/", sample_data)
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
         fac_id = response.data["id"]

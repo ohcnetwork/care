@@ -1,11 +1,13 @@
 import datetime
 from unittest.mock import patch
 
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
+from care.facility.models.bed import Bed
+from care.facility.models.encounter_symptom import Symptom
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
@@ -33,11 +35,11 @@ class TestPatientConsultation(TestUtils, APITestCase):
             "doctor", cls.district, home_facility=cls.facility, user_type=15
         )
         cls.patient1 = cls.create_patient(cls.district, cls.facility)
+        cls.patient2 = cls.create_patient(cls.district, cls.facility)
 
     def get_default_data(self):
         return {
             "route_to_facility": 10,
-            "symptoms": [1],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
@@ -50,6 +52,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
                     "is_principal": False,
                     "verification_status": ConditionVerificationStatus.CONFIRMED,
                 }
+            ],
+            "create_symptoms": [
+                {
+                    "symptom": Symptom.FEVER,
+                    "onset_date": now(),
+                },
+                {
+                    "symptom": Symptom.OTHERS,
+                    "other_symptom": "Other Symptom",
+                    "onset_date": now(),
+                },
             ],
             "patient_no": datetime.datetime.now().timestamp(),
         }
@@ -419,9 +432,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        res = self.update_consultation(
-            consultation, symptoms=[1, 2], category="MILD", suggestion="A"
-        )
+        res = self.update_consultation(consultation, category="MILD", suggestion="A")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_add_diagnoses_and_duplicate_diagnoses(self):
@@ -560,36 +571,6 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-    def test_create_consultations_with_duplicate_patient_no_within_facility(self):
-        patient2 = self.create_patient(self.district, self.facility)
-        data = self.get_default_data().copy()
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": patient2.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-                "suggestion": SuggestionChoices.A,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-        data.update(
-            {
-                "patient_no": "IP1234",
-                "patient": self.patient1.external_id,
-                "facility": self.facility.external_id,
-                "created_by": self.user.external_id,
-            }
-        )
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-        data.update({"suggestion": SuggestionChoices.A})
-        res = self.client.post(self.get_url(), data, format="json")
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_create_consultations_with_same_patient_no_in_different_facilities(self):
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body, name="bar"
@@ -661,3 +642,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_consultation_with_bed(self):
+        asset_location = self.create_asset_location(self.facility)
+        bed = Bed.objects.create(
+            name="bed", location=asset_location, facility=self.facility
+        )
+
+        consultation: PatientConsultation = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            bed=bed.external_id,
+        )
+
+        self.assertEqual(consultation.current_bed.bed, bed)

@@ -9,6 +9,9 @@ from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
+from healthy_django.healthcheck.celery_queue_length import (
+    DjangoCeleryQueueLengthHealthCheck,
+)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -58,6 +61,9 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# timeout for setnx lock
+LOCK_TIMEOUT = env.int("LOCK_TIMEOUT", default=32)
 
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
@@ -415,6 +421,15 @@ HEALTHY_DJANGO = [
         "Database", slug="main_database", connection_name="default"
     ),
     DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+    DjangoCeleryQueueLengthHealthCheck(
+        "Celery Queue Length",
+        slug="celery_queue_length",
+        broker=REDIS_URL,
+        queue_name="celery",
+        info_length=50,
+        warning_length=0,  # this skips the 300 status code
+        alert_length=200,
+    ),
 ]
 
 # Audit logs
@@ -499,6 +514,7 @@ BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
 BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
+BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
@@ -512,9 +528,9 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FILE_UPLOAD_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
+    ),
 )
 
 ALLOWED_MIME_TYPES = env.list(
@@ -543,7 +559,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
-        "audio/mp4"
+        "audio/mp4",
         # Documents
         "text/plain",
         "text/csv",
@@ -566,9 +582,9 @@ FACILITY_S3_BUCKET_ENDPOINT = env(
 )
 FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FACILITY_S3_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
+    ),
 )
 
 # for setting the shifting mode
@@ -591,6 +607,8 @@ BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+APP_VERSION = env("APP_VERSION", default="unknown")
 
 # ABDM
 ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)

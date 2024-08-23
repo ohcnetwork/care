@@ -14,7 +14,7 @@ from care.facility.models import (
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import SYMPTOM_CHOICES, SuggestionChoices
+from care.facility.models.patient_base import SuggestionChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
@@ -24,9 +24,6 @@ from config.serializers import ChoiceField
 
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    additional_symptoms = serializers.MultipleChoiceField(
-        choices=SYMPTOM_CHOICES, required=False
-    )
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
@@ -256,6 +253,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 daily_round_obj,
                 daily_round_obj.created_by_id,
                 daily_round_obj.created_date,
+                taken_at=daily_round_obj.taken_at,
             )
             return daily_round_obj
 

@@ -34,14 +34,6 @@ class Command(BaseCommand):
                     "name": "CLINICAL",
                     "children": (
                         {
-                            "name": "SYMPTOMS",
-                            "fields": (
-                                "symptoms",
-                                "other_symptoms",
-                                "symptoms_onset_date",
-                            ),
-                        },
-                        {
                             "name": "DEATH",
                             "fields": ("death_datetime", "death_confirmed_doctor"),
                         },
@@ -62,8 +54,15 @@ class Command(BaseCommand):
                             "fields": ("course_in_facility",),
                         },
                         {
+                            "name": "INVESTIGATION",
+                            "fields": ("investigation",),
+                        },
+                        {
                             "name": "TREATING_PHYSICIAN",
-                            "fields": ("treating_physician",),
+                            "fields": (
+                                "treating_physician__username",
+                                "treating_physician__full_name",
+                            ),
                         },
                     ),
                 },
@@ -103,10 +102,6 @@ class Command(BaseCommand):
                         "review_after",
                     ),
                     "children": (
-                        {
-                            "name": "ROUND_SYMPTOMS",  # todo resolve clash with consultation symptoms
-                            "fields": ("additional_symptoms",),
-                        },
                         {
                             "name": "PHYSICAL_EXAMINATION",
                             "fields": ("physical_examination_info",),
@@ -158,7 +153,7 @@ class Command(BaseCommand):
                     "fields": (
                         "bilateral_air_entry",
                         "etco2",
-                        "ventilator_fi02",
+                        "ventilator_fio2",
                         "ventilator_interface",
                         "ventilator_mean_airway_pressure",
                         "ventilator_mode",
@@ -232,7 +227,18 @@ class Command(BaseCommand):
         {
             "name": "DIAGNOSIS",
             "model": "ConsultationDiagnosis",
-            "fields": ("diagnosis", "verification_status", "is_principal"),
+            "fields": ("diagnosis__label", "verification_status", "is_principal"),
+        },
+        {
+            "name": "SYMPTOMS",
+            "model": "EncounterSymptom",
+            "fields": (
+                "symptom",
+                "other_symptom",
+                "onset_date",
+                "cure_date",
+                "clinical_impression_status",
+            ),
         },
     )
 
@@ -240,6 +246,8 @@ class Command(BaseCommand):
         "RESPIRATORY",
         "INTAKE_OUTPUT",
         "VENTILATOR_MODES",
+        "SYMPTOMS",
+        "ROUND_SYMPTOMS",
     )
 
     def create_objects(

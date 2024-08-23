@@ -7,8 +7,12 @@ from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
 from care.facility.models.bed import AssetBed, Bed
 from care.facility.models.facility import FacilityHubSpoke
+from care.facility.models.file_upload import FileUpload
+from care.facility.models.patient_consultation import (
+    PatientConsent,
+    PatientConsultation,
+)
 from care.facility.models.patient_sample import PatientSample
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 
 from .models import (
     Building,
@@ -205,7 +209,6 @@ admin.site.register(InventoryLog)
 admin.site.register(Ambulance, AmbulanceAdmin)
 admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
 admin.site.register(PatientRegistration, PatientAdmin)
-admin.site.register(PatientTeleConsultation)
 admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
 admin.site.register(FacilityInventoryUnit)
@@ -218,3 +221,6 @@ admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
+admin.site.register(PatientConsent)
+admin.site.register(FileUpload)
+admin.site.register(PatientConsultation)
