@@ -458,6 +458,10 @@ class PatientShiftingBareMinimumSerializer(serializers.ModelSerializer):
     disease_status = ChoiceField(
         choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
     )
+    age = serializers.SerializerMethodField()
+
+    def get_age(self, obj):
+        return obj.get_age()
 
     class Meta:
         model = PatientRegistration

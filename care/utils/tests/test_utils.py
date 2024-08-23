@@ -16,7 +16,6 @@ from care.facility.models import (
     DISEASE_CHOICES_MAP,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
-    SYMPTOM_CHOICES,
     VEHICLE_CHOICES,
     Ambulance,
     Disease,
