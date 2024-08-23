@@ -320,7 +320,7 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(70)],
     )
-    ventilator_fi02 = models.IntegerField(
+    ventilator_fio2 = models.IntegerField(
         default=None,
         null=True,
         validators=[MinValueValidator(21), MaxValueValidator(100)],

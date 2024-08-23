@@ -35,6 +35,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.asset import (
     AssetConfigSerializer,
     AssetLocationSerializer,
+    AssetPublicSerializer,
     AssetSerializer,
     AssetServiceSerializer,
     AssetTransactionSerializer,
@@ -187,7 +188,7 @@ class AssetFilter(filters.FilterSet):
 
 class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "external_id"
 
     def retrieve(self, request, *args, **kwargs):
@@ -205,7 +206,7 @@ class AssetPublicViewSet(GenericViewSet):
 
 class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "qr_code_id"
 
     def retrieve(self, request, *args, **kwargs):

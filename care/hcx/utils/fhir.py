@@ -71,7 +71,9 @@ class SYSTEM:
     claim_bundle_identifier = "https://www.tmh.in/bundle"
     coverage_eligibility_request_bundle_identifier = "https://www.tmh.in/bundle"
     practitioner_speciality = "http://snomed.info/sct"
-    claim_supporting_info_category = "https://ig.hcxprotocol.io/v0.7.1/ValueSet-claim-supporting-info-categories.html"
+    claim_supporting_info_category = (
+        "http://hcxprotocol.io/codes/claim-supporting-info-categories"
+    )
     related_claim_relationship = (
         "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship"
     )
@@ -1015,8 +1017,8 @@ class Fhir:
             coverageeligibilityresponse.CoverageEligibilityResponse(
                 **list(
                     filter(
-                        lambda entry: type(entry.resource)
-                        == coverageeligibilityresponse.CoverageEligibilityResponse,
+                        lambda entry: entry.resource
+                        is coverageeligibilityresponse.CoverageEligibilityResponse,
                         coverage_eligibility_check_bundle.entry,
                     )
                 )[0].resource.dict()
@@ -1025,7 +1027,7 @@ class Fhir:
         coverage_request = coverage.Coverage(
             **list(
                 filter(
-                    lambda entry: type(entry.resource) == coverage.Coverage,
+                    lambda entry: entry.resource is coverage.Coverage,
                     coverage_eligibility_check_bundle.entry,
                 )
             )[0].resource.dict()
@@ -1055,7 +1057,7 @@ class Fhir:
         claim_response = claimresponse.ClaimResponse(
             **list(
                 filter(
-                    lambda entry: type(entry.resource) == claimresponse.ClaimResponse,
+                    lambda entry: entry.resource is claimresponse.ClaimResponse,
                     claim_bundle.entry,
                 )
             )[0].resource.dict()

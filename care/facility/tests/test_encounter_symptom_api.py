@@ -114,6 +114,37 @@ class TestEncounterSymptomInConsultation(TestUtils, APITestCase):
             {"create_symptoms": ["Duplicate symptoms are not allowed"]},
         )
 
+    def test_create_consultation_with_duplicate_cured_symptoms(self):
+        data = self.consultation_data.copy()
+        data["create_symptoms"] = [
+            {
+                "symptom": Symptom.FEVER,
+                "onset_date": now(),
+                "cure_date": now(),
+            },
+            {
+                "symptom": Symptom.FEVER,
+                "onset_date": now(),
+            },
+            {
+                "symptom": Symptom.OTHERS,
+                "other_symptom": "Other Symptom",
+                "onset_date": now(),
+                "cure_date": now(),
+            },
+            {
+                "symptom": Symptom.OTHERS,
+                "other_symptom": "Other Symptom",
+                "onset_date": now(),
+            },
+        ]
+        response = self.client.post(
+            "/api/v1/consultation/",
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_create_consultation_with_no_symptom(self):
         data = self.consultation_data.copy()
 
