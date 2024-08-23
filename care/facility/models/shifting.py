@@ -3,6 +3,7 @@ from django.db import models
 from care.facility.models import (
     FACILITY_TYPES,
     FacilityBaseModel,
+    PatientAgeFunc,
     pretty_boolean,
     reverse_choices,
 )
@@ -135,6 +136,10 @@ class ShiftingRequest(FacilityBaseModel):
         "emergency": "Emergency Shift",
         "vehicle_preference": "Vehicle Preference",
         "reason": "Reason for Shifting",
+    }
+
+    CSV_ANNOTATE_FIELDS = {
+        "patient__age": PatientAgeFunc(),
     }
 
     CSV_MAKE_PRETTY = {

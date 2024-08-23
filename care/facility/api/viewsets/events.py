@@ -20,7 +20,7 @@ from care.utils.queryset.consultation import get_consultation_queryset
 
 class EventTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = EventTypeSerializer
-    queryset = EventType.objects.all()
+    queryset = EventType.objects.filter(is_active=True)
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[BaseSerializer]:
@@ -47,11 +47,20 @@ class EventTypeViewSet(ReadOnlyModelViewSet):
 
 
 class PatientConsultationEventFilterSet(filters.FilterSet):
+    ordering = filters.OrderingFilter(
+        fields=(
+            "created_date",
+            "taken_at",
+        )
+    )
+
     class Meta:
         model = PatientConsultationEvent
-        fields = {
-            "event_type": ["exact"],
-        }
+        fields = [
+            "event_type",
+            "caused_by",
+            "is_latest",
+        ]
 
 
 class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
