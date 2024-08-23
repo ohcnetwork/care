@@ -13,13 +13,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-# use pipenv to manage virtualenv
-RUN python -m venv /venv
-RUN pip install pipenv
-
-COPY Pipfile Pipfile.lock ./
-RUN pipenv install --system --categories "packages dev-packages"
-
 # Download and install Typst for the correct architecture
 RUN ARCH=$(dpkg --print-architecture) && \
     if [ "$ARCH" = "amd64" ]; then \
@@ -35,6 +28,14 @@ RUN ARCH=$(dpkg --print-architecture) && \
     mv typst-${TYPST_ARCH}/typst /usr/local/bin/typst && \
     chmod +x /usr/local/bin/typst && \
     rm -rf typst.tar.xz typst-${TYPST_ARCH}
+
+# use pipenv to manage virtualenv
+RUN python -m venv /venv
+RUN pip install pipenv
+
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --system --categories "packages dev-packages"
+
 
 COPY . /app
 
