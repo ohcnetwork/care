@@ -6,11 +6,17 @@ from uuid import uuid4
 
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
+from faker import Faker
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
+    BREATHLESSNESS_CHOICES,
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    FACILITY_TYPES,
+    SHIFTING_STATUS_CHOICES,
+    VEHICLE_CHOICES,
     Ambulance,
     Disease,
     DiseaseStatusEnum,
@@ -19,6 +25,8 @@ from care.facility.models import (
     PatientConsultation,
     PatientExternalTest,
     PatientRegistration,
+    ShiftingRequest,
+    ShiftingRequestComment,
     User,
     Ward,
 )
@@ -37,6 +45,8 @@ from care.facility.models.patient_consultation import (
     PatientConsent,
 )
 from care.users.models import District, State
+
+fake = Faker()
 
 
 class override_cache(override_settings):
@@ -615,3 +625,74 @@ class TestUtils:
                 },
                 **self.get_local_body_district_state_representation(facility),
             }
+
+    def create_patient_note(
+        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+    ):
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+        }
+        data.update(kwargs)
+        patientId = patient.external_id
+
+        refresh_token = RefreshToken.for_user(created_by)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
+        )
+
+        self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
+
+    @classmethod
+    def create_patient_shift(
+        cls,
+        facility: Facility = None,
+        user: User = None,
+        patient: PatientRegistration = None,
+        **kwargs,
+    ) -> None:
+        shifting_approving_facility = cls.create_facility(
+            user=cls.user, district=cls.district, local_body=cls.local_body
+        )
+        assigned_facility = shifting_approving_facility
+        data = {
+            "origin_facility": assigned_facility,
+            "shifting_approving_facility": shifting_approving_facility,
+            "assigned_facility_type": fake.random_element(FACILITY_TYPES)[0],
+            "assigned_facility": assigned_facility,
+            "assigned_facility_external": "Assigned Facility External",
+            "patient": patient,
+            "emergency": False,
+            "is_up_shift": False,
+            "reason": "Reason",
+            "vehicle_preference": "Vehicle Preference",
+            "preferred_vehicle_choice": fake.random_element(VEHICLE_CHOICES)[0],
+            "comments": "Comments",
+            "refering_facility_contact_name": "9900199001",
+            "refering_facility_contact_number": "9900199001",
+            "is_kasp": False,
+            "status": fake.random_element(SHIFTING_STATUS_CHOICES)[0],
+            "breathlessness_level": fake.random_element(BREATHLESSNESS_CHOICES)[0],
+            "is_assigned_to_user": False,
+            "assigned_to": user,
+            "ambulance_driver_name": fake.name(),
+            "ambulance_phone_number": "9900199001",
+            "ambulance_number": fake.license_plate(),
+            "created_by": user,
+            "last_edited_by": user,
+        }
+        data.update(kwargs)
+        return ShiftingRequest.objects.create(**data)
+
+    @classmethod
+    def create_patient_shift_comment(
+        cls, resource: ShiftingRequest = None, user: User = None, **kwargs
+    ) -> None:
+        kwargs.update(
+            {
+                "request": resource,
+                "comment": "comment",
+                "created_by": user,
+            }
+        )
+        return ShiftingRequestComment.objects.create(**kwargs)
