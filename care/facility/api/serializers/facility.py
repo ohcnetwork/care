@@ -13,7 +13,7 @@ from care.users.api.serializers.lsg import (
     StateSerializer,
     WardSerializer,
 )
-from care.utils.csp import config as cs_provider
+from care.utils.csp.config import BucketType, get_client_config
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
@@ -48,7 +48,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     patient_count = serializers.SerializerMethodField()
     bed_count = serializers.SerializerMethodField()
 
@@ -96,7 +99,10 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     # }
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     bed_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -138,12 +144,21 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         read_only_fields = ("modified_date", "created_date")
 
     def validate_middleware_address(self, value):
+        if not value:
+            raise serializers.ValidationError("Middleware Address is required")
         value = value.strip()
         if not value:
             return value
 
         # Check if the address is valid
         MiddlewareDomainAddressValidator()(value)
+        return value
+
+    def validate_features(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                "Features should not contain duplicate values."
+            )
         return value
 
     def create(self, validated_data):
@@ -164,16 +179,17 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         facility = self.instance
         image = self.validated_data["cover_image"]
         image_extension = image.name.rsplit(".", 1)[-1]
-        s3 = boto3.client(
-            "s3",
-            **cs_provider.get_client_config(cs_provider.BucketType.FACILITY.value),
-        )
+        config, bucket_name = get_client_config(BucketType.FACILITY)
+        s3 = boto3.client("s3", **config)
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
-        s3.put_object(
-            Bucket=settings.FACILITY_S3_BUCKET,
-            Key=image_location,
-            Body=image.file,
-        )
+        boto_params = {
+            "Bucket": bucket_name,
+            "Key": image_location,
+            "Body": image.file,
+        }
+        if settings.BUCKET_HAS_FINE_ACL:
+            boto_params["ACL"] = "public-read"
+        s3.put_object(**boto_params)
         facility.cover_image_url = image_location
         facility.save()
         return facility

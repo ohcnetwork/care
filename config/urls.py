@@ -10,7 +10,7 @@ from drf_spectacular.views import (
 )
 
 from care.abdm.urls import abdm_urlpatterns
-from care.facility.api.viewsets.open_id import OpenIdConfigView
+from care.facility.api.viewsets.open_id import PublicJWKsView
 from care.facility.api.viewsets.patient_consultation import (
     dev_preview_discharge_summary,
 )
@@ -27,13 +27,18 @@ from care.users.reset_password_views import (
     ResetPasswordRequestToken,
 )
 from config import api_router
-from config.health_views import MiddlewareAuthenticationVerifyView
+from config.health_views import (
+    MiddlewareAssetAuthenticationVerifyView,
+    MiddlewareAuthenticationVerifyView,
+)
 
 from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
-from .views import home_view
+from .views import app_version, home_view, ping
 
 urlpatterns = [
     path("", home_view, name="home"),
+    path("ping/", ping, name="ping"),
+    path("app_version/", app_version, name="app_version"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Rest API
@@ -90,12 +95,12 @@ urlpatterns = [
     ),
     # Health check urls
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
-    path(
-        ".well-known/openid-configuration",
-        OpenIdConfigView.as_view(),
-        name="openid-configuration",
-    ),
+    path("middleware/verify-asset", MiddlewareAssetAuthenticationVerifyView.as_view()),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
+    # OpenID Connect
+    path(".well-known/jwks.json", PublicJWKsView.as_view(), name="jwks-json"),
+    # TODO: Remove the config url as its not a standard implementation
+    path(".well-known/openid-configuration", PublicJWKsView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.ENABLE_ABDM:
@@ -142,3 +147,6 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
         ),
         path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     ]
+
+for plug in settings.PLUGIN_APPS:
+    urlpatterns += [path(f"api/{plug}/", include(f"{plug}.urls"))]

@@ -25,6 +25,7 @@ from care.facility.models import (
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import DISEASE_STATUS_CHOICES, DiseaseStatusEnum
+from care.facility.models.patient_base import NewDischargeReasonEnum
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.lsg import StateSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
@@ -72,9 +73,9 @@ def discharge_patient(patient: PatientRegistration):
         PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
     )
     if last_consultation:
-        reason = "REF"
+        reason = NewDischargeReasonEnum.REFERRED
         notes = "Patient Shifted to another facility"
-        last_consultation.discharge_reason = reason
+        last_consultation.new_discharge_reason = reason
         last_consultation.discharge_notes = notes
         last_consultation.discharge_date = current_time
         last_consultation.current_bed = None
@@ -324,8 +325,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
         if (
             "status" in validated_data
             and validated_data["status"] == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            and not has_facility_permission(user, instance.origin_facility)
         ):
-            discharge_patient(instance.patient)
+            raise ValidationError(
+                {
+                    "status": [
+                        "Permission Denied - Only staff from the origin facility can mark the shift as complete."
+                    ]
+                }
+            )
 
         old_status = instance.status
         new_instance = super().update(instance, validated_data)

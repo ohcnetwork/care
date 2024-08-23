@@ -16,7 +16,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
 )
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -64,6 +64,19 @@ class PatientExternalTestFilter(filters.FilterSet):
     created_date = DateFromToRangeFilter(field_name="created_date")
 
 
+class PatientExternalTestPermission(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.user_type not in (
+            User.TYPE_VALUE_MAP["StaffReadOnly"],
+            User.TYPE_VALUE_MAP["Staff"],
+            User.TYPE_VALUE_MAP["NurseReadOnly"],
+            User.TYPE_VALUE_MAP["Nurse"],
+        )
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
 class PatientExternalTestViewSet(
     RetrieveModelMixin,
     ListModelMixin,
@@ -77,7 +90,7 @@ class PatientExternalTestViewSet(
         .all()
         .order_by("-id")
     )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, PatientExternalTestPermission)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientExternalTestFilter
     parser_classes = (MultiPartParser, FormParser, JSONParser)
@@ -143,6 +156,12 @@ class PatientExternalTestViewSet(
             raise ValidationError({"sample_tests": "No Data was provided"})
         if not isinstance(request.data["sample_tests"], list):
             raise ValidationError({"sample_tests": "Data should be provided as a list"})
+
+        # check if the user is from same district
+        for data in request.data["sample_tests"]:
+            if str(request.user.district) != data["district"]:
+                raise ValidationError({"Error": "User must belong to same district"})
+
         errors = []
         counter = 0
         ser_objects = []

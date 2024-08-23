@@ -4,7 +4,7 @@
   },
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.organizeImports": "explicit"
     },
     "editor.formatOnSave": true
   },
@@ -18,7 +18,7 @@
   },
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-  "githubPullRequests.ignoredPullRequestBranches": ["master"],
+  "githubPullRequests.ignoredPullRequestBranches": ["develop", "staging"],
   "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",

@@ -1,13 +1,16 @@
 import enum
 import uuid
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import JSONField, Q
 
 from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
-from care.facility.models.mixins.permissions.asset import AssetsPermissionMixin
+from care.facility.models.mixins.permissions.facility import (
+    FacilityRelatedPermissionMixin,
+)
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.models.base import BaseModel
@@ -25,7 +28,7 @@ class AvailabilityStatus(models.TextChoices):
     UNDER_MAINTENANCE = "Under Maintenance"
 
 
-class AssetLocation(BaseModel, AssetsPermissionMixin):
+class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     """
     This model is also used to store rooms that the assets are in, Since these rooms are mapped to
     actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts
@@ -34,6 +37,7 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     class RoomType(enum.Enum):
         OTHER = 1
         ICU = 10
+        WARD = 20
 
     RoomTypeChoices = [(e.value, e.name) for e in RoomType]
 
@@ -44,6 +48,10 @@ class AssetLocation(BaseModel, AssetsPermissionMixin):
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
+    )
+
+    middleware_address = models.CharField(
+        null=True, blank=True, default=None, max_length=200
     )
 
 
@@ -92,7 +100,7 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14,
+        max_length=15,
         validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))],
         default="",
     )
@@ -113,19 +121,18 @@ class Asset(BaseModel):
         "description": "Description",
         "asset_type": "Type",
         "asset_class": "Class",
-        "status": "Working Status",
-        "current_location": "Current Location",
-        "is_working": "Is Working",
+        "status": "Status",
+        "current_location__name": "Current Location Name",
+        "is_working": "Working Status",
         "not_working_reason": "Not Working Reason",
         "serial_number": "Serial Number",
-        "warranty_details": "Warranty Details",
         "vendor_name": "Vendor Name",
         "support_name": "Support Name",
         "support_phone": "Support Phone Number",
         "support_email": "Support Email",
         "qr_code_id": "QR Code ID",
         "manufacturer": "Manufacturer",
-        "warranty_amc_end_of_validity": "Warrenty End Date",
+        "warranty_amc_end_of_validity": "Warranty End Date",
         "last_service__serviced_on": "Last Service Date",
         "last_service__note": "Notes",
         "meta__local_ip_address": "Config - IP Address",
@@ -135,7 +142,26 @@ class Asset(BaseModel):
     CSV_MAKE_PRETTY = {
         "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
         "status": (lambda x: REVERSE_STATUS[x]),
+        "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
+
+    @property
+    def resolved_middleware(self):
+        if hostname := self.meta.get("middleware_hostname"):
+            return {
+                "hostname": hostname,
+                "source": "asset",
+            }
+        if hostname := self.current_location.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "location",
+            }
+        if hostname := self.current_location.facility.middleware_address:
+            return {
+                "hostname": hostname,
+                "source": "facility",
+            }
 
     class Meta:
         constraints = [
@@ -152,23 +178,46 @@ class Asset(BaseModel):
         AssetBed.objects.filter(asset=self).update(deleted=True)
         super().delete(*args, **kwargs)
 
+    @staticmethod
+    def has_write_permission(request):
+        if request.user.asset or request.user.user_type in User.READ_ONLY_TYPES:
+            return False
+        return (
+            request.user.is_superuser
+            or request.user.verified
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    def has_object_write_permission(self, request):
+        return self.has_write_permission(request)
+
+    @staticmethod
+    def has_read_permission(request):
+        return request.user.is_superuser or request.user.verified
+
+    def has_object_read_permission(self, request):
+        return self.has_read_permission(request)
+
     def __str__(self):
         return self.name
 
 
-class AssetAvailabilityRecord(BaseModel):
+class AvailabilityRecord(BaseModel):
     """
-    Model to store the availability status of an asset at a particular timestamp.
+    Model to store the availability status of an object (Asset/AssetLocation for now) at a particular timestamp.
 
     Fields:
-    - asset: ForeignKey to Asset model
+    - content_type: ContentType of the related model
+    - object_external_id: UUIDField to store the external_id of the related model
+    - content_object: To get the linked object
     - status: CharField with choices from AvailabilityStatus
     - timestamp: DateTimeField to store the timestamp of the availability record
 
-    Note: A pair of asset and timestamp together should be unique, not just the timestamp alone.
+    Note: A pair of (object_external_id, timestamp) is unique
     """
 
-    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_external_id = models.UUIDField()
     status = models.CharField(
         choices=AvailabilityStatus.choices,
         default=AvailabilityStatus.NOT_MONITORED,
@@ -177,11 +226,24 @@ class AssetAvailabilityRecord(BaseModel):
     timestamp = models.DateTimeField(null=False, blank=False)
 
     class Meta:
-        unique_together = (("asset", "timestamp"),)
+        indexes = [
+            models.Index(fields=["content_type", "object_external_id"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                name="object_external_id_timestamp",
+                fields=["object_external_id", "timestamp"],
+            )
+        ]
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.asset.name} - {self.status} - {self.timestamp}"
+        return f"{self.content_type} ({self.object_external_id}) - {self.status} - {self.timestamp}"
+
+    @property
+    def content_object(self):
+        model = self.content_type.model_class()
+        return model.objects.get(external_id=self.object_external_id)
 
 
 class UserDefaultAssetLocation(BaseModel):

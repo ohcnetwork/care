@@ -7,31 +7,44 @@ from uuid import uuid4
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
 from faker import Faker
-from pytz import unicode
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
     CATEGORY_CHOICES,
-    COVID_CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     SYMPTOM_CHOICES,
     VEHICLE_CHOICES,
+    Ambulance,
     Disease,
     DiseaseStatusEnum,
     Facility,
     LocalBody,
     PatientConsultation,
+    PatientExternalTest,
     PatientRegistration,
     ShiftingRequest,
     ShiftingRequestComment,
     User,
+    Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
+from care.facility.models.bed import Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
+from care.facility.models.icd11_diagnosis import (
+    ConditionVerificationStatus,
+    ConsultationDiagnosis,
+    ICD11Diagnosis,
+)
+from care.facility.models.patient import RationCardCategory
+from care.facility.models.patient_consultation import (
+    ConsentType,
+    PatientCodeStatusType,
+    PatientConsent,
+)
 from care.users.models import District, State
 
 fake = Faker()
@@ -48,7 +61,7 @@ class override_cache(override_settings):
         super().__init__(
             CACHES={
                 "default": {
-                    "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                    "BACKEND": "config.caches.LocMemCache",
                     "LOCATION": f"care-test-{uuid.uuid4()}",
                 }
             },
@@ -87,8 +100,6 @@ class TestUtils:
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
-    maxDiff = None
-
     def setUp(self) -> None:
         self.client.force_login(self.user)
 
@@ -100,12 +111,16 @@ class TestUtils:
         raise NotImplementedError()
 
     @classmethod
-    def create_state(cls) -> State:
-        return State.objects.create(name=f"State{now().timestamp()}")
+    def create_state(cls, **kwargs) -> State:
+        data = {"name": f"State{now().timestamp()}"}
+        data.update(kwargs)
+        return State.objects.create(**data)
 
     @classmethod
-    def create_district(cls, state: State) -> District:
-        return District.objects.create(state=state, name=f"District{now().timestamp()}")
+    def create_district(cls, state: State, **kwargs) -> District:
+        data = {"state": state, "name": f"District{now().timestamp()}"}
+        data.update(**kwargs)
+        return District.objects.create(**data)
 
     @classmethod
     def create_local_body(cls, district: District, **kwargs) -> LocalBody:
@@ -133,12 +148,12 @@ class TestUtils:
         """
 
         return {
-            "user_type": user_type or User.TYPE_VALUE_MAP["Staff"],
+            "user_type": user_type or User.TYPE_VALUE_MAP["Nurse"],
             "district": district,
             "state": district.state,
             "phone_number": "8887776665",
             "gender": 2,
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "email": "foo@foobar.com",
             "username": "user",
             "password": "bar",
@@ -162,7 +177,7 @@ class TestUtils:
         data = {
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
-            "age": 30,
+            "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "verified": True,
             "username": username,
@@ -170,13 +185,23 @@ class TestUtils:
             "state": district.state,
             "district": district,
             "local_body": local_body,
-            "user_type": User.TYPE_VALUE_MAP["Staff"],
+            "user_type": User.TYPE_VALUE_MAP["Nurse"],
         }
         data.update(kwargs)
         user = User.objects.create_user(**data)
         if home_facility := kwargs.get("home_facility"):
             cls.link_user_with_facility(user, home_facility, user)
         return user
+
+    @classmethod
+    def create_ward(cls, local_body, **kwargs) -> Ward:
+        data = {
+            "name": f"Ward{now().timestamp()}",
+            "local_body": local_body,
+            "number": 1,
+        }
+        data.update(kwargs)
+        return Ward.objects.create(**data)
 
     @classmethod
     def create_super_user(cls, *args, **kwargs) -> User:
@@ -230,13 +255,13 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        return Facility.objects.create(**data)
+        facility = Facility.objects.create(**data)
+        return facility
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
         return {
             "name": "Foo",
-            "age": 32,
             "date_of_birth": date(1992, 4, 1),
             "gender": 2,
             "is_medical_worker": True,
@@ -266,6 +291,7 @@ class TestUtils:
             "date_of_receipt_of_information": make_aware(
                 datetime(2020, 4, 1, 15, 30, 00)
             ),
+            "ration_card_category": RationCardCategory.NON_CARD_HOLDER,
         }
 
     @classmethod
@@ -297,26 +323,21 @@ class TestUtils:
         return patient
 
     @classmethod
-    def get_consultation_data(cls):
+    def get_consultation_data(cls) -> dict:
         return {
-            "patient": cls.patient,
-            "facility": cls.facility,
-            "symptoms": [SYMPTOM_CHOICES[0][0], SYMPTOM_CHOICES[1][0]],
-            "other_symptoms": "No other symptoms",
-            "symptoms_onset_date": make_aware(datetime(2020, 4, 7, 15, 30)),
-            "deprecated_covid_category": COVID_CATEGORY_CHOICES[0][0],
             "category": CATEGORY_CHOICES[0][0],
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
-            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][0],
-            "referred_to": None,
-            "admission_date": None,
+            "suggestion": PatientConsultation.SUGGESTION_CHOICES[0][
+                0
+            ],  # HOME ISOLATION
+            "encounter_date": make_aware(datetime(2020, 4, 7, 15, 30)),
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "created_date": mock_equal,
-            "modified_date": mock_equal,
+            "patient_no": int(datetime.now().timestamp() * 1000),
+            "route_to_facility": 10,
         }
 
     @classmethod
@@ -324,6 +345,7 @@ class TestUtils:
         cls,
         patient: PatientRegistration,
         facility: Facility,
+        doctor: User | None = None,
         referred_to=None,
         **kwargs,
     ) -> PatientConsultation:
@@ -333,14 +355,56 @@ class TestUtils:
                 "patient": patient,
                 "facility": facility,
                 "referred_to": referred_to,
+                "treating_physician": doctor,
             }
         )
         data.update(kwargs)
-        return PatientConsultation.objects.create(**data)
+        consultation = PatientConsultation.objects.create(**data)
+        patient.last_consultation = consultation
+        patient.facility = consultation.facility
+        patient.save()
+        return consultation
+
+    @classmethod
+    def get_patient_external_test_data(cls, district, local_body, ward) -> dict:
+        return {
+            "district": district,
+            "srf_id": "00/EKM/0000",
+            "name": now().timestamp(),
+            "age": 24,
+            "age_in": "years",
+            "gender": "m",
+            "mobile_number": 8888888888,
+            "address": "Upload test address",
+            "ward": ward,
+            "local_body": local_body,
+            "source": "Secondary contact aparna",
+            "sample_collection_date": "2020-10-14",
+            "result_date": "2020-10-14",
+            "test_type": "Antigen",
+            "lab_name": "Karothukuzhi Laboratory",
+            "sample_type": "Ag-SD_Biosensor_Standard_Q_COVID-19_Ag_detection_kit",
+            "patient_status": "Asymptomatic",
+            "is_repeat": True,
+            "patient_category": "Cat 17: All individuals who wish to get themselves tested",
+            "result": "Negative",
+        }
+
+    @classmethod
+    def create_patient_external_test(
+        cls, district: District, local_body: LocalBody, ward: Ward, **kwargs
+    ) -> PatientExternalTest:
+        data = cls.get_patient_external_test_data(district, local_body, ward).copy()
+        data.update(kwargs)
+        return PatientExternalTest.objects.create(**data)
 
     @classmethod
     def create_asset_location(cls, facility: Facility, **kwargs) -> AssetLocation:
-        data = {"name": "asset1 location", "location_type": 1, "facility": facility}
+        data = {
+            "name": "asset1 location",
+            "location_type": 1,
+            "facility": facility,
+        }
         data.update(kwargs)
         return AssetLocation.objects.create(**data)
 
@@ -351,10 +415,68 @@ class TestUtils:
             "current_location": location,
             "asset_type": 50,
             "warranty_amc_end_of_validity": make_aware(datetime(2030, 4, 1)).date(),
-            "qr_code_id": "3dcee5fa-8fb8-4b07-be12-8e0d0baf6692",
+            "qr_code_id": uuid.uuid4(),
         }
         data.update(kwargs)
         return Asset.objects.create(**data)
+
+    @classmethod
+    def create_bed(cls, facility: Facility, location: AssetLocation, **kwargs):
+        data = {
+            "bed_type": 1,
+            "description": "Sample bed",
+            "facility": facility,
+            "location": location,
+            "name": "Test Bed",
+        }
+        data.update(kwargs)
+        return Bed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_bed(
+        cls,
+        consultation: PatientConsultation,
+        bed: Bed,
+        **kwargs,
+    ):
+        data = {
+            "bed": bed,
+            "consultation": consultation,
+            "start_date": make_aware(datetime(2020, 4, 1, 15, 30)),
+        }
+        data.update(kwargs)
+        return ConsultationBed.objects.create(**data)
+
+    @classmethod
+    def create_consultation_diagnosis(
+        cls,
+        consultation: PatientConsultation,
+        diagnosis: ICD11Diagnosis,
+        verification_status: ConditionVerificationStatus,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "diagnosis": diagnosis,
+            "verification_status": verification_status,
+        }
+        data.update(kwargs)
+        return ConsultationDiagnosis.objects.create(**data)
+
+    @classmethod
+    def create_patient_consent(
+        cls,
+        consultation: PatientConsultation,
+        **kwargs,
+    ):
+        data = {
+            "consultation": consultation,
+            "type": ConsentType.PATIENT_CODE_STATUS,
+            "patient_code_status": PatientCodeStatusType.COMFORT_CARE,
+            "created_by": consultation.created_by,
+        }
+        data.update(kwargs)
+        return PatientConsent.objects.create(**data)
 
     @classmethod
     def clone_object(cls, obj, save=True):
@@ -368,6 +490,29 @@ class TestUtils:
         if save:
             new_obj.save()
         return new_obj
+
+    @classmethod
+    def get_ambulance_data(cls, district, user) -> dict:
+        return {
+            "vehicle_number": "KL01AB1234",
+            "owner_name": "Foo",
+            "owner_phone_number": "9998887776",
+            "primary_district": district,
+            "has_oxygen": True,
+            "has_ventilator": True,
+            "has_suction_machine": True,
+            "has_defibrillator": True,
+            "insurance_valid_till_year": 2021,
+            "price_per_km": 10,
+            "has_free_service": False,
+            "created_by": user,
+        }
+
+    @classmethod
+    def create_ambulance(cls, district: District, user: User, **kwargs) -> Ambulance:
+        data = cls.get_ambulance_data(district, user)
+        data.update(**kwargs)
+        return Ambulance.objects.create(**data)
 
     def get_list_representation(self, obj) -> dict:
         """
@@ -450,13 +595,7 @@ class TestUtils:
                 value, (type(None), EverythingEquals)
             ):
                 return_value = value
-                if isinstance(
-                    value,
-                    (
-                        str,
-                        unicode,
-                    ),
-                ):
+                if isinstance(value, str):
                     return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
                 return (
                     return_value.astimezone(tz=UTC)

@@ -1,9 +1,12 @@
+import re
 from typing import Iterable, List
 
 import jsonschema
+from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
 
 
 @deconstructible
@@ -42,6 +45,18 @@ class JSONFieldSchemaValidator:
 
             message = str(error).replace("\n\n", ": ").replace("\n", "")
             container.append(ValidationError(message))
+
+
+@deconstructible
+class UsernameValidator(validators.RegexValidator):
+    regex = r"^(?!.*[._-]{2})[a-z0-9](?:[a-z0-9._-]{2,14}[a-z0-9])$"
+    message = _(
+        "Username must be 4 to 16 characters long. "
+        "It may only contain lowercase alphabets, numbers, underscores, hyphens and dots. "
+        "It shouldn't start or end with underscores, hyphens or dots. "
+        "It shouldn't contain consecutive underscores, hyphens or dots."
+    )
+    flags = re.ASCII
 
 
 @deconstructible
@@ -95,3 +110,87 @@ class PhoneNumberValidator(RegexValidator):
 
 mobile_validator = PhoneNumberValidator(types=("mobile",))
 mobile_or_landline_number_validator = PhoneNumberValidator(types=("mobile", "landline"))
+
+
+@deconstructible
+class DenominationValidator:
+    """
+    This validator is used to validate string inputs with denominations.
+    for example: 1 mg, 1.5 ml, 200 mg etc.
+    """
+
+    def __init__(
+        self,
+        min_amount: int | float,
+        max_amount: int | float,
+        units: Iterable[str],
+        allow_floats: bool = True,
+        precision: int = 2,
+    ):
+        self.min_amount = min_amount
+        self.max_amount = max_amount
+        self.allowed_units = units
+        self.allow_floats = allow_floats
+        self.precision = precision
+
+        if not allow_floats and (
+            isinstance(min_amount, float) or isinstance(max_amount, float)
+        ):
+            raise ValueError(
+                "If floats are not allowed, min_amount and max_amount must be integers"
+            )
+
+    def __call__(self, value: str):
+        try:
+            amount, unit = value.split(" ", maxsplit=1)
+            if unit not in self.allowed_units:
+                raise ValidationError(
+                    f"Unit must be one of {', '.join(self.allowed_units)}"
+                )
+
+            amount_number: int | float = float(amount)
+            if amount_number.is_integer():
+                amount_number = int(amount_number)
+            elif not self.allow_floats:
+                raise ValidationError("Input amount must be an integer")
+            elif len(str(amount_number).split(".")[1]) > self.precision:
+                raise ValidationError("Input amount must have at most 4 decimal places")
+
+            if len(amount) != len(str(amount_number)):
+                raise ValidationError(
+                    f"Input amount must be a valid number without leading{' or trailing ' if self.allow_floats else ' '}zeroes"
+                )
+
+            if self.min_amount > amount_number or amount_number > self.max_amount:
+                raise ValidationError(
+                    f"Input amount must be between {self.min_amount} and {self.max_amount}"
+                )
+        except ValueError:
+            raise ValidationError(
+                "Invalid Input, must be in the format: <amount> <unit>"
+            )
+
+    def clean(self, value: str):
+        if value is None:
+            return None
+        return value.strip()
+
+    def __eq__(self, __value: object) -> bool:  # pragma: no cover
+        if not isinstance(__value, DenominationValidator):
+            return False
+        return (
+            self.min_amount == __value.min_amount
+            and self.max_amount == __value.max_amount
+            and self.allowed_units == __value.allowed_units
+            and self.allow_floats == __value.allow_floats
+            and self.precision == __value.precision
+        )
+
+
+dosage_validator = DenominationValidator(
+    min_amount=0.0001,
+    max_amount=5000,
+    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp", "mcg", "unit(s)"},
+    allow_floats=True,
+    precision=4,
+)

@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from dry_rest_permissions.generics import DRYPermissions
+from redis_om import FindQuery
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,11 +17,17 @@ from care.facility.api.serializers.prescription import (
 from care.facility.models import (
     MedicineAdministration,
     Prescription,
+    PrescriptionDosageType,
     PrescriptionType,
     generate_choices,
 )
+from care.facility.models.notification import Notification
+from care.facility.static_data.medibase import MedibaseMedicine
 from care.utils.filters.choicefilter import CareChoiceFilter
+from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.consultation import get_consultation_queryset
+from care.utils.static_data.helpers import query_builder, token_escaper
 
 
 def inverse_choices(choices):
@@ -29,18 +38,27 @@ def inverse_choices(choices):
 
 
 inverse_prescription_type = inverse_choices(generate_choices(PrescriptionType))
+inverse_prescription_dosage_type = inverse_choices(
+    generate_choices(PrescriptionDosageType)
+)
 
 
 class MedicineAdminstrationFilter(filters.FilterSet):
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
     administered_date = filters.DateFromToRangeFilter(field_name="administered_date")
+    archived = filters.BooleanFilter(method="archived_filter")
+
+    def archived_filter(self, queryset, name, value):
+        if value is None:
+            return queryset
+        return queryset.exclude(archived_on__isnull=value)
 
 
 class MedicineAdministrationViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
 ):
     serializer_class = MedicineAdministrationSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = MedicineAdministration.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -57,11 +75,25 @@ class MedicineAdministrationViewSet(
         consultation_obj = self.get_consultation_obj()
         return self.queryset.filter(prescription__consultation_id=consultation_obj.id)
 
+    @extend_schema(tags=["prescription_administration"])
+    @action(methods=["POST"], detail=True)
+    def archive(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.archived_on:
+            return Response(
+                {"error": "Already Archived"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        instance.archived_by = request.user
+        instance.archived_on = timezone.now()
+        instance.save()
+        return Response({}, status=status.HTTP_200_OK)
+
 
 class ConsultationPrescriptionFilter(filters.FilterSet):
-    is_prn = filters.BooleanFilter()
+    dosage_type = MultiSelectFilter()
     prescription_type = CareChoiceFilter(choice_dict=inverse_prescription_type)
     discontinued = filters.BooleanFilter()
+    medicine = filters.UUIDFilter(field_name="medicine__external_id")
 
 
 class ConsultationPrescriptionViewSet(
@@ -71,7 +103,7 @@ class ConsultationPrescriptionViewSet(
     GenericViewSet,
 ):
     serializer_class = PrescriptionSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = Prescription.objects.all().order_by("-created_date")
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -90,6 +122,13 @@ class ConsultationPrescriptionViewSet(
 
     def perform_create(self, serializer):
         consultation_obj = self.get_consultation_obj()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_PRESCRIPTION_CREATED,
+            caused_by=self.request.user,
+            caused_object=consultation_obj,
+            facility=consultation_obj.facility,
+            generate_for_facility=True,
+        ).generate()
         serializer.save(prescribed_by=self.request.user, consultation=consultation_obj)
 
     @extend_schema(tags=["prescriptions"])
@@ -103,6 +142,14 @@ class ConsultationPrescriptionViewSet(
         prescription_obj.discontinued_reason = request.data.get(
             "discontinued_reason", None
         )
+        consultation_obj = self.get_consultation_obj()
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_PRESCRIPTION_UPDATED,
+            caused_by=self.request.user,
+            caused_object=consultation_obj,
+            facility=consultation_obj.facility,
+            generate_for_facility=True,
+        ).generate()
         prescription_obj.save()
         return Response({}, status=status.HTTP_200_OK)
 
@@ -126,77 +173,31 @@ class ConsultationPrescriptionViewSet(
         serializer.save(prescription=prescription_obj, administered_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # @action(methods=["GET"], detail=True)
-    # def get_administrations(self, request, *args, **kwargs):
-    #     prescription_obj = self.get_object()
-    #     serializer = MedicineAdministrationSerializer(
-    #         MedicineAdministration.objects.filter(prescription_id=prescription_obj.id),
-    #         many=True)
-    #     return Response(serializer.data)
-
-    # @action(methods=["DELETE"], detail=True)
-    # def delete_administered(self, request, *args, **kwargs):
-    #     if not request.query_params.get("id", None):
-    #         return Response({"success": False, "error": "id is required"}, status=status.HTTP_400_BAD_REQUEST)
-    #     administered_obj = MedicineAdministration.objects.get(external_id=request.query_params.get("id", None))
-    #     administered_obj.delete()
-    #     return Response({"success": True}, status=status.HTTP_200_OK)
-
 
 class MedibaseViewSet(ViewSet):
     permission_classes = (IsAuthenticated,)
 
-    def serailize_data(self, objects):
-        return [
-            {
-                "id": x[0],
-                "name": x[1],
-                "type": x[2],
-                "generic": x[3],
-                "company": x[4],
-                "contents": x[5],
-                "cims_class": x[6],
-                "atc_classification": x[7],
-            }
-            for x in objects
-        ]
-
-    def sort(self, query, results):
-        exact_matches = []
-        word_matches = []
-        partial_matches = []
-
-        for x in results:
-            name = x[1].lower()
-            generic = x[3].lower()
-            company = x[4].lower()
-            words = f"{name} {generic} {company}".split()
-
-            if name == query:
-                exact_matches.append(x)
-            elif query in words:
-                word_matches.append(x)
-            else:
-                partial_matches.append(x)
-
-        return exact_matches + word_matches + partial_matches
+    def serialize_data(self, objects: list[MedibaseMedicine]):
+        return [medicine.get_representation() for medicine in objects]
 
     def list(self, request):
-        from care.facility.static_data.medibase import MedibaseMedicineTable
-
-        queryset = MedibaseMedicineTable
-
-        if type := request.query_params.get("type"):
-            queryset = [x for x in queryset if x[2] == type]
-
-        if query := request.query_params.get("query"):
-            query = query.strip().lower()
-            queryset = [x for x in queryset if query in f"{x[1]} {x[3]} {x[4]}".lower()]
-            queryset = self.sort(query, queryset)
-
         try:
-            limit = min(int(request.query_params.get("limit", 30)), 100)
-        except ValueError:
+            limit = min(int(request.query_params.get("limit")), 30)
+        except (ValueError, TypeError):
             limit = 30
 
-        return Response(self.serailize_data(queryset[:limit]))
+        query = []
+        if type := request.query_params.get("type"):
+            query.append(MedibaseMedicine.type == type)
+
+        if q := request.query_params.get("query"):
+            query.append(
+                (MedibaseMedicine.name == token_escaper.escape(q))
+                | (MedibaseMedicine.vec % query_builder(q))
+            )
+
+        result = FindQuery(
+            expressions=query, model=MedibaseMedicine, limit=limit
+        ).execute(exhaust_results=False)
+
+        return Response(self.serialize_data(result))

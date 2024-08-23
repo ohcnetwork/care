@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
@@ -38,6 +39,7 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+# to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
     (2, "Maternity Care"),
@@ -47,9 +49,20 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
+
+class FacilityFeature(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, "CT Scan Facility"
+    MATERNITY_CARE = 2, "Maternity Care"
+    X_RAY_FACILITY = 3, "X-Ray Facility"
+    NEONATAL_CARE = 4, "Neonatal Care"
+    OPERATION_THEATER = 5, "Operation Theater"
+    BLOOD_BANK = 6, "Blood Bank"
+
+
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -59,26 +72,27 @@ FACILITY_TYPES = [
     (5, "Hotel"),
     (6, "Lodge"),
     (7, "TeleMedicine"),
-    (8, "Govt Hospital"),
-    (9, "Labs"),
+    # (8, "Govt Hospital"), # Change from "Govt Hospital" to "Govt Medical College Hospitals"
+    (9, "Govt Labs"),
+    (10, "Private Labs"),
     # Use 8xx for Govt owned hospitals and health centres
     (800, "Primary Health Centres"),
-    (801, "24x7 Public Health Centres"),
+    # (801, "24x7 Public Health Centres"), # Change from "24x7 Public Health Centres" to "Primary Health Centres"
     (802, "Family Health Centres"),
     (803, "Community Health Centres"),
-    (820, "Urban Primary Health Center"),
+    # (820, "Urban Primary Health Center"),   # Change from "Urban Primary Health Center" to "Primary Health Centres"
     (830, "Taluk Hospitals"),
-    (831, "Taluk Headquarters Hospitals"),
+    # (831, "Taluk Headquarters Hospitals"),     # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
     (840, "Women and Child Health Centres"),
-    (850, "General hospitals"),  # TODO: same as 8, need to merge
+    # (850, "General hospitals"),  # Change from "General hospitals" to "District Hospitals"
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
     (900, "Co-operative hospitals"),
     (910, "Autonomous healthcare facility"),
     # Use 9xx for Labs
-    (950, "Corona Testing Labs"),
+    # (950, "Corona Testing Labs"),    # Change from "Corona Testing Labs" to "Govt Labs"
     # Use 10xx for Corona Care Center
-    (1000, "Corona Care Centre"),
+    # (1000, "Corona Care Centre"),   # Change from "Corona Care Centre" to "Other"
     (1010, "COVID-19 Domiciliary Care Center"),
     # Use 11xx for First Line Treatment Centre
     (1100, "First Line Treatment Centre"),
@@ -100,9 +114,52 @@ REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 DOCTOR_TYPES = [
     (1, "General Medicine"),
     (2, "Pulmonology"),
-    (3, "Critical Care"),
-    (4, "Paediatrics"),
-    (5, "Other Speciality"),
+    (3, "Intensivist"),
+    (4, "Pediatrician"),
+    (5, "Others"),
+    (6, "Anesthesiologist"),
+    (7, "Cardiac Surgeon"),
+    (8, "Cardiologist"),
+    (9, "Dentist"),
+    (10, "Dermatologist"),
+    (11, "Diabetologist"),
+    (12, "Emergency Medicine Physician"),
+    (13, "Endocrinologist"),
+    (14, "Family Physician"),
+    (15, "Gastroenterologist"),
+    (16, "General Surgeon"),
+    (17, "Geriatrician"),
+    (18, "Hematologist"),
+    (29, "Immunologist"),
+    (20, "Infectious Disease Specialist"),
+    (21, "MBBS doctor"),
+    (22, "Medical Officer"),
+    (23, "Nephrologist"),
+    (24, "Neuro Surgeon"),
+    (25, "Neurologist"),
+    (26, "Obstetrician and Gynecologist"),
+    (27, "Oncologist"),
+    (28, "Oncology Surgeon"),
+    (29, "Ophthalmologist"),
+    (30, "Oral and Maxillofacial Surgeon"),
+    (31, "Orthopedic"),
+    (32, "Orthopedic Surgeon"),
+    (33, "Otolaryngologist (ENT)"),
+    (34, "Palliative care Physician"),
+    (35, "Pathologist"),
+    (36, "Pediatric Surgeon"),
+    (37, "Physician"),
+    (38, "Plastic Surgeon"),
+    (39, "Psychiatrist"),
+    (40, "Pulmonologist"),
+    (41, "Radio technician"),
+    (42, "Radiologist"),
+    (43, "Rheumatologist"),
+    (44, "Sports Medicine Specialist"),
+    (45, "Thoraco-Vascular Surgeon"),
+    (46, "Transfusion Medicine Specialist"),
+    (47, "Urologist"),
+    (48, "Nurse"),
 ]
 
 REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
@@ -116,13 +173,17 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(
+    features = ArrayField(
+        models.SmallIntegerField(choices=FacilityFeature.choices),
+        blank=True,
+        null=True,
+    )
+    old_features = MultiSelectField(
         choices=FEATURE_CHOICES,
         null=True,
         blank=True,
         max_length=get_max_length(FEATURE_CHOICES, None),
     )
-
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
     )
@@ -175,7 +236,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
 
     def read_cover_image_url(self):
         if self.cover_image_url:
-            return f"{settings.FACILITY_S3_STATIC_PREFIX}/{self.cover_image_url}"
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
         return None
 
     def __str__(self):
@@ -199,6 +260,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    @property
+    def get_features_display(self):
+        if not self.features:
+            return []
+        return [FacilityFeature(f).label for f in self.features]
+
     CSV_MAPPING = {
         "name": "Facility Name",
         "facility_type": "Facility Type",
@@ -208,11 +275,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         "local_body__name": "Local Body",
         "district__name": "District",
         "state__name": "State",
-        "oxygen_capacity": "Oxygen Capacity",
         "phone_number": "Phone Number",
-        "type_b_cylinders": "B Type Oxygen Cylinder",
-        "type_c_cylinders": "C Type Oxygen Cylinder",
-        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
@@ -269,7 +332,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
     area = models.IntegerField(choices=DOCTOR_TYPES)
-    count = models.IntegerField()
+    count = models.PositiveIntegerField()
 
     def __str__(self):
         return str(self.facility) + str(self.count)
@@ -316,9 +379,16 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         "facilitycapacity__total_capacity": "Total Capacity",
         "facilitycapacity__current_capacity": "Current Capacity",
         "facilitycapacity__modified_date": "Updated Date",
+        "oxygen_capacity": "Oxygen Capacity",
+        "type_b_cylinders": "B Type Oxygen Cylinder",
+        "type_c_cylinders": "C Type Oxygen Cylinder",
+        "type_d_cylinders": "Jumbo D Type Oxygen Cylinder",
     }
 
-    CSV_MAKE_PRETTY = {"facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x])}
+    CSV_MAKE_PRETTY = {
+        "facilitycapacity__room_type": (lambda x: REVERSE_ROOM_TYPES[x]),
+        "facilitycapacity__modified_date": (lambda x: x.strftime("%d-%m-%Y")),
+    }
 
     def __str__(self):
         return (

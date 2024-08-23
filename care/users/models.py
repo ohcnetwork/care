@@ -1,7 +1,7 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import (
+    UsernameValidator,
     mobile_or_landline_number_validator,
     mobile_validator,
 )
@@ -130,9 +131,19 @@ class CustomUserManager(UserManager):
         return super().get_queryset().select_related("local_body", "district", "state")
 
     def create_superuser(self, username, email, password, **extra_fields):
-        district = District.objects.all()[0]
+        district = District.objects.all().first()
+        data_command = (
+            "load_data" if settings.IS_PRODUCTION is True else "load_dummy_data"
+        )
+        if not district:
+            proceed = input(
+                f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
+            )
+            if proceed.lower() != "y":
+                raise Exception("Aborted Superuser Creation")
+            district = None
+
         extra_fields["district"] = district
-        extra_fields["age"] = 20
         extra_fields["phone_number"] = "+919696969696"
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
@@ -145,13 +156,6 @@ class Skill(BaseModel):
 
     def __str__(self):
         return self.name
-
-
-class UsernameValidator(UnicodeUsernameValidator):
-    regex = r"^[\w.@+-]+[^.@+_-]$"
-    message = _(
-        "Please enter letters, digits and @ . + - _ only and username should not end with @ . + - or _"
-    )
 
 
 class UserSkill(BaseModel):
@@ -175,7 +179,7 @@ class User(AbstractUser):
         _("username"),
         max_length=150,
         unique=True,
-        help_text=_("150 characters or fewer. Letters, digits and @/./+/-/_ only."),
+        help_text=username_validator.message,
         validators=[username_validator],
         error_messages={"unique": _("A user with that username already exists.")},
     )
@@ -186,6 +190,8 @@ class User(AbstractUser):
         "Volunteer": 5,
         "StaffReadOnly": 9,
         "Staff": 10,
+        "NurseReadOnly": 13,
+        "Nurse": 14,
         "Doctor": 15,
         "Reserved": 20,
         "WardAdmin": 21,
@@ -197,6 +203,13 @@ class User(AbstractUser):
         "StateReadOnlyAdmin": 39,
         "StateAdmin": 40,
     }
+
+    READ_ONLY_TYPES = (
+        TYPE_VALUE_MAP["StaffReadOnly"],
+        TYPE_VALUE_MAP["NurseReadOnly"],
+        TYPE_VALUE_MAP["DistrictReadOnlyAdmin"],
+        TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+    )
 
     TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
 
@@ -230,9 +243,10 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
+    video_connect_link = models.URLField(blank=True, null=True)
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
-    age = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    date_of_birth = models.DateField(null=True, blank=True)
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -287,7 +301,7 @@ class User(AbstractUser):
         "last_name": "Last Name",
         "phone_number": "Phone Number",
         "gender": "Gender",
-        "age": "Age",
+        "date_of_birth": "Date of Birth",
         "verified": "verified",
         "local_body__name": "Local Body",
         "district__name": "District",
@@ -296,6 +310,10 @@ class User(AbstractUser):
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
+
+    @property
+    def full_name(self):
+        return self.get_full_name()
 
     @staticmethod
     def has_read_permission(request):

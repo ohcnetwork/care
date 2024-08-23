@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timedelta
 
 from django.core.cache import cache
@@ -14,6 +15,8 @@ from care.facility.models.patient import PatientRegistration
 from care.facility.models.patient_consultation import PatientConsultation
 from config.authentication import ABDMAuthentication
 
+logger = logging.getLogger(__name__)
+
 
 class OnFetchView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
@@ -22,7 +25,17 @@ class OnFetchView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        AbdmGateway().init(data["resp"]["requestId"])
+        try:
+            AbdmGateway().init(data["resp"]["requestId"])
+        except Exception as e:
+            logger.warning(
+                f"Error: OnFetchView::post failed while initialising ABDM Gateway, Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {"detail": "Error: Initialising ABDM Gateway failed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -277,7 +290,7 @@ class RequestDataView(GenericAPIView):
             data["hiRequest"]["keyMaterial"]["nonce"],
         )
 
-        AbdmGateway().data_transfer(
+        data_transfer_response = AbdmGateway().data_transfer(
             {
                 "transaction_id": data["transactionId"],
                 "data_push_url": data["hiRequest"]["dataPushUrl"],
@@ -293,11 +306,11 @@ class RequestDataView(GenericAPIView):
                                         ],
                                         "data": cipher.encrypt(
                                             Fhir(
-                                                PatientConsultation.objects.get(
+                                                PatientConsultation.objects.filter(
                                                     external_id=context[
                                                         "careContextReference"
                                                     ]
-                                                )
+                                                ).first()
                                             ).create_record(record)
                                         )["data"],
                                     },
@@ -319,25 +332,43 @@ class RequestDataView(GenericAPIView):
                         "parameters": "Curve25519/32byte random key",
                         "keyValue": cipher.key_to_share,
                     },
-                    "nonce": cipher.sender_nonce,
+                    "nonce": cipher.internal_nonce,
                 },
             }
         )
 
-        AbdmGateway().data_notify(
-            {
-                "health_id": consent["notification"]["consentDetail"]["patient"]["id"],
-                "consent_id": data["hiRequest"]["consent"]["id"],
-                "transaction_id": data["transactionId"],
-                "care_contexts": list(
-                    map(
-                        lambda context: {"id": context["careContextReference"]},
-                        consent["notification"]["consentDetail"]["careContexts"][
-                            :-2:-1
-                        ],
-                    )
-                ),
-            }
-        )
+        try:
+            AbdmGateway().data_notify(
+                {
+                    "health_id": consent["notification"]["consentDetail"]["patient"][
+                        "id"
+                    ],
+                    "consent_id": data["hiRequest"]["consent"]["id"],
+                    "transaction_id": data["transactionId"],
+                    "session_status": "TRANSFERRED"
+                    if data_transfer_response
+                    and data_transfer_response.status_code == 202
+                    else "FAILED",
+                    "care_contexts": list(
+                        map(
+                            lambda context: {"id": context["careContextReference"]},
+                            consent["notification"]["consentDetail"]["careContexts"][
+                                :-2:-1
+                            ],
+                        )
+                    ),
+                }
+            )
+        except Exception as e:
+            logger.warning(
+                f"Error: RequestDataView::post failed to notify (health-information/notify). Reason: {e}",
+                exc_info=True,
+            )
+            return Response(
+                {
+                    "detail": "Failed to notify (health-information/notify)",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)

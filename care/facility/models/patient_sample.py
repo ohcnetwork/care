@@ -1,6 +1,7 @@
 from django.db import models
 
 from care.facility.models import FacilityBaseModel, PatientRegistration, reverse_choices
+from care.facility.models.patient import PatientAgeFunc
 from care.users.models import User
 
 SAMPLE_TYPE_CHOICES = [
@@ -125,6 +126,10 @@ class PatientSample(FacilityBaseModel):
         "date_of_result": "Date of Result",
     }
 
+    CSV_ANNOTATE_FIELDS = {
+        "patient__age": PatientAgeFunc(),
+    }
+
     CSV_MAKE_PRETTY = {
         "sample_type": (lambda x: REVERSE_SAMPLE_TYPE_CHOICES.get(x, "-")),
         "status": (
@@ -152,25 +157,31 @@ class PatientSample(FacilityBaseModel):
 
     @staticmethod
     def has_write_permission(request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
+        if request.user.is_superuser:
+            return True
         return (
-            request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"]
         )
 
     @staticmethod
     def has_read_permission(request):
         return (
             request.user.is_superuser
-            or request.user.user_type >= User.TYPE_VALUE_MAP["StaffReadOnly"]
+            or request.user.user_type >= User.TYPE_VALUE_MAP["NurseReadOnly"]
+        )
+
+    @staticmethod
+    def has_update_permission(request):
+        return (
+            request.user.is_superuser
+            or request.user.user_type >= User.TYPE_VALUE_MAP["Doctor"]
         )
 
     def has_object_read_permission(self, request):
+        if request.user.user_type < User.TYPE_VALUE_MAP["NurseReadOnly"]:
+            return False
+
         if self.testing_facility:
             test_facility = request.user in self.testing_facility.users.all()
 
@@ -190,25 +201,10 @@ class PatientSample(FacilityBaseModel):
         )
 
     def has_object_update_permission(self, request):
-        if (
-            request.user.user_type == User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]
-            or request.user.user_type == User.TYPE_VALUE_MAP["StaffReadOnly"]
-        ):
-            return False
-        if not self.has_object_read_permission(request):
-            return False
-        # if request.user.is_superuser:
-        #     return True
-        # map_ = self.SAMPLE_TEST_FLOW_CHOICES
-        # if map_[self.status - 1][1] in ("REQUEST_SUBMITTED", "SENT_TO_COLLECTON_CENTRE"):
-        #     return request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        # elif map_[self.status - 1][1] in ("APPROVED", "DENIED"):
-        #     return request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
-        # elif map_[self.status - 1][1] in ("RECEIVED_AND_FORWARED", "RECEIVED_AT_LAB"):
-        #     return request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]
-        # The view shall raise a 400
-        return True
+        return (
+            request.user.user_type not in User.READ_ONLY_TYPES
+            and self.has_object_read_permission(request)
+        )
 
     def has_object_destroy_permission(self, request):
         return request.user.is_superuser

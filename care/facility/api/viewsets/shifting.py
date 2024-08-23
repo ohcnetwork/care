@@ -31,7 +31,10 @@ from care.facility.models import (
     ShiftingRequestComment,
     User,
 )
-from care.facility.models.patient_base import DISEASE_STATUS_DICT
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_DICT,
+    NewDischargeReasonEnum,
+)
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.shifting import get_shifting_queryset
@@ -173,7 +176,10 @@ class ShiftingViewSet(
                     # Discharge from all other active consultations
                     PatientConsultation.objects.filter(
                         patient=patient, discharge_date__isnull=True
-                    ).update(discharge_date=localtime(now()), discharge_reason="REF")
+                    ).update(
+                        discharge_date=localtime(now()),
+                        new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+                    )
                     ConsultationBed.objects.filter(
                         consultation=patient.last_consultation,
                         end_date__isnull=True,
@@ -188,8 +194,10 @@ class ShiftingViewSet(
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *ShiftingRequest.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**ShiftingRequest.CSV_ANNOTATE_FIELDS)
+                .values(*ShiftingRequest.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,
@@ -210,7 +218,7 @@ class ShifitngRequestCommentViewSet(
     lookup_field = "external_id"
     queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         queryset = self.queryset.filter(

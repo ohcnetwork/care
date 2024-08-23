@@ -1,6 +1,9 @@
-from django.contrib.auth import get_user_model
+from datetime import timedelta
+
 from django.core.cache import cache
-from django.db.models import F
+from django.db.models import F, Q, Subquery
+from django.http import Http404
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -15,15 +18,14 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.models.base import READ_ONLY_USER_TYPES
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
     UserListSerializer,
     UserSerializer,
 )
-
-User = get_user_model()
+from care.users.models import User
+from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def remove_facility_user_cache(user_id):
@@ -55,9 +57,14 @@ class UserFilterSet(filters.FilterSet):
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
-    home_facility = filters.UUIDFilter(
-        field_name="home_facility__external_id", lookup_expr="exact"
-    )
+    home_facility = filters.CharFilter(method="filter_home_facility")
+
+    def filter_home_facility(self, queryset, name, value):
+        if value == "NONE":
+            return queryset.filter(home_facility__isnull=True)
+        return queryset.filter(home_facility__external_id=value)
+
+    last_active_days = filters.CharFilter(method="last_active_after")
 
     def get_user_type(
         self,
@@ -71,6 +78,14 @@ class UserFilterSet(filters.FilterSet):
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
+
+    def last_active_after(self, queryset, name, value):
+        if value == "never":
+            return queryset.filter(last_login__isnull=True)
+        # convert days to date
+        date = timezone.now() - timedelta(days=int(value))
+
+        return queryset.filter(last_login__gte=date)
 
 
 class UserViewSet(
@@ -86,7 +101,7 @@ class UserViewSet(
 
     queryset = (
         User.objects.filter(is_active=True, is_superuser=False)
-        .select_related("local_body", "district", "state")
+        .select_related("local_body", "district", "state", "home_facility")
         .order_by(F("last_login").desc(nulls_last=True))
         .annotate(
             created_by_user=F("created_by__username"),
@@ -122,6 +137,42 @@ class UserViewSet(
     #         DRYPermissions(),
     #     ]
 
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return self.queryset
+        query = Q(id=self.request.user.id)
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
+            query |= Q(
+                state=self.request.user.state,
+                user_type__lte=User.TYPE_VALUE_MAP["StateAdmin"],
+                is_superuser=False,
+            )
+        elif (
+            self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]
+        ):
+            query |= Q(
+                district=self.request.user.district,
+                user_type__lte=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                is_superuser=False,
+            )
+        else:
+            query |= Q(
+                id__in=Subquery(
+                    FacilityUser.objects.filter(
+                        facility_id__in=get_accessible_facilities(self.request.user)
+                    ).values("user_id")
+                ),
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
+                is_superuser=False,
+            )
+        return self.queryset.filter(query)
+
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Http404:
+            raise Http404("User not found")
+
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
@@ -149,6 +200,12 @@ class UserViewSet(
             queryset = queryset.filter(
                 state=request.user.state,
                 user_type__lt=User.TYPE_VALUE_MAP["StateAdmin"],
+                is_superuser=False,
+            )
+        elif request.user.user_type == User.TYPE_VALUE_MAP["DistrictAdmin"]:
+            queryset = queryset.filter(
+                district=request.user.district,
+                user_type__lt=User.TYPE_VALUE_MAP["DistrictAdmin"],
                 is_superuser=False,
             )
         else:
@@ -202,11 +259,12 @@ class UserViewSet(
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
     def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
-        facilities = Facility.objects.filter(users=user).select_related(
+        queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
         )
+        facilities = self.paginate_queryset(queryset)
         facilities = FacilityBasicInfoSerializer(facilities, many=True)
-        return Response(facilities.data)
+        return self.get_paginated_response(facilities.data)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
@@ -245,13 +303,27 @@ class UserViewSet(
         if not user.home_facility:
             raise ValidationError({"home_facility": "No Home Facility Present"})
         if (
+            requesting_user.id == user.id
+            and requesting_user.user_type == User.TYPE_VALUE_MAP["Nurse"]
+        ):
+            pass
+        elif (
             requesting_user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or requesting_user.user_type in READ_ONLY_USER_TYPES
+            or requesting_user.user_type in User.READ_ONLY_TYPES
         ):
             raise ValidationError({"home_facility": "Insufficient Permissions"})
 
         if not self.has_user_type_permission_elevation(requesting_user, user):
             raise ValidationError({"home_facility": "Cannot Access Higher Level User"})
+
+        # ensure that district admin only able to delete in the same district
+        if (
+            requesting_user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            and user.district_id != requesting_user.district_id
+        ):
+            raise ValidationError(
+                {"facility": "Cannot unlink User's Home Facility from other district"}
+            )
 
         user.home_facility = None
         user.save(update_fields=["home_facility"])

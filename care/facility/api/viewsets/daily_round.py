@@ -12,7 +12,6 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.daily_round import DailyRoundSerializer
 from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.daily_round import DailyRound
-from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.queryset.consultation import get_consultation_queryset
 
 DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
@@ -20,6 +19,7 @@ DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
 
 class DailyRoundFilterSet(filters.FilterSet):
     rounds_type = filters.CharFilter(method="filter_rounds_type")
+    taken_at = filters.DateTimeFromToRangeFilter()
 
     def filter_rounds_type(self, queryset, name, value):
         rounds_type = set()
@@ -45,7 +45,7 @@ class DailyRoundsViewSet(
         IsAuthenticated,
         DRYPermissions,
     )
-    queryset = DailyRound.objects.all().order_by("-id")
+    queryset = DailyRound.objects.all().select_related("created_by", "last_edited_by")
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
 
@@ -56,16 +56,21 @@ class DailyRoundsViewSet(
     PAGE_SIZE = 36  # One Round Per Hour
 
     def get_queryset(self):
-        return self.queryset.filter(
-            consultation__external_id=self.kwargs["consultation_external_id"]
-        )
-
-    def get_serializer(self, *args, **kwargs):
-        if "data" in kwargs:
-            kwargs["data"]["consultation"] = PatientConsultation.objects.get(
+        consultation = get_object_or_404(
+            get_consultation_queryset(self.request.user).filter(
                 external_id=self.kwargs["consultation_external_id"]
-            ).id
-        return super().get_serializer(*args, **kwargs)
+            )
+        )
+        return self.queryset.filter(consultation=consultation).order_by("-taken_at")
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["consultation"] = get_object_or_404(
+            get_consultation_queryset(self.request.user).filter(
+                external_id=self.kwargs["consultation_external_id"]
+            )
+        )
+        return context
 
     @extend_schema(tags=["daily_rounds"])
     @action(methods=["POST"], detail=False)

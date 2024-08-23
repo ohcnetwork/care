@@ -1,51 +1,77 @@
-import contextlib
-import json
+import re
+from typing import TypedDict
 
-from littletable import Table
+from django.core.paginator import Paginator
+from redis_om import Field, Migrator
 
+from care.facility.models.icd11_diagnosis import ICD11Diagnosis
+from care.utils.static_data.models.base import BaseRedisModel
 
-def fetch_data():
-    with open("data/icd11.json", "r") as json_file:
-        return json.load(json_file)
-
-
-def is_numeric(val):
-    if str(val).isnumeric():
-        return val
-    return -1
+DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
 
 
-ICDDiseases = Table("ICD11")
-icd11_objects = fetch_data()
-entity_id = ""
-IGNORE_FIELDS = [
-    "isLeaf",
-    "classKind",
-    "isAdoptedChild",
-    "averageDepth",
-    "breadthValue",
-    "Suggested",
-]
-
-for icd11_object in icd11_objects:
-    for field in IGNORE_FIELDS:
-        icd11_object.pop(field, "")
-    icd11_object["id"] = icd11_object.pop("ID")
-    entity_id = icd11_object["id"].split("/")[-1]
-    icd11_object["id"] = is_numeric(entity_id)
-    if icd11_object["id"] == -1:
-        continue
-    if icd11_object["id"]:
-        ICDDiseases.insert(icd11_object)
-
-ICDDiseases.create_search_index("label")
-ICDDiseases.create_index("id", unique=True)
+class ICD11Object(TypedDict):
+    id: int
+    label: str
+    chapter: str
 
 
-def get_icd11_diagnoses_objects_by_ids(diagnoses_ids):
-    diagnosis_objects = []
-    for diagnosis in diagnoses_ids:
-        with contextlib.suppress(BaseException):
-            diagnosis_object = ICDDiseases.by.id[diagnosis].__dict__
-            diagnosis_objects.append(diagnosis_object)
-    return diagnosis_objects
+class ICD11(BaseRedisModel):
+    id: int = Field(primary_key=True)
+    label: str
+    chapter: str = Field(index=True)
+    has_code: int = Field(index=True)
+
+    vec: str = Field(index=True, full_text_search=True)
+
+    def get_representation(self) -> ICD11Object:
+        return {
+            "id": self.id,
+            "label": self.label,
+            "chapter": self.chapter if self.chapter != "null" else "",
+        }
+
+
+def load_icd11_diagnosis():
+    print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
+
+    icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
+        "id", "label", "meta_chapter_short"
+    )
+    paginator = Paginator(icd_objs, 5000)
+    for page_number in paginator.page_range:
+        for diagnosis in paginator.page(page_number).object_list:
+            ICD11(
+                id=diagnosis[0],
+                label=diagnosis[1],
+                chapter=diagnosis[2] or "null",
+                has_code=1 if re.match(DISEASE_CODE_PATTERN, diagnosis[1]) else 0,
+                vec=diagnosis[1].replace(".", "\\.", 1),
+            ).save()
+    Migrator().run()
+    print("Done")
+
+
+def get_icd11_diagnosis_object_by_id(
+    diagnosis_id: int, as_dict=False
+) -> ICD11 | ICD11Object | None:
+    try:
+        diagnosis = ICD11.get(diagnosis_id)
+        return diagnosis.get_representation() if as_dict else diagnosis
+    except Exception:
+        return None
+
+
+def get_icd11_diagnoses_objects_by_ids(diagnoses_ids: list[int]) -> list[ICD11Object]:
+    if not diagnoses_ids:
+        return []
+
+    query = None
+    for diagnosis_id in diagnoses_ids:
+        if query is None:
+            query = ICD11.id == diagnosis_id
+        else:
+            query |= ICD11.id == diagnosis_id
+
+    diagnosis_objects: list[ICD11] = list(ICD11.find(query))
+    return [diagnosis.get_representation() for diagnosis in diagnosis_objects]

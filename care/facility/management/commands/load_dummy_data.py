@@ -22,12 +22,14 @@ class Command(BaseCommand):
             )
 
         try:
-            management.call_command("loaddata", self.BASE_URL + "users.json")
-            management.call_command("load_data", "kerala")
-            management.call_command("load_medicines_data")
+            management.call_command("loaddata", self.BASE_URL + "states.json")
+            management.call_command("load_skill_data")
             management.call_command("seed_data")
-            management.call_command("loaddata", self.BASE_URL + "facility.json")
-            management.call_command("loaddata", self.BASE_URL + "cypress_users.json")
-            management.call_command("loaddata", self.BASE_URL + "facility_users.json")
+            management.call_command(
+                "loaddata",
+                self.BASE_URL + "users.json",
+                self.BASE_URL + "facility.json",
+            )
+            management.call_command("populate_investigations")
         except Exception as e:
             raise CommandError(e)

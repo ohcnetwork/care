@@ -12,6 +12,7 @@ from django.core.cache import cache
 from django.db.models import Q
 
 from care.abdm.models import AbhaNumber
+from care.abdm.service.request import Request
 from care.facility.models.patient_consultation import PatientConsultation
 
 GATEWAY_API_URL = settings.ABDM_URL
@@ -20,6 +21,7 @@ ABDM_DEVSERVICE_URL = GATEWAY_API_URL + "/devservice"
 ABDM_GATEWAY_URL = GATEWAY_API_URL + "/gateway"
 ABDM_TOKEN_URL = ABDM_GATEWAY_URL + "/v0.5/sessions"
 ABDM_TOKEN_CACHE_KEY = "abdm_token"
+ABDM_FACILITY_URL = settings.ABDM_FACILITY_URL
 
 # TODO: Exception handling for all api calls, need to gracefully handle known exceptions
 
@@ -45,6 +47,8 @@ class APIGateway:
             self.url = ABDM_GATEWAY_URL
         elif gateway == "abdm_devservice":
             self.url = ABDM_DEVSERVICE_URL
+        elif gateway == "facility":
+            self.url = ABDM_FACILITY_URL
         else:
             self.url = GATEWAY_API_URL
         self.token = token
@@ -346,11 +350,17 @@ class AbdmGateway:
         self.api = APIGateway("abdm_gateway", None)
 
     def get_hip_id_by_health_id(self, health_id):
-        return (
-            AbhaNumber.objects.filter(Q(abha_number=health_id) | Q(health_id=health_id))
-            .first()
-            .patientregistration.facility.healthfacility.hf_id
-        )
+        abha_number = AbhaNumber.objects.filter(
+            Q(abha_number=health_id) | Q(health_id=health_id)
+        ).first()
+        if not abha_number:
+            raise Exception("No ABHA Number found")
+
+        patient_facility = abha_number.patientregistration.last_consultation.facility
+        if not hasattr(patient_facility, "healthfacility"):
+            raise Exception("Health Facility not linked")
+
+        return patient_facility.healthfacility.hf_id
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
@@ -401,16 +411,7 @@ class AbdmGateway:
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
         request_id = str(uuid.uuid4())
 
-        """
-        data = {
-            healthId,
-            name,
-            gender,
-            dateOfBirth,
-        }
-        """
         self.temp_memory[request_id] = data
-
         if "authMode" in data and data["authMode"] == "DIRECT":
             self.init(request_id)
             return
@@ -676,7 +677,15 @@ class AbdmGateway:
         return response
 
     def data_transfer(self, data):
-        headers = {"Content-Type": "application/json"}
+        auth_header = Request("").auth_header()
+
+        if not auth_header:
+            return None
+
+        headers = {
+            "Content-Type": "application/json",
+            **auth_header,
+        }
 
         payload = {
             "pageNumber": 1,
@@ -718,7 +727,7 @@ class AbdmGateway:
                     datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
                 ),
                 "statusNotification": {
-                    "sessionStatus": "TRANSFERRED",
+                    "sessionStatus": data["session_status"],
                     "hipId": self.get_hip_id_by_health_id(data["health_id"]),
                     "statusResponses": list(
                         map(
@@ -789,4 +798,14 @@ class Bridge:
     def add_update_service(self, data):
         path = "/v1/bridges/addUpdateServices"
         response = self.api.post(path, data, method="PUT")
+        return response
+
+
+class Facility:
+    def __init__(self) -> None:
+        self.api = APIGateway("facility", None)
+
+    def add_update_service(self, data):
+        path = "/v1/bridges/MutipleHRPAddUpdateServices"
+        response = self.api.post(path, data, method="POST")
         return response

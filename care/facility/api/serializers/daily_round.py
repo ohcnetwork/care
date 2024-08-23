@@ -1,14 +1,11 @@
 from datetime import timedelta
-from uuid import uuid4
 
 from django.db import transaction
-from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 
-# from care.facility.api.serializers.bed import BedSerializer
+from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -17,24 +14,20 @@ from care.facility.models import (
 from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import CURRENT_HEALTH_CHOICES, SYMPTOM_CHOICES
+from care.facility.models.patient_base import SuggestionChoices
+from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
-from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_home_facility_queryset
 from config.serializers import ChoiceField
 
 
 class DailyRoundSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    additional_symptoms = serializers.MultipleChoiceField(
-        choices=SYMPTOM_CHOICES, required=False
-    )
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
     patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
-    current_health = ChoiceField(choices=CURRENT_HEALTH_CHOICES, required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
@@ -84,10 +77,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
     )
 
-    clone_last = serializers.BooleanField(
-        write_only=True, default=False, required=False
-    )
-
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
 
@@ -101,6 +90,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "glasgow_total_calculated",
             "total_intake_calculated",
             "total_output_calculated",
+            "consultation",
         )
         exclude = ("deleted",)
 
@@ -146,7 +136,17 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             facility=instance.consultation.patient.facility,
         ).generate()
 
-        return super().update(instance, validated_data)
+        instance = super().update(instance, validated_data)
+
+        create_consultation_events(
+            instance.consultation_id,
+            instance,
+            instance.created_by_id,
+            instance.created_date,
+            fields_to_store=set(validated_data.keys()),
+        )
+
+        return instance
 
     def update_last_daily_round(self, daily_round_obj):
         consultation = daily_round_obj.consultation
@@ -161,82 +161,40 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         ).generate()
 
     def create(self, validated_data):
+        consultation: PatientConsultation = validated_data["consultation"]
         # Authorisation Checks
-
-        # Skip check for asset user
-        if self.context["request"].user.asset_id is None:
-            allowed_facilities = get_home_facility_queryset(
-                self.context["request"].user
+        if (
+            not get_home_facility_queryset(self.context["request"].user)
+            .filter(id=consultation.facility_id)
+            .exists()
+        ):
+            raise ValidationError(
+                {"facility": "Daily Round creates are only allowed in home facility"}
             )
-            if not allowed_facilities.filter(
-                id=self.validated_data["consultation"].facility.id
-            ).exists():
-                raise ValidationError(
-                    {
-                        "facility": "Daily Round creates are only allowed in home facility"
-                    }
-                )
-
         # Authorisation Checks End
 
+        # Patient needs to have a bed assigned for admission
+        if (
+            not consultation.current_bed
+            and consultation.suggestion == SuggestionChoices.A
+        ):
+            raise ValidationError(
+                {
+                    "bed": "Patient does not have a bed assigned. Please assign a bed first"
+                }
+            )
+
         with transaction.atomic():
-            if "clone_last" in validated_data:
-                should_clone = validated_data.pop("clone_last")
-                if should_clone:
-                    consultation = get_object_or_404(
-                        get_consultation_queryset(self.context["request"].user).filter(
-                            id=validated_data["consultation"].id
-                        )
-                    )
-                    last_objects = DailyRound.objects.filter(
-                        consultation=consultation
-                    ).order_by("-created_date")
-                    if not last_objects.exists():
-                        raise ValidationError(
-                            {"daily_round": "No Daily Round record available to copy"}
-                        )
-
-                    if "rounds_type" not in validated_data:
-                        raise ValidationError(
-                            {"daily_round": "Rounds type is required to clone"}
-                        )
-
-                    rounds_type = validated_data.get("rounds_type")
-                    if rounds_type == DailyRound.RoundsType.NORMAL.value:
-                        fields_to_clone = [
-                            "consultation_id",
-                            "patient_category",
-                            "taken_at",
-                            "additional_symptoms",
-                            "other_symptoms",
-                            "physical_examination_info",
-                            "other_details",
-                            "recommend_discharge",
-                            "bp",
-                            "pulse",
-                            "resp",
-                            "temperature",
-                            "rhythm",
-                            "rhythm_detail",
-                            "ventilator_spo2",
-                        ]
-                        cloned_daily_round_obj = DailyRound()
-                        for field in fields_to_clone:
-                            value = getattr(last_objects[0], field)
-                            setattr(cloned_daily_round_obj, field, value)
-                    else:
-                        cloned_daily_round_obj = last_objects[0]
-
-                    cloned_daily_round_obj.pk = None
-                    cloned_daily_round_obj.rounds_type = rounds_type
-                    cloned_daily_round_obj.created_by = self.context["request"].user
-                    cloned_daily_round_obj.last_edited_by = self.context["request"].user
-                    cloned_daily_round_obj.created_date = timezone.now()
-                    cloned_daily_round_obj.modified_date = timezone.now()
-                    cloned_daily_round_obj.external_id = uuid4()
-                    cloned_daily_round_obj.save()
-                    self.update_last_daily_round(cloned_daily_round_obj)
-                    return self.update(cloned_daily_round_obj, validated_data)
+            if (
+                validated_data.get("rounds_type")
+                == DailyRound.RoundsType.TELEMEDICINE.value
+                and consultation.suggestion != SuggestionChoices.DC
+            ):
+                raise ValidationError(
+                    {
+                        "rounds_type": "Telemedicine Rounds are only allowed for Domiciliary Care patients"
+                    }
+                )
 
             if (
                 "action" in validated_data
@@ -252,8 +210,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                     review_interval = validated_data.pop(
                         "consultation__review_interval"
                     )
+                    validated_data["consultation"].review_interval = review_interval
                     if review_interval >= 0:
-                        validated_data["consultation"].review_interval = review_interval
                         patient.review_time = localtime(now()) + timedelta(
                             minutes=review_interval
                         )
@@ -289,10 +247,19 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
             if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
                 self.update_last_daily_round(daily_round_obj)
+
+            create_consultation_events(
+                daily_round_obj.consultation_id,
+                daily_round_obj,
+                daily_round_obj.created_by_id,
+                daily_round_obj.created_date,
+                taken_at=daily_round_obj.taken_at,
+            )
             return daily_round_obj
 
-    def validate(self, obj):
-        validated = super().validate(obj)
+    def validate(self, attrs):
+        validated = super().validate(attrs)
+        validated["consultation"] = self.context["consultation"]
 
         if validated["consultation"].discharge_date:
             raise ValidationError(

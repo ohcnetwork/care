@@ -6,7 +6,7 @@ from djqscsv import render_to_csv_response
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -117,9 +117,17 @@ class PatientSampleViewSet(
         - district - District ID
         - district_name - District name - case insensitive match
         """
+        if (
+            not self.kwargs.get("patient_external_id")
+            and request.user.user_type < User.TYPE_VALUE_MAP["Doctor"]
+        ):
+            raise PermissionDenied()
+
         if settings.CSV_REQUEST_PARAMETER in request.GET:
-            queryset = self.filter_queryset(self.get_queryset()).values(
-                *PatientSample.CSV_MAPPING.keys()
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**PatientSample.CSV_ANNOTATE_FIELDS)
+                .values(*PatientSample.CSV_MAPPING.keys())
             )
             return render_to_csv_response(
                 queryset,

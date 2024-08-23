@@ -1,6 +1,9 @@
 import enum
 from types import SimpleNamespace
 
+from django.db.models import IntegerChoices
+from django.utils.translation import gettext_lazy as _
+
 
 def reverse_choices(choices):
     output = {}
@@ -8,14 +11,6 @@ def reverse_choices(choices):
         output[choice[0]] = choice[1]
     return output
 
-
-CURRENT_HEALTH_CHOICES = [
-    (0, "NO DATA"),
-    (1, "REQUIRES VENTILATOR"),
-    (2, "WORSE"),
-    (3, "STATUS QUO"),
-    (4, "BETTER"),
-]
 
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
@@ -41,6 +36,16 @@ SYMPTOM_CHOICES = [
     (22, "HEAD ACHE"),
     (23, "BLEEDING"),
     (24, "DIZZINESS"),
+    (25, "CHILLS"),
+    (26, "GENERAL WEAKNESS"),
+    (27, "IRRITABILITY"),
+    (28, "CONFUSION"),
+    (29, "ABDOMINAL PAIN"),
+    (30, "JOINT PAIN"),
+    (31, "REDNESS OF EYES"),
+    (32, "ANOREXIA"),
+    (33, "NEW LOSS OF TASTE"),
+    (34, "NEW LOSS OF SMELL"),
 ]
 
 DISEASE_CHOICES_MAP = {
@@ -65,8 +70,8 @@ COVID_CATEGORY_CHOICES = [
 
 CATEGORY_CHOICES = [
     ("Comfort", "Comfort Care"),
-    ("Stable", "Stable"),
-    ("Moderate", "Abnormal"),
+    ("Stable", "Mild"),
+    ("Moderate", "Moderate"),
     ("Critical", "Critical"),
 ]
 
@@ -76,6 +81,17 @@ DISCHARGE_REASON_CHOICES = [
     ("EXP", "Expired"),
     ("LAMA", "LAMA"),
 ]
+
+
+class NewDischargeReasonEnum(IntegerChoices):
+    UNKNOWN = -1, _("Unknown")
+    RECOVERED = 1, _("Recovered")
+    REFERRED = 2, _("Referred")
+    EXPIRED = 3, _("Expired")
+    LAMA = 4, _("LAMA")
+
+
+NEW_DISCHARGE_REASON_CHOICES = [(e.value, e.name) for e in NewDischargeReasonEnum]
 
 
 class DiseaseStatusEnum(enum.IntEnum):
@@ -106,16 +122,11 @@ BLOOD_GROUP_CHOICES = [
 SuggestionChoices = SimpleNamespace(HI="HI", A="A", R="R", OP="OP", DC="DC", DD="DD")
 
 
-class ConsultationStatusEnum(enum.Enum):
-    UNKNOWN = 0
-    BROUGHT_DEAD = 1
-    TRANSFERRED_FROM_WARD = 2
-    TRANSFERRED_FROM_ICU = 3
-    REFERRED_FROM_OTHER_HOSPITAL = 4
-    OUT_PATIENT = 5
-
-
-ConsultationStatusChoices = [(e.value, e.name) for e in ConsultationStatusEnum]
+class RouteToFacility(IntegerChoices):
+    OUTPATIENT = 10, _("Outpatient/Emergency Room")
+    INTER_FACILITY_TRANSFER = 20, _("Referred from another facility")
+    INTRA_FACILITY_TRANSFER = 30, _("Internal Transfer within the facility")
+    __empty__ = _("(Unknown)")
 
 
 class BedType(enum.Enum):
@@ -134,7 +145,7 @@ REVERSE_BLOOD_GROUP_CHOICES = reverse_choices(BLOOD_GROUP_CHOICES)
 REVERSE_DISEASE_STATUS_CHOICES = reverse_choices(DISEASE_STATUS_CHOICES)
 REVERSE_COVID_CATEGORY_CHOICES = reverse_choices(COVID_CATEGORY_CHOICES)  # Deprecated
 REVERSE_CATEGORY_CHOICES = reverse_choices(CATEGORY_CHOICES)
-# REVERSE_ADMIT_CHOICES = reverse_choices(ADMIT_CHOICES)
 REVERSE_BED_TYPE_CHOICES = reverse_choices(BedTypeChoices)
-REVERSE_CONSULTATION_STATUS_CHOICES = reverse_choices(ConsultationStatusChoices)
+REVERSE_ROUTE_TO_FACILITY_CHOICES = reverse_choices(RouteToFacility.choices)
 REVERSE_DISCHARGE_REASON_CHOICES = reverse_choices(DISCHARGE_REASON_CHOICES)
+REVERSE_NEW_DISCHARGE_REASON_CHOICES = reverse_choices(NEW_DISCHARGE_REASON_CHOICES)

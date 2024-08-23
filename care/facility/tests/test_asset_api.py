@@ -3,6 +3,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import Asset, Bed
+from care.users.models import User
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -16,6 +18,11 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.state_admin_ro = cls.create_user(
+            "stateadmin-ro",
+            cls.district,
+            user_type=User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+        )
         cls.patient = cls.create_patient(
             cls.district, cls.facility, local_body=cls.local_body
         )
@@ -31,17 +38,25 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
     def test_create_asset(self):
         sample_data = {
             "name": "Test Asset",
-            "current_location": self.asset_location.pk,
             "asset_type": 50,
             "location": self.asset_location.external_id,
         }
         response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_create_asset_read_only(self):
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+        }
+        self.client.force_authenticate(self.state_admin_ro)
+        response = self.client.post("/api/v1/asset/", sample_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_create_asset_with_warranty_past(self):
         sample_data = {
             "name": "Test Asset",
-            "current_location": self.asset_location.pk,
             "asset_type": 50,
             "location": self.asset_location.external_id,
             "warranty_amc_end_of_validity": "2000-04-01",
@@ -52,11 +67,11 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
     def test_retrieve_asset(self):
         response = self.client.get(f"/api/v1/asset/{self.asset.external_id}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("latest_status", response.data)
 
     def test_update_asset(self):
         sample_data = {
             "name": "Updated Test Asset",
-            "current_location": self.asset_location.pk,
             "asset_type": 50,
             "location": self.asset_location.external_id,
         }
@@ -165,3 +180,182 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         self.assertNotIn(
             str(asset1.external_id), [asset["id"] for asset in response.data["results"]]
         )
+
+
+class AssetConfigValidationTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.hostname = "test-middleware.com"
+        cls.facility = cls.create_facility(
+            cls.super_user,
+            cls.district,
+            cls.local_body,
+            middleware_address=cls.hostname,
+        )
+        cls.asset_location = cls.create_asset_location(cls.facility)
+        cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+
+    def test_create_asset_with_unique_ip(self):
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_asset_with_duplicate_ip(self):
+        self.create_asset(
+            self.asset_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={"local_ip_address": "192.168.1.14"},
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("I was here first", response.json()["non_field_errors"][0])
+
+    def test_create_asset_with_duplicate_ip_same_hostname_on_location(self):
+        test_location = self.create_asset_location(
+            self.facility, middleware_address=self.hostname
+        )
+        self.create_asset(
+            test_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={"local_ip_address": "192.168.1.14"},
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": test_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("I was here first", response.json()["non_field_errors"][0])
+
+    def test_create_asset_with_duplicate_ip_same_hostname_on_asset(self):
+        self.create_asset(
+            self.asset_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={
+                "local_ip_address": "192.168.1.14",
+                "middleware_hostname": self.hostname,
+            },
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("I was here first", response.json()["non_field_errors"][0])
+
+    def test_create_asset_with_duplicate_ip_same_hostname_on_location_asset(self):
+        test_location = self.create_asset_location(
+            self.facility, middleware_address=self.hostname
+        )
+        self.create_asset(
+            test_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={
+                "local_ip_address": "192.168.1.14",
+                "middleware_hostname": self.hostname,
+            },
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": test_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("I was here first", response.json()["non_field_errors"][0])
+
+    def test_create_asset_with_duplicate_ip_different_hostname_on_location(self):
+        test_location = self.create_asset_location(
+            self.facility, middleware_address="not-test-middleware.com"
+        )
+        self.create_asset(
+            self.asset_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={"local_ip_address": "192.168.1.14"},
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": test_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {"local_ip_address": "192.168.1.14"},
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_asset_with_duplicate_ip_different_hostname_on_asset(self):
+        self.create_asset(
+            self.asset_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={"local_ip_address": "192.168.1.14"},
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {
+                "local_ip_address": "192.168.1.14",
+                "middleware_hostname": "not-test-middleware.com",
+            },
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_asset_with_duplicate_ip_different_hostname_on_location_asset(self):
+        test_location = self.create_asset_location(
+            self.facility, middleware_address="not-test-middleware.com"
+        )
+        self.create_asset(
+            test_location,
+            name="I was here first",
+            asset_class=AssetClasses.HL7MONITOR.name,
+            meta={
+                "local_ip_address": "192.168.1.14",
+                "middleware_hostname": self.hostname,
+            },
+        )
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": test_location.external_id,
+            "asset_class": AssetClasses.HL7MONITOR.name,
+            "meta": {
+                "local_ip_address": "192.168.1.14",
+                "middleware_hostname": "not-test-middleware.com",
+            },
+        }
+        response = self.client.post("/api/v1/asset/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

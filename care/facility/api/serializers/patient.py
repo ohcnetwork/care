@@ -3,7 +3,7 @@ import datetime
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.utils.timezone import localtime, make_aware, now
+from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
 from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
@@ -25,17 +25,20 @@ from care.facility.models import (
     PatientContactDetails,
     PatientMetaInfo,
     PatientNotes,
+    PatientNoteThreadChoices,
     PatientRegistration,
 )
+from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
+from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
     BLOOD_GROUP_CHOICES,
     DISEASE_STATUS_CHOICES,
     DiseaseStatusEnum,
+    NewDischargeReasonEnum,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
-from care.facility.models.patient_tele_consultation import PatientTeleConsultation
 from care.hcx.models.claim import Claim
 from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
@@ -53,7 +56,7 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices)
+    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
 
     class Meta:
         model = PatientMetaInfo
@@ -118,13 +121,12 @@ class PatientListSerializer(serializers.ModelSerializer):
             "created_by",
             "deleted",
             "ongoing_medication",
-            "year_of_birth",
             "meta_info",
             "countries_travelled_old",
             "allergies",
             "external_id",
         )
-        read_only = TIMESTAMP_FIELDS
+        read_only = TIMESTAMP_FIELDS + ("death_datetime",)
 
 
 class PatientContactDetailsSerializer(serializers.ModelSerializer):
@@ -157,11 +159,6 @@ class PatientDetailSerializer(PatientListSerializer):
         disease = ChoiceField(choices=DISEASE_CHOICES)
         details = serializers.CharField(required=False, allow_blank=True)
 
-    class PatientTeleConsultationSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = PatientTeleConsultation
-            fields = "__all__"
-
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=False
     )
@@ -169,9 +166,6 @@ class PatientDetailSerializer(PatientListSerializer):
         child=MedicalHistorySerializer(), required=False
     )
 
-    tele_consultation_history = serializers.ListSerializer(
-        child=PatientTeleConsultationSerializer(), read_only=True
-    )
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
     # nearest_facility_object = FacilitySerializer(
@@ -220,12 +214,16 @@ class PatientDetailSerializer(PatientListSerializer):
         model = PatientRegistration
         exclude = (
             "deleted",
-            "year_of_birth",
             "countries_travelled_old",
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + ("last_edited", "created_by", "is_active")
+        read_only = TIMESTAMP_FIELDS + (
+            "last_edited",
+            "created_by",
+            "is_active",
+            "death_datetime",
+        )
 
     # def get_last_consultation(self, obj):
     #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
@@ -245,15 +243,27 @@ class PatientDetailSerializer(PatientListSerializer):
             value = [value]
         return value
 
+    def validate_date_of_birth(self, value):
+        if value and value > now().date():
+            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+        return value
+
+    def validate_year_of_birth(self, value):
+        if value and value > now().year:
+            raise serializers.ValidationError("Enter a valid year of birth")
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
-        if (
-            not self.partial
-            and not validated.get("age")
-            and not validated.get("date_of_birth")
+        if not self.partial and not (
+            validated.get("year_of_birth") or validated.get("date_of_birth")
         ):
             raise serializers.ValidationError(
-                {"non_field_errors": ["Either age or date_of_birth should be passed"]}
+                {
+                    "non_field_errors": [
+                        "Either year_of_birth or date_of_birth should be passed"
+                    ]
+                }
             )
 
         if validated.get("is_vaccinated"):
@@ -309,9 +319,8 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
-                patient.meta_info = meta_info_obj
-                patient.save()
+                patient.meta_info = PatientMetaInfo.objects.create(**meta_info)
+                patient.meta_info.save()
 
             if contacted_patients:
                 contacted_patient_objs = [
@@ -358,8 +367,12 @@ class PatientDetailSerializer(PatientListSerializer):
                 Disease.objects.bulk_create(diseases, ignore_conflicts=True)
 
             if meta_info:
-                for key, value in meta_info.items():
-                    setattr(patient.meta_info, key, value)
+                if patient.meta_info is None:
+                    meta_info_obj = PatientMetaInfo.objects.create(**meta_info)
+                    patient.meta_info = meta_info_obj
+                else:
+                    for key, value in meta_info.items():
+                        setattr(patient.meta_info, key, value)
                 patient.meta_info.save()
 
             if self.partial is not True:  # clear the list and enter details if PUT
@@ -429,6 +442,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
             "facility",
             "allow_transfer",
             "is_active",
+            "is_expired",
         )
 
 
@@ -441,27 +455,61 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = ("facility", "date_of_birth", "patient", "facility_object")
+        fields = ("facility", "year_of_birth", "patient", "facility_object")
 
-    def validate_date_of_birth(self, value):
-        if self.instance and self.instance.date_of_birth != value:
-            raise serializers.ValidationError("Date of birth does not match")
+    def validate_year_of_birth(self, value):
+        if self.instance and self.instance.year_of_birth != value:
+            raise serializers.ValidationError("Year of birth does not match")
         return value
 
     def create(self, validated_data):
         raise NotImplementedError
 
-    def save(self, **kwargs):
-        self.instance.facility = self.validated_data["facility"]
-        PatientConsultation.objects.filter(
-            patient=self.instance, discharge_date__isnull=True
-        ).update(discharge_date=localtime(now()))
-        self.instance.save()
+    def update(self, instance, validated_data):
+        instance.facility = validated_data["facility"]
+
+        with transaction.atomic():
+            consultation = PatientConsultation.objects.filter(
+                patient=instance, discharge_date__isnull=True
+            ).first()
+
+            if consultation:
+                consultation.discharge_date = now()
+                consultation.new_discharge_reason = NewDischargeReasonEnum.REFERRED
+                consultation.current_bed = None
+                consultation.save()
+
+                ConsultationBed.objects.filter(
+                    consultation=consultation, end_date__isnull=True
+                ).update(end_date=now())
+
+            instance.save()
+            return instance
+
+
+class PatientNotesEditSerializer(serializers.ModelSerializer):
+    edited_by = UserBaseMinimumSerializer(read_only=True)
+
+    class Meta:
+        model = PatientNotesEdit
+        exclude = ("patient_note",)
 
 
 class PatientNotesSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    last_edited_by = serializers.CharField(read_only=True)
+    last_edited_date = serializers.DateTimeField(read_only=True)
+    consultation = ExternalIdSerializerField(
+        queryset=PatientConsultation.objects.all(),
+        required=False,
+        allow_null=True,
+        read_only=True,
+    )
+    thread = serializers.ChoiceField(
+        choices=PatientNoteThreadChoices, required=False, allow_null=False
+    )
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -469,6 +517,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data)
 
     def create(self, validated_data):
+        if "thread" not in validated_data:
+            raise serializers.ValidationError({"thread": "This field is required"})
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
@@ -481,15 +531,60 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
 
-        return super().create(validated_data)
+        user = self.context["request"].user
+        note = validated_data.get("note")
+        with transaction.atomic():
+            instance = super().create(validated_data)
+            initial_edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_date=instance.modified_date,
+                edited_by=user,
+                note=note,
+            )
+            initial_edit.save()
+
+        return instance
+
+    def update(self, instance, validated_data):
+        validated_data.pop("thread", None)  # Disallow changing thread of the note.
+
+        user = self.context["request"].user
+        note = validated_data.get("note")
+
+        if note == instance.note:
+            return instance
+
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            edit = PatientNotesEdit(
+                patient_note=instance,
+                edited_date=instance.modified_date,
+                edited_by=user,
+                note=note,
+            )
+            edit.save()
+        return instance
 
     class Meta:
         model = PatientNotes
         fields = (
+            "id",
             "note",
             "facility",
+            "consultation",
+            "thread",
             "created_by_object",
             "user_type",
             "created_date",
+            "modified_date",
+            "last_edited_by",
+            "last_edited_date",
         )
-        read_only_fields = ("created_date",)
+        read_only_fields = (
+            "id",
+            "created_date",
+            "modified_date",
+            "user_type",
+            "last_edited_by",
+            "last_edited_date",
+        )
