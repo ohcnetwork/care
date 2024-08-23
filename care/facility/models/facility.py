@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from multiselectfield import MultiSelectField
@@ -38,6 +39,7 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+# to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
     (2, "Maternity Care"),
@@ -47,9 +49,20 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
+
+class FacilityFeature(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, "CT Scan Facility"
+    MATERNITY_CARE = 2, "Maternity Care"
+    X_RAY_FACILITY = 3, "X-Ray Facility"
+    NEONATAL_CARE = 4, "Neonatal Care"
+    OPERATION_THEATER = 5, "Operation Theater"
+    BLOOD_BANK = 6, "Blood Bank"
+
+
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -176,13 +189,17 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(
+    features = ArrayField(
+        models.SmallIntegerField(choices=FacilityFeature.choices),
+        blank=True,
+        null=True,
+    )
+    old_features = MultiSelectField(
         choices=FEATURE_CHOICES,
         null=True,
         blank=True,
         max_length=get_max_length(FEATURE_CHOICES, None),
     )
-
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
     )
@@ -258,6 +275,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityUser.objects.create(
                 facility=self, user=self.created_by, created_by=self.created_by
             )
+
+    @property
+    def get_features_display(self):
+        if not self.features:
+            return []
+        return [FacilityFeature(f).label for f in self.features]
 
     CSV_MAPPING = {
         "name": "Facility Name",
