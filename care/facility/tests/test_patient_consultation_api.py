@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
+from care.facility.models.bed import Bed
 from care.facility.models.encounter_symptom import Symptom
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
@@ -641,3 +642,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_consultation_with_bed(self):
+        asset_location = self.create_asset_location(self.facility)
+        bed = Bed.objects.create(
+            name="bed", location=asset_location, facility=self.facility
+        )
+
+        consultation: PatientConsultation = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            bed=bed.external_id,
+        )
+
+        self.assertEqual(consultation.current_bed.bed, bed)
