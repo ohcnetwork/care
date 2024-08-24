@@ -183,7 +183,7 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
             password = User.objects.make_random_password()
             asset_user = User(
                 username=f"asset{str(asset_obj.external_id)}",
-                email="support@coronasafe.network",
+                email="support@ohc.network",
                 password=f"{password}123",  # The 123 makes it inaccessible without hashing
                 gender=3,
                 phone_number="919999999999",
@@ -235,7 +235,7 @@ class ABDMAuthentication(JWTAuthentication):
             password = User.objects.make_random_password()
             user = User(
                 username=settings.ABDM_USERNAME,
-                email="hcx@coronasafe.network",
+                email="hcx@ohc.network",
                 password=f"{password}123",
                 gender=3,
                 phone_number="917777777777",
