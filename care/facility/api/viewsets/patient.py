@@ -1033,12 +1033,7 @@ class PatientNotesViewSet(
             generate_for_facility=True,
         ).generate()
 
-
-        pattern = r"!\[mention_user\]\(user_id:(\d+), username:([^)]+)\)"
-        mentioned_users = set()
-        for mention in re.findall(pattern, instance.note):
-            mentioned_users.add(mention[1])
-
+        mentioned_users = set(re.findall(r"@(\w+)", instance.note))
         users = User.objects.filter(username__in=mentioned_users)
 
         NotificationGenerator(

@@ -547,14 +547,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     mentioned_users = serializers.SerializerMethodField()
 
     def get_mentioned_users(self, obj):
-        pattern = r"!\[mention_user\]\(user_id:(\d+), username:([^)]+)\)"
-        mentioned_users = set()
-
-        for mention in re.findall(pattern, obj.note):
-            mentioned_users.add(mention[1])
-
+        mentioned_users = set(re.findall(r"@(\w+)", obj.note))
         users = User.objects.filter(username__in=mentioned_users)
-
         return [UserBaseMinimumSerializer(user).data for user in users]
 
     def get_parent_note_object(self, obj):
