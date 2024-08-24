@@ -9,9 +9,8 @@ import care.facility.models.mixins.permissions.facility
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("facility", "0449_merge_20240822_1343"),
+        ("facility", "0453_merge_20240824_2040"),
     ]
 
     operations = [
