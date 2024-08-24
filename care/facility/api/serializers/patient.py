@@ -558,12 +558,16 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         return ReplyToPatientNoteSerializer(parent_note).data if parent_note != obj else None
 
     def get_files(self, obj):
-        return FileUpload.objects.filter(
-            associating_id=obj.external_id,
-            file_type=FileUpload.FileType.NOTES.value,
-            upload_completed=True,
-            is_archived=False,
-        ).values()
+        from care.facility.api.serializers.file_upload import FileUploadListSerializer
+        return FileUploadListSerializer(
+            FileUpload.objects.filter(
+                associating_id=obj.external_id,
+                file_type=FileUpload.FileType.NOTES.value,
+                upload_completed=True,
+                is_archived=False,
+            ),
+            many=True,
+        ).data
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():

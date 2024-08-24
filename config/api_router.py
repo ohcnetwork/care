@@ -55,6 +55,7 @@ from care.facility.api.viewsets.patient import (
     PatientNotesViewSet,
     PatientSearchViewSet,
     PatientViewSet,
+    PatientNotesForConsultationViewSet,
 )
 from care.facility.api.viewsets.patient_consultation import (
     PatientConsentViewSet,
@@ -277,6 +278,9 @@ consultation_nested_router.register(
 )
 consultation_nested_router.register(
     r"investigation", InvestigationValueViewSet, basename="consultation-investigation"
+)
+consultation_nested_router.register(
+    r"files", PatientNotesForConsultationViewSet, basename="consultation-files"
 )
 consultation_nested_router.register(
     r"prescriptions",
