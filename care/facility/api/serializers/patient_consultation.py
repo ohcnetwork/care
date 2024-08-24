@@ -204,15 +204,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "created_by",
             "kasp_enabled_date",
             "is_readmission",
-            "deprecated_diagnosis",
             "deprecated_verified_by",
         )
         exclude = (
             "deleted",
             "external_id",
-            "deprecated_icd11_provisional_diagnoses",
-            "deprecated_icd11_diagnoses",
-            "deprecated_icd11_principal_diagnosis",
         )
 
     def validate_bed_number(self, bed_number):
