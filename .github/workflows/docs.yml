@@ -15,7 +15,7 @@ on:
 
 jobs:
   build-docs:
-    if: github.repository == 'coronasafe/care'
+    if: github.repository == 'ohcnetwork/care'
     name: Build docs
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +44,7 @@ jobs:
           retention-days: 30
 
   deploy-docs:
-    if: github.repository == 'coronasafe/care' && github.ref == 'refs/heads/develop'
+    if: github.repository == 'ohcnetwork/care' && github.ref == 'refs/heads/develop'
     name: Deploy docs
     runs-on: ubuntu-latest
     needs: build-docs
