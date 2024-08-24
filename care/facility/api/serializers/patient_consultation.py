@@ -204,15 +204,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "created_by",
             "kasp_enabled_date",
             "is_readmission",
-            "deprecated_diagnosis",
             "deprecated_verified_by",
         )
         exclude = (
             "deleted",
             "external_id",
-            "deprecated_icd11_provisional_diagnoses",
-            "deprecated_icd11_diagnoses",
-            "deprecated_icd11_principal_diagnosis",
         )
 
     def validate_bed_number(self, bed_number):
@@ -613,11 +609,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-        if (
-            "suggestion" in validated
-            and validated["suggestion"] != SuggestionChoices.DD
-        ):
-            if "treating_physician" not in validated:
+        if "suggestion" in validated and validated["suggestion"] not in [
+            SuggestionChoices.DD,
+            SuggestionChoices.DC,
+        ]:
+            treating_physician = validated.get("treating_physician")
+            if not treating_physician:
                 raise ValidationError(
                     {
                         "treating_physician": [
@@ -625,10 +622,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         ]
                     }
                 )
-            if (
-                not validated["treating_physician"].user_type
-                == User.TYPE_VALUE_MAP["Doctor"]
-            ):
+            if not treating_physician.user_type == User.TYPE_VALUE_MAP["Doctor"]:
                 raise ValidationError("Only Doctors can verify a Consultation")
 
             facility = (
@@ -637,8 +631,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 or validated["patient"].facility
             )
             if (
-                validated["treating_physician"].home_facility
-                and validated["treating_physician"].home_facility != facility
+                treating_physician.home_facility
+                and treating_physician.home_facility != facility
             ):
                 raise ValidationError(
                     "Home Facility of the Doctor must be the same as the Consultation Facility"

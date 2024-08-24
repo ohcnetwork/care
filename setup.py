@@ -11,7 +11,7 @@ setup(
     description="A Django app for managing healthcare across hospitals and care centers.",
     license="MIT",
     keywords="django care ohc",
-    url="https://github.com/coronasafe/care",
+    url="https://github.com/ohcnetwork/care",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Framework :: Django",
