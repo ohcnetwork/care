@@ -6,7 +6,6 @@ from django.core.cache import cache
 
 from care.facility.static_data.icd11 import load_icd11_diagnosis
 from care.facility.static_data.medibase import load_medibase_medicines
-from care.hcx.static_data.pmjy_packages import load_pmjy_packages
 from care.utils.static_data.models.base import index_exists
 
 logger: Logger = get_task_logger(__name__)
@@ -26,7 +25,6 @@ def load_redis_index():
 
     load_icd11_diagnosis()
     load_medibase_medicines()
-    load_pmjy_packages()
 
     cache.delete("redis_index_loading")
     logger.info("Redis Index Loaded")

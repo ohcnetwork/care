@@ -3,7 +3,6 @@ from django.core.management import BaseCommand
 
 from care.facility.static_data.icd11 import load_icd11_diagnosis
 from care.facility.static_data.medibase import load_medibase_medicines
-from care.hcx.static_data.pmjy_packages import load_pmjy_packages
 
 
 class Command(BaseCommand):
@@ -23,6 +22,5 @@ class Command(BaseCommand):
 
         load_icd11_diagnosis()
         load_medibase_medicines()
-        load_pmjy_packages()
 
         cache.delete("redis_index_loading")

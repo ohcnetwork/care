@@ -31,7 +31,6 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
-from care.hcx.models.policy import Policy
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +116,6 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     samples = PatientSample.objects.filter(
         patient=consultation.patient, consultation=consultation
     )
-    hcx = Policy.objects.filter(patient=consultation.patient)
     symptoms = EncounterSymptom.objects.filter(
         consultation=consultation, onset_date__lt=consultation.encounter_date
     ).exclude(clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR)
@@ -181,7 +179,6 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     return {
         "patient": consultation.patient,
         "samples": samples,
-        "hcx": hcx,
         "symptoms": symptoms,
         "admitted_to": admitted_to,
         "admission_duration": admission_duration,

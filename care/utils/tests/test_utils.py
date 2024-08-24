@@ -51,7 +51,6 @@ from care.facility.models.patient_consultation import (
     PatientCodeStatusType,
     PatientConsent,
 )
-from care.hcx.models.policy import Policy
 from care.users.models import District, State
 
 fake = Faker()
@@ -567,31 +566,6 @@ class TestUtils:
         sample.created_date = make_aware(datetime(2020, 4, 1, 15, 30, 00))
         sample.save()
         return sample
-
-    @classmethod
-    def get_policy_data(cls, patient, user) -> dict:
-        return {
-            "patient": patient,
-            "subscriber_id": "sample_subscriber_id",
-            "policy_id": "sample_policy_id",
-            "insurer_id": "sample_insurer_id",
-            "insurer_name": "Sample Insurer",
-            "status": "active",
-            "priority": "normal",
-            "purpose": "discovery",
-            "outcome": "complete",
-            "error_text": "No errors",
-            "created_by": user,
-            "last_modified_by": user,
-        }
-
-    @classmethod
-    def create_policy(
-        cls, patient: PatientRegistration, user: User, **kwargs
-    ) -> Policy:
-        data = cls.get_policy_data(patient, user)
-        data.update(**kwargs)
-        return Policy.objects.create(**data)
 
     @classmethod
     def get_encounter_symptom_data(cls, consultation, user) -> dict:
