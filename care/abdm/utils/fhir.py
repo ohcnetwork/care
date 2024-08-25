@@ -190,12 +190,12 @@ class Fhir:
                 text=procedure["procedure"],
             ),
             subject=self._reference(self._patient()),
-            performedDateTime=f"{procedure['time']}:00+05:30"
-            if not procedure["repetitive"]
-            else None,
-            performedString=f"Every {procedure['frequency']}"
-            if procedure["repetitive"]
-            else None,
+            performedDateTime=(
+                f"{procedure['time']}:00+05:30" if not procedure["repetitive"] else None
+            ),
+            performedString=(
+                f"Every {procedure['frequency']}" if procedure["repetitive"] else None
+            ),
         )
 
         self._procedure_profiles.append(procedure_profile)
@@ -213,9 +213,11 @@ class Fhir:
             description="This includes Treatment Summary, Prescribed Medication, General Notes and Special Instructions",
             period=Period(
                 start=self.consultation.encounter_date.isoformat(),
-                end=self.consultation.discharge_date.isoformat()
-                if self.consultation.discharge_date
-                else None,
+                end=(
+                    self.consultation.discharge_date.isoformat()
+                    if self.consultation.discharge_date
+                    else None
+                ),
             ),
             note=[
                 Annotation(text=self.consultation.treatment_plan),
@@ -260,36 +262,44 @@ class Fhir:
         return self._diagnostic_report_profile
 
     def _observation(self, title, value, id, date):
-        if not value or (type(value) == dict and not value["value"]):
+        if not value or (type(value) is dict and not value["value"]):
             return
 
         return Observation(
-            id=f"{id}.{title.replace(' ', '').replace('_', '-')}"
-            if id and title
-            else str(uuid()),
+            id=(
+                f"{id}.{title.replace(' ', '').replace('_', '-')}"
+                if id and title
+                else str(uuid())
+            ),
             status="final",
             effectiveDateTime=date if date else None,
             code=CodeableConcept(text=title),
-            valueQuantity=Quantity(value=str(value["value"]), unit=value["unit"])
-            if type(value) == dict
-            else None,
-            valueString=value if type(value) == str else None,
-            component=list(
-                map(
-                    lambda component: ObservationComponent(
-                        code=CodeableConcept(text=component["title"]),
-                        valueQuantity=Quantity(
-                            value=component["value"], unit=component["unit"]
-                        )
-                        if type(component) == dict
-                        else None,
-                        valueString=component if type(component) == str else None,
-                    ),
-                    value,
+            valueQuantity=(
+                Quantity(value=str(value["value"]), unit=value["unit"])
+                if type(value) is dict
+                else None
+            ),
+            valueString=value if type(value) is str else None,
+            component=(
+                list(
+                    map(
+                        lambda component: ObservationComponent(
+                            code=CodeableConcept(text=component["title"]),
+                            valueQuantity=(
+                                Quantity(
+                                    value=component["value"], unit=component["unit"]
+                                )
+                                if type(component) is dict
+                                else None
+                            ),
+                            valueString=component if type(component) is str else None,
+                        ),
+                        value,
+                    )
                 )
-            )
-            if type(value) == list
-            else None,
+                if type(value) is list
+                else None
+            ),
         )
 
     def _observations_from_daily_round(self, daily_round):
@@ -304,7 +314,7 @@ class Fhir:
             ),
             self._observation(
                 "SpO2",
-                {"value": daily_round.spo2, "unit": "%"},
+                {"value": daily_round.archived_spo2, "unit": "%"},
                 id,
                 date,
             ),
@@ -322,20 +332,22 @@ class Fhir:
             ),
             self._observation(
                 "Blood Pressure",
-                [
-                    {
-                        "title": "Systolic Blood Pressure",
-                        "value": daily_round.bp["systolic"],
-                        "unit": "mmHg",
-                    },
-                    {
-                        "title": "Diastolic Blood Pressure",
-                        "value": daily_round.bp["diastolic"],
-                        "unit": "mmHg",
-                    },
-                ]
-                if "systolic" in daily_round.bp and "diastolic" in daily_round.bp
-                else None,
+                (
+                    [
+                        {
+                            "title": "Systolic Blood Pressure",
+                            "value": daily_round.bp["systolic"],
+                            "unit": "mmHg",
+                        },
+                        {
+                            "title": "Diastolic Blood Pressure",
+                            "value": daily_round.bp["diastolic"],
+                            "unit": "mmHg",
+                        },
+                    ]
+                    if "systolic" in daily_round.bp and "diastolic" in daily_round.bp
+                    else None
+                ),
                 id,
                 date,
             ),
@@ -369,21 +381,23 @@ class Fhir:
                 "class": Coding(code="IMP", display="Inpatient Encounter"),
                 "subject": self._reference(self._patient()),
                 "period": Period(start=period_start, end=period_end),
-                "diagnosis": list(
-                    map(
-                        lambda consultation_diagnosis: EncounterDiagnosis(
-                            condition=self._reference(
-                                self._condition(
-                                    consultation_diagnosis.diagnosis_id,
-                                    consultation_diagnosis.verification_status,
-                                ),
-                            )
-                        ),
-                        self.consultation.diagnoses.all(),
+                "diagnosis": (
+                    list(
+                        map(
+                            lambda consultation_diagnosis: EncounterDiagnosis(
+                                condition=self._reference(
+                                    self._condition(
+                                        consultation_diagnosis.diagnosis_id,
+                                        consultation_diagnosis.verification_status,
+                                    ),
+                                )
+                            ),
+                            self.consultation.diagnoses.all(),
+                        )
                     )
-                )
-                if include_diagnosis
-                else None,
+                    if include_diagnosis
+                    else None
+                ),
             }
         )
 
@@ -655,10 +669,12 @@ class Fhir:
                             else []
                         )
                     ],
-                    emptyReason=None
-                    if self._immunization()
-                    else CodeableConcept(
-                        coding=[Coding(code="notasked", display="Not Asked")]
+                    emptyReason=(
+                        None
+                        if self._immunization()
+                        else CodeableConcept(
+                            coding=[Coding(code="notasked", display="Not Asked")]
+                        )
                     ),
                 ),
             ],

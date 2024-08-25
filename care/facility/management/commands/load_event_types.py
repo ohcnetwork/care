@@ -116,7 +116,7 @@ class Command(BaseCommand):
                     "name": "VITALS",
                     "children": (
                         {"name": "TEMPERATURE", "fields": ("temperature",)},
-                        {"name": "SPO2", "fields": ("spo2",)},
+                        {"name": "SPO2", "fields": ("archived_spo2",)},
                         {"name": "PULSE", "fields": ("pulse",)},
                         {"name": "BLOOD_PRESSURE", "fields": ("bp",)},
                         {"name": "RESPIRATORY_RATE", "fields": ("resp",)},
