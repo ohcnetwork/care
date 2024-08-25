@@ -3,8 +3,6 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -20,13 +18,20 @@ from care.facility.models.patient_base import (
     NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
-    SYMPTOM_CHOICES,
     RouteToFacility,
     SuggestionChoices,
     reverse_choices,
 )
 from care.users.models import User
 from care.utils.models.base import BaseModel
+
+
+class ConsentType(models.IntegerChoices):
+    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
+    PATIENT_CODE_STATUS = 2, "Patient Code Status"
+    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
+    HIGH_RISK_CONSENT = 4, "High Risk Consent"
+    OTHERS = 5, "Others"
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
@@ -60,29 +65,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, related_name="consultations"
     )
-    deprecated_diagnosis = models.TextField(
-        default="", null=True, blank=True
-    )  # Deprecated
-    deprecated_icd11_provisional_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    deprecated_icd11_diagnoses = ArrayField(
-        models.CharField(max_length=100), default=list, blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    deprecated_icd11_principal_diagnosis = models.CharField(
-        max_length=100, default="", blank=True, null=True
-    )  # Deprecated in favour of ConsultationDiagnosis M2M model
-    deprecated_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES,
-        default=1,
-        null=True,
-        blank=True,
-        max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )  # Deprecated
-    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
-    deprecated_symptoms_onset_date = models.DateTimeField(
-        null=True, blank=True
-    )  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,
@@ -91,7 +73,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=8, blank=False, null=True
+        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -155,12 +137,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     discharge_notes = models.TextField(default="", null=True, blank=True)
-    discharge_prescription = JSONField(
-        default=dict, null=True, blank=True
-    )  # Deprecated
-    discharge_prn_prescription = JSONField(
-        default=dict, null=True, blank=True
-    )  # Deprecated
     death_datetime = models.DateTimeField(null=True, blank=True)
     death_confirmed_doctor = models.TextField(default="", null=True, blank=True)
     bed_number = models.CharField(max_length=100, null=True, blank=True)  # Deprecated
@@ -243,10 +219,10 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
     intubation_history = JSONField(default=list)
 
-    # Deprecated Fields
-
-    prn_prescription = JSONField(default=dict)
-    discharge_advice = JSONField(default=dict)
+    has_consents = ArrayField(
+        models.IntegerField(choices=ConsentType.choices),
+        default=list,
+    )
 
     def get_related_consultation(self):
         return self
@@ -359,14 +335,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self.has_object_read_permission(request)
 
 
-class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
-    PATIENT_CODE_STATUS = 2, "Patient Code Status"
-    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
-    HIGH_RISK_CONSENT = 4, "High Risk Consent"
-    OTHERS = 5, "Others"
-
-
 class PatientCodeStatusType(models.IntegerChoices):
     NOT_SPECIFIED = 0, "Not Specified"
     DNH = 1, "Do Not Hospitalize"
@@ -387,7 +355,9 @@ class ConsultationClinician(models.Model):
 
 
 class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
-    consultation = models.ForeignKey(PatientConsultation, on_delete=models.CASCADE)
+    consultation = models.ForeignKey(
+        PatientConsultation, on_delete=models.CASCADE, related_name="consents"
+    )
     type = models.IntegerField(choices=ConsentType.choices)
     patient_code_status = models.IntegerField(
         choices=PatientCodeStatusType.choices, null=True, blank=True

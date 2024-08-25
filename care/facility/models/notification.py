@@ -39,6 +39,8 @@ class Notification(FacilityBaseModel):
         SHIFTING_UPDATED = 200
         PATIENT_NOTE_ADDED = 210
         PUSH_MESSAGE = 220
+        PATIENT_PRESCRIPTION_CREATED = 230
+        PATIENT_PRESCRIPTION_UPDATED = 240
 
     EventChoices = [(e.value, e.name) for e in Event]
 
