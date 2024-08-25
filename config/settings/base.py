@@ -317,14 +317,30 @@ LOGGING = {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
             "%(process)d %(thread)d %(message)s"
-        }
+        },
+        "request_time": {
+            "format": "INFO %(asctime)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "time_logging": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "request_time",
+        },
+    },
+    "loggers": {
+        "time_logging_middleware": {
+            "handlers": ["time_logging"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -656,3 +672,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Time logging middleware
+ENABLE_REQUEST_TIME_LOGGING = env.bool("ENABLE_REQUEST_TIME_LOGGING", default=True)
