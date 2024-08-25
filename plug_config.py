@@ -13,8 +13,15 @@ HCX_AUTH_BASE_PATH = os.getenv(
 HCX_PARTICIPANT_CODE = os.getenv("HCX_PARTICIPANT_CODE", default="")
 HCX_USERNAME = os.getenv("HCX_USERNAME", default="")
 HCX_PASSWORD = os.getenv("HCX_PASSWORD", default="")
-HCX_ENCRYPTION_PRIVATE_KEY_URL = os.getenv("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
+HCX_ENCRYPTION_PRIVATE_KEY_URL = os.getenv(
+    "HCX_ENCRYPTION_PRIVATE_KEY_URL",
+    default="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/hcx-apis/src/test/resources/examples/x509-private-key.pem",
+)
 HCX_IG_URL = os.getenv("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
+HCX_CERT_URL = os.getenv(
+    "HCX_CERT_URL",
+    default="https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/hcx-apis/src/test/resources/examples/x509-self-signed-certificate.pem",
+)
 AUTH_USER_MODEL = "users.User"
 
 hcx_plugin = Plug(
@@ -29,6 +36,7 @@ hcx_plugin = Plug(
         "HCX_PASSWORD": HCX_PASSWORD,
         "HCX_ENCRYPTION_PRIVATE_KEY_URL": HCX_ENCRYPTION_PRIVATE_KEY_URL,
         "HCX_IG_URL": HCX_IG_URL,
+        "HCX_CERT_URL": HCX_CERT_URL,
         "AUTH_USER_MODEL": AUTH_USER_MODEL,
     },
 )
