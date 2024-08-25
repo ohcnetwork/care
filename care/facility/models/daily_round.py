@@ -137,9 +137,9 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(95), MaxValueValidator(106)],
     )
-    spo2 = models.DecimalField(
+    archived_spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
-    )
+    )  # Deprecated
     physical_examination_info = models.TextField(null=True, blank=True)
     deprecated_additional_symptoms = MultiSelectField(
         choices=SYMPTOM_CHOICES,
