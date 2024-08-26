@@ -6,9 +6,9 @@ DOCKER_VERSION := $(shell docker --version 2>/dev/null)
 docker_config_file := 'docker-compose.local.yaml'
 
 all:
-#ifndef DOCKER_VERSION
-#    $(error "command docker is not available, please install Docker")
-#endif
+ifndef DOCKER_VERSION
+    $(error "command docker is not available, please install Docker")
+endif
 
 install:
 	pipenv install --categories "packages dev-packeges docs"
