@@ -34,6 +34,10 @@ class Migration(migrations.Migration):
     empty string.
     """
 
+    dependencies = [
+        ("facility", "0453_merge_20240824_2040"),
+    ]
+
     def forward_fill_empty_io_balance_field_names(apps, schema_editor):
         DailyRound = apps.get_model("facility", "DailyRound")
 
@@ -85,10 +89,6 @@ class Migration(migrations.Migration):
     def reverse_set_empty_bp_to_null(apps, schema_editor):
         DailyRound = apps.get_model("facility", "DailyRound")
         DailyRound.objects.filter(bp=None).update(bp={})
-
-    dependencies = [
-        ("facility", "0453_merge_20240824_2040"),
-    ]
 
     operations = [
         migrations.RunPython(
