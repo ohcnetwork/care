@@ -95,21 +95,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         exclude = ("deleted",)
 
     def validate_bp(self, value):
-        if not value:
-            return value
-
-        systolic = value.get("systolic")
-        diastolic = value.get("diastolic")
-        mean = value.get("mean")
-
-        if systolic is None or diastolic is None or mean is None:
-            raise ValidationError(
-                "Systolic, diastolic and mean are required when either of them is specified"
-            )
-
-        if systolic < diastolic:
+        if value and value["systolic"] < value["diastolic"]:
             raise ValidationError("Systolic must be greater than diastolic")
-
         return value
 
     def update(self, instance, validated_data):

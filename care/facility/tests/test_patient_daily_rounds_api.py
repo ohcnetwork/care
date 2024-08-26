@@ -121,46 +121,37 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_out_of_range_blood_pressure(self):
         response = self.create_log_update(
             rounds_type="VENTILATOR",
-            bp={"systolic": 999, "diastolic": 0, "mean": 0},
+            bp={"systolic": 999, "diastolic": 0},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_missing_systolic_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"diastolic": 100, "mean": 1},
+            rounds_type="VENTILATOR", bp={"diastolic": 100}
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_missing_diastolic_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"systolic": 100, "mean": 0},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_with_missing_mean_blood_pressure(self):
-        response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"systolic": 100, "diastolic": 0},
+            rounds_type="VENTILATOR", bp={"systolic": 100}
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_systolic_below_diastolic_blood_pressure(self):
         response = self.create_log_update(
             rounds_type="VENTILATOR",
-            bp={"systolic": 100, "diastolic": 200, "mean": "100"},
+            bp={"systolic": 100, "diastolic": 200},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_blood_pressure_empty(self):
         response = self.create_log_update(rounds_type="VENTILATOR", bp={})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_valid_blood_pressure(self):
         response = self.create_log_update(
             rounds_type="VENTILATOR",
-            bp={"systolic": 50, "diastolic": 50, "mean": 50},
+            bp={"systolic": 50, "diastolic": 50},
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

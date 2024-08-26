@@ -12,12 +12,8 @@ BLOOD_PRESSURE = {
             "minimum": 0,
             "maximum": 400,
         },
-        "mean": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 400,
-        },
     },
+    "required": ["systolic", "diastolic"],
     "additionalProperties": False,
 }
 
