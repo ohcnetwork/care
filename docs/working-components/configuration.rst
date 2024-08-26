@@ -37,4 +37,4 @@ Care uses emails to send discharge summaries, reset password tokens, and crash r
 
 Reporting Infrastructure
 ------------------------
-Since care by itself cannot produce a really detailed summary of its data, it is advised to use Metabase or Superset as external Business Intelligence tools and connect a Read Replica of the primary database with PII fields masked. This will allow much higher visibility into the actual data and make better data-driven decisions. If you are using Metabase you can ask the coronasafe team to share the existing dashboard structure for simplicity. Care Databases are designed to provide easy and configurable Reporting.
+Since care by itself cannot produce a really detailed summary of its data, it is advised to use Metabase or Superset as external Business Intelligence tools and connect a Read Replica of the primary database with PII fields masked. This will allow much higher visibility into the actual data and make better data-driven decisions. If you are using Metabase you can ask the ohcnetwork team to share the existing dashboard structure for simplicity. Care Databases are designed to provide easy and configurable Reporting.
