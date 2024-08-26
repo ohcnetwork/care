@@ -26,7 +26,7 @@ AUTH_USER_MODEL = "users.User"
 
 hcx_plugin = Plug(
     name="hcx",
-    package_name="/Users/khavinshankar/Documents/ohcnetwork/care_hcx",
+    package_name="git+https://github.com/coronasafe/care_hcx.git",
     version="@main",
     configs={
         "HCX_PROTOCOL_BASE_PATH": HCX_PROTOCOL_BASE_PATH,
