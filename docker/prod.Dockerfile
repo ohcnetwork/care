@@ -15,7 +15,7 @@ ARG TYPST_VERSION=0.11.0
 ENV PATH /venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev libpq-dev git
+  build-essential libjpeg-dev zlib1g-dev libpq-dev libgmp-dev git
 
 # Download and install Typst for the correct architecture
 RUN ARCH=$(dpkg --print-architecture) && \

@@ -11,9 +11,7 @@
         }
       },
       "portMappings": [],
-      "command": [
-        "/app/celery_beat-ecs.sh"
-      ],
+      "command": ["/app/celery_beat-ecs.sh"],
       "cpu": 128,
       "environment": [
         {
@@ -115,10 +113,6 @@
         {
           "name": "X_CM_ID",
           "value": "sbx"
-        },
-        {
-          "name": "FIDELIUS_URL",
-          "value": "https://fidelius.ohc.network"
         },
         {
           "name": "SENTRY_TRACES_SAMPLE_RATE",
@@ -288,9 +282,7 @@
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "command": [
-        "/app/celery_worker-ecs.sh"
-      ],
+      "command": ["/app/celery_worker-ecs.sh"],
       "cpu": 384,
       "memory": 1536,
       "memoryReservation": 1536,
@@ -390,10 +382,6 @@
         {
           "name": "X_CM_ID",
           "value": "sbx"
-        },
-        {
-          "name": "FIDELIUS_URL",
-          "value": "https://fidelius.ohc.network"
         },
         {
           "name": "SENTRY_TRACES_SAMPLE_RATE",

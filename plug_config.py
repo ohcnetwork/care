@@ -16,7 +16,6 @@ HIP_NAME_PREFIX = os.getenv("HIP_NAME_PREFIX") or ""
 HIP_NAME_SUFFIX = os.getenv("HIP_NAME_SUFFIX") or ""
 ABDM_USERNAME = os.getenv("ABDM_USERNAME") or "abdm_user_internal"
 X_CM_ID = os.getenv("X_CM_ID") or "sbx"
-FIDELIUS_URL = os.getenv("FIDELIUS_URL") or "http://fidelius:8090"
 AUTH_USER_MODEL = "users.User"
 
 
@@ -34,7 +33,6 @@ abdm_plugin = Plug(
         "HIP_NAME_SUFFIX": HIP_NAME_SUFFIX,
         "ABDM_USERNAME": ABDM_USERNAME,
         "X_CM_ID": X_CM_ID,
-        "FIDELIUS_URL": FIDELIUS_URL,
         "AUTH_USER_MODEL": AUTH_USER_MODEL,
     },
 )

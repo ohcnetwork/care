@@ -44,6 +44,7 @@ redis-om = "==0.3.1"
 requests = "==2.32.3"
 sentry-sdk = "==2.13.0"
 whitenoise = "==6.6.0"
+fastecdsa = "==2.3.2"
 
 [dev-packages]
 black = "==24.4.2"

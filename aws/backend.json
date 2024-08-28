@@ -130,10 +130,6 @@
           "value": "sbx"
         },
         {
-          "name": "FIDELIUS_URL",
-          "value": "https://fidelius.ohc.network"
-        },
-        {
           "name": "SENTRY_TRACES_SAMPLE_RATE",
           "value": "1.0"
         },
