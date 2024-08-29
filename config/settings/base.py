@@ -191,8 +191,11 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
-    "care.middleware.time_logging_middleware.RequestTimeLoggingMiddleware",
 ]
+
+# add RequestTimeLoggingMiddleware based on the environment variable
+if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=True):
+    MIDDLEWARE.append("config.middleware.RequestTimeLoggingMiddleware")
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -672,6 +675,3 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
-
-# Time logging middleware
-ENABLE_REQUEST_TIME_LOGGING = env.bool("ENABLE_REQUEST_TIME_LOGGING", default=True)
