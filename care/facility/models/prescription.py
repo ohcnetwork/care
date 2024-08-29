@@ -175,7 +175,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
         return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
     def __str__(self):
-        return self.medicine + " - " + self.consultation.patient.name
+        return f"{self.consultation_id} - {self.medicine_id} ({self.id})"
 
 
 class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
@@ -204,11 +204,7 @@ class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
     )
 
     def __str__(self):
-        return (
-            self.prescription.medicine
-            + " - "
-            + self.prescription.consultation.patient.name
-        )
+        return f"{self.consultation_id} - {self.medicine_id} - {self.prescription_id} ({self.id})"
 
     def get_related_consultation(self):
         return self.prescription.consultation
