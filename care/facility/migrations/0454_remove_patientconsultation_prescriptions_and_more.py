@@ -17,6 +17,10 @@ class Migration(migrations.Migration):
             model_name="patientconsultation",
             name="prescriptions",
         ),
+        migrations.RemoveField(
+            model_name="dailyround",
+            name="medication_given",
+        ),
         migrations.AlterField(
             model_name="patientconsultation",
             name="investigation",
