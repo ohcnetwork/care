@@ -286,6 +286,10 @@
         {
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-backend"

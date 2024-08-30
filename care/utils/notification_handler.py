@@ -384,7 +384,7 @@ class NotificationGenerator:
                     data=message,
                     vapid_private_key=settings.VAPID_PRIVATE_KEY,
                     vapid_claims={
-                        "sub": "mailto:info@coronasafe.network",
+                        "sub": "mailto:info@ohc.network",
                     },
                 )
         except WebPushException as ex:
