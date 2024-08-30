@@ -275,6 +275,10 @@
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
           "name": "ABDM_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-celery-beat"
@@ -548,6 +552,10 @@
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
           "name": "ABDM_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-celery-worker"
