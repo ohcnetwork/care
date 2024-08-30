@@ -2,14 +2,11 @@
 Base settings to build other settings files upon.
 """
 
-import base64
-import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 
 import environ
-from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
 )
@@ -17,7 +14,6 @@ from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
-from care.utils.jwks.generate_jwk import generate_encoded_jwks
 from plug_config import manager
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -610,11 +606,6 @@ CSV_REQUEST_PARAMETER = "csv"
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
-
-# open id connect
-JWKS = JsonWebKey.import_key_set(
-    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
-)
 
 APP_VERSION = env("APP_VERSION", default="unknown")
 
