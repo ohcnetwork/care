@@ -33,4 +33,6 @@ done
 python manage.py collectstatic --noinput
 
 export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
+
+python manage.py compilemessages
 newrelic-admin run-program gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
