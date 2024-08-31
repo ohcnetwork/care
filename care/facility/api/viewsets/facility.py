@@ -13,9 +13,9 @@ from rest_framework.response import Response
 
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
-    FacilityHubSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
+    FacilitySpokeSerializer,
 )
 from care.facility.models import (
     Facility,
@@ -181,15 +181,14 @@ class AllFacilityViewSet(
     search_fields = ["name", "district__name", "state__name"]
 
 
-class FacilityHubsViewSet(viewsets.ModelViewSet):
-    queryset = FacilityHubSpoke.objects.all().select_related("spoke")
-    serializer_class = FacilityHubSerializer
-    permission_classes = (IsAuthenticated, DRYPermissions)
-    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
+class FacilitySpokesViewSet(viewsets.ModelViewSet):
+    queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
+    serializer_class = FacilitySpokeSerializer
+    permission_classes = (IsAuthenticated,)
     lookup_field = "external_id"
 
     def get_queryset(self):
-        return self.queryset.filter(spoke=self.get_facility())
+        return self.queryset.filter(hub=self.get_facility())
 
     def get_facility(self):
         facilities = get_facility_queryset(self.request.user)

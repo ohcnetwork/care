@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import IntegerChoices
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from multiselectfield import MultiSelectField
 from multiselectfield.utils import get_max_length
@@ -54,7 +55,8 @@ FEATURE_CHOICES = [
 
 
 class HubRelationship(IntegerChoices):
-    TELE_ICU_HUB = 1, _("Tele ICU Hub")
+    REGULAR_HUB = 1, _("Regular Hub")
+    TELE_ICU_HUB = 2, _("Tele ICU Hub")
 
 
 class FacilityFeature(models.IntegerChoices):
@@ -223,9 +225,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         District, on_delete=models.SET_NULL, null=True, blank=True
     )
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
-    hubs = models.ManyToManyField(
-        "self", through="FacilityHubSpoke", symmetrical=False, related_name="spokes"
-    )
 
     oxygen_capacity = models.IntegerField(default=0)
     type_b_cylinders = models.IntegerField(default=0)
@@ -307,28 +306,34 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
-class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+class FacilityHubSpoke(BaseModel):
     hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hub_set")
     spoke = models.ForeignKey(
         Facility, on_delete=models.CASCADE, related_name="spoke_set"
     )
     relationship = models.IntegerField(
-        choices=HubRelationship.choices, default=HubRelationship.TELE_ICU_HUB
+        choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
     )
 
-    def save(self, *args, **kwargs):
-        if self.hub == self.spoke:
-            raise ValueError("Hub and Spoke cannot be the same")
-
-        if (
-            not self.pk
-            and FacilityHubSpoke.objects.filter(
-                hub=self.spoke, spoke=self.hub, deleted=False
-            ).exists()
-        ):
-            raise ValueError("Hub and Spoke already exists")
-
-        super().save(*args, **kwargs)
+    class Meta:
+        constraints = [
+            # Ensure hub and spoke are not the same
+            CheckConstraint(
+                check=~models.Q(hub=models.F("spoke")),
+                name="hub_and_spoke_not_same",
+            ),
+            # bidirectional uniqueness
+            UniqueConstraint(
+                fields=["hub", "spoke"],
+                name="unique_hub_spoke",
+                condition=models.Q(deleted=False),
+            ),
+            UniqueConstraint(
+                fields=["spoke", "hub"],
+                name="unique_spoke_hub",
+                condition=models.Q(deleted=False),
+            ),
+        ]
 
     def __str__(self):
         return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"

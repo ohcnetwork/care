@@ -1,6 +1,7 @@
 import boto3
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
@@ -167,30 +168,74 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         return super().create(validated_data)
 
 
-class FacilityHubSerializer(serializers.ModelSerializer):
+class FacilitySpokeSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
-    hub = ExternalIdSerializerField(
+    spoke = ExternalIdSerializerField(
         queryset=Facility.objects.all(), required=True, write_only=True
     )
-    hub_object = FacilityBareMinimumSerializer(read_only=True, source="hub")
-    spoke_object = FacilityBareMinimumSerializer(read_only=True, source="spoke")
+    hub_object = FacilityBasicInfoSerializer(read_only=True, source="hub")
+    spoke_object = FacilityBasicInfoSerializer(read_only=True, source="spoke")
 
     class Meta:
         model = FacilityHubSpoke
         fields = (
             "id",
-            "hub",
+            "spoke",
             "hub_object",
             "spoke_object",
             "relationship",
             "created_date",
             "modified_date",
         )
-        read_only_fields = ("id", "spoke", "created_date", "modified_date")
+        read_only_fields = (
+            "id",
+            "spoke_object",
+            "hub_object",
+            "created_date",
+            "modified_date",
+        )
 
     def validate(self, data):
-        data["spoke"] = self.context["facility"]
+        data["hub"] = self.context["facility"]
         return data
+
+    def validate_spoke(self, spoke: Facility):
+        hub: Facility = self.context["facility"]
+        user = self.context["request"].user
+
+        if hub == spoke:
+            raise serializers.ValidationError("Cannot set a facility as it's own spoke")
+
+        if not (
+            user.is_superuser
+            or (
+                user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                and spoke.state == user.state
+                and spoke.district == user.district
+                and spoke.local_body == user.local_body
+            )
+            or (
+                user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
+                and user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
+                and spoke.state == user.state
+                and spoke.district == user.district
+            )
+            or (
+                user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
+                and user.user_type <= User.TYPE_VALUE_MAP["StateAdmin"]
+                and spoke.state == user.state
+            )
+        ):
+            raise serializers.ValidationError(
+                "You do not have permission to set this spoke"
+            )
+
+        if FacilityHubSpoke.objects.filter(
+            Q(hub=hub, spoke=spoke) | Q(hub=spoke, spoke=hub)
+        ).first():
+            raise serializers.ValidationError("Facility is already a spoke/hub")
+
+        return spoke
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
