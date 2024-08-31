@@ -149,7 +149,7 @@ class FacilityTests(TestUtils, APITestCase):
         response = self.client.delete(f"/api/v1/facility/{facility.external_id}/")
         self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_add_hubs(self):
+    def test_add_spoke(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body
@@ -158,12 +158,12 @@ class FacilityTests(TestUtils, APITestCase):
         state_admin = self.create_user("state_admin", self.district, user_type=40)
         self.client.force_authenticate(user=state_admin)
         response = self.client.post(
-            f"/api/v1/facility/{facility.external_id}/hubs/",
-            {"hub": facility2.external_id},
+            f"/api/v1/facility/{facility.external_id}/spokes/",
+            {"spoke": facility2.external_id},
         )
         self.assertIs(response.status_code, status.HTTP_201_CREATED)
 
-    def test_delete_hub(self):
+    def test_delete_spoke(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body
@@ -171,14 +171,14 @@ class FacilityTests(TestUtils, APITestCase):
 
         state_admin = self.create_user("state_admin", self.district, user_type=40)
 
-        hub = FacilityHubSpoke.objects.create(hub=facility2, spoke=facility)
+        spoke = FacilityHubSpoke.objects.create(hub=facility, spoke=facility2)
         self.client.force_authenticate(user=state_admin)
         response = self.client.delete(
-            f"/api/v1/facility/{facility.external_id}/hubs/{hub.external_id}/"
+            f"/api/v1/facility/{facility.external_id}/spokes/{spoke.external_id}/"
         )
         self.assertIs(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_add_hub_no_permission(self):
+    def test_add_spoke_no_permission(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body
@@ -186,20 +186,20 @@ class FacilityTests(TestUtils, APITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            f"/api/v1/facility/{facility.external_id}/hubs/",
+            f"/api/v1/facility/{facility.external_id}/spokes/",
             {"hub": facility2.external_id},
         )
-        self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIs(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_hub_no_permission(self):
+    def test_delete_spoke_no_permission(self):
         facility = self.create_facility(self.super_user, self.district, self.local_body)
         facility2 = self.create_facility(
             self.super_user, self.district, self.local_body
         )
 
-        hub = FacilityHubSpoke.objects.create(hub=facility2, spoke=facility)
+        spoke = FacilityHubSpoke.objects.create(hub=facility, spoke=facility2)
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(
-            f"/api/v1/facility/{facility.external_id}/hubs/{hub.external_id}/"
+            f"/api/v1/facility/{facility.external_id}/spokes/{spoke.external_id}/"
         )
-        self.assertIs(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIs(response.status_code, status.HTTP_404_NOT_FOUND)

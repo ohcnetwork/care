@@ -64,7 +64,14 @@ class FacilityQSPermissions(DRYPermissionFiltersBase):
         return queryset
 
 
-class FacilityViewSet(viewsets.ModelViewSet):
+class FacilityViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     """Viewset for facility CRUD operations."""
 
     queryset = Facility.objects.all().select_related(
