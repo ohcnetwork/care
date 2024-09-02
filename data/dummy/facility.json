@@ -774,7 +774,7 @@
             "modified_date": "2022-09-27T07:00:19.399Z",
             "deleted": false,
             "facility": 1,
-            "room_type": 150,
+            "room_type": 300,
             "total_capacity": 1000,
             "current_capacity": 20
         }
@@ -788,7 +788,7 @@
             "modified_date": "2022-09-27T07:16:52.525Z",
             "deleted": false,
             "facility": 2,
-            "room_type": 150,
+            "room_type": 300,
             "total_capacity": 20,
             "current_capacity": 1
         }
@@ -802,7 +802,7 @@
             "modified_date": "2023-09-15T06:12:31.548Z",
             "deleted": false,
             "facility": 4,
-            "room_type": 150,
+            "room_type": 300,
             "total_capacity": 12,
             "current_capacity": 2
         }
@@ -816,7 +816,7 @@
             "modified_date": "2023-09-15T06:12:50.165Z",
             "deleted": false,
             "facility": 3,
-            "room_type": 20,
+            "room_type": 100,
             "total_capacity": 31,
             "current_capacity": 2
         }
