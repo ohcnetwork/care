@@ -15,4 +15,4 @@ All PR's and issues are monitored by the code reviewers team and merged after a 
 
 Any other forks for deployments **MUST** follow the same Github structure so as to remain in sync and to keep getting updates.
 
-.. _here: https://github.com/coronasafe/care
+.. _here: https://github.com/ohcnetwork/care
