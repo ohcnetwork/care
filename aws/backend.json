@@ -39,7 +39,7 @@
         },
         {
           "name": "CORS_ALLOWED_ORIGIN_REGEXES",
-          "value": "[\"^https://.*--care-egov-staging\\.netlify\\.app$\"]"
+          "value": "[\"^https://[a-zA-Z0-9-]+--care-egov-staging\\.netlify\\.app$\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
