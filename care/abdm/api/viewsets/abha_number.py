@@ -21,20 +21,16 @@ class AbhaNumberViewSet(
     queryset = AbhaNumber.objects.all()
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        queryset = self.queryset
-        patients = get_patient_queryset(self.request.user)
-        return queryset.filter(patient__in=patients, deleted=False)
-
     def get_object(self):
-        queryset = self.get_queryset()
         id = self.kwargs.get("pk")
 
-        instance = queryset.filter(
+        instance = self.queryset.filter(
             Q(abha_number=id) | Q(health_id=id) | Q(patient__external_id=id)
         ).first()
 
-        if not instance:
+        if not instance or get_patient_queryset(self.request.user).contains(
+            instance.patient
+        ):
             raise Http404
 
         self.check_object_permissions(self.request, instance)
