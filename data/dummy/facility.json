@@ -1948,10 +1948,6 @@
       "patient": 1,
       "patient_no": "88.99.44.66",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Moderate",
       "examination_details": "",
@@ -1979,8 +1975,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2000,9 +1994,7 @@
       "weight": 0.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": [],
-      "discharge_advice": []
+      "intubation_history": []
     }
   },
   {
@@ -2016,10 +2008,6 @@
       "patient": 2,
       "patient_no": "IP007",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2047,8 +2035,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2068,9 +2054,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2084,10 +2068,6 @@
       "patient": 3,
       "patient_no": "IP008",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2115,8 +2095,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2136,9 +2114,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2152,10 +2128,6 @@
       "patient": 4,
       "patient_no": "IP009",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2183,8 +2155,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2204,9 +2174,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2220,10 +2188,6 @@
       "patient": 5,
       "patient_no": "IP017",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2251,8 +2215,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2272,9 +2234,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2288,10 +2248,6 @@
       "patient": 6,
       "patient_no": "IP087",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2319,8 +2275,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2340,9 +2294,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2356,10 +2308,6 @@
       "patient": 7,
       "patient_no": "IP00527",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2387,8 +2335,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2408,9 +2354,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2424,10 +2368,6 @@
       "patient": 8,
       "patient_no": "IP0KI07",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2455,8 +2395,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2476,9 +2414,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2492,10 +2428,6 @@
       "patient": 9,
       "patient_no": "IP00767",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2523,8 +2455,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2544,9 +2474,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2560,10 +2488,6 @@
       "patient": 10,
       "patient_no": "IP001237",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2591,8 +2515,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2612,9 +2534,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2628,10 +2548,6 @@
       "patient": 11,
       "patient_no": "IP007963",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2659,8 +2575,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2680,9 +2594,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2696,10 +2608,6 @@
       "patient": 12,
       "patient_no": "IP0001257",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2727,8 +2635,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2748,9 +2654,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2764,10 +2668,6 @@
       "patient": 13,
       "patient_no": "IP075389007",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2795,8 +2695,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2816,9 +2714,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2832,10 +2728,6 @@
       "patient": 14,
       "patient_no": "IP099907",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2863,8 +2755,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2884,9 +2774,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2900,10 +2788,6 @@
       "patient": 15,
       "patient_no": "IP00700",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2931,8 +2815,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -2952,9 +2834,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -2968,10 +2848,6 @@
       "patient": 16,
       "patient_no": "IP00744",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -2999,8 +2875,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3020,9 +2894,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3036,10 +2908,6 @@
       "patient": 17,
       "patient_no": "IP00117",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3067,8 +2935,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3088,9 +2954,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3104,10 +2968,6 @@
       "patient": 18,
       "patient_no": "IP02507",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3135,8 +2995,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3156,9 +3014,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3172,10 +3028,6 @@
       "patient": 18,
       "patient_no": "IP02578",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3203,8 +3055,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3224,9 +3074,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3240,10 +3088,6 @@
       "patient": 18,
       "patient_no": "IP1009",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3271,8 +3115,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3292,9 +3134,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3308,10 +3148,6 @@
       "patient": 18,
       "patient_no": "IP0010",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3339,8 +3175,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3360,9 +3194,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3376,10 +3208,6 @@
       "patient": 18,
       "patient_no": "IP011",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3407,8 +3235,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3428,9 +3254,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3444,10 +3268,6 @@
       "patient": 18,
       "patient_no": "IP012",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3475,8 +3295,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3496,9 +3314,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3512,10 +3328,6 @@
       "patient": 18,
       "patient_no": "IP013",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3543,8 +3355,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3564,9 +3374,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3580,10 +3388,6 @@
       "patient": 18,
       "patient_no": "IP014",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3611,8 +3415,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3632,9 +3434,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {
@@ -3648,10 +3448,6 @@
       "patient": 18,
       "patient_no": "IP015",
       "facility": 1,
-      "deprecated_diagnosis": "",
-      "deprecated_icd11_provisional_diagnoses": "[]",
-      "deprecated_icd11_diagnoses": "[]",
-      "deprecated_icd11_principal_diagnosis": "",
       "deprecated_covid_category": null,
       "category": "Stable",
       "examination_details": "Examination details and Clinical conditions",
@@ -3679,8 +3475,6 @@
       "discharge_reason": null,
       "new_discharge_reason": null,
       "discharge_notes": "",
-      "discharge_prescription": {},
-      "discharge_prn_prescription": {},
       "death_datetime": null,
       "death_confirmed_doctor": "",
       "bed_number": null,
@@ -3700,9 +3494,7 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": [],
-      "prn_prescription": {},
-      "discharge_advice": {}
+      "intubation_history": []
     }
   },
   {

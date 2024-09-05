@@ -7,6 +7,7 @@ cd /app
 
 echo "running collectstatic..."
 python manage.py collectstatic --noinput
+python manage.py compilemessages
 
 echo "starting server..."
 if [[ "${DJANGO_DEBUG,,}" == "true" ]]; then
