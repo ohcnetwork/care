@@ -35,7 +35,7 @@
         },
         {
           "name": "CORS_ALLOWED_ORIGINS",
-          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\"]"
+          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\", \"http://localhost:4000\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -286,6 +286,10 @@
         {
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-backend"
