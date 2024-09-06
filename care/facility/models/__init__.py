@@ -19,3 +19,4 @@ from .prescription import *  # noqa
 from .resources import *  # noqa
 from .shifting import *  # noqa
 from .summary import *  # noqa
+from .feature_flag import * # noqa

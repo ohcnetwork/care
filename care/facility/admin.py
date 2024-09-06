@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django import forms
 from djangoql.admin import DjangoQLSearchMixin
 from djqscsv import render_to_csv_response
 
@@ -33,8 +34,9 @@ from .models import (
     PatientInvestigationGroup,
     PatientRegistration,
     Room,
-    StaffRoomAllocation,
+    StaffRoomAllocation, FacilityFlag,
 )
+from .registries.feature_flag import FlagRegistry, FlagType
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -188,6 +190,24 @@ class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
     actions = ["export_as_csv"]
 
 
+def get_facility_flags():
+    try:
+        return ((x,x) for x in FlagRegistry.get_all_flags(FlagType.FACILITY))
+    except:
+        return ()
+
+class FacilityFlagAdmin(admin.ModelAdmin):
+
+    class AddHorribleTableEntryForm(forms.ModelForm):
+        flag = forms.ChoiceField(choices=get_facility_flags)
+
+        class Meta:
+            fields = "__all__"
+            model = FacilityFlag
+
+    form = AddHorribleTableEntryForm
+
+
 admin.site.register(Facility, FacilityAdmin)
 admin.site.register(FacilityStaff, FacilityStaffAdmin)
 admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
@@ -217,3 +237,4 @@ admin.site.register(Bed)
 admin.site.register(PatientConsent)
 admin.site.register(FileUpload)
 admin.site.register(PatientConsultation)
+admin.site.register(FacilityFlag, FacilityFlagAdmin)
