@@ -1,19 +1,42 @@
 BLOOD_PRESSURE = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "properties": {
-        "systolic": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 400,
-        },
-        "diastolic": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 400,
-        },
+    "definitions": {
+        "blood-pressure": {"type": "number", "minimum": 0, "maximum": 400},
     },
-    "required": ["systolic", "diastolic"],
+    "properties": {
+        "systolic": {},
+        "diastolic": {},
+        "systolic_recordable": {"type": "boolean"},
+        "diastolic_recordable": {"type": "boolean"},
+    },
+    "required": ["systolic_recordable", "diastolic_recordable"],
+    "allOf": [
+        {
+            "if": {
+                "properties": {"systolic_recordable": {"const": True}},
+            },
+            "then": {
+                "properties": {"systolic": {"$ref": "#/definitions/blood-pressure"}},
+                "required": ["systolic"],
+            },
+            "else": {
+                "properties": {"systolic": {"const": None}},
+            },
+        },
+        {
+            "if": {
+                "properties": {"diastolic_recordable": {"const": True}},
+            },
+            "then": {
+                "properties": {"diastolic": {"$ref": "#/definitions/blood-pressure"}},
+                "required": ["diastolic"],
+            },
+            "else": {
+                "properties": {"diastolic": {"const": None}},
+            },
+        },
+    ],
     "additionalProperties": False,
 }
 
@@ -31,12 +54,9 @@ INFUSIONS = {
                         "Vasopressin",
                         "Dopamine",
                         "Dobutamine",
-                    ],
+                    ]
                 },
-                "quantity": {
-                    "type": "number",
-                    "minimum": 0,
-                },
+                "quantity": {"type": "number", "minimum": 0},
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -51,17 +71,8 @@ IV_FLUID = {
         {
             "type": "object",
             "properties": {
-                "name": {
-                    "enum": [
-                        "RL",
-                        "NS",
-                        "DNS",
-                    ],
-                },
-                "quantity": {
-                    "type": "number",
-                    "minimum": 0,
-                },
+                "name": {"enum": ["RL", "NS", "DNS"]},
+                "quantity": {"type": "number", "minimum": 0},
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -76,16 +87,8 @@ FEED = {
         {
             "type": "object",
             "properties": {
-                "name": {
-                    "enum": [
-                        "Ryles Tube",
-                        "Normal Feed",
-                    ],
-                },
-                "quantity": {
-                    "type": "number",
-                    "minimum": 0,
-                },
+                "name": {"enum": ["Ryles Tube", "Normal Feed"]},
+                "quantity": {"type": "number", "minimum": 0},
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -108,10 +111,7 @@ OUTPUT = {
                         "Abdominal Drain",
                     ],
                 },
-                "quantity": {
-                    "type": "number",
-                    "minimum": 0,
-                },
+                "quantity": {"type": "number", "minimum": 0},
             },
             "additionalProperties": False,
             "required": ["name", "quantity"],
@@ -169,22 +169,9 @@ PRESSURE_SORE = {
         {
             "type": "object",
             "properties": {
-                "length": {
-                    "type": "number",
-                    "minimum": 0,
-                },
-                "width": {
-                    "type": "number",
-                    "minimum": 0,
-                },
-                "exudate_amount": {
-                    "enum": [
-                        "None",
-                        "Light",
-                        "Moderate",
-                        "Heavy",
-                    ],
-                },
+                "length": {"type": "number", "minimum": 0},
+                "width": {"type": "number", "minimum": 0},
+                "exudate_amount": {"enum": ["None", "Light", "Moderate", "Heavy"]},
                 "tissue_type": {
                     "enum": [
                         "Closed",
@@ -195,17 +182,9 @@ PRESSURE_SORE = {
                     ]
                 },
                 "description": {"type": "string"},
-                "push_score": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 19,
-                },
+                "push_score": {"type": "number", "minimum": 0, "maximum": 19},
                 "region": {"enum": HUMAN_BODY_REGIONS},
-                "scale": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 5,
-                },
+                "scale": {"type": "number", "minimum": 1, "maximum": 5},
             },
             "additionalProperties": False,
             "required": ["region", "width", "length"],
@@ -221,11 +200,7 @@ PAIN_SCALE_ENHANCED = {
             "type": "object",
             "properties": {
                 "region": {"enum": HUMAN_BODY_REGIONS},
-                "scale": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 10,
-                },
+                "scale": {"type": "number", "minimum": 1, "maximum": 10},
                 "description": {"type": "string"},
             },
             "additionalProperties": False,
