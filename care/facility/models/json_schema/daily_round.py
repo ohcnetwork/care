@@ -7,14 +7,14 @@ BLOOD_PRESSURE = {
     "properties": {
         "systolic": {},
         "diastolic": {},
-        "systolic_not_recordable": {"type": "boolean"},
-        "diastolic_not_recordable": {"type": "boolean"},
+        "systolic_not_measurable": {"type": "boolean"},
+        "diastolic_not_measurable": {"type": "boolean"},
     },
-    "required": ["systolic_not_recordable", "diastolic_not_recordable"],
+    "required": ["systolic_not_measurable", "diastolic_not_measurable"],
     "allOf": [
         {
             "if": {
-                "properties": {"systolic_not_recordable": {"const": False}},
+                "properties": {"systolic_not_measurable": {"const": False}},
             },
             "then": {
                 "properties": {"systolic": {"$ref": "#/definitions/blood-pressure"}},
@@ -26,7 +26,7 @@ BLOOD_PRESSURE = {
         },
         {
             "if": {
-                "properties": {"diastolic_not_recordable": {"const": False}},
+                "properties": {"diastolic_not_measurable": {"const": False}},
             },
             "then": {
                 "properties": {"diastolic": {"$ref": "#/definitions/blood-pressure"}},

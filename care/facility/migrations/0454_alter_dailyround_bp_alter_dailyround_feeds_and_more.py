@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
     2. Fills name with "Unknown" for I/O balance field items for ones with
        empty string.
     3. Update blood pressure column to `None` for empty objects (`{}`).
-    4. Backfill systolic_not_recordable and diastolic_not_recordable attributes.
+    4. Backfill systolic_not_measurable and diastolic_not_measurable attributes.
     """
 
     dependencies = [
@@ -90,7 +90,7 @@ class Migration(migrations.Migration):
         DailyRound = apps.get_model("facility", "DailyRound")
         DailyRound.objects.filter(bp=None).update(bp={})
 
-    def backfill_blood_pressure_recordable(apps, schema_editor):
+    def backfill_blood_pressure_not_measurable(apps, schema_editor):
         DailyRound = apps.get_model("facility", "DailyRound")
 
         paginator = Paginator(
@@ -101,8 +101,8 @@ class Migration(migrations.Migration):
             bulk = []
             for instance in paginator.page(page_number).object_list:
                 bp = instance.bp
-                bp["systolic_not_recordable"] = bp.get("systolic") is None
-                bp["diastolic_not_recordable"] = bp.get("diastolic") is None
+                bp["systolic_not_measurable"] = bp.get("systolic") is None
+                bp["diastolic_not_measurable"] = bp.get("diastolic") is None
                 bulk.append(instance)
             DailyRound.objects.bulk_update(bulk, ["bp"])
 
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
                                     },
                                     "if": {
                                         "properties": {
-                                            "systolic_not_recordable": {"const": False}
+                                            "systolic_not_measurable": {"const": False}
                                         }
                                     },
                                     "then": {
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
                                     },
                                     "if": {
                                         "properties": {
-                                            "diastolic_not_recordable": {"const": False}
+                                            "diastolic_not_measurable": {"const": False}
                                         }
                                     },
                                     "then": {
@@ -169,13 +169,13 @@ class Migration(migrations.Migration):
                             },
                             "properties": {
                                 "diastolic": {},
-                                "diastolic_not_recordable": {"type": "boolean"},
+                                "diastolic_not_measurable": {"type": "boolean"},
                                 "systolic": {},
-                                "systolic_not_recordable": {"type": "boolean"},
+                                "systolic_not_measurable": {"type": "boolean"},
                             },
                             "required": [
-                                "systolic_not_recordable",
-                                "diastolic_not_recordable",
+                                "systolic_not_measurable",
+                                "diastolic_not_measurable",
                             ],
                             "type": "object",
                         }
@@ -188,7 +188,7 @@ class Migration(migrations.Migration):
             reverse_code=reverse_set_empty_bp_to_null,
         ),
         migrations.RunPython(
-            backfill_blood_pressure_recordable,
+            backfill_blood_pressure_not_measurable,
             reverse_code=migrations.RunPython.noop,
         ),
         migrations.AlterField(
