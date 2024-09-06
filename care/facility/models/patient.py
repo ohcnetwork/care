@@ -12,7 +12,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
-from care.abdm.models import AbhaNumber
 from care.facility.models import (
     DISEASE_CHOICES,
     DiseaseStatusEnum,
@@ -427,11 +426,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         null=True,
         blank="True",
         related_name="root_patient_assigned_to",
-    )
-
-    # ABDM Health ID
-    abha_number = models.OneToOneField(
-        AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     history = HistoricalRecords(excluded_fields=["meta_info"])

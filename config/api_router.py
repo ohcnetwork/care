@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.abha_number import AbhaNumberViewSet
 from care.abdm.api.viewsets.consent import ConsentViewSet
 from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
 from care.abdm.api.viewsets.health_information import HealthInformationViewSet
@@ -253,7 +253,6 @@ patient_notes_nested_router = NestedSimpleRouter(
 patient_notes_nested_router.register(
     r"edits", PatientNotesEditViewSet, basename="patient-notes-edits"
 )
-patient_nested_router.register(r"abha", AbhaViewSet)
 
 router.register(
     "external_result", PatientExternalTestViewSet, basename="patient-external-result"
@@ -320,6 +319,7 @@ if settings.ENABLE_ABDM:
         basename="abdm-healthinformation",
     )
     router.register("abdm/patients", PatientsViewSet, basename="abdm-patients")
+    router.register("abdm/abha_numbers", AbhaNumberViewSet, basename="abdm-abhanumber")
 
 router.register(
     "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"
