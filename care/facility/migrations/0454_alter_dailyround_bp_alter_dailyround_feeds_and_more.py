@@ -94,8 +94,7 @@ class Migration(migrations.Migration):
         DailyRound = apps.get_model("facility", "DailyRound")
 
         paginator = Paginator(
-            DailyRound.objects.filter(bp__isnull=False).order_by("id").values("bp"),
-            1000,
+            DailyRound.objects.filter(bp__isnull=False).order_by("id"), 1000
         )
 
         for page_number in paginator.page_range:
