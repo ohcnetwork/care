@@ -134,8 +134,8 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_blood_pressure_not_recordable(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": False,
-                "diastolic_recordable": False,
+                "systolic_not_recordable": True,
+                "diastolic_not_recordable": True,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -143,9 +143,9 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_blood_pressure_not_recordable_with_value(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": False,
+                "systolic_not_recordable": True,
                 "systolic": 60,
-                "diastolic_recordable": False,
+                "diastolic_not_recordable": True,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -153,8 +153,8 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_blood_pressure_recordable_without_value(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": True,
-                "diastolic_recordable": False,
+                "systolic_not_recordable": False,
+                "diastolic_not_recordable": True,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -162,9 +162,9 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_blood_pressure_partially_recordable(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": True,
+                "systolic_not_recordable": False,
                 "systolic": 60,
-                "diastolic_recordable": False,
+                "diastolic_not_recordable": True,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -172,9 +172,9 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_out_of_range_blood_pressure(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": True,
+                "systolic_not_recordable": False,
                 "systolic": 1000,
-                "diastolic_recordable": False,
+                "diastolic_not_recordable": True,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -182,7 +182,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_missing_systolic_blood_pressure(self):
         response = self.create_log_update(
             bp={
-                "diastolic_recordable": True,
+                "diastolic_not_recordable": False,
                 "diastolic": 100,
             }
         )
@@ -191,9 +191,9 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_systolic_below_diastolic_blood_pressure(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": True,
+                "systolic_not_recordable": False,
                 "systolic": 60,
-                "diastolic_recordable": True,
+                "diastolic_not_recordable": False,
                 "diastolic": 90,
             },
         )
@@ -202,9 +202,9 @@ class TestDailyRoundApi(TestUtils, APITestCase):
     def test_create_log_update_with_valid_blood_pressure(self):
         response = self.create_log_update(
             bp={
-                "systolic_recordable": True,
+                "systolic_not_recordable": False,
                 "systolic": 90,
-                "diastolic_recordable": True,
+                "diastolic_not_recordable": False,
                 "diastolic": 60,
             },
         )

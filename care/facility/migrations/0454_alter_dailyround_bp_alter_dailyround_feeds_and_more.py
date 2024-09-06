@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
     2. Fills name with "Unknown" for I/O balance field items for ones with
        empty string.
     3. Update blood pressure column to `None` for empty objects (`{}`).
-    4. Backfill systolic_recordable and diastolic_recordable attributes.
+    4. Backfill systolic_not_recordable and diastolic_not_recordable attributes.
     """
 
     dependencies = [
@@ -101,8 +101,8 @@ class Migration(migrations.Migration):
             bulk = []
             for instance in paginator.page(page_number).object_list:
                 bp = instance.bp
-                bp["systolic_recordable"] = bp.get("systolic") is not None
-                bp["diastolic_recordable"] = bp.get("diastolic") is not None
+                bp["systolic_not_recordable"] = bp.get("systolic") is None
+                bp["diastolic_not_recordable"] = bp.get("diastolic") is None
                 bulk.append(instance)
             DailyRound.objects.bulk_update(bulk, ["bp"])
 
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
                                     },
                                     "if": {
                                         "properties": {
-                                            "systolic_recordable": {"const": True}
+                                            "systolic_not_recordable": {"const": False}
                                         }
                                     },
                                     "then": {
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
                                     },
                                     "if": {
                                         "properties": {
-                                            "diastolic_recordable": {"const": True}
+                                            "diastolic_not_recordable": {"const": False}
                                         }
                                     },
                                     "then": {
@@ -169,11 +169,14 @@ class Migration(migrations.Migration):
                             },
                             "properties": {
                                 "diastolic": {},
-                                "diastolic_recordable": {"type": "boolean"},
+                                "diastolic_not_recordable": {"type": "boolean"},
                                 "systolic": {},
-                                "systolic_recordable": {"type": "boolean"},
+                                "systolic_not_recordable": {"type": "boolean"},
                             },
-                            "required": ["systolic_recordable", "diastolic_recordable"],
+                            "required": [
+                                "systolic_not_recordable",
+                                "diastolic_not_recordable",
+                            ],
                             "type": "object",
                         }
                     )
