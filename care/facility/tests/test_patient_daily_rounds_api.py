@@ -118,40 +118,95 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         response = self.create_log_update(rounds_type="DOCTORS_LOG")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_create_log_update_blood_pressure_empty(self):
+        response = self.create_log_update(bp={})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_log_update_blood_pressure_without_recordable_fields(self):
+        response = self.create_log_update(
+            bp={
+                "systolic": 90,
+                "diastolic": 60,
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_log_update_blood_pressure_not_recordable(self):
+        response = self.create_log_update(
+            bp={
+                "systolic_recordable": False,
+                "diastolic_recordable": False,
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_log_update_blood_pressure_not_recordable_with_value(self):
+        response = self.create_log_update(
+            bp={
+                "systolic_recordable": False,
+                "systolic": 60,
+                "diastolic_recordable": False,
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_log_update_blood_pressure_recordable_without_value(self):
+        response = self.create_log_update(
+            bp={
+                "systolic_recordable": True,
+                "diastolic_recordable": False,
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_log_update_blood_pressure_partially_recordable(self):
+        response = self.create_log_update(
+            bp={
+                "systolic_recordable": True,
+                "systolic": 60,
+                "diastolic_recordable": False,
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_create_log_update_with_out_of_range_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"systolic": 999, "diastolic": 0},
+            bp={
+                "systolic_recordable": True,
+                "systolic": 1000,
+                "diastolic_recordable": False,
+            }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_missing_systolic_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR", bp={"diastolic": 100}
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_with_missing_diastolic_blood_pressure(self):
-        response = self.create_log_update(
-            rounds_type="VENTILATOR", bp={"systolic": 100}
+            bp={
+                "diastolic_recordable": True,
+                "diastolic": 100,
+            }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_systolic_below_diastolic_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"systolic": 100, "diastolic": 200},
+            bp={
+                "systolic_recordable": True,
+                "systolic": 60,
+                "diastolic_recordable": True,
+                "diastolic": 90,
+            },
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_with_blood_pressure_empty(self):
-        response = self.create_log_update(rounds_type="VENTILATOR", bp={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_valid_blood_pressure(self):
         response = self.create_log_update(
-            rounds_type="VENTILATOR",
-            bp={"systolic": 50, "diastolic": 50},
+            bp={
+                "systolic_recordable": True,
+                "systolic": 90,
+                "diastolic_recordable": True,
+                "diastolic": 60,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

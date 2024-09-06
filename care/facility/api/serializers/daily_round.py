@@ -96,7 +96,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     def validate_bp(self, value):
         sys, dia = value.get("systolic"), value.get("diastolic")
-        if sys != None and dia != None and sys < dia:
+        if sys is not None and dia is not None and sys < dia:
             raise ValidationError("Systolic must be greater than diastolic")
         return value
 
