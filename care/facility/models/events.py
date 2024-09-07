@@ -81,6 +81,8 @@ class PatientConsultationEvent(models.Model):
                     "event_type_id",
                     "object_model",
                     "taken_at",
-                ]
+                ],
+                condition=models.Q(is_latest=True),
+                name="consultation_events_latest_idx",
             ),
         ]
