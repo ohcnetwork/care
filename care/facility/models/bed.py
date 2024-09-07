@@ -37,6 +37,7 @@ class Bed(BaseModel):
                 models.functions.Lower("name"),
                 "location",
                 name="unique_bed_name_per_location",
+                condition=models.Q(deleted=False),
             )
         ]
 
