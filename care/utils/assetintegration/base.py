@@ -16,7 +16,7 @@ class BaseAssetIntegration:
         self.host = self.meta["local_ip_address"]
         self.middleware_hostname = self.meta["middleware_hostname"]
         self.insecure_connection = self.meta.get("insecure_connection", False)
-        self.timeout = getattr(settings, "MIDDLEWARE_API_TIMEOUT", 20)
+        self.timeout = settings.MIDDLEWARE_REQUEST_TIMEOUT
 
     def handle_action(self, action):
         pass

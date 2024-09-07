@@ -55,7 +55,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
-
 LANGUAGES = [
     ("en-us", _("English")),
     ("ml", _("Malayalam")),
@@ -665,4 +664,4 @@ TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
 )
 
 # Timeout for middleware request (in seconds)
-MIDDLEWARE_API_TIMEOUT = 20
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
