@@ -76,9 +76,9 @@ class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
 
     def get_consultation_obj(self):
         return get_object_or_404(
-            get_consultation_queryset(self.request.user).filter(
-                external_id=self.kwargs["consultation_external_id"]
-            )
+            get_consultation_queryset(self.request.user)
+            .filter(external_id=self.kwargs["consultation_external_id"])
+            .only("id")
         )
 
     def get_queryset(self):

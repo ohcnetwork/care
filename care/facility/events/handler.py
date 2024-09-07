@@ -31,6 +31,7 @@ def create_consultation_event_entry(
     fields_to_store = fields_to_store & fields if fields_to_store else fields
 
     batch = []
+    groups_to_mark_stale: list[int] = []
     groups = EventType.objects.filter(
         model=object_instance.__class__.__name__, fields__len__gt=0, is_active=True
     ).values_list("id", "fields")
@@ -44,14 +45,7 @@ def create_consultation_event_entry(
             if all(not v for v in value.values()):
                 continue
 
-            PatientConsultationEvent.objects.select_for_update().filter(
-                consultation_id=consultation_id,
-                event_type=group_id,
-                is_latest=True,
-                object_model=object_instance.__class__.__name__,
-                object_id=object_instance.id,
-                taken_at__lt=taken_at,
-            ).update(is_latest=False)
+            groups_to_mark_stale.append(group_id)
             batch.append(
                 PatientConsultationEvent(
                     consultation_id=consultation_id,
@@ -71,6 +65,18 @@ def create_consultation_event_entry(
                 )
             )
 
+    old_events_filter = {
+        "consultation_id": consultation_id,
+        "event_type__in": groups_to_mark_stale,
+        "is_latest": True,
+        "object_model": object_instance.__class__.__name__,
+        "taken_at__lt": taken_at,
+    }
+    if change_type == ChangeType.UPDATED:
+        old_events_filter["object_id"] = object_instance.id
+    PatientConsultationEvent.objects.select_for_update().filter(
+        **old_events_filter
+    ).update(is_latest=False)
     PatientConsultationEvent.objects.bulk_create(batch)
     return len(batch)
 
