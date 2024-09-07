@@ -314,7 +314,7 @@ class Fhir:
             ),
             self._observation(
                 "SpO2",
-                {"value": daily_round.archived_spo2, "unit": "%"},
+                {"value": daily_round.ventilator_spo2, "unit": "%"},
                 id,
                 date,
             ),
