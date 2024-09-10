@@ -31,11 +31,10 @@ class Migration(migrations.Migration):
     2. Fills name with "Unknown" for I/O balance field items for ones with
        empty string.
     3. Update blood pressure column to `None` for empty objects (`{}`).
-    4. Backfill systolic_not_measurable and diastolic_not_measurable attributes.
     """
 
     dependencies = [
-        ("facility", "0453_merge_20240824_2040"),
+        ("facility", "0454_remove_historicalpatientregistration_abha_number_and_more"),
     ]
 
     def forward_fill_empty_io_balance_field_names(apps, schema_editor):
@@ -90,22 +89,6 @@ class Migration(migrations.Migration):
         DailyRound = apps.get_model("facility", "DailyRound")
         DailyRound.objects.filter(bp=None).update(bp={})
 
-    def backfill_blood_pressure_not_measurable(apps, schema_editor):
-        DailyRound = apps.get_model("facility", "DailyRound")
-
-        paginator = Paginator(
-            DailyRound.objects.filter(bp__isnull=False).order_by("id"), 1000
-        )
-
-        for page_number in paginator.page_range:
-            bulk = []
-            for instance in paginator.page(page_number).object_list:
-                bp = instance.bp
-                bp["systolic_not_measurable"] = bp.get("systolic") is None
-                bp["diastolic_not_measurable"] = bp.get("diastolic") is None
-                bulk.append(instance)
-            DailyRound.objects.bulk_update(bulk, ["bp"])
-
     operations = [
         migrations.RunPython(
             forward_fill_empty_io_balance_field_names,
@@ -122,61 +105,19 @@ class Migration(migrations.Migration):
                         {
                             "$schema": "http://json-schema.org/draft-07/schema#",
                             "additionalProperties": False,
-                            "allOf": [
-                                {
-                                    "else": {
-                                        "properties": {"systolic": {"const": None}}
-                                    },
-                                    "if": {
-                                        "properties": {
-                                            "systolic_not_measurable": {"const": False}
-                                        }
-                                    },
-                                    "then": {
-                                        "properties": {
-                                            "systolic": {
-                                                "$ref": "#/definitions/blood-pressure"
-                                            }
-                                        },
-                                        "required": ["systolic"],
-                                    },
-                                },
-                                {
-                                    "else": {
-                                        "properties": {"diastolic": {"const": None}}
-                                    },
-                                    "if": {
-                                        "properties": {
-                                            "diastolic_not_measurable": {"const": False}
-                                        }
-                                    },
-                                    "then": {
-                                        "properties": {
-                                            "diastolic": {
-                                                "$ref": "#/definitions/blood-pressure"
-                                            }
-                                        },
-                                        "required": ["diastolic"],
-                                    },
-                                },
-                            ],
-                            "definitions": {
-                                "blood-pressure": {
+                            "properties": {
+                                "diastolic": {
                                     "maximum": 400,
                                     "minimum": 0,
                                     "type": "number",
-                                }
+                                },
+                                "systolic": {
+                                    "maximum": 400,
+                                    "minimum": 0,
+                                    "type": "number",
+                                },
                             },
-                            "properties": {
-                                "diastolic": {},
-                                "diastolic_not_measurable": {"type": "boolean"},
-                                "systolic": {},
-                                "systolic_not_measurable": {"type": "boolean"},
-                            },
-                            "required": [
-                                "systolic_not_measurable",
-                                "diastolic_not_measurable",
-                            ],
+                            "required": ["systolic", "diastolic"],
                             "type": "object",
                         }
                     )
@@ -186,10 +127,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             forward_set_empty_bp_to_null,
             reverse_code=reverse_set_empty_bp_to_null,
-        ),
-        migrations.RunPython(
-            backfill_blood_pressure_not_measurable,
-            reverse_code=migrations.RunPython.noop,
         ),
         migrations.AlterField(
             model_name="dailyround",

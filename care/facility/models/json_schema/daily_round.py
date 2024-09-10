@@ -1,42 +1,11 @@
 BLOOD_PRESSURE = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "definitions": {
-        "blood-pressure": {"type": "number", "minimum": 0, "maximum": 400},
-    },
     "properties": {
-        "systolic": {},
-        "diastolic": {},
-        "systolic_not_measurable": {"type": "boolean"},
-        "diastolic_not_measurable": {"type": "boolean"},
+        "systolic": {"type": "number", "minimum": 0, "maximum": 400},
+        "diastolic": {"type": "number", "minimum": 0, "maximum": 400},
     },
-    "required": ["systolic_not_measurable", "diastolic_not_measurable"],
-    "allOf": [
-        {
-            "if": {
-                "properties": {"systolic_not_measurable": {"const": False}},
-            },
-            "then": {
-                "properties": {"systolic": {"$ref": "#/definitions/blood-pressure"}},
-                "required": ["systolic"],
-            },
-            "else": {
-                "properties": {"systolic": {"const": None}},
-            },
-        },
-        {
-            "if": {
-                "properties": {"diastolic_not_measurable": {"const": False}},
-            },
-            "then": {
-                "properties": {"diastolic": {"$ref": "#/definitions/blood-pressure"}},
-                "required": ["diastolic"],
-            },
-            "else": {
-                "properties": {"diastolic": {"const": None}},
-            },
-        },
-    ],
+    "required": ["systolic", "diastolic"],
     "additionalProperties": False,
 }
 

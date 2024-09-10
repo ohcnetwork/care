@@ -118,95 +118,27 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         response = self.create_log_update(rounds_type="DOCTORS_LOG")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_log_update_blood_pressure_empty(self):
+    def test_create_log_update_with_blood_pressure_empty(self):
         response = self.create_log_update(bp={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_log_update_blood_pressure_without_measurable_fields(self):
-        response = self.create_log_update(
-            bp={
-                "systolic": 90,
-                "diastolic": 60,
-            }
-        )
+    def test_create_log_update_with_partial_blood_pressure(self):
+        response = self.create_log_update(bp={"systolic": 60})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_blood_pressure_not_measurable(self):
-        response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": True,
-                "diastolic_not_measurable": True,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_create_log_update_blood_pressure_not_measurable_with_value(self):
-        response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": True,
-                "systolic": 60,
-                "diastolic_not_measurable": True,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_blood_pressure_recordable_without_value(self):
-        response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": False,
-                "diastolic_not_measurable": True,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_blood_pressure_partially_recordable(self):
-        response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": False,
-                "systolic": 60,
-                "diastolic_not_measurable": True,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_log_update_with_out_of_range_blood_pressure(self):
-        response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": False,
-                "systolic": 1000,
-                "diastolic_not_measurable": True,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_log_update_with_missing_systolic_blood_pressure(self):
-        response = self.create_log_update(
-            bp={
-                "diastolic_not_measurable": False,
-                "diastolic": 100,
-            }
-        )
+        response = self.create_log_update(bp={"systolic": 1000, "diastolic": 60})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_systolic_below_diastolic_blood_pressure(self):
         response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": False,
-                "systolic": 60,
-                "diastolic_not_measurable": False,
-                "diastolic": 90,
-            },
+            bp={"systolic": 60, "diastolic": 90},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_log_update_with_valid_blood_pressure(self):
         response = self.create_log_update(
-            bp={
-                "systolic_not_measurable": False,
-                "systolic": 90,
-                "diastolic_not_measurable": False,
-                "diastolic": 60,
-            },
+            bp={"systolic": 90, "diastolic": 60},
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
