@@ -4,8 +4,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.shortcuts import get_object_or_404
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -25,7 +23,6 @@ from care.facility.models.json_schema.daily_round import (
     PAIN_SCALE_ENHANCED,
     PRESSURE_SORE,
 )
-from care.facility.models.patient_base import SYMPTOM_CHOICES
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
@@ -141,14 +138,6 @@ class DailyRound(PatientBaseModel):
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
     )
     physical_examination_info = models.TextField(null=True, blank=True)
-    deprecated_additional_symptoms = MultiSelectField(
-        choices=SYMPTOM_CHOICES,
-        default=1,
-        null=True,
-        blank=True,
-        max_length=get_max_length(SYMPTOM_CHOICES, None),
-    )  # Deprecated
-    deprecated_other_symptoms = models.TextField(default="", blank=True)  # Deprecated
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
         max_length=8,

@@ -14,6 +14,7 @@ class OnvifAsset(BaseAssetIntegration):
         GOTO_PRESET = "goto_preset"
         ABSOLUTE_MOVE = "absolute_move"
         RELATIVE_MOVE = "relative_move"
+        GET_STREAM_TOKEN = "get_stream_token"
 
     def __init__(self, meta):
         try:
@@ -53,5 +54,13 @@ class OnvifAsset(BaseAssetIntegration):
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
             return self.api_post(self.get_url("relativeMove"), request_body)
+
+        if action_type == self.OnvifActions.GET_STREAM_TOKEN.value:
+            return self.api_post(
+                self.get_url("api/stream/getToken/videoFeed"),
+                {
+                    "stream_id": self.access_key,
+                },
+            )
 
         raise ValidationError({"action": "invalid action type"})
