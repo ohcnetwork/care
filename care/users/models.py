@@ -2,6 +2,8 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -14,6 +16,11 @@ from care.utils.models.validators import (
     mobile_or_landline_number_validator,
     mobile_validator,
 )
+from care.utils.registries.feature_flag import FlagName, FlagRegistry, FlagType
+
+USER_FLAG_CACHE_KEY = "user_flag_cache:{user_id}:{flag_name}"
+USER_ALL_FLAGS_CACHE_KEY = "user_all_flags_cache:{user_id}"
+USER_FLAG_CACHE_TTL = 60 * 60 * 24  # 1 Day
 
 
 def reverse_choices(choices):
@@ -368,6 +375,9 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
+    def get_all_flags(self):
+        return UserFlag.get_all_flags(self.id)
+
     def save(self, *args, **kwargs) -> None:
         """
         While saving, if the local body is not null, then district will be local body's district
@@ -391,3 +401,64 @@ class UserFacilityAllocation(models.Model):
     )
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+
+
+class UserFlag(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    flag = models.CharField(max_length=1024)
+
+    @classmethod
+    def validate_flag(cls, flag_name) -> None:
+        FlagRegistry.validate_flag_name(FlagType.USER, flag_name)
+
+    def save(self, *args, **kwargs) -> None:
+        self.validate_flag(self.flag)
+
+        if (
+            not self.deleted
+            and self.__class__.objects.filter(
+                user_id=self.user_id, flag=self.flag
+            ).exists()
+        ):
+            raise ValidationError("Flag Already Exists")
+
+        cache.delete(
+            USER_FLAG_CACHE_KEY.format(user_id=self.user_id, flag_name=self.flag)
+        )
+        cache.delete(USER_ALL_FLAGS_CACHE_KEY.format(user_id=self.user_id))
+
+        return super().save(*args, **kwargs)
+
+    @classmethod
+    def check_user_has_flag(cls, user_id: int, flag_name: FlagName) -> bool:
+        cls.validate_flag(flag_name)
+        return cache.get_or_set(
+            USER_FLAG_CACHE_KEY.format(user_id=user_id, flag_name=flag_name),
+            default=lambda: cls.objects.filter(
+                user_id=user_id, flag=flag_name
+            ).exists(),
+            timeout=USER_FLAG_CACHE_TTL,
+        )
+
+    @classmethod
+    def get_all_flags(cls, user_id: int) -> tuple[FlagName]:
+        return cache.get_or_set(
+            USER_ALL_FLAGS_CACHE_KEY.format(user_id=user_id),
+            default=lambda: tuple(
+                cls.objects.filter(user_id=user_id).values_list("flag", flat=True)
+            ),
+            timeout=USER_FLAG_CACHE_TTL,
+        )
+
+    def __str__(self):
+        return f"User Flag: {self.user.get_full_name()} - {self.flag}"
+
+    class Meta:
+        verbose_name = "User Flag"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "flag"],
+                condition=models.Q(deleted=False),
+                name="unique_user_flag",
+            )
+        ]

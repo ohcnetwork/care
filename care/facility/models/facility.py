@@ -8,6 +8,7 @@ from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models.feature_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
@@ -281,6 +282,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         if not self.features:
             return []
         return [FacilityFeature(f).label for f in self.features]
+
+    def get_facility_flags(self):
+        return FacilityFlag.get_all_flags(self.id)
 
     CSV_MAPPING = {
         "name": "Facility Name",
