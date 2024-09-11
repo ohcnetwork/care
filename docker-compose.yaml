@@ -10,7 +10,7 @@ services:
     env_file:
       - ./docker/.prebuilt.env
     volumes:
-      - postgres-data3:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
@@ -44,5 +44,5 @@ services:
       - "8092:8090"
 
 volumes:
-  postgres-data3:
+  postgres-data:
   redis-data:
