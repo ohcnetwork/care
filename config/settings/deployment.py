@@ -41,6 +41,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 )
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origins-sequencestr
 CORS_ALLOWED_ORIGINS = env.json("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOWED_ORIGIN_REGEXES = env.json("CORS_ALLOWED_ORIGIN_REGEXES", default=[])
 
 # TEMPLATES
 # ------------------------------------------------------------------------------

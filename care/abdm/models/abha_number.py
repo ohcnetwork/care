@@ -7,6 +7,14 @@ class AbhaNumber(BaseModel):
     abha_number = models.TextField(null=True, blank=True, unique=True)
     health_id = models.TextField(null=True, blank=True, unique=True)
 
+    patient = models.OneToOneField(
+        "facility.PatientRegistration",
+        related_name="abha_number",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+
     name = models.TextField(null=True, blank=True)
     first_name = models.TextField(null=True, blank=True)
     middle_name = models.TextField(null=True, blank=True)

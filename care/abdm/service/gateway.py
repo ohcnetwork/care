@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from django.conf import settings
 from django.db.models import Q
+from rest_framework.exceptions import ValidationError
 
 from care.abdm.models.abha_number import AbhaNumber
 from care.abdm.models.base import Purpose
@@ -157,11 +158,11 @@ class Gateway:
             Q(abha_number=health_id) | Q(health_id=health_id)
         ).first()
         if not abha_number:
-            raise Exception("No ABHA Number found")
+            raise ValidationError(detail="No ABHA Number found")
 
-        patient_facility = abha_number.patientregistration.last_consultation.facility
+        patient_facility = abha_number.patient.last_consultation.facility
         if not hasattr(patient_facility, "healthfacility"):
-            raise Exception("Health Facility not linked")
+            raise ValidationError(detail="Health Facility not linked")
 
         return patient_facility.healthfacility.hf_id
 
@@ -204,7 +205,7 @@ class Gateway:
                 "patient": {"id": abha_number.health_id},
                 "requester": {
                     "type": "HIU",
-                    "id": abha_number.patientregistration.facility.healthfacility.hf_id,
+                    "id": self.get_hf_id_by_health_id(abha_number.health_id),
                 },
             },
         }
