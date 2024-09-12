@@ -40,6 +40,25 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
 
+    # Community Nurse's Log
+
+    bowel_difficulty = ChoiceField(
+        choices=DailyRound.BowelDifficultyChoice, required=False
+    )
+    bladder_drainage = ChoiceField(
+        choices=DailyRound.BladderDrainageChoice, required=False
+    )
+    bladder_issue = ChoiceField(choices=DailyRound.BladderIssueChoice, required=False)
+    urination_frequency = ChoiceField(
+        choices=DailyRound.UrinationFrequencyChoice, required=False
+    )
+    sleep = ChoiceField(choices=DailyRound.SleepChoice, required=False)
+    nutrition_route = ChoiceField(
+        choices=DailyRound.NutritionRouteChoice, required=False
+    )
+    oral_issue = ChoiceField(choices=DailyRound.OralIssueChoice, required=False)
+    appetite = ChoiceField(choices=DailyRound.AppetiteChoice, required=False)
+
     # Critical Care Components
 
     consciousness_level = ChoiceField(
