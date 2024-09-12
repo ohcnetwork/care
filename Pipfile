@@ -39,7 +39,7 @@ pyjwt = "==2.8.0"
 python-slugify = "==8.0.4"
 pywebpush = "==2.0.0"
 redis = { extras = ["hiredis"], version = "==5.0.5" } # constraint for redis-om
-redis-om = "==0.3.1"
+redis-om = "==0.3.2"
 requests = "==2.32.3"
 sentry-sdk = "==2.13.0"
 whitenoise = "==6.6.0"
