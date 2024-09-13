@@ -23,7 +23,7 @@
 
 project = "Care"
 copyright = """2023, Open Healthcare Network"""
-author = "coronasafe"
+author = "ohcnetwork"
 
 
 # -- General configuration ---------------------------------------------------
