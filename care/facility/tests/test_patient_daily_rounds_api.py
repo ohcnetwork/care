@@ -138,5 +138,4 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
             data,
         )
-        print(response.json())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
