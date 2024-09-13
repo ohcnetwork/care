@@ -217,6 +217,26 @@ class Command(BaseCommand):
                     ),
                 },
                 {"name": "NURSING", "fields": ("nursing",)},
+                {
+                    "name": "ROUTINE",
+                    "children": (
+                        {"name": "SLEEP", "fields": ("sleep",)},
+                        {"name": "BOWEL_DIFFICULTY", "fields": ("bowel_difficulty",)},
+                        {
+                            "name": "BLADDER",
+                            "fields": (
+                                "bladder_drainage",
+                                "bladder_issue",
+                                "experiences_dysuria",
+                                "urination_frequency",
+                            ),
+                        },
+                        {
+                            "name": "NUTRITION",
+                            "fields": ("nutrition_route", "oral_issue", "appetite"),
+                        },
+                    ),
+                },
             ),
         },
         {

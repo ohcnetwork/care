@@ -80,7 +80,7 @@ class DailyRound(PatientBaseModel):
         RETENTION = 2
         HESITANCY = 3
 
-    BladderIssueChoice = enum_choices(BladderDrainageType)
+    BladderIssueChoice = enum_choices(BladderIssueType)
 
     class UrinationFrequencyType(enum.Enum):
         NORMAL = 1
