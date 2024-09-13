@@ -6,8 +6,6 @@ from django.db import models
 from django.db.models import IntegerChoices
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
@@ -202,12 +200,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         models.SmallIntegerField(choices=FacilityFeature.choices),
         blank=True,
         null=True,
-    )
-    old_features = MultiSelectField(
-        choices=FEATURE_CHOICES,
-        null=True,
-        blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
     )
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
