@@ -298,6 +298,6 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         return validated
 
     def validate_taken_at(self, value):
-        if value > timezone.now():
+        if value and value > timezone.now():
             raise serializers.ValidationError("Cannot create an update in the future")
         return value
