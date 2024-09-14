@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ("facility", "0454_remove_historicalpatientregistration_abha_number_and_more"),
+        ("facility", "0455_remove_facility_old_features"),
     ]
 
     def forward_fill_empty_io_balance_field_names(apps, schema_editor):
