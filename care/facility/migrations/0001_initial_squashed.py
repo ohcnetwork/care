@@ -7,7 +7,6 @@ import django.contrib.postgres.fields.jsonb
 import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
-import multiselectfield.db.fields
 import simple_history.models
 from django.conf import settings
 from django.db import migrations, models
@@ -1039,7 +1038,7 @@ class Migration(migrations.Migration):
                 ("physical_examination_info", models.TextField(blank=True, null=True)),
                 (
                     "additional_symptoms",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         blank=True,
                         choices=[
                             (1, "ASYMPTOMATIC"),
@@ -2052,7 +2051,7 @@ class Migration(migrations.Migration):
                 ("kasp_empanelled", models.BooleanField(default=False)),
                 (
                     "features",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         blank=True,
                         choices=[
                             (1, "CT Scan Facility"),
@@ -2402,7 +2401,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "symptoms",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         blank=True,
                         choices=[
                             (1, "ASYMPTOMATIC"),
@@ -4330,7 +4329,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "symptoms",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         choices=[
                             (1, "ASYMPTOMATIC"),
                             (2, "FEVER"),
