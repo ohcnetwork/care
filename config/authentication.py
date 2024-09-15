@@ -184,7 +184,7 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
             asset_user = User(
                 username=f"asset{str(asset_obj.external_id)}",
                 email="support@ohc.network",
-                password=f"{password}123",  # The 123 makes it inaccessible without hashing
+                password=f"{password}xyz",  # The xyz makes it inaccessible without hashing
                 gender=3,
                 phone_number="919999999999",
                 user_type=User.TYPE_VALUE_MAP["Nurse"],
@@ -236,7 +236,7 @@ class ABDMAuthentication(JWTAuthentication):
             user = User(
                 username=settings.ABDM_USERNAME,
                 email="hcx@ohc.network",
-                password=f"{password}123",
+                password=f"{password}xyz",
                 gender=3,
                 phone_number="917777777777",
                 user_type=User.TYPE_VALUE_MAP["Volunteer"],

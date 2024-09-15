@@ -1,3 +1,5 @@
+import secrets
+import string
 import uuid
 
 from django.conf import settings
@@ -148,6 +150,35 @@ class CustomUserManager(UserManager):
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
+
+    def make_random_password(
+        self,
+        length: int = 10,
+        secure_random: bool = True,
+        allowed_chars: str = string.ascii_letters + string.digits + string.punctuation,
+    ) -> str:
+        """
+        Generate a random password with the specified length and allowed characters.
+
+        If secure_random is True the allowed_chars parameter is ignored and,
+        the generated password will contain:
+        - At least one lowercase letter.
+        - At least one uppercase letter.
+        - At least length // 4 digits.
+        """
+        if secure_random:
+            allowed_chars = string.ascii_letters + string.digits + string.punctuation
+            while True:
+                password = "".join(secrets.choice(allowed_chars) for i in range(length))
+                if (
+                    any(c.islower() for c in password)
+                    and any(c.isupper() for c in password)
+                    and sum(c.isdigit() for c in password) >= (length // 4)
+                ):
+                    break
+        else:
+            password = "".join(secrets.choice(allowed_chars) for _ in range(length))
+        return password
 
 
 class Skill(BaseModel):
