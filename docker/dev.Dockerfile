@@ -1,11 +1,8 @@
 FROM python:3.12-slim-bookworm
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
-
-ENV PATH /venv/bin:$PATH
-
 ARG TYPST_VERSION=0.11.0
+
+ENV PATH=/venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev \
@@ -35,7 +32,6 @@ RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"
-
 
 COPY . /app
 
