@@ -10,6 +10,7 @@ User = get_user_model()
 
 
 class ExportCsvMixin:
+    @admin.action(description="Export Selected")
     def export_as_csv(self, request, queryset):
         queryset = User.objects.filter(is_superuser=False).values(
             *User.CSV_MAPPING.keys()
@@ -19,8 +20,6 @@ class ExportCsvMixin:
             field_header_map=User.CSV_MAPPING,
             field_serializer_map=User.CSV_MAKE_PRETTY,
         )
-
-    export_as_csv.short_description = "Export Selected"
 
 
 @admin.register(User)

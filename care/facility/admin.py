@@ -37,6 +37,7 @@ from .models import (
 )
 
 
+@admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     search_fields = ["name"]
@@ -90,43 +91,51 @@ class StateFilter(SimpleListFilter):
         return queryset.filter(state__name=self.value())
 
 
+@admin.register(Facility)
 class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name"]
     list_filter = [StateFilter, DistrictFilter]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(FacilityStaff)
 class FacilityStaffAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility", "staff"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(FacilityCapacity)
 class FacilityCapacityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(FacilityVolunteer)
 class FacilityVolunteerAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility", "volunteer"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(Inventory)
 class InventoryAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["facility", "item"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(InventoryItem)
 class InventoryItemAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name", "description"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(Room)
 class RoomAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["building"]
     search_fields = ["building", "num"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(StaffRoomAllocation)
 class StaffRoomAllocationAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["staff", "room"]
     djangoql_completion_enabled_by_default = True
@@ -137,6 +146,7 @@ class AmbulanceDriverInline(DjangoQLSearchMixin, admin.TabularInline):
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(Ambulance)
 class AmbulanceAdmin(admin.ModelAdmin):
     search_fields = ["vehicle_number"]
     inlines = [
@@ -145,33 +155,40 @@ class AmbulanceAdmin(admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(AmbulanceDriver)
 class AmbulanceDriverAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     autocomplete_fields = ["ambulance"]
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(PatientRegistration)
 class PatientAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     list_display = ("id", "name", "year_of_birth", "gender")
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(PatientSample)
 class PatientSampleAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     djangoql_completion_enabled_by_default = True
 
 
+@admin.register(PatientExternalTest)
 class PatientExternalTestAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(PatientInvestigation)
 class PatientTestAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(PatientInvestigationGroup)
 class PatientTestGroupAdmin(admin.ModelAdmin):
     pass
 
 
 class ExportCsvMixin:
+    @admin.action(description="Export Selected")
     def export_as_csv(self, request, queryset):
         queryset = FacilityUser.objects.all().values(*FacilityUser.CSV_MAPPING.keys())
         return render_to_csv_response(
@@ -180,37 +197,19 @@ class ExportCsvMixin:
             field_serializer_map=FacilityUser.CSV_MAKE_PRETTY,
         )
 
-    export_as_csv.short_description = "Export Selected"
 
-
+@admin.register(FacilityUser)
 class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
     djangoql_completion_enabled_by_default = True
     actions = ["export_as_csv"]
 
 
-admin.site.register(Facility, FacilityAdmin)
-admin.site.register(FacilityStaff, FacilityStaffAdmin)
-admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
-admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
-admin.site.register(FacilityUser, FacilityUserAdmin)
-admin.site.register(Building, BuildingAdmin)
-admin.site.register(Room, RoomAdmin)
-admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
-admin.site.register(InventoryItem, InventoryItemAdmin)
-admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
-admin.site.register(Ambulance, AmbulanceAdmin)
-admin.site.register(AmbulanceDriver, AmbulanceDriverAdmin)
-admin.site.register(PatientRegistration, PatientAdmin)
-admin.site.register(PatientSample, PatientSampleAdmin)
 admin.site.register(Disease)
 admin.site.register(FacilityInventoryUnit)
 admin.site.register(FacilityInventoryUnitConverter)
 admin.site.register(FacilityInventoryItem)
 admin.site.register(FacilityInventoryItemTag)
-admin.site.register(PatientExternalTest, PatientExternalTestAdmin)
-admin.site.register(PatientInvestigation, PatientTestAdmin)
-admin.site.register(PatientInvestigationGroup, PatientTestGroupAdmin)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)

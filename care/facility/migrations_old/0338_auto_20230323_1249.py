@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="patientconsultation",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     models.Q(_negated=True, suggestion="R"),
                     ("referred_to__isnull", False),
                     ("referred_to_external__isnull", False),

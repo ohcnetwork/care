@@ -209,7 +209,7 @@ class ABDMAuthentication(JWTAuthentication):
         return "Bearer"
 
     def authenticate(self, request):
-        jwt_token = request.META.get("HTTP_AUTHORIZATION")
+        jwt_token = self.get_header(request)
         if jwt_token is None:
             return None
         jwt_token = self.get_jwt_token(jwt_token)

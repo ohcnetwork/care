@@ -149,7 +149,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         verbose_name="Passport Number of Foreign Patients",
     )
     ration_card_category = models.CharField(
-        choices=RationCardCategory.choices, null=True, max_length=8
+        choices=RationCardCategory, null=True, max_length=8
     )
 
     is_medical_worker = models.BooleanField(
@@ -778,7 +778,7 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     thread = models.SmallIntegerField(
-        choices=PatientNoteThreadChoices.choices,
+        choices=PatientNoteThreadChoices,
         db_index=True,
         default=PatientNoteThreadChoices.DOCTORS,
     )
