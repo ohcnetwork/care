@@ -199,7 +199,7 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
 class ABDMAuthentication(JWTAuthentication):
     def open_id_authenticate(self, url, token):
         public_key = requests.get(url,timeout=10)
-        public_key.rise_for_status()
+        public_key.raise_for_status()
         jwk = public_key.json()["keys"][0]
         public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
         return jwt.decode(
