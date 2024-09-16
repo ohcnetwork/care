@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: ohccarefe\n"
 "X-Crowdin-Project-ID: 704503\n"
 "X-Crowdin-Language: ta\n"
-"X-Crowdin-File: /[ohcnetwork.care] develop/locale/ta/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 70\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/hi/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 66\n"
 
 #: care/abdm/apps.py:7
 msgid "ABDM Integration"
@@ -149,7 +149,7 @@ msgstr "பயனர் பெயர் 4 முதல் 16 எழுத்த�
 #: care/utils/ulid/serializers.py:9
 #, python-brace-format
 msgid "\"{value}\" is not a valid ULID."
-msgstr "\"{value}\" என்பது சரியான ULID அல்ல."
+msgstr "\"{value}\" சரியான ULID அல்ல."
 
 #: config/auth_views.py:19
 msgid "Too Many Requests Provide Captcha"
