@@ -94,59 +94,71 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "is_migrated",
         )
 
-    def validate(self, attrs):
-        if "medicine" in attrs:
-            attrs["medicine"] = get_object_or_404(
-                MedibaseMedicine, external_id=attrs["medicine"]
-            )
+   def validate(self, attrs):
+   
+    if "medicine" in attrs:
+        attrs["medicine"] = get_object_or_404(
+            MedibaseMedicine, external_id=attrs["medicine"]
+        )
 
-        if not self.instance:
-            if Prescription.objects.filter(
-                consultation__external_id=self.context["request"].parser_context[
-                    "kwargs"
-                ]["consultation_external_id"],
-                medicine=attrs["medicine"],
-                discontinued=False,
-            ).exists():
-                raise serializers.ValidationError(
-                    {
-                        "medicine": (
-                            "This medicine is already prescribed to this patient. "
-                            "Please discontinue the existing prescription to prescribe again."
-                        )
-                    }
-                )
-
-        if not attrs.get("base_dosage"):
+   
+    if not self.instance:
+        if Prescription.objects.filter(
+            consultation__external_id=self.context["request"].parser_context[
+                "kwargs"
+            ]["consultation_external_id"],
+            medicine=attrs["medicine"],
+            discontinued=False,
+        ).exists():
             raise serializers.ValidationError(
-                {"base_dosage": "Base dosage is required."}
+                {
+                    "medicine": (
+                        "This medicine is already prescribed to this patient. "
+                        "Please discontinue the existing prescription to prescribe again."
+                    )
+                }
             )
 
-        if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
-            if not attrs.get("indicator"):
+    
+    if not attrs.get("base_dosage"):
+        raise serializers.ValidationError({"base_dosage": "Base dosage is required."})
+
+   
+    if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
+        if not attrs.get("indicator"):
+            raise serializers.ValidationError(
+                {"indicator": "Indicator should be set for PRN prescriptions."}
+            )
+        attrs.pop("frequency", None)
+        attrs.pop("days", None)
+    else:
+        if not attrs.get("frequency"):
+            raise serializers.ValidationError(
+                {"frequency": "Frequency should be set for prescriptions."}
+            )
+        attrs.pop("indicator", None)
+        attrs.pop("max_dosage", None)
+        attrs.pop("min_hours_between_doses", None)
+
+        
+        if attrs.get("dosage_type") == PrescriptionDosageType.TITRATED:
+            if not attrs.get("target_dosage"):
                 raise serializers.ValidationError(
-                    {"indicator": "Indicator should be set for PRN prescriptions."}
+                    {"target_dosage": "Target dosage should be set for titrated prescriptions."}
                 )
-            attrs.pop("frequency", None)
-            attrs.pop("days", None)
         else:
-            if not attrs.get("frequency"):
-                raise serializers.ValidationError(
-                    {"frequency": "Frequency should be set for prescriptions."}
-                )
-            attrs.pop("indicator", None)
-            attrs.pop("max_dosage", None)
-            attrs.pop("min_hours_between_doses", None)
+            attrs.pop("target_dosage", None)
 
-            if attrs.get("dosage_type") == PrescriptionDosageType.TITRATED:
-                if not attrs.get("target_dosage"):
-                    raise serializers.ValidationError(
-                        {
-                            "target_dosage": "Target dosage should be set for titrated prescriptions."
-                        }
-                    )
-            else:
-                attrs.pop("target_dosage", None)
+    # Check if max_dosage in 24 hours is greater than or equal to base_dosage
+    base_dosage = attrs.get("base_dosage")
+    max_dosage = attrs.get("max_dosage")
+    
+    if max_dosage is not None and base_dosage is not None:
+        if max_dosage < base_dosage:
+            raise serializers.ValidationError(
+                {"max_dosage": "Max dosage in 24 hours must be greater than or equal to the base dosage."}
+            )
 
-        return super().validate(attrs)
+    return super().validate(attrs)
+
         # TODO: Ensure that this medicine is not already prescribed to the same patient and is currently active.
