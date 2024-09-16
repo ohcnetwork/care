@@ -77,7 +77,7 @@ class MiddlewareAuthentication(JWTAuthentication):
     def get_public_key(self, url):
         public_key_json = cache.get(jwk_response_cache_key(url))
         if not public_key_json:
-            res = requests.get(url)
+            res = requests.get(url,timeout=10)
             res.raise_for_status()
             public_key_json = res.json()
             cache.set(jwk_response_cache_key(url), public_key_json, timeout=60 * 5)
@@ -198,7 +198,8 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
 
 class ABDMAuthentication(JWTAuthentication):
     def open_id_authenticate(self, url, token):
-        public_key = requests.get(url)
+        public_key = requests.get(url,timeout=10)
+        public_key.rise_for_status()
         jwk = public_key.json()["keys"][0]
         public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
         return jwt.decode(
