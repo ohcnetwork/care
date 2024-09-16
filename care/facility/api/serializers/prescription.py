@@ -149,7 +149,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         else:
             attrs.pop("target_dosage", None)
 
-    # Check if max_dosage in 24 hours is greater than or equal to base_dosage
+   
     base_dosage = attrs.get("base_dosage")
     max_dosage = attrs.get("max_dosage")
     
