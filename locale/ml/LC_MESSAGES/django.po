@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: ohccarefe\n"
 "X-Crowdin-Project-ID: 704503\n"
 "X-Crowdin-Language: ml-IN\n"
-"X-Crowdin-File: /[ohcnetwork.care] develop/locale/ml/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 68\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/ta/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 70\n"
 
 #: care/abdm/apps.py:7
 msgid "ABDM Integration"
@@ -116,7 +116,7 @@ msgstr ""
 
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
-msgstr ""
+msgstr "ആരോഗ്യ സംരക്ഷണ ശൃംഖല"
 
 #: care/templates/pages/home.html:9
 msgid "Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity."
