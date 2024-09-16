@@ -247,7 +247,7 @@ class Command(BaseCommand):
         "VENTILATOR_MODES",
         "SYMPTOMS",
         "ROUND_SYMPTOMS",
-        "SPO",
+        "SPO2",
     )
 
     def create_objects(
