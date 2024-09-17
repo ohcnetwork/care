@@ -6,10 +6,10 @@ import base64
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 
 import environ
 from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
 )
