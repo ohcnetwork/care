@@ -56,70 +56,70 @@ class DailyRound(PatientBaseModel):
 
     ConsciousnessChoice = enum_choices(ConsciousnessType)
 
-    class BowelDifficultyType(enum.Enum):
-        NO_DIFFICULTY = 0
-        CONSTIPATION = 1
-        DIARRHOEA = 2
+    class BowelDifficultyType(models.IntegerChoices):
+        NO_DIFFICULTY = 0, "NO_DIFFICULTY"
+        CONSTIPATION = 1, "CONSTIPATION"
+        DIARRHOEA = 2, "DIARRHOEA"
 
     BowelDifficultyChoice = enum_choices(BowelDifficultyType)
 
-    class BladderDrainageType(enum.Enum):
-        NORMAL = 1
-        CONDOM_CATHETER = 2
-        DIAPER = 3
-        INTERMITTENT_CATHETER = 4
-        CONTINUOUS_INDWELLING_CATHETER = 5
-        CONTINUOUS_SUPRAPUBIC_CATHETER = 6
-        UROSTOMY = 7
+    class BladderDrainageType(models.IntegerChoices):
+        NORMAL = 1, "NORMAL"
+        CONDOM_CATHETER = 2, "CONDOM_CATHETER"
+        DIAPER = 3, "DIAPER"
+        INTERMITTENT_CATHETER = 4, "INTERMITTENT_CATHETER"
+        CONTINUOUS_INDWELLING_CATHETER = 5, "CONTINUOUS_INDWELLING_CATHETER"
+        CONTINUOUS_SUPRAPUBIC_CATHETER = 6, "CONTINUOUS_SUPRAPUBIC_CATHETER"
+        UROSTOMY = 7, "UROSTOMY"
 
     BladderDrainageChoice = enum_choices(BladderDrainageType)
 
-    class BladderIssueType(enum.Enum):
-        NO_ISSUES = 0
-        INCONTINENCE = 1
-        RETENTION = 2
-        HESITANCY = 3
+    class BladderIssueType(models.IntegerChoices):
+        NO_ISSUES = 0, "NO_ISSUES"
+        INCONTINENCE = 1, "INCONTINENCE"
+        RETENTION = 2, "RETENTION"
+        HESITANCY = 3, "HESITANCY"
 
     BladderIssueChoice = enum_choices(BladderIssueType)
 
-    class UrinationFrequencyType(enum.Enum):
-        NORMAL = 1
-        DECREASED = 2
-        INCREASED = 3
+    class UrinationFrequencyType(models.IntegerChoices):
+        NORMAL = 1, "NORMAL"
+        DECREASED = 2, "DECREASED"
+        INCREASED = 3, "INCREASED"
 
     UrinationFrequencyChoice = enum_choices(UrinationFrequencyType)
 
-    class SleepType(enum.Enum):
-        EXCESSIVE = 1
-        SATISFACTORY = 2
-        UNSATISFACTORY = 3
-        NO_SLEEP = 4
+    class SleepType(models.IntegerChoices):
+        EXCESSIVE = 1, "EXCESSIVE"
+        SATISFACTORY = 2, "SATISFACTORY"
+        UNSATISFACTORY = 3, "UNSATISFACTORY"
+        NO_SLEEP = 4, "NO_SLEEP"
 
     SleepChoice = enum_choices(SleepType)
 
-    class NutritionRouteType(enum.Enum):
-        ORAL = 1
-        RYLES_TUBE = 2
-        GASTROSTOMY_OR_JEJUNOSTOMY = 3
-        PEG = 4
-        PARENTERAL_TUBING_FLUID = 5
-        PARENTERAL_TUBING_TPN = 6
+    class NutritionRouteType(models.IntegerChoices):
+        ORAL = 1, "ORAL"
+        RYLES_TUBE = 2, "RYLES_TUBE"
+        GASTROSTOMY_OR_JEJUNOSTOMY = 3, "GASTROSTOMY_OR_JEJUNOSTOMY"
+        PEG = 4, "PEG"
+        PARENTERAL_TUBING_FLUID = 5, "PARENTERAL_TUBING_FLUID"
+        PARENTERAL_TUBING_TPN = 6, "PARENTERAL_TUBING_TPN"
 
     NutritionRouteChoice = enum_choices(NutritionRouteType)
 
-    class OralIssueType(enum.Enum):
-        NO_ISSUE = 0
-        DYSPHAGIA = 1
-        ODYNOPHAGIA = 2
+    class OralIssueType(models.IntegerChoices):
+        NO_ISSUE = 0, "NO_ISSUE"
+        DYSPHAGIA = 1, "DYSPHAGIA"
+        ODYNOPHAGIA = 2, "ODYNOPHAGIA"
 
     OralIssueChoice = enum_choices(OralIssueType)
 
-    class AppetiteType(enum.Enum):
-        INCREASED = 1
-        SATISFACTORY = 2
-        REDUCED = 3
-        NO_TASTE_FOR_FOOD = 4
-        CANNOT_BE_ASSESSED = 5
+    class AppetiteType(models.IntegerChoices):
+        INCREASED = 1, "INCREASED"
+        SATISFACTORY = 2, "SATISFACTORY"
+        REDUCED = 3, "REDUCED"
+        NO_TASTE_FOR_FOOD = 4, "NO_TASTE_FOR_FOOD"
+        CANNOT_BE_ASSESSED = 5, "CANNOT_BE_ASSESSED"
 
     AppetiteChoice = enum_choices(AppetiteType)
 
