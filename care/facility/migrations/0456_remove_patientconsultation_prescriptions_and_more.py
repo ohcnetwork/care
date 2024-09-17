@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0453_merge_20240824_2040"),
+        ("facility", "0455_remove_facility_old_features"),
     ]
 
     def forward_investigations_dict_to_array(apps, schema_editor):
