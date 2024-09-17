@@ -38,6 +38,10 @@
           "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\", \"http://localhost:4000\"]"
         },
         {
+          "name": "CORS_ALLOWED_ORIGIN_REGEXES",
+          "value": "[\"^https://[a-zA-Z0-9-]+--care-ohc\\\\.netlify\\\\.app$\"]"
+        },
+        {
           "name": "CURRENT_DOMAIN",
           "value": "https://care.ohc.network"
         },
