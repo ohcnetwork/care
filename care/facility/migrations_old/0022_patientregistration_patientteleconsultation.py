@@ -2,7 +2,6 @@
 
 import django.core.validators
 import django.db.models.deletion
-import multiselectfield.db.fields
 from django.conf import settings
 from django.db import migrations, models
 
@@ -28,7 +27,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "symptoms",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         choices=[
                             (1, "NO"),
                             (2, "FEVER"),
@@ -94,7 +93,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "medical_history",
-                    multiselectfield.db.fields.MultiSelectField(
+                    models.CharField(
                         choices=[
                             (1, "NO"),
                             (2, "Diabetes"),
