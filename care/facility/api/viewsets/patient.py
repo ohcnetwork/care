@@ -639,18 +639,23 @@ class PatientViewSet(
 class DischargePatientFilterSet(PatientFilterSet):
     last_consultation_field = "last_discharge_consultation"
 
+    # Filters patients by the type of bed they have been assigned to.
     def filter_by_bed_type(self, queryset, name, value):
         if not value:
             return queryset
 
         values = value.split(",")
         filter_q = Q()
+
+        # Get the latest consultation bed records for each patient by ordering by patient_id
+        # and the end_date of the consultation, then selecting distinct patient entries.
         last_consultation_bed_ids = (
             ConsultationBed.objects.filter(end_date__isnull=False)
             .order_by("consultation__patient_id", "-end_date")
             .distinct("consultation__patient_id")
         )
 
+        # patients whose last consultation did not include a bed
         if "None" in values:
             filter_q |= ~Q(
                 last_discharge_consultation__id__in=Subquery(
@@ -659,14 +664,15 @@ class DischargePatientFilterSet(PatientFilterSet):
             )
             values.remove("None")
 
+        # If the values list contains valid bed types, apply the filtering for those bed types.
         if isinstance(values, list) and len(values) > 0:
             filter_q |= Q(
                 last_discharge_consultation__id__in=Subquery(
                     ConsultationBed.objects.filter(
                         id__in=Subquery(
                             last_consultation_bed_ids.values_list("id", flat=True)
-                        ),
-                        bed__bed_type__in=values,
+                        ),  # Filter by consultation beds that are part of the latest records for each patient.
+                        bed__bed_type__in=values,  # Match the bed types from the provided values list.
                     ).values_list("consultation_id", flat=True)
                 )
             )
