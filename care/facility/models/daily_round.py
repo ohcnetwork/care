@@ -10,7 +10,6 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -29,16 +28,14 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class DailyRound(PatientBaseModel):
-    class RoundsType(enum.Enum):
-        NORMAL = 0
-        DOCTORS_LOG = 50
-        VENTILATOR = 100
-        ICU = 200
-        AUTOMATED = 300
-        TELEMEDICINE = 400
 
-    RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
-    RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
+    class RoundsTypeChoice(models.IntegerChoices):
+        NORMAL = 0, "NORMAL"
+        DOCTORS_LOG = 50, "DOCTORS_LOG"
+        VENTILATOR = 100, "VENTILATOR"
+        ICU = 200, "ICU"
+        AUTOMATED = 300, "AUTOMATED"
+        TELEMEDICINE = 400, "TELEMEDICINE"
 
     class ConsciousnessType(enum.Enum):
         UNKNOWN = 0
@@ -171,7 +168,7 @@ class DailyRound(PatientBaseModel):
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(
-        choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
+        choices=RoundsTypeChoice.choices, default=RoundsTypeChoice.NORMAL.value
     )
     is_parsed_by_ocr = models.BooleanField(default=False)
 

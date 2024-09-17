@@ -39,7 +39,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+    rounds_type = ChoiceField(
+        choices=DailyRound.RoundsTypeChoice.choices, required=True
+    )
 
     # Critical Care Components
 
@@ -188,7 +190,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             if (
                 validated_data.get("rounds_type")
-                == DailyRound.RoundsType.TELEMEDICINE.value
+                == DailyRound.RoundsTypeChoice.TELEMEDICINE.value
                 and consultation.suggestion != SuggestionChoices.DC
             ):
                 raise ValidationError(
@@ -246,7 +248,10 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 ]
             )
 
-            if daily_round_obj.rounds_type != DailyRound.RoundsType.AUTOMATED.value:
+            if (
+                daily_round_obj.rounds_type
+                != DailyRound.RoundsTypeChoice.AUTOMATED.value
+            ):
                 self.update_last_daily_round(daily_round_obj)
 
             create_consultation_events(
