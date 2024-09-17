@@ -28,10 +28,6 @@ from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
 
 
-def enum_choices(enum: enum.Enum):
-    return [(e.value, e.name) for e in enum]
-
-
 class DailyRound(PatientBaseModel):
     class RoundsType(enum.Enum):
         NORMAL = 0
@@ -42,7 +38,7 @@ class DailyRound(PatientBaseModel):
         AUTOMATED = 300
         TELEMEDICINE = 400
 
-    RoundsTypeChoice = enum_choices(RoundsType)
+    RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
     RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
 
     class ConsciousnessType(enum.Enum):
@@ -54,14 +50,12 @@ class DailyRound(PatientBaseModel):
         AGITATED_OR_CONFUSED = 25
         ONSET_OF_AGITATION_AND_CONFUSION = 30
 
-    ConsciousnessChoice = enum_choices(ConsciousnessType)
+    ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
 
     class BowelDifficultyType(models.IntegerChoices):
         NO_DIFFICULTY = 0, "NO_DIFFICULTY"
         CONSTIPATION = 1, "CONSTIPATION"
         DIARRHOEA = 2, "DIARRHOEA"
-
-    BowelDifficultyChoice = enum_choices(BowelDifficultyType)
 
     class BladderDrainageType(models.IntegerChoices):
         NORMAL = 1, "NORMAL"
@@ -72,30 +66,22 @@ class DailyRound(PatientBaseModel):
         CONTINUOUS_SUPRAPUBIC_CATHETER = 6, "CONTINUOUS_SUPRAPUBIC_CATHETER"
         UROSTOMY = 7, "UROSTOMY"
 
-    BladderDrainageChoice = enum_choices(BladderDrainageType)
-
     class BladderIssueType(models.IntegerChoices):
         NO_ISSUES = 0, "NO_ISSUES"
         INCONTINENCE = 1, "INCONTINENCE"
         RETENTION = 2, "RETENTION"
         HESITANCY = 3, "HESITANCY"
 
-    BladderIssueChoice = enum_choices(BladderIssueType)
-
     class UrinationFrequencyType(models.IntegerChoices):
         NORMAL = 1, "NORMAL"
         DECREASED = 2, "DECREASED"
         INCREASED = 3, "INCREASED"
-
-    UrinationFrequencyChoice = enum_choices(UrinationFrequencyType)
 
     class SleepType(models.IntegerChoices):
         EXCESSIVE = 1, "EXCESSIVE"
         SATISFACTORY = 2, "SATISFACTORY"
         UNSATISFACTORY = 3, "UNSATISFACTORY"
         NO_SLEEP = 4, "NO_SLEEP"
-
-    SleepChoice = enum_choices(SleepType)
 
     class NutritionRouteType(models.IntegerChoices):
         ORAL = 1, "ORAL"
@@ -105,14 +91,10 @@ class DailyRound(PatientBaseModel):
         PARENTERAL_TUBING_FLUID = 5, "PARENTERAL_TUBING_FLUID"
         PARENTERAL_TUBING_TPN = 6, "PARENTERAL_TUBING_TPN"
 
-    NutritionRouteChoice = enum_choices(NutritionRouteType)
-
     class OralIssueType(models.IntegerChoices):
         NO_ISSUE = 0, "NO_ISSUE"
         DYSPHAGIA = 1, "DYSPHAGIA"
         ODYNOPHAGIA = 2, "ODYNOPHAGIA"
-
-    OralIssueChoice = enum_choices(OralIssueType)
 
     class AppetiteType(models.IntegerChoices):
         INCREASED = 1, "INCREASED"
@@ -121,8 +103,6 @@ class DailyRound(PatientBaseModel):
         NO_TASTE_FOR_FOOD = 4, "NO_TASTE_FOR_FOOD"
         CANNOT_BE_ASSESSED = 5, "CANNOT_BE_ASSESSED"
 
-    AppetiteChoice = enum_choices(AppetiteType)
-
     class PupilReactionType(enum.Enum):
         UNKNOWN = 0
         BRISK = 5
@@ -130,7 +110,7 @@ class DailyRound(PatientBaseModel):
         FIXED = 15
         CANNOT_BE_ASSESSED = 20
 
-    PupilReactionChoice = enum_choices(PupilReactionType)
+    PupilReactionChoice = [(e.value, e.name) for e in PupilReactionType]
 
     class LimbResponseType(enum.Enum):
         UNKNOWN = 0
@@ -141,14 +121,14 @@ class DailyRound(PatientBaseModel):
         EXTENSION = 25
         NONE = 30
 
-    LimbResponseChoice = enum_choices(LimbResponseType)
+    LimbResponseChoice = [(e.value, e.name) for e in LimbResponseType]
 
     class RythmnType(enum.Enum):
         UNKNOWN = 0
         REGULAR = 5
         IRREGULAR = 10
 
-    RythmnChoice = enum_choices(RythmnType)
+    RythmnChoice = [(e.value, e.name) for e in RythmnType]
 
     class VentilatorInterfaceType(enum.Enum):
         UNKNOWN = 0
@@ -156,7 +136,7 @@ class DailyRound(PatientBaseModel):
         NON_INVASIVE = 10
         OXYGEN_SUPPORT = 15
 
-    VentilatorInterfaceChoice = enum_choices(VentilatorInterfaceType)
+    VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
 
     class VentilatorModeType(enum.Enum):
         UNKNOWN = 0
@@ -170,7 +150,7 @@ class DailyRound(PatientBaseModel):
         ASV = 45
         PSV = 50
 
-    VentilatorModeChoice = enum_choices(VentilatorModeType)
+    VentilatorModeChoice = [(e.value, e.name) for e in VentilatorModeType]
 
     class VentilatorOxygenModalityType(enum.Enum):
         UNKNOWN = 0
@@ -179,7 +159,9 @@ class DailyRound(PatientBaseModel):
         NON_REBREATHING_MASK = 15
         HIGH_FLOW_NASAL_CANNULA = 20
 
-    VentilatorOxygenModalityChoice = enum_choices(VentilatorOxygenModalityType)
+    VentilatorOxygenModalityChoice = [
+        (e.value, e.name) for e in VentilatorOxygenModalityType
+    ]
 
     class InsulinIntakeFrequencyType(enum.Enum):
         UNKNOWN = 0
@@ -187,7 +169,9 @@ class DailyRound(PatientBaseModel):
         BD = 10
         TD = 15
 
-    InsulinIntakeFrequencyChoice = enum_choices(InsulinIntakeFrequencyType)
+    InsulinIntakeFrequencyChoice = [
+        (e.value, e.name) for e in InsulinIntakeFrequencyType
+    ]
 
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -246,29 +230,29 @@ class DailyRound(PatientBaseModel):
     # Community Nurse's Log Attributes
 
     bowel_difficulty = models.SmallIntegerField(
-        choices=BowelDifficultyChoice, default=None, null=True, blank=True
+        choices=BowelDifficultyType.choices, default=None, null=True, blank=True
     )
     bladder_drainage = models.SmallIntegerField(
-        choices=BladderDrainageChoice, default=None, null=True, blank=True
+        choices=BladderDrainageType.choices, default=None, null=True, blank=True
     )
     bladder_issue = models.SmallIntegerField(
-        choices=BladderIssueChoice, default=None, null=True, blank=True
+        choices=BladderIssueType.choices, default=None, null=True, blank=True
     )
     is_experiencing_dysuria = models.BooleanField(default=None, null=True, blank=True)
     urination_frequency = models.SmallIntegerField(
-        choices=UrinationFrequencyChoice, default=None, null=True, blank=True
+        choices=UrinationFrequencyType.choices, default=None, null=True, blank=True
     )
     sleep = models.SmallIntegerField(
-        choices=SleepChoice, default=None, null=True, blank=True
+        choices=SleepType.choices, default=None, null=True, blank=True
     )
     nutrition_route = models.SmallIntegerField(
-        choices=NutritionRouteChoice, default=None, null=True, blank=True
+        choices=NutritionRouteType.choices, default=None, null=True, blank=True
     )
     oral_issue = models.SmallIntegerField(
-        choices=OralIssueChoice, default=None, null=True, blank=True
+        choices=OralIssueType.choices, default=None, null=True, blank=True
     )
     appetite = models.SmallIntegerField(
-        choices=AppetiteChoice, default=None, null=True, blank=True
+        choices=AppetiteType.choices, default=None, null=True, blank=True
     )
 
     # Critical Care Attributes
