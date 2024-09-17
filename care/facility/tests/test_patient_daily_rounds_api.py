@@ -135,7 +135,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             data={
                 **self.log_update,
                 "rounds_type": "COMMUNITY_NURSES_LOG",
-                "bowel_difficulty": "NO_DIFFICULTY",
+                "bowel_issue": "NO_DIFFICULTY",
                 "bladder_drainage": "CONDOM_CATHETER",
                 "bladder_issue": "NO_ISSUES",
                 "urination_frequency": "DECREASED",

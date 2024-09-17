@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="dailyround",
-            name="bowel_difficulty",
+            name="bowel_issue",
             field=models.SmallIntegerField(
                 blank=True,
                 choices=[(0, "NO_DIFFICULTY"), (1, "CONSTIPATION"), (2, "DIARRHOEA")],

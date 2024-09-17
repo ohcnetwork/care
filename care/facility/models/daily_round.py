@@ -229,7 +229,7 @@ class DailyRound(PatientBaseModel):
 
     # Community Nurse's Log Attributes
 
-    bowel_difficulty = models.SmallIntegerField(
+    bowel_issue = models.SmallIntegerField(
         choices=BowelDifficultyType.choices, default=None, null=True, blank=True
     )
     bladder_drainage = models.SmallIntegerField(

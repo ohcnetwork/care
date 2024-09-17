@@ -43,7 +43,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     # Community Nurse's Log
 
-    bowel_difficulty = ChoiceField(
+    bowel_issue = ChoiceField(
         choices=DailyRound.BowelDifficultyType.choices, required=False
     )
     bladder_drainage = ChoiceField(

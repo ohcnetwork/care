@@ -220,10 +220,10 @@ class Command(BaseCommand):
                 {
                     "name": "ROUTINE",
                     "children": (
-                        {"name": "SLEEP", "fields": ("sleep",)},
-                        {"name": "BOWEL_DIFFICULTY", "fields": ("bowel_difficulty",)},
+                        {"name": "SLEEP_ROUTINE", "fields": ("sleep",)},
+                        {"name": "BOWEL_ROUTINE", "fields": ("bowel_issue",)},
                         {
-                            "name": "BLADDER",
+                            "name": "BLADDER_ROUTINE",
                             "fields": (
                                 "bladder_drainage",
                                 "bladder_issue",
@@ -232,7 +232,7 @@ class Command(BaseCommand):
                             ),
                         },
                         {
-                            "name": "NUTRITION",
+                            "name": "NUTRITION_ROUTINE",
                             "fields": ("nutrition_route", "oral_issue", "appetite"),
                         },
                     ),
