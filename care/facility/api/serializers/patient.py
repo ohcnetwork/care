@@ -5,8 +5,6 @@ from django.db import transaction
 from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
-from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -170,11 +168,6 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
-
-    abha_number = ExternalIdSerializerField(
-        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
-    )
-    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration

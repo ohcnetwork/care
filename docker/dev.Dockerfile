@@ -23,7 +23,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
         echo "Unsupported architecture: $ARCH"; \
         exit 1; \
     fi && \
-    wget -O typst.tar.xz https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz && \
+    wget -qO typst.tar.xz https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz && \
     tar -xf typst.tar.xz && \
     mv typst-${TYPST_ARCH}/typst /usr/local/bin/typst && \
     chmod +x /usr/local/bin/typst && \
