@@ -145,6 +145,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
             "patient_count",
             "bed_count",
+            "facility_flags",
         ]
         read_only_fields = ("modified_date", "created_date")
 

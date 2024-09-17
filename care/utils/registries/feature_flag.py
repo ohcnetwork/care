@@ -11,6 +11,10 @@ class FlagNotFoundException(ValidationError):
     pass
 
 
+class InvalidFlagTypeException(ValidationError):
+    pass
+
+
 class FlagType(enum.Enum):
     USER = "USER"
     FACILITY = "FACILITY"
@@ -27,7 +31,7 @@ class FlagRegistry:
     @classmethod
     def register(cls, flag_type: FlagType, flag_name: FlagName) -> None:
         if flag_type not in FlagType:
-            return
+            raise InvalidFlagTypeException("Invalid Flag Type")
         if flag_type not in cls._flags:
             cls._flags[flag_type] = {}
         cls._flags[flag_type][flag_name] = True
@@ -53,6 +57,12 @@ class FlagRegistry:
             raise FlagNotFoundException("Invalid Flag Type")
 
     @classmethod
+    def validate_flag_name(cls, flag_type: FlagType, flag_name):
+        cls.validate_flag_type(flag_type)
+        if flag_name not in cls._flags[flag_type]:
+            raise FlagNotFoundException("Flag not registered")
+
+    @classmethod
     def get_all_flags(cls, flag_type: FlagType) -> list[FlagName]:
         cls.validate_flag_type(flag_type)
         return list(cls._flags[flag_type].keys())
@@ -62,12 +72,6 @@ class FlagRegistry:
         cls, flag_type: FlagType
     ) -> list[tuple[FlagName, FlagName]]:
         return ((x, x) for x in cls._flags.get(flag_type, {}).keys())
-
-    @classmethod
-    def validate_flag_name(cls, flag_type: FlagType, flag_name):
-        cls.validate_flag_type(flag_type)
-        if flag_name not in cls._flags[flag_type]:
-            raise FlagNotFoundException("Flag not registered")
 
 
 FlagRegistry.register(FlagType.USER, "USER_TEST_FLAG")
