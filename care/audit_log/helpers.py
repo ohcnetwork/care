@@ -4,7 +4,6 @@ from functools import lru_cache
 from typing import List, NamedTuple
 
 from django.conf import settings
-from multiselectfield.db.fields import MSFList
 from rest_framework.utils.encoders import JSONEncoder
 
 
@@ -15,7 +14,7 @@ def remove_non_member_fields(d: dict):
 def instance_finder(v):
     return isinstance(
         v,
-        (list, dict, set, MSFList),
+        (list, dict, set),
     )
 
 
