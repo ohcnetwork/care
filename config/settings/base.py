@@ -6,6 +6,7 @@ import base64
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 import environ
 from authlib.jose import JsonWebKey
@@ -54,6 +55,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
+
+LANGUAGES = [
+    ("en-us", _("English")),
+    ("ml", _("Malayalam")),
+    ("hi", _("Hindi")),
+    ("ta", _("Tamil")),
+]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -61,6 +69,9 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# timeout for setnx lock
+LOCK_TIMEOUT = env.int("LOCK_TIMEOUT", default=32)
 
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
