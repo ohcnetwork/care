@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -314,3 +315,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated["bed_id"] = bed_object.id
 
         return validated
+
+    def validate_taken_at(self, value):
+        if value and value > timezone.now():
+            raise serializers.ValidationError("Cannot create an update in the future")
+        return value
