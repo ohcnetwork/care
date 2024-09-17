@@ -4,7 +4,6 @@ from care.utils.registries.feature_flag import (
     FlagNotFoundException,
     FlagRegistry,
     FlagType,
-    InvalidFlagTypeException,
 )
 
 
@@ -18,10 +17,6 @@ class FeatureFlagTestCase(TestCase):
         self.assertTrue(FlagRegistry._flags[FlagType.USER]["TEST_FLAG"])
         FlagRegistry.register(FlagType.USER, "TEST_FLAG_2")
         self.assertTrue(FlagRegistry._flags[FlagType.USER]["TEST_FLAG_2"])
-
-    def test_register_invalid_flag(self):
-        with self.assertRaises(InvalidFlagTypeException):
-            FlagRegistry.register("INVALID", "TEST_FLAG")
 
     def test_unregister_flag(self):
         FlagRegistry.register(FlagType.USER, "TEST_FLAG")
@@ -42,9 +37,6 @@ class FeatureFlagTestCase(TestCase):
             FlagRegistry.validate_flag_type(
                 FlagType.USER
             )  # FlagType.USER is not registered
-
-        with self.assertRaises(FlagNotFoundException):
-            FlagRegistry.validate_flag_type("INVALID")
 
     def test_validate_flag_name(self):
         FlagRegistry.register(FlagType.USER, "TEST_FLAG")
