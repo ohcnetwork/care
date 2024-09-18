@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ("facility", "0455_remove_facility_old_features"),
+        ("facility", "0456_dailyround_appetite_dailyround_bladder_drainage_and_more"),
     ]
 
     def forward_fill_empty_io_balance_field_names(apps, schema_editor):
