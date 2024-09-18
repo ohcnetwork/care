@@ -31,6 +31,7 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 class DailyRound(PatientBaseModel):
     class RoundsType(enum.Enum):
         NORMAL = 0
+        COMMUNITY_NURSES_LOG = 30
         DOCTORS_LOG = 50
         VENTILATOR = 100
         ICU = 200
@@ -50,6 +51,57 @@ class DailyRound(PatientBaseModel):
         ONSET_OF_AGITATION_AND_CONFUSION = 30
 
     ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
+
+    class BowelDifficultyType(models.IntegerChoices):
+        NO_DIFFICULTY = 0, "NO_DIFFICULTY"
+        CONSTIPATION = 1, "CONSTIPATION"
+        DIARRHOEA = 2, "DIARRHOEA"
+
+    class BladderDrainageType(models.IntegerChoices):
+        NORMAL = 1, "NORMAL"
+        CONDOM_CATHETER = 2, "CONDOM_CATHETER"
+        DIAPER = 3, "DIAPER"
+        INTERMITTENT_CATHETER = 4, "INTERMITTENT_CATHETER"
+        CONTINUOUS_INDWELLING_CATHETER = 5, "CONTINUOUS_INDWELLING_CATHETER"
+        CONTINUOUS_SUPRAPUBIC_CATHETER = 6, "CONTINUOUS_SUPRAPUBIC_CATHETER"
+        UROSTOMY = 7, "UROSTOMY"
+
+    class BladderIssueType(models.IntegerChoices):
+        NO_ISSUES = 0, "NO_ISSUES"
+        INCONTINENCE = 1, "INCONTINENCE"
+        RETENTION = 2, "RETENTION"
+        HESITANCY = 3, "HESITANCY"
+
+    class UrinationFrequencyType(models.IntegerChoices):
+        NORMAL = 1, "NORMAL"
+        DECREASED = 2, "DECREASED"
+        INCREASED = 3, "INCREASED"
+
+    class SleepType(models.IntegerChoices):
+        EXCESSIVE = 1, "EXCESSIVE"
+        SATISFACTORY = 2, "SATISFACTORY"
+        UNSATISFACTORY = 3, "UNSATISFACTORY"
+        NO_SLEEP = 4, "NO_SLEEP"
+
+    class NutritionRouteType(models.IntegerChoices):
+        ORAL = 1, "ORAL"
+        RYLES_TUBE = 2, "RYLES_TUBE"
+        GASTROSTOMY_OR_JEJUNOSTOMY = 3, "GASTROSTOMY_OR_JEJUNOSTOMY"
+        PEG = 4, "PEG"
+        PARENTERAL_TUBING_FLUID = 5, "PARENTERAL_TUBING_FLUID"
+        PARENTERAL_TUBING_TPN = 6, "PARENTERAL_TUBING_TPN"
+
+    class OralIssueType(models.IntegerChoices):
+        NO_ISSUE = 0, "NO_ISSUE"
+        DYSPHAGIA = 1, "DYSPHAGIA"
+        ODYNOPHAGIA = 2, "ODYNOPHAGIA"
+
+    class AppetiteType(models.IntegerChoices):
+        INCREASED = 1, "INCREASED"
+        SATISFACTORY = 2, "SATISFACTORY"
+        REDUCED = 3, "REDUCED"
+        NO_TASTE_FOR_FOOD = 4, "NO_TASTE_FOR_FOOD"
+        CANNOT_BE_ASSESSED = 5, "CANNOT_BE_ASSESSED"
 
     class PupilReactionType(enum.Enum):
         UNKNOWN = 0
@@ -174,6 +226,34 @@ class DailyRound(PatientBaseModel):
         choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
     )
     is_parsed_by_ocr = models.BooleanField(default=False)
+
+    # Community Nurse's Log Attributes
+
+    bowel_issue = models.SmallIntegerField(
+        choices=BowelDifficultyType.choices, default=None, null=True, blank=True
+    )
+    bladder_drainage = models.SmallIntegerField(
+        choices=BladderDrainageType.choices, default=None, null=True, blank=True
+    )
+    bladder_issue = models.SmallIntegerField(
+        choices=BladderIssueType.choices, default=None, null=True, blank=True
+    )
+    is_experiencing_dysuria = models.BooleanField(default=None, null=True, blank=True)
+    urination_frequency = models.SmallIntegerField(
+        choices=UrinationFrequencyType.choices, default=None, null=True, blank=True
+    )
+    sleep = models.SmallIntegerField(
+        choices=SleepType.choices, default=None, null=True, blank=True
+    )
+    nutrition_route = models.SmallIntegerField(
+        choices=NutritionRouteType.choices, default=None, null=True, blank=True
+    )
+    oral_issue = models.SmallIntegerField(
+        choices=OralIssueType.choices, default=None, null=True, blank=True
+    )
+    appetite = models.SmallIntegerField(
+        choices=AppetiteType.choices, default=None, null=True, blank=True
+    )
 
     # Critical Care Attributes
 

@@ -302,6 +302,24 @@ class TestDailyRoundApi(TestUtils, APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_community_nurses_log_update(self):
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation_with_bed.external_id}/daily_rounds/",
+            data={
+                **self.log_update,
+                "rounds_type": "COMMUNITY_NURSES_LOG",
+                "bowel_issue": "NO_DIFFICULTY",
+                "bladder_drainage": "CONDOM_CATHETER",
+                "bladder_issue": "NO_ISSUES",
+                "urination_frequency": "DECREASED",
+                "sleep": "SATISFACTORY",
+                "nutrition_route": "ORAL",
+                "oral_issue": "NO_ISSUE",
+                "appetite": "INCREASED",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_invalid_taken_at(self):
         data = {
             **self.log_update,
