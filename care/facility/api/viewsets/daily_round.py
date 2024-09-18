@@ -23,10 +23,10 @@ class DailyRoundFilterSet(filters.FilterSet):
 
     def filter_rounds_type(self, queryset, name, value):
         rounds_type = set()
-        values = value.split(",")
+        values = value.upper().split(",")
         for v in values:
             try:
-                rounds_type.add(DailyRound.RoundsType[v.upper()].value)
+                rounds_type.add(DailyRound.RoundsType[v].value)
             except KeyError:
                 pass
         return queryset.filter(rounds_type__in=list(rounds_type))
