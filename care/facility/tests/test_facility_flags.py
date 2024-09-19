@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
-from care.facility.models.feature_flag import FacilityFlag
+from care.facility.models.facility_flag import FacilityFlag
 from care.utils.registries.feature_flag import FlagRegistry, FlagType
 from care.utils.tests.test_utils import TestUtils
 

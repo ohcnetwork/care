@@ -6,7 +6,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
-from care.facility.models.feature_flag import FacilityFlag
+from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
