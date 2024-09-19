@@ -344,12 +344,14 @@ class PatientTestCase(TestUtils, APITestCase):
             format="json",
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertDictContainsSubset(
-            {
+        res_meta = res.data.get("meta_info")
+        self.assertEqual(
+            res_meta,
+            res_meta
+            | {
                 "socioeconomic_status": "VERY_POOR",
                 "domestic_healthcare_support": "FAMILY_MEMBER",
             },
-            res.data.get("meta_info"),
         )
 
     def test_has_consent(self):
@@ -646,7 +648,6 @@ class PatientFilterTestCase(TestUtils, APITestCase):
                 self.assertIsNone(patient["review_time"])
 
     def test_filter_by_has_consents(self):
-
         choices = ["1", "2", "3", "4", "5", "None"]
 
         self.client.force_authenticate(user=self.user)

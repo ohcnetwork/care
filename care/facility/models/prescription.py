@@ -113,7 +113,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     )
     dosage_type = models.CharField(
         max_length=100,
-        choices=PrescriptionDosageType.choices,
+        choices=PrescriptionDosageType,
         default=PrescriptionDosageType.REGULAR.value,
     )
 

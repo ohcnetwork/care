@@ -189,7 +189,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
     features = ArrayField(
-        models.SmallIntegerField(choices=FacilityFeature.choices),
+        models.SmallIntegerField(choices=FacilityFeature),
         blank=True,
         null=True,
     )
@@ -317,7 +317,7 @@ class FacilityLocalGovtBody(models.Model):
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False)
+                condition=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
             )
         ]

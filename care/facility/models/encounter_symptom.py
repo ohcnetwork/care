@@ -54,13 +54,13 @@ class Symptom(models.IntegerChoices):
 
 
 class EncounterSymptom(BaseModel, ConsultationRelatedPermissionMixin):
-    symptom = models.SmallIntegerField(choices=Symptom.choices, null=False, blank=False)
+    symptom = models.SmallIntegerField(choices=Symptom, null=False, blank=False)
     other_symptom = models.CharField(default="", blank=True, null=False)
     onset_date = models.DateTimeField(null=False, blank=False)
     cure_date = models.DateTimeField(null=True, blank=True)
     clinical_impression_status = models.CharField(
         max_length=255,
-        choices=ClinicalImpressionStatus.choices,
+        choices=ClinicalImpressionStatus,
         default=ClinicalImpressionStatus.IN_PROGRESS,
     )
     consultation = models.ForeignKey(
