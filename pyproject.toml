@@ -42,7 +42,6 @@ known_third_party = [
   "healthy_django",
   "jsonschema",
   "jwt",
-  "multiselectfield",
   "phonenumber_field",
   "phonenumbers",
   "pytz",
