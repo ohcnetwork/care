@@ -84,7 +84,7 @@ class WardAdmin(admin.ModelAdmin):
 
 @admin.register(UserFlag)
 class UserFlagAdmin(admin.ModelAdmin):
-    class AddHorribleTableEntryForm(forms.ModelForm):
+    class UserFlagForm(forms.ModelForm):
         flag = forms.ChoiceField(
             choices=lambda: FlagRegistry.get_all_flags_as_choices(FlagType.USER)
         )
@@ -93,7 +93,7 @@ class UserFlagAdmin(admin.ModelAdmin):
             fields = "__all__"
             model = UserFlag
 
-    form = AddHorribleTableEntryForm
+    form = UserFlagForm
 
 
 admin.site.register(Skill)
