@@ -1,10 +1,20 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 from djqscsv import render_to_csv_response
 
 from care.users.forms import UserChangeForm, UserCreationForm
-from care.users.models import District, LocalBody, Skill, State, UserSkill, Ward
+from care.users.models import (
+    District,
+    LocalBody,
+    Skill,
+    State,
+    UserFlag,
+    UserSkill,
+    Ward,
+)
+from care.utils.registries.feature_flag import FlagRegistry, FlagType
 
 User = get_user_model()
 
@@ -72,6 +82,19 @@ class WardAdmin(admin.ModelAdmin):
     autocomplete_fields = ["local_body"]
 
 
-admin.site.register(Skill)
+@admin.register(UserFlag)
+class UserFlagAdmin(admin.ModelAdmin):
+    class UserFlagForm(forms.ModelForm):
+        flag = forms.ChoiceField(
+            choices=lambda: FlagRegistry.get_all_flags_as_choices(FlagType.USER)
+        )
 
+        class Meta:
+            fields = "__all__"
+            model = UserFlag
+
+    form = UserFlagForm
+
+
+admin.site.register(Skill)
 admin.site.register(UserSkill)
