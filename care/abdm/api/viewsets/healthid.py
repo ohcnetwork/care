@@ -20,6 +20,7 @@ from care.abdm.api.serializers.healthid import (
     GenerateMobileOtpRequestPayloadSerializer,
     HealthIdAuthSerializer,
     HealthIdSerializer,
+    LinkPatientSerializer,
     QRContentSerializer,
     VerifyDemographicsRequestPayloadSerializer,
     VerifyOtpRequestPayloadSerializer,
@@ -412,6 +413,65 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_serialized = AbhaNumberSerializer(abha_number).data
         return Response(
             {"id": abha_serialized["external_id"], "abha_profile": abha_serialized},
+            status=status.HTTP_200_OK,
+        )
+
+    @extend_schema(
+        operation_id="search_by_health_id",
+        request=LinkPatientSerializer,
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def link_patient(self, request):
+        data = request.data
+
+        serializer = LinkPatientSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        patient_queryset = get_patient_queryset(request.user)
+        patient = patient_queryset.filter(external_id=data.get("patient")).first()
+
+        if not patient:
+            return Response(
+                {
+                    "detail": "Patient not found or you do not have permission to access the patient",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if hasattr(patient, "abha_number"):
+            return Response(
+                {
+                    "detail": "Patient already linked to an ABHA Number",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        abha_number = AbhaNumber.objects.filter(
+            external_id=data.get("abha_number")
+        ).first()
+
+        if not abha_number:
+            return Response(
+                {
+                    "detail": "ABHA Number not found",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if abha_number.patient is not None:
+            return Response(
+                {
+                    "detail": "ABHA Number already linked to a patient",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        abha_number.patient = patient
+        abha_number.save()
+
+        return Response(
+            AbhaNumberSerializer(abha_number).data,
             status=status.HTTP_200_OK,
         )
 
