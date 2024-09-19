@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from rest_framework.test import APITestCase
 
 from care.facility.models.facility_flag import FacilityFlag
@@ -33,7 +33,7 @@ class FacilityFlagsTestCase(TestUtils, APITestCase):
 
     def test_create_duplicate_flag(self):
         FacilityFlag.objects.create(facility=self.facility, flag="TEST_FLAG")
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(IntegrityError):
             FacilityFlag.objects.create(facility=self.facility, flag="TEST_FLAG")
 
     def test_get_all_flags(self):

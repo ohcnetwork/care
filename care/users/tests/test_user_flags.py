@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from rest_framework.test import APITestCase
 
 from care.users.models import UserFlag
@@ -26,7 +26,7 @@ class UserFlagsTestCase(TestUtils, APITestCase):
 
     def test_create_duplicate_flag(self):
         UserFlag.objects.create(user=self.user, flag="TEST_FLAG")
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(IntegrityError):
             UserFlag.objects.create(user=self.user, flag="TEST_FLAG")
 
     def test_get_all_flags(self):
