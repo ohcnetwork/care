@@ -56,6 +56,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
+COPY --from=builder --chmod=0755 /usr/local/bin/typst /usr/local/bin/typst
+
 COPY --from=builder /venv /venv
 
 COPY --chmod=0755 ./scripts/*.sh $APP_HOME
