@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -39,6 +40,27 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     taken_at = serializers.DateTimeField(required=True)
 
     rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+
+    # Community Nurse's Log
+
+    bowel_issue = ChoiceField(
+        choices=DailyRound.BowelDifficultyType.choices, required=False
+    )
+    bladder_drainage = ChoiceField(
+        choices=DailyRound.BladderDrainageType.choices, required=False
+    )
+    bladder_issue = ChoiceField(
+        choices=DailyRound.BladderIssueType.choices, required=False
+    )
+    urination_frequency = ChoiceField(
+        choices=DailyRound.UrinationFrequencyType.choices, required=False
+    )
+    sleep = ChoiceField(choices=DailyRound.SleepType.choices, required=False)
+    nutrition_route = ChoiceField(
+        choices=DailyRound.NutritionRouteType.choices, required=False
+    )
+    oral_issue = ChoiceField(choices=DailyRound.OralIssueType.choices, required=False)
+    appetite = ChoiceField(choices=DailyRound.AppetiteType.choices, required=False)
 
     # Critical Care Components
 
@@ -295,3 +317,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated["bed_id"] = bed_object.id
 
         return validated
+
+    def validate_taken_at(self, value):
+        if value and value > timezone.now():
+            raise serializers.ValidationError("Cannot create an update in the future")
+        return value

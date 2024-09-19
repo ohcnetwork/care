@@ -6,10 +6,10 @@ import base64
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 
 import environ
 from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
 )
@@ -54,7 +54,6 @@ USE_I18N = True
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
-
 
 LANGUAGES = [
     ("en-us", _("English")),
@@ -663,3 +662,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Timeout for middleware request (in seconds)
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
