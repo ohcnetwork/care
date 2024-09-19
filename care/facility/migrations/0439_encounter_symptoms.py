@@ -39,9 +39,11 @@ def backfill_symptoms_table(apps, schema_editor):
                     bulk.append(
                         EncounterSymptom(
                             symptom=symptom_id,
-                            other_symptom=consultation.deprecated_other_symptoms
-                            if symptom_id == 9  # Other symptom
-                            else "",
+                            other_symptom=(
+                                consultation.deprecated_other_symptoms
+                                if symptom_id == 9  # Other symptom
+                                else ""
+                            ),
                             onset_date=consultation.deprecated_symptoms_onset_date
                             or consultation.encounter_date,
                             created_date=consultation.created_date,
@@ -85,9 +87,11 @@ def backfill_symptoms_table(apps, schema_editor):
                         bulk.append(
                             EncounterSymptom(
                                 symptom=symptom_id,
-                                other_symptom=daily_round.deprecated_other_symptoms
-                                if symptom_id == 9  # Other symptom
-                                else "",
+                                other_symptom=(
+                                    daily_round.deprecated_other_symptoms
+                                    if symptom_id == 9  # Other symptom
+                                    else ""
+                                ),
                                 onset_date=daily_round.created_date,
                                 created_date=daily_round.created_date,
                                 created_by=daily_round.created_by,
