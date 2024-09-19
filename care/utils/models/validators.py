@@ -194,3 +194,7 @@ dosage_validator = DenominationValidator(
     allow_floats=True,
     precision=4,
 )
+
+custom_image_extension_validator = validators.FileExtensionValidator(
+    allowed_extensions=["jpg", "jpeg", "png"]
+)

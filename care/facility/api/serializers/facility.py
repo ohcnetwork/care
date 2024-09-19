@@ -1,3 +1,5 @@
+import uuid
+
 import boto3
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -14,6 +16,9 @@ from care.users.api.serializers.lsg import (
     WardSerializer,
 )
 from care.utils.csp.config import BucketType, get_client_config
+from care.utils.models.validators import (
+    custom_image_extension_validator,
+)
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
@@ -173,7 +178,11 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
-    cover_image = serializers.ImageField(required=True, write_only=True)
+    cover_image = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator],
+    )
     read_cover_image_url = serializers.URLField(read_only=True)
 
     class Meta:
@@ -184,10 +193,15 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
-        image_extension = image.name.rsplit(".", 1)[-1]
+
         config, bucket_name = get_client_config(BucketType.FACILITY)
         s3 = boto3.client("s3", **config)
-        image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
+
+        if facility.cover_image_url:
+            s3.delete_object(Bucket=bucket_name, Key=facility.cover_image_url)
+
+        image_extension = image.name.rsplit(".", 1)[-1]
+        image_location = f"cover_images/{facility.external_id}_{str(uuid.uuid4())[0:8]}.{image_extension}"
         boto_params = {
             "Bucket": bucket_name,
             "Key": image_location,
