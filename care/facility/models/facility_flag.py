@@ -21,7 +21,7 @@ class FacilityFlag(BaseFlag):
     def __str__(self) -> str:
         return f"Facility Flag: {self.facility.name} - {self.flag}"
 
-    class Meta(BaseFlag.Meta):
+    class Meta:
         verbose_name = "Facility Flag"
         constraints = [
             models.UniqueConstraint(

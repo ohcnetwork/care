@@ -412,7 +412,7 @@ class UserFlag(BaseFlag):
     def __str__(self):
         return f"User Flag: {self.user.get_full_name()} - {self.flag}"
 
-    class Meta(BaseFlag.Meta):
+    class Meta:
         verbose_name = "User Flag"
         constraints = [
             models.UniqueConstraint(
