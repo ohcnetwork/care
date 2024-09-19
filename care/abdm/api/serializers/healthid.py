@@ -59,3 +59,8 @@ class CreateHealthIdSerializer(Serializer):
     healthId = CharField(max_length=64, min_length=1, required=False)
     txnId = CharField(max_length=64, min_length=1, required=True)
     patientId = UUIDField(required=False)
+
+
+class LinkPatientSerializer(Serializer):
+    abha_number = UUIDField(required=True)
+    patient = UUIDField(required=True)
