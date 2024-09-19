@@ -331,6 +331,27 @@ class PatientTestCase(TestUtils, APITestCase):
     def get_base_url(self) -> str:
         return "/api/v1/patient/"
 
+    def test_update_patient_with_meta_info(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.patch(
+            f"{self.get_base_url()}{self.patient.external_id}/",
+            data={
+                "meta_info": {
+                    "socioeconomic_status": "VERY_POOR",
+                    "domestic_healthcare_support": "FAMILY_MEMBER",
+                }
+            },
+            format="json",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertDictContainsSubset(
+            {
+                "socioeconomic_status": "VERY_POOR",
+                "domestic_healthcare_support": "FAMILY_MEMBER",
+            },
+            res.data.get("meta_info"),
+        )
+
     def test_has_consent(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.get_base_url())

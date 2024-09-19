@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
@@ -12,12 +13,14 @@ from care.facility.models.patient_consultation import (
     PatientConsultation,
 )
 from care.facility.models.patient_sample import PatientSample
+from care.utils.registries.feature_flag import FlagRegistry, FlagType
 
 from .models import (
     Building,
     Disease,
     Facility,
     FacilityCapacity,
+    FacilityFlag,
     FacilityInventoryItem,
     FacilityInventoryItemTag,
     FacilityInventoryUnit,
@@ -202,6 +205,20 @@ class ExportCsvMixin:
 class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
     djangoql_completion_enabled_by_default = True
     actions = ["export_as_csv"]
+
+    
+@admin.register(FacilityFlag)
+class FacilityFlagAdmin(admin.ModelAdmin):
+    class FacilityFeatureFlagForm(forms.ModelForm):
+        flag = forms.ChoiceField(
+            choices=lambda: FlagRegistry.get_all_flags_as_choices(FlagType.FACILITY)
+        )
+
+        class Meta:
+            fields = "__all__"
+            model = FacilityFlag
+
+    form = FacilityFeatureFlagForm
 
 
 admin.site.register(InventoryLog)
