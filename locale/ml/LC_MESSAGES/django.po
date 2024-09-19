@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: ohccarefe\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-08-25 17:02+0530\n"
-"PO-Revision-Date: 2024-09-16 10:58\n"
+"PO-Revision-Date: 2024-09-16 12:34\n"
 "Last-Translator: \n"
 "Language-Team: Malayalam\n"
 "Language: ml_IN\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: ohccarefe\n"
 "X-Crowdin-Project-ID: 704503\n"
 "X-Crowdin-Language: ml-IN\n"
-"X-Crowdin-File: /[ohcnetwork.care] develop/locale/ta/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 70\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/kn/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 76\n"
 
 #: care/abdm/apps.py:7
 msgid "ABDM Integration"
@@ -116,7 +116,7 @@ msgstr "HCX ഇൻ്റഗ്രേഷൻ"
 
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
-msgstr "ആരോഗ്യ സംരക്ഷണ ശൃംഖല"
+msgstr "ഹെൽത്ത് കെയർ നെറ്റ്‌വർക്ക് തുറക്കുക"
 
 #: care/templates/pages/home.html:9
 msgid "Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity."
