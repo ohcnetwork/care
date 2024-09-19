@@ -206,7 +206,7 @@ class FacilityUserAdmin(DjangoQLSearchMixin, admin.ModelAdmin, ExportCsvMixin):
     djangoql_completion_enabled_by_default = True
     actions = ["export_as_csv"]
 
-    
+
 @admin.register(FacilityFlag)
 class FacilityFlagAdmin(admin.ModelAdmin):
     class FacilityFeatureFlagForm(forms.ModelForm):
