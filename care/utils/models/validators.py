@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
+from PIL import Image
 
 
 @deconstructible
@@ -193,6 +194,106 @@ dosage_validator = DenominationValidator(
     units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp", "mcg", "unit(s)"},
     allow_floats=True,
     precision=4,
+)
+
+
+class ImageSizeValidator:
+    message = {
+        "min_width": _(
+            "Image width is less than the minimum allowed width of %(min_width)s."
+        ),
+        "max_width": _(
+            "Image width is greater than the maximum allowed width of %(max_width)s."
+        ),
+        "min_height": _(
+            "Image height is less than the minimum allowed height of %(min_height)s."
+        ),
+        "max_height": _(
+            "Image height is greater than the maximum allowed height of %(max_height)s."
+        ),
+        "aspect_ratio": _(
+            "Image aspect ratio is not within the allowed range of %(aspect_ratio)s."
+        ),
+        "min_size": _(
+            "Image size is less than the minimum allowed size of %(min_size)s."
+        ),
+        "max_size": _(
+            "Image size is greater than the maximum allowed size of %(max_size)s."
+        ),
+    }
+
+    def __init__(
+        self,
+        min_width: int = None,
+        max_width: int = None,
+        min_height: int = None,
+        max_height: int = None,
+        aspect_ratio: float = None,
+        min_size: int = None,
+        max_size: int = None,
+    ):
+        self.min_width = min_width
+        self.max_width = max_width
+        self.min_height = min_height
+        self.max_height = max_height
+        self.aspect_ratio = aspect_ratio
+        self.min_size = min_size
+        self.max_size = max_size
+
+    def __call__(self, value):
+        with Image.open(value.file) as image:
+            width, height = image.size
+            size = value.size
+
+            if self.min_width and width < self.min_width:
+                raise ValidationError(
+                    self.message["min_width"] % {"min_width": self.min_width}
+                )
+
+            if self.max_width and width > self.max_width:
+                raise ValidationError(
+                    self.message["max_width"] % {"max_width": self.max_width}
+                )
+
+            if self.min_height and height < self.min_height:
+                raise ValidationError(
+                    self.message["min_height"] % {"min_height": self.min_height}
+                )
+
+            if self.max_height and height > self.max_height:
+                raise ValidationError(
+                    self.message["max_height"] % {"max_height": self.max_height}
+                )
+
+            if self.aspect_ratio:
+                if not (1 / self.aspect_ratio) < (width / height) < self.aspect_ratio:
+                    raise ValidationError(
+                        self.message["aspect_ratio"]
+                        % {
+                            "aspect_ratio": f"{1/self.aspect_ratio} to {self.aspect_ratio}"
+                        }
+                    )
+
+            if self.min_size and size < self.min_size:
+                raise ValidationError(
+                    self.message["min_size"] % {"min_size": self.min_size}
+                )
+
+            if self.max_size and size > self.max_size:
+                raise ValidationError(
+                    self.message["max_size"] % {"max_size": self.max_size}
+                )
+        value.seek(0)
+
+
+cover_image_validator = ImageSizeValidator(
+    min_width=400,
+    min_height=400,
+    max_width=1024,
+    max_height=1024,
+    aspect_ratio=1 / 1,
+    min_size=1024,
+    max_size=1024 * 1024 * 2,
 )
 
 custom_image_extension_validator = validators.FileExtensionValidator(

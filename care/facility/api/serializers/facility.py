@@ -17,6 +17,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.csp.config import BucketType, get_client_config
 from care.utils.models.validators import (
+    cover_image_validator,
     custom_image_extension_validator,
 )
 from config.serializers import ChoiceField
@@ -181,7 +182,7 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
     cover_image = serializers.ImageField(
         required=True,
         write_only=True,
-        validators=[custom_image_extension_validator],
+        validators=[custom_image_extension_validator, cover_image_validator],
     )
     read_cover_image_url = serializers.URLField(read_only=True)
 
