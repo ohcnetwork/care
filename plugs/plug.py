@@ -1,4 +1,4 @@
-from dataclasses import _MISSING_TYPE, dataclass, fields
+from dataclasses import _MISSING_TYPE, dataclass, field, fields
 
 
 @dataclass(slots=True)
@@ -6,12 +6,21 @@ class Plug:
     name: str
     package_name: str
     version: str = "@main"
-    configs: dict = {}
+    configs: dict = field(default_factory=dict)
 
-    def __post_init__(self) -> None:
-        for field in fields(self):
+    def __post_init__(self):
+        for _field in fields(self):
             if (
-                not isinstance(field.default, _MISSING_TYPE)
-                and getattr(self, field.name) is None
+                not isinstance(_field.default, _MISSING_TYPE)
+                and getattr(self, _field.name) is None
             ):
-                setattr(self, field.name, field.default)
+                setattr(self, _field.name, _field.default)
+
+        if not isinstance(self.name, str):
+            raise ValueError("name must be a string")
+        if not isinstance(self.package_name, str):
+            raise ValueError("package_name must be a string")
+        if not isinstance(self.version, str):
+            raise ValueError("version must be a string")
+        if not isinstance(self.configs, dict):
+            raise ValueError("configs must be a dictionary")
