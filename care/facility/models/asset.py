@@ -219,7 +219,7 @@ class AvailabilityRecord(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_external_id = models.UUIDField()
     status = models.CharField(
-        choices=AvailabilityStatus.choices,
+        choices=AvailabilityStatus,
         default=AvailabilityStatus.NOT_MONITORED,
         max_length=20,
     )

@@ -94,7 +94,6 @@ from config.authentication import (
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
-VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -223,7 +222,9 @@ class PatientFilterSet(filters.FilterSet):
     )
     ventilator_interface = CareChoiceFilter(
         field_name=f"{last_consultation_field}__last_daily_round__ventilator_interface",
-        choice_dict=VENTILATOR_CHOICES,
+        choice_dict={
+            label: value for value, label in DailyRound.VentilatorInterfaceType.choices
+        },
     )
 
     # Vaccination Filters
