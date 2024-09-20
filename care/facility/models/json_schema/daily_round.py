@@ -19,7 +19,7 @@ INFUSIONS = {
                 "name": {
                     "enum": [
                         "Adrenalin",
-                        "Nor-adrenalin",
+                        "Noradrenalin",
                         "Vasopressin",
                         "Dopamine",
                         "Dobutamine",

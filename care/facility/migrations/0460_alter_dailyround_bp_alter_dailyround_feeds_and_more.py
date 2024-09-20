@@ -170,7 +170,7 @@ class Migration(migrations.Migration):
                                         "name": {
                                             "enum": [
                                                 "Adrenalin",
-                                                "Nor-adrenalin",
+                                                "Noradrenalin",
                                                 "Vasopressin",
                                                 "Dopamine",
                                                 "Dobutamine",
