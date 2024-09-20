@@ -9,8 +9,12 @@ from care.facility.models import AssetBed, CameraPreset
 
 
 class CameraPresetFilter(filters.FilterSet):
-    position = filters.ChoiceFilter(method="filter_preset_type")
+    position = filters.BooleanFilter(method="filter_preset_type")
     boundary = filters.BooleanFilter(method="filter_preset_type")
+
+    asset = filters.UUIDFilter(field_name="asset_bed__asset__external_id")
+    bed = filters.UUIDFilter(field_name="asset_bed__bed__external_id")
+    asset_bed = filters.UUIDFilter(field_name="asset_bed__external_id")
 
     def filter_preset_type(self, queryset, name, value):
         if value is not None:

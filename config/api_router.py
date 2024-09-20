@@ -235,11 +235,7 @@ router.register("asset_transaction", AssetTransactionViewSet)
 router.register("bed", BedViewSet, basename="bed")
 router.register("assetbed", AssetBedViewSet, basename="asset-bed")
 router.register("consultationbed", ConsultationBedViewSet, basename="consultation-bed")
-
-assetbed_nested_router = NestedSimpleRouter(router, r"assetbed", lookup="assetbed")
-assetbed_nested_router.register(
-    r"camera-presets", CameraPresetViewSet, basename="assetbed-camera-presets"
-)
+router.register("camera_preset", CameraPresetViewSet, basename="camera-preset")
 
 router.register("patient/search", PatientSearchViewSet, basename="patient-search")
 router.register("patient", PatientViewSet, basename="patient")
@@ -339,7 +335,6 @@ urlpatterns = [
     path("", include(facility_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
     path("", include(asset_nested_router.urls)),
-    path("", include(assetbed_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(patient_notes_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
