@@ -48,9 +48,9 @@ def tests_summary():
             if facility_test_summary.data != facility_tests_summarised_data:
                 facility_test_summary.data = facility_tests_summarised_data
                 latest_modification_date = timezone.now()
-                facility_test_summary.data[
-                    "modified_date"
-                ] = latest_modification_date.strftime("%d-%m-%Y %H:%M")
+                facility_test_summary.data["modified_date"] = (
+                    latest_modification_date.strftime("%d-%m-%Y %H:%M")
+                )
                 facility_test_summary.save()
         except ObjectDoesNotExist:
             modified_date = timezone.now()

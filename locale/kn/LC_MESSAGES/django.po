@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: ohccarefe\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-08-25 17:02+0530\n"
-"PO-Revision-Date: 2024-09-16 10:57\n"
+"PO-Revision-Date: 2024-09-16 12:34\n"
 "Last-Translator: \n"
 "Language-Team: Kannada\n"
 "Language: kn_IN\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: ohccarefe\n"
 "X-Crowdin-Project-ID: 704503\n"
 "X-Crowdin-Language: kn\n"
-"X-Crowdin-File: /[ohcnetwork.care] develop/locale/ta/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 70\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/kn/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 76\n"
 
 #: care/abdm/apps.py:7
 msgid "ABDM Integration"
@@ -230,4 +230,3 @@ msgstr "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 1 ಚ�
 #: config/validators.py:66
 msgid "The domain name is invalid. It should not start with scheme and should not end with a trailing slash."
 msgstr "ಡೊಮೇನ್ ಹೆಸರು ಅಮಾನ್ಯವಾಗಿದೆ. ಇದು ಸ್ಕೀಮ್‌ನೊಂದಿಗೆ ಪ್ರಾರಂಭವಾಗಬಾರದು ಮತ್ತು ಟ್ರೇಲಿಂಗ್ ಸ್ಲ್ಯಾಷ್‌ನೊಂದಿಗೆ ಕೊನೆಗೊಳ್ಳಬಾರದು."
-
