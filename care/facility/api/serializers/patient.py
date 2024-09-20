@@ -51,7 +51,19 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
+    occupation = ChoiceField(
+        choices=PatientMetaInfo.OccupationChoices, allow_null=True, required=False
+    )
+    socioeconomic_status = ChoiceField(
+        choices=PatientMetaInfo.SocioeconomicStatus.choices,
+        allow_null=True,
+        required=False,
+    )
+    domestic_healthcare_support = ChoiceField(
+        choices=PatientMetaInfo.DomesticHealthcareSupport.choices,
+        allow_null=True,
+        required=False,
+    )
 
     class Meta:
         model = PatientMetaInfo
