@@ -287,6 +287,11 @@ class UserSerializer(SignUpSerializer):
 
     date_of_birth = serializers.DateField(required=True)
 
+    user_flags = serializers.SerializerMethodField()
+
+    def get_user_flags(self, user) -> tuple[str]:
+        return user.get_all_flags()
+
     class Meta:
         model = User
         fields = (
@@ -320,6 +325,7 @@ class UserSerializer(SignUpSerializer):
             "pf_p256dh",
             "pf_auth",
             "read_profile_picture_url",
+            "user_flags",
         )
         read_only_fields = (
             "is_superuser",

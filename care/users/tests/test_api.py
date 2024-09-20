@@ -47,6 +47,7 @@ class TestSuperUser(TestUtils, APITestCase):
             "weekly_working_hours": obj.weekly_working_hours,
             "video_connect_link": obj.video_connect_link,
             "profile_picture_url": obj.profile_picture_url,
+            "user_flags": [],
             **self.get_local_body_district_state_representation(obj),
         }
 
