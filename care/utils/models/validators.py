@@ -200,16 +200,16 @@ dosage_validator = DenominationValidator(
 class ImageSizeValidator:
     message = {
         "min_width": _(
-            "Image width is less than the minimum allowed width of %(min_width)s."
+            "Image width is less than the minimum allowed width of %(min_width)s pixels."
         ),
         "max_width": _(
-            "Image width is greater than the maximum allowed width of %(max_width)s."
+            "Image width is greater than the maximum allowed width of %(max_width)s pixels."
         ),
         "min_height": _(
-            "Image height is less than the minimum allowed height of %(min_height)s."
+            "Image height is less than the minimum allowed height of %(min_height)s pixels."
         ),
         "max_height": _(
-            "Image height is greater than the maximum allowed height of %(max_height)s."
+            "Image height is greater than the maximum allowed height of %(max_height)s pixels."
         ),
         "aspect_ratio": _(
             "Image aspect ratio is not within the allowed range of %(aspect_ratio)s."
@@ -245,29 +245,27 @@ class ImageSizeValidator:
             width, height = image.size
             size = value.size
 
+            errors = []
+
             if self.min_width and width < self.min_width:
-                raise ValidationError(
-                    self.message["min_width"] % {"min_width": self.min_width}
-                )
+                errors.append(self.message["min_width"] % {"min_width": self.min_width})
 
             if self.max_width and width > self.max_width:
-                raise ValidationError(
-                    self.message["max_width"] % {"max_width": self.max_width}
-                )
+                errors.append(self.message["max_width"] % {"max_width": self.max_width})
 
             if self.min_height and height < self.min_height:
-                raise ValidationError(
+                errors.append(
                     self.message["min_height"] % {"min_height": self.min_height}
                 )
 
             if self.max_height and height > self.max_height:
-                raise ValidationError(
+                errors.append(
                     self.message["max_height"] % {"max_height": self.max_height}
                 )
 
             if self.aspect_ratio:
                 if not (1 / self.aspect_ratio) < (width / height) < self.aspect_ratio:
-                    raise ValidationError(
+                    errors.append(
                         self.message["aspect_ratio"]
                         % {
                             "aspect_ratio": f"{1/self.aspect_ratio} to {self.aspect_ratio}"
@@ -275,14 +273,14 @@ class ImageSizeValidator:
                     )
 
             if self.min_size and size < self.min_size:
-                raise ValidationError(
-                    self.message["min_size"] % {"min_size": self.min_size}
-                )
+                errors.append(self.message["min_size"] % {"min_size": self.min_size})
 
             if self.max_size and size > self.max_size:
-                raise ValidationError(
-                    self.message["max_size"] % {"max_size": self.max_size}
-                )
+                errors.append(self.message["max_size"] % {"max_size": self.max_size})
+
+            if errors:
+                raise ValidationError(errors)
+
         value.seek(0)
 
 
