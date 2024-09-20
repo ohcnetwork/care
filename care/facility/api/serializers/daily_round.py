@@ -39,7 +39,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+    rounds_type = ChoiceField(choices=DailyRound.RoundsType.choices, required=True)
 
     # Community Nurse's Log
 
@@ -65,38 +65,38 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     # Critical Care Components
 
     consciousness_level = ChoiceField(
-        choices=DailyRound.ConsciousnessChoice, required=False
+        choices=DailyRound.ConsciousnessTypeChoice.choices, required=False
     )
     left_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     right_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     limb_response_upper_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_upper_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
-    rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
+    rhythm = ChoiceField(choices=DailyRound.RythmnType.choices, required=False)
     ventilator_interface = ChoiceField(
-        choices=DailyRound.VentilatorInterfaceChoice, required=False
+        choices=DailyRound.VentilatorInterfaceType.choices, required=False
     )
     ventilator_mode = ChoiceField(
-        choices=DailyRound.VentilatorModeChoice, required=False
+        choices=DailyRound.VentilatorModeType.choices, required=False
     )
     ventilator_oxygen_modality = ChoiceField(
-        choices=DailyRound.VentilatorOxygenModalityChoice, required=False
+        choices=DailyRound.VentilatorOxygenModalityType.choices, required=False
     )
     insulin_intake_frequency = ChoiceField(
-        choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
+        choices=DailyRound.InsulinIntakeFrequencyType.choices, required=False
     )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
