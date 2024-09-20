@@ -5,6 +5,7 @@ from typing import Iterable, List
 import jsonschema
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import UploadedFile
 from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
@@ -198,8 +199,9 @@ dosage_validator = DenominationValidator(
 )
 
 
+@deconstructible
 class ImageSizeValidator:
-    message = {
+    message: dict[str, str] = {
         "min_width": _(
             "Image width is less than the minimum allowed width of %(min_width)s pixels."
         ),
@@ -225,14 +227,14 @@ class ImageSizeValidator:
 
     def __init__(
         self,
-        min_width: int = None,
-        max_width: int = None,
-        min_height: int = None,
-        max_height: int = None,
-        aspect_ratio: float = None,
-        min_size: int = None,
-        max_size: int = None,
-    ):
+        min_width: int | None = None,
+        max_width: int | None = None,
+        min_height: int | None = None,
+        max_height: int | None = None,
+        aspect_ratio: float | None = None,
+        min_size: int | None = None,
+        max_size: int | None = None,
+    ) -> None:
         self.min_width = min_width
         self.max_width = max_width
         self.min_height = min_height
@@ -241,12 +243,12 @@ class ImageSizeValidator:
         self.min_size = min_size
         self.max_size = max_size
 
-    def __call__(self, value):
+    def __call__(self, value: UploadedFile) -> None:
         with Image.open(value.file) as image:
             width, height = image.size
-            size = value.size
+            size: int = value.size
 
-            errors = []
+            errors: list[str] = []
 
             if self.min_width and width < self.min_width:
                 errors.append(self.message["min_width"] % {"min_width": self.min_width})
@@ -286,6 +288,22 @@ class ImageSizeValidator:
                 raise ValidationError(errors)
 
         value.seek(0)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, ImageSizeValidator):
+            return False
+        return all(
+            getattr(self, attr) == getattr(other, attr)
+            for attr in [
+                "min_width",
+                "max_width",
+                "min_height",
+                "max_height",
+                "aspect_ratio",
+                "min_size",
+                "max_size",
+            ]
+        )
 
 
 cover_image_validator = ImageSizeValidator(
