@@ -42,14 +42,12 @@ class Consent(BaseModel):
         default=list, validators=[JSONFieldSchemaValidator(CARE_CONTEXTS)]
     )
 
-    status = models.CharField(
-        choices=Status.choices, max_length=20, default=Status.REQUESTED.value
-    )
+    status = models.CharField(choices=Status, max_length=20, default=Status.REQUESTED)
     purpose = models.CharField(
-        choices=Purpose.choices, max_length=20, default=Purpose.CARE_MANAGEMENT.value
+        choices=Purpose, max_length=20, default=Purpose.CARE_MANAGEMENT
     )
     hi_types = ArrayField(
-        models.CharField(choices=HealthInformationTypes.choices, max_length=20),
+        models.CharField(choices=HealthInformationTypes, max_length=20),
         default=list,
     )
 
@@ -61,14 +59,14 @@ class Consent(BaseModel):
     )
 
     access_mode = models.CharField(
-        choices=AccessMode.choices, max_length=20, default=AccessMode.VIEW.value
+        choices=AccessMode, max_length=20, default=AccessMode.VIEW
     )
     from_time = models.DateTimeField(null=True, blank=True, default=default_from_time)
     to_time = models.DateTimeField(null=True, blank=True, default=default_to_time)
     expiry = models.DateTimeField(null=True, blank=True, default=default_expiry)
 
     frequency_unit = models.CharField(
-        choices=FrequencyUnit.choices, max_length=20, default=FrequencyUnit.HOUR.value
+        choices=FrequencyUnit, max_length=20, default=FrequencyUnit.HOUR
     )
     frequency_value = models.PositiveSmallIntegerField(
         default=1, validators=[MinValueValidator(1)]
