@@ -228,17 +228,6 @@ class FacilityFlagAdmin(admin.ModelAdmin):
     form = FacilityFeatureFlagForm
 
 
-admin.site.register(Facility, FacilityAdmin)
-admin.site.register(FacilityHubSpoke, FacilityHubSpokeAdmin)
-admin.site.register(FacilityStaff, FacilityStaffAdmin)
-admin.site.register(FacilityCapacity, FacilityCapacityAdmin)
-admin.site.register(FacilityVolunteer, FacilityVolunteerAdmin)
-admin.site.register(FacilityUser, FacilityUserAdmin)
-admin.site.register(Building, BuildingAdmin)
-admin.site.register(Room, RoomAdmin)
-admin.site.register(StaffRoomAllocation, StaffRoomAllocationAdmin)
-admin.site.register(InventoryItem, InventoryItemAdmin)
-admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(InventoryLog)
 admin.site.register(Disease)
 admin.site.register(FacilityInventoryUnit)
