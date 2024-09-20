@@ -1,4 +1,5 @@
 import re
+from fractions import Fraction
 from typing import Iterable, List
 
 import jsonschema
@@ -265,11 +266,14 @@ class ImageSizeValidator:
 
             if self.aspect_ratio:
                 if not (1 / self.aspect_ratio) < (width / height) < self.aspect_ratio:
+                    aspect_ratio_fraction = Fraction(
+                        self.aspect_ratio
+                    ).limit_denominator()
+                    aspect_ratio_str = f"{aspect_ratio_fraction.numerator}:{aspect_ratio_fraction.denominator}"
+
                     errors.append(
                         self.message["aspect_ratio"]
-                        % {
-                            "aspect_ratio": f"{1/self.aspect_ratio} to {self.aspect_ratio}"
-                        }
+                        % {"aspect_ratio": aspect_ratio_str}
                     )
 
             if self.min_size and size < self.min_size:
