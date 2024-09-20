@@ -309,7 +309,7 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # MANAGERS = ADMINS
 
 # Django Admin URL.
-ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # LOGGING
 # ------------------------------------------------------------------------------
