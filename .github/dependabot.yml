@@ -10,9 +10,13 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      boto:
+      all-dependencies:
         patterns:
-          - "boto*"
+          - "*"
+    ignore:
+      - dependency-name: "redis-om"
+      - dependency-name: "pydantic"
+      - dependency-name: "fhir.resources"
 
   - package-ecosystem: "docker"
     directory: "/docker"

@@ -105,6 +105,11 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     )
     bed_count = serializers.SerializerMethodField()
 
+    facility_flags = serializers.SerializerMethodField()
+
+    def get_facility_flags(self, facility):
+        return facility.get_facility_flags()
+
     class Meta:
         model = Facility
         fields = [
@@ -140,6 +145,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
             "patient_count",
             "bed_count",
+            "facility_flags",
         ]
         read_only_fields = ("modified_date", "created_date")
 

@@ -87,7 +87,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         data.update(kwargs)
         return self.client.post(self.get_url(), data, format="json")
 
-    def create_admission_consultation(self, patient=None, **kwargs):
+    def call_create_admission_consultation_api(self, patient=None, **kwargs):
         patient = patient or self.create_patient(self.district, self.facility)
         data = self.get_default_data().copy()
         kwargs.update(
@@ -97,7 +97,10 @@ class TestPatientConsultation(TestUtils, APITestCase):
             }
         )
         data.update(kwargs)
-        res = self.client.post(self.get_url(), data, format="json")
+        return self.client.post(self.get_url(), data, format="json")
+
+    def create_admission_consultation(self, patient=None, **kwargs):
+        res = self.call_create_admission_consultation_api(patient, **kwargs)
         return PatientConsultation.objects.get(external_id=res.data["id"])
 
     def update_consultation(self, consultation, **kwargs):
@@ -130,6 +133,12 @@ class TestPatientConsultation(TestUtils, APITestCase):
             }
         )
         res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_admission_consultation_without_treating_physician(self):
+        res = self.call_create_admission_consultation_api(
+            suggestion="A", treating_physician=None
+        )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_consultation_treating_physician_invalid_user(self):

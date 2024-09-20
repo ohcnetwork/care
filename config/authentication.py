@@ -183,8 +183,8 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
             password = User.objects.make_random_password()
             asset_user = User(
                 username=f"asset{str(asset_obj.external_id)}",
-                email="support@coronasafe.network",
-                password=f"{password}123",  # The 123 makes it inaccessible without hashing
+                email="support@ohc.network",
+                password=f"{password}xyz",  # The xyz makes it inaccessible without hashing
                 gender=3,
                 phone_number="919999999999",
                 user_type=User.TYPE_VALUE_MAP["Nurse"],
@@ -209,7 +209,7 @@ class ABDMAuthentication(JWTAuthentication):
         return "Bearer"
 
     def authenticate(self, request):
-        jwt_token = request.META.get("HTTP_AUTHORIZATION")
+        jwt_token = self.get_header(request)
         if jwt_token is None:
             return None
         jwt_token = self.get_jwt_token(jwt_token)
@@ -235,8 +235,8 @@ class ABDMAuthentication(JWTAuthentication):
             password = User.objects.make_random_password()
             user = User(
                 username=settings.ABDM_USERNAME,
-                email="hcx@coronasafe.network",
-                password=f"{password}123",
+                email="hcx@ohc.network",
+                password=f"{password}xyz",
                 gender=3,
                 phone_number="917777777777",
                 user_type=User.TYPE_VALUE_MAP["Volunteer"],

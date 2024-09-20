@@ -6,8 +6,6 @@ from django.db.models import Q
 from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
-from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -56,7 +54,19 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
+    occupation = ChoiceField(
+        choices=PatientMetaInfo.OccupationChoices, allow_null=True, required=False
+    )
+    socioeconomic_status = ChoiceField(
+        choices=PatientMetaInfo.SocioeconomicStatus.choices,
+        allow_null=True,
+        required=False,
+    )
+    domestic_healthcare_support = ChoiceField(
+        choices=PatientMetaInfo.DomesticHealthcareSupport.choices,
+        allow_null=True,
+        required=False,
+    )
 
     class Meta:
         model = PatientMetaInfo
@@ -204,11 +214,6 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
-
-    abha_number = ExternalIdSerializerField(
-        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
-    )
-    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration

@@ -1017,8 +1017,10 @@ class Fhir:
             coverageeligibilityresponse.CoverageEligibilityResponse(
                 **list(
                     filter(
-                        lambda entry: entry.resource
-                        is coverageeligibilityresponse.CoverageEligibilityResponse,
+                        lambda entry: isinstance(
+                            entry.resource,
+                            coverageeligibilityresponse.CoverageEligibilityResponse,
+                        ),
                         coverage_eligibility_check_bundle.entry,
                     )
                 )[0].resource.dict()
@@ -1027,7 +1029,7 @@ class Fhir:
         coverage_request = coverage.Coverage(
             **list(
                 filter(
-                    lambda entry: entry.resource is coverage.Coverage,
+                    lambda entry: isinstance(entry.resource, coverage.Coverage),
                     coverage_eligibility_check_bundle.entry,
                 )
             )[0].resource.dict()
@@ -1057,7 +1059,9 @@ class Fhir:
         claim_response = claimresponse.ClaimResponse(
             **list(
                 filter(
-                    lambda entry: entry.resource is claimresponse.ClaimResponse,
+                    lambda entry: isinstance(
+                        entry.resource, claimresponse.ClaimResponse
+                    ),
                     claim_bundle.entry,
                 )
             )[0].resource.dict()
