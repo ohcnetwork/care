@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
@@ -197,7 +198,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
     features = ArrayField(
-        models.SmallIntegerField(choices=FacilityFeature.choices),
+        models.SmallIntegerField(choices=FacilityFeature),
         blank=True,
         null=True,
     )
@@ -283,6 +284,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             return []
         return [FacilityFeature(f).label for f in self.features]
 
+    def get_facility_flags(self):
+        return FacilityFlag.get_all_flags(self.id)
+
     CSV_MAPPING = {
         "name": "Facility Name",
         "facility_type": "Facility Type",
@@ -365,7 +369,7 @@ class FacilityLocalGovtBody(models.Model):
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False)
+                condition=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
             )
         ]
