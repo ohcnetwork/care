@@ -175,7 +175,6 @@ class DailyRound(PatientBaseModel):
         choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     other_details = models.TextField(null=True, blank=True)
-    medication_given = JSONField(default=dict)  # To be Used Later on
 
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
