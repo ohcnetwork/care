@@ -296,7 +296,9 @@ class DailyRound(PatientBaseModel):
     limb_response_lower_extremity_right = models.IntegerField(
         choices=LimbResponseType.choices, default=None, null=True
     )
-    bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
+    bp = JSONField(
+        default=None, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)], null=True
+    )
     pulse = models.IntegerField(
         default=None,
         null=True,
@@ -498,7 +500,7 @@ class DailyRound(PatientBaseModel):
 
     def cztn(self, value):
         """
-        Cast Zero to null values
+        Cast null to zero values
         """
         if not value:
             return 0
