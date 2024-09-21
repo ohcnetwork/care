@@ -1,4 +1,5 @@
 import boto3
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -47,7 +48,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     patient_count = serializers.SerializerMethodField()
     bed_count = serializers.SerializerMethodField()
 
@@ -95,8 +99,16 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     # }
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     bed_count = serializers.SerializerMethodField()
+
+    facility_flags = serializers.SerializerMethodField()
+
+    def get_facility_flags(self, facility):
+        return facility.get_facility_flags()
 
     class Meta:
         model = Facility
@@ -133,6 +145,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
             "patient_count",
             "bed_count",
+            "facility_flags",
         ]
         read_only_fields = ("modified_date", "created_date")
 
@@ -145,6 +158,13 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
         # Check if the address is valid
         MiddlewareDomainAddressValidator()(value)
+        return value
+
+    def validate_features(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                "Features should not contain duplicate values."
+            )
         return value
 
     def create(self, validated_data):
@@ -168,11 +188,14 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         config, bucket_name = get_client_config(BucketType.FACILITY)
         s3 = boto3.client("s3", **config)
         image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
-        s3.put_object(
-            Bucket=bucket_name,
-            Key=image_location,
-            Body=image.file,
-        )
+        boto_params = {
+            "Bucket": bucket_name,
+            "Key": image_location,
+            "Body": image.file,
+        }
+        if settings.BUCKET_HAS_FINE_ACL:
+            boto_params["ACL"] = "public-read"
+        s3.put_object(**boto_params)
         facility.cover_image_url = image_location
         facility.save()
         return facility

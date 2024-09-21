@@ -2,7 +2,7 @@
 Glossary
 ===============
 
-**CARE** is a comprehensive capacity and patient management tool, built specifically for the COVID Pandemic Management. It is a web-based application hosted at  https://care.coronasafe.network/
+**CARE** is a comprehensive capacity and patient management tool, built specifically for the COVID Pandemic Management. It is a web-based application hosted at  https://care.ohcnetwork.network/
 
 This document gives an overview of the Care System for the developers who are willing to contribute to it.
 
@@ -21,7 +21,7 @@ Facility
 -----------
 
 - Facilities represent **Hospitals** associated with the Ward.
-- There are 15+ Facility **Types** in the Care System with its `ID Number Conventions <https://github.com/coronasafe/care/blob/6b39d0c8c2cd65c5f86db3fc667456f2d28db70c/care/facility/models/facility.py#L44>`_
+- There are 15+ Facility **Types** in the Care System with its `ID Number Conventions <https://github.com/ohcnetwork/care/blob/6b39d0c8c2cd65c5f86db3fc667456f2d28db70c/care/facility/models/facility.py#L44>`_
 - Each Facility record has its Basic information, Bed Capacity, Oxygen Cylinder Capacity and Doctor Capacity.
 - Reference: Karunya Arogya Suraksha Padhathi `(KASP) <https://sha.kerala.gov.in/karunya-arogya-suraksha-padhathi/>`_ - Health Care Scheme
 

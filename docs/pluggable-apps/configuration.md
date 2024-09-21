@@ -43,7 +43,7 @@ The order of precedence is as follows:
 
 ## Development
 
-To get started with developing a plugin, use [care-plugin-cookiecutter](https://github.com/coronasafe/care-plugin-cookiecutter)
+To get started with developing a plugin, use [care-plugin-cookiecutter](https://github.com/ohcnetwork/care-plugin-cookiecutter)
 The plugin follows the structure of a typical django app where you can define your models, views, urls, etc. in the plugin folder.
 The plugin manager will automatically load the required configurations and plugin urls under `/api/plugin-name/`.
 
@@ -54,4 +54,4 @@ If you need to inherit the components from the core app, you can install care in
 
 ## Available Plugins
 
-- [Care Scribe](https://github.com/coronasafe/care_scribe): Care Scribe is a plugin that provides autofill functionality for the care consultation forms.
+- [Care Scribe](https://github.com/ohcnetwork/care_scribe): Care Scribe is a plugin that provides autofill functionality for the care consultation forms.

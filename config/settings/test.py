@@ -39,7 +39,7 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 # test in peace
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        "BACKEND": "config.caches.DummyCache",
     }
 }
 # for testing retelimit use override_settings decorator
