@@ -401,14 +401,14 @@ class UserViewSet(
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
 
-    def has_profile_image_write_permission(self, user, request):
-        return user.is_superuser or (user.id == request.user.id)
+    def has_profile_image_write_permission(self, request, user):
+        return request.user.is_superuser or (user.id == request.user.id)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-    def profile_picture(self, request, username):
+    def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.has_profile_image_write_permission(user, request):
+        if not self.has_profile_image_write_permission(request, user):
             return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -417,9 +417,9 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @profile_picture.mapping.delete
-    def profile_picture_delete(self, *args, **kwargs):
+    def profile_picture_delete(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.has_profile_image_write_permission(user, self.request):
+        if not self.has_profile_image_write_permission(request, user):
             return Response(status=status.HTTP_403_FORBIDDEN)
         user.profile_picture_url = None
         user.save()

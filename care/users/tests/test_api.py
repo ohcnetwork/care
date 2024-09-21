@@ -1,6 +1,9 @@
+import io
 from datetime import date, timedelta
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
+from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -292,4 +295,69 @@ class TestUserFilter(TestUtils, APITestCase):
         self.assertEqual(res_data_json["count"], 1)
         self.assertIn(
             self.user_5.username, {r["username"] for r in res_data_json["results"]}
+        )
+
+
+class TestUserProfilePicture(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.user = cls.create_user("staff1", cls.district)
+
+    def get_base_url(self) -> str:
+        return f"/api/v1/users/{self.user.username}/profile_picture/"
+
+    def get_payload(self) -> dict:
+        image = Image.new("RGB", (400, 400))
+        file = io.BytesIO()
+        image.save(file, format="JPEG")
+        test_file = SimpleUploadedFile("test.jpg", file.getvalue(), "image/jpeg")
+        test_file.size = 2000
+        return {"profile_picture": test_file}
+
+    def test_user_can_upload_profile_picture(self):
+        image = Image.new("RGB", (400, 400))
+        file = io.BytesIO()
+        image.save(file, format="JPEG")
+        test_file = SimpleUploadedFile("test.jpg", file.getvalue(), "image/jpeg")
+        test_file.size = 2000
+        response = self.client.post(
+            self.get_base_url(), self.get_payload(), format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(
+            User.objects.get(username=self.user.username).profile_picture_url
+        )
+
+    def test_user_can_delete_profile_picture(self):
+        self.user.profile_picture_url = "image.jpg"
+        self.user.save(update_fields=["profile_picture_url"])
+
+        response = self.client.delete(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertIsNone(
+            User.objects.get(username=self.user.username).profile_picture_url
+        )
+
+    def test_superuser_can_upload_profile_picture(self):
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_base_url(), self.get_payload(), format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(
+            User.objects.get(username=self.user.username).profile_picture_url
+        )
+
+    def test_superuser_can_delete_profile_picture(self):
+        self.user.profile_picture_url = "image.jpg"
+        self.user.save(update_fields=["profile_picture_url"])
+
+        self.client.force_authenticate(self.super_user)
+        response = self.client.delete(self.get_base_url())
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertIsNone(
+            User.objects.get(username=self.user.username).profile_picture_url
         )
