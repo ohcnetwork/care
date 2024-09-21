@@ -1,11 +1,12 @@
 from django.conf import settings
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -96,11 +97,6 @@ class FacilityViewSet(
         self.action = self.action_map.get(request.method.lower())
         return super().initialize_request(request, *args, **kwargs)
 
-    def get_parsers(self):
-        if self.action == "cover_image":
-            return [MultiPartParser()]
-        return super().get_parsers()
-
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
@@ -151,6 +147,7 @@ class FacilityViewSet(
         return super(FacilityViewSet, self).list(request, *args, **kwargs)
 
     @extend_schema(tags=["facility"])
+    @method_decorator(parser_classes([MultiPartParser]))
     @action(methods=["POST"], detail=True)
     def cover_image(self, request, external_id):
         facility = self.get_object()

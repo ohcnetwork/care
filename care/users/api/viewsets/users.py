@@ -4,13 +4,14 @@ from django.core.cache import cache
 from django.db.models import F, Q, Subquery
 from django.http import Http404
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -168,15 +169,6 @@ class UserViewSet(
                 is_superuser=False,
             )
         return self.queryset.filter(query)
-
-    def get_parsers(self):
-        if (
-            self.request
-            and self.request.method == "POST"
-            and self.request.path.endswith("profile_picture")
-        ):
-            return [MultiPartParser()]
-        return super().get_parsers()
 
     def get_object(self) -> User:
         try:
@@ -405,6 +397,7 @@ class UserViewSet(
         return request.user.is_superuser or (user.id == request.user.id)
 
     @extend_schema(tags=["users"])
+    @method_decorator(parser_classes([MultiPartParser]))
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
