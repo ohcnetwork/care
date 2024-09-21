@@ -350,7 +350,6 @@ class User(AbstractUser):
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
 
-
     def read_profile_picture_url(self):
         if self.profile_picture_url:
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
