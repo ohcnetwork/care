@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
@@ -158,7 +160,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(95), MaxValueValidator(106)],
+        validators=[MinValueValidator(Decimal(95)), MaxValueValidator(Decimal(106))],
     )
     spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
@@ -324,7 +326,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(30)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(30))],
     )
     ventilator_pip = models.IntegerField(
         default=None,
@@ -395,7 +397,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(10)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(10))],
     )
     pco2 = models.IntegerField(
         default=None,
@@ -413,7 +415,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(5), MaxValueValidator(80)],
+        validators=[MinValueValidator(Decimal(5)), MaxValueValidator(Decimal(80))],
     )
     base_excess = models.IntegerField(
         default=None,
@@ -426,7 +428,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(20)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(20))],
     )
     sodium = models.DecimalField(
         decimal_places=2,
@@ -434,7 +436,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(100), MaxValueValidator(170)],
+        validators=[MinValueValidator(Decimal(100)), MaxValueValidator(Decimal(170))],
     )
     potassium = models.DecimalField(
         decimal_places=2,
@@ -442,7 +444,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[MinValueValidator(Decimal(1)), MaxValueValidator(Decimal(10))],
     )
     blood_sugar_level = models.IntegerField(
         default=None,
@@ -455,7 +457,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(100))],
     )
     insulin_intake_frequency = models.IntegerField(
         choices=InsulinIntakeFrequencyType.choices,
