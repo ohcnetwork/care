@@ -175,7 +175,6 @@ class DailyRound(PatientBaseModel):
         choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     other_details = models.TextField(null=True, blank=True)
-    medication_given = JSONField(default=dict)  # To be Used Later on
 
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
@@ -296,7 +295,9 @@ class DailyRound(PatientBaseModel):
     limb_response_lower_extremity_right = models.IntegerField(
         choices=LimbResponseType.choices, default=None, null=True
     )
-    bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
+    bp = JSONField(
+        default=None, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)], null=True
+    )
     pulse = models.IntegerField(
         default=None,
         null=True,
@@ -498,7 +499,7 @@ class DailyRound(PatientBaseModel):
 
     def cztn(self, value):
         """
-        Cast Zero to null values
+        Cast null to zero values
         """
         if not value:
             return 0
