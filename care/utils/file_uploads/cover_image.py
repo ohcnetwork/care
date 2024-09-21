@@ -1,5 +1,5 @@
 import logging
-import uuid
+import secrets
 from typing import Literal
 
 import boto3
@@ -28,7 +28,7 @@ def upload_cover_image(
 
     image_extension = image.name.rsplit(".", 1)[-1]
     image_key = (
-        f"{folder}/{object_external_id}_{str(uuid.uuid4())[0:8]}.{image_extension}"
+        f"{folder}/{object_external_id}_{secrets.token_hex(8)}.{image_extension}"
     )
 
     boto_params = {
