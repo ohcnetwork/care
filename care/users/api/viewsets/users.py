@@ -29,6 +29,7 @@ from care.users.api.serializers.user import (
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.file_uploads.cover_image import delete_cover_image
 
 
 def remove_facility_user_cache(user_id):
@@ -414,6 +415,7 @@ class UserViewSet(
         user = self.get_object()
         if not self.has_profile_image_write_permission(request, user):
             return Response(status=status.HTTP_403_FORBIDDEN)
+        delete_cover_image(user.profile_picture_url, "avatars")
         user.profile_picture_url = None
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

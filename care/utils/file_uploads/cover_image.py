@@ -11,6 +11,16 @@ from care.utils.csp.config import BucketType, get_client_config
 logger = logging.getLogger(__name__)
 
 
+def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"]):
+    config, bucket_name = get_client_config(BucketType.FACILITY)
+    s3 = boto3.client("s3", **config)
+
+    try:
+        s3.delete_object(Bucket=bucket_name, Key=f"{folder}/{image_key}")
+    except Exception:
+        logger.warning(f"Failed to delete cover image {image_key}")
+
+
 def upload_cover_image(
     image: UploadedFile,
     object_external_id: str,

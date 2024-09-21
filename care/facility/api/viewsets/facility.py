@@ -24,6 +24,7 @@ from care.facility.models import (
 )
 from care.facility.models.facility import FacilityUser
 from care.users.models import User
+from care.utils.file_uploads.cover_image import delete_cover_image
 
 
 class FacilityFilter(filters.FilterSet):
@@ -160,6 +161,7 @@ class FacilityViewSet(
     @cover_image.mapping.delete
     def cover_image_delete(self, *args, **kwargs):
         facility = self.get_object()
+        delete_cover_image(facility.cover_image_url, "cover_images")
         facility.cover_image_url = None
         facility.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
