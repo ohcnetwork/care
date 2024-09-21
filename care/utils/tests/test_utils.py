@@ -107,6 +107,8 @@ class TestUtils:
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
+    maxDiff = None
+
     def setUp(self) -> None:
         self.client.force_login(self.user)
 
