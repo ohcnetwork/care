@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0459_remove_bed_unique_bed_name_per_location_and_more"),
+        ("facility", "0460_alter_dailyround_bp_alter_dailyround_feeds_and_more"),
     ]
 
     def forward_investigations_dict_to_array(apps, schema_editor):
