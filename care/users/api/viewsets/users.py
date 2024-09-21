@@ -178,7 +178,7 @@ class UserViewSet(
             return [MultiPartParser()]
         return super().get_parsers()
 
-    def get_object(self):
+    def get_object(self) -> User:
         try:
             return super().get_object()
         except Http404:
@@ -402,20 +402,7 @@ class UserViewSet(
         return Response(status=status.HTTP_200_OK)
 
     def has_profile_image_write_permission(self, user, request):
-        allowed_user_types = [
-            User.TYPE_VALUE_MAP["WardAdmin"],
-            User.TYPE_VALUE_MAP["LocalBodyAdmin"],
-            User.TYPE_VALUE_MAP["DistrictAdmin"],
-            User.TYPE_VALUE_MAP["StateAdmin"],
-        ]
-        return (
-            user.is_superuser
-            or (user.id == request.user.id)
-            or (
-                user.user_type in allowed_user_types
-                and self.facility.has_object_write_permission(request)
-            )
-        )
+        return user.is_superuser or (user.id == request.user.id)
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
@@ -423,7 +410,7 @@ class UserViewSet(
         user = self.get_object()
         if not self.has_profile_image_write_permission(user, request):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        serializer = UserImageUploadSerializer(user, data=request.data)
+        serializer = self.get_serializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
