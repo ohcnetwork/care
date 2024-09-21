@@ -215,7 +215,7 @@ class ImageSizeValidator:
             "Image height is greater than the maximum allowed height of %(max_height)s pixels."
         ),
         "aspect_ratio": _(
-            "Image aspect ratio is not within the allowed range of %(aspect_ratio)s."
+            "Image aspect ratio must be one of the following: %(aspect_ratio)s."
         ),
         "min_size": _(
             "Image size is less than the minimum allowed size of %(min_size)s."
@@ -231,17 +231,23 @@ class ImageSizeValidator:
         max_width: int | None = None,
         min_height: int | None = None,
         max_height: int | None = None,
-        aspect_ratio: float | None = None,
-        min_size: int | None = None,
-        max_size: int | None = None,
+        aspect_ratio: list[float] | None = None,
+        min_size: int | None = None,  # in bytes
+        max_size: int | None = None,  # in bytes
     ) -> None:
         self.min_width = min_width
         self.max_width = max_width
         self.min_height = min_height
         self.max_height = max_height
-        self.aspect_ratio = aspect_ratio
         self.min_size = min_size
         self.max_size = max_size
+        if aspect_ratio:
+            self.aspect_ratio = set(
+                Fraction(ratio).limit_denominator(10) for ratio in aspect_ratio
+            )
+            self.aspect_ratio_str = ", ".join(
+                f"{ratio.numerator}:{ratio.denominator}" for ratio in self.aspect_ratio
+            )
 
     def __call__(self, value: UploadedFile) -> None:
         with Image.open(value.file) as image:
@@ -267,22 +273,24 @@ class ImageSizeValidator:
                 )
 
             if self.aspect_ratio:
-                if not (1 / self.aspect_ratio) < (width / height) < self.aspect_ratio:
-                    aspect_ratio_fraction = Fraction(
-                        self.aspect_ratio
-                    ).limit_denominator()
-                    aspect_ratio_str = f"{aspect_ratio_fraction.numerator}:{aspect_ratio_fraction.denominator}"
-
+                image_aspect_ratio = Fraction(width / height).limit_denominator(10)
+                if image_aspect_ratio not in self.aspect_ratio:
                     errors.append(
                         self.message["aspect_ratio"]
-                        % {"aspect_ratio": aspect_ratio_str}
+                        % {"aspect_ratio": self.aspect_ratio_str}
                     )
 
             if self.min_size and size < self.min_size:
-                errors.append(self.message["min_size"] % {"min_size": self.min_size})
+                errors.append(
+                    self.message["min_size"]
+                    % {"min_size": self._humanize_bytes(self.min_size)}
+                )
 
             if self.max_size and size > self.max_size:
-                errors.append(self.message["max_size"] % {"max_size": self.max_size})
+                errors.append(
+                    self.message["max_size"]
+                    % {"max_size": self._humanize_bytes(self.max_size)}
+                )
 
             if errors:
                 raise ValidationError(errors)
@@ -305,15 +313,22 @@ class ImageSizeValidator:
             ]
         )
 
+    def _humanize_bytes(self, size: int) -> str:
+        for unit in ["B", "KB"]:
+            if size < 1024.0:
+                return f"{f"{size:.2f}".rstrip(".0")} {unit}"
+            size /= 1024.0
+        return f"{f"{size:.2f}".rstrip(".0")} MB"
+
 
 cover_image_validator = ImageSizeValidator(
     min_width=400,
     min_height=400,
     max_width=1024,
     max_height=1024,
-    aspect_ratio=1 / 1,
-    min_size=1024,
-    max_size=1024 * 1024 * 2,
+    aspect_ratio=[1 / 1],
+    min_size=1024,  # 1 KB
+    max_size=1024 * 1024 * 2,  # 2 MB
 )
 
 custom_image_extension_validator = validators.FileExtensionValidator(
