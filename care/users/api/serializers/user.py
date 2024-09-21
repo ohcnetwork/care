@@ -1,4 +1,3 @@
-import boto3
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.utils.timezone import now
@@ -13,7 +12,11 @@ from care.users.api.serializers.lsg import (
 )
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import GENDER_CHOICES, User
-from care.utils.csp.config import BucketType, get_client_config
+from care.utils.file_uploads.cover_image import upload_cover_image
+from care.utils.models.validators import (
+    cover_image_validator,
+    custom_image_extension_validator,
+)
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
@@ -447,25 +450,25 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class UserImageUploadSerializer(serializers.ModelSerializer):
-    profile_picture_url = serializers.ImageField(required=True, write_only=True)
-    read_profile_picture_url = serializers.CharField(read_only=True)
+    profile_picture = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = User
-        fields = ("profile_picture_url", "read_profile_picture_url")
+        fields = ("profile_picture", "read_profile_picture_url")
 
     def save(self, **kwargs):
-        user = self.instance
-        image = self.validated_data["profile_picture_url"]
-        image_extension = image.name.split(".")[-1]
-        config, bucket_name = get_client_config(BucketType.FACILITY)
-        s3 = boto3.client("s3", **config)
-        image_location = f"avatars/{user.external_id}.{image_extension}"
-        s3.put_object(
-            Bucket=bucket_name,
-            Key=image_location,
-            Body=image.file,
+        user: User = self.instance
+        image = self.validated_data["profile_picture"]
+        user.profile_picture_url = upload_cover_image(
+            image,
+            str(user.external_id),
+            "avatars",
+            user.profile_picture_url,
         )
-        user.profile_picture_url = image_location
-        user.save()
+        user.save(update_fields=["profile_picture_url"])
         return user

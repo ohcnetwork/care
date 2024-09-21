@@ -1,7 +1,3 @@
-import uuid
-
-import boto3
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -15,7 +11,7 @@ from care.users.api.serializers.lsg import (
     StateSerializer,
     WardSerializer,
 )
-from care.utils.csp.config import BucketType, get_client_config
+from care.utils.file_uploads.cover_image import upload_cover_image
 from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
@@ -192,25 +188,13 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
         fields = ("cover_image", "read_cover_image_url")
 
     def save(self, **kwargs):
-        facility = self.instance
+        facility: Facility = self.instance
         image = self.validated_data["cover_image"]
-
-        config, bucket_name = get_client_config(BucketType.FACILITY)
-        s3 = boto3.client("s3", **config)
-
-        if facility.cover_image_url:
-            s3.delete_object(Bucket=bucket_name, Key=facility.cover_image_url)
-
-        image_extension = image.name.rsplit(".", 1)[-1]
-        image_location = f"cover_images/{facility.external_id}_{str(uuid.uuid4())[0:8]}.{image_extension}"
-        boto_params = {
-            "Bucket": bucket_name,
-            "Key": image_location,
-            "Body": image.file,
-        }
-        if settings.BUCKET_HAS_FINE_ACL:
-            boto_params["ACL"] = "public-read"
-        s3.put_object(**boto_params)
-        facility.cover_image_url = image_location
-        facility.save()
+        facility.cover_image_url = upload_cover_image(
+            image,
+            str(facility.external_id),
+            "cover_images",
+            facility.cover_image_url,
+        )
+        facility.save(update_fields=["cover_image_url"])
         return facility
