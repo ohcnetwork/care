@@ -213,34 +213,9 @@ class FacilitySpokeSerializer(serializers.ModelSerializer):
 
     def validate_spoke(self, spoke: Facility):
         hub: Facility = self.context["facility"]
-        user = self.context["request"].user
 
         if hub == spoke:
             raise serializers.ValidationError("Cannot set a facility as it's own spoke")
-
-        if not (
-            user.is_superuser
-            or (
-                user.user_type <= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-                and spoke.state == user.state
-                and spoke.district == user.district
-                and spoke.local_body == user.local_body
-            )
-            or (
-                user.user_type > User.TYPE_VALUE_MAP["LocalBodyAdmin"]
-                and user.user_type <= User.TYPE_VALUE_MAP["DistrictAdmin"]
-                and spoke.state == user.state
-                and spoke.district == user.district
-            )
-            or (
-                user.user_type > User.TYPE_VALUE_MAP["DistrictAdmin"]
-                and user.user_type <= User.TYPE_VALUE_MAP["StateAdmin"]
-                and spoke.state == user.state
-            )
-        ):
-            raise serializers.ValidationError(
-                "You do not have permission to set this spoke"
-            )
 
         if FacilityHubSpoke.objects.filter(
             Q(hub=hub, spoke=spoke) | Q(hub=spoke, spoke=hub)

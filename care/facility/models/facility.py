@@ -3,9 +3,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import IntegerChoices, Q
+from django.db.models import IntegerChoices
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
@@ -191,6 +192,17 @@ REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 
+# making sure A -> B -> C -> A does not happen
+def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
+    ancestors_of_base = FacilityHubSpoke.objects.filter(spoke_id=base_id).values_list(
+        "hub_id", flat=True
+    )
+    if spoke_id in ancestors_of_base:
+        raise serializers.ValidationError("This facility is already an ancestor hub")
+    for ancestor in ancestors_of_base:
+        check_if_spoke_is_not_ancestor(ancestor, spoke_id)
+
+
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
@@ -302,11 +314,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
-class FacilityHubSpoke(BaseModel):
-    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hub_set")
-    spoke = models.ForeignKey(
-        Facility, on_delete=models.CASCADE, related_name="spoke_set"
-    )
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")
     relationship = models.IntegerField(
         choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
     )
@@ -332,13 +342,7 @@ class FacilityHubSpoke(BaseModel):
         ]
 
     def save(self, *args, **kwargs):
-        if (
-            not self.deleted
-            and FacilityHubSpoke.objects.filter(
-                Q(hub=self.hub, spoke=self.spoke) | Q(hub=self.spoke, spoke=self.hub)
-            ).first()
-        ):
-            raise ValueError("Facility is already a spoke/hub")
+        check_if_spoke_is_not_ancestor(self.hub.id, self.spoke.id)
         return super().save(*args, **kwargs)
 
     def __str__(self):
