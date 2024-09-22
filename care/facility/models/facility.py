@@ -290,6 +290,17 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    def delete(self, *args):
+        from care.facility.models.asset import Asset, AssetLocation
+
+        AssetLocation.objects.filter(facility_id=self.id).update(deleted=True)
+        Asset.objects.filter(
+            current_location_id__in=AssetLocation._base_manager.filter(  # noqa: SLF001
+                facility_id=self.id
+            ).values_list("id", flat=True)
+        ).update(deleted=True)
+        return super().delete(*args)
+
     @property
     def get_features_display(self):
         if not self.features:
