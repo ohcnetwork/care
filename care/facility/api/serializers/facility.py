@@ -3,11 +3,12 @@ import uuid
 import boto3
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import serializers
 
 from care.facility.models import FACILITY_TYPES, Facility, FacilityLocalGovtBody
 from care.facility.models.bed import Bed
-from care.facility.models.facility import FEATURE_CHOICES
+from care.facility.models.facility import FEATURE_CHOICES, FacilityHubSpoke
 from care.facility.models.patient import PatientRegistration
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
@@ -20,6 +21,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
@@ -176,6 +178,51 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
+
+
+class FacilitySpokeSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    spoke = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), required=True, write_only=True
+    )
+    hub_object = FacilityBasicInfoSerializer(read_only=True, source="hub")
+    spoke_object = FacilityBasicInfoSerializer(read_only=True, source="spoke")
+
+    class Meta:
+        model = FacilityHubSpoke
+        fields = (
+            "id",
+            "spoke",
+            "hub_object",
+            "spoke_object",
+            "relationship",
+            "created_date",
+            "modified_date",
+        )
+        read_only_fields = (
+            "id",
+            "spoke_object",
+            "hub_object",
+            "created_date",
+            "modified_date",
+        )
+
+    def validate(self, data):
+        data["hub"] = self.context["facility"]
+        return data
+
+    def validate_spoke(self, spoke: Facility):
+        hub: Facility = self.context["facility"]
+
+        if hub == spoke:
+            raise serializers.ValidationError("Cannot set a facility as it's own spoke")
+
+        if FacilityHubSpoke.objects.filter(
+            Q(hub=hub, spoke=spoke) | Q(hub=spoke, spoke=hub)
+        ).first():
+            raise serializers.ValidationError("Facility is already a spoke/hub")
+
+        return spoke
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):

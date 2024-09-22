@@ -159,7 +159,7 @@ class DiscoverView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -213,7 +213,7 @@ class LinkConfirmView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -251,7 +251,7 @@ class RequestDataView(GenericAPIView):
 
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
+        if not consent or consent["notification"]["status"] != "GRANTED":
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
@@ -269,7 +269,7 @@ class RequestDataView(GenericAPIView):
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
-        if not on_data_request_response.status_code == 202:
+        if on_data_request_response.status_code != 202:
             return Response({}, status=status.HTTP_202_ACCEPTED)
             return Response(
                 on_data_request_response, status=status.HTTP_400_BAD_REQUEST

@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4 as uuid
 
 from fhir.resources.address import Address
@@ -263,7 +263,7 @@ class Fhir:
 
     def _observation(self, title, value, id, date):
         if not value or (isinstance(value, dict) and not value["value"]):
-            return
+            return None
 
         return Observation(
             id=(
@@ -410,7 +410,7 @@ class Fhir:
             return self._immunization_profile
 
         if not self.consultation.patient.is_vaccinated:
-            return
+            return None
 
         self._immunization_profile = Immunization(
             id=str(uuid()),
@@ -516,7 +516,7 @@ class Fhir:
                 ]
             ),
             title="Prescription",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="In Patient Prescriptions",
@@ -560,7 +560,7 @@ class Fhir:
                 ]
             ),
             title="Health Document Record",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Health Document Record",
@@ -605,7 +605,7 @@ class Fhir:
                 ]
             ),
             title="Wellness Record",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=list(
                 map(
                     lambda daily_round: CompositionSection(
@@ -651,7 +651,7 @@ class Fhir:
                 ],
             ),
             title="Immunization",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="IPD Immunization",
@@ -701,7 +701,7 @@ class Fhir:
                 ],
             ),
             title="Diagnostic Report",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Investigation Report",
@@ -738,7 +738,7 @@ class Fhir:
                 ]
             ),
             title="Discharge Summary Document",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Prescribed medications",
@@ -861,7 +861,7 @@ class Fhir:
                 ]
             ),
             title="OP Consultation Document",
-            date=datetime.now(timezone.utc).isoformat(),
+            date=datetime.now(UTC).isoformat(),
             section=[
                 CompositionSection(
                     title="Prescribed medications",
@@ -973,7 +973,7 @@ class Fhir:
 
     def create_prescription_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1003,7 +1003,7 @@ class Fhir:
 
     def create_wellness_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1027,7 +1027,7 @@ class Fhir:
 
     def create_immunization_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1046,7 +1046,7 @@ class Fhir:
 
     def create_diagnostic_report_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1070,7 +1070,7 @@ class Fhir:
 
     def create_health_document_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1094,7 +1094,7 @@ class Fhir:
 
     def create_discharge_summary_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
@@ -1149,7 +1149,7 @@ class Fhir:
 
     def create_op_consultation_record(self):
         id = str(uuid())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         return Bundle(
             id=id,
             identifier=Identifier(value=id),
