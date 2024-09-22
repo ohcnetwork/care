@@ -16,7 +16,7 @@ def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"
     s3 = boto3.client("s3", **config)
 
     try:
-        s3.delete_object(Bucket=bucket_name, Key=f"{folder}/{image_key}")
+        s3.delete_object(Bucket=bucket_name, Key=image_key)
     except Exception:
         logger.warning(f"Failed to delete cover image {image_key}")
 
@@ -32,7 +32,7 @@ def upload_cover_image(
 
     if old_key:
         try:
-            s3.delete_object(Bucket=bucket_name, Key=f"{folder}/{old_key}")
+            s3.delete_object(Bucket=bucket_name, Key=old_key)
         except Exception:
             logger.warning(f"Failed to delete old cover image {old_key}")
 
