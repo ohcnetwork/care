@@ -25,17 +25,7 @@ class OnFetchView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        try:
-            AbdmGateway().init(data["resp"]["requestId"])
-        except Exception as e:
-            logger.warning(
-                f"Error: OnFetchView::post failed while initialising ABDM Gateway, Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {"detail": "Error: Initialising ABDM Gateway failed."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        AbdmGateway().init(data["resp"]["requestId"])
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
@@ -169,7 +159,7 @@ class DiscoverView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -223,7 +213,7 @@ class LinkConfirmView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -261,7 +251,7 @@ class RequestDataView(GenericAPIView):
 
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
+        if not consent or consent["notification"]["status"] != "GRANTED":
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
@@ -279,7 +269,7 @@ class RequestDataView(GenericAPIView):
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
-        if not on_data_request_response.status_code == 202:
+        if on_data_request_response.status_code != 202:
             return Response({}, status=status.HTTP_202_ACCEPTED)
             return Response(
                 on_data_request_response, status=status.HTTP_400_BAD_REQUEST
@@ -337,38 +327,26 @@ class RequestDataView(GenericAPIView):
             }
         )
 
-        try:
-            AbdmGateway().data_notify(
-                {
-                    "health_id": consent["notification"]["consentDetail"]["patient"][
-                        "id"
-                    ],
-                    "consent_id": data["hiRequest"]["consent"]["id"],
-                    "transaction_id": data["transactionId"],
-                    "session_status": "TRANSFERRED"
+        AbdmGateway().data_notify(
+            {
+                "health_id": consent["notification"]["consentDetail"]["patient"]["id"],
+                "consent_id": data["hiRequest"]["consent"]["id"],
+                "transaction_id": data["transactionId"],
+                "session_status": (
+                    "TRANSFERRED"
                     if data_transfer_response
                     and data_transfer_response.status_code == 202
-                    else "FAILED",
-                    "care_contexts": list(
-                        map(
-                            lambda context: {"id": context["careContextReference"]},
-                            consent["notification"]["consentDetail"]["careContexts"][
-                                :-2:-1
-                            ],
-                        )
-                    ),
-                }
-            )
-        except Exception as e:
-            logger.warning(
-                f"Error: RequestDataView::post failed to notify (health-information/notify). Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {
-                    "detail": "Failed to notify (health-information/notify)",
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                    else "FAILED"
+                ),
+                "care_contexts": list(
+                    map(
+                        lambda context: {"id": context["careContextReference"]},
+                        consent["notification"]["consentDetail"]["careContexts"][
+                            :-2:-1
+                        ],
+                    )
+                ),
+            }
+        )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)

@@ -51,7 +51,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
-
 LANGUAGES = [
     ("en-us", _("English")),
     ("ml", _("Malayalam")),
@@ -197,6 +196,10 @@ MIDDLEWARE = [
     "care.audit_log.middleware.AuditLogMiddleware",
 ]
 
+# add RequestTimeLoggingMiddleware based on the environment variable
+if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
+    MIDDLEWARE.insert(0, "config.middleware.RequestTimeLoggingMiddleware")
+
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-files
@@ -306,7 +309,7 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # MANAGERS = ADMINS
 
 # Django Admin URL.
-ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -320,14 +323,30 @@ LOGGING = {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
             "%(process)d %(thread)d %(message)s"
-        }
+        },
+        "request_time": {
+            "format": "INFO %(asctime)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "time_logging": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "request_time",
+        },
+    },
+    "loggers": {
+        "time_logging_middleware": {
+            "handlers": ["time_logging"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -654,3 +673,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Timeout for middleware request (in seconds)
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)

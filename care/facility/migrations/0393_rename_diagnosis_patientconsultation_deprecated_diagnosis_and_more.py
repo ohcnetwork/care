@@ -174,7 +174,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="consultationdiagnosis",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     ("is_principal", False),
                     models.Q(
                         ("verification_status__in", ["refuted", "entered-in-error"]),

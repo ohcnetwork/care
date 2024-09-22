@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -112,14 +112,13 @@ class HipViewSet(GenericViewSet):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
+                abha_number.patient = patient
                 abha_number.save()
-                patient.abha_number = abha_number
-                patient.save()
 
             payload = {
                 "requestId": str(uuid.uuid4()),
                 "timestamp": str(
-                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                    datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
                 ),
                 "acknowledgement": {
                     "status": "SUCCESS",
