@@ -107,6 +107,7 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
     permission_classes = (
