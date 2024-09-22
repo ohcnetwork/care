@@ -31,7 +31,7 @@ class PMJYPackage(BaseRedisModel):
 
 def load_pmjy_packages():
     print("Loading PMJY Packages into the redis cache...", end="", flush=True)
-    with open("data/pmjy_packages.json", "r") as f:
+    with open("data/pmjy_packages.json") as f:
         pmjy_packages = json.load(f)
         for package in pmjy_packages:
             PMJYPackage(

@@ -1,7 +1,6 @@
 import glob
 import json
 from collections import defaultdict
-from typing import Optional
 
 from django.core.management.base import BaseCommand, CommandParser
 
@@ -19,7 +18,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("folder", help="path to the folder of JSONs")
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         folder = options["folder"]
         counter = 0
         local_bodies = []
@@ -95,7 +94,7 @@ class Command(BaseCommand):
 
         for f in sorted(glob.glob(f"{folder}/*.json")):
             counter += 1
-            with open(f"{f}", "r") as data_f:
+            with open(f"{f}") as data_f:
                 data = json.load(data_f)
                 data.pop("wards", None)
                 local_bodies.append(data)

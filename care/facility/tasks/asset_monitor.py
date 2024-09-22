@@ -49,7 +49,7 @@ def check_asset_status():
             )
 
             if not resolved_middleware:
-                logger.warn(
+                logger.warning(
                     f"Asset {asset.external_id} does not have a middleware hostname"
                 )
                 continue
@@ -91,7 +91,7 @@ def check_asset_status():
                 else:
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
             except Exception as e:
-                logger.warn(f"Middleware {resolved_middleware} is down", e)
+                logger.warning(f"Middleware {resolved_middleware} is down", e)
 
             # If no status is returned, setting default status as down
             if not result or "error" in result:

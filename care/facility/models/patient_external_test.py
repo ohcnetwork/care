@@ -78,7 +78,7 @@ class PatientExternalTest(FacilityBaseModel):
         "sample_type": "Sample Type",
         "result": "Final Result",
         "sample_collection_date": "Sample Collection Date",
-        "source": "Source"
+        "source": "Source",
         # "result_date": "",
     }
 

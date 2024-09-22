@@ -28,7 +28,7 @@ class BaseFileUpload(models.Model):
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     file_type = models.IntegerField(default=0)
     file_category = models.CharField(
-        choices=FileCategory.choices,
+        choices=FileCategory,
         default=FileCategory.UNSPECIFIED,
         max_length=100,
     )
@@ -141,7 +141,7 @@ class FileUpload(BaseFileUpload):
         CONSENT_RECORD = 7, "CONSENT_RECORD"
         ABDM_HEALTH_INFORMATION = 8, "ABDM_HEALTH_INFORMATION"
 
-    file_type = models.IntegerField(choices=FileType.choices, default=FileType.PATIENT)
+    file_type = models.IntegerField(choices=FileType, default=FileType.PATIENT)
     is_archived = models.BooleanField(default=False)
     archive_reason = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(
