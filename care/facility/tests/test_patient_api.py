@@ -331,6 +331,29 @@ class PatientTestCase(TestUtils, APITestCase):
     def get_base_url(self) -> str:
         return "/api/v1/patient/"
 
+    def test_update_patient_with_meta_info(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.patch(
+            f"{self.get_base_url()}{self.patient.external_id}/",
+            data={
+                "meta_info": {
+                    "socioeconomic_status": "VERY_POOR",
+                    "domestic_healthcare_support": "FAMILY_MEMBER",
+                }
+            },
+            format="json",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res_meta = res.data.get("meta_info")
+        self.assertEqual(
+            res_meta,
+            res_meta
+            | {
+                "socioeconomic_status": "VERY_POOR",
+                "domestic_healthcare_support": "FAMILY_MEMBER",
+            },
+        )
+
     def test_has_consent(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.get_base_url())
@@ -625,7 +648,6 @@ class PatientFilterTestCase(TestUtils, APITestCase):
                 self.assertIsNone(patient["review_time"])
 
     def test_filter_by_has_consents(self):
-
         choices = ["1", "2", "3", "4", "5", "None"]
 
         self.client.force_authenticate(user=self.user)
