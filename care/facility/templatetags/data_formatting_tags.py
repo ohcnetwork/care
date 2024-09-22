@@ -14,7 +14,7 @@ def format_empty_data(data):
 @register.filter(name="format_to_sentence_case")
 def format_to_sentence_case(data):
     if data is None:
-        return
+        return None
 
     def convert_to_sentence_case(s):
         if s == "ICU":

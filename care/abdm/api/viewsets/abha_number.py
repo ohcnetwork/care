@@ -28,7 +28,7 @@ class AbhaNumberViewSet(
             Q(abha_number=id) | Q(health_id=id) | Q(patient__external_id=id)
         ).first()
 
-        if not instance or get_patient_queryset(self.request.user).contains(
+        if not instance or not get_patient_queryset(self.request.user).contains(
             instance.patient
         ):
             raise Http404

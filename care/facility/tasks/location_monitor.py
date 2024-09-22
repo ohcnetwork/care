@@ -29,7 +29,7 @@ def check_location_status():
             )
 
             if not resolved_middleware:
-                logger.warn(
+                logger.warning(
                     f"No middleware hostname resolved for location {location.external_id}"
                 )
                 continue
@@ -54,7 +54,7 @@ def check_location_status():
                     new_status = AvailabilityStatus.OPERATIONAL
 
             except Exception as e:
-                logger.warn(f"Middleware {resolved_middleware} is down", e)
+                logger.warning(f"Middleware {resolved_middleware} is down", e)
 
             # Fetching the last record of the location
             last_record = (

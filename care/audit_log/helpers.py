@@ -1,10 +1,9 @@
 import re
 from fnmatch import fnmatch
 from functools import lru_cache
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 from django.conf import settings
-from multiselectfield.db.fields import MSFList
 from rest_framework.utils.encoders import JSONEncoder
 
 
@@ -15,7 +14,7 @@ def remove_non_member_fields(d: dict):
 def instance_finder(v):
     return isinstance(
         v,
-        (list, dict, set, MSFList),
+        (list, dict, set),
     )
 
 
@@ -27,7 +26,7 @@ def seperate_hashable_dict(d: dict):
 
 def get_or_create_meta(instance):
     if not hasattr(instance._meta, "dal"):
-        setattr(instance._meta, "dal", MetaDataContainer())
+        instance._meta.dal = MetaDataContainer()
     return instance
 
 
@@ -35,7 +34,9 @@ def get_model_name(instance):
     return f"{instance._meta.app_label}.{instance.__class__.__name__}"
 
 
-Search = NamedTuple("Search", [("type", str), ("value", str)])
+class Search(NamedTuple):
+    type: str
+    value: str
 
 
 def _make_search(item):
@@ -47,7 +48,7 @@ def _make_search(item):
 
 
 def candidate_in_scope(
-    candidate: str, scope: List, is_application: bool = False
+    candidate: str, scope: list, is_application: bool = False
 ) -> bool:
     """
     Check if the candidate string is valid with the scope supplied,
@@ -81,7 +82,7 @@ def candidate_in_scope(
     return False
 
 
-@lru_cache()
+@lru_cache
 def exclude_model(model_name):
     if candidate_in_scope(
         model_name,

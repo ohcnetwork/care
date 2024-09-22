@@ -35,7 +35,11 @@ from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
 )
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
+from care.facility.api.viewsets.facility import (
+    AllFacilityViewSet,
+    FacilitySpokesViewSet,
+    FacilityViewSet,
+)
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -217,6 +221,9 @@ facility_nested_router.register(
     r"discharged_patients",
     FacilityDischargedPatientViewSet,
     basename="facility-discharged-patients",
+)
+facility_nested_router.register(
+    r"spokes", FacilitySpokesViewSet, basename="facility-spokes"
 )
 
 router.register("asset", AssetViewSet, basename="asset")
