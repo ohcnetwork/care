@@ -10,13 +10,9 @@ on:
 permissions: { }
 
 jobs:
-  build:
+  lint:
     name: Lint Code Base
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
 
     steps:
       - name: Checkout Code
@@ -24,11 +20,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_PYTHON_RUFF: true
-          LINTER_RULES_PATH: /
-          PYTHON_RUFF_CONFIG_FILE: "pyproject.toml"
+      - name: Ruff check
+        uses: chartboost/ruff-action@v1
+        with:
+          args: "check"
+          changed-files: "true"
+
+      - name: Ruff format
+        uses: chartboost/ruff-action@v1
+        with:
+          args: "format"
+          changed-files: "true"
