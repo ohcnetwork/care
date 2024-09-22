@@ -148,4 +148,4 @@ def capture_goals():
                     f"Saved goal property entry for {goal_name} and property {property_name} on {yesterday}"
                 )
         except Exception as e:
-            logger.error(f"Failed to process goal {goal_name} due to error: {str(e)}")
+            logger.error(f"Failed to process goal {goal_name} due to error: {e!s}")

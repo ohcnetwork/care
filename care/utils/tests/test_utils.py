@@ -115,7 +115,7 @@ class TestUtils:
         Should return the base url of the testing viewset
         eg: return "api/v1/facility/"
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @classmethod
     def create_state(cls, **kwargs) -> State:
@@ -752,7 +752,7 @@ class TestUtils:
         :param obj: Object to be represented
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_detail_representation(self, obj=None) -> dict:
         """
@@ -761,7 +761,7 @@ class TestUtils:
         :param data: data
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_local_body_district_state_representation(self, obj):
         """

@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = "Loads Medibase Medicines into the database from medibase.json"
 
     def fetch_data(self):
-        with open("data/medibase.json", "r") as json_file:
+        with open("data/medibase.json") as json_file:
             return json.load(json_file)
 
     def handle(self, *args, **options):

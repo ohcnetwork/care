@@ -65,7 +65,7 @@ class PatientConsultationEvent(models.Model):
     meta = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     value = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     change_type = models.CharField(
-        max_length=10, choices=ChangeType.choices, default=ChangeType.CREATED
+        max_length=10, choices=ChangeType, default=ChangeType.CREATED
     )
 
     def __str__(self) -> str:

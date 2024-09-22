@@ -181,7 +181,7 @@ class AssetSerializer(ModelSerializer):
 
             facilities = get_facility_queryset(user)
             if not facilities.filter(id=location.facility.id).exists():
-                raise PermissionError()
+                raise PermissionError
             del attrs["location"]
             attrs["current_location"] = location
 
@@ -201,7 +201,7 @@ class AssetSerializer(ModelSerializer):
                 )
 
         # validate that last serviced date is not in the future
-        if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
+        if attrs.get("last_serviced_on"):
             if attrs["last_serviced_on"] > datetime.now().date():
                 raise ValidationError("Last serviced on cannot be in the future")
 

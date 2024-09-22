@@ -94,7 +94,6 @@ from config.authentication import (
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
-VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -220,7 +219,9 @@ class PatientFilterSet(filters.FilterSet):
     )
     ventilator_interface = CareChoiceFilter(
         field_name="last_consultation__last_daily_round__ventilator_interface",
-        choice_dict=VENTILATOR_CHOICES,
+        choice_dict={
+            label: value for value, label in DailyRound.VentilatorInterfaceType.choices
+        },
     )
 
     # Vaccination Filters
@@ -242,7 +243,7 @@ class PatientFilterSet(filters.FilterSet):
         if isinstance(value, bool):
             if value:
                 queryset = queryset.filter(
-                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                    Q(review_time__isnull=False) & Q(review_time__lt=timezone.now())
                 )
             else:
                 queryset = queryset.filter(
@@ -284,7 +285,6 @@ class PatientFilterSet(filters.FilterSet):
     )
 
     def filter_by_has_consents(self, queryset, name, value: str):
-
         if not value:
             return queryset
 
@@ -804,7 +804,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
         "facility",
         "allow_transfer",
         "is_active",
-    )
+    ).order_by("id")
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     pagination_class = PatientSearchSetPagination
@@ -941,7 +941,9 @@ class PatientNotesViewSet(
 ):
     queryset = (
         PatientNotes.objects.all()
-        .select_related("facility", "patient", "created_by")
+        .select_related(
+            "facility", "patient", "created_by", "reply_to", "reply_to__created_by"
+        )
         .order_by("-created_date")
     )
     lookup_field = "external_id"
