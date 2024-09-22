@@ -73,7 +73,7 @@ class BedSerializer(ModelSerializer):
             if (not facilities.filter(id=location.facility.id).exists()) or (
                 not facilities.filter(id=facility.id).exists()
             ):
-                raise PermissionError()
+                raise PermissionError
             del attrs["location"]
             attrs["location"] = location
             attrs["facility"] = facility
@@ -109,7 +109,7 @@ class AssetBedSerializer(ModelSerializer):
             if (
                 not facilities.filter(id=asset.current_location.facility.id).exists()
             ) or (not facilities.filter(id=bed.facility.id).exists()):
-                raise PermissionError()
+                raise PermissionError
             if asset.asset_class not in [
                 AssetClasses.HL7MONITOR.name,
                 AssetClasses.ONVIF.name,

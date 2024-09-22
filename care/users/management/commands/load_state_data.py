@@ -22,7 +22,7 @@ class Command(BaseCommand):
         json_file_path = options["json_file_path"]
 
         data = []
-        with open(json_file_path, "r") as json_file:
+        with open(json_file_path) as json_file:
             data = json.load(json_file)
 
         for item in data:
