@@ -29,6 +29,7 @@ done
 >&2 echo 'PostgreSQL is available'
 
 python manage.py migrate --noinput
+python manage.py compilemessages
 python manage.py load_redis_index
 
 

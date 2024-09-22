@@ -22,7 +22,7 @@ class ULID(BaseULID):
             if len_value == 10:
                 return cls.from_timestamp(int(value))
             raise ValueError(
-                "Cannot create ULID from string of length {}".format(len_value)
+                f"Cannot create ULID from string of length {len_value}"
             )
         if isinstance(value, (int, float)):
             return cls.from_int(int(value))
@@ -31,5 +31,5 @@ class ULID(BaseULID):
         if isinstance(value, memoryview):
             return cls.from_bytes(value.tobytes())
         raise ValueError(
-            "Cannot create ULID from type {}".format(value.__class__.__name__)
+            f"Cannot create ULID from type {value.__class__.__name__}"
         )

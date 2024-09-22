@@ -170,7 +170,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="facilitylocalgovtbody",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     ("local_body__isnull", False),
                     ("district__isnull", False),
                     _connector="OR",

@@ -8,7 +8,7 @@ from care.facility.models.patient_investigation import (
     PatientInvestigationGroup,
 )
 
-with open("data/investigations.json", "r") as investigations_data:
+with open("data/investigations.json") as investigations_data:
     investigations = json.load(investigations_data)
 
 with open("data/investigation_groups.json") as investigation_groups_data:
@@ -47,12 +47,16 @@ class Command(BaseCommand):
                 "name": investigation["name"],
                 "unit": investigation.get("unit", ""),
                 "ideal_value": investigation.get("ideal_value", ""),
-                "min_value": None
-                if investigation.get("min_value") is None
-                else float(investigation.get("min_value")),
-                "max_value": None
-                if investigation.get("max_value") is None
-                else float(investigation.get("max_value")),
+                "min_value": (
+                    None
+                    if investigation.get("min_value") is None
+                    else float(investigation.get("min_value"))
+                ),
+                "max_value": (
+                    None
+                    if investigation.get("max_value") is None
+                    else float(investigation.get("max_value"))
+                ),
                 "investigation_type": investigation["type"],
                 "choices": investigation.get("choices", ""),
             }

@@ -142,16 +142,6 @@ class HealthInformationCallbackViewSet(GenericViewSet):
         file.upload_completed = True
         file.save()
 
-        try:
-            Gateway().health_information__notify(artefact)
-        except Exception as e:
-            logger.warning(
-                f"Error: health_information__transfer::post failed to notify (health-information/notify). Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {"detail": "Failed to notify (health-information/notify)"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        Gateway().health_information__notify(artefact)
 
         return Response(status=status.HTTP_202_ACCEPTED)

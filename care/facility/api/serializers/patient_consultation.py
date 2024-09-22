@@ -8,7 +8,6 @@ from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer
 from care.facility.api.serializers.bed import (
@@ -204,15 +203,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             "created_by",
             "kasp_enabled_date",
             "is_readmission",
-            "deprecated_diagnosis",
             "deprecated_verified_by",
         )
         exclude = (
             "deleted",
             "external_id",
-            "deprecated_icd11_provisional_diagnoses",
-            "deprecated_icd11_diagnoses",
-            "deprecated_icd11_principal_diagnosis",
         )
 
     def validate_bed_number(self, bed_number):
@@ -613,11 +608,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-        if (
-            "suggestion" in validated
-            and validated["suggestion"] != SuggestionChoices.DD
-        ):
-            if "treating_physician" not in validated:
+        if "suggestion" in validated and validated["suggestion"] not in [
+            SuggestionChoices.DD,
+            SuggestionChoices.DC,
+        ]:
+            treating_physician = validated.get("treating_physician")
+            if not treating_physician:
                 raise ValidationError(
                     {
                         "treating_physician": [
@@ -625,10 +621,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         ]
                     }
                 )
-            if (
-                not validated["treating_physician"].user_type
-                == User.TYPE_VALUE_MAP["Doctor"]
-            ):
+            if not treating_physician.user_type == User.TYPE_VALUE_MAP["Doctor"]:
                 raise ValidationError("Only Doctors can verify a Consultation")
 
             facility = (
@@ -636,9 +629,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 and self.instance.facility
                 or validated["patient"].facility
             )
+            # Check if the Doctor is associated with the Facility (.facilities)
+            if not treating_physician.facilities.filter(id=facility.id).exists():
+                raise ValidationError(
+                    "The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
+                )
+
             if (
-                validated["treating_physician"].home_facility
-                and validated["treating_physician"].home_facility != facility
+                treating_physician.home_facility
+                and treating_physician.home_facility != facility
             ):
                 raise ValidationError(
                     "Home Facility of the Doctor must be the same as the Consultation Facility"
@@ -802,21 +801,6 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
-            if settings.ENABLE_ABDM and patient.abha_number:
-                abha_number = patient.abha_number
-                try:
-                    AbdmGateway().fetch_modes(
-                        {
-                            "healthId": abha_number.abha_number,
-                            "name": abha_number.name,
-                            "gender": abha_number.gender,
-                            "dateOfBirth": str(abha_number.date_of_birth),
-                            "consultationId": abha_number.external_id,
-                            "purpose": "LINK",
-                        }
-                    )
-                except Exception:
-                    pass
             create_consultation_events(
                 instance.id,
                 instance,

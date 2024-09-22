@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
 
-class NumberValidator(object):
+class NumberValidator:
     def validate(self, password, user=None):
         if not re.findall(r"\d", password):
             raise ValidationError(
@@ -17,7 +17,7 @@ class NumberValidator(object):
         return _("Your password must contain at least 1 digit, 0-9.")
 
 
-class UppercaseValidator(object):
+class UppercaseValidator:
     def validate(self, password, user=None):
         if not re.findall("[A-Z]", password):
             raise ValidationError(
@@ -29,7 +29,7 @@ class UppercaseValidator(object):
         return _("Your password must contain at least 1 uppercase letter, A-Z.")
 
 
-class LowercaseValidator(object):
+class LowercaseValidator:
     def validate(self, password, user=None):
         if not re.findall("[a-z]", password):
             raise ValidationError(
@@ -41,7 +41,7 @@ class LowercaseValidator(object):
         return _("Your password must contain at least 1 lowercase letter, a-z.")
 
 
-class SymbolValidator(object):
+class SymbolValidator:
     def validate(self, password, user=None):
         if not re.findall(r"[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]", password):
             raise ValidationError(

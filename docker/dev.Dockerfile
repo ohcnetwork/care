@@ -1,11 +1,8 @@
-FROM python:3.11-slim-bullseye
-
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
-
-ENV PATH /venv/bin:$PATH
+FROM python:3.12-slim-bookworm
 
 ARG TYPST_VERSION=0.11.0
+
+ENV PATH=/venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev \
@@ -23,7 +20,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
         echo "Unsupported architecture: $ARCH"; \
         exit 1; \
     fi && \
-    wget -O typst.tar.xz https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz && \
+    wget -qO typst.tar.xz https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz && \
     tar -xf typst.tar.xz && \
     mv typst-${TYPST_ARCH}/typst /usr/local/bin/typst && \
     chmod +x /usr/local/bin/typst && \
@@ -35,7 +32,6 @@ RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"
-
 
 COPY . /app
 
