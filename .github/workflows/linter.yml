@@ -25,14 +25,10 @@ jobs:
           fetch-depth: 0
 
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v6
+        uses: super-linter/super-linter/slim@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_PYTHON_BLACK: true
-          VALIDATE_PYTHON_FLAKE8: true
-          VALIDATE_PYTHON_ISORT: true
+          VALIDATE_PYTHON_RUFF: true
           LINTER_RULES_PATH: /
-          PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
-          PYTHON_FLAKE8_CONFIG_FILE: ".flake8"
-          PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"
+          PYTHON_RUFF_CONFIG_FILE: "pyproject.toml"
