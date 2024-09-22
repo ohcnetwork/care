@@ -1,6 +1,6 @@
 import re
+from collections.abc import Iterable
 from fractions import Fraction
-from typing import Iterable, List
 
 import jsonschema
 from django.core import validators
@@ -40,7 +40,7 @@ class JSONFieldSchemaValidator:
     def _extract_errors(
         self,
         errors: Iterable[jsonschema.ValidationError],
-        container: List[ValidationError],
+        container: list[ValidationError],
     ):
         for error in errors:
             if error.context:

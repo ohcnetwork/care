@@ -182,7 +182,7 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
         if not asset_user:
             password = User.objects.make_random_password()
             asset_user = User(
-                username=f"asset{str(asset_obj.external_id)}",
+                username=f"asset{asset_obj.external_id!s}",
                 email="support@ohc.network",
                 password=f"{password}xyz",  # The xyz makes it inaccessible without hashing
                 gender=3,

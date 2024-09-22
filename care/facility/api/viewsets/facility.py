@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
@@ -15,6 +16,7 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
+    FacilitySpokeSerializer,
 )
 from care.facility.models import (
     Facility,
@@ -22,9 +24,10 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     HospitalDoctors,
 )
-from care.facility.models.facility import FacilityUser
+from care.facility.models.facility import FacilityHubSpoke, FacilityUser
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image
+from care.utils.queryset.facility import get_facility_queryset
 
 
 class FacilityFilter(filters.FilterSet):
@@ -104,8 +107,7 @@ class FacilityViewSet(
         if self.action == "cover_image":
             # Check DRYpermissions before updating
             return FacilityImageUploadSerializer
-        else:
-            return FacilitySerializer
+        return FacilitySerializer
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -182,3 +184,25 @@ class AllFacilityViewSet(
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
+
+
+class FacilitySpokesViewSet(viewsets.ModelViewSet):
+    queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
+    serializer_class = FacilitySpokeSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        return self.queryset.filter(hub=self.get_facility())
+
+    def get_facility(self):
+        facilities = get_facility_queryset(self.request.user)
+        return get_object_or_404(
+            facilities.filter(external_id=self.kwargs["facility_external_id"])
+        )
+
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context

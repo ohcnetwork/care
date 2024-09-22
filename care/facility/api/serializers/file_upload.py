@@ -111,9 +111,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return sample.id
-        elif file_type == FileUpload.FileType.CLAIM.value:
-            return associating_id
-        elif file_type == FileUpload.FileType.COMMUNICATION.value:
+        elif file_type == FileUpload.FileType.CLAIM.value or file_type == FileUpload.FileType.COMMUNICATION.value:
             return associating_id
         else:
             raise Exception("Undefined File Type")

@@ -243,7 +243,7 @@ class PatientFilterSet(filters.FilterSet):
         if isinstance(value, bool):
             if value:
                 queryset = queryset.filter(
-                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                    Q(review_time__isnull=False) & Q(review_time__lt=timezone.now())
                 )
             else:
                 queryset = queryset.filter(
@@ -285,7 +285,6 @@ class PatientFilterSet(filters.FilterSet):
     )
 
     def filter_by_has_consents(self, queryset, name, value: str):
-
         if not value:
             return queryset
 
@@ -805,7 +804,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
         "facility",
         "allow_transfer",
         "is_active",
-    )
+    ).order_by("id")
     serializer_class = PatientSearchSerializer
     permission_classes = (IsAuthenticated, DRYPermissions)
     pagination_class = PatientSearchSetPagination
@@ -942,7 +941,9 @@ class PatientNotesViewSet(
 ):
     queryset = (
         PatientNotes.objects.all()
-        .select_related("facility", "patient", "created_by")
+        .select_related(
+            "facility", "patient", "created_by", "reply_to", "reply_to__created_by"
+        )
         .order_by("-created_date")
     )
     lookup_field = "external_id"
