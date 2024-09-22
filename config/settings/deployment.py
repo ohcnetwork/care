@@ -7,13 +7,13 @@ from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from .base import *  # noqa
-from .base import env
+from .base import APP_VERSION, DATABASES, TEMPLATES, env
 
 # DATABASES
 # ------------------------------------------------------------------------------
-DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
-DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
-DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
+DATABASES["default"] = env.db("DATABASE_URL")
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -41,11 +41,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 )
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origins-sequencestr
 CORS_ALLOWED_ORIGINS = env.json("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOWED_ORIGIN_REGEXES = env.json("CORS_ALLOWED_ORIGIN_REGEXES", default=[])
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
-TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
+TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index]
     (
         "django.template.loaders.cached.Loader",
         [
@@ -98,12 +99,14 @@ LOGGING = {
 if SENTRY_DSN := env("SENTRY_DSN", default=""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        release=env("APP_VERSION", default="unknown"),
+        release=APP_VERSION,
         environment=env("SENTRY_ENVIRONMENT", default="deployment-unknown"),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0),
         profiles_sample_rate=env.float("SENTRY_PROFILES_SAMPLE_RATE", default=0),
         integrations=[
-            LoggingIntegration(event_level=logging.WARNING),
+            LoggingIntegration(
+                event_level=env.int("SENTRY_EVENT_LEVEL", default=logging.ERROR)
+            ),
             DjangoIntegration(),
             CeleryIntegration(monitor_beat_tasks=True),
             RedisIntegration(),

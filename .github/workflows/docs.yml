@@ -15,21 +15,19 @@ on:
 
 jobs:
   build-docs:
-    if: github.repository == 'coronasafe/care'
+    if: github.repository == 'ohcnetwork/care'
     name: Build docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
           cache: 'pipenv'
-          cache-dependency-path: |
-            Pipfile.lock
 
       - name: Install pipenv
-        run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
+        run: pip install pipenv
 
       - name: Install dependencies
         run: pipenv sync --categories "docs"
@@ -39,21 +37,21 @@ jobs:
           make -C ./docs html
 
       - name: Upload sphinx documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sphinx-docs
           path: ./docs/_build/html
           retention-days: 30
 
   deploy-docs:
-    if: github.repository == 'coronasafe/care' && github.ref == 'refs/heads/develop'
+    if: github.repository == 'ohcnetwork/care' && github.ref == 'refs/heads/develop'
     name: Deploy docs
     runs-on: ubuntu-latest
     needs: build-docs
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download sphinx documentation
         uses: actions/download-artifact@v3
@@ -66,7 +64,7 @@ jobs:
           touch build/.nojekyll
 
       - name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: build

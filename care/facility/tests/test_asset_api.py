@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models import Asset, Bed
+from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.tests.test_utils import TestUtils
 
@@ -17,6 +18,11 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
+        cls.state_admin_ro = cls.create_user(
+            "stateadmin-ro",
+            cls.district,
+            user_type=User.TYPE_VALUE_MAP["StateReadOnlyAdmin"],
+        )
         cls.patient = cls.create_patient(
             cls.district, cls.facility, local_body=cls.local_body
         )
@@ -37,6 +43,16 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
         }
         response = self.client.post("/api/v1/asset/", sample_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_asset_read_only(self):
+        sample_data = {
+            "name": "Test Asset",
+            "asset_type": 50,
+            "location": self.asset_location.external_id,
+        }
+        self.client.force_authenticate(self.state_admin_ro)
+        response = self.client.post("/api/v1/asset/", sample_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_asset_with_warranty_past(self):
         sample_data = {

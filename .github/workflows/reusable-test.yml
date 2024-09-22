@@ -1,0 +1,76 @@
+name: Test
+
+on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
+    inputs:
+      event_name:
+        required: false
+        type: string
+        default: 'pull_request'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Restore Docker layers cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Bake docker images
+        uses: docker/bake-action@v4
+        with:
+          load: true
+          set: |
+            *.cache-from=type=local,src=/tmp/.buildx-cache
+            *.cache-to=type=local,dest=/tmp/.buildx-cache-new
+          files: docker-compose.yaml,docker-compose.local.yaml
+
+      - name: Start services
+        run: |
+          docker compose \
+            -f docker-compose.yaml \
+            -f docker-compose.local.yaml \
+            up -d --wait ||\
+          docker compose \
+            -f docker-compose.yaml \
+            -f docker-compose.local.yaml \
+            logs
+
+      - name: Check migrations
+        run: make checkmigration
+
+      - name: Validate integrity of fixtures
+        run: make load-dummy-data
+
+      - name: Run tests
+        run: make test-coverage
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Move new cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Save Docker layers cache
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}

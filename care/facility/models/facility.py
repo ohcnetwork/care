@@ -1,17 +1,22 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
+from django.db.models import IntegerChoices
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
@@ -38,6 +43,7 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+# to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
     (2, "Maternity Care"),
@@ -47,9 +53,25 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
+
+class HubRelationship(IntegerChoices):
+    REGULAR_HUB = 1, _("Regular Hub")
+    TELE_ICU_HUB = 2, _("Tele ICU Hub")
+
+
+class FacilityFeature(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, "CT Scan Facility"
+    MATERNITY_CARE = 2, "Maternity Care"
+    X_RAY_FACILITY = 3, "X-Ray Facility"
+    NEONATAL_CARE = 4, "Neonatal Care"
+    OPERATION_THEATER = 5, "Operation Theater"
+    BLOOD_BANK = 6, "Blood Bank"
+
+
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -101,14 +123,84 @@ REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 DOCTOR_TYPES = [
     (1, "General Medicine"),
     (2, "Pulmonology"),
-    (3, "Critical Care"),
-    (4, "Paediatrics"),
-    (5, "Other Speciality"),
+    (3, "Intensivist"),
+    (4, "Pediatrician"),
+    (5, "Others"),
+    (6, "Anesthesiologist"),
+    (7, "Cardiac Surgeon"),
+    (8, "Cardiologist"),
+    (9, "Dentist"),
+    (10, "Dermatologist"),
+    (11, "Diabetologist"),
+    (12, "Emergency Medicine Physician"),
+    (13, "Endocrinologist"),
+    (14, "Family Physician"),
+    (15, "Gastroenterologist"),
+    (16, "General Surgeon"),
+    (17, "Geriatrician"),
+    (18, "Hematologist"),
+    (29, "Immunologist"),
+    (20, "Infectious Disease Specialist"),
+    (21, "MBBS doctor"),
+    (22, "Medical Officer"),
+    (23, "Nephrologist"),
+    (24, "Neuro Surgeon"),
+    (25, "Neurologist"),
+    (26, "Obstetrician/Gynecologist (OB/GYN)"),
+    (27, "Oncologist"),
+    (28, "Oncology Surgeon"),
+    (29, "Ophthalmologist"),
+    (30, "Oral and Maxillofacial Surgeon"),
+    (31, "Orthopedic"),
+    (32, "Orthopedic Surgeon"),
+    (33, "Otolaryngologist (ENT)"),
+    (34, "Palliative care Physician"),
+    (35, "Pathologist"),
+    (36, "Pediatric Surgeon"),
+    (37, "Physician"),
+    (38, "Plastic Surgeon"),
+    (39, "Psychiatrist"),
+    (40, "Pulmonologist"),
+    (41, "Radio technician"),
+    (42, "Radiologist"),
+    (43, "Rheumatologist"),
+    (44, "Sports Medicine Specialist"),
+    (45, "Thoraco-Vascular Surgeon"),
+    (46, "Transfusion Medicine Specialist"),
+    (47, "Urologist"),
+    (48, "Nurse"),
+    (49, "Allergist/Immunologist"),
+    (50, "Cardiothoracic Surgeon"),
+    (51, "Gynecologic Oncologist"),
+    (52, "Hepatologist"),
+    (53, "Internist"),
+    (54, "Neonatologist"),
+    (55, "Pain Management Specialist"),
+    (56, "Physiatrist (Physical Medicine and Rehabilitation)"),
+    (57, "Podiatrist"),
+    (58, "Preventive Medicine Specialist"),
+    (59, "Radiation Oncologist"),
+    (60, "Sleep Medicine Specialist"),
+    (61, "Transplant Surgeon"),
+    (62, "Trauma Surgeon"),
+    (63, "Vascular Surgeon"),
+    (64, "Critical Care Physician"),
 ]
 
 REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
+
+
+# making sure A -> B -> C -> A does not happen
+def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
+    ancestors_of_base = FacilityHubSpoke.objects.filter(spoke_id=base_id).values_list(
+        "hub_id", flat=True
+    )
+    if spoke_id in ancestors_of_base:
+        raise serializers.ValidationError("This facility is already an ancestor hub")
+    for ancestor in ancestors_of_base:
+        check_if_spoke_is_not_ancestor(ancestor, spoke_id)
 
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
@@ -117,13 +209,11 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(
-        choices=FEATURE_CHOICES,
-        null=True,
+    features = ArrayField(
+        models.SmallIntegerField(choices=FacilityFeature),
         blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
+        null=True,
     )
-
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
     )
@@ -200,6 +290,15 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    @property
+    def get_features_display(self):
+        if not self.features:
+            return []
+        return [FacilityFeature(f).label for f in self.features]
+
+    def get_facility_flags(self):
+        return FacilityFlag.get_all_flags(self.id)
+
     CSV_MAPPING = {
         "name": "Facility Name",
         "facility_type": "Facility Type",
@@ -213,6 +312,41 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+
+
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")
+    relationship = models.IntegerField(
+        choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
+    )
+
+    class Meta:
+        constraints = [
+            # Ensure hub and spoke are not the same
+            CheckConstraint(
+                check=~models.Q(hub=models.F("spoke")),
+                name="hub_and_spoke_not_same",
+            ),
+            # bidirectional uniqueness
+            UniqueConstraint(
+                fields=["hub", "spoke"],
+                name="unique_hub_spoke",
+                condition=models.Q(deleted=False),
+            ),
+            UniqueConstraint(
+                fields=["spoke", "hub"],
+                name="unique_spoke_hub",
+                condition=models.Q(deleted=False),
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        check_if_spoke_is_not_ancestor(self.hub.id, self.spoke.id)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -239,7 +373,7 @@ class FacilityLocalGovtBody(models.Model):
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False)
+                condition=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
             )
         ]

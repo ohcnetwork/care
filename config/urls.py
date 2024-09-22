@@ -33,13 +33,14 @@ from config.health_views import (
 )
 
 from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
-from .views import home_view, ping
+from .views import app_version, home_view, ping
 
 urlpatterns = [
     path("", home_view, name="home"),
     path("ping/", ping, name="ping"),
+    path("app_version/", app_version, name="app_version"),
     # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
+    path(f"{settings.ADMIN_URL.rstrip("/")}/", admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(

@@ -7,32 +7,27 @@ on:
       - staging
   merge_group:
 
+permissions: { }
+
 jobs:
-  build:
-    if: github.repository == 'coronasafe/care'
+  lint:
     name: Lint Code Base
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
-      - name: Lint Code Base
-        uses: github/super-linter/slim@v5
-        env:
-          DEFAULT_BRANCH: develop
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_PYTHON_BLACK: true
-          VALIDATE_PYTHON_FLAKE8: true
-          VALIDATE_PYTHON_ISORT: true
-          LINTER_RULES_PATH: /
-          PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
-          PYTHON_FLAKE8_CONFIG_FILE: ".flake8"
-          PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"
+      - name: Ruff check
+        uses: chartboost/ruff-action@v1
+        with:
+          version: 0.6.7
+          args: "check"
+          changed-files: "true"
+
+      - name: Ruff format
+        uses: chartboost/ruff-action@v1
+        with:
+          version: 0.6.7
+          args: "format"
+          changed-files: "true"

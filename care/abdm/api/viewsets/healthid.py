@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
+from care.abdm.api.serializers.abha_number import AbhaNumberSerializer
 from care.abdm.api.serializers.healthid import (
     AadharOtpGenerateRequestPayloadSerializer,
     AadharOtpResendRequestPayloadSerializer,
@@ -20,6 +20,7 @@ from care.abdm.api.serializers.healthid import (
     GenerateMobileOtpRequestPayloadSerializer,
     HealthIdAuthSerializer,
     HealthIdSerializer,
+    LinkPatientSerializer,
     QRContentSerializer,
     VerifyDemographicsRequestPayloadSerializer,
     VerifyOtpRequestPayloadSerializer,
@@ -30,7 +31,7 @@ from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models.patient import PatientConsultation, PatientRegistration
 from care.utils.queryset.patient import get_patient_queryset
 from config.auth_views import CaptchaRequiredException
-from config.ratelimit import ratelimit
+from config.ratelimit import USER_READABLE_RATE_LIMIT_TIME, ratelimit
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "generate_aadhaar_otp", [data["aadhaar"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -75,7 +79,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "resend_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -97,7 +104,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "verify_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -121,7 +131,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "generate_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -143,7 +156,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "verify_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -190,9 +206,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         return abha_object
 
     def add_abha_details_to_patient(self, abha_object, patient_object):
-        patient_object.abha_number = abha_object
-        patient_object.save()
-        return True
+        if abha_object.patient is not None:
+            raise ValidationError(detail="Abha Number is already linked to a patient")
+
+        if getattr(patient_object, "abha_number", None) is not None:
+            raise ValidationError(detail="Patient already has an Abha Number linked")
+
+        abha_object.patient = patient_object
+        abha_object.save()
 
     @extend_schema(
         # /v1/registration/aadhaar/createHealthId
@@ -207,7 +228,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "create_health_id", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -216,9 +240,12 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
         abha_profile = HealthIdGateway().create_health_id(data)
 
         if "token" not in abha_profile:
-            return Response(
-                abha_profile,
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                detail="\n\n".join(
+                    detail.get("message", "")
+                    for detail in abha_profile.get("details", [])
+                )
+                or abha_profile.get("message", "Error while fetching abha profile")
             )
 
         # have a serializer to verify data of abha_profile
@@ -236,16 +263,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
@@ -269,7 +289,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             request, "search_by_health_id", [data["healthId"]], increment=False
         ):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -284,17 +307,20 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "get_abha_card", [data["patient"]], increment=False):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
         allowed_patients = get_patient_queryset(request.user)
         patient = allowed_patients.filter(external_id=data["patient"]).first()
         if not patient:
-            raise ValidationError({"patient": "Not Found"})
+            raise ValidationError(detail="Patient not found")
 
-        if not patient.abha_number:
-            raise ValidationError({"abha": "Patient hasn't linked thier abha"})
+        if getattr(patient, "abha_number", None) is None:
+            raise ValidationError(detail="Patient hasn't linked thier abha")
 
         if data["type"] == "png":
             response = HealthIdGateway().get_abha_card_png(
@@ -320,7 +346,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "link_via_qr", [data["hidn"]], increment=False):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -354,28 +383,16 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                 state=data["state name"],
             )
 
-            try:
-                AbdmGateway().fetch_modes(
-                    {
-                        "healthId": data["phr"] or data["hidn"],
-                        "name": data["name"],
-                        "gender": data["gender"],
-                        "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[
-                            0:10
-                        ],
-                    }
-                )
-            except Exception as e:
-                logger.warning(
-                    f"Error: ABDMHealthIDViewSet::link_via_qr failed to fetch modes. Reason: {e}",
-                    exc_info=True,
-                )
-                return Response(
-                    {
-                        "detail": "Failed to fetch modes",
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            AbdmGateway().fetch_modes(
+                {
+                    "healthId": data["phr"] or data["hidn"],
+                    "name": data["name"],
+                    "gender": data["gender"],
+                    "dateOfBirth": str(datetime.strptime(data["dob"], "%d-%m-%Y"))[
+                        0:10
+                    ],
+                }
+            )
 
             abha_number.save()
 
@@ -390,12 +407,71 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            patient.abha_number = abha_number
-            patient.save()
+            abha_number.patient = patient
+            abha_number.save()
 
         abha_serialized = AbhaNumberSerializer(abha_number).data
         return Response(
             {"id": abha_serialized["external_id"], "abha_profile": abha_serialized},
+            status=status.HTTP_200_OK,
+        )
+
+    @extend_schema(
+        operation_id="search_by_health_id",
+        request=LinkPatientSerializer,
+        tags=["ABDM HealthID"],
+    )
+    @action(detail=False, methods=["post"])
+    def link_patient(self, request):
+        data = request.data
+
+        serializer = LinkPatientSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        patient_queryset = get_patient_queryset(request.user)
+        patient = patient_queryset.filter(external_id=data.get("patient")).first()
+
+        if not patient:
+            return Response(
+                {
+                    "detail": "Patient not found or you do not have permission to access the patient",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if hasattr(patient, "abha_number"):
+            return Response(
+                {
+                    "detail": "Patient already linked to an ABHA Number",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        abha_number = AbhaNumber.objects.filter(
+            external_id=data.get("abha_number")
+        ).first()
+
+        if not abha_number:
+            return Response(
+                {
+                    "detail": "ABHA Number not found",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if abha_number.patient is not None:
+            return Response(
+                {
+                    "detail": "ABHA Number already linked to a patient",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        abha_number.patient = patient
+        abha_number.save()
+
+        return Response(
+            AbhaNumberSerializer(abha_number).data,
             status=status.HTTP_200_OK,
         )
 
@@ -410,7 +486,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "get_new_linking_token", [data["patient"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -418,27 +497,14 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             PatientRegistration.objects.get(external_id=data["patient"])
         ).data
 
-        try:
-            AbdmGateway().fetch_modes(
-                {
-                    "healthId": patient["abha_number_object"]["abha_number"],
-                    "name": patient["abha_number_object"]["name"],
-                    "gender": patient["abha_number_object"]["gender"],
-                    "dateOfBirth": str(patient["abha_number_object"]["date_of_birth"]),
-                }
-            )
-        except Exception as e:
-            logger.warning(
-                f"Error: ABDMHealthIDViewSet::get_new_linking_token failed to fetch modes. Reason: {e}",
-                exc_info=True,
-            )
-
-            return Response(
-                {
-                    "detail": "Failed to fetch modes",
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        AbdmGateway().fetch_modes(
+            {
+                "healthId": patient["abha_number_object"]["abha_number"],
+                "name": patient["abha_number_object"]["name"],
+                "gender": patient["abha_number_object"]["gender"],
+                "dateOfBirth": str(patient["abha_number_object"]["date_of_birth"]),
+            }
+        )
 
         return Response({}, status=status.HTTP_200_OK)
 
@@ -448,48 +514,44 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "add_care_context", [consultation_id]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
         consultation = PatientConsultation.objects.get(external_id=consultation_id)
 
         if not consultation:
-            return Response(
-                {"consultation": "No matching records found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise ValidationError(detail="Consultation not found")
 
-        try:
-            AbdmGateway().fetch_modes(
-                {
-                    "healthId": consultation.patient.abha_number.health_id,
-                    "name": request.data["name"]
+        if getattr(consultation.patient, "abha_number", None) is None:
+            raise ValidationError(detail="Patient hasn't linked thier abha")
+
+        AbdmGateway().fetch_modes(
+            {
+                "healthId": consultation.patient.abha_number.health_id,
+                "name": (
+                    request.data["name"]
                     if "name" in request.data
-                    else consultation.patient.abha_number.name,
-                    "gender": request.data["gender"]
+                    else consultation.patient.abha_number.name
+                ),
+                "gender": (
+                    request.data["gender"]
                     if "gender" in request.data
-                    else consultation.patient.abha_number.gender,
-                    "dateOfBirth": request.data["dob"]
+                    else consultation.patient.abha_number.gender
+                ),
+                "dateOfBirth": (
+                    request.data["dob"]
                     if "dob" in request.data
-                    else str(consultation.patient.abha_number.date_of_birth),
-                    "consultationId": consultation_id,
-                    # "authMode": "DIRECT",
-                    "purpose": "LINK",
-                }
-            )
-        except Exception as e:
-            logger.warning(
-                f"Error: ABDMHealthIDViewSet::add_care_context failed. Reason: {e}",
-                exc_info=True,
-            )
-
-            return Response(
-                {
-                    "detail": "Failed to add care context",
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                    else str(consultation.patient.abha_number.date_of_birth)
+                ),
+                "consultationId": consultation_id,
+                # "authMode": "DIRECT",
+                "purpose": "LINK",
+            }
+        )
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
@@ -499,7 +561,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "patient_sms_notify", [patient_id]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -507,27 +572,22 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if not patient:
             return Response(
-                {"consultation": "No matching records found"},
+                {"patient": "No matching records found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        try:
-            response = AbdmGateway().patient_sms_notify(
-                {
-                    "phone": patient.phone_number,
-                    "healthId": patient.abha_number.health_id,
-                }
-            )
-        except Exception as e:
-            logger.warning(
-                f"Error: ABDMHealthIDViewSet::patient_sms_notify failed to send SMS. Reason: {e}",
-                exc_info=True,
-            )
-
+        if getattr(patient, "abha_number", None) is None:
             return Response(
-                {"detail": "Failed to send SMS"},
+                {"abha": "Patient hasn't linked thier abha"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        response = AbdmGateway().patient_sms_notify(
+            {
+                "phone": patient.phone_number,
+                "healthId": patient.abha_number.health_id,
+            }
+        )
 
         return Response(response, status=status.HTTP_202_ACCEPTED)
 
@@ -545,7 +605,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "auth_init", [data["healthid"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -567,7 +630,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_aadhaar_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -591,16 +657,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
@@ -620,7 +679,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -644,16 +706,9 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
             allowed_patients = get_patient_queryset(request.user)
             patient_obj = allowed_patients.filter(external_id=patient_id).first()
             if not patient_obj:
-                raise ValidationError({"patient": "Not Found"})
+                raise ValidationError(detail="Patient not found")
 
-            if not self.add_abha_details_to_patient(
-                abha_object,
-                patient_obj,
-            ):
-                return Response(
-                    {"message": "Failed to add abha Number to the patient"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            self.add_abha_details_to_patient(abha_object, patient_obj)
 
         return Response(
             {"id": abha_object.external_id, "abha_profile": abha_profile},
@@ -672,7 +727,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "confirm_with_demographics", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
@@ -696,7 +754,10 @@ class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
 
         if ratelimit(request, "check_and_generate_mobile_otp", [data["txnId"]]):
             raise CaptchaRequiredException(
-                detail={"status": 429, "detail": "Too Many Requests Provide Captcha"},
+                detail={
+                    "status": 429,
+                    "detail": f"Request limit reached. Try after {USER_READABLE_RATE_LIMIT_TIME}",
+                },
                 code=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 

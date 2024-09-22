@@ -4,6 +4,7 @@ from typing import Any
 
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.utils import timezone
 
 from care.facility.models.asset import Asset, AvailabilityRecord, AvailabilityStatus
@@ -17,12 +18,25 @@ logger = logging.getLogger(__name__)
 def check_asset_status():
     logger.info(f"Checking Asset Status: {timezone.now()}")
 
-    assets = Asset.objects.all()
+    assets = (
+        Asset.objects.exclude(Q(asset_class=None) | Q(asset_class=""))
+        .select_related(
+            "current_location",
+            "current_location__facility",
+        )
+        .only(
+            "external_id",
+            "meta",
+            "asset_class",
+            "current_location__middleware_address",
+            "current_location__facility__middleware_address",
+        )
+    )
     asset_content_type = ContentType.objects.get_for_model(Asset)
 
     for asset in assets:
-        # Skipping if asset class or local IP address is not present
-        if not asset.asset_class or not asset.meta.get("local_ip_address", None):
+        # Skipping if local IP address is not present
+        if not asset.meta.get("local_ip_address", None):
             continue
         try:
             # Fetching middleware hostname
@@ -49,28 +63,35 @@ def check_asset_status():
                 ].value(
                     {
                         **asset.meta,
+                        "id": asset.external_id,
                         "middleware_hostname": resolved_middleware,
                     }
                 )
                 # Fetching the status of the device
                 if asset.asset_class == "ONVIF":
-                    asset_config = asset.meta["camera_access_key"].split(":")
-                    assets_config = [
-                        {
-                            "hostname": asset.meta.get("local_ip_address"),
-                            "port": 80,
-                            "username": asset_config[0],
-                            "password": asset_config[1],
-                        }
-                    ]
+                    try:
+                        # TODO: Remove this block after all assets are migrated to the new middleware
+                        asset_config = asset.meta["camera_access_key"].split(":")
+                        assets_config = [
+                            {
+                                "hostname": asset.meta.get("local_ip_address"),
+                                "port": 80,
+                                "username": asset_config[0],
+                                "password": asset_config[1],
+                            }
+                        ]
 
-                    result = asset_class.api_post(
-                        asset_class.get_url("cameras/status"), data=assets_config
-                    )
+                        result = asset_class.api_post(
+                            asset_class.get_url("cameras/status"), data=assets_config
+                        )
+                    except Exception:
+                        result = asset_class.api_get(
+                            asset_class.get_url("cameras/status")
+                        )
                 else:
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
-            except Exception:
-                logger.warn(f"Middleware {resolved_middleware} is down", exc_info=True)
+            except Exception as e:
+                logger.warn(f"Middleware {resolved_middleware} is down", e)
 
             # If no status is returned, setting default status as down
             if not result or "error" in result:
@@ -116,5 +137,5 @@ def check_asset_status():
                         status=new_status.value,
                         timestamp=status_record.get("time", timezone.now()),
                     )
-        except Exception:
-            logger.error("Error in Asset Status Check", exc_info=True)
+        except Exception as e:
+            logger.error("Error in Asset Status Check", e)

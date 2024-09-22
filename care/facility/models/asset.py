@@ -100,7 +100,7 @@ class Asset(BaseModel):
     vendor_name = models.CharField(max_length=1024, blank=True, null=True)
     support_name = models.CharField(max_length=1024, blank=True, null=True)
     support_phone = models.CharField(
-        max_length=14,
+        max_length=15,
         validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))],
         default="",
     )
@@ -178,6 +178,26 @@ class Asset(BaseModel):
         AssetBed.objects.filter(asset=self).update(deleted=True)
         super().delete(*args, **kwargs)
 
+    @staticmethod
+    def has_write_permission(request):
+        if request.user.asset or request.user.user_type in User.READ_ONLY_TYPES:
+            return False
+        return (
+            request.user.is_superuser
+            or request.user.verified
+            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+        )
+
+    def has_object_write_permission(self, request):
+        return self.has_write_permission(request)
+
+    @staticmethod
+    def has_read_permission(request):
+        return request.user.is_superuser or request.user.verified
+
+    def has_object_read_permission(self, request):
+        return self.has_read_permission(request)
+
     def __str__(self):
         return self.name
 
@@ -199,7 +219,7 @@ class AvailabilityRecord(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_external_id = models.UUIDField()
     status = models.CharField(
-        choices=AvailabilityStatus.choices,
+        choices=AvailabilityStatus,
         default=AvailabilityStatus.NOT_MONITORED,
         max_length=20,
     )

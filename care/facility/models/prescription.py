@@ -35,6 +35,7 @@ class Routes(enum.Enum):
     INTRATHECAL = "intrathecal injection"
     TRANSDERMAL = "Transdermal"
     RECTAL = "Rectal"
+    SUBLINGUAL = "Sublingual"
 
 
 class PrescriptionType(enum.Enum):
@@ -112,7 +113,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     )
     dosage_type = models.CharField(
         max_length=100,
-        choices=PrescriptionDosageType.choices,
+        choices=PrescriptionDosageType,
         default=PrescriptionDosageType.REGULAR.value,
     )
 
@@ -174,7 +175,7 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
         return ConsultationRelatedPermissionMixin.has_write_permission(request)
 
     def __str__(self):
-        return self.medicine + " - " + self.consultation.patient.name
+        return f"Prescription({self.id}) {self.consultation_id} - {self.medicine_id}"
 
 
 class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
@@ -203,11 +204,7 @@ class MedicineAdministration(BaseModel, ConsultationRelatedPermissionMixin):
     )
 
     def __str__(self):
-        return (
-            self.prescription.medicine
-            + " - "
-            + self.prescription.consultation.patient.name
-        )
+        return f"MedicineAdministration({self.id}) {self.prescription_id} - {self.administered_date}"
 
     def get_related_consultation(self):
         return self.prescription.consultation

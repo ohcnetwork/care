@@ -9,6 +9,10 @@ from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
+from healthy_django.healthcheck.celery_queue_length import (
+    DjangoCeleryQueueLengthHealthCheck,
+)
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
@@ -51,6 +55,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
+LANGUAGES = [
+    ("en-us", _("English")),
+    ("ml", _("Malayalam")),
+    ("hi", _("Hindi")),
+    ("ta", _("Tamil")),
+]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -58,6 +68,9 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# timeout for setnx lock
+LOCK_TIMEOUT = env.int("LOCK_TIMEOUT", default=32)
 
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
@@ -187,6 +200,10 @@ MIDDLEWARE = [
     "care.audit_log.middleware.AuditLogMiddleware",
 ]
 
+# add RequestTimeLoggingMiddleware based on the environment variable
+if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
+    MIDDLEWARE.insert(0, "config.middleware.RequestTimeLoggingMiddleware")
+
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-files
@@ -296,7 +313,7 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # MANAGERS = ADMINS
 
 # Django Admin URL.
-ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -310,14 +327,30 @@ LOGGING = {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
             "%(process)d %(thread)d %(message)s"
-        }
+        },
+        "request_time": {
+            "format": "INFO %(asctime)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "time_logging": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "request_time",
+        },
+    },
+    "loggers": {
+        "time_logging_middleware": {
+            "handlers": ["time_logging"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -415,6 +448,15 @@ HEALTHY_DJANGO = [
         "Database", slug="main_database", connection_name="default"
     ),
     DjangoCacheHealthCheck("Cache", slug="main_cache", connection_name="default"),
+    DjangoCeleryQueueLengthHealthCheck(
+        "Celery Queue Length",
+        slug="celery_queue_length",
+        broker=REDIS_URL,
+        queue_name="celery",
+        info_length=50,
+        warning_length=0,  # this skips the 300 status code
+        alert_length=200,
+    ),
 ]
 
 # Audit logs
@@ -499,6 +541,7 @@ BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
 BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
+BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
@@ -512,9 +555,9 @@ FILE_UPLOAD_BUCKET_ENDPOINT = env(
 )
 FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FILE_UPLOAD_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
+    ),
 )
 
 ALLOWED_MIME_TYPES = env.list(
@@ -543,6 +586,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
+        "audio/mp4",
         # Documents
         "text/plain",
         "text/csv",
@@ -565,9 +609,9 @@ FACILITY_S3_BUCKET_ENDPOINT = env(
 )
 FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=BUCKET_EXTERNAL_ENDPOINT
-    if BUCKET_ENDPOINT
-    else FACILITY_S3_BUCKET_ENDPOINT,
+    default=(
+        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
+    ),
 )
 
 # for setting the shifting mode
@@ -584,11 +628,14 @@ CSV_REQUEST_PARAMETER = "csv"
 
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
 # open id connect
 JWKS = JsonWebKey.import_key_set(
     json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
 )
+
+APP_VERSION = env("APP_VERSION", default="unknown")
 
 # ABDM
 ENABLE_ABDM = env.bool("ENABLE_ABDM", default=False)
@@ -635,3 +682,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Timeout for middleware request (in seconds)
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
