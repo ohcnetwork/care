@@ -56,13 +56,13 @@ ruff-all:
 	ruff check .
 
 ruff:
-	ruff --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')
+	ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')
 
 ruff-all-docker:
 	docker exec care bash -c "ruff check ."
 
 ruff-docker:
-	docker exec care bash -c "ruff --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"
+	docker exec care bash -c "ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"
 
 %:
 	docker compose exec backend bash -c "python manage.py $*"
