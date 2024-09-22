@@ -17,9 +17,8 @@ class UserAccessMixin:
                     queryset = queryset.filter(
                         facility__district=self.request.user.district
                     )
-            else:
-                if hasattr(instance, "created_by"):
-                    queryset = queryset.filter(created_by=self.request.user)
+            elif hasattr(instance, "created_by"):
+                queryset = queryset.filter(created_by=self.request.user)
         return queryset
 
     def filter_by_user_scope(self, queryset):
@@ -34,9 +33,8 @@ class UserAccessMixin:
                     queryset = queryset.filter(
                         facility__district=self.request.user.district
                     )
-            else:
-                if hasattr(instance, "created_by"):
-                    queryset = queryset.filter(created_by=self.request.user)
+            elif hasattr(instance, "created_by"):
+                queryset = queryset.filter(created_by=self.request.user)
         return queryset
 
     def perform_create(self, serializer):

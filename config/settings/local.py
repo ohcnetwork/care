@@ -11,14 +11,14 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS  # noqa F405
 # django-silk
 # ------------------------------------------------------------------------------
 # https://github.com/jazzband/django-silk#requirements
-INSTALLED_APPS += ["silk"]  # noqa F405
+INSTALLED_APPS += ["silk"]  # F405
 MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]  # noqa F405
 SILKY_PYTHON_PROFILER = True
 
 # django-extensions
 # ------------------------------------------------------------------------------
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
-INSTALLED_APPS += ["django_extensions"]  # noqa F405
+INSTALLED_APPS += ["django_extensions"]  # F405
 
 
 # Celery

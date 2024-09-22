@@ -6,7 +6,7 @@ from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 
 
 def fetch_data():
-    with open("data/icd11.json", "r") as json_file:
+    with open("data/icd11.json") as json_file:
         return json.load(json_file)
 
 

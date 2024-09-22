@@ -280,9 +280,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
                     and has_facility_permission(user, instance.origin_facility)
-                ):
-                    pass
-                elif (
+                ) or (
                     status in self.PEACETIME_RECIEVING_STATUS
                     and has_facility_permission(user, instance.assigned_facility)
                 ):
@@ -294,10 +292,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 status in self.LIMITED_RECIEVING_STATUS
                 and instance.assigned_facility
                 and not has_facility_permission(user, instance.assigned_facility)
-            ):
-                raise ValidationError({"status": ["Permission Denied"]})
-
-            elif status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
+            ) or status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
                 user, instance.shifting_approving_facility
             ):
                 raise ValidationError({"status": ["Permission Denied"]})

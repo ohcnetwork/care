@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -22,15 +22,11 @@ from care.audit_log.middleware import AuditLogMiddleware
 
 logger = logging.getLogger(__name__)
 
-Event = NamedTuple(
-    "Event",
-    [
-        ("model", str),
-        ("actor", AbstractUser),
-        ("entity_id", Union[int, str]),
-        ("changes", dict),
-    ],
-)
+class Event(NamedTuple):
+    model: str
+    actor: AbstractUser
+    entity_id: int | str
+    changes: dict
 
 
 @receiver(pre_delete, weak=False)
@@ -105,7 +101,7 @@ def pre_save_signal(sender, instance, **kwargs) -> None:
     )
 
 
-def _post_processor(instance, event: Optional[Event], operation: Operation):
+def _post_processor(instance, event: Event | None, operation: Operation):
     request_id = AuditLogMiddleware.get_current_request_id()
     actor = AuditLogMiddleware.get_current_user()
     model_name = get_model_name(instance)
