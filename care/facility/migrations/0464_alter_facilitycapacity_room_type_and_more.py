@@ -7,7 +7,7 @@ from care.facility.models import RoomType
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0453_merge_20240824_2040"),
+        ("facility", "0463_patientnotes_reply_to"),
     ]
 
     def migrate_room_type(apps, schema_editor):
@@ -47,12 +47,12 @@ class Migration(migrations.Migration):
                         "current_capacity": facility_capacity.current_capacity,
                     }
                 else:
-                    merged_facility_capacities[key][
-                        "total_capacity"
-                    ] += facility_capacity.total_capacity
-                    merged_facility_capacities[key][
-                        "current_capacity"
-                    ] += facility_capacity.current_capacity
+                    merged_facility_capacities[key]["total_capacity"] += (
+                        facility_capacity.total_capacity
+                    )
+                    merged_facility_capacities[key]["current_capacity"] += (
+                        facility_capacity.current_capacity
+                    )
 
                 facility_capacity.delete()
 
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             FacilityCapacity.objects.create(**data)
 
     operations = [
-        migrations.RunPython(migrate_room_type),
+        migrations.RunPython(migrate_room_type, migrations.RunPython.noop),
         migrations.AlterField(
             model_name="facilitycapacity",
             name="room_type",
