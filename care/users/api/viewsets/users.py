@@ -29,7 +29,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def remove_facility_user_cache(user_id):
-    key = f"user_facilities:{str(user_id)}"
+    key = f"user_facilities:{user_id!s}"
     cache.delete(key)
     return True
 

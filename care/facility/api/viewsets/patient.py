@@ -243,7 +243,7 @@ class PatientFilterSet(filters.FilterSet):
         if isinstance(value, bool):
             if value:
                 queryset = queryset.filter(
-                    (Q(review_time__isnull=False) & Q(review_time__lt=timezone.now()))
+                    Q(review_time__isnull=False) & Q(review_time__lt=timezone.now())
                 )
             else:
                 queryset = queryset.filter(

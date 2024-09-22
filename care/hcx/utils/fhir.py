@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import reduce
-from typing import List, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import requests
 from fhir.resources import (
@@ -408,8 +408,8 @@ class Fhir:
         priority="normal",
         status="active",
         purpose="validation",
-        service_period_start=datetime.now().astimezone(tz=timezone.utc),
-        service_period_end=datetime.now().astimezone(tz=timezone.utc),
+        service_period_start=datetime.now().astimezone(tz=UTC),
+        service_period_end=datetime.now().astimezone(tz=UTC),
     ):
         return coverageeligibilityrequest.CoverageEligibilityRequest(
             id=id,
@@ -430,7 +430,7 @@ class Fhir:
                 start=service_period_start,
                 end=service_period_end,
             ),
-            created=datetime.now().astimezone(tz=timezone.utc),
+            created=datetime.now().astimezone(tz=UTC),
             enterer=reference.Reference(reference=self.get_reference_url(enterer)),
             provider=reference.Reference(reference=self.get_reference_url(provider)),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
@@ -447,7 +447,7 @@ class Fhir:
         self,
         id: str,
         identifier_value: str,
-        items: List[IClaimItem],
+        items: list[IClaimItem],
         patient: patient.Patient,
         provider: organization.Organization,
         insurer: organization.Organization,
@@ -504,7 +504,7 @@ class Fhir:
                 )
             ),
             patient=reference.Reference(reference=self.get_reference_url(patient)),
-            created=datetime.now().astimezone(tz=timezone.utc),
+            created=datetime.now().astimezone(tz=UTC),
             insurer=reference.Reference(reference=self.get_reference_url(insurer)),
             provider=reference.Reference(reference=self.get_reference_url(provider)),
             priority=codeableconcept.CodeableConcept(
@@ -704,9 +704,9 @@ class Fhir:
         status="active",
         priority="normal",
         purpose="validation",
-        service_period_start=datetime.now().astimezone(tz=timezone.utc),
-        service_period_end=datetime.now().astimezone(tz=timezone.utc),
-        last_upadted=datetime.now().astimezone(tz=timezone.utc),
+        service_period_start=datetime.now().astimezone(tz=UTC),
+        service_period_end=datetime.now().astimezone(tz=UTC),
+        last_upadted=datetime.now().astimezone(tz=UTC),
     ):
         provider = self.create_provider_profile(
             provider_id, provider_name, provider_identifier_value
@@ -754,7 +754,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(coverage_eligibility_request),
@@ -804,7 +804,7 @@ class Fhir:
         type="institutional",
         priority="normal",
         claim_payee_type="provider",
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
+        last_updated=datetime.now().astimezone(tz=UTC),
         supporting_info=[],
         related_claims=[],
         procedures=[],
@@ -884,7 +884,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(claim),
@@ -933,7 +933,7 @@ class Fhir:
         identifier_value: str,
         payload: list,
         about: list,
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
+        last_updated=datetime.now().astimezone(tz=UTC),
     ):
         return communication.Communication(
             id=id,
@@ -980,7 +980,7 @@ class Fhir:
         communication_identifier_value: str,
         payload: list,
         about: list,
-        last_updated=datetime.now().astimezone(tz=timezone.utc),
+        last_updated=datetime.now().astimezone(tz=UTC),
     ):
         communication_profile = self.create_communication_profile(
             communication_id,
@@ -1001,7 +1001,7 @@ class Fhir:
                 value=identifier_value,
             ),
             type="collection",
-            timestamp=datetime.now().astimezone(tz=timezone.utc),
+            timestamp=datetime.now().astimezone(tz=UTC),
             entry=[
                 bundle.BundleEntry(
                     fullUrl=self.get_reference_url(communication_profile),

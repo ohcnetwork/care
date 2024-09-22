@@ -55,6 +55,9 @@ reset_db:
 ruff-all:
 	ruff check .
 
+ruff-fix-all:
+	ruff check --fix .
+
 ruff:
 	ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')
 

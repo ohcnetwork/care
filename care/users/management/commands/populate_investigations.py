@@ -8,7 +8,7 @@ from care.facility.models.patient_investigation import (
     PatientInvestigationGroup,
 )
 
-with open("data/investigations.json", "r") as investigations_data:
+with open("data/investigations.json") as investigations_data:
     investigations = json.load(investigations_data)
 
 with open("data/investigation_groups.json") as investigation_groups_data:
