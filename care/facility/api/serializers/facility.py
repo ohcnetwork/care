@@ -1,4 +1,7 @@
+import uuid
+
 import boto3
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -13,6 +16,10 @@ from care.users.api.serializers.lsg import (
     WardSerializer,
 )
 from care.utils.csp.config import BucketType, get_client_config
+from care.utils.models.validators import (
+    cover_image_validator,
+    custom_image_extension_validator,
+)
 from config.serializers import ChoiceField
 from config.validators import MiddlewareDomainAddressValidator
 
@@ -47,7 +54,10 @@ class FacilityBasicInfoSerializer(serializers.ModelSerializer):
     state_object = StateSerializer(source="state", read_only=True)
     facility_type = serializers.SerializerMethodField()
     read_cover_image_url = serializers.CharField(read_only=True)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     patient_count = serializers.SerializerMethodField()
     bed_count = serializers.SerializerMethodField()
 
@@ -99,8 +109,16 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     # }
     read_cover_image_url = serializers.URLField(read_only=True)
     # location = PointField(required=False)
-    features = serializers.MultipleChoiceField(choices=FEATURE_CHOICES)
+    features = serializers.ListField(
+        child=serializers.ChoiceField(choices=FEATURE_CHOICES),
+        required=False,
+    )
     bed_count = serializers.SerializerMethodField()
+
+    facility_flags = serializers.SerializerMethodField()
+
+    def get_facility_flags(self, facility):
+        return facility.get_facility_flags()
 
     class Meta:
         model = Facility
@@ -137,6 +155,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "read_cover_image_url",
             "patient_count",
             "bed_count",
+            "facility_flags",
         ]
         read_only_fields = ("modified_date", "created_date")
 
@@ -151,13 +170,24 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
         MiddlewareDomainAddressValidator()(value)
         return value
 
+    def validate_features(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                "Features should not contain duplicate values."
+            )
+        return value
+
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
-    cover_image = serializers.ImageField(required=True, write_only=True)
+    cover_image = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
     read_cover_image_url = serializers.URLField(read_only=True)
 
     class Meta:
@@ -168,15 +198,23 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility = self.instance
         image = self.validated_data["cover_image"]
-        image_extension = image.name.rsplit(".", 1)[-1]
-        config, bucket_name = get_client_config(BucketType.FACILITY, True)
+
+        config, bucket_name = get_client_config(BucketType.FACILITY)
         s3 = boto3.client("s3", **config)
-        image_location = f"cover_images/{facility.external_id}_cover.{image_extension}"
-        s3.put_object(
-            Bucket=bucket_name,
-            Key=image_location,
-            Body=image.file,
-        )
+
+        if facility.cover_image_url:
+            s3.delete_object(Bucket=bucket_name, Key=facility.cover_image_url)
+
+        image_extension = image.name.rsplit(".", 1)[-1]
+        image_location = f"cover_images/{facility.external_id}_{str(uuid.uuid4())[0:8]}.{image_extension}"
+        boto_params = {
+            "Bucket": bucket_name,
+            "Key": image_location,
+            "Body": image.file,
+        }
+        if settings.BUCKET_HAS_FINE_ACL:
+            boto_params["ACL"] = "public-read"
+        s3.put_object(**boto_params)
         facility.cover_image_url = image_location
         facility.save()
         return facility

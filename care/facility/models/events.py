@@ -55,6 +55,7 @@ class PatientConsultationEvent(models.Model):
     )
     caused_by = models.ForeignKey(User, on_delete=models.PROTECT)
     created_date = models.DateTimeField(db_index=True)
+    taken_at = models.DateTimeField(db_index=True)
     object_model = models.CharField(
         max_length=50, db_index=True, null=False, blank=False
     )
@@ -64,7 +65,7 @@ class PatientConsultationEvent(models.Model):
     meta = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     value = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     change_type = models.CharField(
-        max_length=10, choices=ChangeType.choices, default=ChangeType.CREATED
+        max_length=10, choices=ChangeType, default=ChangeType.CREATED
     )
 
     def __str__(self) -> str:

@@ -57,11 +57,13 @@ class Command(BaseCommand):
                             "name": "INVESTIGATION",
                             "fields": ("investigation",),
                         },
-                        # disabling until we have a better way to serialize user objects
-                        # {
-                        #     "name": "TREATING_PHYSICIAN",
-                        #     "fields": ("treating_physician",),
-                        # },
+                        {
+                            "name": "TREATING_PHYSICIAN",
+                            "fields": (
+                                "treating_physician__username",
+                                "treating_physician__full_name",
+                            ),
+                        },
                     ),
                 },
                 {
@@ -118,7 +120,7 @@ class Command(BaseCommand):
                         {"name": "PULSE", "fields": ("pulse",)},
                         {"name": "BLOOD_PRESSURE", "fields": ("bp",)},
                         {"name": "RESPIRATORY_RATE", "fields": ("resp",)},
-                        {"name": "RHYTHM", "fields": ("rhythm", "rhythm_details")},
+                        {"name": "RHYTHM", "fields": ("rhythm", "rhythm_detail")},
                         {"name": "PAIN_SCALE", "fields": ("pain_scale_enhanced",)},
                     ),
                 },
@@ -151,7 +153,7 @@ class Command(BaseCommand):
                     "fields": (
                         "bilateral_air_entry",
                         "etco2",
-                        "ventilator_fi02",
+                        "ventilator_fio2",
                         "ventilator_interface",
                         "ventilator_mean_airway_pressure",
                         "ventilator_mode",
@@ -215,6 +217,26 @@ class Command(BaseCommand):
                     ),
                 },
                 {"name": "NURSING", "fields": ("nursing",)},
+                {
+                    "name": "ROUTINE",
+                    "children": (
+                        {"name": "SLEEP_ROUTINE", "fields": ("sleep",)},
+                        {"name": "BOWEL_ROUTINE", "fields": ("bowel_issue",)},
+                        {
+                            "name": "BLADDER_ROUTINE",
+                            "fields": (
+                                "bladder_drainage",
+                                "bladder_issue",
+                                "experiences_dysuria",
+                                "urination_frequency",
+                            ),
+                        },
+                        {
+                            "name": "NUTRITION_ROUTINE",
+                            "fields": ("nutrition_route", "oral_issue", "appetite"),
+                        },
+                    ),
+                },
             ),
         },
         {
@@ -225,7 +247,7 @@ class Command(BaseCommand):
         {
             "name": "DIAGNOSIS",
             "model": "ConsultationDiagnosis",
-            "fields": ("diagnosis", "verification_status", "is_principal"),
+            "fields": ("diagnosis__label", "verification_status", "is_principal"),
         },
         {
             "name": "SYMPTOMS",
@@ -246,7 +268,6 @@ class Command(BaseCommand):
         "VENTILATOR_MODES",
         "SYMPTOMS",
         "ROUND_SYMPTOMS",
-        "TREATING_PHYSICIAN",
     )
 
     def create_objects(

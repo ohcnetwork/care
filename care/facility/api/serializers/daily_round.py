@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -38,43 +39,64 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+    rounds_type = ChoiceField(choices=DailyRound.RoundsType.choices, required=True)
+
+    # Community Nurse's Log
+
+    bowel_issue = ChoiceField(
+        choices=DailyRound.BowelDifficultyType.choices, required=False
+    )
+    bladder_drainage = ChoiceField(
+        choices=DailyRound.BladderDrainageType.choices, required=False
+    )
+    bladder_issue = ChoiceField(
+        choices=DailyRound.BladderIssueType.choices, required=False
+    )
+    urination_frequency = ChoiceField(
+        choices=DailyRound.UrinationFrequencyType.choices, required=False
+    )
+    sleep = ChoiceField(choices=DailyRound.SleepType.choices, required=False)
+    nutrition_route = ChoiceField(
+        choices=DailyRound.NutritionRouteType.choices, required=False
+    )
+    oral_issue = ChoiceField(choices=DailyRound.OralIssueType.choices, required=False)
+    appetite = ChoiceField(choices=DailyRound.AppetiteType.choices, required=False)
 
     # Critical Care Components
 
     consciousness_level = ChoiceField(
-        choices=DailyRound.ConsciousnessChoice, required=False
+        choices=DailyRound.ConsciousnessTypeChoice.choices, required=False
     )
     left_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     right_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     limb_response_upper_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_upper_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
-    rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
+    rhythm = ChoiceField(choices=DailyRound.RythmnType.choices, required=False)
     ventilator_interface = ChoiceField(
-        choices=DailyRound.VentilatorInterfaceChoice, required=False
+        choices=DailyRound.VentilatorInterfaceType.choices, required=False
     )
     ventilator_mode = ChoiceField(
-        choices=DailyRound.VentilatorModeChoice, required=False
+        choices=DailyRound.VentilatorModeType.choices, required=False
     )
     ventilator_oxygen_modality = ChoiceField(
-        choices=DailyRound.VentilatorOxygenModalityChoice, required=False
+        choices=DailyRound.VentilatorOxygenModalityType.choices, required=False
     )
     insulin_intake_frequency = ChoiceField(
-        choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
+        choices=DailyRound.InsulinIntakeFrequencyType.choices, required=False
     )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
@@ -93,6 +115,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "consultation",
         )
         exclude = ("deleted",)
+
+    def validate_bp(self, value):
+        if value is not None:
+            sys, dia = value.get("systolic"), value.get("diastolic")
+            if sys is not None and dia is not None and sys < dia:
+                raise ValidationError("Systolic must be greater than diastolic")
+        return value
 
     def update(self, instance, validated_data):
         instance.last_edited_by = self.context["request"].user
@@ -253,6 +282,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 daily_round_obj,
                 daily_round_obj.created_by_id,
                 daily_round_obj.created_date,
+                taken_at=daily_round_obj.taken_at,
             )
             return daily_round_obj
 
@@ -294,3 +324,8 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated["bed_id"] = bed_object.id
 
         return validated
+
+    def validate_taken_at(self, value):
+        if value and value > timezone.now():
+            raise serializers.ValidationError("Cannot create an update in the future")
+        return value

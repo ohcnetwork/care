@@ -9,6 +9,7 @@ from pathlib import Path
 
 import environ
 from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
 )
@@ -54,6 +55,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
+LANGUAGES = [
+    ("en-us", _("English")),
+    ("ml", _("Malayalam")),
+    ("hi", _("Hindi")),
+    ("ta", _("Tamil")),
+]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -61,6 +68,9 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=0)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# timeout for setnx lock
+LOCK_TIMEOUT = env.int("LOCK_TIMEOUT", default=32)
 
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
 
@@ -511,6 +521,7 @@ BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
 BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
+BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
     print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
@@ -555,7 +566,7 @@ ALLOWED_MIME_TYPES = env.list(
         "audio/midi",
         "audio/x-midi",
         "audio/webm",
-        "audio/mp4"
+        "audio/mp4",
         # Documents
         "text/plain",
         "text/csv",
@@ -651,3 +662,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Timeout for middleware request (in seconds)
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)

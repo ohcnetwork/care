@@ -63,6 +63,27 @@ class SingleBedTest(TestUtils, APITestCase):
 
         self.assertEqual(Bed.objects.filter(facility=self.facility).count(), 1)
 
+    def test_create_with_name_previously_deleted(self):
+        sample_data = {
+            "bed_type": "REGULAR",
+            "description": "Testing creation of beds.",
+            "facility": self.facility.external_id,
+            "location": self.asset_location.external_id,
+            "name": "Test Bed",
+            "number_of_beds": 1,
+        }
+        response = self.client.post("/api/v1/bed/", sample_data, format="json")
+        self.assertIs(response.status_code, status.HTTP_201_CREATED)
+
+        bed = Bed.objects.get(name="Test Bed")
+        bed.deleted = True
+        bed.save()
+
+        response = self.client.post("/api/v1/bed/", sample_data, format="json")
+        self.assertIs(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(Bed.objects.filter(facility=self.facility).count(), 1)
+
 
 class MultipleBedTest(TestUtils, APITestCase):
     @classmethod

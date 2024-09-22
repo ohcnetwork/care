@@ -112,9 +112,8 @@ class HipViewSet(GenericViewSet):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
+                abha_number.patient = patient
                 abha_number.save()
-                patient.abha_number = abha_number
-                patient.save()
 
             payload = {
                 "requestId": str(uuid.uuid4()),

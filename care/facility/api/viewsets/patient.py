@@ -94,7 +94,6 @@ from config.authentication import (
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
-VENTILATOR_CHOICES = covert_choice_dict(DailyRound.VentilatorInterfaceChoice)
 
 
 class PatientFilterSet(filters.FilterSet):
@@ -220,7 +219,9 @@ class PatientFilterSet(filters.FilterSet):
     )
     ventilator_interface = CareChoiceFilter(
         field_name="last_consultation__last_daily_round__ventilator_interface",
-        choice_dict=VENTILATOR_CHOICES,
+        choice_dict={
+            label: value for value, label in DailyRound.VentilatorInterfaceType.choices
+        },
     )
 
     # Vaccination Filters
@@ -277,6 +278,32 @@ class PatientFilterSet(filters.FilterSet):
             filter_q &= Q(
                 last_consultation__diagnoses__verification_status=verification_status
             )
+        return queryset.filter(filter_q)
+
+    last_consultation__consent_types = MultiSelectFilter(
+        method="filter_by_has_consents"
+    )
+
+    def filter_by_has_consents(self, queryset, name, value: str):
+
+        if not value:
+            return queryset
+
+        values = value.split(",")
+
+        filter_q = Q()
+
+        if "None" in values:
+            filter_q |= ~Q(
+                last_consultation__has_consents__len__gt=0,
+            )
+            values.remove("None")
+
+        if values:
+            filter_q |= Q(
+                last_consultation__has_consents__overlap=values,
+            )
+
         return queryset.filter(filter_q)
 
 
@@ -564,6 +591,14 @@ class PatientViewSet(
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
         facility = Facility.objects.get(external_id=request.data["facility"])
+
+        if patient.is_expired:
+            return Response(
+                {
+                    "Patient": "Patient transfer cannot be completed because the patient is expired"
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
 
         if patient.is_active and facility == patient.facility:
             return Response(

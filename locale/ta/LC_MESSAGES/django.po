@@ -1,0 +1,232 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ohccarefe\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-25 17:02+0530\n"
+"PO-Revision-Date: 2024-09-16 14:40\n"
+"Last-Translator: \n"
+"Language-Team: Tamil\n"
+"Language: ta_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: ohccarefe\n"
+"X-Crowdin-Project-ID: 704503\n"
+"X-Crowdin-Language: ta\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/kn/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 76\n"
+
+#: care/abdm/apps.py:7
+msgid "ABDM Integration"
+msgstr "ABDM ஒருங்கிணைப்பு"
+
+#: care/audit_log/apps.py:7
+msgid "Audit Log Management"
+msgstr "தணிக்கை பதிவு மேலாண்மை"
+
+#: care/facility/apps.py:7
+msgid "Facility Management"
+msgstr "வசதி மேலாண்மை"
+
+#: care/facility/models/encounter_symptom.py:16
+msgid "In Progress"
+msgstr "செயல்பாட்டில் உள்ளது"
+
+#: care/facility/models/encounter_symptom.py:17
+msgid "Completed"
+msgstr "முடிக்கப்பட்டது"
+
+#: care/facility/models/encounter_symptom.py:18
+#: care/facility/models/icd11_diagnosis.py:53
+msgid "Entered in Error"
+msgstr "பிழையில் நுழைந்தது"
+
+#: care/facility/models/icd11_diagnosis.py:48
+msgid "Unconfirmed"
+msgstr "உறுதி செய்யப்படவில்லை"
+
+#: care/facility/models/icd11_diagnosis.py:49
+msgid "Provisional"
+msgstr "தற்காலிகமானது"
+
+#: care/facility/models/icd11_diagnosis.py:50
+msgid "Differential"
+msgstr "வித்தியாசமான"
+
+#: care/facility/models/icd11_diagnosis.py:51
+msgid "Confirmed"
+msgstr "உறுதி செய்யப்பட்டது"
+
+#: care/facility/models/icd11_diagnosis.py:52
+msgid "Refuted"
+msgstr "மறுத்தார்"
+
+#: care/facility/models/patient.py:50
+msgid "Non-card holder"
+msgstr "அட்டை இல்லாதவர்"
+
+#: care/facility/models/patient.py:51
+msgid "BPL"
+msgstr "பிபிஎல்"
+
+#: care/facility/models/patient.py:52
+msgid "APL"
+msgstr "ஏபிஎல்"
+
+#: care/facility/models/patient_base.py:88
+msgid "Unknown"
+msgstr "தெரியவில்லை"
+
+#: care/facility/models/patient_base.py:89
+msgid "Recovered"
+msgstr "மீட்கப்பட்டது"
+
+#: care/facility/models/patient_base.py:90
+msgid "Referred"
+msgstr "குறிப்பிடப்பட்டுள்ளது"
+
+#: care/facility/models/patient_base.py:91
+msgid "Expired"
+msgstr "காலாவதியானது"
+
+#: care/facility/models/patient_base.py:92
+msgid "LAMA"
+msgstr "லாமா"
+
+#: care/facility/models/patient_base.py:127
+msgid "Outpatient/Emergency Room"
+msgstr "வெளிநோயாளர்/அவசர அறை"
+
+#: care/facility/models/patient_base.py:128
+msgid "Referred from another facility"
+msgstr "மற்றொரு வசதியிலிருந்து பரிந்துரைக்கப்பட்டது"
+
+#: care/facility/models/patient_base.py:129
+msgid "Internal Transfer within the facility"
+msgstr "வசதிக்குள் உள் பரிமாற்றம்"
+
+#: care/facility/models/patient_base.py:130
+msgid "(Unknown)"
+msgstr "(தெரியாது)"
+
+#: care/hcx/apps.py:7
+msgid "HCX Integration"
+msgstr "HCX ஒருங்கிணைப்பு"
+
+#: care/templates/pages/home.html:8
+msgid "Open Healthcare Network"
+msgstr "ஹெல்த்கேர் நெட்வொர்க்கைத் திறக்கவும்"
+
+#: care/templates/pages/home.html:9
+msgid "Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity."
+msgstr "எங்களின் இலக்கு, கேரளாவின் ஹெல்த்கேர் சிஸ்டத்தை திறனுக்கு அப்பால் அதிக சுமைகளில் இருந்து பாதுகாப்பதாகும்."
+
+#: care/users/apps.py:7
+msgid "Users"
+msgstr "பயனர்கள்"
+
+#: care/users/forms.py:15
+msgid "This username has already been taken."
+msgstr "இந்த பயனர் பெயர் ஏற்கனவே எடுக்கப்பட்டது."
+
+#: care/users/models.py:179
+msgid "username"
+msgstr "பயனர் பெயர்"
+
+#: care/users/models.py:184
+msgid "A user with that username already exists."
+msgstr "அந்த பயனர்பெயருடன் ஏற்கனவே ஒரு பயனர் இருக்கிறார்."
+
+#: care/users/reset_password_views.py:245
+msgid "There is no active user associated with this username or the password can not be changed"
+msgstr "இந்த பயனர்பெயருடன் தொடர்புடைய செயலில் உள்ள பயனர் யாரும் இல்லை அல்லது கடவுச்சொல்லை மாற்ற முடியாது"
+
+#: care/utils/models/validators.py:54
+msgid "Username must be 4 to 16 characters long. It may only contain lowercase alphabets, numbers, underscores, hyphens and dots. It shouldn't start or end with underscores, hyphens or dots. It shouldn't contain consecutive underscores, hyphens or dots."
+msgstr "பயனர் பெயர் 4 முதல் 16 எழுத்துகள் வரை இருக்க வேண்டும். இதில் சிறிய எழுத்துக்கள், எண்கள், அடிக்கோடிட்டுகள், ஹைபன்கள் மற்றும் புள்ளிகள் மட்டுமே இருக்கலாம். இது அடிக்கோடிட்டுகள், ஹைபன்கள் அல்லது புள்ளிகளுடன் தொடங்கவோ முடிவோ கூடாது. இதில் தொடர்ச்சியான அடிக்கோடிகள், ஹைபன்கள் அல்லது புள்ளிகள் இருக்கக்கூடாது."
+
+#: care/utils/ulid/serializers.py:9
+#, python-brace-format
+msgid "\"{value}\" is not a valid ULID."
+msgstr "\"{value}\" என்பது சரியான ULID அல்ல."
+
+#: config/auth_views.py:19
+msgid "Too Many Requests Provide Captcha"
+msgstr "பல கோரிக்கைகள் கேப்ட்சாவை வழங்குகின்றன"
+
+#: config/auth_views.py:27
+msgid "No active account found with the given credentials"
+msgstr "கொடுக்கப்பட்ட நற்சான்றிதழ்களுடன் செயலில் உள்ள கணக்கு எதுவும் இல்லை"
+
+#: config/authentication.py:141
+msgid "Authorization header must contain two space-delimited values"
+msgstr "அங்கீகரிப்பு தலைப்பு இரண்டு இடைவெளி-பிரிக்கப்பட்ட மதிப்புகளைக் கொண்டிருக்க வேண்டும்"
+
+#: config/authentication.py:270
+msgid "Used for authenticating requests from the middleware. The scheme requires a valid JWT token in the Authorization header along with the facility id in the X-Facility-Id header. --The value field is just for preview, filling it will show allowed endpoints.--"
+msgstr "மிடில்வேரில் இருந்து கோரிக்கைகளை அங்கீகரிக்கப் பயன்படுகிறது. இந்தத் திட்டத்திற்கு, X-Facility-Id தலைப்பில் உள்ள வசதி ஐடியுடன் அங்கீகாரத் தலைப்பில் சரியான JWT டோக்கன் தேவை. --மதிப்பு புலமானது முன்னோட்டத்திற்கானது, அதை நிரப்பினால் அனுமதிக்கப்பட்ட இறுதிப்புள்ளிகள் காண்பிக்கப்படும்.--"
+
+#: config/authentication.py:289
+msgid "Used for authenticating requests from the middleware on behalf of assets. The scheme requires a valid JWT token in the Authorization header along with the facility id in the X-Facility-Id header. --The value field is just for preview, filling it will show allowed endpoints.--"
+msgstr "சொத்துகளின் சார்பாக மிடில்வேரிலிருந்து கோரிக்கைகளை அங்கீகரிக்கப் பயன்படுகிறது. இந்தத் திட்டத்திற்கு, X-Facility-Id தலைப்பில் உள்ள வசதி ஐடியுடன் அங்கீகாரத் தலைப்பில் சரியான JWT டோக்கன் தேவை. --மதிப்பு புலமானது முன்னோட்டத்திற்கானது, அதை நிரப்பினால் அனுமதிக்கப்பட்ட இறுதிப்புள்ளிகள் காண்பிக்கப்படும்.--"
+
+#: config/authentication.py:306 config/authentication.py:320
+msgid "Do not use this scheme for production."
+msgstr "இந்த திட்டத்தை உற்பத்திக்கு பயன்படுத்த வேண்டாம்."
+
+#: config/patient_otp_authentication.py:56
+msgid "Given token not valid for any token type"
+msgstr "கொடுக்கப்பட்ட டோக்கன் எந்த டோக்கன் வகைக்கும் செல்லாது"
+
+#: config/settings/base.py:60
+msgid "English"
+msgstr "ஆங்கிலம்"
+
+#: config/settings/base.py:61
+msgid "Malayalam"
+msgstr "மலையாளம்"
+
+#: config/settings/base.py:62
+msgid "Hindi"
+msgstr "ஹிந்தி"
+
+#: config/settings/base.py:63
+msgid "Tamil"
+msgstr "தமிழ்"
+
+#: config/validators.py:12
+msgid "The password must contain at least 1 digit, 0-9."
+msgstr "கடவுச்சொல்லில் குறைந்தது 1 இலக்கம், 0-9 இருக்க வேண்டும்."
+
+#: config/validators.py:17
+msgid "Your password must contain at least 1 digit, 0-9."
+msgstr "உங்கள் கடவுச்சொல்லில் குறைந்தது 1 இலக்கம், 0-9 இருக்க வேண்டும்."
+
+#: config/validators.py:24
+msgid "The password must contain at least 1 uppercase letter, A-Z."
+msgstr "கடவுச்சொல்லில் குறைந்தது 1 பெரிய எழுத்து AZ இருக்க வேண்டும்."
+
+#: config/validators.py:29
+msgid "Your password must contain at least 1 uppercase letter, A-Z."
+msgstr "உங்கள் கடவுச்சொல்லில் குறைந்தது 1 பெரிய எழுத்து AZ இருக்க வேண்டும்."
+
+#: config/validators.py:36
+msgid "The password must contain at least 1 lowercase letter, a-z."
+msgstr "கடவுச்சொல்லில் குறைந்தது 1 சிற்றெழுத்து இருக்க வேண்டும், az."
+
+#: config/validators.py:41
+msgid "Your password must contain at least 1 lowercase letter, a-z."
+msgstr "உங்கள் கடவுச்சொல்லில் குறைந்தது 1 சிற்றெழுத்து இருக்க வேண்டும், az."
+
+#: config/validators.py:49
+msgid "The password must contain at least 1 symbol: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+msgstr "கடவுச்சொல்லில் குறைந்தது 1 குறியீடு இருக்க வேண்டும்: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+
+#: config/validators.py:57
+msgid "Your password must contain at least 1 symbol: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+msgstr "உங்கள் கடவுச்சொல்லில் குறைந்தது 1 சின்னம் இருக்க வேண்டும்: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+
+#: config/validators.py:66
+msgid "The domain name is invalid. It should not start with scheme and should not end with a trailing slash."
+msgstr "டொமைன் பெயர் தவறானது. இது திட்டத்துடன் தொடங்கக்கூடாது மற்றும் பின்னோக்கி சாய்வுடன் முடிவடையக்கூடாது."
