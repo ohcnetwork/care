@@ -27,6 +27,7 @@ class ExpectedPatientNoteKeys(Enum):
     LAST_EDITED_DATE = "last_edited_date"
     THREAD = "thread"
     USER_TYPE = "user_type"
+    REPLY_TO_OBJECT = "reply_to_object"
 
 
 class ExpectedFacilityKeys(Enum):
@@ -234,6 +235,48 @@ class PatientNotesTestCase(TestUtils, APITestCase):
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
 
+    def test_patient_note_with_reply(self):
+        patient = self.patient
+        note = "How is the patient"
+        created_by = self.user
+
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+            "thread": PatientNoteThreadChoices.DOCTORS,
+        }
+        self.client.force_authenticate(user=created_by)
+        response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=data
+        )
+        reply_data = {
+            "facility": patient.facility or self.facility,
+            "note": "Patient is doing fine",
+            "thread": PatientNoteThreadChoices.DOCTORS,
+            "reply_to": response.json()["id"],
+        }
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=reply_data
+        )
+
+        # Ensure the reply is created successfully
+        self.assertEqual(reply_response.status_code, status.HTTP_201_CREATED)
+
+        # Ensure the reply is posted on same thread
+        self.assertEqual(reply_response.json()["thread"], response.json()["thread"])
+
+        # Posting reply in other thread should fail
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/",
+            {
+                "facility": patient.facility or self.facility,
+                "note": "Patient is doing fine",
+                "thread": PatientNoteThreadChoices.NURSES,
+                "reply_to": response.json()["id"],
+            },
+        )
+        self.assertEqual(reply_response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_patient_note_edit(self):
         patientId = self.patient.external_id
         notes_list_response = self.client.get(
@@ -330,6 +373,29 @@ class PatientTestCase(TestUtils, APITestCase):
 
     def get_base_url(self) -> str:
         return "/api/v1/patient/"
+
+    def test_update_patient_with_meta_info(self):
+        self.client.force_authenticate(user=self.user)
+        res = self.client.patch(
+            f"{self.get_base_url()}{self.patient.external_id}/",
+            data={
+                "meta_info": {
+                    "socioeconomic_status": "VERY_POOR",
+                    "domestic_healthcare_support": "FAMILY_MEMBER",
+                }
+            },
+            format="json",
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res_meta = res.data.get("meta_info")
+        self.assertEqual(
+            res_meta,
+            res_meta
+            | {
+                "socioeconomic_status": "VERY_POOR",
+                "domestic_healthcare_support": "FAMILY_MEMBER",
+            },
+        )
 
     def test_has_consent(self):
         self.client.force_authenticate(user=self.user)
@@ -625,7 +691,6 @@ class PatientFilterTestCase(TestUtils, APITestCase):
                 self.assertIsNone(patient["review_time"])
 
     def test_filter_by_has_consents(self):
-
         choices = ["1", "2", "3", "4", "5", "None"]
 
         self.client.force_authenticate(user=self.user)

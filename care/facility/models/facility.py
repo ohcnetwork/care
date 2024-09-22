@@ -3,16 +3,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
+from django.db.models import IntegerChoices
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
@@ -57,6 +61,11 @@ FEATURE_CHOICES = [
     (5, "Operation theater"),
     (6, "Blood Bank"),
 ]
+
+
+class HubRelationship(IntegerChoices):
+    REGULAR_HUB = 1, _("Regular Hub")
+    TELE_ICU_HUB = 2, _("Tele ICU Hub")
 
 
 class FacilityFeature(models.IntegerChoices):
@@ -192,6 +201,17 @@ REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 
+# making sure A -> B -> C -> A does not happen
+def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
+    ancestors_of_base = FacilityHubSpoke.objects.filter(spoke_id=base_id).values_list(
+        "hub_id", flat=True
+    )
+    if spoke_id in ancestors_of_base:
+        raise serializers.ValidationError("This facility is already an ancestor hub")
+    for ancestor in ancestors_of_base:
+        check_if_spoke_is_not_ancestor(ancestor, spoke_id)
+
+
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
@@ -199,15 +219,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
     features = ArrayField(
-        models.SmallIntegerField(choices=FacilityFeature.choices),
+        models.SmallIntegerField(choices=FacilityFeature),
         blank=True,
         null=True,
-    )
-    old_features = MultiSelectField(
-        choices=FEATURE_CHOICES,
-        null=True,
-        blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
     )
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
@@ -291,6 +305,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             return []
         return [FacilityFeature(f).label for f in self.features]
 
+    def get_facility_flags(self):
+        return FacilityFlag.get_all_flags(self.id)
+
     CSV_MAPPING = {
         "name": "Facility Name",
         "facility_type": "Facility Type",
@@ -304,6 +321,41 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+
+
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")
+    relationship = models.IntegerField(
+        choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
+    )
+
+    class Meta:
+        constraints = [
+            # Ensure hub and spoke are not the same
+            CheckConstraint(
+                check=~models.Q(hub=models.F("spoke")),
+                name="hub_and_spoke_not_same",
+            ),
+            # bidirectional uniqueness
+            UniqueConstraint(
+                fields=["hub", "spoke"],
+                name="unique_hub_spoke",
+                condition=models.Q(deleted=False),
+            ),
+            UniqueConstraint(
+                fields=["spoke", "hub"],
+                name="unique_spoke_hub",
+                condition=models.Q(deleted=False),
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        check_if_spoke_is_not_ancestor(self.hub.id, self.spoke.id)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -330,7 +382,7 @@ class FacilityLocalGovtBody(models.Model):
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False)
+                condition=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
             )
         ]

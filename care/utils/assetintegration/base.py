@@ -16,6 +16,7 @@ class BaseAssetIntegration:
         self.host = self.meta["local_ip_address"]
         self.middleware_hostname = self.meta["middleware_hostname"]
         self.insecure_connection = self.meta.get("insecure_connection", False)
+        self.timeout = settings.MIDDLEWARE_REQUEST_TIMEOUT
 
     def handle_action(self, action):
         pass
@@ -37,12 +38,17 @@ class BaseAssetIntegration:
             url,
             json=data,
             headers=self.get_headers(),
+            timeout=self.timeout,
         )
         try:
             response = req.json()
             if req.status_code >= 400:
                 raise APIException(response, req.status_code)
             return response
+
+        except requests.Timeout:
+            raise APIException({"error": "Request Timeout"}, 504)
+
         except json.decoder.JSONDecodeError:
             raise APIException({"error": "Invalid Response"}, req.status_code)
 
@@ -51,11 +57,16 @@ class BaseAssetIntegration:
             url,
             params=data,
             headers=self.get_headers(),
+            timeout=self.timeout,
         )
         try:
             if req.status_code >= 400:
                 raise APIException(req.text, req.status_code)
             response = req.json()
             return response
+
+        except requests.Timeout:
+            raise APIException({"error": "Request Timeout"}, 504)
+
         except json.decoder.JSONDecodeError:
             raise APIException({"error": "Invalid Response"}, req.status_code)

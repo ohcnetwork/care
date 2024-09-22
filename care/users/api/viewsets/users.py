@@ -29,7 +29,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def remove_facility_user_cache(user_id):
-    key = f"user_facilities:{str(user_id)}"
+    key = f"user_facilities:{user_id!s}"
     cache.delete(key)
     return True
 
@@ -107,6 +107,7 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
     permission_classes = (
