@@ -1157,15 +1157,14 @@
                 "sha256:8bad2e497ce22d556dac1464738cb948f8d6bab450d965cf1d8a8effd52412e0",
                 "sha256:babf565d459d8f72fb65da5e211dd0b58a52c51e4e1fa9cadecff42d6b7619b2"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==3.2.2"
         },
         "psycopg-c": {
             "hashes": [
-                "sha256:8e90f53c430e7d661cb3a9298e2761847212ead1b24c5fb058fc9d0fd9616017"
+                "sha256:de8cac75bc6640ef0f54ad9187b81e07c430206a83c566b73d4cca41ecccb7c8"
             ],
-            "version": "==3.1.19"
+            "version": "==3.2.2"
         },
         "py-vapid": {
             "hashes": [
@@ -1381,7 +1380,6 @@
                 "sha256:0c5b10d387568dfe0698c6fad6615750c24170e548ca2deac10c649d463e9870",
                 "sha256:56134ee08ea909106090934adc36f65c9bcbbaecea5b21ba704ba6fb561f8eb4"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.7'",
             "version": "==5.0.8"
         },
@@ -1816,12 +1814,12 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:84b3fe1727945bc3cada832d969ddb3dc0d08fce1677064ca8bdc13a89c1a143",
-                "sha256:9979fe674780a0b7100eae9156d74ee374cd1638a9f61c77277e3ce712f3e496"
+                "sha256:97fcc1a14cbc759e4ba9535ced703a99fcf652c9c4b8dfcd06f292c80551684b",
+                "sha256:be7807f30f26d6c0057e45cfd09dad5968e664488bf4f9138d0bb7a0f6d8ed40"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==1.35.19"
+            "version": "==1.35.24"
         },
         "boto3-stubs": {
             "extras": [
@@ -1832,7 +1830,6 @@
                 "sha256:329a9944a75bedd9b343230b03d37c94158e60e7b7a9553e03be9a8f327cd41c",
                 "sha256:f96c814f26f2ab8fcd42811b7208105f43657fe15ffa82be2cdc7734160e28c4"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==1.35.24"
         },
