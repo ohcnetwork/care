@@ -221,7 +221,7 @@ class ResetPasswordRequestToken(GenericAPIView):
 
         # find a user
         users = User.objects.filter(
-            **{"{}__exact".format(get_password_reset_lookup_field()): username}
+            **{f"{get_password_reset_lookup_field()}__exact": username}
         )
 
         active_user_found = False

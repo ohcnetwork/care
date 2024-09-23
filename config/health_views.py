@@ -1,4 +1,3 @@
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,7 +10,6 @@ from config.authentication import (
 
 class MiddlewareAuthenticationVerifyView(APIView):
     authentication_classes = [MiddlewareAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response(UserBaseMinimumSerializer(request.user).data)
@@ -19,7 +17,6 @@ class MiddlewareAuthenticationVerifyView(APIView):
 
 class MiddlewareAssetAuthenticationVerifyView(APIView):
     authentication_classes = [MiddlewareAssetAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response(UserBaseMinimumSerializer(request.user).data)

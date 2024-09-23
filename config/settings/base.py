@@ -2,13 +2,10 @@
 Base settings to build other settings files upon.
 """
 
-import base64
-import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import environ
-from authlib.jose import JsonWebKey
 from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
@@ -17,7 +14,6 @@ from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
-from care.utils.jwks.generate_jwk import generate_encoded_jwks
 from plug_config import manager
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -129,7 +125,6 @@ LOCAL_APPS = [
     "care.abdm",
     "care.users",
     "care.audit_log",
-    "care.hcx",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -199,6 +194,10 @@ MIDDLEWARE = [
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
 ]
+
+# add RequestTimeLoggingMiddleware based on the environment variable
+if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
+    MIDDLEWARE.insert(0, "config.middleware.RequestTimeLoggingMiddleware")
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -309,7 +308,7 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # MANAGERS = ADMINS
 
 # Django Admin URL.
-ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -323,14 +322,30 @@ LOGGING = {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
             "%(process)d %(thread)d %(message)s"
-        }
+        },
+        "request_time": {
+            "format": "INFO %(asctime)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "time_logging": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "request_time",
+        },
+    },
+    "loggers": {
+        "time_logging_middleware": {
+            "handlers": ["time_logging"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -347,6 +362,9 @@ REST_FRAMEWORK = {
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
@@ -610,11 +628,6 @@ CSV_REQUEST_PARAMETER = "csv"
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
-# open id connect
-JWKS = JsonWebKey.import_key_set(
-    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
-)
-
 APP_VERSION = env("APP_VERSION", default="unknown")
 
 # ABDM
@@ -633,20 +646,6 @@ X_CM_ID = env("X_CM_ID", default="sbx")
 FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
 
 IS_PRODUCTION = False
-
-# HCX
-HCX_PROTOCOL_BASE_PATH = env(
-    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
-)
-HCX_AUTH_BASE_PATH = env(
-    "HCX_AUTH_BASE_PATH",
-    default="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
-)
-HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
-HCX_USERNAME = env("HCX_USERNAME", default="")
-HCX_PASSWORD = env("HCX_PASSWORD", default="")
-HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
-HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")

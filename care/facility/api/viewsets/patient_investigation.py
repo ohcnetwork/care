@@ -10,7 +10,6 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.patient_investigation import (
@@ -60,7 +59,6 @@ class InvestigationGroupViewset(
     serializer_class = PatientInvestigationGroupSerializer
     queryset = PatientInvestigationGroup.objects.all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = InvestigationGroupFilter
 
     filter_backends = (filters.DjangoFilterBackend,)
@@ -76,7 +74,6 @@ class PatientInvestigationViewSet(
     serializer_class = PatientInvestigationSerializer
     queryset = PatientInvestigation.objects.all().prefetch_related("groups")
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationResultsSetPagination
@@ -101,7 +98,6 @@ class PatientInvestigationSummaryViewSet(
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationSummaryResultsSetPagination
@@ -157,7 +153,6 @@ class InvestigationValueViewSet(
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationValueSetPagination

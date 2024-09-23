@@ -52,7 +52,6 @@ class FacilityInventoryItemViewSet(
         .prefetch_related("allowed_units", "tags")
         .all()
     )
-    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityInventoryFilter
 

@@ -2,7 +2,6 @@ from django.db.models import Q
 from django.http import Http404
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -19,7 +18,6 @@ class AbhaNumberViewSet(
     serializer_class = AbhaNumberSerializer
     model = AbhaNumber
     queryset = AbhaNumber.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         id = self.kwargs.get("pk")

@@ -59,7 +59,7 @@ class FileUploadViewSet(
     queryset = (
         FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
     )
-    permission_classes = [IsAuthenticated, FileUploadPermission]
+    permission_classes = (IsAuthenticated, FileUploadPermission)
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FileUploadFilter

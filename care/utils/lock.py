@@ -16,7 +16,7 @@ class Lock:
 
     def acquire(self):
         if not cache.set(self.key, True, self.timeout, nx=True):
-            raise ObjectLocked()
+            raise ObjectLocked
 
     def release(self):
         return cache.delete(self.key)

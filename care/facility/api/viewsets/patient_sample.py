@@ -76,10 +76,7 @@ class PatientSampleViewSet(
         )
         .order_by("-id")
     )
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         PatientSampleFilterBackend,
         filters.DjangoFilterBackend,

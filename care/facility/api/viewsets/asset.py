@@ -15,9 +15,8 @@ from django_filters.constants import EMPTY_VALUES
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework import filters as drf_filters
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
@@ -190,6 +189,8 @@ class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetPublicSerializer
     lookup_field = "external_id"
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         key = "asset:" + kwargs["external_id"]
@@ -208,6 +209,8 @@ class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetPublicSerializer
     lookup_field = "qr_code_id"
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         qr_code_id = kwargs["qr_code_id"]
@@ -228,7 +231,6 @@ class AssetPublicQRViewSet(GenericViewSet):
 class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AvailabilityRecord.objects.all()
     serializer_class = AvailabilityRecordSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         facility_queryset = get_facility_queryset(self.request.user)
@@ -424,7 +426,6 @@ class AssetViewSet(
 class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
     queryset = Asset.objects.all()
     authentication_classes = [MiddlewareAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = AssetConfigSerializer
 
     @extend_schema(
@@ -550,8 +551,6 @@ class AssetServiceViewSet(
         .order_by("-created_date")
     )
     serializer_class = AssetServiceSerializer
-
-    permission_classes = (IsAuthenticated,)
 
     lookup_field = "external_id"
 

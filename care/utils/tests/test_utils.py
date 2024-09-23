@@ -51,7 +51,6 @@ from care.facility.models.patient_consultation import (
     PatientCodeStatusType,
     PatientConsent,
 )
-from care.hcx.models.policy import Policy
 from care.users.models import District, State
 
 fake = Faker()
@@ -107,6 +106,8 @@ class TestUtils:
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
+    maxDiff = None
+
     def setUp(self) -> None:
         self.client.force_login(self.user)
 
@@ -115,7 +116,7 @@ class TestUtils:
         Should return the base url of the testing viewset
         eg: return "api/v1/facility/"
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @classmethod
     def create_state(cls, **kwargs) -> State:
@@ -569,31 +570,6 @@ class TestUtils:
         return sample
 
     @classmethod
-    def get_policy_data(cls, patient, user) -> dict:
-        return {
-            "patient": patient,
-            "subscriber_id": "sample_subscriber_id",
-            "policy_id": "sample_policy_id",
-            "insurer_id": "sample_insurer_id",
-            "insurer_name": "Sample Insurer",
-            "status": "active",
-            "priority": "normal",
-            "purpose": "discovery",
-            "outcome": "complete",
-            "error_text": "No errors",
-            "created_by": user,
-            "last_modified_by": user,
-        }
-
-    @classmethod
-    def create_policy(
-        cls, patient: PatientRegistration, user: User, **kwargs
-    ) -> Policy:
-        data = cls.get_policy_data(patient, user)
-        data.update(**kwargs)
-        return Policy.objects.create(**data)
-
-    @classmethod
     def get_encounter_symptom_data(cls, consultation, user) -> dict:
         return {
             "symptom": 2,
@@ -752,7 +728,7 @@ class TestUtils:
         :param obj: Object to be represented
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_detail_representation(self, obj=None) -> dict:
         """
@@ -761,7 +737,7 @@ class TestUtils:
         :param data: data
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_local_body_district_state_representation(self, obj):
         """
