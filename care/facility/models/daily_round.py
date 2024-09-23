@@ -162,9 +162,9 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(Decimal(95)), MaxValueValidator(Decimal(106))],
     )
-    spo2 = models.DecimalField(
+    archived_spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
-    )
+    )  # Deprecated
     physical_examination_info = models.TextField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,

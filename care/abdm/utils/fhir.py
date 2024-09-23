@@ -316,7 +316,7 @@ class Fhir:
             ),
             self._observation(
                 "SpO2",
-                {"value": daily_round.spo2, "unit": "%"},
+                {"value": daily_round.ventilator_spo2, "unit": "%"},
                 id,
                 date,
             ),
@@ -1205,17 +1205,16 @@ class Fhir:
     def create_record(self, record_type):
         if record_type == "Prescription":
             return self.create_prescription_record()
-        elif record_type == "WellnessRecord":
+        if record_type == "WellnessRecord":
             return self.create_wellness_record()
-        elif record_type == "ImmunizationRecord":
+        if record_type == "ImmunizationRecord":
             return self.create_immunization_record()
-        elif record_type == "HealthDocumentRecord":
+        if record_type == "HealthDocumentRecord":
             return self.create_health_document_record()
-        elif record_type == "DiagnosticReport":
+        if record_type == "DiagnosticReport":
             return self.create_diagnostic_report_record()
-        elif record_type == "DischargeSummary":
+        if record_type == "DischargeSummary":
             return self.create_discharge_summary_record()
-        elif record_type == "OPConsultation":
+        if record_type == "OPConsultation":
             return self.create_op_consultation_record()
-        else:
-            return self.create_discharge_summary_record()
+        return self.create_discharge_summary_record()
