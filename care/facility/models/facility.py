@@ -43,6 +43,15 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+
+class RoomType(models.IntegerChoices):
+    ICU_BED = 100, "ICU Bed"
+    GENERAL_BED = 200, "Ordinary Bed"
+    OXYGEN_BED = 300, "Oxygen Bed"
+    ISOLATION_BED = 400, "Isolation Bed"
+    OTHER = 500, "Others"
+
+
 # to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
@@ -426,7 +435,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomType.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -462,7 +471,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return (
             str(self.facility)
             + " "
-            + REVERSE_ROOM_TYPES[self.room_type]
+            + RoomType(self.room_type).label
             + " "
             + str(self.total_capacity)
         )
