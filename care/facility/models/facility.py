@@ -79,7 +79,7 @@ class FacilityFeature(models.IntegerChoices):
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
-REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_ROOM_TYPES = reverse_choices(RoomType.choices)
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
