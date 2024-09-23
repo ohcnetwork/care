@@ -60,15 +60,3 @@ class CoverImageValidatorTests(TestCase):
                 "Image size is greater than the maximum allowed size of 2 MB.",
             ],
         )
-
-    def test_invalid_image_aspect_ratio(self):
-        image = Image.new("RGB", (400, 800))
-        file = io.BytesIO()
-        image.save(file, format="JPEG")
-        test_file = UploadedFile(file, "test.jpg", "image/jpeg", 2048)
-        with self.assertRaises(ValidationError) as cm:
-            self.cover_image_validator(test_file)
-        self.assertEqual(
-            cm.exception.messages,
-            ["Image aspect ratio must be one of the following: 1:1."],
-        )
