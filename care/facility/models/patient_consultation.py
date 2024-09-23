@@ -80,8 +80,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     treatment_plan = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
-    investigation = JSONField(default=dict)
-    prescriptions = JSONField(default=dict)  # Deprecated
+    investigation = JSONField(default=list)
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     route_to_facility = models.SmallIntegerField(

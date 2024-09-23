@@ -4,14 +4,16 @@ from django.core.cache import cache
 from django.db.models import F, Q, Subquery
 from django.http import Http404
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -21,15 +23,17 @@ from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
 from care.facility.models.facility import Facility, FacilityUser
 from care.users.api.serializers.user import (
     UserCreateSerializer,
+    UserImageUploadSerializer,
     UserListSerializer,
     UserSerializer,
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.file_uploads.cover_image import delete_cover_image
 
 
 def remove_facility_user_cache(user_id):
-    key = f"user_facilities:{str(user_id)}"
+    key = f"user_facilities:{user_id!s}"
     cache.delete(key)
     return True
 
@@ -107,6 +111,7 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
     permission_classes = (
@@ -167,7 +172,7 @@ class UserViewSet(
             )
         return self.queryset.filter(query)
 
-    def get_object(self):
+    def get_object(self) -> User:
         try:
             return super().get_object()
         except Http404:
@@ -180,6 +185,8 @@ class UserViewSet(
             return UserCreateSerializer
         # elif self.action == "create":
         #     return SignUpSerializer
+        elif self.action == "profile_picture":
+            return UserImageUploadSerializer
         else:
             return UserSerializer
 
@@ -387,3 +394,29 @@ class UserViewSet(
         if User.check_username_exists(username):
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
+
+    def has_profile_image_write_permission(self, request, user):
+        return request.user.is_superuser or (user.id == request.user.id)
+
+    @extend_schema(tags=["users"])
+    @method_decorator(parser_classes([MultiPartParser]))
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def profile_picture(self, request, *args, **kwargs):
+        user = self.get_object()
+        if not self.has_profile_image_write_permission(request, user):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        serializer = self.get_serializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(tags=["users"])
+    @profile_picture.mapping.delete
+    def profile_picture_delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        if not self.has_profile_image_write_permission(request, user):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        delete_cover_image(user.profile_picture_url, "avatars")
+        user.profile_picture_url = None
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

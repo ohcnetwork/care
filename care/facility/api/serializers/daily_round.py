@@ -116,6 +116,13 @@ class DailyRoundSerializer(serializers.ModelSerializer):
         )
         exclude = ("deleted",)
 
+    def validate_bp(self, value):
+        if value is not None:
+            sys, dia = value.get("systolic"), value.get("diastolic")
+            if sys is not None and dia is not None and sys < dia:
+                raise ValidationError("Systolic must be greater than diastolic")
+        return value
+
     def update(self, instance, validated_data):
         instance.last_edited_by = self.context["request"].user
 

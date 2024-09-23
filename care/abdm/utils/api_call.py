@@ -2,7 +2,7 @@ import json
 import logging
 import uuid
 from base64 import b64encode
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import requests
 from Crypto.Cipher import PKCS1_v1_5
@@ -83,7 +83,7 @@ class APIGateway:
             resp = requests.post(
                 ABDM_TOKEN_URL, data=json.dumps(data), headers=auth_headers
             )
-            logger.info("Token Response Status: {}".format(resp.status_code))
+            logger.info(f"Token Response Status: {resp.status_code}")
             if resp.status_code < 300:
                 # Checking if Content-Type is application/json
                 if resp.headers["Content-Type"] != "application/json":
@@ -92,21 +92,21 @@ class APIGateway:
                             resp.headers["Content-Type"]
                         )
                     )
-                    logger.info("Response: {}".format(resp.text))
+                    logger.info(f"Response: {resp.text}")
                     return None
                 else:
                     data = resp.json()
                     token = data["accessToken"]
                     expires_in = data["expiresIn"]
-                    logger.info("New Token: {}".format(token))
-                    logger.info("Expires in: {}".format(expires_in))
+                    logger.info(f"New Token: {token}")
+                    logger.info(f"Expires in: {expires_in}")
                     cache.set(ABDM_TOKEN_CACHE_KEY, token, expires_in)
             else:
-                logger.info("Bad Response: {}".format(resp.text))
+                logger.info(f"Bad Response: {resp.text}")
                 return None
         # logger.info("Returning Authorization Header: Bearer {}".format(token))
         logger.info("Adding Authorization Header")
-        auth_header = {"Authorization": "Bearer {}".format(token)}
+        auth_header = {"Authorization": f"Bearer {token}"}
         return {**headers, **auth_header}
 
     def add_additional_headers(self, headers, additional_headers):
@@ -118,9 +118,9 @@ class APIGateway:
         headers = self.add_auth_header(headers)
         if auth:
             headers = self.add_user_header(headers, auth)
-        logger.info("Making GET Request to: {}".format(url))
+        logger.info(f"Making GET Request to: {url}")
         response = requests.get(url, headers=headers, params=params)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info(f"{response.status_code} Response: {response.text}")
         return response
 
     def post(self, path, data=None, auth=None, additional_headers=None, method="POST"):
@@ -140,9 +140,9 @@ class APIGateway:
         # )
         data_json = json.dumps(data)
         # logger.info("curl -X POST {} {} -d {}".format(url, headers_string, data_json))
-        logger.info("Posting Request to: {}".format(url))
+        logger.info(f"Posting Request to: {url}")
         response = requests.request(method, url, headers=headers, data=data_json)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info(f"{response.status_code} Response: {response.text}")
         return response
 
 
@@ -153,7 +153,7 @@ class HealthIdGateway:
     def generate_aadhaar_otp(self, data):
         path = "/v1/registration/aadhaar/generateOtp"
         response = self.api.post(path, data)
-        logger.info("{} Response: {}".format(response.status_code, response.text))
+        logger.info(f"{response.status_code} Response: {response.text}")
         return response.json()
 
     def resend_aadhaar_otp(self, data):
@@ -185,7 +185,7 @@ class HealthIdGateway:
     # /v1/registration/aadhaar/createHealthIdWithPreVerified
     def create_health_id(self, data):
         path = "/v1/registration/aadhaar/createHealthIdWithPreVerified"
-        logger.info("Creating Health ID with data: {}".format(data))
+        logger.info(f"Creating Health ID with data: {data}")
         # data.pop("healthId", None)
         response = self.api.post(path, data)
         return response.json()
@@ -310,9 +310,9 @@ class HealthIdGateway:
     def get_qr_code(self, data, auth):
         path = "/v1/account/qrCode"
         access_token = self.generate_access_token(data)
-        logger.info("Getting QR Code for: {}".format(data))
+        logger.info(f"Getting QR Code for: {data}")
         response = self.api.get(path, {}, access_token)
-        logger.info("QR Code Response: {}".format(response.text))
+        logger.info(f"QR Code Response: {response.text}")
         return response.json()
 
 
@@ -365,7 +365,7 @@ class AbdmGateway:
 
     def add_care_context(self, access_token, request_id):
         if request_id not in self.temp_memory:
-            return
+            return None
 
         data = self.temp_memory[request_id]
 
@@ -380,7 +380,7 @@ class AbdmGateway:
                     "patient_id": str(consultation.patient.external_id),
                     "patient_name": consultation.patient.name,
                     "context_id": str(consultation.external_id),
-                    "context_name": f"Encounter: {str(consultation.created_date.date())}",
+                    "context_name": f"Encounter: {consultation.created_date.date()!s}",
                 }
             )
 
@@ -390,7 +390,7 @@ class AbdmGateway:
 
     def save_linking_token(self, patient, access_token, request_id):
         if request_id not in self.temp_memory:
-            return
+            return None
 
         data = self.temp_memory[request_id]
         health_id = patient and patient["id"] or data["healthId"]
@@ -415,11 +415,11 @@ class AbdmGateway:
         self.temp_memory[request_id] = data
         if "authMode" in data and data["authMode"] == "DIRECT":
             self.init(request_id)
-            return
+            return None
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
@@ -437,7 +437,7 @@ class AbdmGateway:
     # "/v0.5/users/auth/init"
     def init(self, prev_request_id):
         if prev_request_id not in self.temp_memory:
-            return
+            return None
 
         path = "/v0.5/users/auth/init"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
@@ -449,7 +449,7 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
@@ -468,7 +468,7 @@ class AbdmGateway:
     # "/v0.5/users/auth/confirm"
     def confirm(self, transaction_id, prev_request_id):
         if prev_request_id not in self.temp_memory:
-            return
+            return None
 
         path = "/v0.5/users/auth/confirm"
         additional_headers = {"X-CM-ID": settings.X_CM_ID}
@@ -480,7 +480,7 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": transaction_id,
@@ -504,7 +504,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK"},
@@ -524,7 +524,7 @@ class AbdmGateway:
 
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "link": {
@@ -552,7 +552,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": data["transaction_id"],
@@ -584,7 +584,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "transactionId": data["transaction_id"],
@@ -615,7 +615,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "patient": {
@@ -645,7 +645,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK", "consentId": data["consent_id"]},
@@ -663,7 +663,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "hiRequest": {
@@ -718,14 +718,14 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "notification": {
                 "consentId": data["consent_id"],
                 "transactionId": data["transaction_id"],
                 "doneAt": str(
-                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                    datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
                 ),
                 "statusNotification": {
                     "sessionStatus": data["session_status"],
@@ -754,7 +754,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "acknowledgement": {"status": "OK"},
@@ -772,7 +772,7 @@ class AbdmGateway:
         request_id = str(uuid.uuid4())
         payload = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "notification": {

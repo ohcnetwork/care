@@ -57,6 +57,13 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
         return super().validate(attrs)
 
+    def create(self, validated_data):
+        if validated_data["prescription"].consultation.discharge_date:
+            raise serializers.ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
+        return super().create(validated_data)
+
     class Meta:
         model = MedicineAdministration
         exclude = ("deleted",)
@@ -149,4 +156,10 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 attrs.pop("target_dosage", None)
 
         return super().validate(attrs)
-        # TODO: Ensure that this medicine is not already prescribed to the same patient and is currently active.
+
+    def create(self, validated_data):
+        if validated_data["consultation"].discharge_date:
+            raise serializers.ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
+        return super().create(validated_data)

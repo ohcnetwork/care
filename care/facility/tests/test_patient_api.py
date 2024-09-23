@@ -27,6 +27,7 @@ class ExpectedPatientNoteKeys(Enum):
     LAST_EDITED_DATE = "last_edited_date"
     THREAD = "thread"
     USER_TYPE = "user_type"
+    REPLY_TO_OBJECT = "reply_to_object"
 
 
 class ExpectedFacilityKeys(Enum):
@@ -233,6 +234,48 @@ class PatientNotesTestCase(TestUtils, APITestCase):
                 created_by_object_content.keys(),
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
+
+    def test_patient_note_with_reply(self):
+        patient = self.patient
+        note = "How is the patient"
+        created_by = self.user
+
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+            "thread": PatientNoteThreadChoices.DOCTORS,
+        }
+        self.client.force_authenticate(user=created_by)
+        response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=data
+        )
+        reply_data = {
+            "facility": patient.facility or self.facility,
+            "note": "Patient is doing fine",
+            "thread": PatientNoteThreadChoices.DOCTORS,
+            "reply_to": response.json()["id"],
+        }
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=reply_data
+        )
+
+        # Ensure the reply is created successfully
+        self.assertEqual(reply_response.status_code, status.HTTP_201_CREATED)
+
+        # Ensure the reply is posted on same thread
+        self.assertEqual(reply_response.json()["thread"], response.json()["thread"])
+
+        # Posting reply in other thread should fail
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/",
+            {
+                "facility": patient.facility or self.facility,
+                "note": "Patient is doing fine",
+                "thread": PatientNoteThreadChoices.NURSES,
+                "reply_to": response.json()["id"],
+            },
+        )
+        self.assertEqual(reply_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_patient_note_edit(self):
         patientId = self.patient.external_id

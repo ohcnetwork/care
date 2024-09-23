@@ -1,5 +1,5 @@
 import os
-from typing import Sequence
+from collections.abc import Sequence
 
 ROOT_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 PRODUCTION_DOTENVS_DIR_PATH = os.path.join(ROOT_DIR_PATH, ".envs", ".production")
@@ -15,7 +15,7 @@ def merge(
 ) -> None:
     with open(output_file_path, "w") as output_file:
         for merged_file_path in merged_file_paths:
-            with open(merged_file_path, "r") as merged_file:
+            with open(merged_file_path) as merged_file:
                 merged_file_content = merged_file.read()
                 output_file.write(merged_file_content)
                 if append_linesep:

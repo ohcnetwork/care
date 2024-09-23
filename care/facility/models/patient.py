@@ -799,6 +799,13 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         db_index=True,
         default=PatientNoteThreadChoices.DOCTORS,
     )
+    reply_to = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="replies",
+    )
     note = models.TextField(default="", blank=True)
 
     def get_related_consultation(self):
