@@ -9,7 +9,6 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -49,7 +48,6 @@ class AmbulanceViewSet(
     DestroyModelMixin,
     GenericViewSet,
 ):
-    permission_classes = (IsAuthenticated,)
     serializer_class = AmbulanceSerializer
     queryset = Ambulance.objects.filter(deleted=False).select_related(
         "primary_district", "secondary_district", "third_district"

@@ -79,10 +79,7 @@ class FacilityViewSet(
     queryset = Facility.objects.all().select_related(
         "ward", "local_body", "district", "state"
     )
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         FacilityQSPermissions,
         filters.DjangoFilterBackend,
@@ -178,6 +175,7 @@ class AllFacilityViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
+    permission_classes = ()
     queryset = Facility.objects.all().select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)

@@ -4,7 +4,6 @@ import logging
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -20,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class HealthInformationViewSet(GenericViewSet):
-    permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, pk):
         files = FileUpload.objects.filter(
@@ -83,7 +81,6 @@ class HealthInformationViewSet(GenericViewSet):
 
 
 class HealthInformationCallbackViewSet(GenericViewSet):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def health_information__hiu__on_request(self, request):

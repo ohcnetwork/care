@@ -114,10 +114,7 @@ class UserViewSet(
     queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,

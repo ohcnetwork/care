@@ -18,10 +18,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     lookup_field = "external_id"
     serializer_class = FacilityCapacitySerializer
     queryset = FacilityCapacity.objects.filter(facility__deleted=False)
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         user = self.request.user

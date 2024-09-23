@@ -41,10 +41,7 @@ class DailyRoundsViewSet(
     GenericViewSet,
 ):
     serializer_class = DailyRoundSerializer
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = DailyRound.objects.all().select_related("created_by", "last_edited_by")
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
