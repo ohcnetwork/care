@@ -257,6 +257,10 @@
           "name": "HCX_IG_URL"
         },
         {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
+        },
+        {
           "valueFrom": "/care/backend/PLAUSIBLE_HOST",
           "name": "PLAUSIBLE_HOST"
         },
@@ -532,6 +536,10 @@
         {
           "valueFrom": "/care/backend/HCX_IG_URL",
           "name": "HCX_IG_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
         },
         {
           "valueFrom": "/care/backend/PLAUSIBLE_HOST",
