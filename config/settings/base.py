@@ -125,7 +125,6 @@ LOCAL_APPS = [
     "care.abdm",
     "care.users",
     "care.audit_log",
-    "care.hcx",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -644,20 +643,6 @@ X_CM_ID = env("X_CM_ID", default="sbx")
 FIDELIUS_URL = env("FIDELIUS_URL", default="http://fidelius:8090")
 
 IS_PRODUCTION = False
-
-# HCX
-HCX_PROTOCOL_BASE_PATH = env(
-    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
-)
-HCX_AUTH_BASE_PATH = env(
-    "HCX_AUTH_BASE_PATH",
-    default="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
-)
-HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
-HCX_USERNAME = env("HCX_USERNAME", default="")
-HCX_PASSWORD = env("HCX_PASSWORD", default="")
-HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
-HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
