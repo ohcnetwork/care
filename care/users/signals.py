@@ -13,17 +13,11 @@ from .models import UserFacilityAllocation
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(
-    sender, instance, reset_password_token, *args, **kwargs
+    _, __, reset_password_token, *___, **____
 ):
     """
     Handles password reset tokens
     When a token is created, an e-mail needs to be sent to the user
-    :param sender: View Class that sent the signal
-    :param instance: View Instance that sent the signal
-    :param reset_password_token: Token Model Object
-    :param args:
-    :param kwargs:
-    :return:
     """
     # send an e-mail to the user
     context = {
@@ -47,7 +41,7 @@ def password_reset_token_created(
 
 
 @receiver(pre_save, sender=settings.AUTH_USER_MODEL)
-def save_fields_before_update(sender, instance, raw, using, update_fields, **kwargs):
+def save_fields_before_update(_, instance, raw, __, update_fields, **___):
     if raw:
         return
 
@@ -57,14 +51,14 @@ def save_fields_before_update(sender, instance, raw, using, update_fields, **kwa
             fields_to_save &= set(update_fields)
         if fields_to_save:
             with contextlib.suppress(IndexError):
-                instance._previous_values = instance.__class__._base_manager.filter(
+                instance._previous_values = instance.__class__._base_manager.filter( # noqa SLF001
                     pk=instance.pk
                 ).values(*fields_to_save)[0]
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def track_user_facility_allocation(
-    sender, instance, created, raw, using, update_fields, **kwargs
+    _, instance, created, raw, __, update_fields, **___
 ):
     if raw or (update_fields and "home_facility" not in update_fields):
         return

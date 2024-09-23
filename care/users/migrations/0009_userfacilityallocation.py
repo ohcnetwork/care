@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 
-def fill_user_facility_allocation(apps, schema_editor):
+def fill_user_facility_allocation(apps, _):
     UserFacilityAllocation = apps.get_model("users", "UserFacilityAllocation")
     User = apps.get_model("users", "User")
     users = User.objects.filter(home_facility__isnull=False)
@@ -20,7 +20,7 @@ def fill_user_facility_allocation(apps, schema_editor):
     UserFacilityAllocation.objects.bulk_create(to_create, batch_size=2000)
 
 
-def reverse_fill_user_facility_allocation(apps, schema_editor):
+def reverse_fill_user_facility_allocation(apps, _):
     UserFacilityAllocation = apps.get_model("users", "UserFacilityAllocation")
     UserFacilityAllocation.objects.all().delete()
 

@@ -82,7 +82,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         return validated
 
-
+MIN_USER_AGE = 16
 class UserCreateSerializer(SignUpSerializer):
     password = serializers.CharField(required=False)
     facilities = serializers.ListSerializer(
@@ -115,24 +115,23 @@ class UserCreateSerializer(SignUpSerializer):
     date_of_birth = serializers.DateField(required=True)
 
     def validate_date_of_birth(self, value):
-        if value and now().year - value.year < 16:
-            raise serializers.ValidationError("Age must be greater than 15 years")
+        if value and now().year - value.year < MIN_USER_AGE:
+            error = "Age must be greater than 15 years"
+            raise serializers.ValidationError(error)
 
         return value
 
     def validate_facilities(self, facility_ids):
-        if facility_ids:
-            if (
-                len(facility_ids)
-                != Facility.objects.filter(external_id__in=facility_ids).count()
-            ):
-                available_facility_ids = Facility.objects.filter(
-                    external_id__in=facility_ids,
-                ).values_list("external_id", flat=True)
-                not_found_ids = list(set(facility_ids) - set(available_facility_ids))
-                raise serializers.ValidationError(
-                    f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}",
-                )
+        if facility_ids and len(facility_ids) != Facility.objects.filter(external_id__in=facility_ids).count():
+
+            available_facility_ids = Facility.objects.filter(
+                external_id__in=facility_ids,
+            ).values_list("external_id", flat=True)
+            not_found_ids = list(set(facility_ids) - set(available_facility_ids))
+            error = f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}"
+            raise serializers.ValidationError(
+                error
+            )
         return facility_ids
 
     def validate_ward(self, value):
@@ -143,7 +142,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different Ward")
+            error = "Cannot create for a different Ward"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_local_body(self, value):
@@ -154,9 +154,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
-            raise serializers.ValidationError(
-                "Cannot create for a different local body",
-            )
+            error = "Cannot create for a different local body"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_district(self, value):
@@ -167,7 +166,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different district")
+            error = "Cannot create for a different district"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_state(self, value):
@@ -176,7 +176,8 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].state
             and not self.context["created_by"].is_superuser
         ):
-            raise serializers.ValidationError("Cannot create for a different state")
+            error = "Cannot create for a different state"
+            raise serializers.ValidationError(error)
         return value
 
     def validate(self, attrs):
@@ -190,15 +191,14 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in User.READ_ONLY_TYPES:
-            if validated["user_type"] not in User.READ_ONLY_TYPES:
-                raise exceptions.ValidationError(
-                    {
-                        "user_type": [
-                            "Read only users can create other read only users only",
-                        ],
-                    },
-                )
+        if self.context["created_by"].user_type in User.READ_ONLY_TYPES and validated["user_type"] not in User.READ_ONLY_TYPES:
+            raise exceptions.ValidationError(
+                {
+                    "user_type": [
+                        "Read only users can create other read only users only",
+                    ],
+                },
+            )
 
         if (
             self.context["created_by"].user_type
@@ -339,8 +339,9 @@ class UserSerializer(SignUpSerializer):
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
     def validate_date_of_birth(self, value):
-        if value and now().year - value.year < 16:
-            raise serializers.ValidationError("Age must be greater than 15 years")
+        if value and now().year - value.year < MIN_USER_AGE:
+            error = "Age must be greater than 15 years"
+            raise serializers.ValidationError(error)
 
         return value
 

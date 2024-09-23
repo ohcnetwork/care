@@ -68,7 +68,7 @@ class ResetPasswordCheck(GenericAPIView):
     serializer_class = ResetPasswordCheckSerializer
 
     @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *_, **__):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         token = serializer.validated_data["token"]
@@ -117,7 +117,7 @@ class ResetPasswordConfirm(GenericAPIView):
     serializer_class = ResetPasswordConfirmSerializer
 
     @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *__, **___):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         password = serializer.validated_data["password"]
@@ -170,7 +170,7 @@ class ResetPasswordConfirm(GenericAPIView):
                 )
             except ValidationError as e:
                 # raise a validation error for the serializer
-                raise exceptions.ValidationError({"password": e.messages})
+                raise exceptions.ValidationError({"password": e.messages}) from e
 
             reset_password_token.user.set_password(password)
             reset_password_token.user.save()
@@ -197,7 +197,7 @@ class ResetPasswordRequestToken(GenericAPIView):
     serializer_class = ResetPasswordRequestTokenSerializer
 
     @extend_schema(tags=["auth"])
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *__, **___):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data["username"]

@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def rename_skill_and_add_new(apps, schema_editor):
+def rename_skill_and_add_new(apps, _):
     Skill = apps.get_model("users", "Skill")
     Skill.objects.filter(name="Genreal Surgeon").update(name="General Surgeon")
 

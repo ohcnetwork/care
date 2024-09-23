@@ -2,7 +2,7 @@ from django.db import migrations, models
 from django.utils.timezone import now
 
 
-def age_to_date_of_birth(apps, schema_editor):
+def age_to_date_of_birth(apps, _):
     User = apps.get_model("users", "User")
     users_to_update = []
     for user in User.objects.all():
@@ -13,7 +13,7 @@ def age_to_date_of_birth(apps, schema_editor):
     User.objects.bulk_update(users_to_update, ["date_of_birth"])
 
 
-def date_of_birth_to_age(apps, schema_editor):
+def date_of_birth_to_age(apps, _):
     User = apps.get_model("users", "User")
     users_to_update = []
     for user in User.objects.all():

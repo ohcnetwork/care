@@ -147,7 +147,7 @@ class CustomUserManager(UserManager):
                 f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
             )
             if proceed.lower() != "y":
-                raise Exception("Aborted Superuser Creation")
+                raise Exception
             district = None
 
         extra_fields["district"] = district
@@ -352,7 +352,7 @@ class User(AbstractUser):
         return self.get_full_name()
 
     @staticmethod
-    def has_read_permission(request):
+    def has_read_permission(_):
         return True
 
     def has_object_read_permission(self, request):
@@ -397,7 +397,7 @@ class User(AbstractUser):
     def check_username_exists(username):
         return User.objects.get_entire_queryset().filter(username=username).exists()
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *_, **__):
         self.deleted = True
         self.save()
 
@@ -431,6 +431,8 @@ class UserFacilityAllocation(models.Model):
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return self.facility.name
 
 class UserFlag(BaseFlag):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)

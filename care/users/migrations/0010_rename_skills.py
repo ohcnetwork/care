@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def fix_skill_name(apps, schema_editor):
+def fix_skill_name(apps, _):
     Skill = apps.get_model("users", "Skill")
 
     fix = {
@@ -24,10 +24,8 @@ def fix_skill_name(apps, schema_editor):
     }
 
     for old, new in fix.items():
-        try:
-            Skill.objects.filter(name=old).update(name=new)
-        except Exception as e:
-            print(e)
+        Skill.objects.filter(name=old).update(name=new)
+
 
 
 class Migration(migrations.Migration):

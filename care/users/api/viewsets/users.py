@@ -59,7 +59,7 @@ class UserFilterSet(filters.FilterSet):
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
     home_facility = filters.CharFilter(method="filter_home_facility")
 
-    def filter_home_facility(self, queryset, name, value):
+    def filter_home_facility(self, queryset, _, value):
         if value == "NONE":
             return queryset.filter(home_facility__isnull=True)
         return queryset.filter(home_facility__external_id=value)
@@ -69,17 +69,16 @@ class UserFilterSet(filters.FilterSet):
     def get_user_type(
         self,
         queryset,
-        field_name,
+        _,
         value,
     ):
-        if value:
-            if value in INVERSE_USER_TYPE:
-                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+        if value and value in INVERSE_USER_TYPE:
+            return queryset.filter(user_type=INVERSE_USER_TYPE[value])
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
 
-    def last_active_after(self, queryset, name, value):
+    def last_active_after(self, queryset, _, value):
         if value == "never":
             return queryset.filter(last_login__isnull=True)
         # convert days to date
@@ -122,21 +121,7 @@ class UserViewSet(
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
-    # last_login
-    # def get_permissions(self):
-    #     return [
-    #         DRYPermissions(),
-    #         IsAuthenticated(),
-    #     ]
-    # if self.request.method == "POST":
-    #     return [
-    #         DRYPermissions(),
-    #     ]
-    # else:
-    #     return [
-    #         IsAuthenticated(),
-    #         DRYPermissions(),
-    #     ]
+
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -171,18 +156,16 @@ class UserViewSet(
     def get_object(self):
         try:
             return super().get_object()
-        except Http404:
-            raise Http404("User not found")
+        except Http404 as e:
+            error = "User not found"
+            raise Http404(error) from e
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
-        elif self.action == "add_user":
+        if self.action == "add_user":
             return UserCreateSerializer
-        # elif self.action == "create":
-        #     return SignUpSerializer
-        else:
-            return UserSerializer
+        return UserSerializer
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])
@@ -192,7 +175,7 @@ class UserViewSet(
             data=UserSerializer(request.user, context={"request": request}).data,
         )
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, *_, **kwargs):
         queryset = self.queryset
         username = kwargs["username"]
         if request.user.is_superuser:
@@ -220,7 +203,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["POST"])
-    def add_user(self, request, *args, **kwargs):
+    def add_user(self, request, *_, **__):
         password = request.data.pop(
             "password", User.objects.make_random_password(length=8)
         )
@@ -258,7 +241,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
-    def get_facilities(self, request, *args, **kwargs):
+    def get_facilities(self, _, *__, **___):
         user = self.get_object()
         queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
@@ -269,7 +252,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
-    def add_facility(self, request, *args, **kwargs):
+    def add_facility(self, request, *_, **__):
         # Remove User Facility Cache
         user = self.get_object()
         remove_facility_user_cache(user.id)
@@ -297,7 +280,7 @@ class UserViewSet(
         responses={204: "Deleted Successfully"},
     )
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
-    def clear_home_facility(self, request, *args, **kwargs):
+    def clear_home_facility(self, request, *_, **__):
         user = self.get_object()
         requesting_user = request.user
 
@@ -332,7 +315,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
-    def delete_facility(self, request, *args, **kwargs):
+    def delete_facility(self, request, *_, **__):
         # Remove User Facility Cache
         user = self.get_object()
         remove_facility_user_cache(user.id)
@@ -362,7 +345,7 @@ class UserViewSet(
         methods=["PATCH", "GET"],
         permission_classes=[IsAuthenticated],
     )
-    def pnconfig(self, request, *args, **kwargs):
+    def pnconfig(self, request, *_, **__):
         user = request.user
         if request.method == "GET":
             return Response(
@@ -381,7 +364,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(methods=["GET"], detail=True)
-    def check_availability(self, request, username):
+    def check_availability(self, _, username):
         """
         Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
         """

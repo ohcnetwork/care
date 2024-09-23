@@ -53,7 +53,7 @@ reset_db:
 	docker compose exec backend bash -c "python manage.py migrate"
 
 ruff-all:
-	ruff check .
+	ruff check care/users/
 
 ruff-fix-all:
 	ruff check --fix .

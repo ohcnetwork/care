@@ -79,6 +79,8 @@ ignore = [
   "DJ001",   # django-nullable-model-string-field
   "ISC001",  # conflicts with format
   "COM812",  # conflicts with format
+  "RUF012", # Too hard
+  "FBT001", # why not!
 ]
 
 

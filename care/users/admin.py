@@ -21,7 +21,7 @@ User = get_user_model()
 
 class ExportCsvMixin:
     @admin.action(description="Export Selected")
-    def export_as_csv(self, request, queryset):
+    def export_as_csv(self, _, __):
         queryset = User.objects.filter(is_superuser=False).values(
             *User.CSV_MAPPING.keys()
         )
@@ -37,23 +37,7 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
     form = UserChangeForm
     add_form = UserCreationForm
     actions = ["export_as_csv"]
-    fieldsets = (
-        (
-            "User",
-            {
-                "fields": (
-                    "user_type",
-                    "local_body",
-                    "district",
-                    "state",
-                    "phone_number",
-                    "alt_phone_number",
-                    "gender",
-                    "verified",
-                )
-            },
-        ),
-    ) + auth_admin.UserAdmin.fieldsets
+    fieldsets = (("User", {"fields": ("user_type", "local_body", "district", "state", "phone_number", "alt_phone_number", "gender", "verified")}), *auth_admin.UserAdmin.fieldsets)
     list_display = ["username", "is_superuser"]
     search_fields = ["first_name", "last_name"]
 
@@ -89,7 +73,7 @@ class UserFlagAdmin(admin.ModelAdmin):
         )
 
         class Meta:
-            fields = "__all__"
+            fields = "__all__" # noqa DJ007
             model = UserFlag
 
     form = UserFlagForm

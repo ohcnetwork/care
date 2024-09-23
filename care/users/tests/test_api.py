@@ -155,7 +155,7 @@ class TestUser(TestUtils, APITestCase):
 
     def test_user_can_modify_themselves(self):
         """Test user can modify the attributes for themselves"""
-        password = "new_password"
+        password = "new_password" # noqa S105
         username = self.user.username
         response = self.client.patch(
             f"/api/v1/users/{username}/",

@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def add_skills(apps, schema_editor):
+def add_skills(apps, _):
     Skill = apps.get_model("users", "Skill")
     if Skill.objects.exists():
         skills = [
