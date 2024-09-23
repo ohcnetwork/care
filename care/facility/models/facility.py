@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import IntegerChoices
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
@@ -43,6 +43,15 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+
+class RoomType(models.IntegerChoices):
+    ICU_BED = 100, "ICU Bed"
+    GENERAL_BED = 200, "Ordinary Bed"
+    OXYGEN_BED = 300, "Oxygen Bed"
+    ISOLATION_BED = 400, "Isolation Bed"
+    OTHER = 500, "Others"
+
+
 # to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
@@ -70,7 +79,7 @@ class FacilityFeature(models.IntegerChoices):
 
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
-REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_ROOM_TYPES = reverse_choices(RoomType.choices)
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
@@ -290,6 +299,18 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    @transaction.atomic
+    def delete(self, *args):
+        from care.facility.models.asset import Asset, AssetLocation
+
+        AssetLocation.objects.filter(facility_id=self.id).update(deleted=True)
+        Asset.objects.filter(
+            current_location_id__in=AssetLocation._base_manager.filter(  # noqa: SLF001
+                facility_id=self.id
+            ).values_list("id", flat=True)
+        ).update(deleted=True)
+        return super().delete(*args)
+
     @property
     def get_features_display(self):
         if not self.features:
@@ -426,7 +447,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomType.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -462,7 +483,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return (
             str(self.facility)
             + " "
-            + REVERSE_ROOM_TYPES[self.room_type]
+            + RoomType(self.room_type).label
             + " "
             + str(self.total_capacity)
         )

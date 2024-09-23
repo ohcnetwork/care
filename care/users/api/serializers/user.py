@@ -12,6 +12,11 @@ from care.users.api.serializers.lsg import (
 )
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import GENDER_CHOICES, User
+from care.utils.file_uploads.cover_image import upload_cover_image
+from care.utils.models.validators import (
+    cover_image_validator,
+    custom_image_extension_validator,
+)
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
 from config.serializers import ChoiceField
@@ -279,6 +284,7 @@ class UserSerializer(SignUpSerializer):
         source="home_facility",
         read_only=True,
     )
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
 
@@ -321,6 +327,7 @@ class UserSerializer(SignUpSerializer):
             "pf_endpoint",
             "pf_p256dh",
             "pf_auth",
+            "read_profile_picture_url",
             "user_flags",
         )
         read_only_fields = (
@@ -416,6 +423,7 @@ class UserListSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     home_facility = ExternalIdSerializerField(queryset=Facility.objects.all())
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = User
@@ -438,4 +446,30 @@ class UserListSerializer(serializers.ModelSerializer):
             "home_facility_object",
             "home_facility",
             "video_connect_link",
+            "read_profile_picture_url",
         )
+
+
+class UserImageUploadSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
+    read_profile_picture_url = serializers.URLField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("profile_picture", "read_profile_picture_url")
+
+    def save(self, **kwargs):
+        user: User = self.instance
+        image = self.validated_data["profile_picture"]
+        user.profile_picture_url = upload_cover_image(
+            image,
+            str(user.external_id),
+            "avatars",
+            user.profile_picture_url,
+        )
+        user.save(update_fields=["profile_picture_url"])
+        return user

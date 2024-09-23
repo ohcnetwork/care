@@ -1,6 +1,9 @@
+import base64
+import json
 import logging
 
 import sentry_sdk
+from authlib.jose import JsonWebKey
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration, ignore_logger
@@ -118,3 +121,6 @@ if SENTRY_DSN := env("SENTRY_DSN", default=""):
 SNS_ACCESS_KEY = env("SNS_ACCESS_KEY")
 SNS_SECRET_KEY = env("SNS_SECRET_KEY")
 SNS_REGION = "ap-south-1"
+
+# open id connect
+JWKS = JsonWebKey.import_key_set(json.loads(base64.b64decode(env("JWKS_BASE64"))))

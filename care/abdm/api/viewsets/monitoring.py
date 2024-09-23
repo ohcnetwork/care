@@ -2,13 +2,12 @@ from datetime import UTC, datetime
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
 class HeartbeatView(GenericAPIView):
-    permission_classes = (AllowAny,)
-    authentication_classes = []
+    permission_classes = ()
+    authentication_classes = ()
 
     def get(self, request, *args, **kwargs):
         return Response(

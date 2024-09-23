@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.abdm.utils.api_call import AbdmGateway
@@ -19,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 
 class OnFetchView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -31,7 +29,6 @@ class OnFetchView(GenericAPIView):
 
 
 class OnInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -43,7 +40,6 @@ class OnInitView(GenericAPIView):
 
 
 class OnConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -76,7 +72,6 @@ class OnConfirmView(GenericAPIView):
 
 
 class AuthNotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -94,7 +89,6 @@ class AuthNotifyView(GenericAPIView):
 
 
 class OnAddContextsView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -102,7 +96,6 @@ class OnAddContextsView(GenericAPIView):
 
 
 class DiscoverView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -171,7 +164,6 @@ class DiscoverView(GenericAPIView):
 
 
 class LinkInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -191,7 +183,6 @@ class LinkInitView(GenericAPIView):
 
 
 class LinkConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -225,7 +216,6 @@ class LinkConfirmView(GenericAPIView):
 
 
 class NotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -243,7 +233,6 @@ class NotifyView(GenericAPIView):
 
 
 class RequestDataView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):

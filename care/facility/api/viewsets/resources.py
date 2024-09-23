@@ -116,7 +116,6 @@ class ResourceRequestViewSet(
         "emergency",
         "priority",
     ]
-
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         filters.DjangoFilterBackend,
@@ -149,8 +148,6 @@ class ResourceRequestCommentViewSet(
     serializer_class = ResourceRequestCommentSerializer
     lookup_field = "external_id"
     queryset = ResourceRequestComment.objects.all().order_by("-created_date")
-
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(

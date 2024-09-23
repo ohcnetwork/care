@@ -67,7 +67,7 @@ from care.facility.models import (
     ShiftingRequest,
 )
 from care.facility.models.base import covert_choice_dict
-from care.facility.models.bed import AssetBed
+from care.facility.models.bed import AssetBed, ConsultationBed
 from care.facility.models.icd11_diagnosis import (
     INACTIVE_CONDITION_VERIFICATION_STATUSES,
     ConditionVerificationStatus,
@@ -97,6 +97,9 @@ DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 
 class PatientFilterSet(filters.FilterSet):
+
+    last_consultation_field = "last_consultation"
+
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
     disease_status = CareChoiceFilter(choice_dict=DISEASE_STATUS_DICT)
     facility = filters.UUIDFilter(field_name="facility__external_id")
@@ -109,14 +112,14 @@ class PatientFilterSet(filters.FilterSet):
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     patient_no = filters.CharFilter(
-        field_name="last_consultation__patient_no", lookup_expr="iexact"
+        field_name=f"{last_consultation_field}__patient_no", lookup_expr="iexact"
     )
     gender = filters.NumberFilter(field_name="gender")
     age = filters.NumberFilter(field_name="age")
     age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
     age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
     deprecated_covid_category = filters.ChoiceFilter(
-        field_name="last_consultation__deprecated_covid_category",
+        field_name=f"{last_consultation_field}__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
     )
     category = filters.ChoiceFilter(
@@ -168,24 +171,24 @@ class PatientFilterSet(filters.FilterSet):
     state = filters.NumberFilter(field_name="state__id")
     state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
     # Consultation Fields
-    is_kasp = filters.BooleanFilter(field_name="last_consultation__is_kasp")
+    is_kasp = filters.BooleanFilter(field_name=f"{last_consultation_field}__is_kasp")
     last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__kasp_enabled_date"
+        field_name=f"{last_consultation_field}__kasp_enabled_date"
     )
     last_consultation_encounter_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__encounter_date"
+        field_name=f"{last_consultation_field}__encounter_date"
     )
     last_consultation_discharge_date = filters.DateFromToRangeFilter(
-        field_name="last_consultation__discharge_date"
+        field_name=f"{last_consultation_field}__discharge_date"
     )
     last_consultation_admitted_bed_type_list = MultiSelectFilter(
         method="filter_by_bed_type",
     )
     last_consultation_medico_legal_case = filters.BooleanFilter(
-        field_name="last_consultation__medico_legal_case"
+        field_name=f"{last_consultation_field}__medico_legal_case"
     )
     last_consultation_current_bed__location = filters.UUIDFilter(
-        field_name="last_consultation__current_bed__bed__location__external_id"
+        field_name=f"{last_consultation_field}__current_bed__bed__location__external_id"
     )
 
     def filter_by_bed_type(self, queryset, name, value):
@@ -204,21 +207,21 @@ class PatientFilterSet(filters.FilterSet):
         return queryset.filter(filter_q)
 
     last_consultation_admitted_bed_type = CareChoiceFilter(
-        field_name="last_consultation__current_bed__bed__bed_type",
+        field_name=f"{last_consultation_field}__current_bed__bed__bed_type",
         choice_dict=REVERSE_BED_TYPES,
     )
     last_consultation__new_discharge_reason = filters.ChoiceFilter(
-        field_name="last_consultation__new_discharge_reason",
+        field_name=f"{last_consultation_field}__new_discharge_reason",
         choices=NewDischargeReasonEnum.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
-        field_name="last_consultation__assigned_to"
+        field_name=f"{last_consultation_field}__assigned_to"
     )
     last_consultation_is_telemedicine = filters.BooleanFilter(
-        field_name="last_consultation__is_telemedicine"
+        field_name=f"{last_consultation_field}__is_telemedicine"
     )
     ventilator_interface = CareChoiceFilter(
-        field_name="last_consultation__last_daily_round__ventilator_interface",
+        field_name=f"{last_consultation_field}__last_daily_round__ventilator_interface",
         choice_dict={
             label: value for value, label in DailyRound.VentilatorInterfaceType.choices
         },
@@ -633,19 +636,74 @@ class PatientViewSet(
         return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
 
+class DischargePatientFilterSet(PatientFilterSet):
+    last_consultation_field = "last_discharge_consultation"
+
+    # Filters patients by the type of bed they have been assigned to.
+    def filter_by_bed_type(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        values = value.split(",")
+        filter_q = Q()
+
+        # Get the latest consultation bed records for each patient by ordering by patient_id
+        # and the end_date of the consultation, then selecting distinct patient entries.
+        last_consultation_bed_ids = (
+            ConsultationBed.objects.filter(end_date__isnull=False)
+            .order_by("consultation__patient_id", "-end_date")
+            .distinct("consultation__patient_id")
+        )
+
+        # patients whose last consultation did not include a bed
+        if "None" in values:
+            filter_q |= ~Q(
+                last_discharge_consultation__id__in=Subquery(
+                    last_consultation_bed_ids.values_list("consultation_id", flat=True)
+                )
+            )
+            values.remove("None")
+
+        # If the values list contains valid bed types, apply the filtering for those bed types.
+        if isinstance(values, list) and len(values) > 0:
+            filter_q |= Q(
+                last_discharge_consultation__id__in=Subquery(
+                    ConsultationBed.objects.filter(
+                        id__in=Subquery(
+                            last_consultation_bed_ids.values_list("id", flat=True)
+                        ),  # Filter by consultation beds that are part of the latest records for each patient.
+                        bed__bed_type__in=values,  # Match the bed types from the provided values list.
+                    ).values_list("consultation_id", flat=True)
+                )
+            )
+
+        return queryset.filter(filter_q)
+
+
 @extend_schema_view(tags=["patient"])
 class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
     filter_backends = (
+        PatientDRYFilter,
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
         PatientCustomOrderingFilter,
     )
-    filterset_class = PatientFilterSet
+    filterset_class = DischargePatientFilterSet
     queryset = (
-        PatientRegistration.objects.select_related(
+        PatientRegistration.objects.annotate(
+            last_discharge_consultation__id=Subquery(
+                PatientConsultation.objects.filter(
+                    patient_id=OuterRef("id"),
+                    discharge_date__isnull=False,
+                )
+                .order_by("-discharge_date")
+                .values("id")[:1]
+            )
+        )
+        .select_related(
             "local_body",
             "district",
             "state",
@@ -656,8 +714,6 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
             "facility__local_body",
             "facility__district",
             "facility__state",
-            "last_consultation",
-            "last_consultation__assigned_to",
             "last_edited",
             "created_by",
         )
@@ -702,9 +758,9 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "date_declared_positive",
         "date_of_result",
         "last_vaccinated_date",
-        "last_consultation_encounter_date",
-        "last_consultation_discharge_date",
-        "last_consultation_symptoms_onset_date",
+        "last_discharge_consultation_encounter_date",
+        "last_discharge_consultation_discharge_date",
+        "last_discharge_consultation_symptoms_onset_date",
     ]
 
     ordering_fields = [
@@ -713,7 +769,7 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "created_date",
         "modified_date",
         "review_time",
-        "last_consultation__current_bed__bed__name",
+        "last_discharge_consultation__current_bed__bed__name",
         "date_declared_positive",
     ]
 
@@ -733,10 +789,7 @@ class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
 
 class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
     lookup_field = "external_id"
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = FacilityPatientStatsHistory.objects.filter(
         facility__deleted=False
     ).order_by("-entry_date")
@@ -902,7 +955,6 @@ class PatientNotesEditViewSet(
     queryset = PatientNotesEdit.objects.all().order_by("-edited_date")
     lookup_field = "external_id"
     serializer_class = PatientNotesEditSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
@@ -941,7 +993,9 @@ class PatientNotesViewSet(
 ):
     queryset = (
         PatientNotes.objects.all()
-        .select_related("facility", "patient", "created_by")
+        .select_related(
+            "facility", "patient", "created_by", "reply_to", "reply_to__created_by"
+        )
         .order_by("-created_date")
     )
     lookup_field = "external_id"
