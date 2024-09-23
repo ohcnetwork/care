@@ -29,7 +29,6 @@ class StateModelTest(TestCase):
         """
         cls.state = State.objects.create(name="kerala")
 
-
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
         state = self.state
@@ -44,7 +43,6 @@ class DistrictModelTest(TestCase):
         """
         state = State.objects.create(name="uttar pradesh")
         cls.district = District.objects.create(state=state, name="name")
-
 
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
@@ -66,7 +64,6 @@ class LocalBodyModelTest(TestCase):
         cls.local_body = LocalBody.objects.create(
             district=district, name="blabla", body_type=1
         )
-
 
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
@@ -93,4 +90,3 @@ class UserModelTest(TestCase):
             gender=1,
             date_of_birth=date(2005, 1, 1),
         )
-

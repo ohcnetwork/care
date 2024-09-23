@@ -27,7 +27,6 @@ def fix_skill_name(apps, schema_editor):
         Skill.objects.filter(name=old).update(name=new)
 
 
-
 class Migration(migrations.Migration):
     dependencies = [
         ("users", "0009_userfacilityallocation"),

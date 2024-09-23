@@ -87,7 +87,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         return validated
 
+
 MIN_USER_AGE = 16
+
+
 class UserCreateSerializer(SignUpSerializer):
     password = serializers.CharField(required=False)
     facilities = serializers.ListSerializer(
@@ -127,16 +130,17 @@ class UserCreateSerializer(SignUpSerializer):
         return value
 
     def validate_facilities(self, facility_ids):
-        if facility_ids and len(facility_ids) != Facility.objects.filter(external_id__in=facility_ids).count():
-
+        if (
+            facility_ids
+            and len(facility_ids)
+            != Facility.objects.filter(external_id__in=facility_ids).count()
+        ):
             available_facility_ids = Facility.objects.filter(
                 external_id__in=facility_ids,
             ).values_list("external_id", flat=True)
             not_found_ids = list(set(facility_ids) - set(available_facility_ids))
             error = f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}"
-            raise serializers.ValidationError(
-                error
-            )
+            raise serializers.ValidationError(error)
         return facility_ids
 
     def validate_ward(self, value):
@@ -196,7 +200,10 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in User.READ_ONLY_TYPES and validated["user_type"] not in User.READ_ONLY_TYPES:
+        if (
+            self.context["created_by"].user_type in User.READ_ONLY_TYPES
+            and validated["user_type"] not in User.READ_ONLY_TYPES
+        ):
             raise exceptions.ValidationError(
                 {
                     "user_type": [
