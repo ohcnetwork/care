@@ -30,13 +30,15 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Bake docker images
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           load: true
           set: |
             *.cache-from=type=local,src=/tmp/.buildx-cache
             *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
+        env:
+          DOCKER_BUILD_NO_SUMMARY: true
 
       - name: Start services
         run: |
