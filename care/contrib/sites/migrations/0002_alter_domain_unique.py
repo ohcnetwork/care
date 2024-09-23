@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 max_length=100,
                 unique=True,
-                validators=[django.contrib.sites.models._simple_domain_name_validator],  # noqa: SLF001
+                validators=[django.contrib.sites.models._simple_domain_name_validator],
                 verbose_name="domain name",
             ),
         )

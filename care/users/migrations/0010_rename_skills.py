@@ -24,7 +24,10 @@ def fix_skill_name(apps, schema_editor):
     }
 
     for old, new in fix.items():
-        Skill.objects.filter(name=old).update(name=new)
+        try:
+            Skill.objects.filter(name=old).update(name=new)
+        except Exception as e:
+            print(e)
 
 
 class Migration(migrations.Migration):

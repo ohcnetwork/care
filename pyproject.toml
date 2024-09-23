@@ -21,7 +21,7 @@ ignore_errors = true
 
 [tool.ruff]
 target-version = "py312"
-extend-exclude = ["*/migrations_old/*"]
+extend-exclude = ["*/migrations*/*"]
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
