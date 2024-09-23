@@ -1,6 +1,5 @@
 import enum
 import logging
-from typing import TypeAlias
 
 from django.core.exceptions import ValidationError
 
@@ -18,7 +17,7 @@ class FlagType(enum.Enum):
 
 # TODO: convert to type in python 3.12
 FlagName = str
-FlagTypeRegistry: TypeAlias = dict[FlagType, dict[FlagName, bool]]
+type FlagTypeRegistry = dict[FlagType, dict[FlagName, bool]]
 
 
 class FlagRegistry:
@@ -48,13 +47,15 @@ class FlagRegistry:
     @classmethod
     def validate_flag_type(cls, flag_type: FlagType) -> None:
         if flag_type not in cls._flags:
-            raise FlagNotFoundException("Invalid Flag Type")
+            msg = "Invalid Flag Type"
+            raise FlagNotFoundException(msg)
 
     @classmethod
     def validate_flag_name(cls, flag_type: FlagType, flag_name):
         cls.validate_flag_type(flag_type)
         if flag_name not in cls._flags[flag_type]:
-            raise FlagNotFoundException("Flag not registered")
+            msg = "Flag not registered"
+            raise FlagNotFoundException(msg)
 
     @classmethod
     def get_all_flags(cls, flag_type: FlagType) -> list[FlagName]:
@@ -65,4 +66,4 @@ class FlagRegistry:
     def get_all_flags_as_choices(
         cls, flag_type: FlagType
     ) -> list[tuple[FlagName, FlagName]]:
-        return ((x, x) for x in cls._flags.get(flag_type, {}).keys())
+        return ((x, x) for x in cls._flags.get(flag_type, {}))

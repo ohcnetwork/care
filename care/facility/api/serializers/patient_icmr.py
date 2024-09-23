@@ -7,7 +7,7 @@ from care.facility.models.patient_icmr import (
     PatientSampleICMR,
 )
 from care.users.models import GENDER_CHOICES
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 class ICMRPersonalDetails(serializers.ModelSerializer):

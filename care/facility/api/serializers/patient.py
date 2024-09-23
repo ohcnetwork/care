@@ -46,8 +46,7 @@ from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):

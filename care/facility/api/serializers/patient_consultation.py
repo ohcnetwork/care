@@ -66,8 +66,7 @@ from care.users.models import User
 from care.utils.lock import Lock
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
 
@@ -227,10 +226,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"consultation": ["Discharged Consultation data cannot be updated"]}
                 )
-            else:
-                instance.medico_legal_case = validated_data.pop("medico_legal_case")
-                instance.save()
-                return instance
+            instance.medico_legal_case = validated_data.pop("medico_legal_case")
+            instance.save()
+            return instance
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())

@@ -64,23 +64,23 @@ class NotificationGenerator:
     ):
         if not worker_initated:
             if not isinstance(event_type, Notification.EventType):
-                raise NotificationCreationException("Event Type Invalid")
+                msg = "Event Type Invalid"
+                raise NotificationCreationException(msg)
             if not isinstance(event, Notification.Event):
-                raise NotificationCreationException("Event Invalid")
+                msg = "Event Invalid"
+                raise NotificationCreationException(msg)
             if not isinstance(caused_by, User):
-                raise NotificationCreationException(
-                    "edited_by must be an instance of a user"
-                )
-            if facility:
-                if not isinstance(facility, Facility):
-                    raise NotificationCreationException(
-                        "facility must be an instance of Facility"
-                    )
+                msg = "edited_by must be an instance of a user"
+                raise NotificationCreationException(msg)
+            if facility and not isinstance(facility, Facility):
+                msg = "facility must be an instance of Facility"
+                raise NotificationCreationException(msg)
             mediums = []
             if notification_mediums:
                 for medium in notification_mediums:
                     if not isinstance(medium, Notification.Medium):
-                        raise NotificationCreationException("Medium Type Invalid")
+                        msg = "Medium Type Invalid"
+                        raise NotificationCreationException(msg)
                     mediums.append(medium.value)
             data = {
                 "event_type": event_type.value,
@@ -231,6 +231,7 @@ class NotificationGenerator:
                 self.caused_object.patient.phone_number,
                 self.caused_object.patient.emergency_phone_number,
             ]
+        return None
 
     def _get_default_medium(self):
         return [Notification.Medium.SYSTEM.value]

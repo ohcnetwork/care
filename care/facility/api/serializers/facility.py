@@ -14,12 +14,11 @@ from care.users.api.serializers.lsg import (
 )
 from care.utils.file_uploads.cover_image import upload_cover_image
 from care.utils.models.validators import (
+    MiddlewareDomainAddressValidator,
     cover_image_validator,
     custom_image_extension_validator,
 )
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
-from config.validators import MiddlewareDomainAddressValidator
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 User = get_user_model()
 

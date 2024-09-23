@@ -25,7 +25,7 @@ def upload_cover_image(
     image: UploadedFile,
     object_external_id: str,
     folder: Literal["cover_images", "avatars"],
-    old_key: str = None,
+    old_key: str | None = None,
 ) -> str:
     config, bucket_name = get_client_config(BucketType.FACILITY)
     s3 = boto3.client("s3", **config)

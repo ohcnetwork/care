@@ -17,7 +17,7 @@ def generate_encoded_jwks():
 def get_jwks_from_file(base_path: Path):
     file_path = base_path / "jwks.b64.txt"
     try:
-        with open(file_path, "r") as file:
+        with open(file_path) as file:
             return file.read()
     except FileNotFoundError:
         jwks = generate_encoded_jwks()

@@ -199,7 +199,7 @@ MIDDLEWARE = [
 
 # add RequestTimeLoggingMiddleware based on the environment variable
 if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
-    MIDDLEWARE.insert(0, "config.middleware.RequestTimeLoggingMiddleware")
+    MIDDLEWARE.insert(0, "config.middlewares.RequestTimeLoggingMiddleware")
 
 # STATIC
 # ------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 class DailyRoundSerializer(serializers.ModelSerializer):

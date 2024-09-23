@@ -33,8 +33,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.lsg import StateSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 def inverse_choices(choices):
@@ -246,7 +245,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
             raise ValidationError("Permission Denied, Shifting request was cancelled.")
-        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
             raise ValidationError("Permission Denied, Shifting request was completed.")
 
         # Dont allow editing origin or patient
@@ -289,11 +288,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
                     raise ValidationError({"status": ["Permission Denied"]})
 
             elif (
-                status in self.LIMITED_RECIEVING_STATUS
-                and instance.assigned_facility
-                and not has_facility_permission(user, instance.assigned_facility)
-            ) or status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
-                user, instance.shifting_approving_facility
+                (
+                    status in self.LIMITED_RECIEVING_STATUS
+                    and instance.assigned_facility
+                    and not has_facility_permission(user, instance.assigned_facility)
+                )
+                or status in self.LIMITED_SHIFTING_STATUS
+                and not has_facility_permission(
+                    user, instance.shifting_approving_facility
+                )
             ):
                 raise ValidationError({"status": ["Permission Denied"]})
 

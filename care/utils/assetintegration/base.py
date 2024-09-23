@@ -62,8 +62,7 @@ class BaseAssetIntegration:
         try:
             if req.status_code >= 400:
                 raise APIException(req.text, req.status_code)
-            response = req.json()
-            return response
+            return req.json()
 
         except requests.Timeout:
             raise APIException({"error": "Request Timeout"}, 504)

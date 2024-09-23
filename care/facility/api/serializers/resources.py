@@ -13,8 +13,7 @@ from care.facility.models import (
 )
 from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 def inverse_choices(choices):

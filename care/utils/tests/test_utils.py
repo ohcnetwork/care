@@ -85,7 +85,10 @@ class EverythingEquals:
 mock_equal = EverythingEquals()
 
 
-def assert_equal_dicts(d1, d2, ignore_keys=[]):
+def assert_equal_dicts(d1, d2, ignore_keys=None):
+    if ignore_keys is None:
+        ignore_keys = []
+
     def check_equal():
         ignored = set(ignore_keys)
         for k1, v1 in d1.items():
@@ -142,7 +145,7 @@ class TestUtils:
         return LocalBody.objects.create(**data)
 
     @classmethod
-    def get_user_data(cls, district: District, user_type: str = None):
+    def get_user_data(cls, district: District, user_type: str | None = None):
         """
         Returns the data to be used for API testing
 
@@ -174,7 +177,7 @@ class TestUtils:
     @classmethod
     def create_user(
         cls,
-        username: str = None,
+        username: str | None = None,
         district: District = None,
         local_body: LocalBody = None,
         **kwargs,
@@ -265,8 +268,7 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        facility = Facility.objects.create(**data)
-        return facility
+        return Facility.objects.create(**data)
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -625,8 +627,7 @@ class TestUtils:
     def create_patient_investigation_group(cls, **kwargs) -> PatientInvestigationGroup:
         data = cls.get_patient_investigation_group_data()
         data.update(**kwargs)
-        investigation_group = PatientInvestigationGroup.objects.create(**data)
-        return investigation_group
+        return PatientInvestigationGroup.objects.create(**data)
 
     @classmethod
     def get_patient_investigation_session_data(cls, user) -> dict:
@@ -640,8 +641,7 @@ class TestUtils:
     ) -> InvestigationSession:
         data = cls.get_patient_investigation_session_data(user)
         data.update(**kwargs)
-        investigation_session = InvestigationSession.objects.create(**data)
-        return investigation_session
+        return InvestigationSession.objects.create(**data)
 
     @classmethod
     def get_investigation_value_data(
@@ -761,17 +761,16 @@ class TestUtils:
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:
             return {"local_body": None, "local_body_object": None}
-        else:
-            return {
-                "local_body": local_body.id,
-                "local_body_object": {
-                    "id": local_body.id,
-                    "name": local_body.name,
-                    "district": local_body.district.id,
-                    "localbody_code": local_body.localbody_code,
-                    "body_type": local_body.body_type,
-                },
-            }
+        return {
+            "local_body": local_body.id,
+            "local_body_object": {
+                "id": local_body.id,
+                "name": local_body.name,
+                "district": local_body.district.id,
+                "localbody_code": local_body.localbody_code,
+                "body_type": local_body.body_type,
+            },
+        }
 
     def get_district_representation(self, district: District):
         if district is None:
@@ -795,13 +794,11 @@ class TestUtils:
             return {k: to_matching_type(k, v) for k, v in d.items()}
 
         def to_matching_type(name: str, value):
-            if isinstance(value, (OrderedDict, dict)):
+            if isinstance(value, OrderedDict | dict):
                 return dict_to_matching_type(dict(value))
-            elif isinstance(value, list):
+            if isinstance(value, list):
                 return [to_matching_type("", v) for v in value]
-            elif "date" in name and not isinstance(
-                value, (type(None), EverythingEquals)
-            ):
+            if "date" in name and not isinstance(value, type(None) | EverythingEquals):
                 return_value = value
                 if isinstance(value, str):
                     return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -824,16 +821,15 @@ class TestUtils:
     def get_facility_representation(self, facility):
         if facility is None:
             return facility
-        else:
-            return {
-                "id": str(facility.external_id),
-                "name": facility.name,
-                "facility_type": {
-                    "id": facility.facility_type,
-                    "name": facility.get_facility_type_display(),
-                },
-                **self.get_local_body_district_state_representation(facility),
-            }
+        return {
+            "id": str(facility.external_id),
+            "name": facility.name,
+            "facility_type": {
+                "id": facility.facility_type,
+                "name": facility.get_facility_type_display(),
+            },
+            **self.get_local_body_district_state_representation(facility),
+        }
 
     def create_patient_note(
         self, patient=None, note="Patient is doing find", created_by=None, **kwargs

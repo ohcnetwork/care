@@ -30,8 +30,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class BedSerializer(ModelSerializer):

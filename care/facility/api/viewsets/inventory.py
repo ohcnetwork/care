@@ -33,7 +33,17 @@ from care.facility.models import (
 )
 from care.users.models import User
 from care.utils.queryset.facility import get_facility_queryset
-from care.utils.validation.integer_validation import check_integer
+
+
+def check_integer(vals):
+    if not isinstance(vals, list):
+        vals = [vals]
+    for i in range(len(vals)):
+        try:
+            vals[i] = int(vals[i])
+        except Exception as e:
+            raise ValidationError({"value": "Integer Required"}) from e
+    return vals
 
 
 class FacilityInventoryFilter(filters.FilterSet):
@@ -87,9 +97,9 @@ class FacilityInventoryLogViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -171,9 +181,9 @@ class FacilityInventoryMinQuantityViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -215,9 +225,9 @@ class FacilityInventorySummaryViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 

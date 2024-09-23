@@ -38,9 +38,9 @@ from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
+from care.utils.models.validators import MiddlewareDomainAddressValidator
 from care.utils.queryset.facility import get_facility_queryset
-from config.serializers import ChoiceField
-from config.validators import MiddlewareDomainAddressValidator
+from care.utils.serializers.fields import ChoiceField
 
 
 class AssetLocationSerializer(ModelSerializer):

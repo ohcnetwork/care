@@ -16,7 +16,7 @@ from care.facility.models.patient_sample import PatientSample
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 def check_permissions(file_type, associating_id, user, action="create"):
@@ -37,7 +37,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return patient.id
-        elif file_type == FileUpload.FileType.CONSULTATION.value:
+        if file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if consultation.discharge_date and not action == "read":
                 raise serializers.ValidationError(
@@ -57,7 +57,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.id
-        elif file_type == FileUpload.FileType.CONSENT_RECORD.value:
+        if file_type == FileUpload.FileType.CONSENT_RECORD.value:
             consultation = PatientConsent.objects.get(
                 external_id=associating_id
             ).consultation
@@ -75,7 +75,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 return associating_id
             raise Exception("No Permission")
-        elif file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
+        if file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if (
                 consultation.patient.assigned_to
@@ -90,7 +90,7 @@ def check_permissions(file_type, associating_id, user, action="create"):
             ):
                 raise Exception("No Permission")
             return consultation.external_id
-        elif file_type == FileUpload.FileType.SAMPLE_MANAGEMENT.value:
+        if file_type == FileUpload.FileType.SAMPLE_MANAGEMENT.value:
             sample = PatientSample.objects.get(external_id=associating_id)
             patient = sample.patient
             if patient.assigned_to:
@@ -111,10 +111,12 @@ def check_permissions(file_type, associating_id, user, action="create"):
             if not has_facility_permission(user, patient.facility):
                 raise Exception("No Permission")
             return sample.id
-        elif file_type == FileUpload.FileType.CLAIM.value or file_type == FileUpload.FileType.COMMUNICATION.value:
+        if (
+            file_type == FileUpload.FileType.CLAIM.value
+            or file_type == FileUpload.FileType.COMMUNICATION.value
+        ):
             return associating_id
-        else:
-            raise Exception("Undefined File Type")
+        raise Exception("Undefined File Type")
 
     except Exception:
         raise serializers.ValidationError({"permission": "denied"})

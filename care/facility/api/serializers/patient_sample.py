@@ -12,8 +12,7 @@ from care.facility.models.patient_sample import (
     PatientSampleFlow,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class PatientSampleFlowSerializer(serializers.ModelSerializer):
