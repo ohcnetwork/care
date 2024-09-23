@@ -248,6 +248,9 @@ class ImageSizeValidator:
             self.aspect_ratio_str = ", ".join(
                 f"{ratio.numerator}:{ratio.denominator}" for ratio in self.aspect_ratio
             )
+        else:
+            self.aspect_ratio = None
+            self.aspect_ratio_str = None
 
     def __call__(self, value: UploadedFile) -> None:
         with Image.open(value.file) as image:
@@ -326,7 +329,6 @@ cover_image_validator = ImageSizeValidator(
     min_height=400,
     max_width=1024,
     max_height=1024,
-    aspect_ratio=[1 / 1],
     min_size=1024,  # 1 KB
     max_size=1024 * 1024 * 2,  # 2 MB
 )

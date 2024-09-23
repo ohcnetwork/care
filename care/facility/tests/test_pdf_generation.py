@@ -143,7 +143,6 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             suggestion="A",
         )
         cls.create_patient_sample(cls.patient, cls.consultation, cls.facility, cls.user)
-        cls.create_policy(patient=cls.patient, user=cls.user)
         cls.create_encounter_symptom(cls.consultation, cls.user)
         cls.patient_investigation_group = cls.create_patient_investigation_group()
         cls.patient_investigation = cls.create_patient_investigation(

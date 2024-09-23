@@ -380,24 +380,6 @@
     -
 {% endif %}]]
 
-{% if hcx %}
-    #align(center, [#line(length: 40%, stroke: mygray,)])
-
-    #align(left, text(14pt,weight: "bold")[=== Health Insurance Details])
-
-    #table(
-        columns: (1fr, 1fr, 1fr, 1fr),
-        inset: 10pt,
-        align: horizon,
-        table.header(
-            [*INSURER NAME*], [*ISSUER ID*], [*MEMBER ID*], [*POLICY ID*],
-        ),
-        {% for policy in hcx %}
-            "{{policy.insurer_name|format_empty_data }}", "{{policy.insurer_id|format_empty_data }}", "{{policy.subscriber_id }}", "{{policy.policy_id }}",
-        {% endfor %}
-    )
-{% endif %}
-
 {% if files %}
     #align(center, [#line(length: 40%, stroke: mygray,)])
 
