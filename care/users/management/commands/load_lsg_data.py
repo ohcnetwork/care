@@ -18,7 +18,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("folder", help="path to the folder of JSONs")
 
-    def handle(self, *_, **options) -> str | None:
+    def handle(self, *args, **options) -> str | None:
         folder = options["folder"]
         counter = 0
         local_bodies = []
@@ -89,7 +89,7 @@ class Command(BaseCommand):
             # Hence, those records can be ignored using the `ignore_conflicts` flag
             LocalBody.objects.bulk_create(local_body_objs, ignore_conflicts=True)
 
-        for counter,f in enumerate(sorted(Path.glob(f"{folder}/*.json"))):
+        for counter, f in enumerate(sorted(Path.glob(f"{folder}/*.json"))):
             with Path(f).open() as data_f:
                 data = json.load(data_f)
                 data.pop("wards", None)

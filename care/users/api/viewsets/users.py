@@ -122,7 +122,6 @@ class UserViewSet(
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
 
-
     def get_queryset(self):
         if self.request.user.is_superuser:
             return self.queryset
@@ -175,7 +174,7 @@ class UserViewSet(
             data=UserSerializer(request.user, context={"request": request}).data,
         )
 
-    def destroy(self, request, *_, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         queryset = self.queryset
         username = kwargs["username"]
         if request.user.is_superuser:
@@ -203,7 +202,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["POST"])
-    def add_user(self, request, *_, **__):
+    def add_user(self, request, *args, **kwargs):
         password = request.data.pop(
             "password", User.objects.make_random_password(length=8)
         )
@@ -241,7 +240,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
-    def get_facilities(self, _, *__, **___):
+    def get_facilities(self, _, *__, **kwargs_):
         user = self.get_object()
         queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
@@ -252,7 +251,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["PUT"], permission_classes=[IsAuthenticated])
-    def add_facility(self, request, *_, **__):
+    def add_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
         user = self.get_object()
         remove_facility_user_cache(user.id)
@@ -280,7 +279,7 @@ class UserViewSet(
         responses={204: "Deleted Successfully"},
     )
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
-    def clear_home_facility(self, request, *_, **__):
+    def clear_home_facility(self, request, *args, **kwargs):
         user = self.get_object()
         requesting_user = request.user
 
@@ -315,7 +314,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["DELETE"], permission_classes=[IsAuthenticated])
-    def delete_facility(self, request, *_, **__):
+    def delete_facility(self, request, *args, **kwargs):
         # Remove User Facility Cache
         user = self.get_object()
         remove_facility_user_cache(user.id)
@@ -345,7 +344,7 @@ class UserViewSet(
         methods=["PATCH", "GET"],
         permission_classes=[IsAuthenticated],
     )
-    def pnconfig(self, request, *_, **__):
+    def pnconfig(self, request, *args, **kwargs):
         user = request.user
         if request.method == "GET":
             return Response(

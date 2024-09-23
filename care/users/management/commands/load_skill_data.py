@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     help = "Seed Data for Skills"
 
-    def handle(self, *_, **__):
+    def handle(self, *args, **kwargs):
         self.stdout.write("Seeding Skills Data... ", ending="")
 
         skills = [

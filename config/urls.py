@@ -99,9 +99,8 @@ urlpatterns = [
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
     # OpenID Connect
     path(".well-known/jwks.json", PublicJWKsView.as_view(), name="jwks-json"),
-    # TODO: Remove the config url as its not a standard implementation
-    path(".well-known/openid-configuration", PublicJWKsView.as_view()),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+]
 
 if settings.ENABLE_ABDM:
     urlpatterns += abdm_urlpatterns

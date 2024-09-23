@@ -51,7 +51,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("state", help="")
 
-    def handle(self, *_, **options):
+    def handle(self, *args, **options):
         state = options["state"]
         states = []
         if state == "all":

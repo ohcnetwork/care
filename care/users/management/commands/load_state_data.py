@@ -19,7 +19,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("json_file_path", help="path to the folder of JSONs")
 
-    def handle(self, *_, **options):
+    def handle(self, *args, **options):
         json_file_path = options["json_file_path"]
 
         data = []

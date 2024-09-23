@@ -23,7 +23,7 @@ class Command(BaseCommand):
 
     help = "Seed Data for Investigations"
 
-    def handle(self, *_, **__):
+    def handle(self, *args, **kwargs):
         investigation_group_dict = {}
 
         investigation_groups_to_create = [

@@ -10,16 +10,16 @@ from config.authentication import (
 
 
 class MiddlewareAuthenticationVerifyView(APIView):
-    authentication_classes = [MiddlewareAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = (MiddlewareAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response(UserBaseMinimumSerializer(request.user).data)
 
 
 class MiddlewareAssetAuthenticationVerifyView(APIView):
-    authentication_classes = [MiddlewareAssetAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = (MiddlewareAssetAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response(UserBaseMinimumSerializer(request.user).data)

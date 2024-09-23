@@ -40,7 +40,7 @@ class StateViewSet(
     @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
-    def districts(self, *_, **__):
+    def districts(self, *args, **kwargs):
         state = self.get_object()
         serializer = DistrictSerializer(
             state.district_set.all().order_by("name"), many=True
@@ -74,7 +74,7 @@ class DistrictViewSet(
     @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
-    def local_bodies(self, *_, **__):
+    def local_bodies(self, *args, **kwargs):
         district = self.get_object()
         serializer = LocalBodySerializer(
             district.localbody_set.all().order_by("name"), many=True
@@ -84,7 +84,7 @@ class DistrictViewSet(
     @extend_schema(tags=["places"])
     @method_decorator(cache_page(3600))
     @action(detail=True, methods=["get"])
-    def get_all_local_body(self, *_, **__):
+    def get_all_local_body(self, *args, **kwargs):
         district = self.get_object()
         data = []
         for lsg_object in LocalBody.objects.filter(district=district):

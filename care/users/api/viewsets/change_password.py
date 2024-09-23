@@ -30,7 +30,7 @@ class ChangePasswordView(UpdateAPIView):
     model = User
     permission_classes = (IsAuthenticated,)
 
-    def update(self, request, *_, **__):
+    def update(self, request, *args, **kwargs):
         self.object = self.request.user
         serializer = self.get_serializer(data=request.data)
 

@@ -15,8 +15,7 @@ class Command(BaseCommand):
 
     help = "Seed Data for Inventory"
 
-    def handle(self, *_, **__):
-
+    def handle(self, *args, **kwargs):
         # Inventory Unit
 
         items, _ = FacilityInventoryUnit.objects.get_or_create(name="Items")

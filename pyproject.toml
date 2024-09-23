@@ -79,14 +79,19 @@ ignore = [
   "DJ001",   # django-nullable-model-string-field
   "ISC001",  # conflicts with format
   "COM812",  # conflicts with format
-  "RUF012", # Too hard
-  "FBT001", # why not!
+  "RUF012",  # Too hard
+  "FBT001",  # why not!
+  "S106",    # useless
 ]
 
 
 [tool.ruff.format]
 line-ending = "lf"
 
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["E402", "F401"] # for imports
+"**/tests/**" = ["DTZ001"]
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "list", "filter"]
@@ -96,6 +101,5 @@ builtins-ignorelist = ["id", "list", "filter"]
 docstring-quotes = "double"
 
 
-[tool.ruff.lint.per-file-ignores]
-"**/__init__.py" = ["E402", "F401"] # for imports
-"**/tests/**" = ["DTZ001"]
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true

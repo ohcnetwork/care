@@ -397,7 +397,7 @@ class User(AbstractUser):
     def check_username_exists(username):
         return User.objects.get_entire_queryset().filter(username=username).exists()
 
-    def delete(self, *_, **__):
+    def delete(self, *args, **kwargs):
         self.deleted = True
         self.save()
 
@@ -433,6 +433,7 @@ class UserFacilityAllocation(models.Model):
 
     def __str__(self):
         return self.facility.name
+
 
 class UserFlag(BaseFlag):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
