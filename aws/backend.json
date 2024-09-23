@@ -272,6 +272,10 @@
           "name": "HCX_IG_URL"
         },
         {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
+        },
+        {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
           "name": "ABDM_CLIENT_ID"
         },
