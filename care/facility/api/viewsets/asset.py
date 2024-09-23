@@ -15,9 +15,8 @@ from django_filters.constants import EMPTY_VALUES
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework import filters as drf_filters
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
@@ -35,6 +34,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.asset import (
     AssetConfigSerializer,
     AssetLocationSerializer,
+    AssetPublicSerializer,
     AssetSerializer,
     AssetServiceSerializer,
     AssetTransactionSerializer,
@@ -187,7 +187,7 @@ class AssetFilter(filters.FilterSet):
 
 class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "external_id"
     permission_classes = []
 
@@ -206,7 +206,7 @@ class AssetPublicViewSet(GenericViewSet):
 
 class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "qr_code_id"
     permission_classes = []
 
@@ -241,11 +241,10 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="asset",
                     object_external_id=self.kwargs["asset_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset's availability records"
-                )
-        elif "asset_location_external_id" in self.kwargs:
+            raise exceptions.PermissionDenied(
+                "You do not have access to this asset's availability records"
+            )
+        if "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
                 AssetLocation, external_id=self.kwargs["asset_location_external_id"]
             )
@@ -254,14 +253,12 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="assetlocation",
                     object_external_id=self.kwargs["asset_location_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset location's availability records"
-                )
-        else:
-            raise exceptions.ValidationError(
-                "Either asset_external_id or asset_location_external_id is required"
+            raise exceptions.PermissionDenied(
+                "You do not have access to this asset location's availability records"
             )
+        raise exceptions.ValidationError(
+            "Either asset_external_id or asset_location_external_id is required"
+        )
 
 
 class AssetViewSet(
@@ -281,6 +278,7 @@ class AssetViewSet(
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name", "serial_number", "qr_code_id"]
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filterset_class = AssetFilter
 
     def get_queryset(self):
@@ -326,10 +324,9 @@ class AssetViewSet(
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        else:
-            raise exceptions.AuthenticationFailed(
-                "Only District Admin and above can delete assets"
-            )
+        raise exceptions.AuthenticationFailed(
+            "Only District Admin and above can delete assets"
+        )
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
@@ -388,6 +385,7 @@ class AssetViewSet(
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,
+                    "id": asset.external_id,
                     "middleware_hostname": middleware_hostname,
                 }
             )

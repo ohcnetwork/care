@@ -37,8 +37,8 @@ def send_webpush(**kwargs):
 
 def get_model_class(model_name):
     if model_name == "User":
-        return apps.get_model("users.{}".format(model_name))
-    return apps.get_model("facility.{}".format(model_name))
+        return apps.get_model(f"users.{model_name}")
+    return apps.get_model(f"facility.{model_name}")
 
 
 class NotificationGenerator:
@@ -166,30 +166,26 @@ class NotificationGenerator:
         message = ""
         if isinstance(self.caused_object, PatientRegistration):
             if self.event == Notification.Event.PATIENT_CREATED.value:
-                message = "Patient {} was created by {}".format(
-                    self.caused_object.name, self.caused_by.get_full_name()
-                )
+                message = f"Patient {self.caused_object.name} was created by {self.caused_by.get_full_name()}"
             elif self.event == Notification.Event.PATIENT_UPDATED.value:
-                message = "Patient {} was updated by {}".format(
-                    self.caused_object.name, self.caused_by.get_full_name()
-                )
+                message = f"Patient {self.caused_object.name} was updated by {self.caused_by.get_full_name()}"
             if self.event == Notification.Event.PATIENT_DELETED.value:
-                message = "Patient {} was deleted by {}".format(
-                    self.caused_object.name, self.caused_by.get_full_name()
-                )
+                message = f"Patient {self.caused_object.name} was deleted by {self.caused_by.get_full_name()}"
+            if self.event == Notification.Event.PATIENT_FILE_UPLOAD_CREATED.value:
+                message = f"A file for patient {self.caused_object.name} was uploaded by {self.caused_by.get_full_name()}"
         elif isinstance(self.caused_object, PatientConsultation):
             if self.event == Notification.Event.PATIENT_CONSULTATION_CREATED.value:
-                message = "Consultation for Patient {} was created by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
-                )
+                message = f"Consultation for Patient {self.caused_object.patient.name} was created by {self.caused_by.get_full_name()}"
             elif self.event == Notification.Event.PATIENT_CONSULTATION_UPDATED.value:
-                message = "Consultation for Patient {} was updated by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
-                )
+                message = f"Consultation for Patient {self.caused_object.patient.name} was updated by {self.caused_by.get_full_name()}"
             if self.event == Notification.Event.PATIENT_CONSULTATION_DELETED.value:
-                message = "Consultation for Patient {} was deleted by {}".format(
-                    self.caused_object.patient.name, self.caused_by.get_full_name()
-                )
+                message = f"Consultation for Patient {self.caused_object.patient.name} was deleted by {self.caused_by.get_full_name()}"
+            if self.event == Notification.Event.CONSULTATION_FILE_UPLOAD_CREATED.value:
+                message = f"Consultation file for Patient {self.caused_object.patient.name} was uploaded by {self.caused_by.get_full_name()}"
+            if self.event == Notification.Event.PATIENT_PRESCRIPTION_CREATED.value:
+                message = f"Prescription for Patient {self.caused_object.patient.name} was created by {self.caused_by.get_full_name()}"
+            if self.event == Notification.Event.PATIENT_PRESCRIPTION_UPDATED.value:
+                message = f"Prescription for Patient {self.caused_object.patient.name} was updated by {self.caused_by.get_full_name()}"
         elif isinstance(self.caused_object, InvestigationSession):
             if self.event == Notification.Event.INVESTIGATION_SESSION_CREATED.value:
                 message = (
@@ -200,42 +196,24 @@ class NotificationGenerator:
                 )
         elif isinstance(self.caused_object, InvestigationValue):
             if self.event == Notification.Event.INVESTIGATION_UPDATED.value:
-                message = "Investigation Value for {} for Patient {} was updated by {}".format(
-                    self.caused_object.investigation.name,
-                    self.caused_object.consultation.patient.name,
-                    self.caused_by.get_full_name(),
-                )
+                message = f"Investigation Value for {self.caused_object.investigation.name} for Patient {self.caused_object.consultation.patient.name} was updated by {self.caused_by.get_full_name()}"
         elif isinstance(self.caused_object, DailyRound):
             if (
                 self.event
                 == Notification.Event.PATIENT_CONSULTATION_UPDATE_CREATED.value
             ):
-                message = "Consultation for Patient {}  at facility {} was created by {}".format(
-                    self.caused_object.consultation.patient.name,
-                    self.caused_object.consultation.facility.name,
-                    self.caused_by.get_full_name(),
-                )
+                message = f"Consultation for Patient {self.caused_object.consultation.patient.name}  at facility {self.caused_object.consultation.facility.name} was created by {self.caused_by.get_full_name()}"
             elif (
                 self.event
                 == Notification.Event.PATIENT_CONSULTATION_UPDATE_UPDATED.value
             ):
-                message = "Consultation for Patient {}  at facility {} was updated by {}".format(
-                    self.caused_object.consultation.patient.name,
-                    self.caused_object.consultation.facility.name,
-                    self.caused_by.get_full_name(),
-                )
+                message = f"Consultation for Patient {self.caused_object.consultation.patient.name}  at facility {self.caused_object.consultation.facility.name} was updated by {self.caused_by.get_full_name()}"
         elif isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
-                message = "Shifting for Patient {} was updated by {}".format(
-                    self.caused_object.patient.name,
-                    self.caused_by.get_full_name(),
-                )
+                message = f"Shifting for Patient {self.caused_object.patient.name} was updated by {self.caused_by.get_full_name()}"
         elif isinstance(self.caused_object, PatientNotes):
             if self.event == Notification.Event.PATIENT_NOTE_ADDED.value:
-                message = "Notes for Patient {} was added by {}".format(
-                    self.caused_object.patient.name,
-                    self.caused_by.get_full_name(),
-                )
+                message = f"Notes for Patient {self.caused_object.patient.name} was added by {self.caused_by.get_full_name()}"
 
         return message
 
@@ -243,10 +221,7 @@ class NotificationGenerator:
         message = ""
         if isinstance(self.caused_object, ShiftingRequest):
             if self.event == Notification.Event.SHIFTING_UPDATED.value:
-                message = "Your Shifting Request to {} has been approved in Care. Please contact {} for any queries".format(
-                    self.caused_object.assigned_facility.name,
-                    self.caused_object.shifting_approving_facility.phone_number,
-                )
+                message = f"Your Shifting Request to {self.caused_object.assigned_facility.name} has been approved in Care. Please contact {self.caused_object.shifting_approving_facility.phone_number} for any queries"
         return message
 
     def generate_sms_phone_numbers(self):
@@ -368,7 +343,7 @@ class NotificationGenerator:
                     data=message,
                     vapid_private_key=settings.VAPID_PRIVATE_KEY,
                     vapid_claims={
-                        "sub": "mailto:info@coronasafe.network",
+                        "sub": "mailto:info@ohc.network",
                     },
                 )
         except WebPushException as ex:

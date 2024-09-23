@@ -73,6 +73,7 @@ CATEGORY_CHOICES = [
     ("Stable", "Mild"),
     ("Moderate", "Moderate"),
     ("Critical", "Critical"),
+    ("ActivelyDying", "Actively Dying"),
 ]
 
 DISCHARGE_REASON_CHOICES = [

@@ -181,7 +181,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="patientconsent",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     models.Q(("type", 2), _negated=True),
                     ("patient_code_status__isnull", False),
                     _connector="OR",
@@ -192,7 +192,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="patientconsent",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     ("type", 2), ("patient_code_status__isnull", True), _connector="OR"
                 ),
                 name="patient_code_status_not_required",

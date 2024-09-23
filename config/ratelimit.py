@@ -38,7 +38,7 @@ def ratelimit(
             group = group
             key = "ip"
         else:
-            group = group + "-{}".format(key)
+            group = group + f"-{key}"
             key = GETKEY
         if is_ratelimited(
             request,

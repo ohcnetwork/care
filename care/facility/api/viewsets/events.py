@@ -45,11 +45,20 @@ class EventTypeViewSet(ReadOnlyModelViewSet):
 
 
 class PatientConsultationEventFilterSet(filters.FilterSet):
+    ordering = filters.OrderingFilter(
+        fields=(
+            "created_date",
+            "taken_at",
+        )
+    )
+
     class Meta:
         model = PatientConsultationEvent
-        fields = {
-            "event_type": ["exact"],
-        }
+        fields = [
+            "event_type",
+            "caused_by",
+            "is_latest",
+        ]
 
 
 class PatientConsultationEventViewSet(ReadOnlyModelViewSet):

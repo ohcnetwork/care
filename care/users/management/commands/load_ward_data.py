@@ -1,6 +1,5 @@
 import glob
 import json
-from typing import Optional
 
 from django.core.management.base import BaseCommand, CommandParser
 from django.db import IntegrityError
@@ -19,7 +18,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("folder", help="path to the folder of JSONs")
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         def int_or_zero(value):
             try:
                 int(value)
@@ -60,7 +59,7 @@ class Command(BaseCommand):
             ).first()
 
         for f in sorted(glob.glob(f"{folder}/*.json")):
-            with open(f"{f}", "r") as data_f:
+            with open(f"{f}") as data_f:
                 data = json.load(data_f)
                 wards = data.pop("wards", None)
                 if wards is None:

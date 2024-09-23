@@ -84,6 +84,7 @@ class HcxGatewayViewSet(GenericViewSet):
                 policy["id"],
                 policy["id"],
                 policy["id"],
+                policy["patient_object"]["phone_number"],
                 REVERSE_STATUS_CHOICES[policy["status"]],
                 REVERSE_PRIORITY_CHOICES[policy["priority"]],
                 REVERSE_PURPOSE_CHOICES[policy["purpose"]],
@@ -229,6 +230,7 @@ class HcxGatewayViewSet(GenericViewSet):
             claim["id"],
             claim["id"],
             claim["items"],
+            claim["policy_object"]["patient_object"]["phone_number"],
             REVERSE_USE_CHOICES[claim["use"]],
             REVERSE_STATUS_CHOICES[claim["status"]],
             REVERSE_CLAIM_TYPE_CHOICES[claim["type"]],
@@ -318,7 +320,17 @@ class HcxGatewayViewSet(GenericViewSet):
     def payors(self, request):
         payors = Hcx().searchRegistry("roles", "payor")["participants"]
 
-        active_payors = list(filter(lambda payor: payor["status"] == "Active", payors))
+        result = filter(lambda payor: payor["status"] == "Active", payors)
+
+        if query := request.query_params.get("query"):
+            query = query.lower()
+            result = filter(
+                lambda payor: (
+                    query in payor["participant_name"].lower()
+                    or query in payor["participant_code"].lower()
+                ),
+                result,
+            )
 
         response = list(
             map(
@@ -326,7 +338,7 @@ class HcxGatewayViewSet(GenericViewSet):
                     "name": payor["participant_name"],
                     "code": payor["participant_code"],
                 },
-                active_payors,
+                result,
             )
         )
 

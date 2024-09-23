@@ -112,7 +112,7 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
         ):
             validated["is_principal"] = False
 
-        if "is_principal" in validated and validated["is_principal"]:
+        if validated.get("is_principal"):
             verification_status = validated.get(
                 "verification_status",
                 self.instance.verification_status if self.instance else None,

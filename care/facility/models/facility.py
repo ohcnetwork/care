@@ -1,17 +1,22 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
-from django.db import models
-from multiselectfield import MultiSelectField
-from multiselectfield.utils import get_max_length
+from django.db import models, transaction
+from django.db.models import IntegerChoices
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
+from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
@@ -38,6 +43,16 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+
+class RoomType(models.IntegerChoices):
+    ICU_BED = 100, "ICU Bed"
+    GENERAL_BED = 200, "Ordinary Bed"
+    OXYGEN_BED = 300, "Oxygen Bed"
+    ISOLATION_BED = 400, "Isolation Bed"
+    OTHER = 500, "Others"
+
+
+# to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
     (2, "Maternity Care"),
@@ -47,9 +62,25 @@ FEATURE_CHOICES = [
     (6, "Blood Bank"),
 ]
 
+
+class HubRelationship(IntegerChoices):
+    REGULAR_HUB = 1, _("Regular Hub")
+    TELE_ICU_HUB = 2, _("Tele ICU Hub")
+
+
+class FacilityFeature(models.IntegerChoices):
+    CT_SCAN_FACILITY = 1, "CT Scan Facility"
+    MATERNITY_CARE = 2, "Maternity Care"
+    X_RAY_FACILITY = 3, "X-Ray Facility"
+    NEONATAL_CARE = 4, "Neonatal Care"
+    OPERATION_THEATER = 5, "Operation Theater"
+    BLOOD_BANK = 6, "Blood Bank"
+
+
 ROOM_TYPES.extend(BASE_ROOM_TYPES)
 
 REVERSE_ROOM_TYPES = reverse_choices(ROOM_TYPES)
+REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 FACILITY_TYPES = [
     (1, "Educational Inst"),
@@ -124,7 +155,7 @@ DOCTOR_TYPES = [
     (23, "Nephrologist"),
     (24, "Neuro Surgeon"),
     (25, "Neurologist"),
-    (26, "Obstetrician and Gynecologist"),
+    (26, "Obstetrician/Gynecologist (OB/GYN)"),
     (27, "Oncologist"),
     (28, "Oncology Surgeon"),
     (29, "Ophthalmologist"),
@@ -147,11 +178,38 @@ DOCTOR_TYPES = [
     (46, "Transfusion Medicine Specialist"),
     (47, "Urologist"),
     (48, "Nurse"),
+    (49, "Allergist/Immunologist"),
+    (50, "Cardiothoracic Surgeon"),
+    (51, "Gynecologic Oncologist"),
+    (52, "Hepatologist"),
+    (53, "Internist"),
+    (54, "Neonatologist"),
+    (55, "Pain Management Specialist"),
+    (56, "Physiatrist (Physical Medicine and Rehabilitation)"),
+    (57, "Podiatrist"),
+    (58, "Preventive Medicine Specialist"),
+    (59, "Radiation Oncologist"),
+    (60, "Sleep Medicine Specialist"),
+    (61, "Transplant Surgeon"),
+    (62, "Trauma Surgeon"),
+    (63, "Vascular Surgeon"),
+    (64, "Critical Care Physician"),
 ]
 
 REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
+
+
+# making sure A -> B -> C -> A does not happen
+def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
+    ancestors_of_base = FacilityHubSpoke.objects.filter(spoke_id=base_id).values_list(
+        "hub_id", flat=True
+    )
+    if spoke_id in ancestors_of_base:
+        raise serializers.ValidationError("This facility is already an ancestor hub")
+    for ancestor in ancestors_of_base:
+        check_if_spoke_is_not_ancestor(ancestor, spoke_id)
 
 
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
@@ -160,13 +218,11 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     kasp_empanelled = models.BooleanField(default=False, blank=False, null=False)
-    features = MultiSelectField(
-        choices=FEATURE_CHOICES,
-        null=True,
+    features = ArrayField(
+        models.SmallIntegerField(choices=FacilityFeature),
         blank=True,
-        max_length=get_max_length(FEATURE_CHOICES, None),
+        null=True,
     )
-
     longitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
     )
@@ -243,6 +299,27 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    @transaction.atomic
+    def delete(self, *args):
+        from care.facility.models.asset import Asset, AssetLocation
+
+        AssetLocation.objects.filter(facility_id=self.id).update(deleted=True)
+        Asset.objects.filter(
+            current_location_id__in=AssetLocation._base_manager.filter(  # noqa: SLF001
+                facility_id=self.id
+            ).values_list("id", flat=True)
+        ).update(deleted=True)
+        return super().delete(*args)
+
+    @property
+    def get_features_display(self):
+        if not self.features:
+            return []
+        return [FacilityFeature(f).label for f in self.features]
+
+    def get_facility_flags(self):
+        return FacilityFlag.get_all_flags(self.id)
+
     CSV_MAPPING = {
         "name": "Facility Name",
         "facility_type": "Facility Type",
@@ -256,6 +333,41 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+
+
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")
+    relationship = models.IntegerField(
+        choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
+    )
+
+    class Meta:
+        constraints = [
+            # Ensure hub and spoke are not the same
+            CheckConstraint(
+                check=~models.Q(hub=models.F("spoke")),
+                name="hub_and_spoke_not_same",
+            ),
+            # bidirectional uniqueness
+            UniqueConstraint(
+                fields=["hub", "spoke"],
+                name="unique_hub_spoke",
+                condition=models.Q(deleted=False),
+            ),
+            UniqueConstraint(
+                fields=["spoke", "hub"],
+                name="unique_spoke_hub",
+                condition=models.Q(deleted=False),
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        check_if_spoke_is_not_ancestor(self.hub.id, self.spoke.id)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -282,7 +394,7 @@ class FacilityLocalGovtBody(models.Model):
         constraints = [
             models.CheckConstraint(
                 name="cons_facilitylocalgovtbody_only_one_null",
-                check=models.Q(local_body__isnull=False)
+                condition=models.Q(local_body__isnull=False)
                 | models.Q(district__isnull=False),
             )
         ]
@@ -335,7 +447,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomType.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -371,7 +483,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return (
             str(self.facility)
             + " "
-            + REVERSE_ROOM_TYPES[self.room_type]
+            + RoomType(self.room_type).label
             + " "
             + str(self.total_capacity)
         )

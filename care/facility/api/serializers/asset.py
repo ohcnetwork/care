@@ -181,7 +181,7 @@ class AssetSerializer(ModelSerializer):
 
             facilities = get_facility_queryset(user)
             if not facilities.filter(id=location.facility.id).exists():
-                raise PermissionError()
+                raise PermissionError
             del attrs["location"]
             attrs["current_location"] = location
 
@@ -201,7 +201,7 @@ class AssetSerializer(ModelSerializer):
                 )
 
         # validate that last serviced date is not in the future
-        if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
+        if attrs.get("last_serviced_on"):
             if attrs["last_serviced_on"] > datetime.now().date():
                 raise ValidationError("Last serviced on cannot be in the future")
 
@@ -318,6 +318,32 @@ class AssetSerializer(ModelSerializer):
             updated_instance: Asset = super().update(instance, validated_data)
             cache.delete(f"asset:{instance.external_id}")
         return updated_instance
+
+
+class AssetPublicSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    status = ChoiceField(choices=StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=AssetTypeChoices)
+    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = (
+            "id",
+            "name",
+            "location_object",
+            "serial_number",
+            "warranty_details",
+            "warranty_amc_end_of_validity",
+            "asset_type",
+            "asset_class",
+            "vendor_name",
+            "support_name",
+            "support_email",
+            "support_phone",
+            "is_working",
+            "status",
+        )
 
 
 class AssetConfigSerializer(ModelSerializer):

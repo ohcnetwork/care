@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 
 
-class UUIDValidator(object):
+class UUIDValidator:
     def __call__(self, value):
         try:
             return uuid.UUID(value)

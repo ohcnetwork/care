@@ -21,9 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConsentRequestFilter(filters.FilterSet):
-    patient = filters.UUIDFilter(
-        field_name="patient_abha__patientregistration__external_id"
-    )
+    patient = filters.UUIDFilter(field_name="patient_abha__patient__external_id")
     health_id = filters.CharFilter(field_name="patient_abha__health_id")
     ordering = filters.OrderingFilter(
         fields=(
@@ -32,7 +30,7 @@ class ConsentRequestFilter(filters.FilterSet):
         )
     )
     facility = filters.UUIDFilter(
-        field_name="patient_abha__patientregistration__facility__external_id"
+        field_name="patient_abha__patient__facility__external_id"
     )
 
     class Meta:
@@ -69,19 +67,9 @@ class ConsentViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin):
 
         consent = ConsentRequest(**serializer.validated_data, requester=request.user)
 
-        try:
-            response = Gateway().consent_requests__init(consent)
-            if response.status_code != 202:
-                return Response(response.json(), status=response.status_code)
-        except Exception as e:
-            logger.warning(
-                f"Error: ConsentViewSet::create failed to notify (consent_requests__init). Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {"detail": "Failed to initialize consent request"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        response = Gateway().consent_requests__init(consent)
+        if response.status_code != 202:
+            return Response(response.json(), status=response.status_code)
 
         consent.save()
         return Response(

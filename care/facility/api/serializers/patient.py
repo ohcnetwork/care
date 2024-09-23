@@ -6,8 +6,6 @@ from django.db.models import Q
 from django.utils.timezone import make_aware, now
 from rest_framework import serializers
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
-from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -56,7 +54,19 @@ from config.serializers import ChoiceField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
+    occupation = ChoiceField(
+        choices=PatientMetaInfo.OccupationChoices, allow_null=True, required=False
+    )
+    socioeconomic_status = ChoiceField(
+        choices=PatientMetaInfo.SocioeconomicStatus.choices,
+        allow_null=True,
+        required=False,
+    )
+    domestic_healthcare_support = ChoiceField(
+        choices=PatientMetaInfo.DomesticHealthcareSupport.choices,
+        allow_null=True,
+        required=False,
+    )
 
     class Meta:
         model = PatientMetaInfo
@@ -204,11 +214,6 @@ class PatientDetailSerializer(PatientListSerializer):
     )
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
-
-    abha_number = ExternalIdSerializerField(
-        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
-    )
-    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
 
     class Meta:
         model = PatientRegistration
@@ -442,6 +447,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
             "facility",
             "allow_transfer",
             "is_active",
+            "is_expired",
         )
 
 
@@ -494,6 +500,21 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
         exclude = ("patient_note",)
 
 
+class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    class Meta:
+        model = PatientNotes
+        fields = (
+            "id",
+            "created_by_object",
+            "created_date",
+            "user_type",
+            "note",
+        )
+
+
 class PatientNotesSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
@@ -509,6 +530,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     thread = serializers.ChoiceField(
         choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
+    reply_to = ExternalIdSerializerField(
+        queryset=PatientNotes.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+    reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -518,6 +546,10 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if "thread" not in validated_data:
             raise serializers.ValidationError({"thread": "This field is required"})
+        if "consultation" not in validated_data:
+            raise serializers.ValidationError(
+                {"consultation": "This field is required"}
+            )
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
@@ -529,6 +561,17 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         else:
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
+
+        if validated_data.get("reply_to"):
+            reply_to_note = validated_data["reply_to"]
+            if reply_to_note.thread != validated_data["thread"]:
+                raise serializers.ValidationError(
+                    "Reply to note should be in the same thread"
+                )
+            if reply_to_note.consultation != validated_data.get("consultation"):
+                raise serializers.ValidationError(
+                    "Reply to note should be in the same consultation"
+                )
 
         user = self.context["request"].user
         note = validated_data.get("note")
@@ -578,6 +621,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "modified_date",
             "last_edited_by",
             "last_edited_date",
+            "reply_to",
+            "reply_to_object",
         )
         read_only_fields = (
             "id",

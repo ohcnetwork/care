@@ -9,12 +9,12 @@
   </a>
 </p>
 
-[![Deploy Care](https://github.com/coronasafe/care/actions/workflows/deployment.yaml/badge.svg)](https://github.com/coronasafe/care/actions/workflows/deployment.yaml)
+[![Deploy Care](https://github.com/ohcnetwork/care/actions/workflows/deployment.yaml/badge.svg)](https://github.com/ohcnetwork/care/actions/workflows/deployment.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)](https://github.com/pydanny/cookiecutter-django/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Chat](https://img.shields.io/badge/-Join%20us%20on%20slack-7b1c7d?logo=slack)](https://slack.coronasafe.in/)
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=&message=Open%20in%20Dev%20Containers&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/coronasafe/care)
+[![Chat](https://img.shields.io/badge/-Join%20us%20on%20slack-7b1c7d?logo=slack)](https://slack.ohc.network/)
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=&message=Open%20in%20Dev%20Containers&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/ohcnetwork/care)
 
 This is the backend for care. an open source platform for managing patients, health workers, and hospitals.
 
@@ -70,7 +70,7 @@ make load-dummy-data
 #### Docker
 
 Prebuilt docker images for server deployments are available
-on [ghcr](https://github.com/coronasafe/care/pkgs/container/care)
+on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
 ## Contributing
 
