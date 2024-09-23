@@ -5,7 +5,7 @@ from django.db import migrations
 from care.users.models import User
 
 
-def migrate_staff_to_nurse(_, __):
+def migrate_staff_to_nurse(apps, schema_editor):
     User.objects.filter(user_type=User.TYPE_VALUE_MAP["Staff"]).update(
         user_type=User.TYPE_VALUE_MAP["Nurse"]
     )
@@ -14,7 +14,7 @@ def migrate_staff_to_nurse(_, __):
     )
 
 
-def migrate_nurse_to_staff(_, __):
+def migrate_nurse_to_staff(apps, schema_editor):
     User.objects.filter(user_type=User.TYPE_VALUE_MAP["Nurse"]).update(
         user_type=User.TYPE_VALUE_MAP["Staff"]
     )

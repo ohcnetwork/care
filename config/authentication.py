@@ -47,7 +47,7 @@ class MiddlewareUser(AnonymousUser):
 
 
 class CustomJWTAuthentication(JWTAuthentication):
-    def authenticate_header(self, _):
+    def authenticate_header(self, request):
         return ""
 
     def get_validated_token(self, raw_token):
@@ -63,7 +63,7 @@ class CustomJWTAuthentication(JWTAuthentication):
 
 
 class CustomBasicAuthentication(BasicAuthentication):
-    def authenticate_header(self, _):
+    def authenticate_header(self, request):
         return ""
 
 
@@ -91,7 +91,7 @@ class MiddlewareAuthentication(JWTAuthentication):
         public_key = jwt.algorithms.RSAAlgorithm.from_jwk(public_key_response)
         return jwt.decode(token, key=public_key, algorithms=["RS256"])
 
-    def authenticate_header(self, _):
+    def authenticate_header(self, request):
         return f'{self.auth_header_type} realm="{self.www_authenticate_realm}"'
 
     def get_user(self, _: Token, facility: Facility):
@@ -208,7 +208,7 @@ class ABDMAuthentication(JWTAuthentication):
             token, key=public_key, audience="account", algorithms=["RS256"]
         )
 
-    def authenticate_header(self, _):
+    def authenticate_header(self, request):
         return "Bearer"
 
     def authenticate(self, request):
@@ -233,7 +233,7 @@ class ABDMAuthentication(JWTAuthentication):
             err = {"detail": "Invalid Authorization token"}
             raise InvalidToken(err) from e
 
-    def get_user(self, _):
+    def get_user(self, validated_token):
         user = User.objects.filter(username=settings.ABDM_USERNAME).first()
         if not user:
             password = User.objects.make_random_password()
@@ -255,7 +255,7 @@ class CustomJWTAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "config.authentication.CustomJWTAuthentication"
     name = "jwtAuth"
 
-    def get_security_definition(self, *args):
+    def get_security_definition(self, auto_schema):
         return build_bearer_security_scheme_object(
             header_name="Authorization",
             token_prefix="Bearer",
@@ -267,7 +267,7 @@ class MiddlewareAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "config.authentication.MiddlewareAuthentication"
     name = "middlewareAuth"
 
-    def get_security_definition(self, *args):
+    def get_security_definition(self, auto_schema):
         return {
             "type": "http",
             "scheme": "bearer",
@@ -286,7 +286,7 @@ class MiddlewareAssetAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "config.authentication.MiddlewareAssetAuthentication"
     name = "middlewareAssetAuth"
 
-    def get_security_definition(self, *args):
+    def get_security_definition(self, auto_schema):
         return {
             "type": "http",
             "scheme": "bearer",
@@ -305,7 +305,7 @@ class CustomBasicAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "config.authentication.CustomBasicAuthentication"
     name = "basicAuth"
 
-    def get_security_definition(self, *args):
+    def get_security_definition(self, auto_schema):
         return {
             "type": "http",
             "scheme": "basic",
@@ -317,7 +317,7 @@ class SessionAuthenticationScheme(OpenApiAuthenticationExtension):
     target_class = "rest_framework.authentication.SessionAuthentication"
     name = "cookieAuth"
 
-    def get_security_definition(self, *args):
+    def get_security_definition(self, auto_schema):
         return {
             "type": "apiKey",
             "in": "cookie",

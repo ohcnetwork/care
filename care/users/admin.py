@@ -21,7 +21,7 @@ User = get_user_model()
 
 class ExportCsvMixin:
     @admin.action(description="Export Selected")
-    def export_as_csv(self, _, __):
+    def export_as_csv(self, request, queryset):
         queryset = User.objects.filter(is_superuser=False).values(
             *User.CSV_MAPPING.keys()
         )
@@ -73,7 +73,7 @@ class UserFlagAdmin(admin.ModelAdmin):
         )
 
         class Meta:
-            fields = "__all__" # noqa DJ007
+            fields = "__all__"
             model = UserFlag
 
     form = UserFlagForm

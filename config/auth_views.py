@@ -72,7 +72,7 @@ class TokenObtainSerializer(serializers.Serializer):
         return {}
 
     @classmethod
-    def get_token(cls, _):
+    def get_token(cls, user):
         msg = "Must implement `get_token` method for `TokenObtainSerializer` subclasses"
         raise NotImplementedError(msg)
 

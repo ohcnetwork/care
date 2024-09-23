@@ -63,7 +63,7 @@ class UserFilterSet(filters.FilterSet):
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
     home_facility = filters.CharFilter(method="filter_home_facility")
 
-    def filter_home_facility(self, queryset, _, value):
+    def filter_home_facility(self, queryset, name, value):
         if value == "NONE":
             return queryset.filter(home_facility__isnull=True)
         return queryset.filter(home_facility__external_id=value)
@@ -73,7 +73,7 @@ class UserFilterSet(filters.FilterSet):
     def get_user_type(
         self,
         queryset,
-        _,
+        field_name,
         value,
     ):
         if value and value in INVERSE_USER_TYPE:
@@ -82,7 +82,7 @@ class UserFilterSet(filters.FilterSet):
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
 
-    def last_active_after(self, queryset, _, value):
+    def last_active_after(self, queryset, name, value):
         if value == "never":
             return queryset.filter(last_login__isnull=True)
         # convert days to date
@@ -243,7 +243,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(detail=True, methods=["GET"], permission_classes=[IsAuthenticated])
-    def get_facilities(self, _, *__, **kwargs_):
+    def get_facilities(self, request, *args, **kwargs):
         user = self.get_object()
         queryset = Facility.objects.filter(users=user).select_related(
             "local_body", "district", "state", "ward"
@@ -366,7 +366,7 @@ class UserViewSet(
 
     @extend_schema(tags=["users"])
     @action(methods=["GET"], detail=True)
-    def check_availability(self, _, username):
+    def check_availability(self, request, username):
         """
         Checks availability of username by getting as query, returns 200 if available, and 409 otherwise.
         """

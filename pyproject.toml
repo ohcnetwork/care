@@ -59,7 +59,7 @@ select = [
   "TID",  # flake8-tidy-imports
   "TCH",  # flake8-todo
   "INT",  # flake8-gettext
-  "ARG",  # flake8-unused-arguments
+  # "ARG",  # flake8-unused-arguments
   "PTH",  # flake8-use-pathlib
   "TD",   # flake8-todo
   "ERA",  # eradicate

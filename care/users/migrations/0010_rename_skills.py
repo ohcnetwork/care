@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def fix_skill_name(apps, _):
+def fix_skill_name(apps, schema_editor):
     Skill = apps.get_model("users", "Skill")
 
     fix = {

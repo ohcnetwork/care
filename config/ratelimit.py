@@ -5,7 +5,7 @@ from django_ratelimit.core import is_ratelimited
 VALIDATE_CAPTCHA_REQUEST_TIMEOUT = 5
 
 
-def get_ratelimit_key(_, __):
+def get_ratelimit_key(group, request):
     return "ratelimit"
 
 

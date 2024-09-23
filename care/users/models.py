@@ -360,7 +360,7 @@ class User(AbstractUser):
         return self.get_full_name()
 
     @staticmethod
-    def has_read_permission(_):
+    def has_read_permission(request):
         return True
 
     def has_object_read_permission(self, request):

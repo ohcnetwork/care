@@ -12,7 +12,9 @@ from .models import UserFacilityAllocation
 
 
 @receiver(reset_password_token_created)
-def password_reset_token_created(_, __, reset_password_token, *args, **kwargs):
+def password_reset_token_created(
+    sender, instance, reset_password_token, *args, **kwargs
+):
     """
     Handles password reset tokens
     When a token is created, an e-mail needs to be sent to the user
@@ -39,7 +41,7 @@ def password_reset_token_created(_, __, reset_password_token, *args, **kwargs):
 
 
 @receiver(pre_save, sender=settings.AUTH_USER_MODEL)
-def save_fields_before_update(_, instance, raw, __, update_fields, **kwargs_):
+def save_fields_before_update(sender, instance, raw, using, update_fields, **kwargs):
     if raw:
         return
 
@@ -56,7 +58,7 @@ def save_fields_before_update(_, instance, raw, __, update_fields, **kwargs_):
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def track_user_facility_allocation(
-    _, instance, created, raw, __, update_fields, **kwargs_
+    sender, instance, created, raw, using, update_fields, **kwargs
 ):
     if raw or (update_fields and "home_facility" not in update_fields):
         return
