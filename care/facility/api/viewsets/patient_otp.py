@@ -5,7 +5,6 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -20,7 +19,8 @@ class PatientMobileOTPViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
-    permission_classes = (AllowAny,)
+    authentication_classes = ()
+    permission_classes = ()
     serializer_class = PatientMobileOTPSerializer
     queryset = PatientMobileOTP.objects.all()
 

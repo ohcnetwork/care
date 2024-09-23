@@ -189,7 +189,8 @@ class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetPublicSerializer
     lookup_field = "external_id"
-    permission_classes = []
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         key = "asset:" + kwargs["external_id"]
@@ -208,7 +209,8 @@ class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetPublicSerializer
     lookup_field = "qr_code_id"
-    permission_classes = []
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         qr_code_id = kwargs["qr_code_id"]
@@ -241,10 +243,11 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="asset",
                     object_external_id=self.kwargs["asset_external_id"],
                 )
-            raise exceptions.PermissionDenied(
-                "You do not have access to this asset's availability records"
-            )
-        if "asset_location_external_id" in self.kwargs:
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset's availability records"
+                )
+        elif "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
                 AssetLocation, external_id=self.kwargs["asset_location_external_id"]
             )
@@ -253,12 +256,14 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="assetlocation",
                     object_external_id=self.kwargs["asset_location_external_id"],
                 )
-            raise exceptions.PermissionDenied(
-                "You do not have access to this asset location's availability records"
+            else:
+                raise exceptions.PermissionDenied(
+                    "You do not have access to this asset location's availability records"
+                )
+        else:
+            raise exceptions.ValidationError(
+                "Either asset_external_id or asset_location_external_id is required"
             )
-        raise exceptions.ValidationError(
-            "Either asset_external_id or asset_location_external_id is required"
-        )
 
 
 class AssetViewSet(
@@ -324,9 +329,10 @@ class AssetViewSet(
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        raise exceptions.AuthenticationFailed(
-            "Only District Admin and above can delete assets"
-        )
+        else:
+            raise exceptions.AuthenticationFailed(
+                "Only District Admin and above can delete assets"
+            )
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]

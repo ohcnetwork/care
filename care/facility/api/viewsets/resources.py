@@ -116,7 +116,6 @@ class ResourceRequestViewSet(
         "emergency",
         "priority",
     ]
-
     permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         filters.DjangoFilterBackend,

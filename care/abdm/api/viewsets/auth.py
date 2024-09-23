@@ -109,24 +109,29 @@ class DiscoverView(GenericAPIView):
                 "No matching records found, need more data",
                 status=status.HTTP_404_NOT_FOUND,
             )
-        for identifier in verified_identifiers:
-            if identifier["value"] is None:
-                continue
+        else:
+            for identifier in verified_identifiers:
+                if identifier["value"] is None:
+                    continue
 
-            # if identifier["type"] == "MOBILE":
-            #     matched_by.append(identifier["value"])
-            #     mobile = identifier["value"].replace("+91", "").replace("-", "")
-            #     patients = patients.filter(
-            #         Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
-            #     )
+                # if identifier["type"] == "MOBILE":
+                #     matched_by.append(identifier["value"])
+                #     mobile = identifier["value"].replace("+91", "").replace("-", "")
+                #     patients = patients.filter(
+                #         Q(phone_number=f"+91{mobile}") | Q(phone_number=mobile)
+                #     )
 
-            if identifier["type"] == "NDHM_HEALTH_NUMBER":
-                matched_by.append(identifier["value"])
-                patients = patients.filter(abha_number__abha_number=identifier["value"])
+                if identifier["type"] == "NDHM_HEALTH_NUMBER":
+                    matched_by.append(identifier["value"])
+                    patients = patients.filter(
+                        abha_number__abha_number=identifier["value"]
+                    )
 
-            if identifier["type"] == "HEALTH_ID":
-                matched_by.append(identifier["value"])
-                patients = patients.filter(abha_number__health_id=identifier["value"])
+                if identifier["type"] == "HEALTH_ID":
+                    matched_by.append(identifier["value"])
+                    patients = patients.filter(
+                        abha_number__health_id=identifier["value"]
+                    )
 
         # TODO: also filter by demographics
         patient = patients.last()
