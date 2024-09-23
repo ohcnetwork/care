@@ -30,7 +30,7 @@ class PlugManager:
     def get_config(self) -> defaultdict[str, dict]:
         configs: defaultdict[str, dict] = defaultdict(dict)
         for plug in self.plugs:
-            if plug.config is None:
+            if plug.configs is None:
                 continue
             for key, value in plug.configs.items():
                 configs[plug.name][key] = value
