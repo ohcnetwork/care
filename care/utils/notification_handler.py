@@ -1,4 +1,5 @@
 import json
+import logging
 
 from celery import shared_task
 from django.apps import apps
@@ -16,10 +17,12 @@ from care.facility.models.patient_investigation import (
 )
 from care.facility.models.shifting import ShiftingRequest
 from care.users.models import User
-from care.utils.sms.sendSMS import sendSMS
+from care.utils.sms.send_sms import send_sms
+
+logger = logging.getLogger(__name__)
 
 
-class NotificationCreationException(Exception):
+class NotificationCreationError(Exception):
     pass
 
 
@@ -41,6 +44,7 @@ def get_model_class(model_name):
     return apps.get_model(f"facility.{model_name}")
 
 
+# ruff: noqa: SIM102, PLR0912 rebuilding the notification generator would be easier
 class NotificationGenerator:
     generate_for_facility = False
     generate_for_user = False
@@ -65,22 +69,22 @@ class NotificationGenerator:
         if not worker_initated:
             if not isinstance(event_type, Notification.EventType):
                 msg = "Event Type Invalid"
-                raise NotificationCreationException(msg)
+                raise NotificationCreationError(msg)
             if not isinstance(event, Notification.Event):
                 msg = "Event Invalid"
-                raise NotificationCreationException(msg)
+                raise NotificationCreationError(msg)
             if not isinstance(caused_by, User):
                 msg = "edited_by must be an instance of a user"
-                raise NotificationCreationException(msg)
+                raise NotificationCreationError(msg)
             if facility and not isinstance(facility, Facility):
                 msg = "facility must be an instance of Facility"
-                raise NotificationCreationException(msg)
+                raise NotificationCreationError(msg)
             mediums = []
             if notification_mediums:
                 for medium in notification_mediums:
                     if not isinstance(medium, Notification.Medium):
                         msg = "Medium Type Invalid"
-                        raise NotificationCreationException(msg)
+                        raise NotificationCreationError(msg)
                     mediums.append(medium.value)
             data = {
                 "event_type": event_type.value,
@@ -102,8 +106,7 @@ class NotificationGenerator:
             self.worker_initiated = False
             return
         self.worker_initiated = True
-        Model = get_model_class(caused_object)
-        caused_object = Model.objects.get(id=caused_object_pk)
+        caused_object = get_model_class(caused_object).objects.get(id=caused_object_pk)
         caused_by = User.objects.get(id=caused_by)
         facility = Facility.objects.get(id=facility)
         self.notification_mediums = notification_mediums
@@ -348,17 +351,17 @@ class NotificationGenerator:
                     },
                 )
         except WebPushException as ex:
-            print("Web Push Failed with Exception: {}", repr(ex))
+            logger.info("Web Push Failed with Exception: %s", repr(ex))
             if ex.response and ex.response.json():
                 extra = ex.response.json()
-                print(
-                    "Remote service replied with a {}:{}, {}",
+                logger.info(
+                    "Remote service replied with a %s:%s, %s",
                     extra.code,
                     extra.errno,
                     extra.message,
                 )
         except Exception as e:
-            print("Error When Doing WebPush", e)
+            logger.info("Error When Doing WebPush: %s", e)
 
     def generate(self):
         if not self.worker_initiated:
@@ -368,7 +371,7 @@ class NotificationGenerator:
                 medium == Notification.Medium.SMS.value
                 and settings.SEND_SMS_NOTIFICATION
             ):
-                sendSMS(
+                send_sms(
                     self.generate_sms_phone_numbers(),
                     self.generate_sms_message(),
                     many=True,

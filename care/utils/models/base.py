@@ -11,12 +11,6 @@ class BaseManager(models.Manager):
         qs = super().get_queryset()
         return qs.filter(deleted=False)
 
-    # def filter(self, *args, **kwargs):
-    #     _id = kwargs.pop("id", "----")
-    #     if _id != "----" and not isinstance(_id, int):
-    #         kwargs["external_id"] = _id
-    #     return super().filter(*args, **kwargs)
-
 
 class BaseModel(models.Model):
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
@@ -52,6 +46,16 @@ class BaseFlag(BaseModel):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        self.validate_flag(self.flag)
+        cache.delete(
+            self.cache_key_template.format(
+                entity_id=self.entity_id, flag_name=self.flag
+            )
+        )
+        cache.delete(self.all_flags_cache_key_template.format(entity_id=self.entity_id))
+        return super().save(*args, **kwargs)
+
     @property
     def entity(self):
         return getattr(self, self.entity_field_name)
@@ -63,16 +67,6 @@ class BaseFlag(BaseModel):
     @classmethod
     def validate_flag(cls, flag_name: FlagName):
         FlagRegistry.validate_flag_name(cls.flag_type, flag_name)
-
-    def save(self, *args, **kwargs):
-        self.validate_flag(self.flag)
-        cache.delete(
-            self.cache_key_template.format(
-                entity_id=self.entity_id, flag_name=self.flag
-            )
-        )
-        cache.delete(self.all_flags_cache_key_template.format(entity_id=self.entity_id))
-        return super().save(*args, **kwargs)
 
     @classmethod
     def check_entity_has_flag(cls, entity_id: int, flag_name: FlagName) -> bool:

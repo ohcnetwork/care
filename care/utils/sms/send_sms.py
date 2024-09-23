@@ -1,10 +1,14 @@
+import logging
+
 import boto3
 from django.conf import settings
 
 from care.utils.models.validators import mobile_validator
 
+logger = logging.getLogger(__name__)
 
-def sendSMS(phone_numbers, message, many=False):
+
+def send_sms(phone_numbers, message, many=False):
     if not many:
         phone_numbers = [phone_numbers]
     phone_numbers = list(set(phone_numbers))
@@ -12,6 +16,7 @@ def sendSMS(phone_numbers, message, many=False):
         try:
             mobile_validator(phone)
         except Exception:
+            logger.error("Invalid Phone Number %s", phone)
             continue
         client = boto3.client(
             "sns",

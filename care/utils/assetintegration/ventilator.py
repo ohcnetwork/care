@@ -18,7 +18,7 @@ class VentilatorAsset(BaseAssetIntegration):
         except KeyError as e:
             raise ValidationError(
                 {key: f"{key} not found in asset metadata" for key in e.args}
-            )
+            ) from e
 
     def handle_action(self, action):
         action_type = action["type"]

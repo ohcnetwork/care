@@ -56,7 +56,7 @@ from care.users.models import District, State
 fake = Faker()
 
 
-class override_cache(override_settings):
+class OverrideCache(override_settings):
     """
     Overrides the cache settings for the test to use a
     local memory cache instead of the redis cache
@@ -93,11 +93,11 @@ def assert_equal_dicts(d1, d2, ignore_keys=None):
         ignored = set(ignore_keys)
         for k1, v1 in d1.items():
             if k1 not in ignored and (k1 not in d2 or d2[k1] != v1):
-                print(k1, v1, d2[k1])
+                print(k1, v1, d2[k1])  # noqa: T201
                 return False
         for k2, v2 in d2.items():
             if k2 not in ignored and k2 not in d1:
-                print(k2, v2)
+                print(k2, v2)  # noqa: T201
                 return False
         return True
 
@@ -350,7 +350,7 @@ class TestUtils:
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "patient_no": int(datetime.now().timestamp() * 1000),
+            "patient_no": int(now().timestamp() * 1000),
             "route_to_facility": 10,
         }
 
@@ -494,7 +494,7 @@ class TestUtils:
 
     @classmethod
     def clone_object(cls, obj, save=True):
-        new_obj = obj._meta.model.objects.get(pk=obj.id)
+        new_obj = obj._meta.model.objects.get(pk=obj.id)  # noqa: SLF001
         new_obj.pk = None
         new_obj.id = None
         try:
@@ -694,7 +694,7 @@ class TestUtils:
         return {
             "consultation": consultation,
             "prescription_type": "REGULAR",
-            "medicine": None,  # TODO : Create medibase medicine
+            "medicine": None,
             "medicine_old": "Sample old Medicine",
             "route": "Oral",
             "base_dosage": "500mg",
@@ -801,7 +801,9 @@ class TestUtils:
             if "date" in name and not isinstance(value, type(None) | EverythingEquals):
                 return_value = value
                 if isinstance(value, str):
-                    return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    return_value = datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    ).astimezone()
                 return (
                     return_value.astimezone(tz=UTC)
                     if isinstance(return_value, datetime)
@@ -839,14 +841,14 @@ class TestUtils:
             "note": note,
         }
         data.update(kwargs)
-        patientId = patient.external_id
+        patient_id = patient.external_id
 
         refresh_token = RefreshToken.for_user(created_by)
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
-        self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
+        self.client.post(f"/api/v1/patient/{patient_id}/notes/", data=data)
 
     @classmethod
     def create_patient_shift(

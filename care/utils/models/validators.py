@@ -106,7 +106,7 @@ class PhoneNumberValidator(RegexValidator):
         self.message = f"Invalid phone number. Must be one of the following types: {', '.join(self.types)}. Received: %(value)s"
         self.code = "invalid_phone_number"
 
-        self.regex = r"|".join([self.regex_map[type] for type in self.types])
+        self.regex = r"|".join([self.regex_map[t] for t in self.types])
         super().__init__(*args, **kwargs)
 
     def __eq__(self, other):
@@ -170,9 +170,9 @@ class DenominationValidator:
             if self.min_amount > amount_number or amount_number > self.max_amount:
                 msg = f"Input amount must be between {self.min_amount} and {self.max_amount}"
                 raise ValidationError(msg)
-        except ValueError:
+        except ValueError as e:
             msg = "Invalid Input, must be in the format: <amount> <unit>"
-            raise ValidationError(msg)
+            raise ValidationError(msg) from e
 
     def clean(self, value: str):
         if value is None:
@@ -328,10 +328,11 @@ class ImageSizeValidator:
         )
 
     def _humanize_bytes(self, size: int) -> str:
+        byte_size = 1024.0
         for unit in ["B", "KB"]:
-            if size < 1024.0:
+            if size < byte_size:
                 return f"{f"{size:.2f}".rstrip(".0")} {unit}"
-            size /= 1024.0
+            size /= byte_size
         return f"{f"{size:.2f}".rstrip(".0")} MB"
 
 
