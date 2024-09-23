@@ -326,7 +326,7 @@ cover_image_validator = ImageSizeValidator(
     min_height=400,
     max_width=1024,
     max_height=1024,
-    aspect_ratio=[1 / 1],
+    aspect_ratio=[],
     min_size=1024,  # 1 KB
     max_size=1024 * 1024 * 2,  # 2 MB
 )
