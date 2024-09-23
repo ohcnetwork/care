@@ -2,21 +2,18 @@ import logging
 import threading
 import uuid
 from hashlib import md5
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest, HttpResponse
 
-RequestInformation = NamedTuple(
-    "RequestInformation",
-    [
-        ("request_id", str),
-        ("request", HttpRequest),
-        ("response", Optional[HttpResponse]),
-        ("exception", Optional[Exception]),
-    ],
-)
+
+class RequestInformation(NamedTuple):
+    request_id: str
+    request: HttpRequest
+    response: HttpResponse | None
+    exception: Exception | None
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +53,7 @@ class AuditLogMiddleware:
                 f"{md5(request.path.lower().encode('utf-8')).hexdigest()}::"
                 f"{uuid.uuid4().hex}"
             )
-            setattr(request, "dal_request_id", dal_request_id)
+            request.dal_request_id = dal_request_id
 
         AuditLogMiddleware.thread.__dal__ = RequestInformation(
             dal_request_id, request, response, exception

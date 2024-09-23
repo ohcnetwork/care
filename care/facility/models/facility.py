@@ -2,7 +2,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import models, transaction
+from django.db.models import IntegerChoices
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.facility.models import FacilityBaseModel, reverse_choices
@@ -12,6 +16,7 @@ from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
 from care.users.models import District, LocalBody, State, Ward
+from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
@@ -38,6 +43,15 @@ ROOM_TYPES = [
     (70, "KASP Ventilator beds"),
 ]
 
+
+class RoomType(models.IntegerChoices):
+    ICU_BED = 100, "ICU Bed"
+    GENERAL_BED = 200, "Ordinary Bed"
+    OXYGEN_BED = 300, "Oxygen Bed"
+    ISOLATION_BED = 400, "Isolation Bed"
+    OTHER = 500, "Others"
+
+
 # to be removed in further PR
 FEATURE_CHOICES = [
     (1, "CT Scan Facility"),
@@ -47,6 +61,11 @@ FEATURE_CHOICES = [
     (5, "Operation theater"),
     (6, "Blood Bank"),
 ]
+
+
+class HubRelationship(IntegerChoices):
+    REGULAR_HUB = 1, _("Regular Hub")
+    TELE_ICU_HUB = 2, _("Tele ICU Hub")
 
 
 class FacilityFeature(models.IntegerChoices):
@@ -182,6 +201,17 @@ REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
 
+# making sure A -> B -> C -> A does not happen
+def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
+    ancestors_of_base = FacilityHubSpoke.objects.filter(spoke_id=base_id).values_list(
+        "hub_id", flat=True
+    )
+    if spoke_id in ancestors_of_base:
+        raise serializers.ValidationError("This facility is already an ancestor hub")
+    for ancestor in ancestors_of_base:
+        check_if_spoke_is_not_ancestor(ancestor, spoke_id)
+
+
 class Facility(FacilityBaseModel, FacilityPermissionMixin):
     name = models.CharField(max_length=1000, blank=False, null=False)
     is_active = models.BooleanField(default=True)
@@ -269,6 +299,18 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
                 facility=self, user=self.created_by, created_by=self.created_by
             )
 
+    @transaction.atomic
+    def delete(self, *args):
+        from care.facility.models.asset import Asset, AssetLocation
+
+        AssetLocation.objects.filter(facility_id=self.id).update(deleted=True)
+        Asset.objects.filter(
+            current_location_id__in=AssetLocation._base_manager.filter(  # noqa: SLF001
+                facility_id=self.id
+            ).values_list("id", flat=True)
+        ).update(deleted=True)
+        return super().delete(*args)
+
     @property
     def get_features_display(self):
         if not self.features:
@@ -291,6 +333,41 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     }
 
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
+
+
+class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
+    hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
+    spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")
+    relationship = models.IntegerField(
+        choices=HubRelationship.choices, default=HubRelationship.REGULAR_HUB
+    )
+
+    class Meta:
+        constraints = [
+            # Ensure hub and spoke are not the same
+            CheckConstraint(
+                check=~models.Q(hub=models.F("spoke")),
+                name="hub_and_spoke_not_same",
+            ),
+            # bidirectional uniqueness
+            UniqueConstraint(
+                fields=["hub", "spoke"],
+                name="unique_hub_spoke",
+                condition=models.Q(deleted=False),
+            ),
+            UniqueConstraint(
+                fields=["spoke", "hub"],
+                name="unique_spoke_hub",
+                condition=models.Q(deleted=False),
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        check_if_spoke_is_not_ancestor(self.hub.id, self.spoke.id)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Hub: {self.hub.name} Spoke: {self.spoke.name}"
 
 
 class FacilityLocalGovtBody(models.Model):
@@ -370,7 +447,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    room_type = models.IntegerField(choices=ROOM_TYPES)
+    room_type = models.IntegerField(choices=RoomType.choices)
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
@@ -406,7 +483,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
         return (
             str(self.facility)
             + " "
-            + REVERSE_ROOM_TYPES[self.room_type]
+            + RoomType(self.room_type).label
             + " "
             + str(self.total_capacity)
         )

@@ -74,7 +74,7 @@ def get_diagnoses_data(consultation: PatientConsultation):
             diagnoses.append(diagnose)
     principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
 
-    for diagnosis, record in zip(diagnoses, entries):
+    for diagnosis, record in zip(diagnoses, entries, strict=False):
         _, verification_status, is_principal = record
 
         diagnosis.verification_status = verification_status

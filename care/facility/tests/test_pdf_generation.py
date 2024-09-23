@@ -103,7 +103,7 @@ def test_compile_typ(data):
 class TestTypstInstallation(TestCase):
     def test_typst_installed(self):
         try:
-            subprocess.run(["typst", "--version"], check=True)
+            subprocess.run(["typst", "--version"], check=True, capture_output=True)
             typst_installed = True
         except subprocess.CalledProcessError:
             typst_installed = False
