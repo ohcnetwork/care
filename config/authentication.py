@@ -230,7 +230,7 @@ class ABDMAuthentication(JWTAuthentication):
             return self.open_id_authenticate(url, token)
         except Exception as e:
             logger.info(e, "Token: ", token)
-            err = {"detail": f"Invalid Authorization token: {e}"}
+            err = {"detail": "Invalid Authorization token"}
             raise InvalidToken(err) from e
 
     def get_user(self, _):
