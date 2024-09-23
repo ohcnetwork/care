@@ -14,15 +14,14 @@ class PlugManager:
         self.plugs: list[Plug] = plugs
 
     def install(self) -> None:
-        packages: list[str] = [x.package_name + x.version for x in self.plugs]
+        packages: list[str] = [f"{x.package_name}{x.version}" for x in self.plugs]
         if packages:
-            subprocess.check_call(
-                [sys.executable, "-m", "pip", "install", " ".join(packages)]
-            )
+            subprocess.check_call([sys.executable, "-m", "pip", "install", *packages])  # noqa: S603
 
     def add_plug(self, plug: Plug) -> None:
         if not isinstance(plug, Plug):
-            raise ValueError("plug must be an instance of Plug")
+            msg = "plug must be an instance of Plug"
+            raise ValueError(msg)
         self.plugs.append(plug)
 
     def get_apps(self) -> list[str]:
