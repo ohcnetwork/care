@@ -19,14 +19,14 @@ jobs:
           fetch-depth: 0
 
       - name: Ruff check
-        uses: ilyvsc/ruff-action@c6bf276018bab6db1dff3c1311d51aa7ba1dc187
+        uses: ilyvsc/ruff-action@742ee1de75ed9b9a7fd05134f4dcb5610a12f1c1
         with:
           version: 0.6.7
           args: "check"
           changed-files: "true"
 
       - name: Ruff format
-        uses: ilyvsc/ruff-action@c6bf276018bab6db1dff3c1311d51aa7ba1dc187
+        uses: ilyvsc/ruff-action@742ee1de75ed9b9a7fd05134f4dcb5610a12f1c1
         with:
           version: 0.6.7
           args: "format --check"
