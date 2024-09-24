@@ -50,7 +50,7 @@ class PatientMobileOTPSerializer(serializers.ModelSerializer):
                     "Please do not share this Confidential Login Token with anyone else"
                 ),
             )
-        else:
+        elif settings.DEBUG:
             print(otp, otp_obj.phone_number)  # noqa: T201
 
         otp_obj.otp = otp

@@ -16,7 +16,8 @@ def send_sms(phone_numbers, message, many=False):
         try:
             mobile_validator(phone)
         except Exception:
-            logger.error("Invalid Phone Number %s", phone)
+            if settings.DEBUG:
+                logger.error("Invalid Phone Number %s", phone)
             continue
         client = boto3.client(
             "sns",
