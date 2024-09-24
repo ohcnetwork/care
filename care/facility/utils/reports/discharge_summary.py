@@ -212,8 +212,8 @@ def compile_typ(output_file, data):
             "reports/patient_discharge_summary_pdf_template.typ", context=data
         )
 
-        subprocess.run(
-            [  # noqa: S607 S603
+        subprocess.run(  # noqa: S603
+            [  # noqa: S607
                 "typst",
                 "compile",
                 "-",

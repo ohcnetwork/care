@@ -302,7 +302,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         return consultation
 
-    def create(self, validated_data):  # noqa: PLR0915
+    def create(self, validated_data):  # noqa: PLR0915 PLR0912
         if route_to_facility := validated_data.get("route_to_facility"):
             if route_to_facility == RouteToFacility.OUTPATIENT:
                 validated_data["icu_admission_date"] = None

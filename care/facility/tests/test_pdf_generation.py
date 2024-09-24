@@ -50,8 +50,8 @@ def test_compile_typ(data):
         content = render_to_string(
             "reports/patient_discharge_summary_pdf_template.typ", context=data
         )
-        subprocess.run(
-            ["typst", "compile", "-", sample_file_dir.as_posix(), "--format", "png"],  # noqa: S607 S603
+        subprocess.run(  # noqa: S603
+            ["typst", "compile", "-", sample_file_dir.as_posix(), "--format", "png"],  # noqa: S607
             input=content.encode("utf-8"),
             capture_output=True,
             check=True,
