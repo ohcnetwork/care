@@ -18,10 +18,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if cache.get("redis_index_loading"):
-            print("Redis Index already loading, skipping")
+            self.stdout.write("Redis Index already loading, skipping")
             return
 
-        cache.set("redis_index_loading", True, timeout=60 * 5)
+        cache.set("redis_index_loading", value=True, timeout=60 * 5)
 
         load_icd11_diagnosis()
         load_medibase_medicines()
@@ -35,8 +35,8 @@ class Command(BaseCommand):
                 if load_static_data:
                     load_static_data()
             except ModuleNotFoundError:
-                print(f"Module {module_path} not found")
+                self.stdout.write(f"Module {module_path} not found")
             except Exception as e:
-                print(f"Error loading static data for {plug.name}: {e}")
+                self.stdout.write(f"Error loading static data for {plug.name}: {e}")
 
         cache.delete("redis_index_loading")

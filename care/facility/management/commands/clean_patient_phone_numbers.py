@@ -33,5 +33,5 @@ class Command(BaseCommand):
             except Exception:
                 failed.append({"id": patient.id, "phone_number": patient.phone_number})
 
-        print(f"Completed for {qs.count()} | Failed for {len(failed)}")
-        print(f"Failed for {json.dumps(failed)}")
+        self.stdout.write(f"Completed for {qs.count()} | Failed for {len(failed)}")
+        self.stdout.write(f"Failed for {json.dumps(failed)}")

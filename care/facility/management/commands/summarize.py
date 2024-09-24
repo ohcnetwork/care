@@ -18,8 +18,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         patient_summary()
-        print("Patients Summarised")
+        self.stdout.write("Patients Summarised")
         facility_capacity_summary()
-        print("Capacity Summarised")
+        self.stdout.write("Capacity Summarised")
         district_patient_summary()
-        print("District Wise Patient Summarised")
+        self.stdout.write("District Wise Patient Summarised")
