@@ -35,6 +35,7 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
+from care.facility.models.shifting import REVERSE_SHIFTING_STATUS_CHOICES
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.shifting import get_shifting_queryset
@@ -161,33 +162,38 @@ class ShiftingViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         shifting_obj = self.get_object()
-        if has_facility_permission(
-            request.user, shifting_obj.shifting_approving_facility
-        ) or has_facility_permission(request.user, shifting_obj.assigned_facility):
-            if shifting_obj.assigned_facility and shifting_obj.status >= 70:
-                if shifting_obj.patient:
-                    patient = shifting_obj.patient
-                    patient.facility = shifting_obj.assigned_facility
-                    patient.is_active = True
-                    patient.allow_transfer = False
-                    patient.save()
-                    shifting_obj.status = 80
-                    shifting_obj.save(update_fields=["status"])
-                    # Discharge from all other active consultations
-                    PatientConsultation.objects.filter(
-                        patient=patient, discharge_date__isnull=True
-                    ).update(
-                        discharge_date=localtime(now()),
-                        new_discharge_reason=NewDischargeReasonEnum.REFERRED,
-                    )
-                    ConsultationBed.objects.filter(
-                        consultation=patient.last_consultation,
-                        end_date__isnull=True,
-                    ).update(end_date=localtime(now()))
+        if (
+            (
+                has_facility_permission(
+                    request.user, shifting_obj.shifting_approving_facility
+                )
+                or has_facility_permission(request.user, shifting_obj.assigned_facility)
+            )
+            and shifting_obj.assigned_facility
+            and shifting_obj.status
+            >= REVERSE_SHIFTING_STATUS_CHOICES["TRANSFER IN PROGRESS"]
+            and shifting_obj.patient
+        ):
+            patient = shifting_obj.patient
+            patient.facility = shifting_obj.assigned_facility
+            patient.is_active = True
+            patient.allow_transfer = False
+            patient.save()
+            shifting_obj.status = REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            shifting_obj.save(update_fields=["status"])
+            # Discharge from all other active consultations
+            PatientConsultation.objects.filter(
+                patient=patient, discharge_date__isnull=True
+            ).update(
+                discharge_date=localtime(now()),
+                new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            )
+            ConsultationBed.objects.filter(
+                consultation=patient.last_consultation,
+                end_date__isnull=True,
+            ).update(end_date=localtime(now()))
 
-                    return Response(
-                        {"transfer": "completed"}, status=status.HTTP_200_OK
-                    )
+            return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response(
             {"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST
         )
@@ -204,8 +210,7 @@ class ShiftingViewSet(
                 field_header_map=ShiftingRequest.CSV_MAPPING,
                 field_serializer_map=ShiftingRequest.CSV_MAKE_PRETTY,
             )
-        response = super().list(request, *args, **kwargs)
-        return response
+        return super().list(request, *args, **kwargs)
 
 
 class ShifitngRequestCommentViewSet(
@@ -236,7 +241,7 @@ class ShifitngRequestCommentViewSet(
                     request__assigned_facility__state=self.request.user.state
                 )
                 return queryset.filter(q_objects)
-            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(
                     request__origin_facility__district=self.request.user.district
                 )

@@ -53,7 +53,7 @@ class AssetUserAccessMixin:
     asset_permissions = (DRYAssetPermissions,)
 
     def get_authenticators(self):
-        return [MiddlewareAssetAuthentication()] + super().get_authenticators()
+        return [MiddlewareAssetAuthentication(), *super().get_authenticators()]
 
     def get_permissions(self):
         """

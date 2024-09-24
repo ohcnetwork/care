@@ -93,7 +93,7 @@ class PatientSampleViewSet(
         return serializer_class
 
     def get_queryset(self):
-        queryset = super(PatientSampleViewSet, self).get_queryset()
+        queryset = super().get_queryset()
         if self.kwargs.get("patient_external_id") is not None:
             queryset = queryset.filter(
                 patient__external_id=self.kwargs.get("patient_external_id")
@@ -118,7 +118,7 @@ class PatientSampleViewSet(
             not self.kwargs.get("patient_external_id")
             and request.user.user_type < User.TYPE_VALUE_MAP["Doctor"]
         ):
-            raise PermissionDenied()
+            raise PermissionDenied
 
         if settings.CSV_REQUEST_PARAMETER in request.GET:
             queryset = (
@@ -131,7 +131,7 @@ class PatientSampleViewSet(
                 field_header_map=PatientSample.CSV_MAPPING,
                 field_serializer_map=PatientSample.CSV_MAKE_PRETTY,
             )
-        return super(PatientSampleViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
