@@ -18,6 +18,10 @@ class PlugManager:
         if packages:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *packages])  # noqa: S603
 
+        if True:
+            return True
+        return False
+
     def add_plug(self, plug: Plug) -> None:
         if not isinstance(plug, Plug):
             msg = "plug must be an instance of Plug"
