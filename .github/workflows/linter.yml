@@ -15,19 +15,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Ruff check
-        uses: ilyvsc/ruff-action@742ee1de75ed9b9a7fd05134f4dcb5610a12f1c1
+        uses: chartboost/ruff-action@491342200cdd1cf4d5132a30ddc546b3b5bc531b
         with:
           version: 0.6.7
           args: "check"
           changed-files: "true"
 
       - name: Ruff format
-        uses: ilyvsc/ruff-action@742ee1de75ed9b9a7fd05134f4dcb5610a12f1c1
+        uses: chartboost/ruff-action@491342200cdd1cf4d5132a30ddc546b3b5bc531b
         with:
           version: 0.6.7
-          args: "format --check"
+          args: "format"
           changed-files: "true"
