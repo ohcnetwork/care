@@ -96,12 +96,7 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
     """Serializer for facility.models.Facility."""
 
     facility_type = ChoiceField(choices=FACILITY_TYPES)
-    # A valid location => {
-    #     "latitude": 49.8782482189424,
-    #     "longitude": 24.452545489
-    # }
     read_cover_image_url = serializers.URLField(read_only=True)
-    # location = PointField(required=False)
     features = serializers.ListField(
         child=serializers.ChoiceField(choices=FEATURE_CHOICES),
         required=False,
@@ -154,7 +149,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
     def validate_middleware_address(self, value):
         if not value:
-            raise serializers.ValidationError("Middleware Address is required")
+            msg = "Middleware Address is required"
+            raise serializers.ValidationError(msg)
         value = value.strip()
         if not value:
             return value
@@ -165,9 +161,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
     def validate_features(self, value):
         if len(value) != len(set(value)):
-            raise serializers.ValidationError(
-                "Features should not contain duplicate values."
-            )
+            msg = "Features should not contain duplicate values."
+            raise serializers.ValidationError(msg)
         return value
 
     def create(self, validated_data):
@@ -210,12 +205,14 @@ class FacilitySpokeSerializer(serializers.ModelSerializer):
         hub: Facility = self.context["facility"]
 
         if hub == spoke:
-            raise serializers.ValidationError("Cannot set a facility as it's own spoke")
+            msg = "Cannot set a facility as it's own spoke"
+            raise serializers.ValidationError(msg)
 
         if FacilityHubSpoke.objects.filter(
             Q(hub=hub, spoke=spoke) | Q(hub=spoke, spoke=hub)
         ).first():
-            raise serializers.ValidationError("Facility is already a spoke/hub")
+            msg = "Facility is already a spoke/hub"
+            raise serializers.ValidationError(msg)
 
         return spoke
 

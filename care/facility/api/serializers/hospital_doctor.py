@@ -15,4 +15,4 @@ class HospitalDoctorSerializer(serializers.ModelSerializer):
             "id",
             "area_text",
         )
-        exclude = TIMESTAMP_FIELDS + ("facility", "external_id")
+        exclude = (*TIMESTAMP_FIELDS, "facility", "external_id")

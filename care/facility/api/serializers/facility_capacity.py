@@ -44,4 +44,4 @@ class FacilityCapacityHistorySerializer(serializers.ModelSerializer):
         super().__init__()
 
     class Meta:
-        exclude = TIMESTAMP_FIELDS + ("facility",)
+        exclude = (*TIMESTAMP_FIELDS, "facility")

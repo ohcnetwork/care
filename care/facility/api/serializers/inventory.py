@@ -68,10 +68,10 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
 
         try:
             item.allowed_units.get(id=unit.id)
-        except FacilityInventoryUnit.DoesNotExist:
+        except FacilityInventoryUnit.DoesNotExist as e:
             raise serializers.ValidationError(
                 {"unit": ["Item cannot be measured with unit"]}
-            )
+            ) from e
 
         multiplier = 1
 
@@ -80,10 +80,10 @@ class FacilityInventoryLogSerializer(serializers.ModelSerializer):
                 multiplier = FacilityInventoryUnitConverter.objects.get(
                     from_unit=unit, to_unit=item.default_unit
                 ).multiplier
-        except FacilityInventoryUnitConverter.DoesNotExist:
+        except FacilityInventoryUnitConverter.DoesNotExist as e:
             raise serializers.ValidationError(
                 {"item": ["Please Ask Admin to Add Conversion Metrics"]}
-            )
+            ) from e
 
         validated_data["created_by"] = self.context["request"].user
 
@@ -197,10 +197,10 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
 
         try:
             instance = super().create(validated_data)
-        except IntegrityError:
+        except IntegrityError as e:
             raise serializers.ValidationError(
                 {"item": ["Item min quantity already set"]}
-            )
+            ) from e
 
         try:
             summary_obj = FacilityInventorySummary.objects.get(
@@ -214,9 +214,8 @@ class FacilityInventoryMinQuantitySerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        if "item" in validated_data:
-            if instance.item != validated_data["item"]:
-                raise serializers.ValidationError({"item": ["Item cannot be Changed"]})
+        if "item" in validated_data and instance.item != validated_data["item"]:
+            raise serializers.ValidationError({"item": ["Item cannot be Changed"]})
 
         item = validated_data["item"]
 

@@ -19,7 +19,7 @@ from care.utils.notification_handler import NotificationGenerator
 from care.utils.serializers.fields import ChoiceField
 
 
-def check_permissions(file_type, associating_id, user, action="create"):
+def check_permissions(file_type, associating_id, user, action="create"):  # noqa: PLR0911, PLR0912
     try:
         if file_type == FileUpload.FileType.PATIENT.value:
             patient = PatientRegistration.objects.get(external_id=associating_id)
@@ -27,15 +27,17 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 raise serializers.ValidationError(
                     {"patient": "Cannot upload file for a discharged patient."}
                 )
-            if patient.assigned_to:
-                if user == patient.assigned_to:
-                    return patient.id
-            if patient.last_consultation:
-                if patient.last_consultation.assigned_to:
-                    if user == patient.last_consultation.assigned_to:
-                        return patient.id
+            if patient.assigned_to and user == patient.assigned_to:
+                return patient.id
+            if (
+                patient.last_consultation
+                and patient.last_consultation.assigned_to
+                and user == patient.last_consultation.assigned_to
+            ):
+                return patient.id
             if not has_facility_permission(user, patient.facility):
-                raise Exception("No Permission")
+                msg = "No Permission"
+                raise Exception(msg)
             return patient.id
         if file_type == FileUpload.FileType.CONSULTATION.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
@@ -45,17 +47,19 @@ def check_permissions(file_type, associating_id, user, action="create"):
                         "consultation": "Cannot upload file for a discharged consultation."
                     }
                 )
-            if consultation.patient.assigned_to:
-                if user == consultation.patient.assigned_to:
-                    return consultation.id
-            if consultation.assigned_to:
-                if user == consultation.assigned_to:
-                    return consultation.id
+            if (
+                consultation.patient.assigned_to
+                and user == consultation.patient.assigned_to
+            ):
+                return consultation.id
+            if consultation.assigned_to and user == consultation.assigned_to:
+                return consultation.id
             if not (
                 has_facility_permission(user, consultation.patient.facility)
                 or has_facility_permission(user, consultation.facility)
             ):
-                raise Exception("No Permission")
+                msg = "No Permission"
+                raise Exception(msg)
             return consultation.id
         if file_type == FileUpload.FileType.CONSENT_RECORD.value:
             consultation = PatientConsent.objects.get(
@@ -68,13 +72,13 @@ def check_permissions(file_type, associating_id, user, action="create"):
                     }
                 )
             if (
-                user == consultation.assigned_to
-                or user == consultation.patient.assigned_to
+                user in (consultation.assigned_to, consultation.patient.assigned_to)
                 or has_facility_permission(user, consultation.facility)
                 or has_facility_permission(user, consultation.patient.facility)
             ):
                 return associating_id
-            raise Exception("No Permission")
+            msg = "No Permission"
+            raise Exception(msg)
         if file_type == FileUpload.FileType.DISCHARGE_SUMMARY.value:
             consultation = PatientConsultation.objects.get(external_id=associating_id)
             if (
@@ -88,38 +92,39 @@ def check_permissions(file_type, associating_id, user, action="create"):
                 has_facility_permission(user, consultation.patient.facility)
                 or has_facility_permission(user, consultation.facility)
             ):
-                raise Exception("No Permission")
+                msg = "No Permission"
+                raise Exception(msg)
             return consultation.external_id
         if file_type == FileUpload.FileType.SAMPLE_MANAGEMENT.value:
             sample = PatientSample.objects.get(external_id=associating_id)
             patient = sample.patient
-            if patient.assigned_to:
-                if user == patient.assigned_to:
-                    return sample.id
-            if sample.consultation:
-                if sample.consultation.assigned_to:
-                    if user == sample.consultation.assigned_to:
-                        return sample.id
-            if sample.testing_facility:
-                if has_facility_permission(
-                    user,
-                    Facility.objects.get(
-                        external_id=sample.testing_facility.external_id
-                    ),
-                ):
-                    return sample.id
+            if patient.assigned_to and user == patient.assigned_to:
+                return sample.id
+            if (
+                sample.consultation
+                and sample.consultation.assigned_to
+                and user == sample.consultation.assigned_to
+            ):
+                return sample.id
+            if sample.testing_facility and has_facility_permission(
+                user,
+                Facility.objects.get(external_id=sample.testing_facility.external_id),
+            ):
+                return sample.id
             if not has_facility_permission(user, patient.facility):
-                raise Exception("No Permission")
+                msg = "No Permission"
+                raise Exception(msg)
             return sample.id
-        if (
-            file_type == FileUpload.FileType.CLAIM.value
-            or file_type == FileUpload.FileType.COMMUNICATION.value
+        if file_type in (
+            FileUpload.FileType.CLAIM.value,
+            FileUpload.FileType.COMMUNICATION.value,
         ):
             return associating_id
-        raise Exception("Undefined File Type")
+        msg = "Undefined File Type"
+        raise Exception(msg)
 
-    except Exception:
-        raise serializers.ValidationError({"permission": "denied"})
+    except Exception as e:
+        raise serializers.ValidationError({"permission": "denied"}) from e
 
 
 class FileUploadCreateSerializer(serializers.ModelSerializer):
@@ -250,7 +255,8 @@ class FileUploadUpdateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         if validated.get("is_archived") and not validated.get("archive_reason"):
-            raise ValidationError("Archive reason must be specified.")
+            msg = "Archive reason must be specified."
+            raise ValidationError(msg)
         return validated
 
 

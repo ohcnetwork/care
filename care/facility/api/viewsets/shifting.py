@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.shifting import (
+    REVERSE_SHIFTING_STATUS_CHOICES,
     ShiftingDetailSerializer,
     ShiftingListSerializer,
     ShiftingRequestCommentDetailSerializer,
@@ -35,7 +36,6 @@ from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
     NewDischargeReasonEnum,
 )
-from care.facility.models.shifting import REVERSE_SHIFTING_STATUS_CHOICES
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.queryset.shifting import get_shifting_queryset

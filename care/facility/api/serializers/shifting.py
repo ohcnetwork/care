@@ -43,7 +43,9 @@ def inverse_choices(choices):
     return output
 
 
-REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
+REVERSE_SHIFTING_STATUS_CHOICES: dict[str, int] = inverse_choices(
+    SHIFTING_STATUS_CHOICES
+)
 
 
 def has_facility_permission(user, facility):
@@ -239,14 +241,17 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     def validate_shifting_approving_facility(self, value):
         if not settings.PEACETIME_MODE and not value:
-            raise ValidationError("Shifting Approving Facility is required")
+            msg = "Shifting Approving Facility is required"
+            raise ValidationError(msg)
         return value
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data):  # noqa: PLR0912
         if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
-            raise ValidationError("Permission Denied, Shifting request was cancelled.")
+            msg = "Permission Denied, Shifting request was cancelled."
+            raise ValidationError(msg)
         if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
-            raise ValidationError("Permission Denied, Shifting request was completed.")
+            msg = "Permission Denied, Shifting request was completed."
+            raise ValidationError(msg)
 
         # Dont allow editing origin or patient
         validated_data.pop("origin_facility")
@@ -349,7 +354,8 @@ class ShiftingSerializer(serializers.ModelSerializer):
             "status" in validated_data
             and new_instance.shifting_approving_facility is not None
             and validated_data["status"] != old_status
-            and validated_data["status"] == 40
+            and validated_data["status"]
+            == REVERSE_SHIFTING_STATUS_CHOICES["DESTINATION APPROVED"]
         ):
             NotificationGenerator(
                 event=Notification.Event.SHIFTING_UPDATED,
@@ -572,8 +578,4 @@ class ShiftingRequestCommentDetailSerializer(ShiftingRequestCommentListSerialize
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + (
-            "created_by",
-            "external_id",
-            "id",
-        )
+        read_only_fields = (*TIMESTAMP_FIELDS, "created_by", "external_id", "id")

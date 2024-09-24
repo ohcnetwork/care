@@ -33,7 +33,8 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
 
     def validate_onset_date(self, value):
         if value and value > now():
-            raise serializers.ValidationError("Onset date cannot be in the future")
+            msg = "Onset date cannot be in the future"
+            raise serializers.ValidationError(msg)
         return value
 
     def validate(self, attrs):
@@ -49,11 +50,10 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
             if self.instance
             else validated_data.get("onset_date")
         )
-        if cure_date := validated_data.get("cure_date"):
-            if cure_date < onset_date:
-                raise serializers.ValidationError(
-                    {"cure_date": "Cure date should be after onset date"}
-                )
+        if validated_data.get("cure_date") and validated_data["cure_date"] < onset_date:
+            raise serializers.ValidationError(
+                {"cure_date": "Cure date should be after onset date"}
+            )
 
         if validated_data.get("symptom") != Symptom.OTHERS and validated_data.get(
             "other_symptom"
