@@ -19,9 +19,9 @@ class PatientPermissionMixin(BasePermissionMixin):
 
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = (
-                self.last_consultation.assigned_to == request.user
-                or request.user == self.assigned_to
+            doctor_allowed = request.user in (
+                self.last_consultation.assigned_to,
+                self.assigned_to,
             )
         return request.user.is_superuser or (
             (hasattr(self, "created_by") and request.user == self.created_by)
@@ -60,9 +60,9 @@ class PatientPermissionMixin(BasePermissionMixin):
 
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = (
-                self.last_consultation.assigned_to == request.user
-                or request.user == self.assigned_to
+            doctor_allowed = request.user in (
+                self.last_consultation.assigned_to,
+                self.assigned_to,
             )
 
         return request.user.is_superuser or (
@@ -99,9 +99,9 @@ class PatientPermissionMixin(BasePermissionMixin):
 
         doctor_allowed = False
         if self.last_consultation:
-            doctor_allowed = (
-                self.last_consultation.assigned_to == request.user
-                or request.user == self.assigned_to
+            doctor_allowed = request.user in (
+                self.last_consultation.assigned_to,
+                self.assigned_to,
             )
 
         return (

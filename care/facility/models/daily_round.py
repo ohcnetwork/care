@@ -571,7 +571,7 @@ class DailyRound(PatientBaseModel):
         if self.output is not None:
             self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
-        super(DailyRound, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @staticmethod
     def has_read_permission(request):
@@ -585,8 +585,8 @@ class DailyRound(PatientBaseModel):
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
-                request.user == consultation.assigned_to
-                or request.user == consultation.patient.assigned_to
+                request.user
+                in (consultation.assigned_to, consultation.patient.assigned_to)
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -620,8 +620,11 @@ class DailyRound(PatientBaseModel):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
+                request.user
+                in (
+                    self.consultation.assigned_to,
+                    self.consultation.patient.assigned_to,
+                )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
