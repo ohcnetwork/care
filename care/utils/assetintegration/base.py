@@ -41,47 +41,30 @@ class BaseAssetIntegration:
             "Accept": "application/json",
         }
 
-    def api_post(self, url, data=None, timeout=None):
-        if timeout is None:
-            timeout = self.timeout
-        req = requests.post(
-            url,
-            json=data,
-            headers=self.get_headers(),
-            timeout=timeout,
-        )
+    def _validate_response(self, response: requests.Response):
         try:
-            response = req.json()
-            if req.raise_for_status():
-                raise APIException(response, req.status_code)
-            return response
+            if response.status_code >= status.HTTP_400_BAD_REQUEST:
+                raise APIException(response.text, response.status_code)
+            return response.json()
 
-        except requests.Timeout:
+        except requests.Timeout as e:
+            raise APIException({"error": "Request Timeout"}, 504) from e
+
+        except json.decoder.JSONDecodeError as e:
             raise APIException(
-                {"error": "Request Timeout"}, status.HTTP_504_GATEWAY_TIMEOUT
+                {"error": "Invalid Response"}, response.status_code
+            ) from e
+
+    def api_post(self, url, data=None):
+        return self._validate_response(
+            requests.post(
+                url, json=data, headers=self.get_headers(), timeout=self.timeout
             )
-
-        except json.decoder.JSONDecodeError:
-            raise APIException({"error": "Invalid Response"}, req.status_code)
-
-    def api_get(self, url, data=None, timeout=None):
-        if timeout is None:
-            timeout = self.timeout
-        req = requests.get(
-            url,
-            params=data,
-            headers=self.get_headers(),
-            timeout=timeout,
         )
-        try:
-            if req.raise_for_status():
-                raise APIException(req.text, req.status_code)
-            return req.json()
 
-        except requests.Timeout:
-            raise APIException(
-                {"error": "Request Timeout"}, status.HTTP_504_GATEWAY_TIMEOUT
+    def api_get(self, url, data=None):
+        return self._validate_response(
+            requests.get(
+                url, params=data, headers=self.get_headers(), timeout=self.timeout
             )
-
-        except json.decoder.JSONDecodeError:
-            raise APIException({"error": "Invalid Response"}, req.status_code)
+        )

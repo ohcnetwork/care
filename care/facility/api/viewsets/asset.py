@@ -1,5 +1,6 @@
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.cache import cache
@@ -65,6 +66,12 @@ from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import MiddlewareAuthentication
+
+if TYPE_CHECKING:
+    from care.utils.assetintegration.base import BaseAssetIntegration
+
+logger = logging.getLogger(__name__)
+
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
@@ -132,9 +139,11 @@ class AssetLocationViewSet(
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.bed_set.filter(deleted=False).count():
-            raise ValidationError("Cannot delete a Location with associated Beds")
+            msg = "Cannot delete a Location with associated Beds"
+            raise ValidationError(msg)
         if instance.asset_set.filter(deleted=False).count():
-            raise ValidationError("Cannot delete a Location with associated Assets")
+            msg = "Cannot delete a Location with associated Assets"
+            raise ValidationError(msg)
 
         return super().destroy(request, *args, **kwargs)
 
@@ -244,9 +253,8 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="asset",
                     object_external_id=self.kwargs["asset_external_id"],
                 )
-            raise exceptions.PermissionDenied(
-                "You do not have access to this asset's availability records"
-            )
+            msg = "You do not have access to this asset's availability records"
+            raise exceptions.PermissionDenied(msg)
         if "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
                 AssetLocation, external_id=self.kwargs["asset_location_external_id"]
@@ -256,12 +264,10 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="assetlocation",
                     object_external_id=self.kwargs["asset_location_external_id"],
                 )
-            raise exceptions.PermissionDenied(
-                "You do not have access to this asset location's availability records"
-            )
-        raise exceptions.ValidationError(
-            "Either asset_external_id or asset_location_external_id is required"
-        )
+            msg = "You do not have access to this asset location's availability records"
+            raise exceptions.PermissionDenied(msg)
+        msg = "Either asset_external_id or asset_location_external_id is required"
+        raise exceptions.ValidationError(msg)
 
 
 class AssetViewSet(
@@ -300,7 +306,7 @@ class AssetViewSet(
             queryset = queryset.filter(
                 current_location__facility__id__in=allowed_facilities
             )
-        queryset = queryset.annotate(
+        return queryset.annotate(
             latest_status=Subquery(
                 AvailabilityRecord.objects.filter(
                     content_type__model="asset",
@@ -310,7 +316,6 @@ class AssetViewSet(
                 .values("status")[:1]
             )
         )
-        return queryset
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
@@ -321,15 +326,14 @@ class AssetViewSet(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
 
-        return super(AssetViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        raise exceptions.AuthenticationFailed(
-            "Only District Admin and above can delete assets"
-        )
+        msg = "Only District Admin and above can delete assets"
+        raise exceptions.AuthenticationFailed(msg)
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
@@ -412,7 +416,7 @@ class AssetViewSet(
             )
 
         except Exception as e:
-            logging.error(f"error: {e}")
+            logger.info("Failed to operate asset: %s", e)
             return Response(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

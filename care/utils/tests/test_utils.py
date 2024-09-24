@@ -56,7 +56,7 @@ from care.users.models import District, State
 fake = Faker()
 
 
-class override_cache(override_settings):
+class OverrideCache(override_settings):
     """
     Overrides the cache settings for the test to use a
     local memory cache instead of the redis cache
@@ -85,16 +85,19 @@ class EverythingEquals:
 mock_equal = EverythingEquals()
 
 
-def assert_equal_dicts(d1, d2, ignore_keys=[]):
+def assert_equal_dicts(d1, d2, ignore_keys=None):
+    if ignore_keys is None:
+        ignore_keys = []
+
     def check_equal():
         ignored = set(ignore_keys)
         for k1, v1 in d1.items():
             if k1 not in ignored and (k1 not in d2 or d2[k1] != v1):
-                print(k1, v1, d2[k1])
+                print(k1, v1, d2[k1])  # noqa: T201
                 return False
         for k2, v2 in d2.items():
             if k2 not in ignored and k2 not in d1:
-                print(k2, v2)
+                print(k2, v2)  # noqa: T201
                 return False
         return True
 
@@ -142,7 +145,7 @@ class TestUtils:
         return LocalBody.objects.create(**data)
 
     @classmethod
-    def get_user_data(cls, district: District, user_type: str = None):
+    def get_user_data(cls, district: District, user_type: str | None = None):
         """
         Returns the data to be used for API testing
 
@@ -174,7 +177,7 @@ class TestUtils:
     @classmethod
     def create_user(
         cls,
-        username: str = None,
+        username: str | None = None,
         district: District = None,
         local_body: LocalBody = None,
         **kwargs,
@@ -265,8 +268,7 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        facility = Facility.objects.create(**data)
-        return facility
+        return Facility.objects.create(**data)
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -348,7 +350,7 @@ class TestUtils:
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "patient_no": int(datetime.now().timestamp() * 1000),
+            "patient_no": int(now().timestamp() * 1000),
             "route_to_facility": 10,
         }
 
@@ -492,7 +494,7 @@ class TestUtils:
 
     @classmethod
     def clone_object(cls, obj, save=True):
-        new_obj = obj._meta.model.objects.get(pk=obj.id)
+        new_obj = obj._meta.model.objects.get(pk=obj.id)  # noqa: SLF001
         new_obj.pk = None
         new_obj.id = None
         try:
@@ -625,8 +627,7 @@ class TestUtils:
     def create_patient_investigation_group(cls, **kwargs) -> PatientInvestigationGroup:
         data = cls.get_patient_investigation_group_data()
         data.update(**kwargs)
-        investigation_group = PatientInvestigationGroup.objects.create(**data)
-        return investigation_group
+        return PatientInvestigationGroup.objects.create(**data)
 
     @classmethod
     def get_patient_investigation_session_data(cls, user) -> dict:
@@ -640,8 +641,7 @@ class TestUtils:
     ) -> InvestigationSession:
         data = cls.get_patient_investigation_session_data(user)
         data.update(**kwargs)
-        investigation_session = InvestigationSession.objects.create(**data)
-        return investigation_session
+        return InvestigationSession.objects.create(**data)
 
     @classmethod
     def get_investigation_value_data(
@@ -694,7 +694,7 @@ class TestUtils:
         return {
             "consultation": consultation,
             "prescription_type": "REGULAR",
-            "medicine": None,  # TODO : Create medibase medicine
+            "medicine": None,
             "medicine_old": "Sample old Medicine",
             "route": "Oral",
             "base_dosage": "500mg",
@@ -761,17 +761,16 @@ class TestUtils:
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:
             return {"local_body": None, "local_body_object": None}
-        else:
-            return {
-                "local_body": local_body.id,
-                "local_body_object": {
-                    "id": local_body.id,
-                    "name": local_body.name,
-                    "district": local_body.district.id,
-                    "localbody_code": local_body.localbody_code,
-                    "body_type": local_body.body_type,
-                },
-            }
+        return {
+            "local_body": local_body.id,
+            "local_body_object": {
+                "id": local_body.id,
+                "name": local_body.name,
+                "district": local_body.district.id,
+                "localbody_code": local_body.localbody_code,
+                "body_type": local_body.body_type,
+            },
+        }
 
     def get_district_representation(self, district: District):
         if district is None:
@@ -795,16 +794,16 @@ class TestUtils:
             return {k: to_matching_type(k, v) for k, v in d.items()}
 
         def to_matching_type(name: str, value):
-            if isinstance(value, (OrderedDict, dict)):
+            if isinstance(value, OrderedDict | dict):
                 return dict_to_matching_type(dict(value))
-            elif isinstance(value, list):
+            if isinstance(value, list):
                 return [to_matching_type("", v) for v in value]
-            elif "date" in name and not isinstance(
-                value, (type(None), EverythingEquals)
-            ):
+            if "date" in name and not isinstance(value, type(None) | EverythingEquals):
                 return_value = value
                 if isinstance(value, str):
-                    return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    return_value = datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    ).astimezone()
                 return (
                     return_value.astimezone(tz=UTC)
                     if isinstance(return_value, datetime)
@@ -824,16 +823,15 @@ class TestUtils:
     def get_facility_representation(self, facility):
         if facility is None:
             return facility
-        else:
-            return {
-                "id": str(facility.external_id),
-                "name": facility.name,
-                "facility_type": {
-                    "id": facility.facility_type,
-                    "name": facility.get_facility_type_display(),
-                },
-                **self.get_local_body_district_state_representation(facility),
-            }
+        return {
+            "id": str(facility.external_id),
+            "name": facility.name,
+            "facility_type": {
+                "id": facility.facility_type,
+                "name": facility.get_facility_type_display(),
+            },
+            **self.get_local_body_district_state_representation(facility),
+        }
 
     def create_patient_note(
         self, patient=None, note="Patient is doing find", created_by=None, **kwargs
@@ -843,14 +841,14 @@ class TestUtils:
             "note": note,
         }
         data.update(kwargs)
-        patientId = patient.external_id
+        patient_id = patient.external_id
 
         refresh_token = RefreshToken.for_user(created_by)
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
         )
 
-        self.client.post(f"/api/v1/patient/{patientId}/notes/", data=data)
+        self.client.post(f"/api/v1/patient/{patient_id}/notes/", data=data)
 
     @classmethod
     def create_patient_shift(

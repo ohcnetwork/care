@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.utils.jwks.token_generator import generate_jwt
-from care.utils.tests.test_utils import TestUtils, override_cache
+from care.utils.tests.test_utils import OverrideCache, TestUtils
 
 
 class MiddlewareAuthTestCase(TestUtils, APITestCase):
@@ -80,7 +80,7 @@ class MiddlewareAuthTestCase(TestUtils, APITestCase):
             response.data["username"], "middleware" + str(self.facility.external_id)
         )
 
-    @override_cache
+    @OverrideCache
     @requests_mock.Mocker()
     def test_middleware_authentication_cached_successful(self, mock_get_public_key):
         mock_get_public_key.get(

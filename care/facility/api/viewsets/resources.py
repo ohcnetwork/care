@@ -46,7 +46,7 @@ def get_request_queryset(request, queryset):
             q_objects |= Q(approving_facility__state=request.user.state)
             q_objects |= Q(assigned_facility__state=request.user.state)
             return queryset.filter(q_objects)
-        elif request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             q_objects = Q(origin_facility__district=request.user.district)
             q_objects |= Q(approving_facility__district=request.user.district)
             q_objects |= Q(assigned_facility__district=request.user.district)
@@ -165,7 +165,7 @@ class ResourceRequestCommentViewSet(
                     request__assigned_facility__state=self.request.user.state
                 )
                 return queryset.filter(q_objects)
-            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(
                     request__origin_facility__district=self.request.user.district
                 )

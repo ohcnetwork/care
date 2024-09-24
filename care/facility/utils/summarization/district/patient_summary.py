@@ -43,9 +43,9 @@ def district_patient_summary():
             home_quarantine = Q(last_consultation__suggestion="HI")
 
             total_patients_home_quarantine = patients.filter(home_quarantine).count()
-            district_summary[local_body_object.id][
-                "total_patients_home_quarantine"
-            ] = total_patients_home_quarantine
+            district_summary[local_body_object.id]["total_patients_home_quarantine"] = (
+                total_patients_home_quarantine
+            )
 
             # Apply Date Filters
 
@@ -69,9 +69,9 @@ def district_patient_summary():
                 district_summary[local_body_object.id][clean_name] = count
 
             # Update Anything Extra
-            district_summary[local_body_object.id][
-                "today_patients_home_quarantine"
-            ] = today_patients_home_quarantine
+            district_summary[local_body_object.id]["today_patients_home_quarantine"] = (
+                today_patients_home_quarantine
+            )
 
         object_filter = Q(s_type="PatientSummary") & Q(
             created_date__startswith=now().date()

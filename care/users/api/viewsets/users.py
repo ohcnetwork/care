@@ -76,9 +76,8 @@ class UserFilterSet(filters.FilterSet):
         field_name,
         value,
     ):
-        if value:
-            if value in INVERSE_USER_TYPE:
-                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+        if value and value in INVERSE_USER_TYPE:
+            return queryset.filter(user_type=INVERSE_USER_TYPE[value])
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
@@ -123,21 +122,6 @@ class UserViewSet(
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
-    # last_login
-    # def get_permissions(self):
-    #     return [
-    #         DRYPermissions(),
-    #         IsAuthenticated(),
-    #     ]
-    # if self.request.method == "POST":
-    #     return [
-    #         DRYPermissions(),
-    #     ]
-    # else:
-    #     return [
-    #         IsAuthenticated(),
-    #         DRYPermissions(),
-    #     ]
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -172,20 +156,18 @@ class UserViewSet(
     def get_object(self) -> User:
         try:
             return super().get_object()
-        except Http404:
-            raise Http404("User not found")
+        except Http404 as e:
+            error = "User not found"
+            raise Http404(error) from e
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
-        elif self.action == "add_user":
+        if self.action == "add_user":
             return UserCreateSerializer
-        # elif self.action == "create":
-        #     return SignUpSerializer
-        elif self.action == "profile_picture":
+        if self.action == "profile_picture":
             return UserImageUploadSerializer
-        else:
-            return UserSerializer
+        return UserSerializer
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])

@@ -1,5 +1,5 @@
 import enum
-from typing import TypeAlias, TypedDict
+from typing import TypedDict
 
 from django.conf import settings
 
@@ -11,7 +11,7 @@ class ClientConfig(TypedDict):
     endpoint_url: str
 
 
-BucketName: TypeAlias = str
+type BucketName = str
 
 
 class CSProvider(enum.Enum):
@@ -57,6 +57,7 @@ def get_patient_bucket_config(external) -> tuple[ClientConfig, BucketName]:
 def get_client_config(bucket_type: BucketType, external=False):
     if bucket_type == BucketType.FACILITY:
         return get_facility_bucket_config(external=external)
-    elif bucket_type == BucketType.PATIENT:
+    if bucket_type == BucketType.PATIENT:
         return get_patient_bucket_config(external=external)
-    raise ValueError("Invalid Bucket Type")
+    msg = "Invalid Bucket Type"
+    raise ValueError(msg)

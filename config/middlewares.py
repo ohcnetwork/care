@@ -11,5 +11,5 @@ class RequestTimeLoggingMiddleware:
         request.start_time = time.time()
         response = self.get_response(request)
         duration = time.time() - request.start_time
-        self.logger.info(f"Request to {request.path} took {duration:.4f} seconds")
+        self.logger.info("Request to %s took %.4f seconds", request.path, duration)
         return response

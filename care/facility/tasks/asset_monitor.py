@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
@@ -9,14 +9,16 @@ from django.utils import timezone
 
 from care.facility.models.asset import Asset, AvailabilityRecord, AvailabilityStatus
 from care.utils.assetintegration.asset_classes import AssetClasses
-from care.utils.assetintegration.base import BaseAssetIntegration
+
+if TYPE_CHECKING:
+    from care.utils.assetintegration.base import BaseAssetIntegration
 
 logger = logging.getLogger(__name__)
 
 
 @shared_task
-def check_asset_status():
-    logger.info(f"Checking Asset Status: {timezone.now()}")
+def check_asset_status():  # noqa: PLR0912
+    logger.info("Checking Asset Status: %s", timezone.now())
 
     assets = (
         Asset.objects.exclude(Q(asset_class=None) | Q(asset_class=""))
@@ -50,7 +52,7 @@ def check_asset_status():
 
             if not resolved_middleware:
                 logger.warning(
-                    f"Asset {asset.external_id} does not have a middleware hostname"
+                    "Asset %s does not have a middleware hostname", asset.external_id
                 )
                 continue
 
@@ -91,7 +93,7 @@ def check_asset_status():
                 else:
                     result = asset_class.api_get(asset_class.get_url("devices/status"))
             except Exception as e:
-                logger.warning(f"Middleware {resolved_middleware} is down", e)
+                logger.warning("Middleware %s is down: %s", resolved_middleware, e)
 
             # If no status is returned, setting default status as down
             if not result or "error" in result:
@@ -138,4 +140,4 @@ def check_asset_status():
                         timestamp=status_record.get("time", timezone.now()),
                     )
         except Exception as e:
-            logger.error("Error in Asset Status Check", e)
+            logger.error("Error in Asset Status Check: %s", e)

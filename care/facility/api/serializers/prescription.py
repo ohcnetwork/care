@@ -32,13 +32,11 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
     def validate_administered_date(self, value):
         if value > timezone.now():
-            raise serializers.ValidationError(
-                "Administered Date cannot be in the future."
-            )
+            msg = "Administered Date cannot be in the future."
+            raise serializers.ValidationError(msg)
         if self.context["prescription"].created_date > value:
-            raise serializers.ValidationError(
-                "Administered Date cannot be before Prescription Date."
-            )
+            msg = "Administered Date cannot be before Prescription Date."
+            raise serializers.ValidationError(msg)
         return value
 
     def validate(self, attrs):
@@ -50,9 +48,7 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"dosage": "Dosage is required for titrated prescriptions."}
             )
-        elif (
-            self.context["prescription"].dosage_type != PrescriptionDosageType.TITRATED
-        ):
+        if self.context["prescription"].dosage_type != PrescriptionDosageType.TITRATED:
             attrs.pop("dosage", None)
 
         return super().validate(attrs)
@@ -107,22 +103,24 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 MedibaseMedicine, external_id=attrs["medicine"]
             )
 
-        if not self.instance:
-            if Prescription.objects.filter(
+        if (
+            not self.instance
+            and Prescription.objects.filter(
                 consultation__external_id=self.context["request"].parser_context[
                     "kwargs"
                 ]["consultation_external_id"],
                 medicine=attrs["medicine"],
                 discontinued=False,
-            ).exists():
-                raise serializers.ValidationError(
-                    {
-                        "medicine": (
-                            "This medicine is already prescribed to this patient. "
-                            "Please discontinue the existing prescription to prescribe again."
-                        )
-                    }
-                )
+            ).exists()
+        ):
+            raise serializers.ValidationError(
+                {
+                    "medicine": (
+                        "This medicine is already prescribed to this patient. "
+                        "Please discontinue the existing prescription to prescribe again."
+                    )
+                }
+            )
 
         if not attrs.get("base_dosage"):
             raise serializers.ValidationError(

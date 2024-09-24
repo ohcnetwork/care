@@ -48,17 +48,6 @@ class FacilityCapacitySummaryViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
-
 
 class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "external_id"
@@ -70,17 +59,6 @@ class TriageSummaryViewSet(ListModelMixin, GenericViewSet):
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
 
     @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 60))
@@ -98,17 +76,6 @@ class TestsSummaryViewSet(ListModelMixin, GenericViewSet):
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilitySummaryFilter
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
 
     @extend_schema(tags=["summary"])
     @method_decorator(cache_page(60 * 60 * 10))
@@ -131,17 +98,6 @@ class PatientSummaryViewSet(ListModelMixin, GenericViewSet):
     @method_decorator(cache_page(60 * 10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)
 
 
 class DistrictSummaryFilter(filters.FilterSet):
@@ -168,14 +124,3 @@ class DistrictPatientSummaryViewSet(ListModelMixin, GenericViewSet):
     @method_decorator(cache_page(60 * 10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = self.queryset
-    #     if user.is_superuser:
-    #         return queryset
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictReadOnlyAdmin"]:
-    #         return queryset.filter(facility__district=user.district)
-    #     elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
-    #         return queryset.filter(facility__state=user.state)
-    #     return queryset.filter(facility__users__id__exact=user.id)

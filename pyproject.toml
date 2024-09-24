@@ -21,7 +21,7 @@ ignore_errors = true
 
 [tool.ruff]
 target-version = "py312"
-extend-exclude = ["*/migrations_old/*"]
+extend-exclude = ["*/migrations*/*", "care/abdm/*"]
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
@@ -34,34 +34,34 @@ select = [
   "N",  # pep8-naming
   "UP", # pyupgrade
   # "ANN", # flake8-annotations
-  "S",    # flake8-bandit
-  "FBT",  # flake8-boolean-trap
-  "B",    # flake8-bugbear
-  "A",    # flake8-builtins
-  "COM",  # flake8-commas
-  "C4",   # flake8-comprehensions
-  "DTZ",  # flake8-datetimez
-  "T10",  # flake8-debugger
-  "DJ",   # flake8-django
-  "EM",   # flake8-errmsg
-  "ISC",  # flake8-import-conventions
-  "ICN",  # flake8-import-order
-  "LOG",  # flake8-logging
-  "G",    # flake8-logging-format
-  "INP",  # flake8-no-pep420
-  "PIE",  # flake8-pie
-  "T20",  # flake8-print
-  "Q",    # flake8-quotes
-  "RSE",  # flake8-raise
-  "RET",  # flake8-return
-  "SLF",  # flake8-self
-  "SIM",  # flake8-simplify
-  "TID",  # flake8-tidy-imports
-  "TCH",  # flake8-todo
-  "INT",  # flake8-gettext
-  "ARG",  # flake8-unused-arguments
+  "S",   # flake8-bandit
+  "FBT", # flake8-boolean-trap
+  "B",   # flake8-bugbear
+  "A",   # flake8-builtins
+  "COM", # flake8-commas
+  "C4",  # flake8-comprehensions
+  "DTZ", # flake8-datetimez
+  "T10", # flake8-debugger
+  "DJ",  # flake8-django
+  "EM",  # flake8-errmsg
+  "ISC", # flake8-import-conventions
+  "ICN", # flake8-import-order
+  "LOG", # flake8-logging
+  "G",   # flake8-logging-format
+  "INP", # flake8-no-pep420
+  "PIE", # flake8-pie
+  "T20", # flake8-print
+  "Q",   # flake8-quotes
+  "RSE", # flake8-raise
+  "RET", # flake8-return
+  "SLF", # flake8-self
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TCH", # flake8-todo
+  "INT", # flake8-gettext
+  # "ARG",  # flake8-unused-arguments
   "PTH",  # flake8-use-pathlib
-  "TD",   # flake8-todo
+  # "TD",   # flake8-todo # disabling this for now
   "ERA",  # eradicate
   "PL",   # pylint
   "FURB", # refurb
@@ -79,12 +79,20 @@ ignore = [
   "DJ001",   # django-nullable-model-string-field
   "ISC001",  # conflicts with format
   "COM812",  # conflicts with format
+  "RUF012",  # Too hard
+  "FBT001",  # why not!
+  "S106",
+  "S105",
 ]
 
 
 [tool.ruff.format]
 line-ending = "lf"
 
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["E402", "F401"] # for imports
+"**/tests/**" = ["DTZ001"]
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "list", "filter"]
@@ -94,6 +102,5 @@ builtins-ignorelist = ["id", "list", "filter"]
 docstring-quotes = "double"
 
 
-[tool.ruff.lint.per-file-ignores]
-"**/__init__.py" = ["E402", "F401"] # for imports
-"**/tests/**" = ["DTZ001"]
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true

@@ -144,9 +144,9 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
     def test_patient_notes(self):
         self.client.force_authenticate(user=self.state_admin)
-        patientId = self.patient.external_id
+        patient_id = self.patient.external_id
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/",
+            f"/api/v1/patient/{patient_id}/notes/",
             {
                 "consultation": self.consultation.external_id,
                 "thread": PatientNoteThreadChoices.DOCTORS,
@@ -160,7 +160,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test if all notes are from same consultation as requested
         self.assertEqual(
             str(self.consultation.external_id),
-            [note["consultation"] for note in results][0],
+            next(note["consultation"] for note in results),
         )
 
         # Test created_by_local_user field if user is not from same facility as patient
@@ -278,13 +278,13 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         self.assertEqual(reply_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_patient_note_edit(self):
-        patientId = self.patient.external_id
+        patient_id = self.patient.external_id
         notes_list_response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+            f"/api/v1/patient/{patient_id}/notes/?consultation={self.consultation.external_id}"
         )
         note_data = notes_list_response.json()["results"][0]
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/edits/"
         )
 
         data = response.json()["results"]
@@ -296,7 +296,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test with a different user editing the note than the one who created it
         self.client.force_authenticate(user=self.state_admin)
         response = self.client.put(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/",
             {"note": new_note_content},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -307,7 +307,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test with the same user editing the note
         self.client.force_authenticate(user=self.user2)
         response = self.client.put(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/",
             {"note": new_note_content},
         )
 
@@ -318,7 +318,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
         # Ensure the original note is still present in the edits
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/edits/"
         )
 
         data = response.json()["results"]
@@ -402,16 +402,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -424,11 +424,11 @@ class PatientTestCase(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -452,16 +452,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -477,16 +477,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],

@@ -34,9 +34,9 @@ def facility_capacity_summary():
             patients_in_facility.filter(is_active=True).count()
         )
         discharge_patients = patients_in_facility.filter(is_active=False)
-        capacity_summary[facility_obj.id][
-            "actual_discharged_patients"
-        ] = discharge_patients.count()
+        capacity_summary[facility_obj.id]["actual_discharged_patients"] = (
+            discharge_patients.count()
+        )
         capacity_summary[facility_obj.id]["availability"] = []
 
         temp_inventory_summary_obj = {}
@@ -53,14 +53,7 @@ def facility_capacity_summary():
                 created_date__gte=current_date,
                 probable_accident=False,
             )
-            # start_log = log_query.order_by("created_date").first()
             end_log = log_query.order_by("-created_date").first()
-            # start_stock = summary_obj.quantity_in_default_unit
-            # if start_log:
-            #     if start_log.is_incoming:  # Add current value to current stock to get correct stock
-            #         start_stock = start_log.current_stock + start_log.quantity_in_default_unit
-            #     else:
-            #         start_stock = start_log.current_stock - start_log.quantity_in_default_unit
             end_stock = summary_obj.quantity
             if end_log:
                 end_stock = end_log.current_stock
@@ -76,11 +69,6 @@ def facility_capacity_summary():
             )
             if temp2:
                 total_added = temp2.get("quantity_in_default_unit__sum", 0) or 0
-
-            # Calculate Start Stock as
-            # end_stock = start_stock - consumption + addition
-            # start_stock = end_stock - addition + consumption
-            # This way the start stock will never veer off course
 
             start_stock = end_stock - total_added + total_consumed
 

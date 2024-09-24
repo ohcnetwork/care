@@ -17,8 +17,8 @@ class HL7MonitorAsset(BaseAssetIntegration):
             super().__init__(meta)
         except KeyError as e:
             raise ValidationError(
-                dict((key, f"{key} not found in asset metadata") for key in e.args)
-            )
+                {key: f"{key} not found in asset metadata" for key in e.args}
+            ) from e
 
     def handle_action(self, **kwargs: ActionParams):
         action_type = kwargs["type"]

@@ -271,7 +271,10 @@ class Command(BaseCommand):
     )
 
     def create_objects(
-        self, types: tuple[EventType, ...], model: str = None, parent: EventType = None
+        self,
+        types: tuple[EventType, ...],
+        model: str | None = None,
+        parent: EventType = None,
     ):
         for event_type in types:
             model = event_type.get("model", model)

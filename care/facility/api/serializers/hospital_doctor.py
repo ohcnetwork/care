@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models import DOCTOR_TYPES, HospitalDoctors
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 class HospitalDoctorSerializer(serializers.ModelSerializer):
@@ -15,4 +15,4 @@ class HospitalDoctorSerializer(serializers.ModelSerializer):
             "id",
             "area_text",
         )
-        exclude = TIMESTAMP_FIELDS + ("facility", "external_id")
+        exclude = (*TIMESTAMP_FIELDS, "facility", "external_id")

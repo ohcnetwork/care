@@ -9,8 +9,9 @@ class UUIDValidator:
     def __call__(self, value):
         try:
             return uuid.UUID(value)
-        except ValueError:
-            raise serializers.ValidationError("invalid uuid")
+        except ValueError as e:
+            msg = "invalid uuid"
+            raise serializers.ValidationError(msg) from e
 
 
 class ExternalIdSerializerField(serializers.UUIDField):
@@ -34,6 +35,23 @@ class ExternalIdSerializerField(serializers.UUIDField):
         if value:
             try:
                 value = self.queryset.get(external_id=value)
-            except ObjectDoesNotExist:
-                raise serializers.ValidationError("object with this id not found")
+            except ObjectDoesNotExist as e:
+                msg = "object with this id not found"
+                raise serializers.ValidationError(msg) from e
         return value
+
+
+class ChoiceField(serializers.ChoiceField):
+    def to_representation(self, obj):
+        try:
+            return self._choices[obj]
+        except KeyError:
+            key_type = type(next(iter(self.choices.keys())))
+            key = key_type(obj)
+            return self._choices[key]
+
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data not in self.choice_strings_to_values:
+            choice_name_map = {v: k for k, v in self._choices.items()}
+            data = choice_name_map.get(data)
+        return super().to_internal_value(data)

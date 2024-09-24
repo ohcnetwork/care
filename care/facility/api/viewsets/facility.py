@@ -144,7 +144,7 @@ class FacilityViewSet(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
 
-        return super(FacilityViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["facility"])
     @method_decorator(parser_classes([MultiPartParser]))

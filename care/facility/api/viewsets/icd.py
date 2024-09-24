@@ -8,7 +8,6 @@ from care.utils.static_data.helpers import query_builder
 
 
 class ICDViewSet(ViewSet):
-
     def serialize_data(self, objects: list[ICD11]):
         return [diagnosis.get_representation() for diagnosis in objects]
 

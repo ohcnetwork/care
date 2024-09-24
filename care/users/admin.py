@@ -53,7 +53,8 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
                 )
             },
         ),
-    ) + auth_admin.UserAdmin.fieldsets
+        *auth_admin.UserAdmin.fieldsets,
+    )
     list_display = ["username", "is_superuser"]
     search_fields = ["first_name", "last_name"]
 
@@ -89,7 +90,10 @@ class UserFlagAdmin(admin.ModelAdmin):
         )
 
         class Meta:
-            fields = "__all__"
+            fields = (
+                "user",
+                "flag",
+            )
             model = UserFlag
 
     form = UserFlagForm

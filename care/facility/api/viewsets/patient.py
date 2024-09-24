@@ -1,4 +1,3 @@
-import datetime
 import json
 from json import JSONDecodeError
 
@@ -97,7 +96,6 @@ DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 
 class PatientFilterSet(filters.FilterSet):
-
     last_consultation_field = "last_consultation"
 
     source = filters.ChoiceFilter(choices=PatientRegistration.SourceChoices)
@@ -356,7 +354,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         ordering = request.query_params.get("ordering", "")
 
-        if ordering == "category_severity" or ordering == "-category_severity":
+        if ordering in ("category_severity", "-category_severity"):
             category_ordering = {
                 category: index + 1
                 for index, (category, _) in enumerate(CATEGORY_CHOICES)
@@ -507,12 +505,11 @@ class PatientViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
-        elif self.action == "icmr_sample":
+        if self.action == "icmr_sample":
             return PatientICMRSerializer
-        elif self.action == "transfer":
+        if self.action == "transfer":
             return PatientTransferSerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class
 
     def filter_queryset(self, queryset: QuerySet) -> QuerySet:
         if self.action == "list" and settings.CSV_REQUEST_PARAMETER in self.request.GET:
@@ -586,7 +583,7 @@ class PatientViewSet(
                 field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
             )
 
-        return super(PatientViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["patient"])
     @action(detail=True, methods=["POST"])
@@ -805,9 +802,9 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -836,9 +833,7 @@ class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
         - entry_date_before: date in YYYY-MM-DD format, inclusive of this date
 
         """
-        return super(FacilityPatientStatsHistoryViewSet, self).list(
-            request, *args, **kwargs
-        )
+        return super().list(request, *args, **kwargs)
 
 
 class PatientSearchSetPagination(PageNumberPagination):
@@ -864,62 +859,58 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         if self.action != "list":
-            return super(PatientSearchViewSet, self).get_queryset()
+            return super().get_queryset()
+        serializer = PatientSearchSerializer(
+            data=self.request.query_params, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            search_keys = [
+                "date_of_birth",
+                "year_of_birth",
+                "phone_number",
+                "name",
+                "age",
+            ]
         else:
-            serializer = PatientSearchSerializer(
-                data=self.request.query_params, partial=True
+            search_keys = [
+                "date_of_birth",
+                "year_of_birth",
+                "phone_number",
+                "age",
+            ]
+        search_fields = {
+            key: serializer.validated_data[key]
+            for key in search_keys
+            if serializer.validated_data.get(key)
+        }
+        if not search_fields:
+            raise serializers.ValidationError(
+                {
+                    "detail": [
+                        f"None of the search keys provided. Available: {', '.join(search_keys)}"
+                    ]
+                }
             )
-            serializer.is_valid(raise_exception=True)
-            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-                search_keys = [
-                    "date_of_birth",
-                    "year_of_birth",
-                    "phone_number",
-                    "name",
-                    "age",
-                ]
-            else:
-                search_keys = [
-                    "date_of_birth",
-                    "year_of_birth",
-                    "phone_number",
-                    "age",
-                ]
-            search_fields = {
-                key: serializer.validated_data[key]
-                for key in search_keys
-                if serializer.validated_data.get(key)
-            }
-            if not search_fields:
-                raise serializers.ValidationError(
-                    {
-                        "detail": [
-                            f"None of the search keys provided. Available: {', '.join(search_keys)}"
-                        ]
-                    }
-                )
 
-            # if not self.request.user.is_superuser:
-            #     search_fields["state_id"] = self.request.user.state_id
+        if "age" in search_fields:
+            age = search_fields.pop("age")
+            year_of_birth = timezone.now().year - age
+            search_fields["age__gte"] = year_of_birth - 5
+            search_fields["age__lte"] = year_of_birth + 5
 
-            if "age" in search_fields:
-                age = search_fields.pop("age")
-                year_of_birth = datetime.datetime.now().year - age
-                search_fields["age__gte"] = year_of_birth - 5
-                search_fields["age__lte"] = year_of_birth + 5
+        name = search_fields.pop("name", None)
 
-            name = search_fields.pop("name", None)
+        queryset = self.queryset.filter(**search_fields)
 
-            queryset = self.queryset.filter(**search_fields)
+        if name:
+            queryset = (
+                queryset.annotate(similarity=TrigramSimilarity("name", name))
+                .filter(similarity__gt=0.2)
+                .order_by("-similarity")
+            )
 
-            if name:
-                queryset = (
-                    queryset.annotate(similarity=TrigramSimilarity("name", name))
-                    .filter(similarity__gt=0.2)
-                    .order_by("-similarity")
-                )
-
-            return queryset
+        return queryset
 
     @extend_schema(tags=["patient"])
     def list(self, request, *args, **kwargs):
@@ -939,7 +930,7 @@ class PatientSearchViewSet(ListModelMixin, GenericViewSet):
         `Eg: api/v1/patient/search/?year_of_birth=1992&phone_number=%2B917795937091`
 
         """
-        return super(PatientSearchViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
 
 class PatientNotesFilterSet(filters.FilterSet):

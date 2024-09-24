@@ -28,5 +28,4 @@ class OTPPatientDataViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class

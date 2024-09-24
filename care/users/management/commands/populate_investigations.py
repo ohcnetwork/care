@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from django.core.management import BaseCommand
 from django.db import transaction
@@ -8,10 +9,10 @@ from care.facility.models.patient_investigation import (
     PatientInvestigationGroup,
 )
 
-with open("data/investigations.json") as investigations_data:
+with Path("data/investigations.json").open() as investigations_data:
     investigations = json.load(investigations_data)
 
-with open("data/investigation_groups.json") as investigation_groups_data:
+with Path("data/investigation_groups.json").open() as investigation_groups_data:
     investigation_groups = json.load(investigation_groups_data)
 
 
@@ -22,7 +23,7 @@ class Command(BaseCommand):
 
     help = "Seed Data for Investigations"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
         investigation_group_dict = {}
 
         investigation_groups_to_create = [

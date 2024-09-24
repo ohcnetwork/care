@@ -170,7 +170,7 @@ class ResetPasswordConfirm(GenericAPIView):
                 )
             except ValidationError as e:
                 # raise a validation error for the serializer
-                raise exceptions.ValidationError({"password": e.messages})
+                raise exceptions.ValidationError({"password": e.messages}) from e
 
             reset_password_token.user.set_password(password)
             reset_password_token.user.save()

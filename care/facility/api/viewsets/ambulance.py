@@ -58,7 +58,7 @@ class AmbulanceViewSet(
     def get_serializer_class(self):
         if self.action == "add_driver":
             return AmbulanceDriverSerializer
-        elif self.action == "remove_driver":
+        if self.action == "remove_driver":
             return DeleteDriverSerializer
         return AmbulanceSerializer
 

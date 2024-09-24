@@ -32,7 +32,7 @@ class Command(BaseCommand):
                     patient.save()
             except Exception:
                 failed += 1
-        print(
+        self.stdout.write(
             str(failed),
             " failed operations ",
             str(success),

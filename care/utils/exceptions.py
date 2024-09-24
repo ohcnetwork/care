@@ -1,2 +1,2 @@
-class CeleryTaskException(Exception):
+class CeleryTaskError(Exception):
     pass
