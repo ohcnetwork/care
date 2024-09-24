@@ -61,7 +61,7 @@ class PatientConsultationEvent(models.Model):
     )
     object_id = models.IntegerField(null=False, blank=False)
     event_type = models.ForeignKey(EventType, null=False, on_delete=models.PROTECT)
-    is_latest = models.BooleanField(default=True)
+    is_latest = models.BooleanField(default=True, db_index=True)
     meta = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     value = models.JSONField(default=dict, encoder=CustomJSONEncoder)
     change_type = models.CharField(
@@ -73,11 +73,16 @@ class PatientConsultationEvent(models.Model):
 
     class Meta:
         ordering = ["-created_date"]
-        indexes = [models.Index(fields=["consultation", "is_latest"])]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=["consultation", "event_type", "is_latest"],
-        #         condition=models.Q(is_latest=True),
-        #         name="unique_consultation_event_type_is_latest",
-        #     )
-        # ]
+        indexes = [
+            models.Index(
+                fields=[
+                    "consultation_id",
+                    "is_latest",
+                    "event_type_id",
+                    "object_model",
+                    "taken_at",
+                ],
+                condition=models.Q(is_latest=True),
+                name="consultation_events_latest_idx",
+            ),
+        ]
