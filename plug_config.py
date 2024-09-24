@@ -4,7 +4,7 @@ from plugs.plug import Plug
 hcx_plugin = Plug(
     name="hcx",
     package_name="git+https://github.com/ohcnetwork/care_hcx.git",
-    version="@sainak/fix-compatibility-with-care",
+    version="@main",
     configs={},
 )
 
