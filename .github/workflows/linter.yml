@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Ruff check
         uses: chartboost/ruff-action@491342200cdd1cf4d5132a30ddc546b3b5bc531b
