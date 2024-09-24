@@ -90,27 +90,27 @@ FACILITY_TYPES = [
     (5, "Hotel"),
     (6, "Lodge"),
     (7, "TeleMedicine"),
-    # (8, "Govt Hospital"), # Change from "Govt Hospital" to "Govt Medical College Hospitals"
+    # 8, "Govt Hospital" # Change from "Govt Hospital" to "Govt Medical College Hospitals"
     (9, "Govt Labs"),
     (10, "Private Labs"),
     # Use 8xx for Govt owned hospitals and health centres
     (800, "Primary Health Centres"),
-    # (801, "24x7 Public Health Centres"), # Change from "24x7 Public Health Centres" to "Primary Health Centres"
+    # 801, "24x7 Public Health Centres" # Change from "24x7 Public Health Centres" to "Primary Health Centres"
     (802, "Family Health Centres"),
     (803, "Community Health Centres"),
-    # (820, "Urban Primary Health Center"),   # Change from "Urban Primary Health Center" to "Primary Health Centres"
+    # 820, "Urban Primary Health Center" # Change from "Urban Primary Health Center" to "Primary Health Centres"
     (830, "Taluk Hospitals"),
-    # (831, "Taluk Headquarters Hospitals"),     # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
+    # 831, "Taluk Headquarters Hospitals" # Change from "Taluk Headquarters Hospitals" to "Taluk Hospitals"
     (840, "Women and Child Health Centres"),
-    # (850, "General hospitals"),  # Change from "General hospitals" to "District Hospitals"
+    # 850, "General hospitals" # Change from "General hospitals" to "District Hospitals"
     (860, "District Hospitals"),
     (870, "Govt Medical College Hospitals"),
     (900, "Co-operative hospitals"),
     (910, "Autonomous healthcare facility"),
     # Use 9xx for Labs
-    # (950, "Corona Testing Labs"),    # Change from "Corona Testing Labs" to "Govt Labs"
+    # 950, "Corona Testing Labs" # Change from "Corona Testing Labs" to "Govt Labs"
     # Use 10xx for Corona Care Center
-    # (1000, "Corona Care Centre"),   # Change from "Corona Care Centre" to "Other"
+    # 1000, "Corona Care Centre" # Change from "Corona Care Centre" to "Other"
     (1010, "COVID-19 Domiciliary Care Center"),
     # Use 11xx for First Line Treatment Centre
     (1100, "First Line Treatment Centre"),
@@ -207,7 +207,8 @@ def check_if_spoke_is_not_ancestor(base_id: int, spoke_id: int):
         "hub_id", flat=True
     )
     if spoke_id in ancestors_of_base:
-        raise serializers.ValidationError("This facility is already an ancestor hub")
+        msg = "This facility is already an ancestor hub"
+        raise serializers.ValidationError(msg)
     for ancestor in ancestors_of_base:
         check_if_spoke_is_not_ancestor(ancestor, spoke_id)
 

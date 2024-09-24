@@ -1,6 +1,6 @@
 from rest_framework.decorators import action
 
-from care.utils.serializer.history_serializer import ModelHistorySerializer
+from care.utils.serializers.history_serializer import ModelHistorySerializer
 
 
 class HistoryMixin:

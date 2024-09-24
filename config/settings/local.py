@@ -14,7 +14,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # WhiteNoise
 # ------------------------------------------------------------------------------
 # http://whitenoise.evans.io/en/latest/django.html#using-whitenoise-in-development
-INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS
+INSTALLED_APPS = ["whitenoise.runserver_nostatic", *INSTALLED_APPS]
 
 # django-silk
 # ------------------------------------------------------------------------------

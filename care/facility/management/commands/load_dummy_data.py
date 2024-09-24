@@ -17,9 +17,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         env = os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
         if "production" in env or "staging" in env:
-            raise CommandError(
-                "This command is not intended to be run in production environment."
-            )
+            msg = "This command is not intended to be run in production environment."
+            raise CommandError(msg)
 
         try:
             management.call_command("loaddata", self.BASE_URL + "states.json")
@@ -32,4 +31,4 @@ class Command(BaseCommand):
             )
             management.call_command("populate_investigations")
         except Exception as e:
-            raise CommandError(e)
+            raise CommandError(e) from e

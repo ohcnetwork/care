@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models import FacilityCapacity, RoomType
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 class FacilityCapacitySerializer(serializers.ModelSerializer):
@@ -44,4 +44,4 @@ class FacilityCapacityHistorySerializer(serializers.ModelSerializer):
         super().__init__()
 
     class Meta:
-        exclude = TIMESTAMP_FIELDS + ("facility",)
+        exclude = (*TIMESTAMP_FIELDS, "facility")

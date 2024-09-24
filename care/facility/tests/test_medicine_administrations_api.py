@@ -123,27 +123,21 @@ class MedicineAdministrationsApiTestCase(TestUtils, APITestCase):
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/"
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(
-            any([administration_id == x["id"] for x in res.data["results"]])
-        )
+        self.assertTrue(any(administration_id == x["id"] for x in res.data["results"]))
 
         # test archived list administrations
         res = self.client.get(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/?archived=true"
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(
-            any([administration_id == x["id"] for x in res.data["results"]])
-        )
+        self.assertTrue(any(administration_id == x["id"] for x in res.data["results"]))
 
         # test archived list administrations
         res = self.client.get(
             f"/api/v1/consultation/{prescription.consultation.external_id}/prescription_administration/?archived=false"
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertFalse(
-            any([administration_id == x["id"] for x in res.data["results"]])
-        )
+        self.assertFalse(any(administration_id == x["id"] for x in res.data["results"]))
 
     def test_administer_in_future(self):
         prescription = self.normal_prescription

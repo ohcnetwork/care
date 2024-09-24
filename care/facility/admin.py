@@ -55,28 +55,12 @@ class DistrictFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         district = Facility.objects.values_list("district__name", flat=True)
-        return list(map(lambda x: (x, x), set(district)))
+        return [(x, x) for x in set(district)]
 
     def queryset(self, request, queryset):
         if self.value() is None:
             return queryset
         return queryset.filter(district__name=self.value())
-
-
-# class LocalBodyFilter(SimpleListFilter):
-#     """Local body filter"""
-
-#     title = "Local body"
-#     parameter_name = "local_body"
-
-#     def lookups(self, request, model_admin):
-#         local_body = Facility.objects.values_list("local_body__name", flat=True)
-#         return list(map(lambda x: (x, x), set(local_body)))
-
-#     def queryset(self, request, queryset):
-#         if self.value() is None:
-#             return queryset
-#         return queryset.filter(local_body__name=self.value())
 
 
 class StateFilter(SimpleListFilter):
@@ -87,7 +71,7 @@ class StateFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         state = Facility.objects.values_list("state__name", flat=True)
-        return list(map(lambda x: (x, x), set(state)))
+        return [(x, x) for x in set(state)]
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -222,7 +206,7 @@ class FacilityFlagAdmin(admin.ModelAdmin):
         )
 
         class Meta:
-            fields = "__all__"
+            fields = ("flag", "facility")
             model = FacilityFlag
 
     form = FacilityFeatureFlagForm

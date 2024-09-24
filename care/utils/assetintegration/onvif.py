@@ -24,8 +24,8 @@ class OnvifAsset(BaseAssetIntegration):
             self.access_key = self.meta["camera_access_key"].split(":")[2]
         except KeyError as e:
             raise ValidationError(
-                dict((key, f"{key} not found in asset metadata") for key in e.args)
-            )
+                {key: f"{key} not found in asset metadata" for key in e.args}
+            ) from e
 
     def handle_action(self, action):
         action_type = action["type"]

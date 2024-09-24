@@ -147,7 +147,7 @@ class CustomUserManager(UserManager):
                 f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
             )
             if proceed.lower() != "y":
-                raise Exception("Aborted Superuser Creation")
+                raise Exception
             district = None
 
         extra_fields["district"] = district
@@ -438,6 +438,9 @@ class UserFacilityAllocation(models.Model):
     )
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.facility.name
 
 
 class UserFlag(BaseFlag):

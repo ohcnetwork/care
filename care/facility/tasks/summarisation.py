@@ -1,41 +1,44 @@
 from celery import shared_task
+from celery.utils.log import get_task_logger
 
-from care.facility.utils.summarisation.district.patient_summary import (
+from care.facility.utils.summarization.district.patient_summary import (
     district_patient_summary,
 )
-from care.facility.utils.summarisation.facility_capacity import (
+from care.facility.utils.summarization.facility_capacity import (
     facility_capacity_summary,
 )
-from care.facility.utils.summarisation.patient_summary import patient_summary
-from care.facility.utils.summarisation.tests_summary import tests_summary
-from care.facility.utils.summarisation.triage_summary import triage_summary
+from care.facility.utils.summarization.patient_summary import patient_summary
+from care.facility.utils.summarization.tests_summary import tests_summary
+from care.facility.utils.summarization.triage_summary import triage_summary
+
+logger = get_task_logger(__name__)
 
 
 @shared_task
-def summarise_triage():
+def summarize_triage():
     triage_summary()
-    print("Summarised Triages")
+    logger.info("Summarized Triages")
 
 
 @shared_task
-def summarise_tests():
+def summarize_tests():
     tests_summary()
-    print("Summarised Tests")
+    logger.info("Summarized Tests")
 
 
 @shared_task
-def summarise_facility_capacity():
+def summarize_facility_capacity():
     facility_capacity_summary()
-    print("Summarised Facility Capacities")
+    logger.info("Summarized Facility Capacities")
 
 
 @shared_task
-def summarise_patient():
+def summarize_patient():
     patient_summary()
-    print("Summarised Patients")
+    logger.info("Summarized Patients")
 
 
 @shared_task
-def summarise_district_patient():
+def summarize_district_patient():
     district_patient_summary()
-    print("Summarised District Patients")
+    logger.info("Summarized District Patients")

@@ -2,6 +2,7 @@
 Base settings to build other settings files upon.
 """
 
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -15,6 +16,8 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
 from plug_config import manager
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
@@ -197,7 +200,7 @@ MIDDLEWARE = [
 
 # add RequestTimeLoggingMiddleware based on the environment variable
 if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
-    MIDDLEWARE.insert(0, "config.middleware.RequestTimeLoggingMiddleware")
+    MIDDLEWARE.insert(0, "config.middlewares.RequestTimeLoggingMiddleware")
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -275,7 +278,7 @@ X_FRAME_OPTIONS = "DENY"
 CSRF_TRUSTED_ORIGINS = env.json("CSRF_TRUSTED_ORIGINS", default=[])
 
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origin_regexes-sequencestr--patternstr
-# CORS_URLS_REGEX = r"^/api/.*$"
+# CORS_URLS_REGEX = r"^/api/.*$"  # noqa: ERA001
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -303,9 +306,9 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 # SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-# ADMINS = [("""👪""", "admin@ohc.network")]
+# ADMINS = [("""👪""", "admin@ohc.network")]  # noqa: ERA001
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
-# MANAGERS = ADMINS
+# MANAGERS = ADMINS  # noqa: ERA001
 
 # Django Admin URL.
 ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
@@ -379,7 +382,6 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
-    # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
 
 # Simple JWT (JWT Authentication)
@@ -542,7 +544,7 @@ BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOI
 BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
-    print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
+    logger.error("invalid CSP found: %s", BUCKET_PROVIDER)
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
@@ -615,10 +617,11 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
 # for setting the shifting mode
 PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
 
+# we are making this tz aware in the app so no need to make it aware here
 MIN_ENCOUNTER_DATE = env(
     "MIN_ENCOUNTER_DATE",
-    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),
-    default=datetime(2020, 1, 1),
+    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),  # noqa: DTZ007
+    default=datetime(2020, 1, 1),  # noqa: DTZ001
 )
 
 # for exporting csv

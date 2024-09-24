@@ -184,7 +184,6 @@ class ConsultationPrescriptionViewSet(
 
 
 class MedibaseViewSet(ViewSet):
-
     def serialize_data(self, objects: list[MedibaseMedicine]):
         return [medicine.get_representation() for medicine in objects]
 
@@ -195,8 +194,8 @@ class MedibaseViewSet(ViewSet):
             limit = 30
 
         query = []
-        if type := request.query_params.get("type"):
-            query.append(MedibaseMedicine.type == type)
+        if t := request.query_params.get("type"):
+            query.append(MedibaseMedicine.type == t)
 
         if q := request.query_params.get("query"):
             query.append(

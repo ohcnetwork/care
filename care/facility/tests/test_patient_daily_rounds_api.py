@@ -1,4 +1,3 @@
-import datetime
 from datetime import timedelta
 
 from django.utils import timezone
@@ -51,7 +50,7 @@ class TestDailyRoundApi(TestUtils, APITestCase):
             "rounds_type": "NORMAL",
             "patient_category": "Comfort",
             "action": "DISCHARGE_RECOMMENDED",
-            "taken_at": datetime.datetime.now().isoformat(),
+            "taken_at": timezone.now().isoformat(),
         }
 
     def get_url(self, external_consultation_id=None):
@@ -243,11 +242,6 @@ class TestDailyRoundApi(TestUtils, APITestCase):
                     "region": "",
                     "length": 1,
                     "width": 1,
-                    # "exudate_amount": "None",
-                    # "tissue_type": "Closed",
-                    # "push_score": 1,
-                    # "scale": 1,
-                    # "description": "Description",
                 }
             ],
         )

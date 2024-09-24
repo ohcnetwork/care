@@ -68,7 +68,7 @@ class NotificationViewSet(
     def notify(self, request, *args, **kwargs):
         user = request.user
         if user.user_type < User.TYPE_VALUE_MAP["Doctor"]:
-            raise PermissionDenied()
+            raise PermissionDenied
         if "facility" not in request.data or request.data["facility"] == "":
             raise ValidationError({"facility": "is required"})
         if "message" not in request.data or request.data["message"] == "":

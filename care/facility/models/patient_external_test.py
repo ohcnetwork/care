@@ -79,7 +79,6 @@ class PatientExternalTest(FacilityBaseModel):
         "result": "Final Result",
         "sample_collection_date": "Sample Collection Date",
         "source": "Source",
-        # "result_date": "",
     }
 
     def __str__(self):

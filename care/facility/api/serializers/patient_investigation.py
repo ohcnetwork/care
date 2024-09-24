@@ -15,7 +15,7 @@ from care.facility.models.patient_investigation import (
 class PatientInvestigationGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientInvestigationGroup
-        exclude = TIMESTAMP_FIELDS + ("id",)
+        exclude = (*TIMESTAMP_FIELDS, "id")
 
 
 class PatientInvestigationSerializer(serializers.ModelSerializer):
@@ -23,13 +23,13 @@ class PatientInvestigationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientInvestigation
-        exclude = TIMESTAMP_FIELDS + ("id",)
+        exclude = (*TIMESTAMP_FIELDS, "id")
 
 
 class MinimalPatientInvestigationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientInvestigation
-        exclude = TIMESTAMP_FIELDS + ("id", "groups")
+        exclude = (*TIMESTAMP_FIELDS, "id", "groups")
 
 
 class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
@@ -38,7 +38,7 @@ class PatientInvestigationSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvestigationSession
-        exclude = TIMESTAMP_FIELDS + ("external_id", "id")
+        exclude = (*TIMESTAMP_FIELDS, "external_id", "id")
 
 
 class InvestigationValueSerializer(serializers.ModelSerializer):
@@ -58,27 +58,20 @@ class InvestigationValueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvestigationValue
-        read_only_fields = TIMESTAMP_FIELDS + (
+        read_only_fields = (
+            *TIMESTAMP_FIELDS,
             "session_id",
             "investigation",
             "consultation",
             "session",
         )
-        exclude = TIMESTAMP_FIELDS + ("external_id",)
+        exclude = (*TIMESTAMP_FIELDS, "external_id")
 
     def update(self, instance, validated_data):
         if instance.consultation.discharge_date:
             raise serializers.ValidationError(
                 {"consultation": ["Discharged Consultation data cannot be updated"]}
             )
-
-        # Removed since it might flood messages
-        # NotificationGenerator(
-        #     event=Notification.Event.INVESTIGATION_UPDATED,
-        #     caused_by=self.context["request"].user,
-        #     caused_object=instance,
-        #     facility=instance.consultation.patient.facility,
-        # ).generate()
 
         return super().update(instance, validated_data)
 
@@ -87,7 +80,7 @@ class InvestigationValueCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvestigationValue
         read_only_fields = TIMESTAMP_FIELDS
-        exclude = TIMESTAMP_FIELDS + ("external_id",)
+        exclude = (*TIMESTAMP_FIELDS, "external_id")
 
 
 class ValueSerializer(serializers.ModelSerializer):

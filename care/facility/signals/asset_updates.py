@@ -17,7 +17,7 @@ def save_asset_fields_before_update(
         return
 
     if instance.pk:
-        instance._previous_values = {
+        instance._previous_values = {  # noqa: SLF001
             "hostname": instance.resolved_middleware.get("hostname"),
         }
 

@@ -68,8 +68,6 @@ class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
     )
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationEventFilterSet
-    # lookup_field = "external_id"
-    # lookup_url_kwarg = "external_id"
 
     def get_consultation_obj(self):
         return get_object_or_404(

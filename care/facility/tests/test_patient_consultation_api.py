@@ -64,7 +64,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
                     "onset_date": now(),
                 },
             ],
-            "patient_no": datetime.datetime.now().timestamp(),
+            "patient_no": now().timestamp(),
         }
 
     def get_url(self, consultation=None):

@@ -1,3 +1,4 @@
+# ruff: noqa: SLF001
 import re
 from fnmatch import fnmatch
 from functools import lru_cache
@@ -14,7 +15,7 @@ def remove_non_member_fields(d: dict):
 def instance_finder(v):
     return isinstance(
         v,
-        (list, dict, set),
+        list | dict | set,
     )
 
 
@@ -41,10 +42,9 @@ class Search(NamedTuple):
 
 def _make_search(item):
     splits = item.split(":")
-    if len(splits) == 2:
+    if len(splits) == 2:  # noqa: PLR2004
         return Search(type=splits[0], value=splits[1])
-    else:
-        return Search(type="plain", value=splits[0])
+    return Search(type="plain", value=splits[0])
 
 
 def candidate_in_scope(
@@ -62,7 +62,7 @@ def candidate_in_scope(
     search_candidate = candidate
     if is_application:
         splits = candidate.split(".")
-        if len(splits) == 2:
+        if len(splits) == 2:  # noqa: PLR2004
             app_label, model_name = splits
             search_candidate = app_label
 
@@ -91,12 +91,11 @@ def exclude_model(model_name):
     ):
         return True
 
-    if candidate_in_scope(
-        model_name, settings.AUDIT_LOG["models"]["exclude"]["models"]
-    ):
-        return True
-
-    return False
+    return bool(
+        candidate_in_scope(
+            model_name, settings.AUDIT_LOG["models"]["exclude"]["models"]
+        )
+    )
 
 
 class MetaDataContainer(dict):

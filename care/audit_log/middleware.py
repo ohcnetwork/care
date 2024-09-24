@@ -15,6 +15,7 @@ class RequestInformation(NamedTuple):
     response: HttpResponse | None
     exception: Exception | None
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -50,7 +51,7 @@ class AuditLogMiddleware:
         if not dal_request_id:
             dal_request_id = (
                 f"{request.method.lower()}::"
-                f"{md5(request.path.lower().encode('utf-8')).hexdigest()}::"
+                f"{md5(request.path.lower().encode('utf-8')).hexdigest()}::"  # noqa: S324
                 f"{uuid.uuid4().hex}"
             )
             request.dal_request_id = dal_request_id
@@ -69,8 +70,7 @@ class AuditLogMiddleware:
         environ = RequestInformation(*AuditLogMiddleware.thread.__dal__)
         if isinstance(environ.request.user, AnonymousUser):
             return None
-        else:
-            return environ.request.user
+        return environ.request.user
 
     @staticmethod
     def get_current_request():
@@ -85,14 +85,14 @@ class AuditLogMiddleware:
         response: HttpResponse = self.get_response(request)
         self.save(request, response)
 
-        if request.user:
-            current_user_str = f"{request.user.id}|{request.user}"
-        else:
-            current_user_str = None
+        current_user_str = f"{request.user.id}|{request.user}" if request.user else None
 
         logger.info(
-            f"{request.method} {request.path} {response.status_code} "
-            f"User:[{current_user_str}]"
+            "%s %s %s User:[%s]",
+            request.method,
+            request.path,
+            response.status_code,
+            current_user_str,
         )
         return response
 

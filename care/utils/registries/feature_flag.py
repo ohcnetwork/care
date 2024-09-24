@@ -1,13 +1,12 @@
 import enum
 import logging
-from typing import TypeAlias
 
 from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
 
-class FlagNotFoundException(ValidationError):
+class FlagNotFoundError(ValidationError):
     pass
 
 
@@ -16,9 +15,8 @@ class FlagType(enum.Enum):
     FACILITY = "FACILITY"
 
 
-# TODO: convert to type in python 3.12
-FlagName = str
-FlagTypeRegistry: TypeAlias = dict[FlagType, dict[FlagName, bool]]
+type FlagName = str
+type FlagTypeRegistry = dict[FlagType, dict[FlagName, bool]]
 
 
 class FlagRegistry:
@@ -35,7 +33,7 @@ class FlagRegistry:
         try:
             del cls._flags[flag_type][flag_name]
         except KeyError as e:
-            logger.warning(f"Flag {flag_name} not found in {flag_type}: {e}")
+            logger.warning("Flag %s not found in %s: %s", flag_name, flag_type, e)
 
     @classmethod
     def register_wrapper(cls, flag_type, flag_name) -> None:
@@ -48,13 +46,15 @@ class FlagRegistry:
     @classmethod
     def validate_flag_type(cls, flag_type: FlagType) -> None:
         if flag_type not in cls._flags:
-            raise FlagNotFoundException("Invalid Flag Type")
+            msg = "Invalid Flag Type"
+            raise FlagNotFoundError(msg)
 
     @classmethod
     def validate_flag_name(cls, flag_type: FlagType, flag_name):
         cls.validate_flag_type(flag_type)
         if flag_name not in cls._flags[flag_type]:
-            raise FlagNotFoundException("Flag not registered")
+            msg = "Flag not registered"
+            raise FlagNotFoundError(msg)
 
     @classmethod
     def get_all_flags(cls, flag_type: FlagType) -> list[FlagName]:
@@ -65,4 +65,4 @@ class FlagRegistry:
     def get_all_flags_as_choices(
         cls, flag_type: FlagType
     ) -> list[tuple[FlagName, FlagName]]:
-        return ((x, x) for x in cls._flags.get(flag_type, {}).keys())
+        return ((x, x) for x in cls._flags.get(flag_type, {}))
