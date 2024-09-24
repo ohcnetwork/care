@@ -18,6 +18,7 @@ from care.utils.csp import config as csp_config
 from plug_config import manager
 
 logger = logging.getLogger(__name__)
+
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
 env = environ.Env()

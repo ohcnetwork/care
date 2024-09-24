@@ -110,7 +110,7 @@ class TestPasswordReset(TestUtils, APITestCase):
         cls.user = cls.create_user("user", cls.district)
 
     def create_reset_password_token(
-        self, user: User, *, expired: bool
+        self, user: User, expired: bool = False
     ) -> ResetPasswordToken:
         token = ResetPasswordToken.objects.create(user=user)
         if expired:

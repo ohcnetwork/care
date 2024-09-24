@@ -35,47 +35,47 @@ def compare_pngs(png_path1, png_path2):
 
 
 def test_compile_typ(data):
-    sample_file_dir: Path = (
+    logo_path = (
+        Path(settings.BASE_DIR) / "staticfiles" / "images" / "logos" / "black-logo.svg"
+    )
+    data["logo_path"] = str(logo_path)
+    content = render_to_string(
+        "reports/patient_discharge_summary_pdf_template.typ", context=data
+    )
+
+    sample_files_dir: Path = (
         settings.BASE_DIR / "care" / "facility" / "tests" / "sample_reports"
     )
-    try:
-        logo_path = (
-            Path(settings.BASE_DIR)
-            / "staticfiles"
-            / "images"
-            / "logos"
-            / "black-logo.svg"
-        )
-        data["logo_path"] = str(logo_path)
-        content = render_to_string(
-            "reports/patient_discharge_summary_pdf_template.typ", context=data
-        )
-        subprocess.run(  # noqa: S603
-            ["typst", "compile", "-", sample_file_dir.as_posix(), "--format", "png"],  # noqa: S607
-            input=content.encode("utf-8"),
-            capture_output=True,
-            check=True,
-            cwd="/",
-        )
 
-        number_of_pngs_generated = 2
-        # To be updated only if the number of sample png increase in future
+    subprocess.run(  # noqa: S603
+        [  # noqa: S607
+            "typst",
+            "compile",
+            "-",
+            sample_files_dir / "test_output{n}.png",
+            "--format",
+            "png",
+        ],
+        input=content.encode("utf-8"),
+        capture_output=True,
+        check=True,
+        cwd="/",
+    )
 
-        for i in range(1, number_of_pngs_generated + 1):
-            current_sample_file_path = sample_file_dir / f"sample{i}.png"
-            current_test_output_file_path = sample_file_dir / f"test_output{i}.png"
+    sample_files = sorted(sample_files_dir.glob("sample*.png"))
+    test_generated_files = sorted(sample_files_dir.glob("test_output*.png"))
 
-            if not compare_pngs(
-                current_sample_file_path, current_test_output_file_path
-            ):
-                return False
-        return True
-    except Exception:
-        return False
-    finally:
-        # Clean up the generated files use path.unlink() instead of os.remove()
-        for file in sample_file_dir.glob("test_output*.png"):
-            file.unlink()
+    result = all(
+        compare_pngs(sample_image, test_output_image)
+        for sample_image, test_output_image in zip(
+            sample_files, test_generated_files, strict=True
+        )
+    )
+
+    for file in test_generated_files:
+        file.unlink()
+
+    return result
 
 
 class TestTypstInstallation(TestCase):
