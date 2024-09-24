@@ -37,9 +37,9 @@ def patient_summary():
             home_quarantine = Q(last_consultation__suggestion="HI")
 
             total_patients_home_quarantine = patients.filter(home_quarantine).count()
-            patient_summary[facility_id][
-                "total_patients_home_quarantine"
-            ] = total_patients_home_quarantine
+            patient_summary[facility_id]["total_patients_home_quarantine"] = (
+                total_patients_home_quarantine
+            )
 
             # Apply Date Filters
 
@@ -63,9 +63,9 @@ def patient_summary():
                 patient_summary[facility_id][clean_name] = count
 
             # Update Anything Extra
-            patient_summary[facility_id][
-                "today_patients_home_quarantine"
-            ] = today_patients_home_quarantine
+            patient_summary[facility_id]["today_patients_home_quarantine"] = (
+                today_patients_home_quarantine
+            )
 
     for i in list(patient_summary.keys()):
         object_filter = Q(s_type="PatientSummary") & Q(
