@@ -14,7 +14,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "Care"
-copyright = """2023, Open Healthcare Network"""
+copyright = """2023, Open Healthcare Network"""  # noqa: A001
 author = "ohcnetwork"
 
 

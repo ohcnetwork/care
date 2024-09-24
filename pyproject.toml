@@ -21,7 +21,7 @@ ignore_errors = true
 
 [tool.ruff]
 target-version = "py312"
-extend-exclude = ["*/migrations*/*"]
+extend-exclude = ["*/migrations*/*", "care/abdm/*"]
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
@@ -61,7 +61,7 @@ select = [
   "INT", # flake8-gettext
   # "ARG",  # flake8-unused-arguments
   "PTH",  # flake8-use-pathlib
-  "TD",   # flake8-todo
+  # "TD",   # flake8-todo # disabling this for now
   "ERA",  # eradicate
   "PL",   # pylint
   "FURB", # refurb
