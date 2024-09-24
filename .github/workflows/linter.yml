@@ -7,8 +7,6 @@ on:
       - staging
   merge_group:
 
-permissions: { }
-
 jobs:
   lint:
     name: Lint Code Base
@@ -21,15 +19,15 @@ jobs:
           fetch-depth: 0
 
       - name: Ruff check
-        uses: chartboost/ruff-action@491342200cdd1cf4d5132a30ddc546b3b5bc531b
+        uses: ilyvsc/ruff-action@c6bf276018bab6db1dff3c1311d51aa7ba1dc187
         with:
           version: 0.6.7
           args: "check"
           changed-files: "true"
 
       - name: Ruff format
-        uses: chartboost/ruff-action@491342200cdd1cf4d5132a30ddc546b3b5bc531b
+        uses: ilyvsc/ruff-action@c6bf276018bab6db1dff3c1311d51aa7ba1dc187
         with:
           version: 0.6.7
-          args: "format"
+          args: "format --check"
           changed-files: "true"
