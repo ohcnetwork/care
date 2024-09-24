@@ -19,7 +19,7 @@ def load_redis_index():
         logger.info("Redis Index already loading, skipping")
         return
 
-    cache.set("redis_index_loading", True, timeout=60 * 2)
+    cache.set("redis_index_loading", value=True, timeout=60 * 2)
     logger.info("Loading Redis Index")
     if index_exists():
         logger.info("Index already exists, skipping")
@@ -37,9 +37,9 @@ def load_redis_index():
             if load_static_data:
                 load_static_data()
         except ModuleNotFoundError:
-            logger.info(f"Module {module_path} not found")
+            logger.info("Module %s not found", module_path)
         except Exception as e:
-            logger.info(f"Error loading static data for {plug.name}: {e}")
+            logger.info("Error loading static data for %s: %s", plug.name, e)
 
     cache.delete("redis_index_loading")
     logger.info("Redis Index Loaded")
