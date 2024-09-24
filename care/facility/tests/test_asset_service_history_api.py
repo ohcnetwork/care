@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.utils.timezone import now
 from rest_framework import status
@@ -20,8 +20,8 @@ class AssetServiceViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset = cls.create_asset(cls.asset_location)
         cls.user = cls.create_user("staff", cls.district, home_facility=cls.facility)
-        cls.today = datetime.today().strftime("%Y-%m-%d")
-        cls.yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+        cls.today = now().strftime("%Y-%m-%d")
+        cls.yesterday = (now() - timedelta(days=1)).strftime("%Y-%m-%d")
         cls.asset_service = AssetService.objects.create(
             asset=cls.asset,
             serviced_on=cls.today,

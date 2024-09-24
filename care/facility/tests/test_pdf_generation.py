@@ -1,4 +1,3 @@
-import os
 import subprocess
 import tempfile
 from datetime import date
@@ -32,18 +31,12 @@ def compare_pngs(png_path1, png_path2):
         img1_data = list(img1.getdata())
         img2_data = list(img2.getdata())
 
-    if img1_data == img2_data:
-        return True
-    else:
-        return False
+    return img1_data == img2_data
 
 
 def test_compile_typ(data):
-    sample_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "tests", "sample_reports", "sample{n}.png"
-    )
-    test_output_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "tests", "sample_reports", "test_output{n}.png"
+    sample_file_dir: Path = (
+        settings.BASE_DIR / "care" / "facility" / "tests" / "sample_reports"
     )
     try:
         logo_path = (
@@ -57,8 +50,8 @@ def test_compile_typ(data):
         content = render_to_string(
             "reports/patient_discharge_summary_pdf_template.typ", context=data
         )
-        subprocess.run(
-            ["typst", "compile", "-", test_output_file_path, "--format", "png"],
+        subprocess.run(  # noqa: S603
+            ["typst", "compile", "-", sample_file_dir.as_posix(), "--format", "png"],  # noqa: S607
             input=content.encode("utf-8"),
             capture_output=True,
             check=True,
@@ -69,41 +62,26 @@ def test_compile_typ(data):
         # To be updated only if the number of sample png increase in future
 
         for i in range(1, number_of_pngs_generated + 1):
-            current_sample_file_path = sample_file_path
-            current_sample_file_path = str(current_sample_file_path).replace(
-                "{n}", str(i)
-            )
-
-            current_test_output_file_path = test_output_file_path
-            current_test_output_file_path = str(current_test_output_file_path).replace(
-                "{n}", str(i)
-            )
+            current_sample_file_path = sample_file_dir / f"sample{i}.png"
+            current_test_output_file_path = sample_file_dir / f"test_output{i}.png"
 
             if not compare_pngs(
-                Path(current_sample_file_path), Path(current_test_output_file_path)
+                current_sample_file_path, current_test_output_file_path
             ):
                 return False
         return True
     except Exception:
         return False
     finally:
-        count = 1
-        while True:
-            current_test_output_file_path = test_output_file_path
-            current_test_output_file_path = current_test_output_file_path.replace(
-                "{n}", str(count)
-            )
-            if Path(current_test_output_file_path).exists():
-                os.remove(Path(current_test_output_file_path))
-            else:
-                break
-            count += 1
+        # Clean up the generated files use path.unlink() instead of os.remove()
+        for file in sample_file_dir.glob("test_output*.png"):
+            file.unlink()
 
 
 class TestTypstInstallation(TestCase):
     def test_typst_installed(self):
         try:
-            subprocess.run(["typst", "--version"], check=True, capture_output=True)
+            subprocess.run(["typst", "--version"], check=True, capture_output=True)  # noqa: S603, S607
             typst_installed = True
         except subprocess.CalledProcessError:
             typst_installed = False
@@ -218,8 +196,8 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as file:
             compile_typ(file.name, test_data)
 
-        self.assertTrue(os.path.exists(file.name))
-        self.assertGreater(os.path.getsize(file.name), 0)
+        self.assertTrue(Path(file.name).exists())
+        self.assertGreater(Path(file.name).stat().st_size, 0)
 
     def test_pdf_generation(self):
         data = discharge_summary.get_discharge_summary_data(self.consultation)

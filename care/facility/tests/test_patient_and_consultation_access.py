@@ -105,7 +105,7 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
             self.assertEqual(str(patients_order[i].external_id), response[i]["id"])
 
         # order by modified date
-        patients_order = patients_order[::-1]
+        patients_order.reverse()
         response = self.client.get(
             f"/api/v1/facility/{self.home_facility.external_id}/discharged_patients/?ordering=modified_date",
         )
@@ -113,7 +113,7 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         for i in range(len(response)):
             self.assertEqual(str(patients_order[i].external_id), response[i]["id"])
 
-    def test_patient_consultation_access(self):
+    def test_patient_consultation_access(self):  # noqa: PLR0915
         # In this test, a patient is admitted to a remote facility and then later admitted to a home facility.
 
         # Admit patient to the remote facility
