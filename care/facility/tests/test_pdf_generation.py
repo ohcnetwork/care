@@ -1,3 +1,4 @@
+import hashlib
 import subprocess
 import tempfile
 from datetime import date
@@ -20,21 +21,18 @@ from care.facility.utils.reports.discharge_summary import compile_typ
 from care.utils.tests.test_utils import TestUtils
 
 
-def compare_pngs(png_path1, png_path2):
-    with Image.open(png_path1) as img1, Image.open(png_path2) as img2:
-        if img1.mode != img2.mode:
+def compare_images(image1_path: Path, image2_path: Path) -> bool:
+    with Image.open(image1_path) as img1, Image.open(image2_path) as img2:
+        if img1.mode != img2.mode or img1.size != img2.size:
             return False
 
-        if img1.size != img2.size:
-            return False
+        img1_hash = hashlib.sha256(img1.tobytes()).hexdigest()
+        img2_hash = hashlib.sha256(img2.tobytes()).hexdigest()
 
-        img1_data = list(img1.getdata())
-        img2_data = list(img2.getdata())
-
-    return img1_data == img2_data
+    return img1_hash == img2_hash
 
 
-def test_compile_typ(data):
+def test_compile_typ(data) -> bool:
     logo_path = (
         Path(settings.BASE_DIR) / "staticfiles" / "images" / "logos" / "black-logo.svg"
     )
@@ -66,7 +64,7 @@ def test_compile_typ(data):
     test_generated_files = sorted(sample_files_dir.glob("test_output*.png"))
 
     result = all(
-        compare_pngs(sample_image, test_output_image)
+        compare_images(sample_image, test_output_image)
         for sample_image, test_output_image in zip(
             sample_files, test_generated_files, strict=True
         )
