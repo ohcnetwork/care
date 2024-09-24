@@ -1,3 +1,4 @@
+import logging
 import re
 
 from django.conf import settings
@@ -243,11 +244,10 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="asset",
                     object_external_id=self.kwargs["asset_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset's availability records"
-                )
-        elif "asset_location_external_id" in self.kwargs:
+            raise exceptions.PermissionDenied(
+                "You do not have access to this asset's availability records"
+            )
+        if "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
                 AssetLocation, external_id=self.kwargs["asset_location_external_id"]
             )
@@ -256,14 +256,12 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="assetlocation",
                     object_external_id=self.kwargs["asset_location_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset location's availability records"
-                )
-        else:
-            raise exceptions.ValidationError(
-                "Either asset_external_id or asset_location_external_id is required"
+            raise exceptions.PermissionDenied(
+                "You do not have access to this asset location's availability records"
             )
+        raise exceptions.ValidationError(
+            "Either asset_external_id or asset_location_external_id is required"
+        )
 
 
 class AssetViewSet(
@@ -329,10 +327,9 @@ class AssetViewSet(
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        else:
-            raise exceptions.AuthenticationFailed(
-                "Only District Admin and above can delete assets"
-            )
+        raise exceptions.AuthenticationFailed(
+            "Only District Admin and above can delete assets"
+        )
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
@@ -379,7 +376,6 @@ class AssetViewSet(
         This API is used to operate assets. API accepts the asset_id and action as parameters.
         """
         try:
-            action = request.data["action"]
             asset: Asset = self.get_object()
             middleware_hostname = (
                 asset.meta.get(
@@ -395,7 +391,7 @@ class AssetViewSet(
                     "middleware_hostname": middleware_hostname,
                 }
             )
-            result = asset_class.handle_action(action)
+            result = asset_class.handle_action(**request.data["action"])
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except ValidationError as e:
@@ -416,7 +412,7 @@ class AssetViewSet(
             )
 
         except Exception as e:
-            print(f"error: {e}")
+            logging.error(f"error: {e}")
             return Response(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
