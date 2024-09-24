@@ -5,7 +5,7 @@ register = template.Library()
 
 @register.filter(name="format_empty_data")
 def format_empty_data(data):
-    if data is None or data == "" or data == 0.0 or data == []:
+    if data is None or data in ("", 0.0, []):
         return "N/A"
 
     return data
@@ -28,7 +28,7 @@ def format_to_sentence_case(data):
         converted_items = [convert_to_sentence_case(item) for item in items]
         return ", ".join(converted_items)
 
-    elif isinstance(data, (list, tuple)):
+    if isinstance(data, list | tuple):
         converted_items = [convert_to_sentence_case(item) for item in data]
         return ", ".join(converted_items)
 
