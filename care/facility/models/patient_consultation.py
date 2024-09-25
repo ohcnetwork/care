@@ -80,8 +80,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     treatment_plan = models.TextField(null=True, blank=True)
     consultation_notes = models.TextField(null=True, blank=True)
     course_in_facility = models.TextField(null=True, blank=True)
-    investigation = JSONField(default=dict)
-    prescriptions = JSONField(default=dict)  # Deprecated
+    investigation = JSONField(default=list)
     procedure = JSONField(default=dict)
     suggestion = models.CharField(max_length=4, choices=SUGGESTION_CHOICES)
     route_to_facility = models.SmallIntegerField(
@@ -248,15 +247,6 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         ),
     }
 
-    # CSV_DATATYPE_DEFAULT_MAPPING = {
-    #     "encounter_date": (None, models.DateTimeField(),),
-    #     "deprecated_symptoms_onset_date": (None, models.DateTimeField(),),
-    #     "deprecated_symptoms": ("-", models.CharField(),),
-    #     "category": ("-", models.CharField(),),
-    #     "examination_details": ("-", models.CharField(),),
-    #     "suggestion": ("-", models.CharField(),),
-    # }
-
     def __str__(self):
         return f"{self.patient.name}<>{self.facility.name}"
 
@@ -272,7 +262,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         if self.death_datetime and self.patient.death_datetime != self.death_datetime:
             self.patient.death_datetime = self.death_datetime
             self.patient.save(update_fields=["death_datetime"])
-        super(PatientConsultation, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
@@ -300,10 +290,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
                 self.patient.facility
                 and request.user in self.patient.facility.users.all()
             )
-            or (
-                self.assigned_to == request.user
-                or request.user == self.patient.assigned_to
-            )
+            or (request.user in (self.assigned_to, self.patient.assigned_to))
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
                 and (
@@ -352,6 +339,9 @@ class ConsultationClinician(models.Model):
         User,
         on_delete=models.PROTECT,
     )
+
+    def __str__(self):
+        return f"ConsultationClinician {self.consultation} - {self.clinician}"
 
 
 class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
@@ -434,8 +424,11 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
+                request.user
+                in (
+                    self.consultation.assigned_to,
+                    self.consultation.patient.assigned_to,
+                )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]

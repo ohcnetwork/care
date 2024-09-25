@@ -1,6 +1,6 @@
 from enum import Enum
 
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -27,6 +27,7 @@ class ExpectedPatientNoteKeys(Enum):
     LAST_EDITED_DATE = "last_edited_date"
     THREAD = "thread"
     USER_TYPE = "user_type"
+    REPLY_TO_OBJECT = "reply_to_object"
 
 
 class ExpectedFacilityKeys(Enum):
@@ -143,9 +144,9 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
     def test_patient_notes(self):
         self.client.force_authenticate(user=self.state_admin)
-        patientId = self.patient.external_id
+        patient_id = self.patient.external_id
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/",
+            f"/api/v1/patient/{patient_id}/notes/",
             {
                 "consultation": self.consultation.external_id,
                 "thread": PatientNoteThreadChoices.DOCTORS,
@@ -159,7 +160,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test if all notes are from same consultation as requested
         self.assertEqual(
             str(self.consultation.external_id),
-            [note["consultation"] for note in results][0],
+            next(note["consultation"] for note in results),
         )
 
         # Test created_by_local_user field if user is not from same facility as patient
@@ -234,14 +235,56 @@ class PatientNotesTestCase(TestUtils, APITestCase):
                 [item.value for item in ExpectedCreatedByObjectKeys],
             )
 
+    def test_patient_note_with_reply(self):
+        patient = self.patient
+        note = "How is the patient"
+        created_by = self.user
+
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+            "thread": PatientNoteThreadChoices.DOCTORS,
+        }
+        self.client.force_authenticate(user=created_by)
+        response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=data
+        )
+        reply_data = {
+            "facility": patient.facility or self.facility,
+            "note": "Patient is doing fine",
+            "thread": PatientNoteThreadChoices.DOCTORS,
+            "reply_to": response.json()["id"],
+        }
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/", data=reply_data
+        )
+
+        # Ensure the reply is created successfully
+        self.assertEqual(reply_response.status_code, status.HTTP_201_CREATED)
+
+        # Ensure the reply is posted on same thread
+        self.assertEqual(reply_response.json()["thread"], response.json()["thread"])
+
+        # Posting reply in other thread should fail
+        reply_response = self.client.post(
+            f"/api/v1/patient/{patient.external_id}/notes/",
+            {
+                "facility": patient.facility or self.facility,
+                "note": "Patient is doing fine",
+                "thread": PatientNoteThreadChoices.NURSES,
+                "reply_to": response.json()["id"],
+            },
+        )
+        self.assertEqual(reply_response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_patient_note_edit(self):
-        patientId = self.patient.external_id
+        patient_id = self.patient.external_id
         notes_list_response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/?consultation={self.consultation.external_id}"
+            f"/api/v1/patient/{patient_id}/notes/?consultation={self.consultation.external_id}"
         )
         note_data = notes_list_response.json()["results"][0]
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/edits/"
         )
 
         data = response.json()["results"]
@@ -253,7 +296,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test with a different user editing the note than the one who created it
         self.client.force_authenticate(user=self.state_admin)
         response = self.client.put(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/",
             {"note": new_note_content},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -264,7 +307,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
         # Test with the same user editing the note
         self.client.force_authenticate(user=self.user2)
         response = self.client.put(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/",
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/",
             {"note": new_note_content},
         )
 
@@ -275,7 +318,7 @@ class PatientNotesTestCase(TestUtils, APITestCase):
 
         # Ensure the original note is still present in the edits
         response = self.client.get(
-            f"/api/v1/patient/{patientId}/notes/{note_data['id']}/edits/"
+            f"/api/v1/patient/{patient_id}/notes/{note_data['id']}/edits/"
         )
 
         data = response.json()["results"]
@@ -359,16 +402,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -381,11 +424,11 @@ class PatientTestCase(TestUtils, APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -409,16 +452,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -434,16 +477,16 @@ class PatientTestCase(TestUtils, APITestCase):
         response = self.client.get(self.get_base_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 2)
-        patient_1_response = [
+        patient_1_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient.external_id)
-        ][0]
-        patient_2_response = [
+        )
+        patient_2_response = next(
             x
             for x in response.data["results"]
             if x["id"] == str(self.patient_2.external_id)
-        ][0]
+        )
         self.assertEqual(
             patient_1_response["last_consultation"]["has_consents"],
             [ConsentType.CONSENT_FOR_ADMISSION],
@@ -683,6 +726,156 @@ class PatientFilterTestCase(TestUtils, APITestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["count"], 3)
+
+
+class DischargePatientFilterTestCase(TestUtils, APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.state = cls.create_state()
+        cls.district = cls.create_district(cls.state)
+        cls.local_body = cls.create_local_body(cls.district)
+        cls.super_user = cls.create_super_user("su", cls.district)
+        cls.facility = cls.create_facility(cls.super_user, cls.district, cls.local_body)
+        cls.user = cls.create_user(
+            "user", cls.district, user_type=15, home_facility=cls.facility
+        )
+        cls.location = cls.create_asset_location(cls.facility)
+
+        cls.iso_bed = cls.create_bed(cls.facility, cls.location, bed_type=1, name="ISO")
+        cls.icu_bed = cls.create_bed(cls.facility, cls.location, bed_type=2, name="ICU")
+        cls.oxy_bed = cls.create_bed(cls.facility, cls.location, bed_type=6, name="OXY")
+        cls.nor_bed = cls.create_bed(cls.facility, cls.location, bed_type=7, name="NOR")
+
+        cls.patient_iso = cls.create_patient(cls.district, cls.facility)
+        cls.patient_icu = cls.create_patient(cls.district, cls.facility)
+        cls.patient_oxy = cls.create_patient(cls.district, cls.facility)
+        cls.patient_nor = cls.create_patient(cls.district, cls.facility)
+        cls.patient_nb = cls.create_patient(cls.district, cls.facility)
+
+        cls.consultation_iso = cls.create_consultation(
+            patient=cls.patient_iso,
+            facility=cls.facility,
+            discharge_date=now(),
+        )
+        cls.consultation_icu = cls.create_consultation(
+            patient=cls.patient_icu,
+            facility=cls.facility,
+            discharge_date=now(),
+        )
+        cls.consultation_oxy = cls.create_consultation(
+            patient=cls.patient_oxy,
+            facility=cls.facility,
+            discharge_date=now(),
+        )
+        cls.consultation_nor = cls.create_consultation(
+            patient=cls.patient_nor,
+            facility=cls.facility,
+            discharge_date=now(),
+        )
+
+        cls.consultation_nb = cls.create_consultation(
+            patient=cls.patient_nb,
+            facility=cls.facility,
+            discharge_date=now(),
+        )
+
+        cls.consultation_bed_iso = cls.create_consultation_bed(
+            cls.consultation_iso,
+            cls.iso_bed,
+            end_date=now(),
+        )
+        cls.consultation_bed_icu = cls.create_consultation_bed(
+            cls.consultation_icu,
+            cls.icu_bed,
+            end_date=now(),
+        )
+        cls.consultation_bed_oxy = cls.create_consultation_bed(
+            cls.consultation_oxy,
+            cls.oxy_bed,
+            end_date=now(),
+        )
+        cls.consultation_bed_nor = cls.create_consultation_bed(
+            cls.consultation_nor,
+            cls.nor_bed,
+            end_date=now(),
+        )
+
+    def get_base_url(self) -> str:
+        return (
+            "/api/v1/facility/"
+            + str(self.facility.external_id)
+            + "/discharged_patients/"
+        )
+
+    def test_filter_by_admitted_to_bed(self):
+        self.client.force_authenticate(user=self.user)
+        choices = ["1", "2", "6", "7", "None"]
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join([choices[0]])},
+        )
+
+        self.assertContains(res, self.patient_iso.external_id)
+        self.assertNotContains(res, self.patient_icu.external_id)
+        self.assertNotContains(res, self.patient_oxy.external_id)
+        self.assertNotContains(res, self.patient_nor.external_id)
+        self.assertNotContains(res, self.patient_nb.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join(choices[1:3])},
+        )
+
+        self.assertNotContains(res, self.patient_iso.external_id)
+        self.assertContains(res, self.patient_icu.external_id)
+        self.assertContains(res, self.patient_oxy.external_id)
+        self.assertNotContains(res, self.patient_nor.external_id)
+        self.assertNotContains(res, self.patient_nb.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join(choices)},
+        )
+
+        self.assertContains(res, self.patient_iso.external_id)
+        self.assertContains(res, self.patient_icu.external_id)
+        self.assertContains(res, self.patient_oxy.external_id)
+        self.assertContains(res, self.patient_nor.external_id)
+        self.assertContains(res, self.patient_nb.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": ",".join(choices[3:])},
+        )
+
+        self.assertNotContains(res, self.patient_iso.external_id)
+        self.assertNotContains(res, self.patient_icu.external_id)
+        self.assertNotContains(res, self.patient_oxy.external_id)
+        self.assertContains(res, self.patient_nor.external_id)
+        self.assertContains(res, self.patient_nb.external_id)
+
+    # if patient is readmitted to another bed type, only the latest admission should be considered
+
+    def test_admitted_to_bed_after_readmission(self):
+        self.client.force_authenticate(user=self.user)
+        self.create_consultation_bed(
+            self.consultation_icu, self.iso_bed, end_date=now() + timedelta(days=1)
+        )
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": "1"},
+        )
+
+        self.assertContains(res, self.patient_icu.external_id)
+
+        res = self.client.get(
+            self.get_base_url(),
+            {"last_consultation_admitted_bed_type_list": "2"},
+        )
+
+        self.assertNotContains(res, self.patient_icu.external_id)
 
 
 class PatientTransferTestCase(TestUtils, APITestCase):

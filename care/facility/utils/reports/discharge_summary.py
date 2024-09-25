@@ -31,7 +31,6 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
 )
 from care.facility.static_data.icd11 import get_icd11_diagnosis_object_by_id
-from care.hcx.models.policy import Policy
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +74,7 @@ def get_diagnoses_data(consultation: PatientConsultation):
             diagnoses.append(diagnose)
     principal, unconfirmed, provisional, differential, confirmed = [], [], [], [], []
 
-    for diagnosis, record in zip(diagnoses, entries):
+    for diagnosis, record in zip(diagnoses, entries, strict=False):
         _, verification_status, is_principal = record
 
         diagnosis.verification_status = verification_status
@@ -113,11 +112,10 @@ def format_duration(duration):
 
 
 def get_discharge_summary_data(consultation: PatientConsultation):
-    logger.info(f"fetching discharge summary data for {consultation.external_id}")
+    logger.info("fetching discharge summary data for %s", consultation.external_id)
     samples = PatientSample.objects.filter(
         patient=consultation.patient, consultation=consultation
     )
-    hcx = Policy.objects.filter(patient=consultation.patient)
     symptoms = EncounterSymptom.objects.filter(
         consultation=consultation, onset_date__lt=consultation.encounter_date
     ).exclude(clinical_impression_status=ClinicalImpressionStatus.ENTERED_IN_ERROR)
@@ -181,7 +179,6 @@ def get_discharge_summary_data(consultation: PatientConsultation):
     return {
         "patient": consultation.patient,
         "samples": samples,
-        "hcx": hcx,
         "symptoms": symptoms,
         "admitted_to": admitted_to,
         "admission_duration": admission_duration,
@@ -215,8 +212,8 @@ def compile_typ(output_file, data):
             "reports/patient_discharge_summary_pdf_template.typ", context=data
         )
 
-        subprocess.run(
-            [
+        subprocess.run(  # noqa: S603
+            [  # noqa: S607
                 "typst",
                 "compile",
                 "-",
@@ -229,29 +226,32 @@ def compile_typ(output_file, data):
         )
 
         logging.info(
-            f"Successfully Compiled Summary pdf for {data['consultation'].external_id}"
+            "Successfully Compiled Summary pdf for %s", data["consultation"].external_id
         )
         return True
 
     except subprocess.CalledProcessError as e:
         logging.error(
-            f"Error compiling summary pdf for {data['consultation'].external_id}: {e.stderr.decode('utf-8')}"
+            "Error compiling summary pdf for %s: %s",
+            data["consultation"].external_id,
+            e.stderr.decode("utf-8"),
         )
         return False
 
 
 def generate_discharge_summary_pdf(data, file):
     logger.info(
-        f"Generating Discharge Summary pdf for {data['consultation'].external_id}"
+        "Generating Discharge Summary pdf for %s", data["consultation"].external_id
     )
     compile_typ(output_file=file.name, data=data)
     logger.info(
-        f"Successfully Generated Discharge Summary pdf for {data['consultation'].external_id}"
+        "Successfully Generated Discharge Summary pdf for %s",
+        data["consultation"].external_id,
     )
 
 
 def generate_and_upload_discharge_summary(consultation: PatientConsultation):
-    logger.info(f"Generating Discharge Summary for {consultation.external_id}")
+    logger.info("Generating Discharge Summary for %s", consultation.external_id)
 
     set_lock(consultation.external_id, 5)
     try:
@@ -270,12 +270,14 @@ def generate_and_upload_discharge_summary(consultation: PatientConsultation):
         set_lock(consultation.external_id, 50)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as file:
             generate_discharge_summary_pdf(data, file)
-            logger.info(f"Uploading Discharge Summary for {consultation.external_id}")
+            logger.info("Uploading Discharge Summary for %s", consultation.external_id)
             summary_file.put_object(file, ContentType="application/pdf")
             summary_file.upload_completed = True
             summary_file.save()
             logger.info(
-                f"Uploaded Discharge Summary for {consultation.external_id}, file id: {summary_file.id}"
+                "Uploaded Discharge Summary for %s, file id: %s",
+                consultation.external_id,
+                summary_file.id,
             )
     finally:
         clear_lock(consultation.external_id)

@@ -1,8 +1,13 @@
 import json
+from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.core.management import BaseCommand
 
 from care.facility.models import MedibaseMedicine
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class Command(BaseCommand):
@@ -14,11 +19,14 @@ class Command(BaseCommand):
     help = "Loads Medibase Medicines into the database from medibase.json"
 
     def fetch_data(self):
-        with open("data/medibase.json", "r") as json_file:
+        medibase_json: Path = settings.BASE_DIR / "data" / "medibase.json"
+        with medibase_json.open() as json_file:
             return json.load(json_file)
 
     def handle(self, *args, **options):
-        print("Loading Medibase Medicines into the database from medibase.json")
+        self.stdout.write(
+            "Loading Medibase Medicines into the database from medibase.json"
+        )
 
         medibase_objects = self.fetch_data()
         MedibaseMedicine.objects.bulk_create(

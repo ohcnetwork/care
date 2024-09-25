@@ -147,7 +147,7 @@ class CustomUserManager(UserManager):
                 f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
             )
             if proceed.lower() != "y":
-                raise Exception("Aborted Superuser Creation")
+                raise Exception
             district = None
 
         extra_fields["district"] = district
@@ -283,6 +283,9 @@ class User(AbstractUser):
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     date_of_birth = models.DateField(null=True, blank=True)
+    profile_picture_url = models.CharField(
+        blank=True, null=True, default=None, max_length=500
+    )
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -346,6 +349,11 @@ class User(AbstractUser):
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
+
+    def read_profile_picture_url(self):
+        if self.profile_picture_url:
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
+        return None
 
     @property
     def full_name(self):
@@ -430,6 +438,9 @@ class UserFacilityAllocation(models.Model):
     )
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.facility.name
 
 
 class UserFlag(BaseFlag):

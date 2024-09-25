@@ -69,7 +69,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    class vaccineEnum(enum.Enum):
+    class VaccineEnum(enum.Enum):
         COVISHIELD = "CoviShield"
         COVAXIN = "Covaxin"
         SPUTNIK = "Sputnik"
@@ -78,7 +78,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         JANSSEN = "Janssen"
         SINOVAC = "Sinovac"
 
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
+    VaccineChoices = [(e.value, e.name) for e in VaccineEnum]
 
     class ActionEnum(enum.Enum):
         NO_ACTION = 10
@@ -116,12 +116,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "PatientMetaInfo", on_delete=models.SET_NULL, null=True
     )
 
-    # name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
 
-    # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(
         max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
@@ -130,7 +128,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
 
-    # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
     permanent_address = models.TextField(default="")
 
@@ -205,7 +202,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         blank=True,
         verbose_name="Already pescribed medication if any",
     )
-    has_SARI = models.BooleanField(
+    has_SARI = models.BooleanField(  # noqa: N815
         default=False, verbose_name="Does the Patient Suffer from SARI"
     )
 
@@ -383,7 +380,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices,
+        choices=VaccineChoices,
         default=None,
         null=True,
         blank=False,
@@ -487,19 +484,17 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
             year_str = f"{delta.years} year{pluralize(delta.years)}"
             return f"{year_str}"
 
-        elif delta.months > 0:
+        if delta.months > 0:
             month_str = f"{delta.months} month{pluralize(delta.months)}"
             day_str = (
                 f" {delta.days} day{pluralize(delta.days)}" if delta.days > 0 else ""
             )
             return f"{month_str}{day_str}"
 
-        elif delta.days > 0:
-            day_str = f"{delta.days} day{pluralize(delta.days)}"
-            return day_str
+        if delta.days > 0:
+            return f"{delta.days} day{pluralize(delta.days)}"
 
-        else:
-            return "0 days"
+        return "0 days"
 
     def annotate_diagnosis_ids(*args, **kwargs):
         return ArrayAgg(
@@ -552,14 +547,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__discharge_date__time": "Time of discharge",
     }
 
-    def format_as_date(date):
-        return date.strftime("%d/%m/%Y")
+    def format_as_date(self):
+        return self.strftime("%d/%m/%Y")
 
-    def format_as_time(time):
-        return time.strftime("%H:%M")
+    def format_as_time(self):
+        return self.strftime("%H:%M")
 
-    def format_diagnoses(diagnosis_ids):
-        diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+    def format_diagnoses(self):
+        diagnoses = get_icd11_diagnoses_objects_by_ids(self)
         return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
 
     CSV_MAKE_PRETTY = {
@@ -645,6 +640,9 @@ class PatientMetaInfo(models.Model):
     )
     head_of_household = models.BooleanField(blank=True, null=True)
 
+    def __str__(self):
+        return f"PatientMetaInfo - {self.id}"
+
 
 class PatientContactDetails(models.Model):
     class RelationEnum(enum.IntEnum):
@@ -660,25 +658,23 @@ class PatientContactDetails(models.Model):
         OTHERS = 10
 
     class ModeOfContactEnum(enum.IntEnum):
-        # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
+        # Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)
         TOUCHED_BODY_FLUIDS = 1
-        # "2. Had direct physical contact with the body of the patient
-        # including physical examination without full precautions."
+        # Had direct physical contact with the body of the patient including physical examination without full precautions.
         DIRECT_PHYSICAL_CONTACT = 2
-        # "3. Touched or cleaned the linens/clothes/or dishes of the patient"
+        # Touched or cleaned the linens/clothes/or dishes of the patient
         CLEANED_USED_ITEMS = 3
-        # "4. Lives in the same household as the patient."
+        # Lives in the same household as the patient.
         LIVE_IN_SAME_HOUSEHOLD = 4
-        # "5. Close contact within 3ft (1m) of the confirmed case without precautions."
+        # Close contact within 3ft (1m) of the confirmed case without precautions.
         CLOSE_CONTACT_WITHOUT_PRECAUTION = 5
-        # "6. Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours."
+        # Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours.
         CO_PASSENGER_AEROPLANE = 6
-        # "7. Health care workers and other contacts who had full PPE while handling the +ve case"
+        # Health care workers and other contacts who had full PPE while handling the +ve case
         HEALTH_CARE_WITH_PPE = 7
-        # "8. Shared the same space(same class for school/worked in
-        # same room/similar and not having a high risk exposure"
+        # Shared the same space(same class for school/worked in same room/similar and not having a high risk exposure
         SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
-        # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
+        # Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above.
         TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
 
     RelationChoices = [(item.value, item.name) for item in RelationEnum]
@@ -708,6 +704,9 @@ class PatientContactDetails(models.Model):
     deleted = models.BooleanField(default=False)
 
     objects = BaseManager()
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.patient_in_contact.name} - {self.get_relation_with_patient_display()}"
 
 
 class Disease(models.Model):
@@ -799,6 +798,13 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         db_index=True,
         default=PatientNoteThreadChoices.DOCTORS,
     )
+    reply_to = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="replies",
+    )
     note = models.TextField(default="", blank=True)
 
     def get_related_consultation(self):
@@ -825,6 +831,9 @@ class PatientNotesEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_date"]
+
+    def __str__(self):
+        return f"PatientNotesEdit {self.patient_note} - {self.edited_by}"
 
 
 class PatientAgeFunc(Func):

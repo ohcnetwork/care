@@ -31,19 +31,19 @@ class EventType(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
-    def get_descendants(self):
-        descendants = list(self.children.all())
-        for child in self.children.all():
-            descendants.extend(child.get_descendants())
-        return descendants
+    def __str__(self) -> str:
+        return f"{self.model} - {self.name}"
 
     def save(self, *args, **kwargs):
         if self.description is not None and not self.description.strip():
             self.description = None
         return super().save(*args, **kwargs)
 
-    def __str__(self) -> str:
-        return f"{self.model} - {self.name}"
+    def get_descendants(self):
+        descendants = list(self.children.all())
+        for child in self.children.all():
+            descendants.extend(child.get_descendants())
+        return descendants
 
 
 class PatientConsultationEvent(models.Model):
@@ -68,16 +68,9 @@ class PatientConsultationEvent(models.Model):
         max_length=10, choices=ChangeType, default=ChangeType.CREATED
     )
 
-    def __str__(self) -> str:
-        return f"{self.id} - {self.consultation_id} - {self.event_type} - {self.change_type}"
-
     class Meta:
         ordering = ["-created_date"]
         indexes = [models.Index(fields=["consultation", "is_latest"])]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=["consultation", "event_type", "is_latest"],
-        #         condition=models.Q(is_latest=True),
-        #         name="unique_consultation_event_type_is_latest",
-        #     )
-        # ]
+
+    def __str__(self) -> str:
+        return f"{self.id} - {self.consultation_id} - {self.event_type} - {self.change_type}"

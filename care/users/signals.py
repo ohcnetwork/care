@@ -18,21 +18,13 @@ def password_reset_token_created(
     """
     Handles password reset tokens
     When a token is created, an e-mail needs to be sent to the user
-    :param sender: View Class that sent the signal
-    :param instance: View Instance that sent the signal
-    :param reset_password_token: Token Model Object
-    :param args:
-    :param kwargs:
-    :return:
     """
     # send an e-mail to the user
     context = {
         "current_user": reset_password_token.user,
         "username": reset_password_token.user.username,
         "email": reset_password_token.user.email,
-        "reset_password_url": "{}/password_reset/{}".format(
-            settings.CURRENT_DOMAIN, reset_password_token.key
-        ),
+        "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
     }
 
     # render email text
@@ -59,7 +51,7 @@ def save_fields_before_update(sender, instance, raw, using, update_fields, **kwa
             fields_to_save &= set(update_fields)
         if fields_to_save:
             with contextlib.suppress(IndexError):
-                instance._previous_values = instance.__class__._base_manager.filter(
+                instance._previous_values = instance.__class__._base_manager.filter(  # noqa SLF001
                     pk=instance.pk
                 ).values(*fields_to_save)[0]
 

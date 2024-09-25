@@ -1,12 +1,13 @@
 from django.test import TestCase
 
 from care.utils.registries.feature_flag import (
-    FlagNotFoundException,
+    FlagNotFoundError,
     FlagRegistry,
     FlagType,
 )
 
 
+# ruff: noqa: SLF001
 class FeatureFlagTestCase(TestCase):
     def setUp(self):
         FlagRegistry._flags = {}
@@ -33,7 +34,7 @@ class FeatureFlagTestCase(TestCase):
         self.assertIsNone(FlagRegistry.validate_flag_type(FlagType.USER))
 
     def test_validate_flag_type_invalid(self):
-        with self.assertRaises(FlagNotFoundException):
+        with self.assertRaises(FlagNotFoundError):
             FlagRegistry.validate_flag_type(
                 FlagType.USER
             )  # FlagType.USER is not registered
@@ -43,12 +44,12 @@ class FeatureFlagTestCase(TestCase):
         self.assertIsNone(FlagRegistry.validate_flag_name(FlagType.USER, "TEST_FLAG"))
 
     def test_validate_flag_name_invalid(self):
-        with self.assertRaises(FlagNotFoundException) as ectx:
+        with self.assertRaises(FlagNotFoundError) as ectx:
             FlagRegistry.validate_flag_name(FlagType.USER, "TEST_OTHER_FLAG")
         self.assertEqual(ectx.exception.message, "Invalid Flag Type")
 
         FlagRegistry.register(FlagType.USER, "TEST_FLAG")
-        with self.assertRaises(FlagNotFoundException) as ectx:
+        with self.assertRaises(FlagNotFoundError) as ectx:
             FlagRegistry.validate_flag_name(FlagType.USER, "TEST_OTHER_FLAG")
         self.assertEqual(ectx.exception.message, "Flag not registered")
 

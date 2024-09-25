@@ -36,7 +36,11 @@ from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
 )
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
+from care.facility.api.viewsets.facility import (
+    AllFacilityViewSet,
+    FacilitySpokesViewSet,
+    FacilityViewSet,
+)
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -91,10 +95,6 @@ from care.facility.api.viewsets.summary import (
     TestsSummaryViewSet,
     TriageSummaryViewSet,
 )
-from care.hcx.api.viewsets.claim import ClaimViewSet
-from care.hcx.api.viewsets.communication import CommunicationViewSet
-from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
-from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -105,10 +105,7 @@ from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
-if settings.DEBUG:
-    router = DefaultRouter()
-else:
-    router = SimpleRouter()
+router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
@@ -219,6 +216,9 @@ facility_nested_router.register(
     FacilityDischargedPatientViewSet,
     basename="facility-discharged-patients",
 )
+facility_nested_router.register(
+    r"spokes", FacilitySpokesViewSet, basename="facility-spokes"
+)
 
 router.register("asset", AssetViewSet, basename="asset")
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
@@ -300,12 +300,6 @@ consultation_nested_router.register(
 router.register("event_types", EventTypeViewSet, basename="event-types")
 
 router.register("medibase", MedibaseViewSet, basename="medibase")
-
-# HCX
-router.register("hcx/policy", PolicyViewSet, basename="hcx-policy")
-router.register("hcx/claim", ClaimViewSet, basename="hcx-claim")
-router.register("hcx/communication", CommunicationViewSet, basename="hcx-communication")
-router.register("hcx", HcxGatewayViewSet)
 
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet, basename="public-asset")

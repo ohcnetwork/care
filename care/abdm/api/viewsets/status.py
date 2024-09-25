@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.abdm.models import AbhaNumber
@@ -10,7 +9,6 @@ from config.authentication import ABDMAuthentication
 
 
 class NotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -29,7 +27,6 @@ class NotifyView(GenericAPIView):
 
 
 class SMSOnNotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):

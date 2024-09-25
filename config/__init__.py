@@ -1,1 +1,1 @@
-from .celery_app import app  # noqa # isort:skip
+from .celery_app import app  # isort:skip

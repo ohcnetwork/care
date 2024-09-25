@@ -6,7 +6,8 @@ from djqscsv import render_to_csv_response
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
-from care.facility.models.bed import AssetBed, Bed
+from care.facility.models.bed import AssetBed, Bed, ConsultationBed
+from care.facility.models.facility import FacilityHubSpoke
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.patient_consultation import (
     PatientConsent,
@@ -54,28 +55,12 @@ class DistrictFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         district = Facility.objects.values_list("district__name", flat=True)
-        return list(map(lambda x: (x, x), set(district)))
+        return [(x, x) for x in set(district)]
 
     def queryset(self, request, queryset):
         if self.value() is None:
             return queryset
         return queryset.filter(district__name=self.value())
-
-
-# class LocalBodyFilter(SimpleListFilter):
-#     """Local body filter"""
-
-#     title = "Local body"
-#     parameter_name = "local_body"
-
-#     def lookups(self, request, model_admin):
-#         local_body = Facility.objects.values_list("local_body__name", flat=True)
-#         return list(map(lambda x: (x, x), set(local_body)))
-
-#     def queryset(self, request, queryset):
-#         if self.value() is None:
-#             return queryset
-#         return queryset.filter(local_body__name=self.value())
 
 
 class StateFilter(SimpleListFilter):
@@ -86,7 +71,7 @@ class StateFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         state = Facility.objects.values_list("state__name", flat=True)
-        return list(map(lambda x: (x, x), set(state)))
+        return [(x, x) for x in set(state)]
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -98,6 +83,12 @@ class StateFilter(SimpleListFilter):
 class FacilityAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     search_fields = ["name"]
     list_filter = [StateFilter, DistrictFilter]
+    djangoql_completion_enabled_by_default = True
+
+
+@admin.register(FacilityHubSpoke)
+class FacilityHubSpokeAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+    search_fields = ["name"]
     djangoql_completion_enabled_by_default = True
 
 
@@ -215,7 +206,7 @@ class FacilityFlagAdmin(admin.ModelAdmin):
         )
 
         class Meta:
-            fields = "__all__"
+            fields = ("flag", "facility")
             model = FacilityFlag
 
     form = FacilityFeatureFlagForm
@@ -230,6 +221,7 @@ admin.site.register(FacilityInventoryItemTag)
 admin.site.register(AssetBed)
 admin.site.register(Asset)
 admin.site.register(Bed)
+admin.site.register(ConsultationBed)
 admin.site.register(PatientConsent)
 admin.site.register(FileUpload)
 admin.site.register(PatientConsultation)
