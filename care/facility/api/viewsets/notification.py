@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.serializers import CharField, UUIDField
 from rest_framework.viewsets import GenericViewSet
@@ -38,7 +38,6 @@ class NotificationViewSet(
         .order_by("-created_date")
     )
     serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated]
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = NotificationFilter
@@ -69,7 +68,7 @@ class NotificationViewSet(
     def notify(self, request, *args, **kwargs):
         user = request.user
         if user.user_type < User.TYPE_VALUE_MAP["Doctor"]:
-            raise PermissionDenied()
+            raise PermissionDenied
         if "facility" not in request.data or request.data["facility"] == "":
             raise ValidationError({"facility": "is required"})
         if "message" not in request.data or request.data["message"] == "":

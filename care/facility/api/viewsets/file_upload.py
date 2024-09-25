@@ -37,11 +37,10 @@ class FileUploadPermission(BasePermission):
                     "PATIENT",
                     "CONSULTATION",
                 )
-            else:
-                return request.data.get("file_type") not in (
-                    "PATIENT",
-                    "CONSULTATION",
-                )
+            return request.data.get("file_type") not in (
+                "PATIENT",
+                "CONSULTATION",
+            )
         return True
 
     def has_object_permission(self, request, view, obj) -> bool:
@@ -59,7 +58,7 @@ class FileUploadViewSet(
     queryset = (
         FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
     )
-    permission_classes = [IsAuthenticated, FileUploadPermission]
+    permission_classes = (IsAuthenticated, FileUploadPermission)
     lookup_field = "external_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FileUploadFilter
@@ -67,12 +66,11 @@ class FileUploadViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return FileUploadRetrieveSerializer
-        elif self.action == "list":
+        if self.action == "list":
             return FileUploadListSerializer
-        elif self.action == "create":
+        if self.action == "create":
             return FileUploadCreateSerializer
-        else:
-            return FileUploadUpdateSerializer
+        return FileUploadUpdateSerializer
 
     def get_queryset(self):
         if "file_type" not in self.request.GET:

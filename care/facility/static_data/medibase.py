@@ -1,3 +1,4 @@
+import logging
 from typing import TypedDict
 
 from django.core.paginator import Paginator
@@ -7,6 +8,8 @@ from redis_om import Field, Migrator
 
 from care.facility.models.prescription import MedibaseMedicine as MedibaseMedicineModel
 from care.utils.static_data.models.base import BaseRedisModel
+
+logger = logging.getLogger(__name__)
 
 
 class MedibaseMedicineObject(TypedDict):
@@ -46,7 +49,7 @@ class MedibaseMedicine(BaseRedisModel):
 
 
 def load_medibase_medicines():
-    print("Loading Medibase Medicines into the redis cache...", end="", flush=True)
+    logger.info("Loading Medibase Medicines into the redis cache...")
 
     medibase_objects = (
         MedibaseMedicineModel.objects.order_by("external_id")
@@ -87,4 +90,4 @@ def load_medibase_medicines():
                 vec=f"{medicine[1]} {medicine[3]} {medicine[4]}",
             ).save()
     Migrator().run()
-    print("Done")
+    logger.info("Medibase Medicines Loaded")

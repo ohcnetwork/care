@@ -4,7 +4,6 @@ from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -21,7 +20,6 @@ from care.utils.queryset.consultation import get_consultation_queryset
 class EventTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = EventTypeSerializer
     queryset = EventType.objects.filter(is_active=True)
-    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[BaseSerializer]:
         if self.action == "roots":
@@ -68,11 +66,8 @@ class PatientConsultationEventViewSet(ReadOnlyModelViewSet):
     queryset = PatientConsultationEvent.objects.all().select_related(
         "event_type", "caused_by"
     )
-    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PatientConsultationEventFilterSet
-    # lookup_field = "external_id"
-    # lookup_url_kwarg = "external_id"
 
     def get_consultation_obj(self):
         return get_object_or_404(

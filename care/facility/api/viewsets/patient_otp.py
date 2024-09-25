@@ -1,11 +1,8 @@
-from re import error
-
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -20,7 +17,8 @@ class PatientMobileOTPViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
-    permission_classes = (AllowAny,)
+    authentication_classes = ()
+    permission_classes = ()
     serializer_class = PatientMobileOTPSerializer
     queryset = PatientMobileOTP.objects.all()
 
@@ -28,13 +26,16 @@ class PatientMobileOTPViewSet(
     @action(detail=False, methods=["POST"])
     def login(self, request):
         if "phone_number" not in request.data or "otp" not in request.data:
-            raise ValidationError("Request Incomplete")
+            msg = "Request Incomplete"
+            raise ValidationError(msg)
         phone_number = request.data["phone_number"]
         otp = request.data["otp"]
         try:
             mobile_validator(phone_number)
-        except error:
-            raise ValidationError({"phone_number": "Invalid phone number format"})
+        except Exception as e:
+            raise ValidationError(
+                {"phone_number": "Invalid phone number format"}
+            ) from e
         if len(otp) != settings.OTP_LENGTH:
             raise ValidationError({"otp": "Invalid OTP"})
 
@@ -47,7 +48,6 @@ class PatientMobileOTPViewSet(
 
         otp_object.is_used = True
         otp_object.save()
-        # return JWT
 
         token = PatientToken()
         token["phone_number"] = phone_number

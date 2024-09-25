@@ -1,4 +1,4 @@
-import enum
+from decimal import Decimal
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -10,7 +10,6 @@ from care.facility.models import (
     COVID_CATEGORY_CHOICES,
     PatientBaseModel,
 )
-from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed
 from care.facility.models.json_schema.daily_round import (
     BLOOD_PRESSURE,
@@ -29,28 +28,23 @@ from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class DailyRound(PatientBaseModel):
-    class RoundsType(enum.Enum):
-        NORMAL = 0
-        COMMUNITY_NURSES_LOG = 30
-        DOCTORS_LOG = 50
-        VENTILATOR = 100
-        ICU = 200
-        AUTOMATED = 300
-        TELEMEDICINE = 400
+    class RoundsType(models.IntegerChoices):
+        NORMAL = 0, "NORMAL"
+        COMMUNITY_NURSES_LOG = 30, "COMMUNITY_NURSES_LOG"
+        DOCTORS_LOG = 50, "DOCTORS_LOG"
+        VENTILATOR = 100, "VENTILATOR"
+        ICU = 200, "ICU"
+        AUTOMATED = 300, "AUTOMATED"
+        TELEMEDICINE = 400, "TELEMEDICINE"
 
-    RoundsTypeChoice = [(e.value, e.name) for e in RoundsType]
-    RoundsTypeDict = covert_choice_dict(RoundsTypeChoice)
-
-    class ConsciousnessType(enum.Enum):
-        UNKNOWN = 0
-        ALERT = 5
-        RESPONDS_TO_VOICE = 10
-        RESPONDS_TO_PAIN = 15
-        UNRESPONSIVE = 20
-        AGITATED_OR_CONFUSED = 25
-        ONSET_OF_AGITATION_AND_CONFUSION = 30
-
-    ConsciousnessChoice = [(e.value, e.name) for e in ConsciousnessType]
+    class ConsciousnessTypeChoice(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        ALERT = 5, "ALERT"
+        RESPONDS_TO_VOICE = 10, "RESPONDS_TO_VOICE"
+        RESPONDS_TO_PAIN = 15, "RESPONDS_TO_PAIN"
+        UNRESPONSIVE = 20, "UNRESPONSIVE"
+        AGITATED_OR_CONFUSED = 25, "AGITATED_OR_CONFUSED"
+        ONSET_OF_AGITATION_AND_CONFUSION = 30, "ONSET_OF_AGITATION_AND_CONFUSION"
 
     class BowelDifficultyType(models.IntegerChoices):
         NO_DIFFICULTY = 0, "NO_DIFFICULTY"
@@ -103,75 +97,57 @@ class DailyRound(PatientBaseModel):
         NO_TASTE_FOR_FOOD = 4, "NO_TASTE_FOR_FOOD"
         CANNOT_BE_ASSESSED = 5, "CANNOT_BE_ASSESSED"
 
-    class PupilReactionType(enum.Enum):
-        UNKNOWN = 0
-        BRISK = 5
-        SLUGGISH = 10
-        FIXED = 15
-        CANNOT_BE_ASSESSED = 20
+    class PupilReactionType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        BRISK = 5, "BRISK"
+        SLUGGISH = 10, "SLUGGISH"
+        FIXED = 15, "FIXED"
+        CANNOT_BE_ASSESSED = 20, "CANNOT_BE_ASSESSED"
 
-    PupilReactionChoice = [(e.value, e.name) for e in PupilReactionType]
+    class LimbResponseType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        STRONG = 5, "STRONG"
+        MODERATE = 10, "MODERATE"
+        WEAK = 15, "WEAK"
+        FLEXION = 20, "FLEXION"
+        EXTENSION = 25, "EXTENSION"
+        NONE = 30, "NONE"
 
-    class LimbResponseType(enum.Enum):
-        UNKNOWN = 0
-        STRONG = 5
-        MODERATE = 10
-        WEAK = 15
-        FLEXION = 20
-        EXTENSION = 25
-        NONE = 30
+    class RythmnType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        REGULAR = 5, "REGULAR"
+        IRREGULAR = 10, "IRREGULAR"
 
-    LimbResponseChoice = [(e.value, e.name) for e in LimbResponseType]
+    class VentilatorInterfaceType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        INVASIVE = 5, "INVASIVE"
+        NON_INVASIVE = 10, "NON_INVASIVE"
+        OXYGEN_SUPPORT = 15, "OXYGEN_SUPPORT"
 
-    class RythmnType(enum.Enum):
-        UNKNOWN = 0
-        REGULAR = 5
-        IRREGULAR = 10
+    class VentilatorModeType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        VCV = 5, "VCV"
+        PCV = 10, "PCV"
+        PRVC = 15, "PRVC"
+        APRV = 20, "APRV"
+        VC_SIMV = 25, "VC_SIMV"
+        PC_SIMV = 30, "PC_SIMV"
+        PRVC_SIMV = 40, "PRVC_SIMV"
+        ASV = 45, "ASV"
+        PSV = 50, "PSV"
 
-    RythmnChoice = [(e.value, e.name) for e in RythmnType]
+    class VentilatorOxygenModalityType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        NASAL_PRONGS = 5, "NASAL_PRONGS"
+        SIMPLE_FACE_MASK = 10, "SIMPLE_FACE_MASK"
+        NON_REBREATHING_MASK = 15, "NON_REBREATHING_MASK"
+        HIGH_FLOW_NASAL_CANNULA = 20, "HIGH_FLOW_NASAL_CANNULA"
 
-    class VentilatorInterfaceType(enum.Enum):
-        UNKNOWN = 0
-        INVASIVE = 5
-        NON_INVASIVE = 10
-        OXYGEN_SUPPORT = 15
-
-    VentilatorInterfaceChoice = [(e.value, e.name) for e in VentilatorInterfaceType]
-
-    class VentilatorModeType(enum.Enum):
-        UNKNOWN = 0
-        VCV = 5
-        PCV = 10
-        PRVC = 15
-        APRV = 20
-        VC_SIMV = 25
-        PC_SIMV = 30
-        PRVC_SIMV = 40
-        ASV = 45
-        PSV = 50
-
-    VentilatorModeChoice = [(e.value, e.name) for e in VentilatorModeType]
-
-    class VentilatorOxygenModalityType(enum.Enum):
-        UNKNOWN = 0
-        NASAL_PRONGS = 5
-        SIMPLE_FACE_MASK = 10
-        NON_REBREATHING_MASK = 15
-        HIGH_FLOW_NASAL_CANNULA = 20
-
-    VentilatorOxygenModalityChoice = [
-        (e.value, e.name) for e in VentilatorOxygenModalityType
-    ]
-
-    class InsulinIntakeFrequencyType(enum.Enum):
-        UNKNOWN = 0
-        OD = 5
-        BD = 10
-        TD = 15
-
-    InsulinIntakeFrequencyChoice = [
-        (e.value, e.name) for e in InsulinIntakeFrequencyType
-    ]
+    class InsulinIntakeFrequencyType(models.IntegerChoices):
+        UNKNOWN = 0, "UNKNOWN"
+        OD = 5, "OD"
+        BD = 10, "BD"
+        TD = 15, "TD"
 
     consultation = models.ForeignKey(
         PatientConsultation,
@@ -184,11 +160,11 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(95), MaxValueValidator(106)],
+        validators=[MinValueValidator(Decimal(95)), MaxValueValidator(Decimal(106))],
     )
-    spo2 = models.DecimalField(
+    archived_spo2 = models.DecimalField(
         max_digits=4, decimal_places=2, blank=True, null=True, default=None
-    )
+    )  # Deprecated
     physical_examination_info = models.TextField(null=True, blank=True)
     deprecated_covid_category = models.CharField(
         choices=COVID_CATEGORY_CHOICES,
@@ -201,7 +177,6 @@ class DailyRound(PatientBaseModel):
         choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
     )
     other_details = models.TextField(null=True, blank=True)
-    medication_given = JSONField(default=dict)  # To be Used Later on
 
     last_updated_by_telemedicine = models.BooleanField(default=False)
     created_by_telemedicine = models.BooleanField(default=False)
@@ -223,7 +198,7 @@ class DailyRound(PatientBaseModel):
     taken_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     rounds_type = models.IntegerField(
-        choices=RoundsTypeChoice, default=RoundsType.NORMAL.value
+        choices=RoundsType.choices, default=RoundsType.NORMAL.value
     )
     is_parsed_by_ocr = models.BooleanField(default=False)
 
@@ -258,7 +233,7 @@ class DailyRound(PatientBaseModel):
     # Critical Care Attributes
 
     consciousness_level = models.IntegerField(
-        choices=ConsciousnessChoice, default=None, null=True
+        choices=ConsciousnessTypeChoice.choices, default=None, null=True
     )
     consciousness_level_detail = models.TextField(default=None, null=True, blank=True)
 
@@ -272,7 +247,7 @@ class DailyRound(PatientBaseModel):
     )
     left_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     left_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=None, null=True
+        choices=PupilReactionType.choices, default=None, null=True
     )
     left_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -285,7 +260,7 @@ class DailyRound(PatientBaseModel):
     )
     right_pupil_size_detail = models.TextField(default=None, null=True, blank=True)
     right_pupil_light_reaction = models.IntegerField(
-        choices=PupilReactionChoice, default=None, null=True
+        choices=PupilReactionType.choices, default=None, null=True
     )
     right_pupil_light_reaction_detail = models.TextField(
         default=None, null=True, blank=True
@@ -311,18 +286,20 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(3), MaxValueValidator(15)],
     )
     limb_response_upper_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=None, null=True
+        choices=LimbResponseType.choices, default=None, null=True
     )
     limb_response_upper_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=None, null=True
+        choices=LimbResponseType.choices, default=None, null=True
     )
     limb_response_lower_extremity_left = models.IntegerField(
-        choices=LimbResponseChoice, default=None, null=True
+        choices=LimbResponseType.choices, default=None, null=True
     )
     limb_response_lower_extremity_right = models.IntegerField(
-        choices=LimbResponseChoice, default=None, null=True
+        choices=LimbResponseType.choices, default=None, null=True
     )
-    bp = JSONField(default=dict, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)])
+    bp = JSONField(
+        default=None, validators=[JSONFieldSchemaValidator(BLOOD_PRESSURE)], null=True
+    )
     pulse = models.IntegerField(
         default=None,
         null=True,
@@ -333,15 +310,15 @@ class DailyRound(PatientBaseModel):
         null=True,
         validators=[MinValueValidator(0), MaxValueValidator(150)],
     )
-    rhythm = models.IntegerField(choices=RythmnChoice, default=None, null=True)
+    rhythm = models.IntegerField(choices=RythmnType.choices, default=None, null=True)
     rhythm_detail = models.TextField(default=None, null=True, blank=True)
     ventilator_interface = models.IntegerField(
-        choices=VentilatorInterfaceChoice,
+        choices=VentilatorInterfaceType.choices,
         default=None,
         null=True,
     )
     ventilator_mode = models.IntegerField(
-        choices=VentilatorModeChoice, default=None, null=True
+        choices=VentilatorModeType.choices, default=None, null=True
     )
     ventilator_peep = models.DecimalField(
         decimal_places=2,
@@ -349,7 +326,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(30)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(30))],
     )
     ventilator_pip = models.IntegerField(
         default=None,
@@ -377,7 +354,7 @@ class DailyRound(PatientBaseModel):
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
     ventilator_oxygen_modality = models.IntegerField(
-        choices=VentilatorOxygenModalityChoice, default=None, null=True
+        choices=VentilatorOxygenModalityType.choices, default=None, null=True
     )
     ventilator_oxygen_modality_oxygen_rate = models.IntegerField(
         default=None,
@@ -420,7 +397,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(10)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(10))],
     )
     pco2 = models.IntegerField(
         default=None,
@@ -438,7 +415,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(5), MaxValueValidator(80)],
+        validators=[MinValueValidator(Decimal(5)), MaxValueValidator(Decimal(80))],
     )
     base_excess = models.IntegerField(
         default=None,
@@ -451,7 +428,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(20)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(20))],
     )
     sodium = models.DecimalField(
         decimal_places=2,
@@ -459,7 +436,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(100), MaxValueValidator(170)],
+        validators=[MinValueValidator(Decimal(100)), MaxValueValidator(Decimal(170))],
     )
     potassium = models.DecimalField(
         decimal_places=2,
@@ -467,7 +444,7 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[MinValueValidator(Decimal(1)), MaxValueValidator(Decimal(10))],
     )
     blood_sugar_level = models.IntegerField(
         default=None,
@@ -480,10 +457,10 @@ class DailyRound(PatientBaseModel):
         blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(100))],
     )
     insulin_intake_frequency = models.IntegerField(
-        choices=InsulinIntakeFrequencyChoice,
+        choices=InsulinIntakeFrequencyType.choices,
         default=None,
         null=True,
     )
@@ -524,7 +501,7 @@ class DailyRound(PatientBaseModel):
 
     def cztn(self, value):
         """
-        Cast Zero to null values
+        Cast null to zero values
         """
         if not value:
             return 0
@@ -594,7 +571,7 @@ class DailyRound(PatientBaseModel):
         if self.output is not None:
             self.total_output_calculated = sum([x["quantity"] for x in self.output])
 
-        super(DailyRound, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @staticmethod
     def has_read_permission(request):
@@ -608,8 +585,8 @@ class DailyRound(PatientBaseModel):
         return request.user.is_superuser or (
             (request.user in consultation.patient.facility.users.all())
             or (
-                request.user == consultation.assigned_to
-                or request.user == consultation.patient.assigned_to
+                request.user
+                in (consultation.assigned_to, consultation.patient.assigned_to)
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
@@ -643,8 +620,11 @@ class DailyRound(PatientBaseModel):
                 and request.user in self.consultation.patient.facility.users.all()
             )
             or (
-                self.consultation.assigned_to == request.user
-                or request.user == self.consultation.patient.assigned_to
+                request.user
+                in (
+                    self.consultation.assigned_to,
+                    self.consultation.patient.assigned_to,
+                )
             )
             or (
                 request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]

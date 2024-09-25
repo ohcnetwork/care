@@ -32,10 +32,10 @@ def create_asset_on_middleware(hostname: str, data: dict) -> dict:
         )
         response.raise_for_status()
         response_json = response.json()
-        logger.info(f"Pushed Asset Configuration to Middleware: {response_json}")
+        logger.info("Pushed Asset Configuration to Middleware: %s", response_json)
         return response_json
     except Exception as e:
-        logger.error(f"Error Pushing Asset Configuration to Middleware: {e}")
+        logger.error("Error Pushing Asset Configuration to Middleware: %s", e)
         return {"error": str(e)}
 
 
@@ -48,10 +48,10 @@ def delete_asset_from_middleware(hostname: str, asset_id: str) -> dict:
         )
         response.raise_for_status()
         response_json = response.json()
-        logger.info(f"Deleted Asset from Middleware: {response_json}")
+        logger.info("Deleted Asset from Middleware: %s", response_json)
         return response_json
     except Exception as e:
-        logger.error(f"Error Deleting Asset from Middleware: {e}")
+        logger.error("Error Deleting Asset from Middleware: %s", e)
         return {"error": str(e)}
 
 
@@ -68,10 +68,10 @@ def update_asset_on_middleware(hostname: str, asset_id: str, data: dict) -> dict
         )
         response.raise_for_status()
         response_json = response.json()
-        logger.info(f"Updated Asset Configuration on Middleware: {response_json}")
+        logger.info("Updated Asset Configuration on Middleware: %s", response_json)
         return response_json
     except Exception as e:
-        logger.error(f"Error Updating Asset Configuration on Middleware: {e}")
+        logger.error("Error Updating Asset Configuration on Middleware: %s", e)
         return {"error": str(e)}
 
 

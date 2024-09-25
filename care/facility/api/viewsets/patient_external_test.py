@@ -28,9 +28,9 @@ from care.facility.models import PatientExternalTest
 from care.users.models import User
 
 
-def prettyerrors(errors):
+def pretty_errors(errors):
     pretty_errors = defaultdict(list)
-    for attribute in PatientExternalTest.HEADER_CSV_MAPPING.keys():
+    for attribute in PatientExternalTest.HEADER_CSV_MAPPING:
         if attribute in errors:
             for error in errors.get(attribute, ""):
                 pretty_errors[attribute].append(str(error))
@@ -46,8 +46,7 @@ class MFilter(Filter):
             self.field_name + "__in": values,
             self.field_name + "__isnull": False,
         }
-        qs = qs.filter(**_filter)
-        return qs
+        return qs.filter(**_filter)
 
 
 class PatientExternalTestFilter(filters.FilterSet):
@@ -113,22 +112,20 @@ class PatientExternalTestViewSet(
         return queryset
 
     def get_serializer_class(self):
-        if self.action == "update" or self.action == "partial_update":
+        if self.action in ("update", "partial_update"):
             return PatientExternalTestUpdateSerializer
         return super().get_serializer_class()
 
     def destroy(self, request, *args, **kwargs):
         if self.request.user.user_type < User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            raise PermissionDenied()
+            raise PermissionDenied
         return super().destroy(request, *args, **kwargs)
 
     def check_upload_permission(self):
-        if (
+        return bool(
             self.request.user.is_superuser is True
             or self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-        ):
-            return True
-        return False
+        )
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
@@ -140,18 +137,14 @@ class PatientExternalTestViewSet(
                 field_header_map=mapping,
                 field_serializer_map=pretty_mapping,
             )
-        return super(PatientExternalTestViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["external_result"])
     @action(methods=["POST"], detail=False)
     def bulk_upsert(self, request, *args, **kwargs):
         if not self.check_upload_permission():
-            raise PermissionDenied("Permission to Endpoint Denied")
-        # if len(request.FILES.keys()) != 1:
-        #     raise ValidationError({"file": "Upload 1 File at a time"})
-        # csv_file = request.FILES[list(request.FILES.keys())[0]]
-        # csv_file.seek(0)
-        # reader = csv.DictReader(io.StringIO(csv_file.read().decode("utf-8-sig")))
+            msg = "Permission to Endpoint Denied"
+            raise PermissionDenied(msg)
         if "sample_tests" not in request.data:
             raise ValidationError({"sample_tests": "No Data was provided"})
         if not isinstance(request.data["sample_tests"], list):
@@ -163,18 +156,16 @@ class PatientExternalTestViewSet(
                 raise ValidationError({"Error": "User must belong to same district"})
 
         errors = []
-        counter = 0
         ser_objects = []
         invalid = False
         for sample in request.data["sample_tests"]:
-            counter += 1
-            serialiser_obj = PatientExternalTestSerializer(data=sample)
-            valid = serialiser_obj.is_valid()
-            current_error = prettyerrors(serialiser_obj._errors)
+            serializer = PatientExternalTestSerializer(data=sample)
+            valid = serializer.is_valid()
+            current_error = pretty_errors(serializer._errors)  # noqa: SLF001
             if current_error and (not valid):
                 errors.append(current_error)
                 invalid = True
-            ser_objects.append(serialiser_obj)
+            ser_objects.append(serializer)
         if invalid:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         for ser_object in ser_objects:

@@ -8,6 +8,7 @@ from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from care.facility.api.serializers.prescription import (
@@ -78,6 +79,10 @@ class MedicineAdministrationViewSet(
     @extend_schema(tags=["prescription_administration"])
     @action(methods=["POST"], detail=True)
     def archive(self, request, *args, **kwargs):
+        if self.get_consultation_obj().discharge_date:
+            raise ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
         instance = self.get_object()
         if instance.archived_on:
             return Response(
@@ -137,12 +142,16 @@ class ConsultationPrescriptionViewSet(
         detail=True,
     )
     def discontinue(self, request, *args, **kwargs):
+        consultation_obj = self.get_consultation_obj()
+        if consultation_obj.discharge_date:
+            raise ValidationError(
+                {"consultation": "Not allowed for discharged consultations"}
+            )
         prescription_obj = self.get_object()
         prescription_obj.discontinued = True
         prescription_obj.discontinued_reason = request.data.get(
             "discontinued_reason", None
         )
-        consultation_obj = self.get_consultation_obj()
         NotificationGenerator(
             event=Notification.Event.PATIENT_PRESCRIPTION_UPDATED,
             caused_by=self.request.user,
@@ -175,8 +184,6 @@ class ConsultationPrescriptionViewSet(
 
 
 class MedibaseViewSet(ViewSet):
-    permission_classes = (IsAuthenticated,)
-
     def serialize_data(self, objects: list[MedibaseMedicine]):
         return [medicine.get_representation() for medicine in objects]
 
@@ -187,8 +194,8 @@ class MedibaseViewSet(ViewSet):
             limit = 30
 
         query = []
-        if type := request.query_params.get("type"):
-            query.append(MedibaseMedicine.type == type)
+        if t := request.query_params.get("type"):
+            query.append(MedibaseMedicine.type == t)
 
         if q := request.query_params.get("query"):
             query.append(

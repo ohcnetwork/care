@@ -10,7 +10,7 @@ from care.users.api.serializers.lsg import DistrictSerializer
 class AmbulanceDriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = AmbulanceDriver
-        exclude = TIMESTAMP_FIELDS + ("ambulance",)
+        exclude = (*TIMESTAMP_FIELDS, "ambulance")
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
@@ -36,9 +36,8 @@ class AmbulanceSerializer(serializers.ModelSerializer):
     def validate(self, obj):
         validated = super().validate(obj)
         if not validated.get("price_per_km") and not validated.get("has_free_service"):
-            raise ValidationError(
-                "The ambulance must provide a price or be marked as free"
-            )
+            msg = "The ambulance must provide a price or be marked as free"
+            raise ValidationError(msg)
         return validated
 
     def create(self, validated_data):
@@ -46,7 +45,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
             drivers = validated_data.pop("drivers", [])
             validated_data.pop("created_by", None)
 
-            ambulance = super(AmbulanceSerializer, self).create(validated_data)
+            ambulance = super().create(validated_data)
 
             for d in drivers:
                 d["ambulance"] = ambulance
@@ -55,8 +54,7 @@ class AmbulanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         validated_data.pop("drivers", [])
-        ambulance = super(AmbulanceSerializer, self).update(instance, validated_data)
-        return ambulance
+        return super().update(instance, validated_data)
 
 
 class DeleteDriverSerializer(serializers.Serializer):

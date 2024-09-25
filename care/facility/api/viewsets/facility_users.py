@@ -4,7 +4,6 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.models.facility import Facility
@@ -28,7 +27,6 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
     serializer_class = UserAssignedSerializer
     filterset_class = UserFilter
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
     filter_backends = [
         filters.DjangoFilterBackend,
         drf_filters.SearchFilter,
@@ -49,5 +47,5 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
                     queryset=UserSkill.objects.filter(skill__deleted=False),
                 ),
             )
-        except Facility.DoesNotExist:
-            raise ValidationError({"Facility": "Facility not found"})
+        except Facility.DoesNotExist as e:
+            raise ValidationError({"Facility": "Facility not found"}) from e

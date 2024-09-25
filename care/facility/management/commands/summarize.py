@@ -1,12 +1,12 @@
 from django.core.management.base import BaseCommand
 
-from care.facility.utils.summarisation.district.patient_summary import (
+from care.facility.utils.summarization.district.patient_summary import (
     district_patient_summary,
 )
-from care.facility.utils.summarisation.facility_capacity import (
+from care.facility.utils.summarization.facility_capacity import (
     facility_capacity_summary,
 )
-from care.facility.utils.summarisation.patient_summary import patient_summary
+from care.facility.utils.summarization.patient_summary import patient_summary
 
 
 class Command(BaseCommand):
@@ -18,8 +18,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         patient_summary()
-        print("Patients Summarised")
+        self.stdout.write("Patients Summarised")
         facility_capacity_summary()
-        print("Capacity Summarised")
+        self.stdout.write("Capacity Summarised")
         district_patient_summary()
-        print("District Wise Patient Summarised")
+        self.stdout.write("District Wise Patient Summarised")

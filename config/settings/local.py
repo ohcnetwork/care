@@ -1,4 +1,12 @@
+import base64
+import json
+
+from authlib.jose import JsonWebKey
+
+from care.utils.jwks.generate_jwk import get_jwks_from_file
+
 from .base import *  # noqa
+from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE, env
 
 # https://github.com/adamchainz/django-cors-headers#cors_allow_all_origins-bool
 CORS_ORIGIN_ALLOW_ALL = True
@@ -6,34 +14,20 @@ CORS_ORIGIN_ALLOW_ALL = True
 # WhiteNoise
 # ------------------------------------------------------------------------------
 # http://whitenoise.evans.io/en/latest/django.html#using-whitenoise-in-development
-INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS  # noqa F405
+INSTALLED_APPS = ["whitenoise.runserver_nostatic", *INSTALLED_APPS]
 
 # django-silk
 # ------------------------------------------------------------------------------
 # https://github.com/jazzband/django-silk#requirements
-INSTALLED_APPS += ["silk"]  # noqa F405
-MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]  # noqa F405
+INSTALLED_APPS += ["silk"]
+MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 # https://github.com/jazzband/django-silk#profiling
 SILKY_PYTHON_PROFILER = True
-
-# django-debug-toolbar
-# ------------------------------------------------------------------------------
-# https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
-INSTALLED_APPS += ["debug_toolbar"]  # noqa F405
-# https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa F405
-# https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
-DEBUG_TOOLBAR_CONFIG = {
-    "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
-    "SHOW_TEMPLATE_CONTEXT": True,
-}
-# https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
-INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 
 # django-extensions
 # ------------------------------------------------------------------------------
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
-INSTALLED_APPS += ["django_extensions"]  # noqa F405
+INSTALLED_APPS += ["django_extensions"]
 
 
 # Celery
@@ -48,3 +42,15 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 100000
 
 DISABLE_RATELIMIT = True
+
+# open id connect
+JWKS = JsonWebKey.import_key_set(
+    json.loads(
+        base64.b64decode(
+            env(
+                "JWKS_BASE64",
+                default=get_jwks_from_file(BASE_DIR),
+            )
+        )
+    )
+)
