@@ -70,6 +70,7 @@ class BaseAssetIntegration:
     def api_post(self, url, data=None, timeout=None):
         if timeout is None:
             timeout = self.timeout
+        timeout = min(timeout, 60)
         return self._validate_response(
             requests.post(url, json=data, headers=self.get_headers(), timeout=timeout)
         )
@@ -77,6 +78,7 @@ class BaseAssetIntegration:
     def api_get(self, url, data=None, timeout=None):
         if timeout is None:
             timeout = self.timeout
+        timeout = min(timeout, 60)
         return self._validate_response(
             requests.get(url, params=data, headers=self.get_headers(), timeout=timeout)
         )
