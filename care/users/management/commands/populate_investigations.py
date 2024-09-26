@@ -17,66 +17,57 @@ with Path("data/investigation_groups.json").open() as investigation_groups_data:
 
 
 class Command(BaseCommand):
-    """
-    Populates Investigation seed data
-    """
-
     help = "Seed Data for Investigations"
 
     def handle(self, *args, **kwargs):
         investigation_group_dict = {}
 
-        investigation_groups_to_create = [
-            PatientInvestigationGroup(name=group.get("name"))
-            for group in investigation_groups
-            if group.get("id") not in investigation_group_dict
-        ]
-        created_groups = PatientInvestigationGroup.objects.bulk_create(
-            investigation_groups_to_create
-        )
-        investigation_group_dict.update({group.id: group for group in created_groups})
-
-        existing_objs = PatientInvestigation.objects.filter(
-            name__in=[investigation["name"] for investigation in investigations]
-        )
+        for investigation_group in investigation_groups:
+            current_obj = PatientInvestigationGroup.objects.filter(
+                name=investigation_group["name"]
+            ).first()
+            if not current_obj:
+                current_obj = PatientInvestigationGroup(
+                    name=investigation_group["name"]
+                )
+                current_obj.save()
+            investigation_group_dict[str(investigation_group["id"])] = current_obj
 
         bulk_create_data = []
         bulk_update_data = []
+        investigations_to_update_groups = []
 
         for investigation in investigations:
             data = {
                 "name": investigation["name"],
                 "unit": investigation.get("unit", ""),
                 "ideal_value": investigation.get("ideal_value", ""),
-                "min_value": (
-                    None
-                    if investigation.get("min_value") is None
-                    else float(investigation.get("min_value"))
-                ),
-                "max_value": (
-                    None
-                    if investigation.get("max_value") is None
-                    else float(investigation.get("max_value"))
-                ),
+                "min_value": float(investigation["min"])
+                if investigation.get("min") is not None
+                else None,
+                "max_value": float(investigation["max"])
+                if investigation.get("max") is not None
+                else None,
                 "investigation_type": investigation["type"],
                 "choices": investigation.get("choices", ""),
             }
 
-            existing_obj = existing_objs.filter(name=data["name"]).first()
+            existing_obj = PatientInvestigation.objects.filter(
+                name=data["name"]
+            ).first()
             if existing_obj:
+                for field, value in data.items():
+                    setattr(existing_obj, field, value)
                 bulk_update_data.append(existing_obj)
+                investigations_to_update_groups.append(
+                    (existing_obj, investigation["category_id"])
+                )
             else:
                 new_obj = PatientInvestigation(**data)
                 bulk_create_data.append(new_obj)
-
-            group_ids = investigation.get("category_ids", [])
-            groups_to_add = [
-                investigation_group_dict[category_id] for category_id in group_ids
-            ]
-            if existing_obj:
-                existing_obj.groups.set(groups_to_add)
-            else:
-                data["groups"] = groups_to_add
+                investigations_to_update_groups.append(
+                    (new_obj, investigation["category_id"])
+                )
 
         with transaction.atomic():
             if bulk_create_data:
@@ -94,3 +85,17 @@ class Command(BaseCommand):
                         "choices",
                     ],
                 )
+
+            for investigation_obj, category_ids in investigations_to_update_groups:
+                groups_to_add = [
+                    investigation_group_dict.get(str(category_id))
+                    for category_id in category_ids
+                ]
+                investigation_obj.save()  # Save the object if it's new
+                investigation_obj.groups.set(
+                    groups_to_add
+                )  # Set many-to-many relationship for groups
+
+        self.stdout.write(
+            self.style.SUCCESS("Successfully populated investigation data")
+        )

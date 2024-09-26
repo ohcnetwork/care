@@ -1814,17 +1814,5 @@
             3,
             7
         ]
-    },
-    {
-        "name": "Serum Creatinine Clearance",
-        "type": "Float",
-        "choices": null,
-        "unit": "mL/min ",
-        "ideal": "110 to 150mL/min (males),100 to 130mL/min (females)",
-        "min": "Varies based on age, sex, and muscle mass",
-        "max": "55 - 105 mL/min (females)",
-        "category_id": [
-            7
-        ]
     }
 ]
