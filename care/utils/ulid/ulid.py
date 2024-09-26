@@ -14,7 +14,7 @@ class ULID(BaseULID):
     @classmethod
     def parse(cls, value) -> Self:
         if isinstance(value, BaseULID):
-            return cls.parse_baseulid(value)
+            return cls.parse_ulid(value)
         if isinstance(value, UUID):
             return cls.parse_uuid(value)
         if isinstance(value, str):
