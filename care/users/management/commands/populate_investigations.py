@@ -91,10 +91,8 @@ class Command(BaseCommand):
                     investigation_group_dict.get(str(category_id))
                     for category_id in category_ids
                 ]
-                investigation_obj.save()  # Save the object if it's new
-                investigation_obj.groups.set(
-                    groups_to_add
-                )  # Set many-to-many relationship for groups
+                investigation_obj.save()
+                investigation_obj.groups.set(groups_to_add)
 
         self.stdout.write(
             self.style.SUCCESS("Successfully populated investigation data")
