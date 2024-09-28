@@ -5,6 +5,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as drf_filters
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.fields import get_error_detail
@@ -264,3 +265,19 @@ class ConsultationBedViewSet(
             allowed_facilities = get_accessible_facilities(user)
             queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
         return queryset
+
+    @action(detail=True, methods=["patch"])
+    def toggle_privacy(self, request, external_id):
+        consultation_bed: ConsultationBed = self.get_object()
+
+        if not consultation_bed.consultation.patient.has_object_update_permission(
+            request
+        ):
+            raise PermissionDenied
+
+        consultation_bed.is_privacy_enabled = not consultation_bed.is_privacy_enabled
+        consultation_bed.save()
+
+        return Response(
+            ConsultationBedSerializer(consultation_bed).data, status=status.HTTP_200_OK
+        )
