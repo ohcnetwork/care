@@ -20,6 +20,7 @@ class SecurityController:
 
     SecurityController maintains a list of override Classes, When present,
     The override classes are invoked first and then the predefined classes.
+    The overridden classes can choose to call the next function in the hierarchy if needed.
     """
 
     OVERRIDE_SECURITY_CONTROLLERS = []  # The order is important

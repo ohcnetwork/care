@@ -33,6 +33,6 @@ class PermissionController:
     This class is used to abstract all operations related to permissions
     """
 
-    OVERRIDE_PERMISSION_CONTROLLERS = []
+    OVERRIDE_PERMISSIONS = []
     # Override Permission Controllers will be defined from plugs
-    INTERNAL_PERMISSION_CONTROLLERS = []
+    INTERNAL_PERMISSIONS = []
