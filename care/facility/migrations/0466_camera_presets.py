@@ -15,7 +15,7 @@ import care.utils.models.validators
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("facility", "0459_remove_bed_unique_bed_name_per_location_and_more"),
+        ("facility", "0465_merge_20240923_1045"),
     ]
 
     def delete_asset_beds_without_asset_class(apps, schema_editor):
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                             position={
                                 "x": position["x"],
                                 "y": position["y"],
-                                "z": position["zoom"],
+                                "zoom": position["zoom"],
                             },
                             is_migrated=True,
                         )
@@ -113,8 +113,9 @@ class Migration(migrations.Migration):
                                     "properties": {
                                         "x": {"type": "number"},
                                         "y": {"type": "number"},
-                                        "z": {"type": "number"},
+                                        "zoom": {"type": "number"},
                                     },
+                                    "required": ["x", "y", "zoom"],
                                     "type": "object",
                                 }
                             )
@@ -136,6 +137,7 @@ class Migration(migrations.Migration):
                                         "y0": {"type": "number"},
                                         "y1": {"type": "number"},
                                     },
+                                    "required": ["x0", "y0", "x1", "y1"],
                                     "type": "object",
                                 }
                             )

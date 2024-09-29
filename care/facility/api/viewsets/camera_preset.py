@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from dry_rest_permissions.generics import DRYPermissions
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from care.facility.api.serializers.camera_preset import CameraPresetSerializer
 from care.facility.models import AssetBed, CameraPreset
@@ -18,16 +18,29 @@ class CameraPresetFilter(filters.FilterSet):
 
     def filter_preset_type(self, queryset, name, value):
         if value is not None:
-            return queryset.filter(**{f"${name}__is_null": not value})
+            return queryset.filter(**{f"{name}__isnull": not value})
+        return queryset
 
 
-class CameraPresetViewSet(ModelViewSet):
+class AssetBedCameraPresetFilter(filters.FilterSet):
+    position = filters.BooleanFilter(method="filter_preset_type")
+    boundary = filters.BooleanFilter(method="filter_preset_type")
+
+    def filter_preset_type(self, queryset, name, value):
+        if value is not None:
+            return queryset.filter(**{f"{name}__isnull": not value})
+        return queryset
+
+
+class AssetBedCameraPresetViewSet(ModelViewSet):
     serializer_class = CameraPresetSerializer
-    queryset = CameraPreset.objects.all()
+    queryset = CameraPreset.objects.all().select_related(
+        "asset_bed", "created_by", "updated_by"
+    )
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated, DRYPermissions)
+    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = CameraPresetFilter
+    filterset_class = AssetBedCameraPresetFilter
 
     def get_asset_bed_obj(self):
         return get_object_or_404(
@@ -42,3 +55,14 @@ class CameraPresetViewSet(ModelViewSet):
         context = super().get_serializer_context()
         context["asset_bed"] = self.get_asset_bed_obj()
         return context
+
+
+class CameraPresetViewSet(GenericViewSet, ListModelMixin):
+    serializer_class = CameraPresetSerializer
+    queryset = CameraPreset.objects.all().select_related(
+        "asset_bed", "created_by", "updated_by"
+    )
+    lookup_field = "external_id"
+    permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CameraPresetFilter

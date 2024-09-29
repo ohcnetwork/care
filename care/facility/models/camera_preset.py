@@ -9,8 +9,9 @@ CAMERA_PRESET_POSITION_SCHEMA = {
     "properties": {
         "x": {"type": "number"},
         "y": {"type": "number"},
-        "z": {"type": "number"},
+        "zoom": {"type": "number"},
     },
+    "required": ["x", "y", "zoom"],
     "additionalProperties": False,
 }
 
@@ -23,6 +24,7 @@ CAMERA_PRESET_BOUNDARY_SCHEMA = {
         "x1": {"type": "number"},
         "y1": {"type": "number"},
     },
+    "required": ["x0", "y0", "x1", "y1"],
     "additionalProperties": False,
 }
 

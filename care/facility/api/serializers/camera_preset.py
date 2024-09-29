@@ -26,12 +26,26 @@ class CameraPresetSerializer(serializers.ModelSerializer):
             "updated_by",
         )
 
+    def get_asset_bed_obj(self):
+        return self.instance.asset_bed if self.instance else self.context["asset_bed"]
+
+    def validate_name(self, value):
+        presets_of_related_bed = (
+            CameraPreset.objects.filter(
+                asset_bed__bed_id=self.get_asset_bed_obj().bed_id
+            )
+            .only("name")
+            .values_list("name")
+        )
+        if value in [x[0] for x in presets_of_related_bed]:
+            msg = "Name should be unique. Another preset related to this bed already uses the same name."
+            raise ValidationError(msg)
+        return value
+
     def validate(self, attrs):
         validated_data = super().validate(attrs)
 
-        asset_bed = (
-            self.instance.asset_bed if self.instance else self.context["asset_bed"]
-        )
+        asset_bed = self.get_asset_bed_obj()
         position = validated_data.get(
             "position", self.instance and self.instance.position
         )
@@ -42,16 +56,17 @@ class CameraPresetSerializer(serializers.ModelSerializer):
         if not self.instance:
             # one of position or boundary only must be present
             if not (validated_data.get("position") or validated_data.get("boundary")):
-                raise ValidationError("Either position or boundary must be specified")
+                msg = "Either position or boundary must be specified"
+                raise ValidationError(msg)
 
             # single boundary preset for an asset_bed
             if boundary and CameraPreset.objects.filter(asset_bed=asset_bed).exists():
-                raise ValidationError(
-                    "Only one boundary preset can exist for an asset_bed"
-                )
+                msg = "Only one boundary preset can exist for an asset_bed"
+                raise ValidationError(msg)
         # one of position or boundary only must be present
         if position and boundary:
-            raise ValidationError("Cannot have both position and a boundary.")
+            msg = "Cannot have both position and a boundary."
+            raise ValidationError(msg)
 
         return validated_data
 
