@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class NewRole:
+class Role:
     """
     This class can be inherited for role classes that are created by default
     """
@@ -10,14 +10,19 @@ class NewRole:
     description: str
 
 
-DOCTOR_ROLE = NewRole(name="Doctor", description="Some Description Here")  # TODO : Clean description
+DOCTOR_ROLE = Role(name="Doctor", description="Some Description Here")  # TODO : Clean description
 
 
-class Role:
-    OVERRIDE_PERMISSION_CONTROLLERS = []
+class RoleController:
+    override_roles = []
     # Override Permission Controllers will be defined from plugs
-    INTERNAL_PERMISSION_CONTROLLERS = [DOCTOR_ROLE]
+    internal_roles = [DOCTOR_ROLE]
 
     @classmethod
     def get_roles(cls):
-        return cls.INTERNAL_PERMISSION_CONTROLLERS + cls.OVERRIDE_PERMISSION_CONTROLLERS
+        return cls.internal_roles + cls.override_roles
+
+    @classmethod
+    def register_role(cls, role: Role):
+        # TODO : Do some deduplication Logic
+        cls.override_roles.append(role)

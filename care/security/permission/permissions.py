@@ -6,6 +6,7 @@ class PermissionContext(enum.Enum):
     GENERIC = "GENERIC"
     FACILITY = "FACILITY"
     ASSET = "ASSET"
+    LOCATION = "LOCATION"
 
 
 @dataclass
@@ -19,12 +20,11 @@ class Permission:
     roles: list
 
 
-class InternalPermissionController:
+class PermissionHandler:
     pass
 
 
-class ExternalPermissionController:
-    pass
+from .facility import FacilityPermissions  # noqa: E402
 
 
 class PermissionController:
@@ -33,6 +33,20 @@ class PermissionController:
     This class is used to abstract all operations related to permissions
     """
 
-    OVERRIDE_PERMISSIONS = []
+    override_permission_handlers = []
     # Override Permission Controllers will be defined from plugs
-    INTERNAL_PERMISSIONS = []
+    internal_permission_handlers = [FacilityPermissions]
+
+    cache = {}
+
+    @classmethod
+    def build_cache(cls):
+        """
+        Iterate through the entire permission library and create a list of permissions and associated Metadata
+        """
+        pass
+
+    @classmethod
+    def has_permission(cls, user, permission):
+        # TODO : Can Cache Directly
+        pass
