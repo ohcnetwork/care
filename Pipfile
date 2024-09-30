@@ -46,7 +46,7 @@ whitenoise = "==6.7.0"
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "==1.35.25" }
 coverage = "==7.6.1"
-debugpy = "==1.8.5"
+debugpy = "==1.8.6"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
 django-silk = "==5.2.0"
