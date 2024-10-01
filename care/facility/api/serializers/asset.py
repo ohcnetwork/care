@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models import F, Value
@@ -38,9 +36,9 @@ from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
+from care.utils.models.validators import MiddlewareDomainAddressValidator
 from care.utils.queryset.facility import get_facility_queryset
-from config.serializers import ChoiceField
-from config.validators import MiddlewareDomainAddressValidator
+from care.utils.serializers.fields import ChoiceField
 
 
 class AssetLocationSerializer(ModelSerializer):
@@ -125,9 +123,7 @@ class AssetServiceSerializer(ModelSerializer):
             )
             edit.save()
 
-            updated_instance = super().update(instance, validated_data)
-
-        return updated_instance
+            return super().update(instance, validated_data)
 
 
 @extend_schema_field(
@@ -159,10 +155,7 @@ class AssetSerializer(ModelSerializer):
     class Meta:
         model = Asset
         exclude = ("deleted", "external_id", "current_location")
-        read_only_fields = TIMESTAMP_FIELDS + (
-            "resolved_middleware",
-            "latest_status",
-        )
+        read_only_fields = (*TIMESTAMP_FIELDS, "resolved_middleware", "latest_status")
 
     def validate_qr_code_id(self, value):
         value = value or None  # treat empty string as null
@@ -181,7 +174,7 @@ class AssetSerializer(ModelSerializer):
 
             facilities = get_facility_queryset(user)
             if not facilities.filter(id=location.facility.id).exists():
-                raise PermissionError()
+                raise PermissionError
             del attrs["location"]
             attrs["current_location"] = location
 
@@ -195,15 +188,14 @@ class AssetSerializer(ModelSerializer):
             ):
                 del attrs["warranty_amc_end_of_validity"]
 
-            elif warranty_amc_end_of_validity < datetime.now().date():
-                raise ValidationError(
-                    "Warranty/AMC end of validity cannot be in the past"
-                )
+            elif warranty_amc_end_of_validity < now().date():
+                msg = "Warranty/AMC end of validity cannot be in the past"
+                raise ValidationError(msg)
 
         # validate that last serviced date is not in the future
-        if "last_serviced_on" in attrs and attrs["last_serviced_on"]:
-            if attrs["last_serviced_on"] > datetime.now().date():
-                raise ValidationError("Last serviced on cannot be in the future")
+        if attrs.get("last_serviced_on") and attrs["last_serviced_on"] > now().date():
+            msg = "Last serviced on cannot be in the future"
+            raise ValidationError(msg)
 
         # only allow setting asset class on creation (or updation if asset class is not set)
         if (
@@ -250,9 +242,8 @@ class AssetSerializer(ModelSerializer):
                     .first()
                 )
                 if asset_using_ip:
-                    raise ValidationError(
-                        f"IP Address {ip_address} is already in use by {asset_using_ip.name} asset"
-                    )
+                    msg = f"IP Address {ip_address} is already in use by {asset_using_ip.name} asset"
+                    raise ValidationError(msg)
 
         return super().validate(attrs)
 
@@ -320,6 +311,32 @@ class AssetSerializer(ModelSerializer):
         return updated_instance
 
 
+class AssetPublicSerializer(ModelSerializer):
+    id = UUIDField(source="external_id", read_only=True)
+    status = ChoiceField(choices=StatusChoices, read_only=True)
+    asset_type = ChoiceField(choices=AssetTypeChoices)
+    location_object = AssetLocationSerializer(source="current_location", read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = (
+            "id",
+            "name",
+            "location_object",
+            "serial_number",
+            "warranty_details",
+            "warranty_amc_end_of_validity",
+            "asset_type",
+            "asset_class",
+            "vendor_name",
+            "support_name",
+            "support_email",
+            "support_phone",
+            "is_working",
+            "status",
+        )
+
+
 class AssetConfigSerializer(ModelSerializer):
     id = UUIDField(source="external_id")
     type = CharField(source="asset_class")
@@ -335,7 +352,7 @@ class AssetConfigSerializer(ModelSerializer):
         data["ip_address"] = instance.meta.get("local_ip_address")
         if camera_access_key := instance.meta.get("camera_access_key"):
             values = camera_access_key.split(":")
-            if len(values) == 3:
+            if len(values) == 3:  # noqa: PLR2004
                 data["username"], data["password"], data["access_key"] = values
         return data
 
@@ -390,7 +407,7 @@ class UserDefaultAssetLocationSerializer(ModelSerializer):
 
 
 class AssetActionSerializer(Serializer):
-    def actionChoices():
+    def action_choices():
         actions = [
             OnvifAsset.OnvifActions,
             HL7MonitorAsset.HL7MonitorActions,
@@ -402,7 +419,7 @@ class AssetActionSerializer(Serializer):
         return choices
 
     type = ChoiceField(
-        choices=actionChoices(),
+        choices=action_choices(),
         required=True,
     )
     data = JSONField(required=False)

@@ -1,4 +1,4 @@
-.PHONY: build, re-build, up, down, list, logs, test, makemigrations
+.PHONY: build, re-build, up, down, list, logs, test, makemigrations, reset_db
 
 
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
@@ -47,3 +47,25 @@ test-coverage:
 	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel --shuffle"
 	docker compose exec backend bash -c "coverage combine || true; coverage xml"
 	docker compose cp backend:/app/coverage.xml coverage.xml
+
+reset_db:
+	docker compose exec backend bash -c "python manage.py reset_db --noinput"
+	docker compose exec backend bash -c "python manage.py migrate"
+
+ruff-all:
+	ruff check .
+
+ruff-fix-all:
+	ruff check --fix .
+
+ruff:
+	ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')
+
+ruff-all-docker:
+	docker exec care bash -c "ruff check ."
+
+ruff-docker:
+	docker exec care bash -c "ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"
+
+%:
+	docker compose exec backend bash -c "python manage.py $*"

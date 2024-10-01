@@ -1,4 +1,6 @@
+import logging
 import re
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.cache import cache
@@ -15,9 +17,8 @@ from django_filters.constants import EMPTY_VALUES
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework import filters as drf_filters
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.mixins import (
@@ -35,6 +36,7 @@ from rest_framework.viewsets import GenericViewSet
 from care.facility.api.serializers.asset import (
     AssetConfigSerializer,
     AssetLocationSerializer,
+    AssetPublicSerializer,
     AssetSerializer,
     AssetServiceSerializer,
     AssetTransactionSerializer,
@@ -58,12 +60,17 @@ from care.facility.models.asset import (
 )
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
-from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import MiddlewareAuthentication
+
+if TYPE_CHECKING:
+    from care.utils.assetintegration.base import BaseAssetIntegration
+
+logger = logging.getLogger(__name__)
+
 
 inverse_asset_type = inverse_choices(AssetTypeChoices)
 inverse_asset_status = inverse_choices(StatusChoices)
@@ -131,9 +138,11 @@ class AssetLocationViewSet(
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.bed_set.filter(deleted=False).count():
-            raise ValidationError("Cannot delete a Location with associated Beds")
+            msg = "Cannot delete a Location with associated Beds"
+            raise ValidationError(msg)
         if instance.asset_set.filter(deleted=False).count():
-            raise ValidationError("Cannot delete a Location with associated Assets")
+            msg = "Cannot delete a Location with associated Assets"
+            raise ValidationError(msg)
 
         return super().destroy(request, *args, **kwargs)
 
@@ -187,8 +196,10 @@ class AssetFilter(filters.FilterSet):
 
 class AssetPublicViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "external_id"
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         key = "asset:" + kwargs["external_id"]
@@ -205,8 +216,10 @@ class AssetPublicViewSet(GenericViewSet):
 
 class AssetPublicQRViewSet(GenericViewSet):
     queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    serializer_class = AssetPublicSerializer
     lookup_field = "qr_code_id"
+    permission_classes = ()
+    authentication_classes = ()
 
     def retrieve(self, request, *args, **kwargs):
         qr_code_id = kwargs["qr_code_id"]
@@ -227,7 +240,6 @@ class AssetPublicQRViewSet(GenericViewSet):
 class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = AvailabilityRecord.objects.all()
     serializer_class = AvailabilityRecordSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         facility_queryset = get_facility_queryset(self.request.user)
@@ -240,11 +252,9 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="asset",
                     object_external_id=self.kwargs["asset_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset's availability records"
-                )
-        elif "asset_location_external_id" in self.kwargs:
+            msg = "You do not have access to this asset's availability records"
+            raise exceptions.PermissionDenied(msg)
+        if "asset_location_external_id" in self.kwargs:
             asset_location = get_object_or_404(
                 AssetLocation, external_id=self.kwargs["asset_location_external_id"]
             )
@@ -253,14 +263,10 @@ class AvailabilityViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                     content_type__model="assetlocation",
                     object_external_id=self.kwargs["asset_location_external_id"],
                 )
-            else:
-                raise exceptions.PermissionDenied(
-                    "You do not have access to this asset location's availability records"
-                )
-        else:
-            raise exceptions.ValidationError(
-                "Either asset_external_id or asset_location_external_id is required"
-            )
+            msg = "You do not have access to this asset location's availability records"
+            raise exceptions.PermissionDenied(msg)
+        msg = "Either asset_external_id or asset_location_external_id is required"
+        raise exceptions.ValidationError(msg)
 
 
 class AssetViewSet(
@@ -299,7 +305,7 @@ class AssetViewSet(
             queryset = queryset.filter(
                 current_location__facility__id__in=allowed_facilities
             )
-        queryset = queryset.annotate(
+        return queryset.annotate(
             latest_status=Subquery(
                 AvailabilityRecord.objects.filter(
                     content_type__model="asset",
@@ -309,7 +315,6 @@ class AssetViewSet(
                 .values("status")[:1]
             )
         )
-        return queryset
 
     def list(self, request, *args, **kwargs):
         if settings.CSV_REQUEST_PARAMETER in request.GET:
@@ -320,16 +325,14 @@ class AssetViewSet(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
 
-        return super(AssetViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
         if user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]:
             return super().destroy(request, *args, **kwargs)
-        else:
-            raise exceptions.AuthenticationFailed(
-                "Only District Admin and above can delete assets"
-            )
+        msg = "Only District Admin and above can delete assets"
+        raise exceptions.AuthenticationFailed(msg)
 
     @extend_schema(
         responses={200: UserDefaultAssetLocationSerializer()}, tags=["asset"]
@@ -388,6 +391,7 @@ class AssetViewSet(
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,
+                    "id": asset.external_id,
                     "middleware_hostname": middleware_hostname,
                 }
             )
@@ -412,7 +416,7 @@ class AssetViewSet(
             )
 
         except Exception as e:
-            print(f"error: {e}")
+            logger.info("Failed to operate asset: %s", e)
             return Response(
                 {"message": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -422,7 +426,6 @@ class AssetViewSet(
 class AssetRetrieveConfigViewSet(ListModelMixin, GenericViewSet):
     queryset = Asset.objects.all()
     authentication_classes = [MiddlewareAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = AssetConfigSerializer
 
     @extend_schema(
@@ -548,8 +551,6 @@ class AssetServiceViewSet(
         .order_by("-created_date")
     )
     serializer_class = AssetServiceSerializer
-
-    permission_classes = (IsAuthenticated,)
 
     lookup_field = "external_id"
 

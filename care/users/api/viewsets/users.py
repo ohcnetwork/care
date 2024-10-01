@@ -4,13 +4,14 @@ from django.core.cache import cache
 from django.db.models import F, Q, Subquery
 from django.http import Http404
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework import mixins, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -28,10 +29,11 @@ from care.users.api.serializers.user import (
 )
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.file_uploads.cover_image import delete_cover_image
 
 
 def remove_facility_user_cache(user_id):
-    key = f"user_facilities:{str(user_id)}"
+    key = f"user_facilities:{user_id!s}"
     cache.delete(key)
     return True
 
@@ -59,9 +61,13 @@ class UserFilterSet(filters.FilterSet):
     )
     last_login = filters.DateFromToRangeFilter(field_name="last_login")
     district_id = filters.NumberFilter(field_name="district_id", lookup_expr="exact")
-    home_facility = filters.UUIDFilter(
-        field_name="home_facility__external_id", lookup_expr="exact"
-    )
+    home_facility = filters.CharFilter(method="filter_home_facility")
+
+    def filter_home_facility(self, queryset, name, value):
+        if value == "NONE":
+            return queryset.filter(home_facility__isnull=True)
+        return queryset.filter(home_facility__external_id=value)
+
     last_active_days = filters.CharFilter(method="last_active_after")
 
     def get_user_type(
@@ -70,9 +76,8 @@ class UserFilterSet(filters.FilterSet):
         field_name,
         value,
     ):
-        if value:
-            if value in INVERSE_USER_TYPE:
-                return queryset.filter(user_type=INVERSE_USER_TYPE[value])
+        if value and value in INVERSE_USER_TYPE:
+            return queryset.filter(user_type=INVERSE_USER_TYPE[value])
         return queryset
 
     user_type = filters.CharFilter(method="get_user_type", field_name="user_type")
@@ -105,12 +110,10 @@ class UserViewSet(
             created_by_user=F("created_by__username"),
         )
     )
+    queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
@@ -119,21 +122,6 @@ class UserViewSet(
     filterset_class = UserFilterSet
     ordering_fields = ["id", "date_joined", "last_login"]
     search_fields = ["first_name", "last_name", "username"]
-    # last_login
-    # def get_permissions(self):
-    #     return [
-    #         DRYPermissions(),
-    #         IsAuthenticated(),
-    #     ]
-    # if self.request.method == "POST":
-    #     return [
-    #         DRYPermissions(),
-    #     ]
-    # else:
-    #     return [
-    #         IsAuthenticated(),
-    #         DRYPermissions(),
-    #     ]
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -165,32 +153,21 @@ class UserViewSet(
             )
         return self.queryset.filter(query)
 
-    def get_parsers(self):
-        if (
-            self.request
-            and self.request.method == "POST"
-            and self.request.path.endswith("profile_picture")
-        ):
-            return [MultiPartParser()]
-        return super().get_parsers()
-
-    def get_object(self):
+    def get_object(self) -> User:
         try:
             return super().get_object()
-        except Http404:
-            raise Http404("User not found")
+        except Http404 as e:
+            error = "User not found"
+            raise Http404(error) from e
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
-        elif self.action == "add_user":
+        if self.action == "add_user":
             return UserCreateSerializer
-        # elif self.action == "create":
-        #     return SignUpSerializer
-        elif self.action == "profile_picture":
+        if self.action == "profile_picture":
             return UserImageUploadSerializer
-        else:
-            return UserSerializer
+        return UserSerializer
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["GET"])
@@ -397,39 +374,29 @@ class UserViewSet(
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
 
-    def has_profile_image_write_permission(self, user, request):
-        allowed_user_types = [
-            User.TYPE_VALUE_MAP["WardAdmin"],
-            User.TYPE_VALUE_MAP["LocalBodyAdmin"],
-            User.TYPE_VALUE_MAP["DistrictAdmin"],
-            User.TYPE_VALUE_MAP["StateAdmin"],
-        ]
-        return (
-            user.is_superuser
-            or (user.id == request.user.id)
-            or (
-                user.user_type in allowed_user_types
-                and self.facility.has_object_write_permission(request)
-            )
-        )
+
+    def has_profile_image_write_permission(self, request, user):
+        return request.user.is_superuser or (user.id == request.user.id)
 
     @extend_schema(tags=["users"])
+    @method_decorator(parser_classes([MultiPartParser]))
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-    def profile_picture(self, request, username):
+    def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.has_profile_image_write_permission(user, request):
+        if not self.has_profile_image_write_permission(request, user):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        serializer = UserImageUploadSerializer(user, data=request.data)
+        serializer = self.get_serializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
 
     @extend_schema(tags=["users"])
     @profile_picture.mapping.delete
-    def profile_picture_delete(self, *args, **kwargs):
+    def profile_picture_delete(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.has_profile_image_write_permission(user, self.request):
+        if not self.has_profile_image_write_permission(request, user):
             return Response(status=status.HTTP_403_FORBIDDEN)
+        delete_cover_image(user.profile_picture_url, "avatars")
         user.profile_picture_url = None
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

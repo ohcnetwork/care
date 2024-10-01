@@ -12,10 +12,10 @@ class Command(BaseCommand):
     help = "Sync the patient created flag in external tests"
 
     def handle(self, *args, **options):
-        print("Starting Sync")
+        self.stdout.write("Starting Sync")
         for patient in PatientRegistration.objects.all():
             if patient.srf_id:
                 PatientExternalTest.objects.filter(
                     srf_id__iexact=patient.srf_id
                 ).update(patient_created=True)
-        print("Completed Sync")
+        self.stdout.write("Completed Sync")

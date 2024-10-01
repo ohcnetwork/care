@@ -35,9 +35,9 @@ class ULIDField(models.Field):
             return None
         try:
             return ULID.parse(value)
-        except (AttributeError, ValueError):
+        except (AttributeError, ValueError) as e:
             raise exceptions.ValidationError(
                 self.error_messages["invalid"],
                 code="invalid",
                 params={"value": value},
-            )
+            ) from e

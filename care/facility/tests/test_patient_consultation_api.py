@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.patient_consultation import MIN_ENCOUNTER_DATE
+from care.facility.models.bed import Bed
 from care.facility.models.encounter_symptom import Symptom
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
@@ -63,7 +64,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
                     "onset_date": now(),
                 },
             ],
-            "patient_no": datetime.datetime.now().timestamp(),
+            "patient_no": now().timestamp(),
         }
 
     def get_url(self, consultation=None):
@@ -86,7 +87,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         data.update(kwargs)
         return self.client.post(self.get_url(), data, format="json")
 
-    def create_admission_consultation(self, patient=None, **kwargs):
+    def call_create_admission_consultation_api(self, patient=None, **kwargs):
         patient = patient or self.create_patient(self.district, self.facility)
         data = self.get_default_data().copy()
         kwargs.update(
@@ -96,7 +97,10 @@ class TestPatientConsultation(TestUtils, APITestCase):
             }
         )
         data.update(kwargs)
-        res = self.client.post(self.get_url(), data, format="json")
+        return self.client.post(self.get_url(), data, format="json")
+
+    def create_admission_consultation(self, patient=None, **kwargs):
+        res = self.call_create_admission_consultation_api(patient, **kwargs)
         return PatientConsultation.objects.get(external_id=res.data["id"])
 
     def update_consultation(self, consultation, **kwargs):
@@ -129,6 +133,12 @@ class TestPatientConsultation(TestUtils, APITestCase):
             }
         )
         res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_admission_consultation_without_treating_physician(self):
+        res = self.call_create_admission_consultation_api(
+            suggestion="A", treating_physician=None
+        )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_consultation_treating_physician_invalid_user(self):
@@ -641,3 +651,17 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_consultation_with_bed(self):
+        asset_location = self.create_asset_location(self.facility)
+        bed = Bed.objects.create(
+            name="bed", location=asset_location, facility=self.facility
+        )
+
+        consultation: PatientConsultation = self.create_admission_consultation(
+            suggestion=SuggestionChoices.A,
+            encounter_date=make_aware(datetime.datetime(2020, 4, 1, 15, 30, 00)),
+            bed=bed.external_id,
+        )
+
+        self.assertEqual(consultation.current_bed.bed, bed)

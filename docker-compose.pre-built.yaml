@@ -1,8 +1,7 @@
-version: '3.4'
 
 services:
   backend:
-    image: "ghcr.io/coronasafe/care:latest"
+    image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "start-ecs.sh" ]
@@ -18,7 +17,7 @@ services:
       - "9000:9000"
 
   celery-worker:
-    image: "ghcr.io/coronasafe/care:latest"
+    image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "celery_worker-ecs.sh" ]
@@ -32,7 +31,7 @@ services:
         condition: service_healthy
 
   celery-beat:
-    image: "ghcr.io/coronasafe/care:latest"
+    image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
     entrypoint: [ "bash", "celery_beat-ecs.sh" ]

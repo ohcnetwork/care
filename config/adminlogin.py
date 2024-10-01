@@ -12,7 +12,6 @@ def login_wrapper(login_func):
                 request, "Too many login attempts, please try again in 20 minutes"
             )
             return redirect(reverse("admin:index"))
-        else:
-            return login_func(request, **kwargs)
+        return login_func(request, **kwargs)
 
     return admin_login

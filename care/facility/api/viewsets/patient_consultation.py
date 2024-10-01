@@ -1,6 +1,11 @@
+import tempfile
+
+from django.db import transaction
 from django.db.models import Prefetch
 from django.db.models.query_utils import Q
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from dry_rest_permissions.generics import DRYPermissions
@@ -65,12 +70,11 @@ class PatientConsultationViewSet(
     def get_serializer_class(self):
         if self.action == "patient_from_asset":
             return PatientConsultationIDSerializer
-        elif self.action == "discharge_patient":
+        if self.action == "discharge_patient":
             return PatientConsultationDischargeSerializer
-        elif self.action == "email_discharge_summary":
+        if self.action == "email_discharge_summary":
             return EmailDischargeSummarySerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class
 
     def get_permissions(self):
         if self.action == "patient_from_asset":
@@ -92,11 +96,11 @@ class PatientConsultationViewSet(
             )
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(
                 patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(
                 patient__facility__district=self.request.user.district
             )
@@ -108,6 +112,10 @@ class PatientConsultationViewSet(
         # A user should be able to see all consultations part of their home facility
         applied_filters |= Q(facility=self.request.user.home_facility)
         return self.queryset.filter(applied_filters)
+
+    @transaction.non_atomic_requests
+    def create(self, request, *args, **kwargs) -> Response:
+        return super().create(request, *args, **kwargs)
 
     @extend_schema(tags=["consultation"])
     @action(detail=True, methods=["POST"])
@@ -291,7 +299,16 @@ def dev_preview_discharge_summary(request, consultation_id):
     if not consultation:
         raise NotFound({"detail": "Consultation not found"})
     data = discharge_summary.get_discharge_summary_data(consultation)
-    return render(request, "reports/patient_discharge_summary_pdf.html", data)
+    data["date"] = timezone.now()
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        discharge_summary.generate_discharge_summary_pdf(data, tmp_file)
+        tmp_file.seek(0)
+
+        response = HttpResponse(tmp_file, content_type="application/pdf")
+        response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
+
+        return response
 
 
 class PatientConsentViewSet(

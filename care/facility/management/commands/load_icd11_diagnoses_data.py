@@ -1,12 +1,18 @@
 import json
+from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.core.management import BaseCommand, CommandError
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 
+if TYPE_CHECKING:
+    from pathlib import Path
+
 
 def fetch_data():
-    with open("data/icd11.json", "r") as json_file:
+    icd11_json: Path = settings.BASE_DIR / "data" / "icd11.json"
+    with icd11_json.open() as json_file:
         return json.load(json_file)
 
 
@@ -87,9 +93,9 @@ class Command(BaseCommand):
         "21 Symptoms, signs or clinical findings, not elsewhere classified": "Others",
         "22 Injury, poisoning or certain other consequences of external causes": "Injury, Poisoning",
         "23 External causes of morbidity or mortality": "External Causes of Injury",
-        "24 Factors influencing health status or contact with health services": None,
+        "24 Factors influencing health status or contact with health services": "Reason for contact with Health Services",
         "25 Codes for special purposes": "Codes for special purposes",
-        "26 Supplementary Chapter Traditional Medicine Conditions - Module I": None,
+        "26 Supplementary Chapter Traditional Medicine Conditions - Module I": "Supplementary chapter",
         "V Supplementary section for functioning assessment": "Functioning assessment",
     }
 
@@ -117,17 +123,17 @@ class Command(BaseCommand):
 
         # The following code is never executed as the `icd11.json` file is
         # pre-sorted and hence the parent is always present before the child.
-        print("Full-scan for", id, item["label"])
+        self.stdout.write("Full-scan for", id, item["label"])
         return self.find_roots(
-            [
+            next(
                 icd11_object
                 for icd11_object in self.data
                 if icd11_object["ID"] == item["parentId"]
-            ][0]
+            )
         )
 
     def handle(self, *args, **options):
-        print("Loading ICD11 diagnoses data to database...")
+        self.stdout.write("Loading ICD11 diagnoses data to database...")
         try:
             self.data = fetch_data()
 
@@ -162,4 +168,4 @@ class Command(BaseCommand):
                 ignore_conflicts=True,  # Voluntarily set to skip duplicates, so that we can run this command multiple times + existing relations are not affected
             )
         except Exception as e:
-            raise CommandError(e)
+            raise CommandError(e) from e

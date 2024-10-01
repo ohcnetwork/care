@@ -4,7 +4,6 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.viewsets.mixins.access import UserAccessMixin
@@ -19,5 +18,3 @@ class FacilityBaseViewset(
     GenericViewSet,
 ):
     """Base class for all endpoints related to Faclity model."""
-
-    permission_classes = (IsAuthenticated,)

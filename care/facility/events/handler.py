@@ -25,7 +25,7 @@ def create_consultation_event_entry(
     fields: set[str] = (
         get_changed_fields(old_instance, object_instance)
         if old_instance
-        else {field.name for field in object_instance._meta.fields}
+        else {field.name for field in object_instance._meta.fields}  # noqa: SLF001
     )
 
     fields_to_store = fields_to_store & fields if fields_to_store else fields
@@ -91,11 +91,10 @@ def create_consultation_events(
         taken_at = created_date
 
     with transaction.atomic():
-        if isinstance(objects, (QuerySet, list, tuple)):
+        if isinstance(objects, QuerySet | list | tuple):
             if old is not None:
-                raise ValueError(
-                    "diff is not available when objects is a list or queryset"
-                )
+                msg = "diff is not available when objects is a list or queryset"
+                raise ValueError(msg)
             for obj in objects:
                 create_consultation_event_entry(
                     consultation_id,

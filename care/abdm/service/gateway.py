@@ -1,8 +1,9 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from django.conf import settings
 from django.db.models import Q
+from rest_framework.exceptions import ValidationError
 
 from care.abdm.models.abha_number import AbhaNumber
 from care.abdm.models.base import Purpose
@@ -17,7 +18,7 @@ class Gateway:
     def consent_requests__init(self, consent: ConsentRequest):
         data = {
             "requestId": str(consent.external_id),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "consent": {
@@ -41,14 +42,14 @@ class Gateway:
                 "permission": {
                     "accessMode": consent.access_mode,
                     "dateRange": {
-                        "from": consent.from_time.astimezone(timezone.utc).strftime(
+                        "from": consent.from_time.astimezone(UTC).strftime(
                             "%Y-%m-%dT%H:%M:%S.000Z"
                         ),
-                        "to": consent.to_time.astimezone(timezone.utc).strftime(
+                        "to": consent.to_time.astimezone(UTC).strftime(
                             "%Y-%m-%dT%H:%M:%S.000Z"
                         ),
                     },
-                    "dataEraseAt": consent.expiry.astimezone(timezone.utc).strftime(
+                    "dataEraseAt": consent.expiry.astimezone(UTC).strftime(
                         "%Y-%m-%dT%H:%M:%S.000Z"
                     ),
                     "frequency": {
@@ -66,7 +67,7 @@ class Gateway:
     def consent_requests__status(self, consent_request_id: str):
         data = {
             "requestId": str(uuid.uuid4()),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "consentRequestId": consent_request_id,
@@ -79,7 +80,7 @@ class Gateway:
     def consents__hiu__on_notify(self, consent: ConsentRequest, request_id: str):
         data = {
             "requestId": str(uuid.uuid4()),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "resp": {"requestId": request_id},
@@ -103,7 +104,7 @@ class Gateway:
     def consents__fetch(self, consent_artefact_id: str):
         data = {
             "requestId": str(uuid.uuid4()),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "consentId": consent_artefact_id,
@@ -120,7 +121,7 @@ class Gateway:
 
         data = {
             "requestId": request_id,
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "hiRequest": {
@@ -131,7 +132,7 @@ class Gateway:
                     "cryptoAlg": artefact.key_material_algorithm,
                     "curve": artefact.key_material_curve,
                     "dhPublicKey": {
-                        "expiry": artefact.expiry.astimezone(timezone.utc).strftime(
+                        "expiry": artefact.expiry.astimezone(UTC).strftime(
                             "%Y-%m-%dT%H:%M:%S.000Z"
                         ),
                         "parameters": f"{artefact.key_material_curve}/{artefact.key_material_algorithm}",
@@ -157,24 +158,24 @@ class Gateway:
             Q(abha_number=health_id) | Q(health_id=health_id)
         ).first()
         if not abha_number:
-            raise Exception("No ABHA Number found")
+            raise ValidationError(detail="No ABHA Number found")
 
-        patient_facility = abha_number.patientregistration.last_consultation.facility
+        patient_facility = abha_number.patient.last_consultation.facility
         if not hasattr(patient_facility, "healthfacility"):
-            raise Exception("Health Facility not linked")
+            raise ValidationError(detail="Health Facility not linked")
 
         return patient_facility.healthfacility.hf_id
 
     def health_information__notify(self, artefact: ConsentArtefact):
         data = {
             "requestId": str(uuid.uuid4()),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "notification": {
                 "consentId": str(artefact.artefact_id),
                 "transactionId": str(artefact.transaction_id),
-                "doneAt": datetime.now(tz=timezone.utc).strftime(
+                "doneAt": datetime.now(tz=UTC).strftime(
                     "%Y-%m-%dT%H:%M:%S.000Z"
                 ),
                 "notifier": {
@@ -197,14 +198,14 @@ class Gateway:
     def patients__find(self, abha_number: AbhaNumber):
         data = {
             "requestId": str(uuid.uuid4()),
-            "timestamp": datetime.now(tz=timezone.utc).strftime(
+            "timestamp": datetime.now(tz=UTC).strftime(
                 "%Y-%m-%dT%H:%M:%S.000Z"
             ),
             "query": {
                 "patient": {"id": abha_number.health_id},
                 "requester": {
                     "type": "HIU",
-                    "id": abha_number.patientregistration.facility.healthfacility.hf_id,
+                    "id": self.get_hf_id_by_health_id(abha_number.health_id),
                 },
             },
         }

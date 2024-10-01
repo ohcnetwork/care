@@ -8,7 +8,6 @@ from django.utils.timezone import localtime, make_aware, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from care.abdm.utils.api_call import AbdmGateway
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.asset import AssetLocationSerializer
 from care.facility.api.serializers.bed import (
@@ -64,10 +63,10 @@ from care.users.api.serializers.user import (
     UserBaseMinimumSerializer,
 )
 from care.users.models import User
+from care.utils.lock import Lock
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 MIN_ENCOUNTER_DATE = make_aware(settings.MIN_ENCOUNTER_DATE)
 
@@ -191,24 +190,24 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             dosage_type=PrescriptionDosageType.PRN.value,
         ).values()
 
+    def _lock_key(self, patient_id):
+        return f"patient_consultation__patient_registration__{patient_id}"
+
     class Meta:
         model = PatientConsultation
-        read_only_fields = TIMESTAMP_FIELDS + (
+        read_only_fields = (
+            *TIMESTAMP_FIELDS,
             "last_updated_by_telemedicine",
             "discharge_date",
             "last_edited_by",
             "created_by",
             "kasp_enabled_date",
             "is_readmission",
-            "deprecated_diagnosis",
             "deprecated_verified_by",
         )
         exclude = (
             "deleted",
             "external_id",
-            "deprecated_icd11_provisional_diagnoses",
-            "deprecated_icd11_diagnoses",
-            "deprecated_icd11_principal_diagnosis",
         )
 
     def validate_bed_number(self, bed_number):
@@ -228,10 +227,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {"consultation": ["Discharged Consultation data cannot be updated"]}
                 )
-            else:
-                instance.medico_legal_case = validated_data.pop("medico_legal_case")
-                instance.save()
-                return instance
+            instance.medico_legal_case = validated_data.pop("medico_legal_case")
+            instance.save()
+            return instance
 
         if instance.suggestion == SuggestionChoices.OP:
             instance.discharge_date = localtime(now())
@@ -260,9 +258,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             self.context["request"].user == instance.assigned_to
         )
 
-        if "is_kasp" in validated_data:
-            if validated_data["is_kasp"] and (not instance.is_kasp):
-                validated_data["kasp_enabled_date"] = localtime(now())
+        if (
+            "is_kasp" in validated_data
+            and validated_data["is_kasp"]
+            and (not instance.is_kasp)
+        ):
+            validated_data["kasp_enabled_date"] = localtime(now())
 
         _temp = instance.assigned_to
 
@@ -276,18 +277,21 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             old=old_instance,
         )
 
-        if "assigned_to" in validated_data:
-            if validated_data["assigned_to"] != _temp and validated_data["assigned_to"]:
-                NotificationGenerator(
-                    event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
-                    caused_by=self.context["request"].user,
-                    caused_object=instance,
-                    facility=instance.patient.facility,
-                    notification_mediums=[
-                        Notification.Medium.SYSTEM,
-                        Notification.Medium.WHATSAPP,
-                    ],
-                ).generate()
+        if (
+            "assigned_to" in validated_data
+            and validated_data["assigned_to"] != _temp
+            and validated_data["assigned_to"]
+        ):
+            NotificationGenerator(
+                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                caused_by=self.context["request"].user,
+                caused_object=instance,
+                facility=instance.patient.facility,
+                notification_mediums=[
+                    Notification.Medium.SYSTEM,
+                    Notification.Medium.WHATSAPP,
+                ],
+            ).generate()
 
         NotificationGenerator(
             event=Notification.Event.PATIENT_CONSULTATION_UPDATED,
@@ -298,7 +302,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         return consultation
 
-    def create(self, validated_data):
+    def create(self, validated_data):  # noqa: PLR0915 PLR0912
         if route_to_facility := validated_data.get("route_to_facility"):
             if route_to_facility == RouteToFacility.OUTPATIENT:
                 validated_data["icu_admission_date"] = None
@@ -353,18 +357,16 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         create_diagnosis = validated_data.pop("create_diagnoses")
         create_symptoms = validated_data.pop("create_symptoms")
-        action = -1
-        review_interval = -1
-        if "action" in validated_data:
-            action = validated_data.pop("action")
-        if "review_interval" in validated_data:
-            review_interval = validated_data.pop("review_interval")
+
+        action = validated_data.pop("action", -1)
+        review_interval = validated_data.get("review_interval", -1)
 
         # Authorisation Check
 
-        allowed_facilities = get_home_facility_queryset(self.context["request"].user)
+        user = self.context["request"].user
+        allowed_facilities = get_home_facility_queryset(user)
         if not allowed_facilities.filter(
-            id=self.validated_data["patient"].facility.id
+            id=self.validated_data["patient"].facility_id
         ).exists():
             raise ValidationError(
                 {"facility": "Consultation creates are only allowed in home facility"}
@@ -372,143 +374,144 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
         # End Authorisation Checks
 
-        if validated_data["patient"].last_consultation:
-            if (
-                self.context["request"].user
-                == validated_data["patient"].last_consultation.assigned_to
-            ):
-                raise ValidationError(
-                    {
-                        "Permission Denied": "Only Facility Staff can create consultation for a Patient"
-                    },
-                )
-
-        if validated_data["patient"].last_consultation:
-            if not validated_data["patient"].last_consultation.discharge_date:
-                raise ValidationError(
-                    {"consultation": "Exists please Edit Existing Consultation"}
-                )
-
-        if "is_kasp" in validated_data:
-            if validated_data["is_kasp"]:
-                validated_data["kasp_enabled_date"] = localtime(now())
-
-        bed = validated_data.pop("bed", None)
-
-        validated_data["facility_id"] = validated_data[
-            "patient"
-        ].facility_id  # Coercing facility as the patient's facility
-        consultation = super().create(validated_data)
-        consultation.created_by = self.context["request"].user
-        consultation.last_edited_by = self.context["request"].user
-        patient = consultation.patient
-        consultation.previous_consultation = patient.last_consultation
-        last_consultation = patient.last_consultation
-        if (
-            last_consultation
-            and consultation.suggestion == SuggestionChoices.A
-            and last_consultation.suggestion == SuggestionChoices.A
-            and last_consultation.discharge_date
-            and last_consultation.discharge_date + timedelta(days=30)
-            > consultation.encounter_date
+        with (
+            Lock(self._lock_key(validated_data["patient"].id)),
+            transaction.atomic(),
         ):
-            consultation.is_readmission = True
-        consultation.save()
+            patient = validated_data["patient"]
+            if patient.last_consultation:
+                if patient.last_consultation.assigned_to == user:
+                    raise ValidationError(
+                        {
+                            "Permission Denied": "Only Facility Staff can create consultation for a Patient"
+                        },
+                    )
 
-        diagnosis = ConsultationDiagnosis.objects.bulk_create(
-            [
-                ConsultationDiagnosis(
+                if not patient.last_consultation.discharge_date:
+                    raise ValidationError(
+                        {"consultation": "Exists please Edit Existing Consultation"}
+                    )
+
+            if validated_data.get("is_kasp"):
+                validated_data["kasp_enabled_date"] = now()
+
+            bed = validated_data.pop("bed", None)
+
+            # Coercing facility as the patient's facility
+            validated_data["facility_id"] = patient.facility_id
+
+            consultation: PatientConsultation = super().create(validated_data)
+            consultation.created_by = user
+            consultation.last_edited_by = user
+            consultation.previous_consultation = patient.last_consultation
+            last_consultation = patient.last_consultation
+            if (
+                last_consultation
+                and consultation.suggestion == SuggestionChoices.A
+                and last_consultation.suggestion == SuggestionChoices.A
+                and last_consultation.discharge_date
+                and last_consultation.discharge_date + timedelta(days=30)
+                > consultation.encounter_date
+            ):
+                consultation.is_readmission = True
+
+            diagnosis = ConsultationDiagnosis.objects.bulk_create(
+                [
+                    ConsultationDiagnosis(
+                        consultation=consultation,
+                        diagnosis_id=obj["diagnosis"].id,
+                        is_principal=obj["is_principal"],
+                        verification_status=obj["verification_status"],
+                        created_by=user,
+                    )
+                    for obj in create_diagnosis
+                ]
+            )
+
+            symptoms = EncounterSymptom.objects.bulk_create(
+                EncounterSymptom(
                     consultation=consultation,
-                    diagnosis_id=obj["diagnosis"].id,
-                    is_principal=obj["is_principal"],
-                    verification_status=obj["verification_status"],
-                    created_by=self.context["request"].user,
+                    symptom=obj.get("symptom"),
+                    onset_date=obj.get("onset_date"),
+                    cure_date=obj.get("cure_date"),
+                    clinical_impression_status=obj.get("clinical_impression_status"),
+                    other_symptom=obj.get("other_symptom") or "",
+                    created_by=user,
                 )
-                for obj in create_diagnosis
-            ]
-        )
-
-        symptoms = EncounterSymptom.objects.bulk_create(
-            EncounterSymptom(
-                consultation=consultation,
-                symptom=obj.get("symptom"),
-                onset_date=obj.get("onset_date"),
-                cure_date=obj.get("cure_date"),
-                clinical_impression_status=obj.get("clinical_impression_status"),
-                other_symptom=obj.get("other_symptom") or "",
-                created_by=self.context["request"].user,
+                for obj in create_symptoms
             )
-            for obj in create_symptoms
-        )
 
-        if bed and consultation.suggestion == SuggestionChoices.A:
-            consultation_bed = ConsultationBed(
-                bed=bed,
-                consultation=consultation,
-                start_date=consultation.created_date,
-            )
-            consultation_bed.save()
-            consultation.current_bed = consultation_bed
-            consultation.save(update_fields=["current_bed"])
+            if bed and consultation.suggestion == SuggestionChoices.A:
+                consultation_bed = ConsultationBed(
+                    bed=bed,
+                    consultation=consultation,
+                    start_date=consultation.created_date,
+                )
+                consultation_bed.save()
+                consultation.current_bed = consultation_bed
 
-        if consultation.suggestion == SuggestionChoices.OP:
-            consultation.discharge_date = localtime(now())
+            if consultation.suggestion == SuggestionChoices.OP:
+                consultation.discharge_date = now()
+                patient.is_active = False
+                patient.allow_transfer = True
+            else:
+                patient.is_active = True
+            patient.last_consultation = consultation
+
+            if action != -1:
+                patient.action = action
+
+            if review_interval > 0:
+                patient.review_time = now() + timedelta(minutes=review_interval)
+            else:
+                patient.review_time = None
+
             consultation.save()
-            patient.is_active = False
-            patient.allow_transfer = True
-        else:
-            patient.is_active = True
-        patient.last_consultation = consultation
+            patient.save()
 
-        if action != -1:
-            patient.action = action
-        consultation.review_interval = review_interval
-        if review_interval > 0:
-            patient.review_time = localtime(now()) + timedelta(minutes=review_interval)
-        else:
-            patient.review_time = None
+            create_consultation_events(
+                consultation.id,
+                (consultation, *diagnosis, *symptoms),
+                consultation.created_by.id,
+                consultation.created_date,
+            )
 
-        patient.save()
-        NotificationGenerator(
-            event=Notification.Event.PATIENT_CONSULTATION_CREATED,
-            caused_by=self.context["request"].user,
-            caused_object=consultation,
-            facility=patient.facility,
-        ).generate()
-
-        create_consultation_events(
-            consultation.id,
-            (consultation, *diagnosis, *symptoms),
-            consultation.created_by.id,
-            consultation.created_date,
-        )
-
-        if consultation.assigned_to:
             NotificationGenerator(
-                event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
-                caused_by=self.context["request"].user,
+                event=Notification.Event.PATIENT_CONSULTATION_CREATED,
+                caused_by=user,
                 caused_object=consultation,
-                facility=consultation.patient.facility,
-                notification_mediums=[
-                    Notification.Medium.SYSTEM,
-                    Notification.Medium.WHATSAPP,
-                ],
+                facility=patient.facility,
             ).generate()
 
-        return consultation
+            if consultation.assigned_to:
+                NotificationGenerator(
+                    event=Notification.Event.PATIENT_CONSULTATION_ASSIGNMENT,
+                    caused_by=user,
+                    caused_object=consultation,
+                    facility=consultation.patient.facility,
+                    notification_mediums=[
+                        Notification.Medium.SYSTEM,
+                        Notification.Medium.WHATSAPP,
+                    ],
+                ).generate()
+
+            return consultation
 
     def validate_create_diagnoses(self, value):
         # Reject if create_diagnoses is present for edits
         if self.instance and value:
-            raise ValidationError("Bulk create diagnoses is not allowed on update")
+            msg = "Bulk create diagnoses is not allowed on update"
+            raise ValidationError(msg)
 
         # Reject if no diagnoses are provided
         if len(value) == 0:
-            raise ValidationError("Atleast one diagnosis is required")
+            msg = "Atleast one diagnosis is required"
+            raise ValidationError(msg)
 
         # Reject if duplicate diagnoses are provided
-        if len(value) != len(set([obj["diagnosis"].id for obj in value])):
-            raise ValidationError("Duplicate diagnoses are not allowed")
+        if len(value) != len({obj["diagnosis"].id for obj in value}):
+            msg = "Duplicate diagnoses are not allowed"
+            raise ValidationError(msg)
 
         principal_diagnosis, confirmed_diagnoses = None, []
         for obj in value:
@@ -518,9 +521,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             # Reject if there are more than one principal diagnosis
             if obj["is_principal"]:
                 if principal_diagnosis:
-                    raise ValidationError(
-                        "Only one diagnosis can be set as principal diagnosis"
-                    )
+                    msg = "Only one diagnosis can be set as principal diagnosis"
+                    raise ValidationError(msg)
                 principal_diagnosis = obj
 
         # Reject if principal diagnosis is not one of confirmed diagnosis (if it is present)
@@ -530,15 +532,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             and principal_diagnosis["verification_status"]
             != ConditionVerificationStatus.CONFIRMED
         ):
-            raise ValidationError(
-                "Only confirmed diagnosis can be set as principal diagnosis if it is present"
-            )
+            msg = "Only confirmed diagnosis can be set as principal diagnosis if it is present"
+            raise ValidationError(msg)
 
         return value
 
     def validate_create_symptoms(self, value):
         if self.instance:
-            raise ValidationError("Bulk create symptoms is not allowed on update")
+            msg = "Bulk create symptoms is not allowed on update"
+            raise ValidationError(msg)
 
         counter: set[int | str] = set()
         for obj in value:
@@ -554,8 +556,11 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 item: str = other_symptom.strip().lower()
             if item in counter:
                 # Reject if duplicate symptoms are provided
-                raise ValidationError("Duplicate symptoms are not allowed")
-            counter.add(item)
+                msg = "Duplicate symptoms are not allowed"
+                raise ValidationError(msg)
+            if not obj.get("cure_date"):
+                # skip duplicate symptom check for ones that has cure date
+                counter.add(item)
 
         current_time = now()
         for obj in value:
@@ -595,7 +600,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             return None
         return value.strip()
 
-    def validate(self, attrs):
+    def validate(self, attrs):  # noqa: PLR0912
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
 
@@ -610,11 +615,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     {"patient_no": "This field is required for admission."}
                 )
 
-        if (
-            "suggestion" in validated
-            and validated["suggestion"] != SuggestionChoices.DD
-        ):
-            if "treating_physician" not in validated:
+        if "suggestion" in validated and validated["suggestion"] not in [
+            SuggestionChoices.DD,
+            SuggestionChoices.DC,
+        ]:
+            treating_physician = validated.get("treating_physician")
+            if not treating_physician:
                 raise ValidationError(
                     {
                         "treating_physician": [
@@ -622,60 +628,59 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                         ]
                     }
                 )
-            if (
-                not validated["treating_physician"].user_type
-                == User.TYPE_VALUE_MAP["Doctor"]
-            ):
-                raise ValidationError("Only Doctors can verify a Consultation")
+            if treating_physician.user_type != User.TYPE_VALUE_MAP["Doctor"]:
+                msg = "Only Doctors can verify a Consultation"
+                raise ValidationError(msg)
 
             facility = (
                 self.instance
                 and self.instance.facility
                 or validated["patient"].facility
             )
+            # Check if the Doctor is associated with the Facility (.facilities)
+            if not treating_physician.facilities.filter(id=facility.id).exists():
+                msg = "The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
+                raise ValidationError(msg)
+
             if (
-                validated["treating_physician"].home_facility
-                and validated["treating_physician"].home_facility != facility
+                treating_physician.home_facility
+                and treating_physician.home_facility != facility
+            ):
+                msg = "Home Facility of the Doctor must be the same as the Consultation Facility"
+                raise ValidationError(msg)
+
+        if "suggestion" in validated and validated["suggestion"] is SuggestionChoices.R:
+            if not validated.get("referred_to") and not validated.get(
+                "referred_to_external"
             ):
                 raise ValidationError(
-                    "Home Facility of the Doctor must be the same as the Consultation Facility"
+                    {
+                        "referred_to": [
+                            f"This field is required as the suggestion is {SuggestionChoices.R}."
+                        ]
+                    }
                 )
+            if validated.get("referred_to_external"):
+                validated["referred_to"] = None
+            elif validated.get("referred_to"):
+                validated["referred_to_external"] = None
 
-        if "suggestion" in validated:
-            if validated["suggestion"] is SuggestionChoices.R:
-                if not validated.get("referred_to") and not validated.get(
-                    "referred_to_external"
-                ):
-                    raise ValidationError(
-                        {
-                            "referred_to": [
-                                f"This field is required as the suggestion is {SuggestionChoices.R}."
-                            ]
-                        }
-                    )
-                if validated.get("referred_to_external"):
-                    validated["referred_to"] = None
-                elif validated.get("referred_to"):
-                    validated["referred_to_external"] = None
-
-        if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "review_interval" not in validated:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field is required as the patient has been requested Review."
-                            ]
-                        }
-                    )
-                if validated["review_interval"] <= 0:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field value is must be greater than 0."
-                            ]
-                        }
-                    )
+        if (
+            "action" in validated
+            and validated["action"] == PatientRegistration.ActionEnum.REVIEW
+        ):
+            if "review_interval" not in validated:
+                raise ValidationError(
+                    {
+                        "review_interval": [
+                            "This field is required as the patient has been requested Review."
+                        ]
+                    }
+                )
+            if validated["review_interval"] <= 0:
+                raise ValidationError(
+                    {"review_interval": ["This field value is must be greater than 0."]}
+                )
 
         if not self.instance and "create_diagnoses" not in validated:
             raise ValidationError({"create_diagnoses": ["This field is required."]})
@@ -799,21 +804,6 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
-            if settings.ENABLE_ABDM and patient.abha_number:
-                abha_number = patient.abha_number
-                try:
-                    AbdmGateway().fetch_modes(
-                        {
-                            "healthId": abha_number.abha_number,
-                            "name": abha_number.name,
-                            "gender": abha_number.gender,
-                            "dateOfBirth": str(abha_number.date_of_birth),
-                            "consultationId": abha_number.external_id,
-                            "purpose": "LINK",
-                        }
-                    )
-                except Exception:
-                    pass
             create_consultation_events(
                 instance.id,
                 instance,
@@ -907,9 +897,8 @@ class PatientConsentSerializer(serializers.ModelSerializer):
 
     def validate_patient_code_status(self, value):
         if value == PatientCodeStatusType.NOT_SPECIFIED:
-            raise ValidationError(
-                "Specify a correct Patient Code Status for the Consent"
-            )
+            msg = "Specify a correct Patient Code Status for the Consent"
+            raise ValidationError(msg)
         return value
 
     def validate(self, attrs):
@@ -918,9 +907,8 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
             and self.context["consultation"].facility_id != user.home_facility_id
         ):
-            raise ValidationError(
-                "Only Home Facility Staff can create consent for a Consultation"
-            )
+            msg = "Only Home Facility Staff can create consent for a Consultation"
+            raise ValidationError(msg)
 
         if (
             attrs.get("type", None)
@@ -949,9 +937,9 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             )
         return attrs
 
-    def clear_existing_records(self, consultation, type, user, self_id=None):
+    def clear_existing_records(self, consultation, _type, user, self_id=None):
         consents = PatientConsent.objects.filter(
-            consultation=consultation, type=type
+            consultation=consultation, type=_type
         ).exclude(id=self_id)
 
         archived_date = timezone.now()
@@ -975,7 +963,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             self.clear_existing_records(
                 consultation=self.context["consultation"],
-                type=validated_data["type"],
+                _type=validated_data["type"],
                 user=self.context["request"].user,
             )
             validated_data["consultation"] = self.context["consultation"]
@@ -986,7 +974,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             self.clear_existing_records(
                 consultation=instance.consultation,
-                type=instance.type,
+                _type=instance.type,
                 user=self.context["request"].user,
                 self_id=instance.id,
             )

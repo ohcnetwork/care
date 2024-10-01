@@ -14,9 +14,13 @@ from care.users.api.serializers.lsg import (
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import GENDER_CHOICES, User
 from care.utils.csp.config import BucketType, get_client_config
+from care.utils.file_uploads.cover_image import upload_cover_image
+from care.utils.models.validators import (
+    cover_image_validator,
+    custom_image_extension_validator,
+)
 from care.utils.queryset.facility import get_home_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -34,7 +38,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "ward",
@@ -54,10 +58,10 @@ class SignUpSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         if "user_type" in attrs and attrs["user_type"] == "Doctor":
-            if not attrs.get("doctor_qualification"):
+            if not attrs.get("qualification"):
                 raise serializers.ValidationError(
                     {
-                        "doctor_qualification": "Field required for Doctor User Type",
+                        "qualification": "Field required for Doctor User Type",
                     },
                 )
 
@@ -83,6 +87,9 @@ class SignUpSerializer(serializers.ModelSerializer):
                 )
 
         return validated
+
+
+MIN_USER_AGE = 16
 
 
 class UserCreateSerializer(SignUpSerializer):
@@ -117,24 +124,24 @@ class UserCreateSerializer(SignUpSerializer):
     date_of_birth = serializers.DateField(required=True)
 
     def validate_date_of_birth(self, value):
-        if value and now().year - value.year < 16:
-            raise serializers.ValidationError("Age must be greater than 15 years")
+        if value and now().year - value.year < MIN_USER_AGE:
+            error = "Age must be greater than 15 years"
+            raise serializers.ValidationError(error)
 
         return value
 
     def validate_facilities(self, facility_ids):
-        if facility_ids:
-            if (
-                len(facility_ids)
-                != Facility.objects.filter(external_id__in=facility_ids).count()
-            ):
-                available_facility_ids = Facility.objects.filter(
-                    external_id__in=facility_ids,
-                ).values_list("external_id", flat=True)
-                not_found_ids = list(set(facility_ids) - set(available_facility_ids))
-                raise serializers.ValidationError(
-                    f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}",
-                )
+        if (
+            facility_ids
+            and len(facility_ids)
+            != Facility.objects.filter(external_id__in=facility_ids).count()
+        ):
+            available_facility_ids = Facility.objects.filter(
+                external_id__in=facility_ids,
+            ).values_list("external_id", flat=True)
+            not_found_ids = list(set(facility_ids) - set(available_facility_ids))
+            error = f"Some facilities are not available - {', '.join([str(_id) for _id in not_found_ids])}"
+            raise serializers.ValidationError(error)
         return facility_ids
 
     def validate_ward(self, value):
@@ -145,7 +152,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["LocalBodyAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different Ward")
+            error = "Cannot create for a different Ward"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_local_body(self, value):
@@ -156,9 +164,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["DistrictAdmin"]
         ):
-            raise serializers.ValidationError(
-                "Cannot create for a different local body",
-            )
+            error = "Cannot create for a different local body"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_district(self, value):
@@ -169,7 +176,8 @@ class UserCreateSerializer(SignUpSerializer):
             and not self.context["created_by"].user_type
             >= User.TYPE_VALUE_MAP["StateAdmin"]
         ):
-            raise serializers.ValidationError("Cannot create for a different district")
+            error = "Cannot create for a different district"
+            raise serializers.ValidationError(error)
         return value
 
     def validate_state(self, value):
@@ -178,7 +186,8 @@ class UserCreateSerializer(SignUpSerializer):
             and value != self.context["created_by"].state
             and not self.context["created_by"].is_superuser
         ):
-            raise serializers.ValidationError("Cannot create for a different state")
+            error = "Cannot create for a different state"
+            raise serializers.ValidationError(error)
         return value
 
     def validate(self, attrs):
@@ -192,15 +201,17 @@ class UserCreateSerializer(SignUpSerializer):
                     },
                 )
 
-        if self.context["created_by"].user_type in User.READ_ONLY_TYPES:
-            if validated["user_type"] not in User.READ_ONLY_TYPES:
-                raise exceptions.ValidationError(
-                    {
-                        "user_type": [
-                            "Read only users can create other read only users only",
-                        ],
-                    },
-                )
+        if (
+            self.context["created_by"].user_type in User.READ_ONLY_TYPES
+            and validated["user_type"] not in User.READ_ONLY_TYPES
+        ):
+            raise exceptions.ValidationError(
+                {
+                    "user_type": [
+                        "Read only users can create other read only users only",
+                    ],
+                },
+            )
 
         if (
             self.context["created_by"].user_type
@@ -287,6 +298,11 @@ class UserSerializer(SignUpSerializer):
 
     date_of_birth = serializers.DateField(required=True)
 
+    user_flags = serializers.SerializerMethodField()
+
+    def get_user_flags(self, user) -> tuple[str]:
+        return user.get_all_flags()
+
     class Meta:
         model = User
         fields = (
@@ -297,7 +313,7 @@ class UserSerializer(SignUpSerializer):
             "email",
             "video_connect_link",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "created_by",
@@ -320,6 +336,7 @@ class UserSerializer(SignUpSerializer):
             "pf_p256dh",
             "pf_auth",
             "read_profile_picture_url",
+            "user_flags",
         )
         read_only_fields = (
             "is_superuser",
@@ -337,8 +354,9 @@ class UserSerializer(SignUpSerializer):
     extra_kwargs = {"url": {"lookup_field": "username"}}
 
     def validate_date_of_birth(self, value):
-        if value and now().year - value.year < 16:
-            raise serializers.ValidationError("Age must be greater than 15 years")
+        if value and now().year - value.year < MIN_USER_AGE:
+            error = "Age must be greater than 15 years"
+            raise serializers.ValidationError(error)
 
         return value
 
@@ -394,7 +412,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "last_login",
             "gender",
             "home_facility_object",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "video_connect_link",
             "doctor_medical_council_registration",
@@ -427,7 +445,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "weekly_working_hours",
@@ -441,25 +459,25 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class UserImageUploadSerializer(serializers.ModelSerializer):
-    profile_picture_url = serializers.ImageField(required=True, write_only=True)
-    read_profile_picture_url = serializers.CharField(read_only=True)
+    profile_picture = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = User
-        fields = ("profile_picture_url", "read_profile_picture_url")
+        fields = ("profile_picture", "read_profile_picture_url")
 
     def save(self, **kwargs):
-        user = self.instance
-        image = self.validated_data["profile_picture_url"]
-        image_extension = image.name.split(".")[-1]
-        config, bucket_name = get_client_config(BucketType.FACILITY)
-        s3 = boto3.client("s3", **config)
-        image_location = f"avatars/{user.external_id}.{image_extension}"
-        s3.put_object(
-            Bucket=bucket_name,
-            Key=image_location,
-            Body=image.file,
+        user: User = self.instance
+        image = self.validated_data["profile_picture"]
+        user.profile_picture_url = upload_cover_image(
+            image,
+            str(user.external_id),
+            "avatars",
+            user.profile_picture_url,
         )
-        user.profile_picture_url = image_location
-        user.save()
+        user.save(update_fields=["profile_picture_url"])
         return user

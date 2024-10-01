@@ -24,12 +24,16 @@ from care.facility.models import (
 )
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
-from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_base import (
+    DISEASE_STATUS_CHOICES,
+    DiseaseStatusEnum,
+    NewDischargeReasonEnum,
+)
 from care.facility.models.patient_consultation import PatientConsultation
+from care.users.api.serializers.lsg import StateSerializer
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 def inverse_choices(choices):
@@ -39,7 +43,9 @@ def inverse_choices(choices):
     return output
 
 
-REVERSE_SHIFTING_STATUS_CHOICES = inverse_choices(SHIFTING_STATUS_CHOICES)
+REVERSE_SHIFTING_STATUS_CHOICES: dict[str, int] = inverse_choices(
+    SHIFTING_STATUS_CHOICES
+)
 
 
 def has_facility_permission(user, facility):
@@ -235,14 +241,17 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
     def validate_shifting_approving_facility(self, value):
         if not settings.PEACETIME_MODE and not value:
-            raise ValidationError("Shifting Approving Facility is required")
+            msg = "Shifting Approving Facility is required"
+            raise ValidationError(msg)
         return value
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data):  # noqa: PLR0912
         if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["CANCELLED"]:
-            raise ValidationError("Permission Denied, Shifting request was cancelled.")
-        elif instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
-            raise ValidationError("Permission Denied, Shifting request was completed.")
+            msg = "Permission Denied, Shifting request was cancelled."
+            raise ValidationError(msg)
+        if instance.status == REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]:
+            msg = "Permission Denied, Shifting request was completed."
+            raise ValidationError(msg)
 
         # Dont allow editing origin or patient
         validated_data.pop("origin_facility")
@@ -275,9 +284,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
                 if (
                     status in self.PEACETIME_SHIFTING_STATUS
                     and has_facility_permission(user, instance.origin_facility)
-                ):
-                    pass
-                elif (
+                ) or (
                     status in self.PEACETIME_RECIEVING_STATUS
                     and has_facility_permission(user, instance.assigned_facility)
                 ):
@@ -286,14 +293,15 @@ class ShiftingSerializer(serializers.ModelSerializer):
                     raise ValidationError({"status": ["Permission Denied"]})
 
             elif (
-                status in self.LIMITED_RECIEVING_STATUS
-                and instance.assigned_facility
-                and not has_facility_permission(user, instance.assigned_facility)
-            ):
-                raise ValidationError({"status": ["Permission Denied"]})
-
-            elif status in self.LIMITED_SHIFTING_STATUS and not has_facility_permission(
-                user, instance.shifting_approving_facility
+                (
+                    status in self.LIMITED_RECIEVING_STATUS
+                    and instance.assigned_facility
+                    and not has_facility_permission(user, instance.assigned_facility)
+                )
+                or status in self.LIMITED_SHIFTING_STATUS
+                and not has_facility_permission(
+                    user, instance.shifting_approving_facility
+                )
             ):
                 raise ValidationError({"status": ["Permission Denied"]})
 
@@ -344,8 +352,10 @@ class ShiftingSerializer(serializers.ModelSerializer):
 
         if (
             "status" in validated_data
+            and new_instance.shifting_approving_facility is not None
             and validated_data["status"] != old_status
-            and validated_data["status"] == 40
+            and validated_data["status"]
+            == REVERSE_SHIFTING_STATUS_CHOICES["DESTINATION APPROVED"]
         ):
             NotificationGenerator(
                 event=Notification.Event.SHIFTING_UPDATED,
@@ -435,7 +445,122 @@ class ShiftingDetailSerializer(ShiftingSerializer):
         read_only_fields = TIMESTAMP_FIELDS
 
 
-class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
+class FacilityShiftingBareMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facility
+        fields = ["id", "name"]
+
+
+class PatientShiftingBareMinimumSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    facility = serializers.UUIDField(
+        source="facility.external_id", allow_null=True, read_only=True
+    )
+    facility_object = FacilityShiftingBareMinimumSerializer(
+        source="facility", read_only=True
+    )
+    state_object = StateSerializer(source="state", read_only=True)
+    disease_status = ChoiceField(
+        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+    )
+    age = serializers.SerializerMethodField()
+
+    def get_age(self, obj):
+        return obj.get_age()
+
+    class Meta:
+        model = PatientRegistration
+        fields = [
+            "id",
+            "name",
+            "allow_transfer",
+            "age",
+            "phone_number",
+            "address",
+            "disease_status",
+            "facility",
+            "facility_object",
+            "state_object",
+        ]
+        read_only = TIMESTAMP_FIELDS
+
+
+class ShiftingListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    patient = ExternalIdSerializerField(
+        queryset=PatientRegistration.objects.all(),
+        allow_null=False,
+        required=True,
+    )
+    patient_object = PatientShiftingBareMinimumSerializer(
+        source="patient", read_only=True
+    )
+
+    status = ChoiceField(choices=SHIFTING_STATUS_CHOICES)
+    origin_facility_object = FacilityShiftingBareMinimumSerializer(
+        source="origin_facility", read_only=True
+    )
+    shifting_approving_facility_object = FacilityShiftingBareMinimumSerializer(
+        source="shifting_approving_facility", read_only=True
+    )
+
+    assigned_facility = ExternalIdSerializerField(
+        queryset=Facility.objects.all(), allow_null=True, required=False
+    )
+    assigned_facility_external = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    assigned_facility_object = FacilityShiftingBareMinimumSerializer(
+        source="assigned_facility", read_only=True
+    )
+
+    class Meta:
+        model = ShiftingRequest
+        exclude = [
+            "created_by",
+            "last_edited_by",
+            "assigned_to",
+            "shifting_approving_facility",
+            "origin_facility",
+            "ambulance_number",
+            "ambulance_phone_number",
+            "ambulance_driver_name",
+            "is_assigned_to_user",
+            "is_kasp",
+            "refering_facility_contact_number",
+            "refering_facility_contact_name",
+            "comments",
+            "preferred_vehicle_choice",
+            "vehicle_preference",
+            "reason",
+            "is_up_shift",
+            "assigned_facility_type",
+            "deleted",
+            "breathlessness_level",
+        ]
+        read_only_fields = TIMESTAMP_FIELDS
+
+
+class ShiftingUserBareMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name"]
+
+
+class ShiftingRequestCommentListSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+    comment = serializers.CharField(required=True)
+    created_by_object = ShiftingUserBareMinimumSerializer(
+        source="created_by", read_only=True
+    )
+
+    class Meta:
+        model = ShiftingRequestComment
+        fields = ["id", "comment", "modified_date", "created_by_object"]
+
+
+class ShiftingRequestCommentDetailSerializer(ShiftingRequestCommentListSerializer):
     id = serializers.UUIDField(source="external_id", read_only=True)
 
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
@@ -453,8 +578,4 @@ class ShiftingRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShiftingRequestComment
         exclude = ("deleted", "request")
-        read_only_fields = TIMESTAMP_FIELDS + (
-            "created_by",
-            "external_id",
-            "id",
-        )
+        read_only_fields = (*TIMESTAMP_FIELDS, "created_by", "external_id", "id")
