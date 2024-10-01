@@ -1,7 +1,7 @@
 import enum
 from dataclasses import dataclass
 
-from care.security.models import RolePermission, RoleAssociation
+from care.security.models import RoleAssociation, RolePermission
 
 
 class PermissionContext(enum.Enum):
@@ -53,8 +53,10 @@ class PermissionController:
     @classmethod
     def has_permission(cls, user, permission, context, context_id):
         # TODO : Cache permissions and invalidate when they change
+        # TODO : Fetch the user role from the previous role management implementation as well.
+        #        Need to maintain some sort of mapping from previous generation to new generation of roles
         permission_roles = RolePermission.objects.filter(permission__slug=permission , permission__context=context).values("role_id")
-        return RoleAssociation.objects.filter(context_id=context_id , context=context, role__in=permission_roles).exists()
+        return RoleAssociation.objects.filter(context_id=context_id , context=context, role__in=permission_roles , user=user).exists()
 
     @classmethod
     def get_permissions(cls):
