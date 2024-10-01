@@ -1,4 +1,5 @@
 import time
+import uuid
 from uuid import uuid4
 
 import boto3
@@ -27,7 +28,7 @@ class BaseFileUpload(models.Model):
     associating_id = models.CharField(max_length=100, blank=False, null=False)
     file_type = models.IntegerField(default=0)
     file_category = models.CharField(
-        choices=FileCategory.choices,
+        choices=FileCategory,
         default=FileCategory.UNSPECIFIED,
         max_length=100,
     )
@@ -45,10 +46,6 @@ class BaseFileUpload(models.Model):
     class Meta:
         abstract = True
 
-    def delete(self, *args):
-        self.deleted = True
-        self.save(update_fields=["deleted"])
-
     def save(self, *args, **kwargs):
         if "force_insert" in kwargs or (not self.internal_name):
             internal_name = str(uuid4()) + str(int(time.time()))
@@ -59,6 +56,10 @@ class BaseFileUpload(models.Model):
             self.internal_name = internal_name
         return super().save(*args, **kwargs)
 
+    def delete(self, *args):
+        self.deleted = True
+        self.save(update_fields=["deleted"])
+
     def get_extension(self):
         parts = self.internal_name.split(".")
         return f".{parts[-1]}" if len(parts) > 1 else ""
@@ -66,7 +67,7 @@ class BaseFileUpload(models.Model):
     def signed_url(
         self, duration=60 * 60, mime_type=None, bucket_type=BucketType.PATIENT
     ):
-        config, bucket_name = get_client_config(bucket_type, True)
+        config, bucket_name = get_client_config(bucket_type, external=True)
         s3 = boto3.client("s3", **config)
         params = {
             "Bucket": bucket_name,
@@ -81,7 +82,7 @@ class BaseFileUpload(models.Model):
         )
 
     def read_signed_url(self, duration=60 * 60, bucket_type=BucketType.PATIENT):
-        config, bucket_name = get_client_config(bucket_type, True)
+        config, bucket_name = get_client_config(bucket_type, external=True)
         s3 = boto3.client("s3", **config)
         return s3.generate_presigned_url(
             "get_object",
@@ -127,8 +128,6 @@ class FileUpload(BaseFileUpload):
     all data will be private and file access will be given on a NEED TO BASIS ONLY
     """
 
-    # TODO : Periodic tasks that removes files that were never uploaded
-
     class FileType(models.IntegerChoices):
         OTHER = 0, "OTHER"
         PATIENT = 1, "PATIENT"
@@ -141,7 +140,7 @@ class FileUpload(BaseFileUpload):
         ABDM_HEALTH_INFORMATION = 8, "ABDM_HEALTH_INFORMATION"
         NOTES = 9, "NOTES"
 
-    file_type = models.IntegerField(choices=FileType.choices, default=FileType.PATIENT)
+    file_type = models.IntegerField(choices=FileType, default=FileType.PATIENT)
     is_archived = models.BooleanField(default=False)
     archive_reason = models.TextField(blank=True)
     uploaded_by = models.ForeignKey(
@@ -166,3 +165,43 @@ class FileUpload(BaseFileUpload):
 
     def __str__(self):
         return f"{self.FileTypeChoices[self.file_type][1]} - {self.name}{' (Archived)' if self.is_archived else ''}"
+
+    def save(self, *args, **kwargs):
+        from care.facility.models import PatientConsent
+
+        if self.file_type == self.FileType.CONSENT_RECORD:
+            new_consent = False
+            if not self.pk and not self.is_archived:
+                new_consent = True
+            consent = PatientConsent.objects.filter(
+                external_id=uuid.UUID(self.associating_id), archived=False
+            ).first()
+            consultation = consent.consultation
+            consent_types = (
+                PatientConsent.objects.filter(consultation=consultation, archived=False)
+                .annotate(
+                    str_external_id=models.functions.Cast(
+                        "external_id", models.CharField()
+                    )
+                )
+                .annotate(
+                    has_files=(
+                        models.Exists(
+                            FileUpload.objects.filter(
+                                associating_id=models.OuterRef("str_external_id"),
+                                file_type=self.FileType.CONSENT_RECORD,
+                                is_archived=False,
+                            ).exclude(pk=self.pk if self.is_archived else None)
+                        )
+                        if not new_consent
+                        else models.Value(value=True)
+                    )
+                )
+                .filter(has_files=True)
+                .distinct("type")
+                .values_list("type", flat=True)
+            )
+            consultation.has_consents = list(consent_types)
+            consultation.save()
+
+        return super().save(*args, **kwargs)

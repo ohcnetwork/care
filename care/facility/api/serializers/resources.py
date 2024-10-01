@@ -13,8 +13,7 @@ from care.facility.models import (
 )
 from care.facility.models.resources import RESOURCE_SUB_CATEGORY_CHOICES
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 def inverse_choices(choices):
@@ -86,6 +85,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         super().__init__(instance=instance, **kwargs)
 
     def update(self, instance, validated_data):
+        # ruff: noqa: N806 better to refactor this
         LIMITED_RECIEVING_STATUS_ = []
         LIMITED_RECIEVING_STATUS = [
             REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_RECIEVING_STATUS_
@@ -101,18 +101,21 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
         LIMITED_REQUEST_STATUS = [
             REVERSE_REQUEST_STATUS_CHOICES[x] for x in LIMITED_REQUEST_STATUS_
         ]
-        # LIMITED_ORGIN_STATUS = []
 
         user = self.context["request"].user
 
         if "status" in validated_data:
             if validated_data["status"] in LIMITED_RECIEVING_STATUS:
-                if instance.assigned_facility:
-                    if not has_facility_permission(user, instance.assigned_facility):
-                        raise ValidationError({"status": ["Permission Denied"]})
-            elif validated_data["status"] in LIMITED_REQUEST_STATUS:
-                if not has_facility_permission(user, instance.approving_facility):
+                if instance.assigned_facility and not has_facility_permission(
+                    user, instance.assigned_facility
+                ):
                     raise ValidationError({"status": ["Permission Denied"]})
+            elif validated_data[
+                "status"
+            ] in LIMITED_REQUEST_STATUS and not has_facility_permission(
+                user, instance.approving_facility
+            ):
+                raise ValidationError({"status": ["Permission Denied"]})
 
         # Dont allow editing origin or patient
         if "origin_facility" in validated_data:
@@ -120,9 +123,7 @@ class ResourceRequestSerializer(serializers.ModelSerializer):
 
         instance.last_edited_by = self.context["request"].user
 
-        new_instance = super().update(instance, validated_data)
-
-        return new_instance
+        return super().update(instance, validated_data)
 
     def create(self, validated_data):
         # Do Validity checks for each of these data
@@ -158,4 +159,4 @@ class ResourceRequestCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceRequestComment
         exclude = ("deleted", "request", "external_id")
-        read_only_fields = TIMESTAMP_FIELDS + ("created_by",)
+        read_only_fields = (*TIMESTAMP_FIELDS, "created_by")

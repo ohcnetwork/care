@@ -10,7 +10,6 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.facility.api.serializers.patient_investigation import (
@@ -45,8 +44,7 @@ class GroupFilter(Filter):
         if not value:
             return qs
 
-        qs = qs.filter(groups__external_id=value)
-        return qs
+        return qs.filter(groups__external_id=value)
 
 
 class PatientInvestigationFilter(filters.FilterSet):
@@ -60,7 +58,6 @@ class InvestigationGroupViewset(
     serializer_class = PatientInvestigationGroupSerializer
     queryset = PatientInvestigationGroup.objects.all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = InvestigationGroupFilter
 
     filter_backends = (filters.DjangoFilterBackend,)
@@ -76,7 +73,6 @@ class PatientInvestigationViewSet(
     serializer_class = PatientInvestigationSerializer
     queryset = PatientInvestigation.objects.all().prefetch_related("groups")
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationResultsSetPagination
@@ -101,7 +97,6 @@ class PatientInvestigationSummaryViewSet(
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationSummaryResultsSetPagination
@@ -119,8 +114,7 @@ class PatientInvestigationSummaryViewSet(
             queryset.filter(investigation__external_id__in=investigations.split(","))
             .order_by("-session__created_date")
             .distinct("session__created_date")[
-                (session_page - 1)
-                * self.SESSION_PER_PAGE : (session_page)
+                (session_page - 1) * self.SESSION_PER_PAGE : (session_page)
                 * self.SESSION_PER_PAGE
             ]
         )
@@ -129,11 +123,11 @@ class PatientInvestigationSummaryViewSet(
         queryset = queryset.filter(session_id__in=sessions.values("session_id"))
         if self.request.user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__district=self.request.user.district
             )
@@ -157,7 +151,6 @@ class InvestigationValueViewSet(
     serializer_class = InvestigationValueSerializer
     queryset = InvestigationValue.objects.select_related("consultation").all()
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     filterset_class = PatientInvestigationFilter
     filter_backends = (filters.DjangoFilterBackend,)
     pagination_class = InvestigationValueSetPagination
@@ -173,11 +166,11 @@ class InvestigationValueViewSet(
         )
         if self.request.user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(
                 consultation__patient__facility__district=self.request.user.district
             )
@@ -211,8 +204,8 @@ class InvestigationValueViewSet(
         responses={204: "Operation successful"},
         tags=["investigation"],
     )
-    @action(detail=False, methods=["PUT"])
-    def batchUpdate(self, request, *args, **kwargs):
+    @action(detail=False, methods=["PUT"], url_path="batchUpdate")
+    def batch_update(self, request, *args, **kwargs):
         if "investigations" not in request.data:
             return Response(
                 {"investigation": "is required"},

@@ -1,4 +1,5 @@
 import enum
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -6,11 +7,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Case, F, Func, JSONField, Value, When
 from django.db.models.functions import Coalesce, Now
+from django.template.defaultfilters import pluralize
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
-from care.abdm.models import AbhaNumber
 from care.facility.models import (
     DISEASE_CHOICES,
     DiseaseStatusEnum,
@@ -68,7 +69,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     SourceChoices = [(e.value, e.name) for e in SourceEnum]
 
-    class vaccineEnum(enum.Enum):
+    class VaccineEnum(enum.Enum):
         COVISHIELD = "CoviShield"
         COVAXIN = "Covaxin"
         SPUTNIK = "Sputnik"
@@ -77,7 +78,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         JANSSEN = "Janssen"
         SINOVAC = "Sinovac"
 
-    vaccineChoices = [(e.value, e.name) for e in vaccineEnum]
+    VaccineChoices = [(e.value, e.name) for e in VaccineEnum]
 
     class ActionEnum(enum.Enum):
         NO_ACTION = 10
@@ -115,12 +116,10 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "PatientMetaInfo", on_delete=models.SET_NULL, null=True
     )
 
-    # name_old = EncryptedCharField(max_length=200, default="")
     name = models.CharField(max_length=200, default="")
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
 
-    # phone_number_old = EncryptedCharField(max_length=14, validators=[phone_number_regex], default="")
     phone_number = models.CharField(
         max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
@@ -129,7 +128,6 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         max_length=14, validators=[mobile_or_landline_number_validator], default=""
     )
 
-    # address_old = EncryptedTextField(default="")
     address = models.TextField(default="")
     permanent_address = models.TextField(default="")
 
@@ -148,7 +146,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         verbose_name="Passport Number of Foreign Patients",
     )
     ration_card_category = models.CharField(
-        choices=RationCardCategory.choices, null=True, max_length=8
+        choices=RationCardCategory, null=True, max_length=8
     )
 
     is_medical_worker = models.BooleanField(
@@ -204,7 +202,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         blank=True,
         verbose_name="Already pescribed medication if any",
     )
-    has_SARI = models.BooleanField(
+    has_SARI = models.BooleanField(  # noqa: N815
         default=False, verbose_name="Does the Patient Suffer from SARI"
     )
 
@@ -382,7 +380,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         validators=[MinValueValidator(0), MaxValueValidator(3)],
     )
     vaccine_name = models.CharField(
-        choices=vaccineChoices,
+        choices=VaccineChoices,
         default=None,
         null=True,
         blank=False,
@@ -427,14 +425,13 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         related_name="root_patient_assigned_to",
     )
 
-    # ABDM Health ID
-    abha_number = models.OneToOneField(
-        AbhaNumber, on_delete=models.SET_NULL, null=True, blank=True
-    )
-
     history = HistoricalRecords(excluded_fields=["meta_info"])
 
     objects = BaseManager()
+
+    @property
+    def is_expired(self) -> bool:
+        return self.death_datetime is not None
 
     def __str__(self):
         return f"{self.name} - {self.year_of_birth} - {self.get_gender_display()}"
@@ -477,10 +474,27 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         self._alias_recovery_to_recovered()
         super().save(*args, **kwargs)
 
-    def get_age(self) -> int:
-        start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
+    def get_age(self) -> str:
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.death_datetime or timezone.now()).date()
-        return relativedelta(end, start).years
+
+        delta = relativedelta(end, start)
+
+        if delta.years > 0:
+            year_str = f"{delta.years} year{pluralize(delta.years)}"
+            return f"{year_str}"
+
+        if delta.months > 0:
+            month_str = f"{delta.months} month{pluralize(delta.months)}"
+            day_str = (
+                f" {delta.days} day{pluralize(delta.days)}" if delta.days > 0 else ""
+            )
+            return f"{month_str}{day_str}"
+
+        if delta.days > 0:
+            return f"{delta.days} day{pluralize(delta.days)}"
+
+        return "0 days"
 
     def annotate_diagnosis_ids(*args, **kwargs):
         return ArrayAgg(
@@ -533,14 +547,14 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         "last_consultation__discharge_date__time": "Time of discharge",
     }
 
-    def format_as_date(date):
-        return date.strftime("%d/%m/%Y")
+    def format_as_date(self):
+        return self.strftime("%d/%m/%Y")
 
-    def format_as_time(time):
-        return time.strftime("%H:%M")
+    def format_as_time(self):
+        return self.strftime("%H:%M")
 
-    def format_diagnoses(diagnosis_ids):
-        diagnoses = get_icd11_diagnoses_objects_by_ids(diagnosis_ids)
+    def format_diagnoses(self):
+        diagnoses = get_icd11_diagnoses_objects_by_ids(self)
         return ", ".join([diagnosis["label"] for diagnosis in diagnoses])
 
     CSV_MAKE_PRETTY = {
@@ -570,44 +584,64 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
 
 class PatientMetaInfo(models.Model):
-    class OccupationEnum(enum.Enum):
-        STUDENT = 1
-        BUSINESSMAN = 2
-        HEALTH_CARE_WORKER = 3
-        HEALTH_CARE_LAB_WORKER = 4
-        ANIMAL_HANDLER = 5
-        OTHERS = 6
-        HEALTHCARE_PRACTITIONER = 7
-        PARADEMICS = 8
-        BUSINESS_RELATED = 9
-        ENGINEER = 10
-        TEACHER = 11
-        OTHER_PROFESSIONAL_OCCUPATIONS = 12
-        OFFICE_ADMINISTRATIVE = 13
-        CHEF = 14
-        PROTECTIVE_SERVICE = 15
-        HOSPITALITY = 16
-        CUSTODIAL = 17
-        CUSTOMER_SERVICE = 18
-        SALES_SUPERVISOR = 19
-        RETAIL_SALES_WORKER = 20
-        INSURANCE_SALES_AGENT = 21
-        SALES_REPRESENTATIVE = 22
-        REAL_ESTATE = 23
-        CONSTRUCTION_EXTRACTION = 24
-        AGRI_NATURAL = 25
-        PRODUCTION_OCCUPATION = 26
-        PILOT_FLIGHT = 27
-        VEHICLE_DRIVER = 28
-        MILITARY = 29
-        HOMEMAKER = 30
-        UNKNOWN = 31
-        NOT_APPLICABLE = 32
+    class OccupationEnum(models.IntegerChoices):
+        STUDENT = 1, "STUDENT"
+        BUSINESSMAN = 2, "BUSINESSMAN"
+        HEALTH_CARE_WORKER = 3, "HEALTH_CARE_WORKER"
+        HEALTH_CARE_LAB_WORKER = 4, "HEALTH_CARE_LAB_WORKER"
+        ANIMAL_HANDLER = 5, "ANIMAL_HANDLER"
+        OTHERS = 6, "OTHERS"
+        HEALTHCARE_PRACTITIONER = 7, "HEALTHCARE_PRACTITIONER"
+        PARADEMICS = 8, "PARADEMICS"
+        BUSINESS_RELATED = 9, "BUSINESS_RELATED"
+        ENGINEER = 10, "ENGINEER"
+        TEACHER = 11, "TEACHER"
+        OTHER_PROFESSIONAL_OCCUPATIONS = 12, "OTHER_PROFESSIONAL_OCCUPATIONS"
+        OFFICE_ADMINISTRATIVE = 13, "OFFICE_ADMINISTRATIVE"
+        CHEF = 14, "CHEF"
+        PROTECTIVE_SERVICE = 15, "PROTECTIVE_SERVICE"
+        HOSPITALITY = 16, "HOSPITALITY"
+        CUSTODIAL = 17, "CUSTODIAL"
+        CUSTOMER_SERVICE = 18, "CUSTOMER_SERVICE"
+        SALES_SUPERVISOR = 19, "SALES_SUPERVISOR"
+        RETAIL_SALES_WORKER = 20, "RETAIL_SALES_WORKER"
+        INSURANCE_SALES_AGENT = 21, "INSURANCE_SALES_AGENT"
+        SALES_REPRESENTATIVE = 22, "SALES_REPRESENTATIVE"
+        REAL_ESTATE = 23, "REAL_ESTATE"
+        CONSTRUCTION_EXTRACTION = 24, "CONSTRUCTION_EXTRACTION"
+        AGRI_NATURAL = 25, "AGRI_NATURAL"
+        PRODUCTION_OCCUPATION = 26, "PRODUCTION_OCCUPATION"
+        PILOT_FLIGHT = 27, "PILOT_FLIGHT"
+        VEHICLE_DRIVER = 28, "VEHICLE_DRIVER"
+        MILITARY = 29, "MILITARY"
+        HOMEMAKER = 30, "HOMEMAKER"
+        UNKNOWN = 31, "UNKNOWN"
+        NOT_APPLICABLE = 32, "NOT_APPLICABLE"
 
     OccupationChoices = [(item.value, item.name) for item in OccupationEnum]
 
+    class SocioeconomicStatus(models.IntegerChoices):
+        VERY_POOR = 10, "VERY_POOR"
+        POOR = 20, "POOR"
+        MIDDLE_CLASS = 30, "MIDDLE_CLASS"
+        WELL_OFF = 40, "WELL_OFF"
+
+    class DomesticHealthcareSupport(models.IntegerChoices):
+        NO_SUPPORT = 0, "NO_SUPPORT"
+        FAMILY_MEMBER = 10, "FAMILY_MEMBER"
+        PAID_CAREGIVER = 20, "PAID_CAREGIVER"
+
     occupation = models.IntegerField(choices=OccupationChoices, blank=True, null=True)
+    socioeconomic_status = models.SmallIntegerField(
+        choices=SocioeconomicStatus.choices, blank=True, null=True
+    )
+    domestic_healthcare_support = models.SmallIntegerField(
+        choices=DomesticHealthcareSupport.choices, blank=True, null=True
+    )
     head_of_household = models.BooleanField(blank=True, null=True)
+
+    def __str__(self):
+        return f"PatientMetaInfo - {self.id}"
 
 
 class PatientContactDetails(models.Model):
@@ -624,25 +658,23 @@ class PatientContactDetails(models.Model):
         OTHERS = 10
 
     class ModeOfContactEnum(enum.IntEnum):
-        # "1. Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)"
+        # Touched body fluids of the patient (respiratory tract secretions/blood/vomit/saliva/urine/faces)
         TOUCHED_BODY_FLUIDS = 1
-        # "2. Had direct physical contact with the body of the patient
-        # including physical examination without full precautions."
+        # Had direct physical contact with the body of the patient including physical examination without full precautions.
         DIRECT_PHYSICAL_CONTACT = 2
-        # "3. Touched or cleaned the linens/clothes/or dishes of the patient"
+        # Touched or cleaned the linens/clothes/or dishes of the patient
         CLEANED_USED_ITEMS = 3
-        # "4. Lives in the same household as the patient."
+        # Lives in the same household as the patient.
         LIVE_IN_SAME_HOUSEHOLD = 4
-        # "5. Close contact within 3ft (1m) of the confirmed case without precautions."
+        # Close contact within 3ft (1m) of the confirmed case without precautions.
         CLOSE_CONTACT_WITHOUT_PRECAUTION = 5
-        # "6. Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours."
+        # Passenger of the aeroplane with a confirmed COVID -19 passenger for more than 6 hours.
         CO_PASSENGER_AEROPLANE = 6
-        # "7. Health care workers and other contacts who had full PPE while handling the +ve case"
+        # Health care workers and other contacts who had full PPE while handling the +ve case
         HEALTH_CARE_WITH_PPE = 7
-        # "8. Shared the same space(same class for school/worked in
-        # same room/similar and not having a high risk exposure"
+        # Shared the same space(same class for school/worked in same room/similar and not having a high risk exposure
         SHARED_SAME_SPACE_WITHOUT_HIGH_EXPOSURE = 8
-        # "9. Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above."
+        # Travel in the same environment (bus/train/Flight) but not having a high-risk exposure as cited above.
         TRAVELLED_TOGETHER_WITHOUT_HIGH_EXPOSURE = 9
 
     RelationChoices = [(item.value, item.name) for item in RelationEnum]
@@ -672,6 +704,9 @@ class PatientContactDetails(models.Model):
     deleted = models.BooleanField(default=False)
 
     objects = BaseManager()
+
+    def __str__(self):
+        return f"{self.patient.name} - {self.patient_in_contact.name} - {self.get_relation_with_patient_display()}"
 
 
 class Disease(models.Model):
@@ -759,9 +794,16 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     thread = models.SmallIntegerField(
-        choices=PatientNoteThreadChoices.choices,
+        choices=PatientNoteThreadChoices,
         db_index=True,
         default=PatientNoteThreadChoices.DOCTORS,
+    )
+    reply_to = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="replies",
     )
     note = models.TextField(default="", blank=True)
 
@@ -789,6 +831,9 @@ class PatientNotesEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_date"]
+
+    def __str__(self):
+        return f"PatientNotesEdit {self.patient_note} - {self.edited_by}"
 
 
 class PatientAgeFunc(Func):

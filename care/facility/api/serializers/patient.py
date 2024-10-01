@@ -1,13 +1,8 @@
-import datetime
-
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Q
-from django.utils.timezone import make_aware, now
+from django.utils.timezone import now
 from rest_framework import serializers
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
-from care.abdm.models import AbhaNumber
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
@@ -39,8 +34,6 @@ from care.facility.models.patient_base import (
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.facility.models.patient_external_test import PatientExternalTest
-from care.hcx.models.claim import Claim
-from care.hcx.models.policy import Policy
 from care.users.api.serializers.lsg import (
     DistrictSerializer,
     LocalBodySerializer,
@@ -52,12 +45,24 @@ from care.users.models import User
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
 from care.facility.models.file_upload import FileUpload
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
-    occupation = ChoiceField(choices=PatientMetaInfo.OccupationChoices, allow_null=True)
+    occupation = ChoiceField(
+        choices=PatientMetaInfo.OccupationChoices, allow_null=True, required=False
+    )
+    socioeconomic_status = ChoiceField(
+        choices=PatientMetaInfo.SocioeconomicStatus.choices,
+        allow_null=True,
+        required=False,
+    )
+    domestic_healthcare_support = ChoiceField(
+        choices=PatientMetaInfo.DomesticHealthcareSupport.choices,
+        allow_null=True,
+        required=False,
+    )
 
     class Meta:
         model = PatientMetaInfo
@@ -85,37 +90,6 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
 
-    # HCX
-    has_eligible_policy = serializers.SerializerMethodField(
-        "get_has_eligible_policy", read_only=True
-    )
-
-    def get_has_eligible_policy(self, patient):
-        eligible_policies = Policy.objects.filter(
-            (Q(error_text="") | Q(error_text=None)),
-            outcome="complete",
-            patient=patient.id,
-        )
-        return bool(len(eligible_policies))
-
-    approved_claim_amount = serializers.SerializerMethodField(
-        "get_approved_claim_amount", read_only=True
-    )
-
-    def get_approved_claim_amount(self, patient):
-        if patient.last_consultation is not None:
-            claim = (
-                Claim.objects.filter(
-                    Q(error_text="") | Q(error_text=None),
-                    consultation__external_id=patient.last_consultation.external_id,
-                    outcome="complete",
-                    total_claim_amount__isnull=False,
-                )
-                .order_by("-modified_date")
-                .first()
-            )
-            return claim.total_claim_amount if claim is not None else None
-
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -127,7 +101,7 @@ class PatientListSerializer(serializers.ModelSerializer):
             "allergies",
             "external_id",
         )
-        read_only = TIMESTAMP_FIELDS + ("death_datetime",)
+        read_only = (*TIMESTAMP_FIELDS, "death_datetime")
 
 
 class PatientContactDetailsSerializer(serializers.ModelSerializer):
@@ -169,9 +143,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     last_consultation = PatientConsultationSerializer(read_only=True)
     facility_object = FacilitySerializer(source="facility", read_only=True)
-    # nearest_facility_object = FacilitySerializer(
-    #     source="nearest_facility", read_only=True
-    # )
 
     source = ChoiceField(
         choices=PatientRegistration.SourceChoices,
@@ -195,7 +166,7 @@ class PatientDetailSerializer(PatientListSerializer):
     last_edited = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
     vaccine_name = serializers.ChoiceField(
-        choices=PatientRegistration.vaccineChoices, required=False, allow_null=True
+        choices=PatientRegistration.VaccineChoices, required=False, allow_null=True
     )
 
     assigned_to_object = UserBaseMinimumSerializer(source="assigned_to", read_only=True)
@@ -206,11 +177,6 @@ class PatientDetailSerializer(PatientListSerializer):
 
     allow_transfer = serializers.BooleanField(default=settings.PEACETIME_MODE)
 
-    abha_number = ExternalIdSerializerField(
-        queryset=AbhaNumber.objects.all(), required=False, allow_null=True
-    )
-    abha_number_object = AbhaNumberSerializer(source="abha_number", read_only=True)
-
     class Meta:
         model = PatientRegistration
         exclude = (
@@ -219,23 +185,13 @@ class PatientDetailSerializer(PatientListSerializer):
             "external_id",
         )
         include = ("contacted_patients",)
-        read_only = TIMESTAMP_FIELDS + (
+        read_only = (
+            *TIMESTAMP_FIELDS,
             "last_edited",
             "created_by",
             "is_active",
             "death_datetime",
         )
-
-    # def get_last_consultation(self, obj):
-    #     last_consultation = PatientConsultation.objects.filter(patient=obj).last()
-    #     if not last_consultation:
-    #         return None
-    #     return PatientConsultationSerializer(last_consultation).data
-
-    # def validate_facility(self, value):
-    #     if value is not None and Facility.objects.filter(external_id=value).first() is None:
-    #         raise serializers.ValidationError("facility not found")
-    #     return value
 
     def validate_countries_travelled(self, value):
         if not value:
@@ -246,12 +202,14 @@ class PatientDetailSerializer(PatientListSerializer):
 
     def validate_date_of_birth(self, value):
         if value and value > now().date():
-            raise serializers.ValidationError("Enter a valid DOB such that age > 0")
+            msg = "Enter a valid DOB such that age > 0"
+            raise serializers.ValidationError(msg)
         return value
 
     def validate_year_of_birth(self, value):
         if value and value > now().year:
-            raise serializers.ValidationError("Enter a valid year of birth")
+            msg = "Enter a valid year of birth"
+            raise serializers.ValidationError(msg)
         return value
 
     def validate(self, attrs):
@@ -269,9 +227,11 @@ class PatientDetailSerializer(PatientListSerializer):
 
         if validated.get("is_vaccinated"):
             if validated.get("number_of_doses") == 0:
-                raise serializers.ValidationError("Number of doses cannot be 0")
+                msg = "Number of doses cannot be 0"
+                raise serializers.ValidationError(msg)
             if validated.get("vaccine_name") is None:
-                raise serializers.ValidationError("Vaccine name cannot be null")
+                msg = "Vaccine name cannot be null"
+                raise serializers.ValidationError(msg)
 
         return validated
 
@@ -306,9 +266,8 @@ class PatientDetailSerializer(PatientListSerializer):
 
             # Authorisation checks end
 
-            if "srf_id" in validated_data:
-                if validated_data["srf_id"]:
-                    self.check_external_entry(validated_data["srf_id"])
+            if validated_data.get("srf_id"):
+                self.check_external_entry(validated_data["srf_id"])
 
             validated_data["created_by"] = self.context["request"].user
             patient = super().create(validated_data)
@@ -355,9 +314,11 @@ class PatientDetailSerializer(PatientListSerializer):
                         external_id=external_id
                     ).id
 
-            if "srf_id" in validated_data:
-                if instance.srf_id != validated_data["srf_id"]:
-                    self.check_external_entry(validated_data["srf_id"])
+            if (
+                "srf_id" in validated_data
+                and instance.srf_id != validated_data["srf_id"]
+            ):
+                self.check_external_entry(validated_data["srf_id"])
 
             patient = super().update(instance, validated_data)
             Disease.objects.filter(patient=patient).update(deleted=True)
@@ -401,9 +362,7 @@ class PatientDetailSerializer(PatientListSerializer):
 
 class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
-    entry_date = serializers.DateField(
-        default=make_aware(datetime.datetime.today()).date()
-    )
+    entry_date = serializers.DateField(default=lambda: now().date())
     facility = ExternalIdSerializerField(
         queryset=Facility.objects.all(), read_only=True
     )
@@ -443,6 +402,7 @@ class PatientSearchSerializer(serializers.ModelSerializer):
             "facility",
             "allow_transfer",
             "is_active",
+            "is_expired",
         )
 
 
@@ -459,7 +419,8 @@ class PatientTransferSerializer(serializers.ModelSerializer):
 
     def validate_year_of_birth(self, value):
         if self.instance and self.instance.year_of_birth != value:
-            raise serializers.ValidationError("Year of birth does not match")
+            msg = "Year of birth does not match"
+            raise serializers.ValidationError(msg)
         return value
 
     def create(self, validated_data):
@@ -495,6 +456,21 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
         exclude = ("patient_note",)
 
 
+class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="external_id", read_only=True)
+    created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+
+    class Meta:
+        model = PatientNotes
+        fields = (
+            "id",
+            "created_by_object",
+            "created_date",
+            "user_type",
+            "note",
+        )
+
+
 class PatientNotesSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     facility = FacilityBasicInfoSerializer(read_only=True)
@@ -510,6 +486,13 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     thread = serializers.ChoiceField(
         choices=PatientNoteThreadChoices, required=False, allow_null=False
     )
+    reply_to = ExternalIdSerializerField(
+        queryset=PatientNotes.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+    reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
     files = serializers.SerializerMethodField()
 
     def get_files(self, obj):
@@ -528,6 +511,10 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if "thread" not in validated_data:
             raise serializers.ValidationError({"thread": "This field is required"})
+        if "consultation" not in validated_data:
+            raise serializers.ValidationError(
+                {"consultation": "This field is required"}
+            )
         user_type = User.REVERSE_TYPE_MAP[validated_data["created_by"].user_type]
         # If the user is a doctor and the note is being created in the home facility
         # then the user type is doctor else it is a remote specialist
@@ -539,6 +526,15 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         else:
             # If the user is not a doctor then the user type is the same as the user type
             validated_data["user_type"] = user_type
+
+        if validated_data.get("reply_to"):
+            reply_to_note = validated_data["reply_to"]
+            if reply_to_note.thread != validated_data["thread"]:
+                msg = "Reply to note should be in the same thread"
+                raise serializers.ValidationError(msg)
+            if reply_to_note.consultation != validated_data.get("consultation"):
+                msg = "Reply to note should be in the same consultation"
+                raise serializers.ValidationError(msg)
 
         user = self.context["request"].user
         note = validated_data.get("note")
@@ -588,6 +584,8 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "modified_date",
             "last_edited_by",
             "last_edited_date",
+            "reply_to",
+            "reply_to_object",
             "files",
         )
         read_only_fields = (

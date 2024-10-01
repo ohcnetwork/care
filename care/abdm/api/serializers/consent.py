@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from care.abdm.api.serializers.abhanumber import AbhaNumberSerializer
+from care.abdm.api.serializers.abha_number import AbhaNumberSerializer
 from care.abdm.models.consent import ConsentArtefact, ConsentRequest
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 

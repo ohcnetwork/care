@@ -38,7 +38,7 @@ class UserSkillViewSet(
     serializer_class = UserSkillSerializer
     queryset = UserSkill.objects.all()
     lookup_field = "external_id"
-    permission_classes = [UserSkillPermission]
+    permission_classes = (UserSkillPermission,)
 
     def get_queryset(self):
         username = self.kwargs["users_username"]

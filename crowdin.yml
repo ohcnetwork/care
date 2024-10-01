@@ -1,0 +1,5 @@
+files:
+  - source: /locale/*/LC_MESSAGES/django.po
+    translation: /locale/%two_letters_code%/LC_MESSAGES/django.po
+bundles:
+  - 4

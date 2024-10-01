@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from care.abdm.api.viewsets.abha import AbhaViewSet
+from care.abdm.api.viewsets.abha_number import AbhaNumberViewSet
 from care.abdm.api.viewsets.consent import ConsentViewSet
 from care.abdm.api.viewsets.health_facility import HealthFacilityViewSet
 from care.abdm.api.viewsets.health_information import HealthInformationViewSet
@@ -35,7 +35,11 @@ from care.facility.api.viewsets.events import (
     EventTypeViewSet,
     PatientConsultationEventViewSet,
 )
-from care.facility.api.viewsets.facility import AllFacilityViewSet, FacilityViewSet
+from care.facility.api.viewsets.facility import (
+    AllFacilityViewSet,
+    FacilitySpokesViewSet,
+    FacilityViewSet,
+)
 from care.facility.api.viewsets.facility_capacity import FacilityCapacityViewSet
 from care.facility.api.viewsets.facility_users import FacilityUserViewSet
 from care.facility.api.viewsets.file_upload import FileUploadViewSet
@@ -90,10 +94,6 @@ from care.facility.api.viewsets.summary import (
     TestsSummaryViewSet,
     TriageSummaryViewSet,
 )
-from care.hcx.api.viewsets.claim import ClaimViewSet
-from care.hcx.api.viewsets.communication import CommunicationViewSet
-from care.hcx.api.viewsets.gateway import HcxGatewayViewSet
-from care.hcx.api.viewsets.policy import PolicyViewSet
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
     LocalBodyViewSet,
@@ -104,10 +104,7 @@ from care.users.api.viewsets.skill import SkillViewSet
 from care.users.api.viewsets.users import UserViewSet
 from care.users.api.viewsets.userskill import UserSkillViewSet
 
-if settings.DEBUG:
-    router = DefaultRouter()
-else:
-    router = SimpleRouter()
+router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
@@ -218,6 +215,9 @@ facility_nested_router.register(
     FacilityDischargedPatientViewSet,
     basename="facility-discharged-patients",
 )
+facility_nested_router.register(
+    r"spokes", FacilitySpokesViewSet, basename="facility-spokes"
+)
 
 router.register("asset", AssetViewSet, basename="asset")
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
@@ -253,7 +253,6 @@ patient_notes_nested_router = NestedSimpleRouter(
 patient_notes_nested_router.register(
     r"edits", PatientNotesEditViewSet, basename="patient-notes-edits"
 )
-patient_nested_router.register(r"abha", AbhaViewSet)
 
 router.register(
     "external_result", PatientExternalTestViewSet, basename="patient-external-result"
@@ -300,12 +299,6 @@ router.register("event_types", EventTypeViewSet, basename="event-types")
 
 router.register("medibase", MedibaseViewSet, basename="medibase")
 
-# HCX
-router.register("hcx/policy", PolicyViewSet, basename="hcx-policy")
-router.register("hcx/claim", ClaimViewSet, basename="hcx-claim")
-router.register("hcx/communication", CommunicationViewSet, basename="hcx-communication")
-router.register("hcx", HcxGatewayViewSet)
-
 # Public endpoints
 router.register("public/asset", AssetPublicViewSet, basename="public-asset")
 router.register("public/asset_qr", AssetPublicQRViewSet, basename="public-asset-qr")
@@ -320,6 +313,7 @@ if settings.ENABLE_ABDM:
         basename="abdm-healthinformation",
     )
     router.register("abdm/patients", PatientsViewSet, basename="abdm-patients")
+    router.register("abdm/abha_numbers", AbhaNumberViewSet, basename="abdm-abhanumber")
 
 router.register(
     "abdm/health_facility", HealthFacilityViewSet, basename="abdm-healthfacility"

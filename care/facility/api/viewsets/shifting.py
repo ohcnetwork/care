@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django.db.models.query_utils import Q
 from django.utils.timezone import localtime, now
 from django_filters import rest_framework as filters
@@ -14,8 +15,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.shifting import (
+    REVERSE_SHIFTING_STATUS_CHOICES,
     ShiftingDetailSerializer,
-    ShiftingRequestCommentSerializer,
+    ShiftingListSerializer,
+    ShiftingRequestCommentDetailSerializer,
+    ShiftingRequestCommentListSerializer,
     ShiftingSerializer,
     has_facility_permission,
 )
@@ -93,36 +97,7 @@ class ShiftingViewSet(
 ):
     serializer_class = ShiftingSerializer
     lookup_field = "external_id"
-    queryset = ShiftingRequest.objects.all().select_related(
-        "origin_facility",
-        "origin_facility__ward",
-        "origin_facility__local_body",
-        "origin_facility__district",
-        "origin_facility__state",
-        "shifting_approving_facility",
-        "shifting_approving_facility__ward",
-        "shifting_approving_facility__local_body",
-        "shifting_approving_facility__district",
-        "shifting_approving_facility__state",
-        "assigned_facility",
-        "assigned_facility__ward",
-        "assigned_facility__local_body",
-        "assigned_facility__district",
-        "assigned_facility__state",
-        "patient",
-        "patient__ward",
-        "patient__local_body",
-        "patient__district",
-        "patient__state",
-        "patient__facility",
-        "patient__facility__ward",
-        "patient__facility__local_body",
-        "patient__facility__district",
-        "patient__facility__state",
-        "assigned_to",
-        "created_by",
-        "last_edited_by",
-    )
+    queryset = ShiftingRequest.objects.all()
     ordering_fields = ["id", "created_date", "modified_date", "emergency"]
 
     permission_classes = (IsAuthenticated, DRYPermissions)
@@ -133,8 +108,52 @@ class ShiftingViewSet(
     )
     filterset_class = ShiftingFilterSet
 
+    def get_queryset(self) -> QuerySet:
+        if self.action == "list":
+            self.queryset = self.queryset.select_related(
+                "origin_facility",
+                "shifting_approving_facility",
+                "assigned_facility",
+                "patient",
+            )
+
+        else:
+            self.queryset = self.queryset.select_related(
+                "origin_facility",
+                "origin_facility__ward",
+                "origin_facility__local_body",
+                "origin_facility__district",
+                "origin_facility__state",
+                "shifting_approving_facility",
+                "shifting_approving_facility__ward",
+                "shifting_approving_facility__local_body",
+                "shifting_approving_facility__district",
+                "shifting_approving_facility__state",
+                "assigned_facility",
+                "assigned_facility__ward",
+                "assigned_facility__local_body",
+                "assigned_facility__district",
+                "assigned_facility__state",
+                "patient",
+                "patient__ward",
+                "patient__local_body",
+                "patient__district",
+                "patient__state",
+                "patient__facility",
+                "patient__facility__ward",
+                "patient__facility__local_body",
+                "patient__facility__district",
+                "patient__facility__state",
+                "assigned_to",
+                "created_by",
+                "last_edited_by",
+            )
+        return self.queryset
+
     def get_serializer_class(self):
         serializer_class = self.serializer_class
+        if self.action == "list":
+            return ShiftingListSerializer
         if self.action == "retrieve":
             serializer_class = ShiftingDetailSerializer
         return serializer_class
@@ -143,33 +162,38 @@ class ShiftingViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         shifting_obj = self.get_object()
-        if has_facility_permission(
-            request.user, shifting_obj.shifting_approving_facility
-        ) or has_facility_permission(request.user, shifting_obj.assigned_facility):
-            if shifting_obj.assigned_facility and shifting_obj.status >= 70:
-                if shifting_obj.patient:
-                    patient = shifting_obj.patient
-                    patient.facility = shifting_obj.assigned_facility
-                    patient.is_active = True
-                    patient.allow_transfer = False
-                    patient.save()
-                    shifting_obj.status = 80
-                    shifting_obj.save(update_fields=["status"])
-                    # Discharge from all other active consultations
-                    PatientConsultation.objects.filter(
-                        patient=patient, discharge_date__isnull=True
-                    ).update(
-                        discharge_date=localtime(now()),
-                        new_discharge_reason=NewDischargeReasonEnum.REFERRED,
-                    )
-                    ConsultationBed.objects.filter(
-                        consultation=patient.last_consultation,
-                        end_date__isnull=True,
-                    ).update(end_date=localtime(now()))
+        if (
+            (
+                has_facility_permission(
+                    request.user, shifting_obj.shifting_approving_facility
+                )
+                or has_facility_permission(request.user, shifting_obj.assigned_facility)
+            )
+            and shifting_obj.assigned_facility
+            and shifting_obj.status
+            >= REVERSE_SHIFTING_STATUS_CHOICES["TRANSFER IN PROGRESS"]
+            and shifting_obj.patient
+        ):
+            patient = shifting_obj.patient
+            patient.facility = shifting_obj.assigned_facility
+            patient.is_active = True
+            patient.allow_transfer = False
+            patient.save()
+            shifting_obj.status = REVERSE_SHIFTING_STATUS_CHOICES["COMPLETED"]
+            shifting_obj.save(update_fields=["status"])
+            # Discharge from all other active consultations
+            PatientConsultation.objects.filter(
+                patient=patient, discharge_date__isnull=True
+            ).update(
+                discharge_date=localtime(now()),
+                new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            )
+            ConsultationBed.objects.filter(
+                consultation=patient.last_consultation,
+                end_date__isnull=True,
+            ).update(end_date=localtime(now()))
 
-                    return Response(
-                        {"transfer": "completed"}, status=status.HTTP_200_OK
-                    )
+            return Response({"transfer": "completed"}, status=status.HTTP_200_OK)
         return Response(
             {"error": "Invalid Request"}, status=status.HTTP_400_BAD_REQUEST
         )
@@ -186,7 +210,7 @@ class ShiftingViewSet(
                 field_header_map=ShiftingRequest.CSV_MAPPING,
                 field_serializer_map=ShiftingRequest.CSV_MAKE_PRETTY,
             )
-        return super(ShiftingViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
 
 class ShifitngRequestCommentViewSet(
@@ -195,7 +219,7 @@ class ShifitngRequestCommentViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    serializer_class = ShiftingRequestCommentSerializer
+    serializer_class = ShiftingRequestCommentDetailSerializer
     lookup_field = "external_id"
     queryset = ShiftingRequestComment.objects.all().order_by("-created_date")
 
@@ -217,7 +241,7 @@ class ShifitngRequestCommentViewSet(
                     request__assigned_facility__state=self.request.user.state
                 )
                 return queryset.filter(q_objects)
-            elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+            if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
                 q_objects = Q(
                     request__origin_facility__district=self.request.user.district
                 )
@@ -243,3 +267,8 @@ class ShifitngRequestCommentViewSet(
 
     def perform_create(self, serializer):
         serializer.save(request=self.get_request())
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ShiftingRequestCommentListSerializer
+        return ShiftingRequestCommentDetailSerializer

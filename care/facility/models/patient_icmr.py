@@ -1,7 +1,6 @@
-import datetime
-
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
+from django.utils.timezone import now
 
 from care.facility.models import (
     DISEASE_CHOICES_MAP,
@@ -17,35 +16,6 @@ from care.facility.models import (
 class PatientIcmr(PatientRegistration):
     class Meta:
         proxy = True
-
-    # @property
-    # def personal_details(self):
-    #     return self
-
-    # @property
-    # def specimen_details(self):
-    #     instance = self.patientsample_set.last()
-    #     if instance is not None:
-    #         instance.__class__ = PatientSampleICMR
-    #     return instance
-
-    # @property
-    # def patient_category(self):
-    #     instance = self.consultations.last()
-    #     if instance:
-    #         instance.__class__ = PatientConsultationICMR
-    #     return instance
-
-    # @property
-    # def exposure_history(self):
-    #     return self
-
-    # @property
-    # def medical_conditions(self):
-    #     instance = self.patientsample_set.last()
-    #     if instance is not None:
-    #         instance.__class__ = PatientSampleICMR
-    #     return instance
 
     def get_age_delta(self):
         start = self.date_of_birth or timezone.datetime(self.year_of_birth, 1, 1).date()
@@ -78,12 +48,14 @@ class PatientIcmr(PatientRegistration):
 
     @property
     def has_travel_to_foreign_last_14_days(self):
+        unsafe_travel_days = 14
         if self.countries_travelled:
             return len(self.countries_travelled) != 0 and (
                 self.date_of_return
-                and (self.date_of_return.date() - datetime.datetime.now().date()).days
-                <= 14
+                and (self.date_of_return.date() - now().date()).days
+                <= unsafe_travel_days
             )
+        return None
 
     @property
     def travel_end_date(self):
@@ -201,6 +173,7 @@ class PatientSampleICMR(PatientSample):
     def date_of_onset_of_symptoms(self):
         if symptom := self.consultation.symptoms.first():
             return symptom.onset_date.date()
+        return None
 
 
 class PatientConsultationICMR(PatientConsultation):
@@ -208,26 +181,22 @@ class PatientConsultationICMR(PatientConsultation):
         proxy = True
 
     def is_symptomatic(self):
-        if (
-            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices.keys()
+        return bool(
+            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices
             or self.symptoms_onset_date is not None
-        ):
-            return True
-        else:
-            return False
+        )
 
     def symptomatic_international_traveller(
         self,
     ):
+        unsafe_travel_days = 14
         return bool(
             self.patient.countries_travelled
             and len(self.patient.countries_travelled) != 0
             and (
                 self.patient.date_of_return
-                and (
-                    self.patient.date_of_return.date() - datetime.datetime.now().date()
-                ).days
-                <= 14
+                and (self.patient.date_of_return.date() - now().date()).days
+                <= unsafe_travel_days
             )
             and self.is_symptomatic()
         )

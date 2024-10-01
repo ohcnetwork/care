@@ -13,11 +13,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
     serializer_class = HospitalDoctorSerializer
     queryset = HospitalDoctors.objects.filter(facility__deleted=False)
-
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         user = self.request.user

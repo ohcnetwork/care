@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.abdm.utils.api_call import AbdmGateway
@@ -19,29 +18,17 @@ logger = logging.getLogger(__name__)
 
 
 class OnFetchView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        try:
-            AbdmGateway().init(data["resp"]["requestId"])
-        except Exception as e:
-            logger.warning(
-                f"Error: OnFetchView::post failed while initialising ABDM Gateway, Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {"detail": "Error: Initialising ABDM Gateway failed."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        AbdmGateway().init(data["resp"]["requestId"])
 
         return Response({}, status=status.HTTP_202_ACCEPTED)
 
 
 class OnInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -53,7 +40,6 @@ class OnInitView(GenericAPIView):
 
 
 class OnConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -86,7 +72,6 @@ class OnConfirmView(GenericAPIView):
 
 
 class AuthNotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -104,7 +89,6 @@ class AuthNotifyView(GenericAPIView):
 
 
 class OnAddContextsView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -112,7 +96,6 @@ class OnAddContextsView(GenericAPIView):
 
 
 class DiscoverView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -169,7 +152,7 @@ class DiscoverView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -181,7 +164,6 @@ class DiscoverView(GenericAPIView):
 
 
 class LinkInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -201,7 +183,6 @@ class LinkInitView(GenericAPIView):
 
 
 class LinkConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -223,7 +204,7 @@ class LinkConfirmView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -235,7 +216,6 @@ class LinkConfirmView(GenericAPIView):
 
 
 class NotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -253,7 +233,6 @@ class NotifyView(GenericAPIView):
 
 
 class RequestDataView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -261,7 +240,7 @@ class RequestDataView(GenericAPIView):
 
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
+        if not consent or consent["notification"]["status"] != "GRANTED":
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
@@ -279,7 +258,7 @@ class RequestDataView(GenericAPIView):
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
-        if not on_data_request_response.status_code == 202:
+        if on_data_request_response.status_code != 202:
             return Response({}, status=status.HTTP_202_ACCEPTED)
             return Response(
                 on_data_request_response, status=status.HTTP_400_BAD_REQUEST
@@ -337,38 +316,26 @@ class RequestDataView(GenericAPIView):
             }
         )
 
-        try:
-            AbdmGateway().data_notify(
-                {
-                    "health_id": consent["notification"]["consentDetail"]["patient"][
-                        "id"
-                    ],
-                    "consent_id": data["hiRequest"]["consent"]["id"],
-                    "transaction_id": data["transactionId"],
-                    "session_status": "TRANSFERRED"
+        AbdmGateway().data_notify(
+            {
+                "health_id": consent["notification"]["consentDetail"]["patient"]["id"],
+                "consent_id": data["hiRequest"]["consent"]["id"],
+                "transaction_id": data["transactionId"],
+                "session_status": (
+                    "TRANSFERRED"
                     if data_transfer_response
                     and data_transfer_response.status_code == 202
-                    else "FAILED",
-                    "care_contexts": list(
-                        map(
-                            lambda context: {"id": context["careContextReference"]},
-                            consent["notification"]["consentDetail"]["careContexts"][
-                                :-2:-1
-                            ],
-                        )
-                    ),
-                }
-            )
-        except Exception as e:
-            logger.warning(
-                f"Error: RequestDataView::post failed to notify (health-information/notify). Reason: {e}",
-                exc_info=True,
-            )
-            return Response(
-                {
-                    "detail": "Failed to notify (health-information/notify)",
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                    else "FAILED"
+                ),
+                "care_contexts": list(
+                    map(
+                        lambda context: {"id": context["careContextReference"]},
+                        consent["notification"]["consentDetail"]["careContexts"][
+                            :-2:-1
+                        ],
+                    )
+                ),
+            }
+        )
 
         return Response({}, status=status.HTTP_202_ACCEPTED)

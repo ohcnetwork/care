@@ -32,10 +32,6 @@ class Ambulance(FacilityBaseModel):
     )
     owner_is_smart_phone = models.BooleanField(default=True)
 
-    # primary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=False)
-    # secondary_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-    # third_district = models.IntegerField(choices=DISTRICT_CHOICES, blank=True, null=True)
-
     primary_district = models.ForeignKey(
         District,
         on_delete=models.PROTECT,
@@ -121,15 +117,6 @@ class Ambulance(FacilityBaseModel):
                 ]
             )
         )
-
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(
-    #             name="ambulance_free_or_price",
-    #             check=models.Q(price_per_km__isnull=False)
-    #             | models.Q(has_free_service=True),
-    #         )
-    #     ]
 
 
 class AmbulanceDriver(FacilityBaseModel):

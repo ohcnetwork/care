@@ -33,7 +33,17 @@ from care.facility.models import (
 )
 from care.users.models import User
 from care.utils.queryset.facility import get_facility_queryset
-from care.utils.validation.integer_validation import check_integer
+
+
+def check_integer(vals):
+    if not isinstance(vals, list):
+        vals = [vals]
+    for i in range(len(vals)):
+        try:
+            vals[i] = int(vals[i])
+        except Exception as e:
+            raise ValidationError({"value": "Integer Required"}) from e
+    return vals
 
 
 class FacilityInventoryFilter(filters.FilterSet):
@@ -52,7 +62,6 @@ class FacilityInventoryItemViewSet(
         .prefetch_related("allowed_units", "tags")
         .all()
     )
-    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FacilityInventoryFilter
 
@@ -88,9 +97,9 @@ class FacilityInventoryLogViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -172,9 +181,9 @@ class FacilityInventoryMinQuantityViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -216,9 +225,9 @@ class FacilityInventorySummaryViewSet(
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 
@@ -226,26 +235,3 @@ class FacilityInventorySummaryViewSet(
         return get_object_or_404(
             self.get_queryset(), external_id=self.kwargs.get("external_id")
         )
-
-
-# class FacilityInventoryBurnRateFilter(filters.FilterSet):
-#     name = filters.CharFilter(field_name="facility__name", lookup_expr="icontains")
-#     item = filters.NumberFilter(field_name="item_id")
-
-
-# class FacilityInventoryBurnRateViewSet(
-#     UserAccessMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet,
-# ):
-#     queryset = FacilityInventoryBurnRate.objects.select_related(
-#         "item", "item__default_unit", "facility__district"
-#     ).all()
-#     filter_backends = (filters.DjangoFilterBackend,)
-#     filterset_class = FacilityInventoryBurnRateFilter
-#     permission_classes = (IsAuthenticated, DRYPermissions)
-#     serializer_class = FacilityInventoryBurnRateSerializer
-
-#     def filter_queryset(self, queryset):
-#         queryset = super().filter_queryset(queryset)
-#         if self.kwargs.get("facility_external_id"):
-#             queryset = queryset.filter(facility__external_id=self.kwargs.get("facility_external_id"))
-#         return self.filter_by_user_scope(queryset)

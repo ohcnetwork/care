@@ -8,6 +8,7 @@ from .daily_round import *  # noqa
 from .encounter_symptom import *  # noqa
 from .events import *  # noqa
 from .facility import *  # noqa
+from .facility_flag import *  # noqa
 from .icd11_diagnosis import *  # noqa
 from .inventory import *  # noqa
 from .patient import *  # noqa

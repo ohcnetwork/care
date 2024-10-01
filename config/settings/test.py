@@ -1,9 +1,12 @@
-"""
-With these settings, tests run faster.
-"""
+import base64
+import json
+
+from authlib.jose import JsonWebKey
+
+from care.utils.jwks.generate_jwk import get_jwks_from_file
 
 from .base import *  # noqa
-from .base import env
+from .base import BASE_DIR, TEMPLATES, env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -17,7 +20,7 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
-TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
+TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index]
     (
         "django.template.loaders.cached.Loader",
         [
@@ -39,7 +42,7 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 # test in peace
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        "BACKEND": "config.caches.DummyCache",
     }
 }
 # for testing retelimit use override_settings decorator
@@ -74,3 +77,16 @@ LOGGING = {
 }
 
 CELERY_TASK_ALWAYS_EAGER = True
+
+
+# open id connect
+JWKS = JsonWebKey.import_key_set(
+    json.loads(
+        base64.b64decode(
+            env(
+                "JWKS_BASE64",
+                default=get_jwks_from_file(BASE_DIR),
+            )
+        )
+    )
+)

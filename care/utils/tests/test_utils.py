@@ -6,19 +6,34 @@ from uuid import uuid4
 
 from django.test import override_settings
 from django.utils.timezone import make_aware, now
+from faker import Faker
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
+    BREATHLESSNESS_CHOICES,
     CATEGORY_CHOICES,
     DISEASE_CHOICES_MAP,
+    FACILITY_TYPES,
+    SHIFTING_STATUS_CHOICES,
+    VEHICLE_CHOICES,
     Ambulance,
     Disease,
     DiseaseStatusEnum,
+    EncounterSymptom,
     Facility,
+    InvestigationSession,
+    InvestigationValue,
     LocalBody,
     PatientConsultation,
     PatientExternalTest,
+    PatientInvestigation,
+    PatientInvestigationGroup,
     PatientRegistration,
+    PatientSample,
+    Prescription,
+    ShiftingRequest,
+    ShiftingRequestComment,
     User,
     Ward,
 )
@@ -38,8 +53,10 @@ from care.facility.models.patient_consultation import (
 )
 from care.users.models import District, State
 
+fake = Faker()
 
-class override_cache(override_settings):
+
+class OverrideCache(override_settings):
     """
     Overrides the cache settings for the test to use a
     local memory cache instead of the redis cache
@@ -50,7 +67,7 @@ class override_cache(override_settings):
         super().__init__(
             CACHES={
                 "default": {
-                    "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                    "BACKEND": "config.caches.LocMemCache",
                     "LOCATION": f"care-test-{uuid.uuid4()}",
                 }
             },
@@ -68,16 +85,19 @@ class EverythingEquals:
 mock_equal = EverythingEquals()
 
 
-def assert_equal_dicts(d1, d2, ignore_keys=[]):
+def assert_equal_dicts(d1, d2, ignore_keys=None):
+    if ignore_keys is None:
+        ignore_keys = []
+
     def check_equal():
         ignored = set(ignore_keys)
         for k1, v1 in d1.items():
             if k1 not in ignored and (k1 not in d2 or d2[k1] != v1):
-                print(k1, v1, d2[k1])
+                print(k1, v1, d2[k1])  # noqa: T201
                 return False
         for k2, v2 in d2.items():
             if k2 not in ignored and k2 not in d1:
-                print(k2, v2)
+                print(k2, v2)  # noqa: T201
                 return False
         return True
 
@@ -89,6 +109,8 @@ class TestUtils:
     Base class for tests, handles most of the test setup and tools for setting up data
     """
 
+    maxDiff = None
+
     def setUp(self) -> None:
         self.client.force_login(self.user)
 
@@ -97,7 +119,7 @@ class TestUtils:
         Should return the base url of the testing viewset
         eg: return "api/v1/facility/"
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @classmethod
     def create_state(cls, **kwargs) -> State:
@@ -123,7 +145,7 @@ class TestUtils:
         return LocalBody.objects.create(**data)
 
     @classmethod
-    def get_user_data(cls, district: District, user_type: str = None):
+    def get_user_data(cls, district: District, user_type: str | None = None):
         """
         Returns the data to be used for API testing
 
@@ -155,7 +177,7 @@ class TestUtils:
     @classmethod
     def create_user(
         cls,
-        username: str = None,
+        username: str | None = None,
         district: District = None,
         local_body: LocalBody = None,
         **kwargs,
@@ -164,6 +186,8 @@ class TestUtils:
             username = f"user{now().timestamp()}"
 
         data = {
+            "first_name": "Foo",
+            "last_name": "Bar",
             "email": f"{username}@somedomain.com",
             "phone_number": "5554446667",
             "date_of_birth": date(1992, 4, 1),
@@ -244,8 +268,7 @@ class TestUtils:
             "created_by": user,
         }
         data.update(kwargs)
-        facility = Facility.objects.create(**data)
-        return facility
+        return Facility.objects.create(**data)
 
     @classmethod
     def get_patient_data(cls, district, state) -> dict:
@@ -284,7 +307,9 @@ class TestUtils:
         }
 
     @classmethod
-    def create_patient(cls, district: District, facility: Facility, **kwargs):
+    def create_patient(
+        cls, district: District, facility: Facility, **kwargs
+    ) -> PatientRegistration:
         patient_data = cls.get_patient_data(district, district.state).copy()
         medical_history = patient_data.pop("medical_history", [])
 
@@ -325,7 +350,7 @@ class TestUtils:
             "discharge_date": None,
             "consultation_notes": "",
             "course_in_facility": "",
-            "patient_no": int(datetime.now().timestamp() * 1000),
+            "patient_no": int(now().timestamp() * 1000),
             "route_to_facility": 10,
         }
 
@@ -469,7 +494,7 @@ class TestUtils:
 
     @classmethod
     def clone_object(cls, obj, save=True):
-        new_obj = obj._meta.model.objects.get(pk=obj.id)
+        new_obj = obj._meta.model.objects.get(pk=obj.id)  # noqa: SLF001
         new_obj.pk = None
         new_obj.id = None
         try:
@@ -503,13 +528,207 @@ class TestUtils:
         data.update(**kwargs)
         return Ambulance.objects.create(**data)
 
+    @classmethod
+    def get_patient_sample_data(cls, patient, consultation, facility, user) -> dict:
+        return {
+            "patient": patient,
+            "consultation": consultation,
+            "sample_type": 1,
+            "sample_type_other": "sample sample type other field",
+            "has_sari": False,
+            "has_ari": False,
+            "doctor_name": "Sample Doctor",
+            "diagnosis": "Sample diagnosis",
+            "diff_diagnosis": "Sample different diagnosis",
+            "etiology_identified": "Sample etiology identified",
+            "is_atypical_presentation": False,
+            "atypical_presentation": "Sample atypical presentation",
+            "is_unusual_course": False,
+            "icmr_category": 10,
+            "icmr_label": "Sample ICMR",
+            "date_of_sample": make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+            "date_of_result": make_aware(datetime(2020, 4, 5, 15, 30, 00)),
+            "testing_facility": facility,
+            "created_by": user,
+            "last_edited_by": user,
+        }
+
+    @classmethod
+    def create_patient_sample(
+        cls,
+        patient: PatientRegistration,
+        consultation: PatientConsultation,
+        facility: Facility,
+        user: User,
+        **kwargs,
+    ) -> PatientSample:
+        data = cls.get_patient_sample_data(patient, consultation, facility, user)
+        data.update(**kwargs)
+        sample = PatientSample.objects.create(**data)
+
+        # To make date static updating the object here for pdf testing
+        sample.created_date = make_aware(datetime(2020, 4, 1, 15, 30, 00))
+        sample.save()
+        return sample
+
+    @classmethod
+    def get_encounter_symptom_data(cls, consultation, user) -> dict:
+        return {
+            "symptom": 2,
+            "onset_date": make_aware(datetime(2020, 4, 1, 15, 30, 00)),
+            "cure_date": make_aware(datetime(2020, 5, 1, 15, 30, 00)),
+            "clinical_impression_status": 3,
+            "consultation": consultation,
+            "created_by": user,
+            "updated_by": user,
+            "is_migrated": False,
+        }
+
+    @classmethod
+    def create_encounter_symptom(
+        cls, consultation: PatientConsultation, user: User, **kwargs
+    ) -> EncounterSymptom:
+        data = cls.get_encounter_symptom_data(consultation, user)
+        data.update(**kwargs)
+        return EncounterSymptom.objects.create(**data)
+
+    @classmethod
+    def get_patient_investigation_data(cls) -> dict:
+        return {
+            "name": "Sample Investigation",
+            "unit": "mg/dL",
+            "ideal_value": "50-100",
+            "min_value": 50.0,
+            "max_value": 100.0,
+            "investigation_type": "Choice",
+            "choices": "Option1,Option2,Option3",
+        }
+
+    @classmethod
+    def create_patient_investigation(
+        cls, patient_investigation_group: PatientInvestigationGroup, **kwargs
+    ) -> PatientInvestigation:
+        data = cls.get_patient_investigation_data()
+        data.update(**kwargs)
+        investigation = PatientInvestigation.objects.create(**data)
+        if "groups" in kwargs:
+            investigation.groups.set(kwargs["groups"])
+        else:
+            investigation.groups.set([patient_investigation_group])
+        return investigation
+
+    @classmethod
+    def get_patient_investigation_group_data(cls) -> dict:
+        return {
+            "name": "Sample Investigation group",
+        }
+
+    @classmethod
+    def create_patient_investigation_group(cls, **kwargs) -> PatientInvestigationGroup:
+        data = cls.get_patient_investigation_group_data()
+        data.update(**kwargs)
+        return PatientInvestigationGroup.objects.create(**data)
+
+    @classmethod
+    def get_patient_investigation_session_data(cls, user) -> dict:
+        return {
+            "created_by": user,
+        }
+
+    @classmethod
+    def create_patient_investigation_session(
+        cls, user: User, **kwargs
+    ) -> InvestigationSession:
+        data = cls.get_patient_investigation_session_data(user)
+        data.update(**kwargs)
+        return InvestigationSession.objects.create(**data)
+
+    @classmethod
+    def get_investigation_value_data(
+        cls, investigation, consultation, session, group
+    ) -> dict:
+        return {
+            "investigation": investigation,
+            "group": group,
+            "value": 5.0,
+            "notes": "Sample notes",
+            "consultation": consultation,
+            "session": session,
+        }
+
+    @classmethod
+    def create_investigation_value(
+        cls,
+        investigation: PatientInvestigation,
+        consultation: PatientConsultation,
+        session: InvestigationSession,
+        group: PatientInvestigationGroup,
+        **kwargs,
+    ) -> InvestigationValue:
+        data = cls.get_investigation_value_data(
+            investigation, consultation, session, group
+        )
+        data.update(**kwargs)
+        investigation_value = InvestigationValue.objects.create(**data)
+        # To make created date static updating the object here for pdf testing
+        investigation_value.created_date = make_aware(datetime(2020, 4, 1, 15, 30, 00))
+        investigation_value.save()
+        return investigation_value
+
+    @classmethod
+    def get_disease_data(cls, patient) -> dict:
+        return {
+            "patient": patient,
+            "disease": 4,
+            "details": "Sample disease details",
+        }
+
+    @classmethod
+    def create_disease(cls, patient: PatientRegistration, **kwargs) -> Disease:
+        data = cls.get_disease_data(patient)
+        data.update(**kwargs)
+        return Disease.objects.create(**data)
+
+    @classmethod
+    def get_prescription_data(cls, consultation, user) -> dict:
+        return {
+            "consultation": consultation,
+            "prescription_type": "REGULAR",
+            "medicine": None,
+            "medicine_old": "Sample old Medicine",
+            "route": "Oral",
+            "base_dosage": "500mg",
+            "dosage_type": "REGULAR",
+            "target_dosage": "1000mg",
+            "instruction_on_titration": "Sample Instruction for titration",
+            "frequency": "8th hourly",
+            "days": 7,
+            # prn fields
+            "indicator": "Sample indicator",
+            "max_dosage": "2000mg",
+            "min_hours_between_doses": 6,
+            "notes": "Take with food",
+            "prescribed_by": user,
+            "discontinued": False,
+            "discontinued_reason": "sample discontinued reason",
+            "discontinued_date": date(2020, 4, 1),
+        }
+
+    @classmethod
+    def create_prescription(
+        cls, consultation: PatientConsultation, user: User, **kwargs
+    ) -> Prescription:
+        data = cls.get_prescription_data(consultation, user)
+        data.update(**kwargs)
+        return Prescription.objects.create(**data)
+
     def get_list_representation(self, obj) -> dict:
         """
         Returns the dict representation of the obj in list API
         :param obj: Object to be represented
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_detail_representation(self, obj=None) -> dict:
         """
@@ -518,7 +737,7 @@ class TestUtils:
         :param data: data
         :return: dict
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_local_body_district_state_representation(self, obj):
         """
@@ -542,17 +761,16 @@ class TestUtils:
     def get_local_body_representation(self, local_body: LocalBody):
         if local_body is None:
             return {"local_body": None, "local_body_object": None}
-        else:
-            return {
-                "local_body": local_body.id,
-                "local_body_object": {
-                    "id": local_body.id,
-                    "name": local_body.name,
-                    "district": local_body.district.id,
-                    "localbody_code": local_body.localbody_code,
-                    "body_type": local_body.body_type,
-                },
-            }
+        return {
+            "local_body": local_body.id,
+            "local_body_object": {
+                "id": local_body.id,
+                "name": local_body.name,
+                "district": local_body.district.id,
+                "localbody_code": local_body.localbody_code,
+                "body_type": local_body.body_type,
+            },
+        }
 
     def get_district_representation(self, district: District):
         if district is None:
@@ -576,16 +794,16 @@ class TestUtils:
             return {k: to_matching_type(k, v) for k, v in d.items()}
 
         def to_matching_type(name: str, value):
-            if isinstance(value, (OrderedDict, dict)):
+            if isinstance(value, OrderedDict | dict):
                 return dict_to_matching_type(dict(value))
-            elif isinstance(value, list):
+            if isinstance(value, list):
                 return [to_matching_type("", v) for v in value]
-            elif "date" in name and not isinstance(
-                value, (type(None), EverythingEquals)
-            ):
+            if "date" in name and not isinstance(value, type(None) | EverythingEquals):
                 return_value = value
                 if isinstance(value, str):
-                    return_value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    return_value = datetime.strptime(
+                        value, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    ).astimezone()
                 return (
                     return_value.astimezone(tz=UTC)
                     if isinstance(return_value, datetime)
@@ -605,13 +823,83 @@ class TestUtils:
     def get_facility_representation(self, facility):
         if facility is None:
             return facility
-        else:
-            return {
-                "id": str(facility.external_id),
-                "name": facility.name,
-                "facility_type": {
-                    "id": facility.facility_type,
-                    "name": facility.get_facility_type_display(),
-                },
-                **self.get_local_body_district_state_representation(facility),
+        return {
+            "id": str(facility.external_id),
+            "name": facility.name,
+            "facility_type": {
+                "id": facility.facility_type,
+                "name": facility.get_facility_type_display(),
+            },
+            **self.get_local_body_district_state_representation(facility),
+        }
+
+    def create_patient_note(
+        self, patient=None, note="Patient is doing find", created_by=None, **kwargs
+    ):
+        data = {
+            "facility": patient.facility or self.facility,
+            "note": note,
+        }
+        data.update(kwargs)
+        patient_id = patient.external_id
+
+        refresh_token = RefreshToken.for_user(created_by)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {refresh_token.access_token}"
+        )
+
+        self.client.post(f"/api/v1/patient/{patient_id}/notes/", data=data)
+
+    @classmethod
+    def create_patient_shift(
+        cls,
+        facility: Facility = None,
+        user: User = None,
+        patient: PatientRegistration = None,
+        **kwargs,
+    ) -> None:
+        shifting_approving_facility = cls.create_facility(
+            user=cls.user, district=cls.district, local_body=cls.local_body
+        )
+        assigned_facility = shifting_approving_facility
+        data = {
+            "origin_facility": assigned_facility,
+            "shifting_approving_facility": shifting_approving_facility,
+            "assigned_facility_type": fake.random_element(FACILITY_TYPES)[0],
+            "assigned_facility": assigned_facility,
+            "assigned_facility_external": "Assigned Facility External",
+            "patient": patient,
+            "emergency": False,
+            "is_up_shift": False,
+            "reason": "Reason",
+            "vehicle_preference": "Vehicle Preference",
+            "preferred_vehicle_choice": fake.random_element(VEHICLE_CHOICES)[0],
+            "comments": "Comments",
+            "refering_facility_contact_name": "9900199001",
+            "refering_facility_contact_number": "9900199001",
+            "is_kasp": False,
+            "status": fake.random_element(SHIFTING_STATUS_CHOICES)[0],
+            "breathlessness_level": fake.random_element(BREATHLESSNESS_CHOICES)[0],
+            "is_assigned_to_user": False,
+            "assigned_to": user,
+            "ambulance_driver_name": fake.name(),
+            "ambulance_phone_number": "9900199001",
+            "ambulance_number": fake.license_plate(),
+            "created_by": user,
+            "last_edited_by": user,
+        }
+        data.update(kwargs)
+        return ShiftingRequest.objects.create(**data)
+
+    @classmethod
+    def create_patient_shift_comment(
+        cls, resource: ShiftingRequest = None, user: User = None, **kwargs
+    ) -> None:
+        kwargs.update(
+            {
+                "request": resource,
+                "comment": "comment",
+                "created_by": user,
             }
+        )
+        return ShiftingRequestComment.objects.create(**kwargs)
