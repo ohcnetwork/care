@@ -59,3 +59,6 @@ class Command(BaseCommand):
                     obj.temp_deleted = False
                     obj.save()
             RolePermission.objects.filter(temp_deleted=True).delete()
+
+
+        PermissionController.has_permission("tser" , "can_read_facility" , "FACILITY" , 1)
