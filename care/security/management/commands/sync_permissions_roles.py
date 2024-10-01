@@ -1,5 +1,3 @@
-from lib2to3.fixes.fix_input import context
-
 from django.core.management import BaseCommand
 from django.db import transaction
 
@@ -21,10 +19,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         permissions = PermissionController.get_permissions()
         roles = RoleController.get_roles()
-        with transaction.atomic() , Lock("sync_permissions_roles",900):
+        with transaction.atomic(), Lock("sync_permissions_roles", 900):
             # Create, update permissions and delete old permissions
             PermissionModel.objects.all().update(temp_deleted=True)
-            for permission,metadata in permissions.items():
+            for permission, metadata in permissions.items():
                 permission_obj = PermissionModel.objects.filter(slug=permission).first()
                 if not permission_obj:
                     permission_obj = PermissionModel(slug=permission)
@@ -37,7 +35,9 @@ class Command(BaseCommand):
             # Create, update roles and delete old roles
             RoleModel.objects.all().update(temp_deleted=True)
             for role in roles:
-                role_obj = RoleModel.objects.filter(name=role.name , context = role.context.value).first()
+                role_obj = RoleModel.objects.filter(
+                    name=role.name, context=role.context.value
+                ).first()
                 if not role_obj:
                     role_obj = RoleModel(name=role.name, context=role.context.value)
                 role_obj.description = role.description
@@ -48,16 +48,18 @@ class Command(BaseCommand):
             # Sync permissions to role
             RolePermission.objects.all().update(temp_deleted=True)
             role_cache = {}
-            for permission,metadata in permissions.items():
+            for permission, metadata in permissions.items():
                 permission_obj = PermissionModel.objects.filter(slug=permission).first()
                 for role in metadata.roles:
                     if role.name not in role_cache:
                         role_cache[role.name] = RoleModel.objects.get(name=role.name)
-                    obj = RolePermission.objects.filter(role=role_cache[role.name] , permission=permission_obj).first()
+                    obj = RolePermission.objects.filter(
+                        role=role_cache[role.name], permission=permission_obj
+                    ).first()
                     if not obj:
-                        obj = RolePermission(role=role_cache[role.name] , permission=permission_obj)
+                        obj = RolePermission(
+                            role=role_cache[role.name], permission=permission_obj
+                        )
                     obj.temp_deleted = False
                     obj.save()
             RolePermission.objects.filter(temp_deleted=True).delete()
-
-

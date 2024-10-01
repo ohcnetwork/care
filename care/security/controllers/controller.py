@@ -1,7 +1,9 @@
 from care.security.permissions.permissions import PermissionController
 
-class PermissionDenied(Exception):
+
+class PermissionDeniedError(Exception):
     pass
+
 
 class AuthorizationHandler:
     """
@@ -15,15 +17,16 @@ class AuthorizationHandler:
 
     Queries are actions that return a queryset as the response.
     """
+
     actions = []
     queries = []
 
-
     def check_permission(self, user, obj):
-        if not PermissionController.has_permission(user,obj):
-            raise PermissionDenied("Access to this resource is denied")
+        if not PermissionController.has_permission(user, obj):
+            raise PermissionDeniedError
 
-        return PermissionController.has_permission(user,obj)
+        return PermissionController.has_permission(user, obj)
+
 
 class AuthorizationController:
     """
@@ -37,7 +40,9 @@ class AuthorizationController:
     The overridden classes can choose to call the next function in the hierarchy if needed.
     """
 
-    override_authz_controllers: list[AuthorizationHandler] = []  # The order is important
+    override_authz_controllers: list[
+        AuthorizationHandler
+    ] = []  # The order is important
     # Override Security Controllers will be defined from plugs
     internal_authz_controllers: list[AuthorizationHandler] = []
 
@@ -45,11 +50,16 @@ class AuthorizationController:
 
     @classmethod
     def build_cache(cls):
-        for controller in cls.internal_authz_controllers + cls.override_authz_controllers:
+        for controller in (
+            cls.internal_authz_controllers + cls.override_authz_controllers
+        ):
             for action in controller.actions:
                 if "actions" not in cls.cache:
                     cls.cache["actions"] = {}
-                cls.cache["actions"][action] = [*cls.cache["actions"].get(action, []), controller]
+                cls.cache["actions"][action] = [
+                    *cls.cache["actions"].get(action, []),
+                    controller,
+                ]
 
     @classmethod
     def get_action_controllers(cls, action):
@@ -71,7 +81,6 @@ class AuthorizationController:
             if not result:
                 return result
         return True
-
 
     @classmethod
     def register_internal_controller(cls, controller: AuthorizationHandler):
