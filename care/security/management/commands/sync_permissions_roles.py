@@ -1,3 +1,4 @@
+from lib2to3.fixes.fix_input import context
 
 from django.core.management import BaseCommand
 from django.db import transaction
@@ -36,11 +37,10 @@ class Command(BaseCommand):
             # Create, update roles and delete old roles
             RoleModel.objects.all().update(temp_deleted=True)
             for role in roles:
-                role_obj = RoleModel.objects.filter(name=role.name).first()
+                role_obj = RoleModel.objects.filter(name=role.name , context = role.context.value).first()
                 if not role_obj:
-                    role_obj = RoleModel(name=role.name)
+                    role_obj = RoleModel(name=role.name, context=role.context.value)
                 role_obj.description = role.description
-                role_obj.context = role.context.value
                 role_obj.is_system = True
                 role_obj.temp_deleted = False
                 role_obj.save()
@@ -61,4 +61,3 @@ class Command(BaseCommand):
             RolePermission.objects.filter(temp_deleted=True).delete()
 
 
-        PermissionController.has_permission("tser" , "can_read_facility" , "FACILITY" , 1)

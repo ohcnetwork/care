@@ -13,11 +13,14 @@ class RoleModel(BaseModel):
     Roles can be created on the fly, System roles cannot be deleted, but user created roles can be deleted by users
     with the permission to delete roles
     """
-    name = models.CharField(max_length=1024 , unique=True)
+    name = models.CharField(max_length=1024)
     description = models.TextField(default="")
     context = models.CharField(max_length=1024)  # We can add choices here as well if needed
     is_system = models.BooleanField(default=False)  # Denotes if role was created on the fly
     temp_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("name", "context")
 
 
 class RolePermission(BaseModel):

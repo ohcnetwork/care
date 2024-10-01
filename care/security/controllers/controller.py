@@ -1,4 +1,7 @@
+from care.security.permissions.permissions import PermissionController
 
+class PermissionDenied(Exception):
+    pass
 
 class AuthorizationHandler:
     """
@@ -15,6 +18,12 @@ class AuthorizationHandler:
     actions = []
     queries = []
 
+
+    def check_permission(self, user, obj):
+        if not PermissionController.has_permission(user,obj):
+            raise PermissionDenied("Access to this resource is denied")
+
+        return PermissionController.has_permission(user,obj)
 
 class AuthorizationController:
     """
