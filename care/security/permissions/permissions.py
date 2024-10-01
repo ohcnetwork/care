@@ -14,9 +14,9 @@ class Permission:
     """
     This class abstracts a permission
     """
-    permission_name: str
-    permission_description: str
-    permission_context: PermissionContext
+    name: str
+    description: str
+    context: PermissionContext
     roles: list
 
 
@@ -24,7 +24,7 @@ class PermissionHandler:
     pass
 
 
-from .facility import FacilityPermissions  # noqa: E402
+from care.security.permissions.facility import FacilityPermissions  # noqa: E402
 
 
 class PermissionController:
@@ -44,9 +44,17 @@ class PermissionController:
         """
         Iterate through the entire permission library and create a list of permissions and associated Metadata
         """
-        pass
+        for handler in cls.internal_permission_handlers + cls.override_permission_handlers:
+            for permission in handler:
+                cls.cache[permission.name] = permission.value
 
     @classmethod
     def has_permission(cls, user, permission):
-        # TODO : Can Cache Directly
+        # TODO : Cache permissions and invalidate when they change
         pass
+
+    @classmethod
+    def get_permissions(cls):
+        if not cls.cache:
+            cls.build_cache()
+        return cls.cache
