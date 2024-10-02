@@ -374,7 +374,6 @@ class UserViewSet(
             return Response(status=status.HTTP_409_CONFLICT)
         return Response(status=status.HTTP_200_OK)
 
-
     def has_profile_image_write_permission(self, request, user):
         return request.user.is_superuser or (user.id == request.user.id)
 

@@ -1,4 +1,3 @@
-import boto3
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.utils.timezone import now
@@ -13,7 +12,6 @@ from care.users.api.serializers.lsg import (
 )
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import GENDER_CHOICES, User
-from care.utils.csp.config import BucketType, get_client_config
 from care.utils.file_uploads.cover_image import upload_cover_image
 from care.utils.models.validators import (
     cover_image_validator,
