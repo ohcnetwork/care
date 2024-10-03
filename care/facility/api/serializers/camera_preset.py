@@ -68,13 +68,13 @@ class CameraPresetSerializer(serializers.ModelSerializer):
             msg = "Cannot have both position and a boundary."
             raise ValidationError(msg)
 
+        validated_data["asset_bed"] = self.get_asset_bed_obj()
         return validated_data
 
     def create(self, validated_data):
-        validated_data["asset_bed"] = self.context["asset_bed"]
         validated_data["created_by"] = self.context["request"].user
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
         validated_data["updated_by"] = self.context["request"].user
-        return super().create(validated_data)
+        return super().update(instance, validated_data)
