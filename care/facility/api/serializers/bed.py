@@ -30,8 +30,7 @@ from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.queryset.consultation import get_consultation_queryset
 from care.utils.queryset.facility import get_facility_queryset
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class BedSerializer(ModelSerializer):
@@ -51,8 +50,10 @@ class BedSerializer(ModelSerializer):
         return value.strip() if value else value
 
     def validate_number_of_beds(self, value):
-        if value > 100:
-            raise ValidationError("Cannot create more than 100 beds at once.")
+        max_beds = 100
+        if value > max_beds:
+            msg = f"Cannot create more than {max_beds} beds at once."
+            raise ValidationError(msg)
         return value
 
     class Meta:
@@ -73,7 +74,7 @@ class BedSerializer(ModelSerializer):
             if (not facilities.filter(id=location.facility.id).exists()) or (
                 not facilities.filter(id=facility.id).exists()
             ):
-                raise PermissionError()
+                raise PermissionError
             del attrs["location"]
             attrs["location"] = location
             attrs["facility"] = facility
@@ -109,7 +110,7 @@ class AssetBedSerializer(ModelSerializer):
             if (
                 not facilities.filter(id=asset.current_location.facility.id).exists()
             ) or (not facilities.filter(id=bed.facility.id).exists()):
-                raise PermissionError()
+                raise PermissionError
             if asset.asset_class not in [
                 AssetClasses.HL7MONITOR.name,
                 AssetClasses.ONVIF.name,
@@ -152,10 +153,11 @@ class PatientAssetBedSerializer(ModelSerializer):
         ).first()
         if patient:
             return PatientListSerializer(patient).data
+        return None
 
     class Meta:
         model = AssetBed
-        exclude = ("external_id", "id") + TIMESTAMP_FIELDS
+        exclude = ("external_id", "id", *TIMESTAMP_FIELDS)
 
 
 class ConsultationBedSerializer(ModelSerializer):
@@ -179,7 +181,7 @@ class ConsultationBedSerializer(ModelSerializer):
         exclude = ("deleted", "external_id")
         read_only_fields = TIMESTAMP_FIELDS
 
-    def validate(self, attrs):
+    def validate(self, attrs):  # noqa: PLR0912
         if "consultation" not in attrs:
             raise ValidationError({"consultation": "This field is required."})
         if "bed" not in attrs:
@@ -192,7 +194,8 @@ class ConsultationBedSerializer(ModelSerializer):
 
         facilities = get_facility_queryset(user)
         if not facilities.filter(id=bed.facility_id).exists():
-            raise ValidationError("You do not have access to this facility")
+            msg = "You do not have access to this facility"
+            raise ValidationError(msg)
 
         permitted_consultations = get_consultation_queryset(user).select_related(
             "patient"
@@ -205,17 +208,20 @@ class ConsultationBedSerializer(ModelSerializer):
             or consultation.discharge_date
             or consultation.death_datetime
         ):
-            raise ValidationError("Patient not active")
+            msg = "Patient not active"
+            raise ValidationError(msg)
 
         # bed validations
         if consultation.facility_id != bed.facility_id:
-            raise ValidationError("Consultation and bed are not in the same facility")
+            msg = "Consultation and bed are not in the same facility"
+            raise ValidationError(msg)
         if (
             ConsultationBed.objects.filter(bed=bed, end_date__isnull=True)
             .exclude(consultation=consultation)
             .exists()
         ):
-            raise ValidationError("Bed is already in use")
+            msg = "Bed is already in use"
+            raise ValidationError(msg)
 
         # check whether the same set of bed and assets are already assigned
         current_consultation_bed = consultation.current_bed
@@ -230,7 +236,8 @@ class ConsultationBedSerializer(ModelSerializer):
             )
             == set(attrs.get("assets", []))
         ):
-            raise ValidationError("These set of bed and assets are already assigned")
+            msg = "These set of bed and assets are already assigned"
+            raise ValidationError(msg)
 
         # date validations
         # note: end_date is for setting end date on current instance
@@ -323,10 +330,11 @@ class ConsultationBedSerializer(ModelSerializer):
                 )
                 not_found_assets = set(assets_ids) - set(assets)
                 if not_found_assets:
-                    raise ValidationError(
+                    msg = (
                         "Some assets are not available - "
                         f"{' ,'.join([str(x) for x in not_found_assets])}"
                     )
+                    raise ValidationError(msg)
             obj: ConsultationBed = super().create(validated_data)
             if assets_ids:
                 asset_objects = Asset.objects.filter(external_id__in=assets_ids).only(

@@ -62,7 +62,7 @@ class AssetType(enum.Enum):
 
 AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
-AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]
+AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]  # noqa: SLF001
 
 
 class Status(enum.Enum):
@@ -162,6 +162,7 @@ class Asset(BaseModel):
                 "hostname": hostname,
                 "source": "facility",
             }
+        return None
 
     class Meta:
         constraints = [
@@ -219,7 +220,7 @@ class AvailabilityRecord(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_external_id = models.UUIDField()
     status = models.CharField(
-        choices=AvailabilityStatus.choices,
+        choices=AvailabilityStatus,
         default=AvailabilityStatus.NOT_MONITORED,
         max_length=20,
     )
@@ -312,3 +313,6 @@ class AssetServiceEdit(models.Model):
 
     class Meta:
         ordering = ["-edited_on"]
+
+    def __str__(self):
+        return f"{self.asset_service.asset.name} - {self.serviced_on}"

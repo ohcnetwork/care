@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, UUIDField
 
 from care.users.api.serializers.skill import SkillSerializer
 from care.users.models import Skill, UserSkill
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from care.utils.serializers.fields import ExternalIdSerializerField
 
 
 class UserSkillSerializer(ModelSerializer):

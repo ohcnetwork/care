@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.generics import UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 User = get_user_model()
@@ -28,7 +27,6 @@ class ChangePasswordView(UpdateAPIView):
 
     serializer_class = ChangePasswordSerializer
     model = User
-    permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
         self.object = self.request.user

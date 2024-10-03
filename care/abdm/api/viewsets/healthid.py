@@ -8,7 +8,6 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -40,7 +39,6 @@ logger = logging.getLogger(__name__)
 class ABDMHealthIDViewSet(GenericViewSet, CreateModelMixin):
     base_name = "healthid"
     model = AbhaNumber
-    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         operation_id="generate_aadhaar_otp",

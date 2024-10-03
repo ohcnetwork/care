@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TypedDict
+from typing import TypedDict
 
 from django.core.management import BaseCommand
 
@@ -7,9 +7,9 @@ from care.facility.models.events import EventType
 
 class EventTypeDef(TypedDict, total=False):
     name: str
-    model: Optional[str]
-    children: Tuple["EventType", ...]
-    fields: Tuple[str, ...]
+    model: str | None
+    children: tuple["EventType", ...]
+    fields: tuple[str, ...]
 
 
 class Command(BaseCommand):
@@ -17,7 +17,7 @@ class Command(BaseCommand):
     Management command to load event types
     """
 
-    consultation_event_types: Tuple[EventTypeDef, ...] = (
+    consultation_event_types: tuple[EventTypeDef, ...] = (
         {
             "name": "CONSULTATION",
             "model": "PatientConsultation",
@@ -116,11 +116,10 @@ class Command(BaseCommand):
                     "name": "VITALS",
                     "children": (
                         {"name": "TEMPERATURE", "fields": ("temperature",)},
-                        {"name": "SPO2", "fields": ("spo2",)},
                         {"name": "PULSE", "fields": ("pulse",)},
                         {"name": "BLOOD_PRESSURE", "fields": ("bp",)},
                         {"name": "RESPIRATORY_RATE", "fields": ("resp",)},
-                        {"name": "RHYTHM", "fields": ("rhythm", "rhythm_details")},
+                        {"name": "RHYTHM", "fields": ("rhythm", "rhythm_detail")},
                         {"name": "PAIN_SCALE", "fields": ("pain_scale_enhanced",)},
                     ),
                 },
@@ -262,16 +261,20 @@ class Command(BaseCommand):
         },
     )
 
-    inactive_event_types: Tuple[str, ...] = (
+    inactive_event_types: tuple[str, ...] = (
         "RESPIRATORY",
         "INTAKE_OUTPUT",
         "VENTILATOR_MODES",
         "SYMPTOMS",
         "ROUND_SYMPTOMS",
+        "SPO2",
     )
 
     def create_objects(
-        self, types: Tuple[EventType, ...], model: str = None, parent: EventType = None
+        self,
+        types: tuple[EventType, ...],
+        model: str | None = None,
+        parent: EventType = None,
     ):
         for event_type in types:
             model = event_type.get("model", model)

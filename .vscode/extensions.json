@@ -3,6 +3,6 @@
     "boto3typed.boto3-ide",
     "ms-python.python",
     "ms-python.vscode-pylance",
-    "ms-python.isort"
+    "charliermarsh.ruff"
   ]
 }

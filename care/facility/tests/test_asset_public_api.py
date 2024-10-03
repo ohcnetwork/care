@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.api.serializers.asset import AssetSerializer
-from care.utils.tests.test_utils import TestUtils, override_cache
+from care.utils.tests.test_utils import OverrideCache, TestUtils
 
 
 class AssetPublicViewSetTestCase(TestUtils, APITestCase):
@@ -38,7 +38,7 @@ class AssetPublicViewSetTestCase(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_retrieve_asset_qr_cached(self):
-        with override_cache(self):
+        with OverrideCache(self):
             response = self.client.get(
                 f"/api/v1/public/asset_qr/{self.asset.qr_code_id}/"
             )
@@ -62,7 +62,7 @@ class AssetPublicViewSetTestCase(TestUtils, APITestCase):
             self.assertEqual(response.data["name"], updated_data["name"])
 
     def test_retrieve_asset_qr_pre_cached(self):
-        with override_cache(self):
+        with OverrideCache(self):
             serializer = AssetSerializer(self.asset)
             cache.set(f"asset:qr:{self.asset.qr_code_id}", serializer.data)
             response = self.client.get(
