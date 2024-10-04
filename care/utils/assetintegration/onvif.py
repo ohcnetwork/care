@@ -185,30 +185,30 @@ class OnvifAsset(BaseAssetIntegration):
         if action_type == self.OnvifActions.LOCK_CAMERA.value:
             if camera_manager.lock_camera():
                 return {
-                    "message": "Camera is now locked",
+                    "message": "You now have access to the camera controls, the camera is locked for other users",
                     "camera_user": camera_manager.current_user(),
                 }
 
             raise PermissionDenied(
                 {
-                    "message": "Camera is currently in used by another user",
+                    "message": "Camera is currently in used by another user, you have been added to the waiting list for camera controls access",
                     "camera_user": camera_manager.current_user(),
                 }
             )
 
         if action_type == self.OnvifActions.UNLOCK_CAMERA.value:
             camera_manager.unlock_camera()
-            return {"message": "Camera is now unlocked"}
+            return {"message": "Camera controls unlocked"}
 
         if action_type == self.OnvifActions.REQUEST_ACCESS.value:
             if camera_manager.request_access():
                 return {
-                    "message": "Access to camera granted",
+                    "message": "Access to camera camera controls granted",
                     "camera_user": camera_manager.current_user(),
                 }
 
             return {
-                "message": "Requested access to camera",
+                "message": "Requested access to camera controls, waiting for current user to release",
                 "camera_user": camera_manager.current_user(),
             }
 
@@ -229,7 +229,7 @@ class OnvifAsset(BaseAssetIntegration):
         if not camera_manager.has_access():
             raise PermissionDenied(
                 {
-                    "message": "Camera is currently in used by another user",
+                    "message": "Camera is currently in used by another user, you have been added to the waiting list for camera controls access",
                     "camera_user": camera_manager.current_user(),
                 }
             )
