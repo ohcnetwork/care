@@ -1,4 +1,5 @@
 import json
+import re
 from json import JSONDecodeError
 
 from django.conf import settings
@@ -38,8 +39,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-import re
 
+from care.facility.api.serializers.file_upload import FileUploadListSerializer
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -61,11 +62,11 @@ from care.facility.models import (
     DailyRound,
     Facility,
     FacilityPatientStatsHistory,
+    FileUpload,
     PatientNotes,
     PatientNoteThreadChoices,
     PatientRegistration,
     ShiftingRequest,
-    FileUpload,
 )
 from care.facility.models.base import covert_choice_dict
 from care.facility.models.bed import AssetBed, ConsultationBed
@@ -91,8 +92,6 @@ from config.authentication import (
     CustomJWTAuthentication,
     MiddlewareAssetAuthentication,
 )
-from care.facility.api.serializers.file_upload import FileUploadListSerializer
-
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
 REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
@@ -1112,13 +1111,14 @@ class PatientNotesViewSet(
 
         return super().perform_update(serializer)
 
+
 class FileUploadFilter(filters.FilterSet):
     file_category = filters.CharFilter(field_name="file_category")
     is_archived = filters.BooleanFilter(field_name="is_archived")
 
+
 class PatientNotesForConsultationViewSet(
-    viewsets.GenericViewSet,
-    mixins.ListModelMixin
+    viewsets.GenericViewSet, mixins.ListModelMixin
 ):
     serializer_class = FileUploadListSerializer
     queryset = (
@@ -1129,13 +1129,14 @@ class PatientNotesForConsultationViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FileUploadFilter
 
-
     def get_queryset(self):
         consultation_external_id = self.kwargs["consultation_external_id"]
 
-        patient_notes_external_ids = list(PatientNotes.objects.filter(
-            consultation__external_id=consultation_external_id
-        ).values_list('external_id', flat=True))
+        patient_notes_external_ids = list(
+            PatientNotes.objects.filter(
+                consultation__external_id=consultation_external_id
+            ).values_list("external_id", flat=True)
+        )
 
         return self.queryset.filter(
             associating_id__in=patient_notes_external_ids,

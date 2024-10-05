@@ -56,10 +56,10 @@ from care.facility.api.viewsets.patient import (
     FacilityDischargedPatientViewSet,
     FacilityPatientStatsHistoryViewSet,
     PatientNotesEditViewSet,
+    PatientNotesForConsultationViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
     PatientViewSet,
-    PatientNotesForConsultationViewSet,
 )
 from care.facility.api.viewsets.patient_consultation import (
     PatientConsentViewSet,

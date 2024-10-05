@@ -1,8 +1,9 @@
+import re
+
 from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import now
 from rest_framework import serializers
-import re
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
@@ -514,10 +515,15 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         parent_note = obj
         while parent_note.reply_to is not None:
             parent_note = parent_note.reply_to
-        return ReplyToPatientNoteSerializer(parent_note).data if parent_note != obj else None
+        return (
+            ReplyToPatientNoteSerializer(parent_note).data
+            if parent_note != obj
+            else None
+        )
 
     def get_files(self, obj):
         from care.facility.api.serializers.file_upload import FileUploadListSerializer
+
         return FileUploadListSerializer(
             FileUpload.objects.filter(
                 associating_id=obj.external_id,
