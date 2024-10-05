@@ -30,6 +30,8 @@ class ExpectedPatientNoteKeys(Enum):
     REPLY_TO_OBJECT = "reply_to_object"
     REPLIES = "replies"
     FILES = "files"
+    MENTIONED_USERS = "mentioned_users"
+    PARENT_NOTE_OBJECT = "parent_note_object"
 
 
 class ExpectedFacilityKeys(Enum):
