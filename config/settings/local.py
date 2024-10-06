@@ -22,7 +22,7 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic", *INSTALLED_APPS]
 INSTALLED_APPS += ["silk"]
 MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 # https://github.com/jazzband/django-silk#profiling
-SILKY_PYTHON_PROFILER = False
+SILKY_PYTHON_PROFILER = True
 
 # django-extensions
 # ------------------------------------------------------------------------------
