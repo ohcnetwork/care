@@ -294,7 +294,7 @@ class User(AbstractUser):
         validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
 
-    doctor_qualification = models.TextField(
+    qualification = models.TextField(
         blank=False,
         null=True,
     )
