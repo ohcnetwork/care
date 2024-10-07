@@ -1824,7 +1824,7 @@
         "min": "Varies based on age, sex, and muscle mass",
         "max": "55 - 105 mL/min (females)",
         "category_id": [
-          7
+            7
         ]
     }
 ]
