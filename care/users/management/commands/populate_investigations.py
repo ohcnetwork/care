@@ -42,15 +42,29 @@ class Command(BaseCommand):
                 "name": investigation["name"],
                 "unit": investigation.get("unit", ""),
                 "ideal_value": investigation.get("ideal_value", ""),
-                "min_value": float(investigation["min"])
-                if investigation.get("min") is not None
-                else None,
-                "max_value": float(investigation["max"])
-                if investigation.get("max") is not None
-                else None,
+                "min_value": None,
+                "max_value": None,
                 "investigation_type": investigation["type"],
                 "choices": investigation.get("choices", ""),
             }
+
+            try:
+                data["min_value"] = (
+                    float(investigation["min"])
+                    if investigation.get("min") is not None
+                    else None
+                )
+            except (ValueError, TypeError):
+                data["min_value"] = None
+
+            try:
+                data["max_value"] = (
+                    float(investigation["max"])
+                    if investigation.get("max") is not None
+                    else None
+                )
+            except (ValueError, TypeError):
+                data["max_value"] = None
 
             existing_obj = PatientInvestigation.objects.filter(
                 name=data["name"]
