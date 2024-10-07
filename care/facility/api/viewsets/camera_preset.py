@@ -9,27 +9,9 @@ from care.facility.models import AssetBed, CameraPreset
 
 
 class CameraPresetFilter(filters.FilterSet):
-    position = filters.BooleanFilter(method="filter_preset_type")
-    boundary = filters.BooleanFilter(method="filter_preset_type")
-
     asset = filters.UUIDFilter(field_name="asset_bed__asset__external_id")
     bed = filters.UUIDFilter(field_name="asset_bed__bed__external_id")
     asset_bed = filters.UUIDFilter(field_name="asset_bed__external_id")
-
-    def filter_preset_type(self, queryset, name, value):
-        if value is not None:
-            return queryset.filter(**{f"{name}__isnull": not value})
-        return queryset
-
-
-class AssetBedCameraPresetFilter(filters.FilterSet):
-    position = filters.BooleanFilter(method="filter_preset_type")
-    boundary = filters.BooleanFilter(method="filter_preset_type")
-
-    def filter_preset_type(self, queryset, name, value):
-        if value is not None:
-            return queryset.filter(**{f"{name}__isnull": not value})
-        return queryset
 
 
 class AssetBedCameraPresetViewSet(ModelViewSet):
@@ -39,8 +21,6 @@ class AssetBedCameraPresetViewSet(ModelViewSet):
     )
     lookup_field = "external_id"
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AssetBedCameraPresetFilter
 
     def get_asset_bed_obj(self):
         return get_object_or_404(

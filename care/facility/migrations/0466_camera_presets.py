@@ -104,7 +104,6 @@ class Migration(migrations.Migration):
                 (
                     "position",
                     models.JSONField(
-                        null=True,
                         validators=[
                             care.utils.models.validators.JSONFieldSchemaValidator(
                                 {
@@ -116,28 +115,6 @@ class Migration(migrations.Migration):
                                         "zoom": {"type": "number"},
                                     },
                                     "required": ["x", "y", "zoom"],
-                                    "type": "object",
-                                }
-                            )
-                        ],
-                    ),
-                ),
-                (
-                    "boundary",
-                    models.JSONField(
-                        null=True,
-                        validators=[
-                            care.utils.models.validators.JSONFieldSchemaValidator(
-                                {
-                                    "$schema": "http://json-schema.org/draft-07/schema#",
-                                    "additionalProperties": False,
-                                    "properties": {
-                                        "x0": {"type": "number"},
-                                        "x1": {"type": "number"},
-                                        "y0": {"type": "number"},
-                                        "y1": {"type": "number"},
-                                    },
-                                    "required": ["x0", "y0", "x1", "y1"],
                                     "type": "object",
                                 }
                             )
@@ -174,25 +151,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-        ),
-        migrations.AddConstraint(
-            model_name="camerapreset",
-            constraint=models.CheckConstraint(
-                check=models.Q(
-                    models.Q(("boundary__isnull", True), ("position__isnull", False)),
-                    models.Q(("boundary__isnull", False), ("position__isnull", True)),
-                    _connector="OR",
-                ),
-                name="position_xor_boundary",
-            ),
-        ),
-        migrations.AddConstraint(
-            model_name="camerapreset",
-            constraint=models.UniqueConstraint(
-                condition=models.Q(("boundary__isnull", False), ("deleted", False)),
-                fields=("asset_bed",),
-                name="single_boundary_preset_for_assetbed",
-            ),
         ),
         migrations.RunPython(
             delete_asset_beds_without_asset_class,

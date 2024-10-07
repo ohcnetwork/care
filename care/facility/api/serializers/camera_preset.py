@@ -42,37 +42,9 @@ class CameraPresetSerializer(serializers.ModelSerializer):
             raise ValidationError(msg)
         return value
 
-    def validate(self, attrs):
-        validated_data = super().validate(attrs)
-
-        asset_bed = self.get_asset_bed_obj()
-        position = validated_data.get(
-            "position", self.instance and self.instance.position
-        )
-        boundary = validated_data.get(
-            "boundary", self.instance and self.instance.boundary
-        )
-
-        if not self.instance:
-            # one of position or boundary only must be present
-            if not (validated_data.get("position") or validated_data.get("boundary")):
-                msg = "Either position or boundary must be specified"
-                raise ValidationError(msg)
-
-            # single boundary preset for an asset_bed
-            if boundary and CameraPreset.objects.filter(asset_bed=asset_bed).exists():
-                msg = "Only one boundary preset can exist for an asset_bed"
-                raise ValidationError(msg)
-        # one of position or boundary only must be present
-        if position and boundary:
-            msg = "Cannot have both position and a boundary."
-            raise ValidationError(msg)
-
-        validated_data["asset_bed"] = self.get_asset_bed_obj()
-        return validated_data
-
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user
+        validated_data["asset_bed"] = self.get_asset_bed_obj()
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
