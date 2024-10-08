@@ -26,6 +26,7 @@ class BaseAssetIntegration:
         )
 
         try:
+            meta["_name"] = self._name
             jsonschema.validate(instance=meta, schema=meta_object_schema)
         except JSONValidationError as e:
             error_message = f"Invalid metadata: {e.message}"
