@@ -27,17 +27,14 @@ class CameraPresetSerializer(serializers.ModelSerializer):
         )
 
     def get_asset_bed_obj(self):
-        return self.instance.asset_bed if self.instance else self.context["asset_bed"]
+        return (
+            self.instance.asset_bed if self.instance else self.context.get("asset_bed")
+        )
 
     def validate_name(self, value):
-        presets_of_related_bed = (
-            CameraPreset.objects.filter(
-                asset_bed__bed_id=self.get_asset_bed_obj().bed_id
-            )
-            .only("name")
-            .values_list("name")
-        )
-        if value in [x[0] for x in presets_of_related_bed]:
+        if CameraPreset.objects.filter(
+            asset_bed__bed_id=self.get_asset_bed_obj().bed_id, name=value
+        ).exists():
             msg = "Name should be unique. Another preset related to this bed already uses the same name."
             raise ValidationError(msg)
         return value

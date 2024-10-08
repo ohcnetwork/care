@@ -8,12 +8,6 @@ from care.facility.api.serializers.camera_preset import CameraPresetSerializer
 from care.facility.models import AssetBed, CameraPreset
 
 
-class CameraPresetFilter(filters.FilterSet):
-    asset = filters.UUIDFilter(field_name="asset_bed__asset__external_id")
-    bed = filters.UUIDFilter(field_name="asset_bed__bed__external_id")
-    asset_bed = filters.UUIDFilter(field_name="asset_bed__external_id")
-
-
 class AssetBedCameraPresetViewSet(ModelViewSet):
     serializer_class = CameraPresetSerializer
     queryset = CameraPreset.objects.all().select_related(
@@ -35,6 +29,11 @@ class AssetBedCameraPresetViewSet(ModelViewSet):
         context = super().get_serializer_context()
         context["asset_bed"] = self.get_asset_bed_obj()
         return context
+
+
+class CameraPresetFilter(filters.FilterSet):
+    asset = filters.UUIDFilter(field_name="asset_bed__asset__external_id")
+    bed = filters.UUIDFilter(field_name="asset_bed__bed__external_id")
 
 
 class CameraPresetViewSet(GenericViewSet, ListModelMixin):
