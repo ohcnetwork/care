@@ -1,30 +1,82 @@
 [
-    {
-        "id": "1",
-        "name": "Haematology"
-    },
-    {
-        "id": "2",
-        "name": "Biochemistry test"
-    },
-    {
-        "id": "3",
-        "name": "Urine Test"
-    },
-    {
-        "id": "4",
-        "name": "CBC"
-    },
-    {
-        "id": "5",
-        "name": "Differential white blood cell count"
-    },
-    {
-        "id": "6",
-        "name": "Liver Function Test"
-    },
-    {
-        "id": "7",
-        "name": "Kidney Function test"
-    }
+  {
+    "id": "1",
+    "name": "Haematology"
+  },
+  {
+    "id": "2",
+    "name": "Biochemistry test"
+  },
+  {
+    "id": "3",
+    "name": "Urine Test"
+  },
+  {
+    "id": "4",
+    "name": "CBC"
+  },
+  {
+    "id": "5",
+    "name": "Differential white blood cell count"
+  },
+  {
+    "id": "6",
+    "name": "Liver Function Test"
+  },
+  {
+    "id": "7",
+    "name": "Kidney Function test"
+  },
+  {
+    "id": "8",
+    "name": "Elecyrolytes"
+  },
+  {
+    "id": "9",
+    "name": "Lipid Profile"
+  },
+  {
+    "id": "10",
+    "name": "ABG"
+  },
+  {
+    "id": "11",
+    "name": "Cardiac Enzyme"
+  },
+  {
+    "id": "12",
+    "name": "RFT"
+  },
+  {
+    "id": "13",
+    "name": "Blood Glucose Level"
+  },
+  {
+    "id": "14",
+    "name": "Immunoglobulins"
+  },
+  {
+    "id": "15",
+    "name": "Other Body Fluids"
+  },
+  {
+    "id": "16",
+    "name": "Cerebro Spinal Fluid analysis"
+  },
+  {
+    "id": "17",
+    "name": "Gastric Analysis"
+  },
+  {
+    "id": "18",
+    "name": "Semen analysis"
+  },
+  {
+    "id": "19",
+    "name": "Stool Examination"
+  },
+  {
+    "id": "20",
+    "name": "Thyroid Function Test"
+  }
 ]

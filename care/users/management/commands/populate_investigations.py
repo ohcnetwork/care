@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 "ideal_value": investigation.get("ideal_value", ""),
                 "min_value": None,
                 "max_value": None,
-                "investigation_type": investigation["type"],
+                "investigation_type": investigation.get("type", None),
                 "choices": investigation.get("choices", ""),
             }
 
