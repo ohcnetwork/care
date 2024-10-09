@@ -267,16 +267,24 @@ class ConsultationBedViewSet(
         return queryset
 
     @action(detail=True, methods=["patch"])
-    def toggle_privacy(self, request, external_id):
+    def set_privacy(self, request, external_id):
         consultation_bed: ConsultationBed = self.get_object()
+
+        is_privacy_enabled = request.data.get("is_privacy_enabled")
+
+        if is_privacy_enabled is None:
+            return Response(
+                {"detail": "'is_privacy_enabled' field is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not consultation_bed.consultation.patient.has_object_update_permission(
             request
         ):
             raise PermissionDenied
 
-        consultation_bed.is_privacy_enabled = not consultation_bed.is_privacy_enabled
-        consultation_bed.save()
+        consultation_bed.is_privacy_enabled = is_privacy_enabled
+        consultation_bed.save(update_fields=["is_privacy_enabled"])
 
         return Response(
             ConsultationBedSerializer(consultation_bed).data, status=status.HTTP_200_OK
