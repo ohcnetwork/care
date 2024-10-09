@@ -105,17 +105,8 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
 
     facility_flags = serializers.SerializerMethodField()
 
-    hubs = serializers.SerializerMethodField()
-    spokes = serializers.SerializerMethodField()
-
     def get_facility_flags(self, facility):
         return facility.get_facility_flags()
-
-    def get_hubs(self, facility):
-        return FacilitySpokeSerializer(facility.hubs, many=True).data
-
-    def get_spokes(self, facility):
-        return FacilitySpokeSerializer(facility.spokes, many=True).data
 
     class Meta:
         model = Facility
@@ -153,8 +144,6 @@ class FacilitySerializer(FacilityBasicInfoSerializer):
             "patient_count",
             "bed_count",
             "facility_flags",
-            "hubs",
-            "spokes",
         ]
         read_only_fields = ("modified_date", "created_date")
 
