@@ -72,6 +72,23 @@ make load-dummy-data
 Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
+###### Backup
+Backup your database running on docker automatically everyday by initiating a cronjob
+and do to do so run the commands as follows.
+
+Check cron service on Linux system
+``bash
+sudo systemctl status cron.service
+```
+Open up a crontab
+```bash
+crontab -e
+```
+Add the cronjob
+```bash
+@daily care/scripts/backup.sh
+```
+
 ## Contributing
 
 We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.

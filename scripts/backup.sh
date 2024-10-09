@@ -1,9 +1,9 @@
 #!/bin/bash
-
 # Variables
-CONTAINER_NAME="care"
-DB_NAME="care_db"
-DB_USER="care_user"
+CONTAINER_NAME= $(docker ps --format '{{.Names}}' | grep 'care-db'
+)
+DB_NAME="postgres"
+DB_USER="postgres"
 #Adding separate directory
 BACKUP_DIR="$(pwd)/backup"
 DATE=$(date +%Y%m%d%H%M%S)
