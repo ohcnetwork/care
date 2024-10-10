@@ -77,15 +77,15 @@ Backup your database running on docker automatically everyday by initiating a cr
 and do to do so run the commands as follows.
 
 Check cron service on Linux system
-``bash
+```bash
 sudo systemctl status cron.service
 ```
 Open up a crontab
-```bash
+```
 crontab -e
 ```
 Add the cronjob
-```bash
+```
 @daily care/scripts/backup.sh
 ```
 
