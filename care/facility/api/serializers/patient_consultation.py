@@ -621,10 +621,9 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {"patient_no": "This field is required for admission."}
                     )
-                else:
-                    resultCount = PatientConsultation.objects.filter(facility=facility, patient_no=patient_no).count()
-                    if resultCount > 0:
-                        raise ValidationError({"patient_number": "This field should be unique for facility"})
+                result_count = PatientConsultation.objects.filter(facility=facility, patient_no=patient_no).count()
+                if result_count > 0:
+                    raise ValidationError({"patient_number": "This field should be unique for facility"})
 
 
         if "suggestion" in validated and validated["suggestion"] not in [
