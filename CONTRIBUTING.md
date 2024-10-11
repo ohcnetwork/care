@@ -5,7 +5,7 @@ Any support is welcome. You could help by writing documentation, pull-requests, 
 
 ### Getting Started
 
-An issue wih the [good first](https://github.com/ohcnetwork/care/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22) or [help wanted](https://github.com/ohcnetwork/care/issues?q=is%3Aissue+sort%3Aupdated-desc+label%3A%22help+wanted%22+is%3Aopen) label might be a good place to start with.
+An issue with the [good first](https://github.com/ohcnetwork/care/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22) or [help wanted](https://github.com/ohcnetwork/care/issues?q=is%3Aissue+sort%3Aupdated-desc+label%3A%22help+wanted%22+is%3Aopen) label might be a good place to start with.
 
 ### Setting up the development environment
 
@@ -34,11 +34,13 @@ Make sure you have docker and docker-compose installed. Then run:
 make build
 ```
 
+
+
 #### Using Virtualenv
 
 Make sure you have Postgres and Redis installed on your system.
 
-##### Setting up postgtres for the first time
+##### Setting up postgres for the first time
 
 ```bash
 sudo -u postgres psql
