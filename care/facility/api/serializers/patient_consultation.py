@@ -605,10 +605,8 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         # TODO Add Bed Authorisation Validation
 
         facility = (
-                self.instance
-                and self.instance.facility
-                or validated["patient"].facility
-            )
+            self.instance and self.instance.facility or validated["patient"].facility
+        )
 
         if (
             not self.instance or validated.get("patient_no") != self.instance.patient_no
@@ -621,10 +619,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {"patient_no": "This field is required for admission."}
                     )
-                result_count = PatientConsultation.objects.filter(facility=facility, patient_no=patient_no).count()
+                result_count = PatientConsultation.objects.filter(
+                    facility=facility, patient_no=patient_no
+                ).count()
                 if result_count > 0:
-                    raise ValidationError({"patient_number": "This field should be unique for facility"})
-
+                    raise ValidationError(
+                        {"patient_number": "This field should be unique for facility"}
+                    )
 
         if "suggestion" in validated and validated["suggestion"] not in [
             SuggestionChoices.DD,
