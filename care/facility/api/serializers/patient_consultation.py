@@ -604,16 +604,28 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         validated = super().validate(attrs)
         # TODO Add Bed Authorisation Validation
 
+        facility = (
+                self.instance
+                and self.instance.facility
+                or validated["patient"].facility
+            )
+
         if (
             not self.instance or validated.get("patient_no") != self.instance.patient_no
         ) and "suggestion" in validated:
             suggestion = validated["suggestion"]
             patient_no = validated.get("patient_no")
 
-            if suggestion == SuggestionChoices.A and not patient_no:
-                raise ValidationError(
-                    {"patient_no": "This field is required for admission."}
-                )
+            if suggestion == SuggestionChoices.A:
+                if not patient_no:
+                    raise ValidationError(
+                        {"patient_no": "This field is required for admission."}
+                    )
+                else:
+                    resultCount = PatientConsultation.objects.filter(facility=facility, patient_no=patient_no).count()
+                    if resultCount > 0:
+                        raise ValidationError({"patient_number": "This field should be unique for facility"})
+
 
         if "suggestion" in validated and validated["suggestion"] not in [
             SuggestionChoices.DD,
@@ -632,11 +644,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 msg = "Only Doctors can verify a Consultation"
                 raise ValidationError(msg)
 
-            facility = (
-                self.instance
-                and self.instance.facility
-                or validated["patient"].facility
-            )
             # Check if the Doctor is associated with the Facility (.facilities)
             if not treating_physician.facilities.filter(id=facility.id).exists():
                 msg = "The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
