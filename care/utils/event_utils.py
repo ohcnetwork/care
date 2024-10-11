@@ -24,24 +24,24 @@ def get_changed_fields(old: Model, new: Model) -> set[str]:
 def serialize_field(obj: Model, field_name: str):
     if "__" in field_name:
         field_name, sub_field = field_name.split("__", 1)
-        related_object = getattr(obj, field_name, None)
-        return serialize_field(related_object, sub_field)
+        related_obj = getattr(obj, field_name, None)
+        return serialize_field(related_obj, sub_field)
 
     value = None
     try:
-        value = getattr(object, field_name)
+        value = getattr(obj, field_name)
     except AttributeError:
-        if object is not None:
+        if obj is not None:
             logger.warning(
-                "Field %s not found in %s", field_name, object.__class__.__name__
+                "Field %s not found in %s", field_name, obj.__class__.__name__
             )
         return None
 
     try:
         # serialize choice fields with display value
-        field = object._meta.get_field(field_name)  # noqa: SLF001
+        field = obj._meta.get_field(field_name)  # noqa: SLF001
         if issubclass(field.__class__, Field) and field.choices:
-            value = getattr(object, f"get_{field_name}_display", lambda: value)()
+            value = getattr(obj, f"get_{field_name}_display", lambda: value)()
     except FieldDoesNotExist:
         # the required field is a property and not a model field
         pass
