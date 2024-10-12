@@ -209,7 +209,7 @@ class FacilitySpokesViewSet(viewsets.ModelViewSet):
 class FacilityHubsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
     serializer_class = FacilitySpokeSerializer
-    permission_classes = (IsAuthenticated, DRYPermissions)
+    permission_classes = (IsAuthenticated,)
     lookup_field = "external_id"
 
     def get_queryset(self):
