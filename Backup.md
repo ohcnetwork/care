@@ -30,7 +30,7 @@ bash /home/$USER/care/scripts/backup.sh
 ```
 Delete the existing database
 ```bash
-docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
+docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "DROP DATABASE IF EXISTS care;"
 ```
 Create the new database
 ```bash
