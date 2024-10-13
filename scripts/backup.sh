@@ -6,7 +6,7 @@ container_name="$(docker ps --format '{{.Names}}' | grep 'care-db'
 db_name='care'
 db_user='postgres'
 #Adding separate directory
-backup_dir="$(pwd)/backup"
+backup_dir="/home/$USER/care-backups"
 date=$(date +%Y%m%d%H%M%S)
 backup_file="${backup_dir}/${db_name}_backup_${date}.sql"
 
