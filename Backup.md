@@ -14,12 +14,33 @@ We are basically deleting the existing database and creating a new database with
 ```bash
 make down
 ```
-1. Move the sql file to the target directory thats mounted to the container.
+Move the sql file to the target directory thats mounted to the container.
 ```bash
 sudo mv /home/$USER/care-backups/<file name> /home/$USER/care_dir-to-read
 ```
-2. Bring up the contaier
+Bring up the contaier
 ```bash
 make up
 ```
-3. 
+Backup the existing database
+```bash
+chmod +x /home/$USER/care/scripts/backup.sh
+bash /home/$USER/care/scripts/backup.sh
+```
+Delete the existing database
+```bash
+docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
+```
+Create the new database
+```bash
+docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
+```
+Get inside the container
+```bash
+docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') /bin/bash
+```
+Restore the database
+```bash
+cd backup
+psql -U postgres -d care < $(ls -t | head -n 1)
+```
