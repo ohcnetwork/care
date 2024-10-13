@@ -9,7 +9,7 @@ And stores these files in `/home/$USER/care-backups`, the script will create thi
 the time of executing the script. And it saves the file as `care_backup_%Y%m%d%H%M%S.sql`.
 
 ## How to restore the database
-We are basically deleting the existing database and creating a new database with the same name. Run the commands as follows on your terminal.
+We are basically backing up the existing database then deleting the existing database and creating a new database with the same name. Run the commands as follows on your terminal.
 > Make sure the containers down
 ```bash
 make down
@@ -44,3 +44,4 @@ Restore the database
 cd backup
 psql -U postgres -d care < $(ls -t | head -n 1)
 ```
+> There are way easier ways to do this, if anyone has any particular idea do make a pr :)
