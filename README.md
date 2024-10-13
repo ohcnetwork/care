@@ -74,11 +74,10 @@ on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
 ###### Backup
 Backup your database running on docker automatically everyday by initiating a cronjob.
-
-install this package if not installed, for doing the cronjob.
-
 **Note: Make sure you have the docker containers up and running**
 refer [this](https://care-be-docs.ohc.network/local-setup/configuration.html)
+
+install this package if not installed, for doing the cronjob.
 
 For a fedora based system:
 ```bash
