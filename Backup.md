@@ -10,7 +10,8 @@ the time of executing the script. And it saves the file as `care_backup_%Y%m%d%H
 
 ## How to restore the database
 We are basically backing up the existing database then deleting the existing database and creating a new database with the same name. Run the commands as follows on your terminal.
-> Make sure the containers down
+
+Make sure the containers down
 ```bash
 make down
 ```
