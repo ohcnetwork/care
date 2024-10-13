@@ -18,7 +18,7 @@ Move the sql file to the target directory thats mounted to the container.
 ```bash
 sudo mv /home/$USER/care-backups/<file name> /home/$USER/care_dir-to-read
 ```
-Bring up the contaier
+Bring up the container
 ```bash
 make up
 ```
