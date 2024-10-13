@@ -11,6 +11,7 @@ services:
       - ./docker/.prebuilt.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - /home/$USER/care_dir-to-read:/backup
     ports:
       - "5433:5432"
 
