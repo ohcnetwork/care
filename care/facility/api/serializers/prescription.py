@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404  # noqa: I001
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -104,7 +104,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             match = re.match(r"(\d+(\.\d+)?)", dosage)  # Matches digits and optional decimal part
             if match:
                 return float(match.group(1))
-            raise serializers.ValidationError({"dosage": "Invalid dosage format."})
 
         if "medicine" in attrs:
             attrs["medicine"] = get_object_or_404(
@@ -140,7 +139,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         max_dosage = attrs.get("max_dosage")
 
         if base_dosage and max_dosage:
-         try:
             # Extract numeric values from dosage strings
             base_dosage_value = extract_numeric_value(base_dosage)
             max_dosage_value = extract_numeric_value(max_dosage)
@@ -150,10 +148,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."}
                 )
-         except ValueError:
-            raise serializers.ValidationError(
-                {"dosage": "Dosages must be numeric values with optional units."}
-            )
 
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
