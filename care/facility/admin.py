@@ -1,9 +1,9 @@
-from django import forms  # noqa: I001
+from django import forms 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 from djqscsv import render_to_csv_response
-from rest_framework.exceptions import ValidationError
+
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
@@ -38,7 +38,6 @@ from .models import (
     PatientRegistration,
     Room,
     StaffRoomAllocation,
-    Prescription  # noqa: F401
 )
 
 
@@ -226,4 +225,3 @@ admin.site.register(ConsultationBed)
 admin.site.register(PatientConsent)
 admin.site.register(FileUpload)
 admin.site.register(PatientConsultation)
-admin.site.register(Prescription)
