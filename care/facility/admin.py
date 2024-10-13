@@ -1,9 +1,8 @@
-from django import forms 
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from djangoql.admin import DjangoQLSearchMixin
 from djqscsv import render_to_csv_response
-
 
 from care.facility.models.ambulance import Ambulance, AmbulanceDriver
 from care.facility.models.asset import Asset
@@ -16,6 +15,7 @@ from care.facility.models.patient_consultation import (
 )
 from care.facility.models.patient_sample import PatientSample
 from care.utils.registries.feature_flag import FlagRegistry, FlagType
+-
 from .models import (
     Building,
     Disease,
