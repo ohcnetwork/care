@@ -76,7 +76,7 @@ on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 Backup your database running on docker automatically everyday by initiating a cronjob.
 > **Note:** Make sure you have the docker containers up and running, refer [this](https://care-be-docs.ohc.network/local-setup/configuration.html)
 
-install this package if not installed, for doing the cronjob.
+**Install the package**
 
 For a fedora based system:
 ```bash
@@ -87,7 +87,7 @@ For a debian based system:
 sudo apt install cron
 ```
 
-For automating the cron job:
+**Automate the cronjob**
 
 Open up a crontab
 ```
@@ -98,12 +98,12 @@ Add the cronjob
 0 0 * * * /home/care/scripts/backup.sh
 
 ```
-List the cron jobs
+**List the cron jobs**
 ```
 crontab -l
 ```
 
-Check the status of cron service.
+**Check the status of cron**
 
 For a fedora based os:
 ```bash
@@ -113,7 +113,6 @@ For a debian based os:
 ```bash
 sudo systemctl status cron
 ```
-
 For restoring the database of your docker container use [this](https://github.com/dumbstertruck3/care/blob/docker_backup/Backup.md) documentation.
 ## Contributing
 
