@@ -15,7 +15,6 @@ from care.facility.models.patient_consultation import (
 )
 from care.facility.models.patient_sample import PatientSample
 from care.utils.registries.feature_flag import FlagRegistry, FlagType
--
 from .models import (
     Building,
     Disease,
