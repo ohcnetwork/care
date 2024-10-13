@@ -72,7 +72,7 @@ make load-dummy-data
 Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
-###### Backup
+### Docker backup
 Backup your database running on docker automatically everyday by initiating a cronjob.
 **Note: Make sure you have the docker containers up and running**
 refer [this](https://care-be-docs.ohc.network/local-setup/configuration.html)
