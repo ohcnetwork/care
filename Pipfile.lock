@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "82b40d895920ac109f51b1e331c891ba2c9e3ebe5e7feded2cd8cc01bbd948d0"
+            "sha256": "a75fac2ca956ed5e3552e62544bda83acfa5dd700df10c9b3a669c5b41dd863b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -208,20 +208,20 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:2244044cdfa8ac345d7400536dc15a4824835e7ec5c55bc267e118af66bb27db",
-                "sha256:7bbb1ee649e09e956952285782cfdebd7e81fc78384f48dfab3d66c6eaf3f63f"
+                "sha256:33c6a7aeab316f7e0b3ad8552afe95a4a10bfd58519d00741c4d4f3047da8382",
+                "sha256:9352f6d61f15c789231a5d608613f03425059072ed862c32e1ed102b17206abf"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==1.35.29"
+            "version": "==1.35.40"
         },
         "botocore": {
             "hashes": [
-                "sha256:4cee814875bc78656aef4011d3d6b2231e96f53ea3661ee428201afb579d5c31",
-                "sha256:f7bfa910cf2cbcc8c2307c1cf7b93495d614c2d699883417893e0a337fe4eb63"
+                "sha256:072cc47f29cb1de4fa77ce6632e4f0480af29b70816973ff415fbaa3f50bd1db",
+                "sha256:547e0a983856c7d7aeaa30fca2a283873c57c07366cd806d2d639856341b3c31"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==1.35.31"
+            "version": "==1.35.40"
         },
         "celery": {
             "hashes": [
@@ -1523,11 +1523,11 @@
         },
         "s3transfer": {
             "hashes": [
-                "sha256:0711534e9356d3cc692fdde846b4a1e4b0cb6519971860796e6bc4c7aea00ef6",
-                "sha256:eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69"
+                "sha256:263ed587a5803c6c708d3ce44dc4dfedaab4c1a32e8329bab818933d79ddcf5d",
+                "sha256:4f50ed74ab84d474ce614475e0b8d5047ff080810aac5d01ea25231cfc944b0c"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.10.2"
+            "version": "==0.10.3"
         },
         "sentry-sdk": {
             "hashes": [
@@ -1801,11 +1801,12 @@
                 "s3"
             ],
             "hashes": [
-                "sha256:048e664389c3fb53e8ab0f810eb280ba02c2f8213a63dc5d3da075ffd54b4504",
-                "sha256:6e5f082f7cd028bdf3bfc57c9db3b784e0f6ec2232b10482859a919d6cd6bfc9"
+                "sha256:d845700ef89fbc523e5524b7d2645a83d6ec5701cca0b4e9905409c3911346b5",
+                "sha256:f586ba655d91e2967c3e735b42e36762761a0aa2923ec7d86b5b71f04c41b0a8"
             ],
+            "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==1.35.29"
+            "version": "==1.35.40"
         },
         "botocore": {
             "hashes": [
@@ -1817,11 +1818,11 @@
         },
         "botocore-stubs": {
             "hashes": [
-                "sha256:b26f79253d8f2460aa8f2d49ae933c3f352fe38be72ea033651c15cd47a822a9",
-                "sha256:b7289c27b759dad40759c1421519cbd7ec65b79f7aa8be5dfc76004a61aef42b"
+                "sha256:266e72603cad6927040b2a2d7dcbf0b11240833c213274a0bec8052b214931c0",
+                "sha256:a1eb2fb186059d667f0583df6d4d3419b7e47c33ad9ab082e970f819c0f511af"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==1.35.31"
+            "version": "==1.35.40"
         },
         "certifi": {
             "hashes": [
@@ -2595,11 +2596,11 @@
         },
         "types-s3transfer": {
             "hashes": [
-                "sha256:60167a3bfb5c536ec6cdb5818f7f9a28edca9dc3e0b5ff85ae374526fc5e576e",
-                "sha256:7a3fec8cd632e2b5efb665a355ef93c2a87fdd5a45b74a949f95a9e628a86356"
+                "sha256:d34c5a82f531af95bb550927136ff5b737a1ed3087f90a59d545591dfde5b4cc",
+                "sha256:f761b2876ac4c208e6c6b75cdf5f6939009768be9950c545b11b0225e7703ee7"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.10.2"
+            "version": "==0.10.3"
         },
         "typing-extensions": {
             "hashes": [
