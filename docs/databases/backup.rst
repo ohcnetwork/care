@@ -1,7 +1,7 @@
 Docker database backup
 ======================
 
-This page explains how to automate the backup process of a Docker database on a daily basis and restore the backup snapshot created by the `backup script <scripts/backup.sh>`_.
+This page explains how to automate the backup process of a Docker database on a daily basis and restore the backup snapshot created by the `backup script <../scripts/backup.sh>`_.
 
    Note: This documentation assumes that you are using a Linux-based system.
 -------------------------------------------------------------------------------
