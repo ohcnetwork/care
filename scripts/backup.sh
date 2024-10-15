@@ -1,21 +1,15 @@
 #!/bin/bash
 set -ue
-# Variables
-container_name="$(docker ps --format '{{.Names}}' | grep 'care-db'
-)"
-db_name='care'
-db_user='postgres'
-#Adding separate directory
-backup_dir="/home/$USER/care-backups"
-date=$(date +%Y%m%d%H%M%S)
-backup_file="${backup_dir}/${db_name}_backup_${date}.sql"
+source ../.env
 
-# Ensure the backup directory exists
-[ -d "${backup_dir}" ] || mkdir "$backup_dir"
+container_name="$(docker ps --format '{{.Names}}' | grep 'care-db')"
+date=$(date +%Y%m%d%H%M%S)
+#name the file
+backup_file="./backup/${POSTGRES_DB}_backup_${date}.dump"
 
 # Remove old backups
-find "${backup_dir}" -name "${db_name}_backup_*.sql" -type f -mtime +7 -exec rm {} \;
+docker exec -t ${container_name} find "./backup" -name "${POSTGRES_DB}_backup_*.dump" -type f -mtime +${RETENTION_PERIOD} -exec rm {} \;
 
-# add the new backup
-docker exec -t ${container_name} pg_dump -U ${db_user} ${db_name} > ${backup_file}
-echo "Backup of database '${db_name}' completed and saved as ${backup_file}"
+#backup the database
+docker exec -t ${container_name} pg_dump -U ${POSTGRES_USER} -Fc -f ${backup_file} ${POSTGRES_DB}
+echo "Backup of database '${POSTGRES_DB}' completed and saved as ${backup_file}"
