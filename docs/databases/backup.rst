@@ -9,14 +9,14 @@ This page explains how to automate the backup process of a Docker database on a 
 Here's how the script works
 ---------------------------
 
-The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup SQL file using the pg_dump utility in PostgreSQL and stores these files in ``/home/$USER/care-backups.`` The script will create this directory if it doesn't already exist. Backup files older than 7 days are deleted when the script is executed. The backup file is saved with the name ``care_backup_%Y%m%d%H%M%S.sql.``
+The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file(``.dump``) using the pg_dump utility in PostgreSQL and stores these files in ``/home/$USER/care-backups.`` which is binded to ``/backups`` in the docker container. Backup files older than 7 days are deleted when the script is executed. The backup file is saved with the name ``care_backup_%Y%m%d%H%M%S.sql``.
 
 Set up a cronjob
 ----------------
 
 Backup your database running on docker automatically everyday by initiating a cronjob.
 
-    **Note**: Make sure you have the docker containers up and running, refer `this <../local-setup/configuration.rst>`_.
+    **Note**: Make sure you are in the care directory at the time of setting this up
 
 Install the package
 ~~~~~~~~~~~~~~~~~~~
@@ -73,32 +73,7 @@ For a debian based os:
 Restoration of the Database
 ===========================
 
-We are first backing up the existing database, then deleting it, and finally creating a new database with the same name. Run the following commands in your terminal.
-
-Make sure the containers are down:
-
-.. code:: bash
-
-   make down
-
-Move the SQL file to the target directory that's mounted to the container:
-
-.. code:: bash
-
-   sudo mv /home/$USER/care-backups/<file name> /home/$USER/care_dir-to-read
-
-Bring up the container:
-
-.. code:: bash
-
-   make up
-
-Backup the existing database:
-
-.. code:: bash
-
-   chmod +x /home/$USER/care/scripts/backup.sh
-   bash /home/$USER/care/scripts/backup.sh
+We are basically deleting the container's existing database and creating a new database with the same name. then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
 
 Delete the existing database:
 
@@ -112,18 +87,19 @@ Create the new database:
 
    docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
 
-Get inside the container:
+Execute and copy the name of the file you want to restore the database with:
 
 .. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') /bin/bash
+   sudo ls /home/$USER/care-backups/
 
 Restore the database:
 
+    Replace <file name> with your file name which looks like this ``care_backup_%Y%m%d%H%M%S.sql``
+
 .. code:: bash
 
-   cd backup
-   psql -U postgres -d care < $(ls -t | head -n 1)
+   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') pg_restore -U postgres -d care ./backups/<file name>.
 
 ------------------------------------------------------------------------------------------------------------------
 
