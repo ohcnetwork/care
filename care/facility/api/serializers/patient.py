@@ -1,3 +1,5 @@
+import re
+
 from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import now
@@ -24,6 +26,7 @@ from care.facility.models import (
     PatientRegistration,
 )
 from care.facility.models.bed import ConsultationBed
+from care.facility.models.file_upload import FileUpload
 from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit
 from care.facility.models.patient_base import (
@@ -457,6 +460,12 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
 class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
+    reply_to_object = serializers.SerializerMethodField()
+
+    def get_reply_to_object(self, obj):
+        if obj.reply_to:
+            return ReplyToPatientNoteSerializer(obj.reply_to).data
+        return None
 
     class Meta:
         model = PatientNotes
@@ -466,6 +475,7 @@ class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
             "created_date",
             "user_type",
             "note",
+            "reply_to_object",
         )
 
 
@@ -491,6 +501,38 @@ class PatientNotesSerializer(serializers.ModelSerializer):
         allow_null=True,
     )
     reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
+    files = serializers.SerializerMethodField()
+    replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
+    parent_note_object = serializers.SerializerMethodField()
+    mentioned_users = serializers.SerializerMethodField()
+
+    def get_mentioned_users(self, obj):
+        mentioned_users = set(re.findall(r"@(\w+)", obj.note))
+        users = User.objects.filter(username__in=mentioned_users)
+        return UserBaseMinimumSerializer(users, many=True).data
+
+    def get_parent_note_object(self, obj):
+        parent_note = obj
+        while parent_note.reply_to is not None:
+            parent_note = parent_note.reply_to
+        return (
+            ReplyToPatientNoteSerializer(parent_note).data
+            if parent_note != obj
+            else None
+        )
+
+    def get_files(self, obj):
+        from care.facility.api.serializers.file_upload import FileUploadListSerializer
+
+        return FileUploadListSerializer(
+            FileUpload.objects.filter(
+                associating_id=obj.external_id,
+                file_type=FileUpload.FileType.NOTES.value,
+                upload_completed=True,
+                is_archived=False,
+            ),
+            many=True,
+        ).data
 
     def validate_empty_values(self, data):
         if not data.get("note", "").strip():
@@ -575,6 +617,10 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "last_edited_date",
             "reply_to",
             "reply_to_object",
+            "files",
+            "replies",
+            "parent_note_object",
+            "mentioned_users",
         )
         read_only_fields = (
             "id",
