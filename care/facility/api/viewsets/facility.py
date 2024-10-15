@@ -204,3 +204,19 @@ class FacilitySpokesViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context["facility"] = facility
         return context
+
+
+class FacilityHubsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
+    serializer_class = FacilitySpokeSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        return self.queryset.filter(spoke=self.get_facility())
+
+    def get_facility(self):
+        facilities = get_facility_queryset(self.request.user)
+        return get_object_or_404(
+            facilities.filter(external_id=self.kwargs["facility_external_id"])
+        )
