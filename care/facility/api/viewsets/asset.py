@@ -20,7 +20,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import exceptions, status
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -395,11 +395,17 @@ class AssetViewSet(
                     "middleware_hostname": middleware_hostname,
                 }
             )
-            result = asset_class.handle_action(action)
+            result = asset_class.handle_action(action, request.user)
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except ValidationError as e:
             return Response({"detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+        except PermissionDenied as e:
+            return Response(
+                {**e.detail},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         except KeyError as e:
             return Response(
