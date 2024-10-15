@@ -4,7 +4,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 
 
 def get_asset_bed_queryset(user, queryset=None):
-    queryset = queryset or AssetBed.objects.all()
+    queryset = AssetBed.objects.all() if queryset is None else queryset
     if user.is_superuser:
         pass
     elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -18,7 +18,7 @@ def get_asset_bed_queryset(user, queryset=None):
 
 
 def get_bed_queryset(user, queryset=None):
-    queryset = queryset or Bed.objects.all()
+    queryset = Bed.objects.all() if queryset is None else queryset
     if user.is_superuser:
         pass
     elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
@@ -32,7 +32,7 @@ def get_bed_queryset(user, queryset=None):
 
 
 def get_asset_queryset(user, queryset=None):
-    queryset = queryset or Asset.objects.all()
+    queryset = Asset.objects.all() if queryset is None else queryset
     if user.is_superuser:
         pass
     elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
