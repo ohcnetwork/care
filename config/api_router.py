@@ -37,6 +37,7 @@ from care.facility.api.viewsets.events import (
 )
 from care.facility.api.viewsets.facility import (
     AllFacilityViewSet,
+    FacilityHubsViewSet,
     FacilitySpokesViewSet,
     FacilityViewSet,
 )
@@ -218,6 +219,7 @@ facility_nested_router.register(
 facility_nested_router.register(
     r"spokes", FacilitySpokesViewSet, basename="facility-spokes"
 )
+facility_nested_router.register(r"hubs", FacilityHubsViewSet, basename="facility-hubs")
 
 router.register("asset", AssetViewSet, basename="asset")
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
