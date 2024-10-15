@@ -9,17 +9,17 @@ from care.facility.models.patient_investigation import (
     PatientInvestigationGroup,
 )
 
-with Path("data/investigations.json").open() as investigations_data:
-    investigations = json.load(investigations_data)
-
-with Path("data/investigation_groups.json").open() as investigation_groups_data:
-    investigation_groups = json.load(investigation_groups_data)
-
 
 class Command(BaseCommand):
     help = "Seed Data for Investigations"
 
     def handle(self, *args, **kwargs):
+        with Path("data/investigations.json").open() as investigations_data:
+            investigations = json.load(investigations_data)
+
+        with Path("data/investigation_groups.json").open() as investigation_groups_data:
+            investigation_groups = json.load(investigation_groups_data)
+
         investigation_group_dict = {}
 
         for investigation_group in investigation_groups:
