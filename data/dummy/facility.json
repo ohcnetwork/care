@@ -12,14 +12,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
+      "features": "[\"1\", \"2\", \"3\", \"4\", \"5\", \"6\"]",
       "longitude": null,
       "latitude": null,
       "pincode": 670000,
@@ -56,10 +49,7 @@
       "verified": false,
       "facility_type": 1300,
       "kasp_empanelled": false,
-      "features": [
-        1,
-        6
-      ],
+      "features": "[\"1\", \"6\"]",
       "longitude": null,
       "latitude": null,
       "pincode": 670112,
@@ -96,11 +86,7 @@
       "verified": false,
       "facility_type": 1500,
       "kasp_empanelled": false,
-      "features": [
-        1,
-        4,
-        6
-      ],
+      "features": "[\"1\", \"4\", \"6\"]",
       "longitude": "78.6757364624373000",
       "latitude": "21.4009146842158660",
       "pincode": 670000,
@@ -137,11 +123,7 @@
       "verified": false,
       "facility_type": 1510,
       "kasp_empanelled": false,
-      "features": [
-        1,
-        3,
-        5
-      ],
+      "features": "[\"1\", \"3\", \"5\"]",
       "longitude": "75.2139014820876600",
       "latitude": "18.2774285038890340",
       "pincode": 670000,
@@ -178,7 +160,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -215,7 +197,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -252,7 +234,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -289,7 +271,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -326,7 +308,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -363,7 +345,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -400,7 +382,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -437,7 +419,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -474,7 +456,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -511,7 +493,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -548,7 +530,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -585,7 +567,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -622,7 +604,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -659,7 +641,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -696,7 +678,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -733,7 +715,7 @@
       "verified": false,
       "facility_type": 2,
       "kasp_empanelled": false,
-      "features": [],
+      "features": "[]",
       "longitude": null,
       "latitude": null,
       "pincode": 682001,
@@ -1052,6 +1034,15 @@
     "fields": {
       "facility": 1,
       "user": 24,
+      "created_by": 2
+    }
+  },
+  {
+    "model": "facility.facilityuser",
+    "pk": 25,
+    "fields": {
+      "facility": 1,
+      "user": 25,
       "created_by": 2
     }
   },
@@ -1984,6 +1975,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-01T08:35:00Z",
@@ -2011,7 +2003,8 @@
       "weight": 0.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2043,6 +2036,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:33:03.700Z",
@@ -2070,7 +2064,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2102,6 +2097,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:39:29.394Z",
@@ -2129,7 +2125,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2161,6 +2158,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:42:10.532Z",
@@ -2188,7 +2186,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2220,6 +2219,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:42:33.614Z",
@@ -2247,7 +2247,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2279,6 +2280,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:42:56.180Z",
@@ -2306,7 +2308,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2338,6 +2341,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:43:18.480Z",
@@ -2365,7 +2369,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2397,6 +2402,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:43:41.540Z",
@@ -2424,7 +2430,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2456,6 +2463,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:44:05.398Z",
@@ -2483,7 +2491,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2515,6 +2524,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:44:28.550Z",
@@ -2542,7 +2552,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2574,6 +2585,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:44:51.239Z",
@@ -2601,7 +2613,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2633,6 +2646,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:45:13.721Z",
@@ -2660,7 +2674,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2692,6 +2707,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:45:37.972Z",
@@ -2719,7 +2735,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2751,6 +2768,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:46:00.645Z",
@@ -2778,7 +2796,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2810,6 +2829,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:46:23.492Z",
@@ -2837,7 +2857,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2869,6 +2890,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:46:46.028Z",
@@ -2896,7 +2918,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2928,6 +2951,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:47:11.141Z",
@@ -2955,7 +2979,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -2987,6 +3012,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:47:34.395Z",
@@ -3014,7 +3040,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3046,6 +3073,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-07T08:47:53.746Z",
@@ -3073,7 +3101,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3105,6 +3134,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-15T08:47:53.746Z",
@@ -3132,7 +3162,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3140,8 +3171,8 @@
     "pk": 21,
     "fields": {
       "external_id": "40fa5cc6-6199-48cd-bc2a-dd9e73b920f9",
-      "created_date": "2024-1-30T08:47:53.746Z",
-      "modified_date": "2024-1-30T08:47:53.746Z",
+      "created_date": "2024-01-30T08:47:53.746Z",
+      "modified_date": "2024-01-30T08:47:53.746Z",
       "deleted": false,
       "patient": 18,
       "patient_no": "IP0010",
@@ -3164,9 +3195,10 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
-      "encounter_date": "2024-1-30T08:47:53.746Z",
+      "encounter_date": "2024-01-30T08:47:53.746Z",
       "icu_admission_date": null,
       "discharge_date": null,
       "discharge_reason": null,
@@ -3191,7 +3223,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3199,8 +3232,8 @@
     "pk": 22,
     "fields": {
       "external_id": "40faecc6-6199-48cd-bc2a-6d9e73b920f9",
-      "created_date": "2024-2-28T08:47:53.746Z",
-      "modified_date": "2024-2-28T08:47:53.746Z",
+      "created_date": "2024-02-28T08:47:53.746Z",
+      "modified_date": "2024-02-28T08:47:53.746Z",
       "deleted": false,
       "patient": 18,
       "patient_no": "IP011",
@@ -3223,9 +3256,10 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
-      "encounter_date": "2024-2-28T08:47:53.746Z",
+      "encounter_date": "2024-02-28T08:47:53.746Z",
       "icu_admission_date": null,
       "discharge_date": null,
       "discharge_reason": null,
@@ -3250,7 +3284,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3282,6 +3317,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2024-04-01T08:47:53.746Z",
@@ -3309,7 +3345,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3341,6 +3378,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2022-05-06T08:47:53.746Z",
@@ -3368,7 +3406,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3400,6 +3439,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2022-02-06T08:47:53.746Z",
@@ -3427,7 +3467,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3459,6 +3500,7 @@
       "referred_from_facility": null,
       "referred_from_facility_external": "",
       "referred_by_external": "",
+      "previous_consultation": null,
       "is_readmission": false,
       "admitted": true,
       "encounter_date": "2023-12-06T08:47:34.395Z",
@@ -3486,7 +3528,8 @@
       "weight": 170.0,
       "operation": null,
       "special_instruction": "",
-      "intubation_history": []
+      "intubation_history": [],
+      "has_consents": "[]"
     }
   },
   {
@@ -3583,6 +3626,54 @@
       "facility": 1,
       "meta": {},
       "location": 1
+    }
+  },
+  {
+    "model": "facility.bed",
+    "pk": 9,
+    "fields": {
+      "external_id": "a9ea05d2-4f58-4fc2-bc24-2979a3502dc4",
+      "created_date": "2024-10-14T07:56:52.641Z",
+      "modified_date": "2024-10-14T07:56:52.641Z",
+      "deleted": false,
+      "name": "Dummy Bed 7",
+      "description": "",
+      "bed_type": 2,
+      "facility": 1,
+      "meta": {},
+      "location": 2
+    }
+  },
+  {
+    "model": "facility.bed",
+    "pk": 10,
+    "fields": {
+      "external_id": "aff5a088-c278-4075-9a4c-64453f50f216",
+      "created_date": "2024-10-14T07:56:59.896Z",
+      "modified_date": "2024-10-14T07:56:59.896Z",
+      "deleted": false,
+      "name": "Dummy Bed 8",
+      "description": "",
+      "bed_type": 6,
+      "facility": 1,
+      "meta": {},
+      "location": 2
+    }
+  },
+  {
+    "model": "facility.bed",
+    "pk": 11,
+    "fields": {
+      "external_id": "882ce4de-4e2c-4afa-b3e6-29fceec30730",
+      "created_date": "2024-10-14T07:57:06.701Z",
+      "modified_date": "2024-10-14T07:57:06.701Z",
+      "deleted": false,
+      "name": "Dummy Bed 9",
+      "description": "",
+      "bed_type": 2,
+      "facility": 1,
+      "meta": {},
+      "location": 2
     }
   },
   {
@@ -3985,14 +4076,8 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 150.0,
-      "allowed_units": [
-        1,
-        2
-      ],
-      "tags": [
-        1,
-        2
-      ]
+      "allowed_units": [1, 2],
+      "tags": [1, 2]
     }
   },
   {
@@ -4003,13 +4088,8 @@
       "default_unit": 1,
       "description": "",
       "min_quantity": 2.0,
-      "allowed_units": [
-        1,
-        2
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [1, 2],
+      "tags": [2]
     }
   },
   {
@@ -4020,12 +4100,8 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [
-        7
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [7],
+      "tags": [2]
     }
   },
   {
@@ -4036,9 +4112,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4050,9 +4124,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4064,9 +4136,7 @@
       "default_unit": 4,
       "description": "",
       "min_quantity": 100.0,
-      "allowed_units": [
-        4
-      ],
+      "allowed_units": [4],
       "tags": []
     }
   },
@@ -4078,12 +4148,8 @@
       "default_unit": 7,
       "description": "",
       "min_quantity": 10.0,
-      "allowed_units": [
-        7
-      ],
-      "tags": [
-        2
-      ]
+      "allowed_units": [7],
+      "tags": [2]
     }
   },
   {
@@ -4107,8 +4173,10 @@
       "pincode": 600115,
       "date_of_birth": "2005-10-16",
       "year_of_birth": 2005,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4123,6 +4191,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 5896,
       "local_body": 95,
@@ -4186,8 +4256,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4202,6 +4274,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4265,8 +4339,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4281,6 +4357,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4344,8 +4422,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4360,6 +4440,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4423,8 +4505,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4439,6 +4523,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4502,8 +4588,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4518,6 +4606,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4581,8 +4671,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4597,6 +4689,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4660,8 +4754,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4676,6 +4772,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4739,8 +4837,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4755,6 +4855,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4818,8 +4920,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4834,6 +4938,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4897,8 +5003,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4913,6 +5021,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -4976,8 +5086,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -4992,6 +5104,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5055,8 +5169,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5071,6 +5187,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5134,8 +5252,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5150,6 +5270,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5213,8 +5335,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5229,6 +5353,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5292,8 +5418,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5308,6 +5436,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5371,8 +5501,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5387,6 +5519,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -5450,8 +5584,10 @@
       "pincode": 682001,
       "date_of_birth": "2001-01-01",
       "year_of_birth": 2001,
+      "death_datetime": null,
       "nationality": "India",
       "passport_no": "",
+      "ration_card_category": null,
       "is_medical_worker": false,
       "blood_group": "O+",
       "contact_with_confirmed_carrier": false,
@@ -5466,6 +5602,8 @@
       "ongoing_medication": "",
       "has_SARI": false,
       "is_antenatal": false,
+      "last_menstruation_start_date": null,
+      "date_of_delivery": null,
       "ward_old": "",
       "ward": 15162,
       "local_body": 6,
@@ -7122,6 +7260,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7151,6 +7291,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7180,6 +7322,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7209,6 +7353,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7238,6 +7384,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7267,6 +7415,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7296,6 +7446,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7325,6 +7477,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7354,6 +7508,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7383,6 +7539,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7412,6 +7570,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7441,6 +7601,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7470,6 +7632,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7499,6 +7663,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7528,6 +7694,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7557,6 +7725,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7586,6 +7756,8 @@
       "route": null,
       "base_dosage": "3 mg",
       "dosage_type": "REGULAR",
+      "target_dosage": null,
+      "instruction_on_titration": null,
       "frequency": "BD",
       "days": null,
       "indicator": null,
@@ -7877,8 +8049,8 @@
     "pk": 9,
     "fields": {
       "external_id": "09876543-210e-4567-a890-1234567890ab",
-      "created_date": "2023-12-06T09:00:00.000Z",
-      "modified_date": "2023-12-06T09:00:00.000Z",
+      "created_date": "2023-12-06T09:00:00Z",
+      "modified_date": "2023-12-06T09:00:00Z",
       "deleted": false,
       "origin_facility": 1,
       "shifting_approving_facility": 2,
@@ -8010,40 +8182,6 @@
   },
   {
     "model": "facility.shiftingrequest",
-    "pk": 15,
-    "fields": {
-      "external_id": "98765432-10e2-40f1-a0b9-876543210abc",
-      "created_date": "2023-09-05T22:50:10.221Z",
-      "modified_date": "2023-12-04T14:30:45.501Z",
-      "deleted": false,
-      "origin_facility": 1,
-      "shifting_approving_facility": 2,
-      "assigned_facility_type": 2,
-      "assigned_facility": null,
-      "assigned_facility_external": null,
-      "patient": 15,
-      "emergency": true,
-      "is_up_shift": true,
-      "reason": "Test",
-      "vehicle_preference": "",
-      "preferred_vehicle_choice": 10,
-      "comments": "",
-      "refering_facility_contact_name": "Someone at Facility",
-      "refering_facility_contact_number": "+914455666777",
-      "is_kasp": false,
-      "status": 100,
-      "breathlessness_level": 30,
-      "is_assigned_to_user": false,
-      "assigned_to": null,
-      "ambulance_driver_name": "",
-      "ambulance_phone_number": "",
-      "ambulance_number": "",
-      "created_by": 2,
-      "last_edited_by": 2
-    }
-  },
-  {
-    "model": "facility.shiftingrequest",
     "pk": 14,
     "fields": {
       "external_id": "f0e1d2c3-b4a5-6789-cdef-0123456789ab",
@@ -8114,6 +8252,10 @@
     "model": "facility.resourcerequest",
     "pk": 1,
     "fields": {
+      "external_id": "067ad8fc-2551-4267-8a09-6facaebf0e1f",
+      "created_date": "2023-09-05T22:50:10.221Z",
+      "modified_date": "2023-09-05T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 1,
       "approving_facility": 2,
       "assigned_facility": 3,
@@ -8131,15 +8273,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 1,
-      "last_edited_by": 1,
-      "created_date": "2023-09-05T22:50:10.221Z",
-      "modified_date": "2023-09-05T22:50:10.221Z"
+      "last_edited_by": 1
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 2,
     "fields": {
+      "external_id": "0c77c84a-3b91-419c-807c-65e53f11a74f",
+      "created_date": "2023-09-06T22:50:10.221Z",
+      "modified_date": "2023-09-06T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 1,
       "approving_facility": 5,
       "assigned_facility": 8,
@@ -8157,15 +8301,17 @@
       "is_assigned_to_user": true,
       "assigned_to": 3,
       "created_by": 2,
-      "last_edited_by": 2,
-      "created_date": "2023-09-06T22:50:10.221Z",
-      "modified_date": "2023-09-06T22:50:10.221Z"
+      "last_edited_by": 2
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 3,
     "fields": {
+      "external_id": "b08312cc-c301-46c0-8347-c521cbae8c54",
+      "created_date": "2023-09-07T22:50:10.221Z",
+      "modified_date": "2023-09-07T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 7,
       "approving_facility": 2,
       "assigned_facility": 3,
@@ -8183,15 +8329,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 3,
-      "last_edited_by": 3,
-      "created_date": "2023-09-07T22:50:10.221Z",
-      "modified_date": "2023-09-07T22:50:10.221Z"
+      "last_edited_by": 3
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 4,
     "fields": {
+      "external_id": "e9664dcf-224f-4e1e-a003-c4ff0d3699d3",
+      "created_date": "2023-09-08T22:50:10.221Z",
+      "modified_date": "2023-09-08T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 9,
       "approving_facility": 1,
       "assigned_facility": 4,
@@ -8209,15 +8357,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 4,
-      "last_edited_by": 4,
-      "created_date": "2023-09-08T22:50:10.221Z",
-      "modified_date": "2023-09-08T22:50:10.221Z"
+      "last_edited_by": 4
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 5,
     "fields": {
+      "external_id": "ce300e4d-fae6-4ee4-8bf9-f70b98abd7be",
+      "created_date": "2023-09-09T22:50:10.221Z",
+      "modified_date": "2023-09-09T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 5,
       "approving_facility": 6,
       "assigned_facility": 7,
@@ -8235,15 +8385,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 5,
-      "last_edited_by": 5,
-      "created_date": "2023-09-09T22:50:10.221Z",
-      "modified_date": "2023-09-09T22:50:10.221Z"
+      "last_edited_by": 5
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 6,
     "fields": {
+      "external_id": "79b90b87-1cac-449b-95d2-656f0c543652",
+      "created_date": "2023-09-10T22:50:10.221Z",
+      "modified_date": "2023-09-10T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 12,
       "approving_facility": 9,
       "assigned_facility": 1,
@@ -8261,15 +8413,17 @@
       "is_assigned_to_user": true,
       "assigned_to": 6,
       "created_by": 6,
-      "last_edited_by": 6,
-      "created_date": "2023-09-10T22:50:10.221Z",
-      "modified_date": "2023-09-10T22:50:10.221Z"
+      "last_edited_by": 6
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 7,
     "fields": {
+      "external_id": "fb5fcb52-8640-4a34-95f3-8adaa7c34f6d",
+      "created_date": "2023-09-11T22:50:10.221Z",
+      "modified_date": "2023-09-11T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 10,
       "approving_facility": 11,
       "assigned_facility": 9,
@@ -8287,15 +8441,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 7,
-      "last_edited_by": 7,
-      "created_date": "2023-09-11T22:50:10.221Z",
-      "modified_date": "2023-09-11T22:50:10.221Z"
+      "last_edited_by": 7
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 8,
     "fields": {
+      "external_id": "94ac6a65-cf45-4a01-aa5a-11238ae7dca5",
+      "created_date": "2023-09-12T22:50:10.221Z",
+      "modified_date": "2023-09-12T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 15,
       "approving_facility": 7,
       "assigned_facility": 6,
@@ -8313,15 +8469,17 @@
       "is_assigned_to_user": true,
       "assigned_to": 8,
       "created_by": 8,
-      "last_edited_by": 8,
-      "created_date": "2023-09-12T22:50:10.221Z",
-      "modified_date": "2023-09-12T22:50:10.221Z"
+      "last_edited_by": 8
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 9,
     "fields": {
+      "external_id": "b8137245-82de-48d8-add1-132d8cf4458a",
+      "created_date": "2023-09-13T22:50:10.221Z",
+      "modified_date": "2023-09-13T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 3,
       "approving_facility": 9,
       "assigned_facility": 1,
@@ -8339,15 +8497,17 @@
       "is_assigned_to_user": false,
       "assigned_to": null,
       "created_by": 9,
-      "last_edited_by": 9,
-      "created_date": "2023-09-13T22:50:10.221Z",
-      "modified_date": "2023-09-13T22:50:10.221Z"
+      "last_edited_by": 9
     }
   },
   {
     "model": "facility.resourcerequest",
     "pk": 10,
     "fields": {
+      "external_id": "996d4aa0-3694-4b05-bb75-53a194d65158",
+      "created_date": "2023-09-14T22:50:10.221Z",
+      "modified_date": "2023-09-14T22:50:10.221Z",
+      "deleted": false,
       "origin_facility": 10,
       "approving_facility": 1,
       "assigned_facility": 5,
@@ -8365,9 +8525,7 @@
       "is_assigned_to_user": true,
       "assigned_to": 10,
       "created_by": 10,
-      "last_edited_by": 10,
-      "created_date": "2023-09-14T22:50:10.221Z",
-      "modified_date": "2023-09-14T22:50:10.221Z"
+      "last_edited_by": 10
     }
   }
 ]
