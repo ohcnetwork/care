@@ -36,7 +36,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             "email",
             "password",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "ward",
@@ -56,10 +56,10 @@ class SignUpSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validated = super().validate(attrs)
         if "user_type" in attrs and attrs["user_type"] == "Doctor":
-            if not attrs.get("doctor_qualification"):
+            if not attrs.get("qualification"):
                 raise serializers.ValidationError(
                     {
-                        "doctor_qualification": "Field required for Doctor User Type",
+                        "qualification": "Field required for Doctor User Type",
                     },
                 )
 
@@ -311,7 +311,7 @@ class UserSerializer(SignUpSerializer):
             "email",
             "video_connect_link",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "created_by",
@@ -410,7 +410,7 @@ class UserAssignedSerializer(serializers.ModelSerializer):
             "last_login",
             "gender",
             "home_facility_object",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "video_connect_link",
             "doctor_medical_council_registration",
@@ -443,7 +443,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "district_object",
             "state_object",
             "user_type",
-            "doctor_qualification",
+            "qualification",
             "doctor_experience_commenced_on",
             "doctor_medical_council_registration",
             "weekly_working_hours",

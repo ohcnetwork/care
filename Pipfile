@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 argon2-cffi = "==23.1.0"
 authlib = "==1.3.2"
-boto3 = "==1.35.25"
+boto3 = "==1.35.29"
 celery = "==5.4.0"
 django = "==5.1.1"
 django-environ = "==0.11.2"
@@ -29,7 +29,7 @@ gunicorn = "==23.0.0"
 healthy-django = "==0.1.0"
 jsonschema = "==4.23.0"
 jwcrypto = "==1.5.6"
-newrelic = "==9.13.0"
+newrelic = "==10.0.0"
 pillow = "==10.4.0"
 psycopg = { extras = ["c"], version = "==3.2.2" }
 pycryptodome = "==3.20.0"
@@ -44,9 +44,9 @@ sentry-sdk = "==2.14.0"
 whitenoise = "==6.7.0"
 
 [dev-packages]
-boto3-stubs = { extras = ["s3", "boto3"], version = "==1.35.25" }
+boto3-stubs = { extras = ["s3", "boto3"], version = "==1.35.29" }
 coverage = "==7.6.1"
-debugpy = "==1.8.5"
+debugpy = "==1.8.6"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
 django-silk = "==5.2.0"
@@ -58,9 +58,9 @@ mypy = "==1.11.2"
 pre-commit = "==3.8.0"
 requests-mock = "==1.12.1"
 tblib = "==3.0.0"
-watchdog = "==5.0.2"
+watchdog = "==5.0.3"
 werkzeug = "==3.0.4"
-ruff = "==0.6.7"
+ruff = "==0.6.8"
 
 [docs]
 furo = "==2024.8.6"
