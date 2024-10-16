@@ -58,6 +58,13 @@ class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
     list_display = ["username", "is_superuser"]
     search_fields = ["first_name", "last_name"]
 
+    def get_queryset(self, request):
+        # use the base manager to avoid filtering out soft deleted objects
+        qs = self.model._base_manager.get_queryset()  # noqa: SLF001
+        if ordering := self.get_ordering(request):
+            qs = qs.order_by(*ordering)
+        return qs
+
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
