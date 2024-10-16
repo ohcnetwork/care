@@ -127,6 +127,34 @@ class TestPasswordReset(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
 
+    @override_settings(IS_PRODUCTION=True)
+    def test_forgot_password_without_email_configration(self):
+        response = self.client.post(
+            "/api/v1/password_reset/",
+            {"username": self.user.username},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["detail"][0],
+            "There was a problem resetting your password. Please contact the administrator.",
+        )
+
+    @override_settings(
+        IS_PRODUCTION=True,
+        EMAIL_HOST="smtp.gmail.com",
+        EMAIL_HOST_USER="your-email@gmail.com",
+        EMAIL_HOST_PASSWORD="your-app-password",
+    )
+    def test_forgot_password_with_email_configration(self):
+        response = self.client.post(
+            "/api/v1/password_reset/",
+            {"username": self.user.username},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
+
     def test_forgot_password_with_missing_fields(self):
         response = self.client.post("/api/v1/password_reset/")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
