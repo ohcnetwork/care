@@ -47,32 +47,30 @@ class Migration(migrations.Migration):
                 name = asset_bed.meta.get("preset_name")
 
                 if position := asset_bed.meta.get("position"):
-                    presets_to_create.append(
-                        CameraPreset(
-                            name=name,
-                            asset_bed=AssetBed.objects.filter(
-                                asset=asset_bed.asset, bed=asset_bed.bed
-                            ).order_by("id")[0],
-                            position={
-                                "x": position["x"],
-                                "y": position["y"],
-                                "zoom": position["zoom"],
-                            },
-                            is_migrated=True,
+                    try:
+                        presets_to_create.append(
+                            CameraPreset(
+                                name=name,
+                                asset_bed=AssetBed.objects.filter(
+                                    asset=asset_bed.asset, bed=asset_bed.bed
+                                ).order_by("id")[0],
+                                position={
+                                    "x": float(position["x"]),
+                                    "y": float(position["y"]),
+                                    "zoom": float(position["zoom"]),
+                                },
+                                is_migrated=True,
+                            )
                         )
-                    )
+                    except:
+                        pass
                     if asset_bed.row_number != 1:
                         assetbeds_to_delete.append(asset_bed.id)
                 else:
                     assetbeds_to_delete.append(asset_bed.id)
 
             CameraPreset.objects.bulk_create(presets_to_create)
-            AssetBed.objects.filter(id__in=assetbeds_to_delete).update(
-                deleted=True, meta={}
-            )
-        AssetBed.objects.filter(deleted=False, asset__asset_class="ONVIF").update(
-            meta={}
-        )
+            AssetBed.objects.filter(id__in=assetbeds_to_delete).update(deleted=True)
 
     operations = [
         migrations.CreateModel(
