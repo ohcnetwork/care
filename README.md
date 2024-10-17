@@ -72,6 +72,7 @@ make load-dummy-data
 Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
+For backup and restore use [this](/docs/databases/backup.rst) documentation.
 ## Contributing
 
 We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.
