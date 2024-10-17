@@ -38,7 +38,7 @@ from care.facility.models import (
     Ward,
 )
 from care.facility.models.asset import Asset, AssetLocation
-from care.facility.models.bed import Bed, ConsultationBed
+from care.facility.models.bed import AssetBed, Bed, ConsultationBed
 from care.facility.models.facility import FacilityUser
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
@@ -721,6 +721,12 @@ class TestUtils:
         data = cls.get_prescription_data(consultation, user)
         data.update(**kwargs)
         return Prescription.objects.create(**data)
+
+    @classmethod
+    def create_assetbed(cls, bed: Bed, asset: Asset, **kwargs) -> AssetBed:
+        data = {"bed": bed, "asset": asset}
+        data.update(kwargs)
+        return AssetBed.objects.create(**data)
 
     def get_list_representation(self, obj) -> dict:
         """
