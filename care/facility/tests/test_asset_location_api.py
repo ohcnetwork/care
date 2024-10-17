@@ -16,7 +16,10 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset_location_with_linked_bed = cls.create_asset_location(cls.facility)
         cls.asset_location_with_linked_asset = cls.create_asset_location(cls.facility)
-        cls.asset = cls.create_asset(cls.asset_location_with_linked_asset, asset_class=AssetClasses.HL7MONITOR.name)
+        cls.asset = cls.create_asset(
+            cls.asset_location_with_linked_asset,
+            asset_class=AssetClasses.HL7MONITOR.name,
+        )
         cls.bed = cls.create_bed(cls.facility, cls.asset_location_with_linked_bed)
         cls.asset_bed = cls.create_asset_bed(cls.asset, cls.bed)
         cls.patient = cls.create_patient(cls.district, cls.facility)
@@ -26,10 +29,16 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.deleted_asset = cls.create_asset(cls.asset_location)
         cls.deleted_asset.deleted = True
         cls.deleted_asset.save()
-        cls.asset_second_location = cls.create_asset_location(cls.facility, name="asset2 location")
-        cls.asset_second = cls.create_asset(cls.asset_second_location, asset_class=AssetClasses.HL7MONITOR.name)
+        cls.asset_second_location = cls.create_asset_location(
+            cls.facility, name="asset2 location"
+        )
+        cls.asset_second = cls.create_asset(
+            cls.asset_second_location, asset_class=AssetClasses.HL7MONITOR.name
+        )
         cls.asset_bed_second = cls.create_bed(cls.facility, cls.asset_second_location)
-        cls.assetbed_second = cls.create_asset_bed(cls.asset_second, cls.asset_bed_second)
+        cls.assetbed_second = cls.create_asset_bed(
+            cls.asset_second, cls.asset_bed_second
+        )
 
     def test_list_asset_locations(self):
         response = self.client.get(

@@ -83,11 +83,16 @@ def delete_asset_cache(sender, instance, created, **kwargs):
     cache.delete("asset:qr:" + str(instance.qr_code_id))
     cache.delete("asset:qr:" + str(instance.id))
 
+
 class AssetLocationFilter(filters.FilterSet):
     bed_is_occupied = filters.BooleanFilter(method="filter_bed_is_occupied")
 
     def filter_bed_is_occupied(self, queryset, name, value):
-        asset_locations = AssetBed.objects.select_related("asset","bed").filter(asset__asset_class=AssetClasses.HL7MONITOR.name).values_list("bed__location_id", "bed__id")
+        asset_locations = (
+            AssetBed.objects.select_related("asset", "bed")
+            .filter(asset__asset_class=AssetClasses.HL7MONITOR.name)
+            .values_list("bed__location_id", "bed__id")
+        )
         if value:
             asset_locations = asset_locations.filter(
                 bed__id__in=Subquery(
