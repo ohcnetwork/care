@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core import mail
 from django.test import override_settings
 from django.utils.timezone import now
 from django_rest_passwordreset.models import ResetPasswordToken
@@ -99,7 +100,7 @@ class TestAuthTokens(TestUtils, APITestCase):
         self.assertEqual(response.data["detail"], "Token is invalid or expired")
 
 
-@override_settings(DISABLE_RATELIMIT=True)
+@override_settings(DISABLE_RATELIMIT=True, IS_PRODUCTION=False)
 class TestPasswordReset(TestUtils, APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -118,13 +119,21 @@ class TestPasswordReset(TestUtils, APITestCase):
             token.save()
         return token
 
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    )
     def test_forgot_password_with_valid_input(self):
+        mail.outbox = []
         response = self.client.post(
             "/api/v1/password_reset/",
             {"username": self.user.username},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual("Password Reset for Care", mail.outbox[0].subject)
+        self.assertEqual(mail.outbox[0].to, [self.user.email])
+        self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
         self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
 
     @override_settings(IS_PRODUCTION=True)
@@ -142,17 +151,23 @@ class TestPasswordReset(TestUtils, APITestCase):
 
     @override_settings(
         IS_PRODUCTION=True,
-        EMAIL_HOST="smtp.gmail.com",
-        EMAIL_HOST_USER="your-email@gmail.com",
-        EMAIL_HOST_PASSWORD="your-app-password",
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        EMAIL_HOST="dummy.smtp.server",
+        EMAIL_HOST_USER="dummy-email@example.com",
+        EMAIL_HOST_PASSWORD="dummy-password",
     )
-    def test_forgot_password_with_email_configration(self):
+    def test_forgot_password_with_email_configuration(self):
+        mail.outbox = []
+
         response = self.client.post(
             "/api/v1/password_reset/",
             {"username": self.user.username},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual("Password Reset for Care", mail.outbox[0].subject)
+        self.assertEqual(mail.outbox[0].to, [self.user.email])
         self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
 
     def test_forgot_password_with_missing_fields(self):
