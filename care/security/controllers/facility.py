@@ -18,6 +18,5 @@ class FacilityAccess(AuthorizationHandler):
             raise PermissionDeniedError
         return True, True
 
-
-    def allowed_facilities(self , user):
+    def allowed_facilities(self, user):
         return Facility.objects.filter(users__id__exact=user.id)
