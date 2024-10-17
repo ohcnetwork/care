@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -15,7 +16,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset_location_with_linked_bed = cls.create_asset_location(cls.facility)
         cls.asset_location_with_linked_asset = cls.create_asset_location(cls.facility)
-        cls.asset = cls.create_asset(cls.asset_location_with_linked_asset, asset_class="HL7MONITOR")
+        cls.asset = cls.create_asset(cls.asset_location_with_linked_asset, asset_class=AssetClasses.HL7MONITOR.name)
         cls.bed = cls.create_bed(cls.facility, cls.asset_location_with_linked_bed)
         cls.asset_bed = cls.create_asset_bed(cls.asset, cls.bed)
         cls.patient = cls.create_patient(cls.district, cls.facility)
@@ -26,7 +27,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         cls.deleted_asset.deleted = True
         cls.deleted_asset.save()
         cls.asset_second_location = cls.create_asset_location(cls.facility, name="asset2 location")
-        cls.asset_second = cls.create_asset(cls.asset_second_location, asset_class="HL7MONITOR")
+        cls.asset_second = cls.create_asset(cls.asset_second_location, asset_class=AssetClasses.HL7MONITOR.name)
         cls.asset_bed_second = cls.create_bed(cls.facility, cls.asset_second_location)
         cls.assetbed_second = cls.create_asset_bed(cls.asset_second, cls.asset_bed_second)
 
@@ -54,7 +55,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
         self.assertContains(response, self.asset_location_with_linked_bed.external_id)
 
     def test_asset_locations_get_only_monitors(self):
-        self.asset.asset_class = "VENTILATOR"
+        self.asset.asset_class = AssetClasses.VENTILATOR.name
         self.asset.save()
         response = self.client.get(
             f"/api/v1/facility/{self.facility.external_id}/asset_location/?bed_is_occupied=false"
