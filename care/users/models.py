@@ -130,7 +130,7 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False, is_active=True).select_related(
+        return qs.filter(deleted=False).select_related(
             "local_body", "district", "state"
         )
 
