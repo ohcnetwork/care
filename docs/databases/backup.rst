@@ -16,8 +16,6 @@ Set up a cronjob
 
 Backup your database running on docker automatically everyday by initiating a cronjob.
 
-    **Note**: Make sure you are in the care directory at the time of setting this up
-
 Install the package
 ~~~~~~~~~~~~~~~~~~~
 
@@ -73,7 +71,7 @@ For a debian based os:
 Restoration of the Database
 ===========================
 
-We are basically deleting the container's existing database and creating a new database with the same name. then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
+We are basically deleting the container's existing database and creating a new database with the same name. Then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
 
 Delete the existing database:
 
@@ -99,7 +97,7 @@ Restore the database:
 
 .. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') pg_restore -U postgres -d care ./backups/<file name>.
+   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') pg_restore -U postgres -d care /backups/<file name>.
 
 ------------------------------------------------------------------------------------------------------------------
 
