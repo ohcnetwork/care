@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("facility", "0373_remove_patientconsultation_hba1c"),
+        ("facility", "0466_camera_presets"),
     ]
 
     replaces = [
