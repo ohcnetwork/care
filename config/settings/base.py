@@ -124,6 +124,7 @@ THIRD_PARTY_APPS = [
     "healthy_django",
 ]
 LOCAL_APPS = [
+    "care.security",
     "care.facility",
     "care.users",
     "care.audit_log",
