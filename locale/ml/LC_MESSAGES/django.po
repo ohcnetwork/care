@@ -1,0 +1,232 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ohccarefe\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-25 17:02+0530\n"
+"PO-Revision-Date: 2024-09-16 12:34\n"
+"Last-Translator: \n"
+"Language-Team: Malayalam\n"
+"Language: ml_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: ohccarefe\n"
+"X-Crowdin-Project-ID: 704503\n"
+"X-Crowdin-Language: ml-IN\n"
+"X-Crowdin-File: /[ohcnetwork.care] develop/locale/kn/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 76\n"
+
+#: care/abdm/apps.py:7
+msgid "ABDM Integration"
+msgstr "എബിഡിഎം ഇൻ്റഗ്രേഷൻ"
+
+#: care/audit_log/apps.py:7
+msgid "Audit Log Management"
+msgstr "ഓഡിറ്റ് ലോഗ് മാനേജ്മെൻ്റ്"
+
+#: care/facility/apps.py:7
+msgid "Facility Management"
+msgstr "ഫെസിലിറ്റി മാനേജ്മെൻ്റ്"
+
+#: care/facility/models/encounter_symptom.py:16
+msgid "In Progress"
+msgstr "പുരോഗതിയിൽ"
+
+#: care/facility/models/encounter_symptom.py:17
+msgid "Completed"
+msgstr "പൂർത്തിയാക്കി"
+
+#: care/facility/models/encounter_symptom.py:18
+#: care/facility/models/icd11_diagnosis.py:53
+msgid "Entered in Error"
+msgstr "പിശകിൽ പ്രവേശിച്ചു"
+
+#: care/facility/models/icd11_diagnosis.py:48
+msgid "Unconfirmed"
+msgstr "സ്ഥിരീകരിച്ചിട്ടില്ല"
+
+#: care/facility/models/icd11_diagnosis.py:49
+msgid "Provisional"
+msgstr "താൽക്കാലികം"
+
+#: care/facility/models/icd11_diagnosis.py:50
+msgid "Differential"
+msgstr "ഡിഫറൻഷ്യൽ"
+
+#: care/facility/models/icd11_diagnosis.py:51
+msgid "Confirmed"
+msgstr "സ്ഥിരീകരിച്ചു"
+
+#: care/facility/models/icd11_diagnosis.py:52
+msgid "Refuted"
+msgstr "നിഷേധിച്ചു"
+
+#: care/facility/models/patient.py:50
+msgid "Non-card holder"
+msgstr "നോൺ-കാർഡ് ഹോൾഡർ"
+
+#: care/facility/models/patient.py:51
+msgid "BPL"
+msgstr "ബി.പി.എൽ"
+
+#: care/facility/models/patient.py:52
+msgid "APL"
+msgstr "എ.പി.എൽ"
+
+#: care/facility/models/patient_base.py:88
+msgid "Unknown"
+msgstr "അജ്ഞാതം"
+
+#: care/facility/models/patient_base.py:89
+msgid "Recovered"
+msgstr "വീണ്ടെടുത്തു"
+
+#: care/facility/models/patient_base.py:90
+msgid "Referred"
+msgstr "പരാമർശിച്ചു"
+
+#: care/facility/models/patient_base.py:91
+msgid "Expired"
+msgstr "കാലഹരണപ്പെട്ടു"
+
+#: care/facility/models/patient_base.py:92
+msgid "LAMA"
+msgstr "ലാമ"
+
+#: care/facility/models/patient_base.py:127
+msgid "Outpatient/Emergency Room"
+msgstr "ഔട്ട്പേഷ്യൻ്റ്/അടിയന്തര മുറി"
+
+#: care/facility/models/patient_base.py:128
+msgid "Referred from another facility"
+msgstr "മറ്റൊരു സൗകര്യത്തിൽ നിന്ന് റഫർ ചെയ്തു"
+
+#: care/facility/models/patient_base.py:129
+msgid "Internal Transfer within the facility"
+msgstr "സൗകര്യത്തിനുള്ളിൽ ആന്തരിക കൈമാറ്റം"
+
+#: care/facility/models/patient_base.py:130
+msgid "(Unknown)"
+msgstr "(അജ്ഞാതം)"
+
+#: care/hcx/apps.py:7
+msgid "HCX Integration"
+msgstr "HCX ഇൻ്റഗ്രേഷൻ"
+
+#: care/templates/pages/home.html:8
+msgid "Open Healthcare Network"
+msgstr "ഹെൽത്ത് കെയർ നെറ്റ്‌വർക്ക് തുറക്കുക"
+
+#: care/templates/pages/home.html:9
+msgid "Our Goal is to defend the Healthcare system of Kerala from overloading beyond capacity."
+msgstr "ശേഷിക്കപ്പുറമുള്ള അമിതഭാരത്തിൽ നിന്ന് കേരളത്തിൻ്റെ ആരോഗ്യസംരക്ഷണ സംവിധാനത്തെ പ്രതിരോധിക്കുക എന്നതാണ് ഞങ്ങളുടെ ലക്ഷ്യം."
+
+#: care/users/apps.py:7
+msgid "Users"
+msgstr "ഉപയോക്താക്കൾ"
+
+#: care/users/forms.py:15
+msgid "This username has already been taken."
+msgstr "ഈ ഉപയോക്തൃനാമം ഇതിനകം എടുത്തതാണ്."
+
+#: care/users/models.py:179
+msgid "username"
+msgstr "ഉപയോക്തൃനാമം"
+
+#: care/users/models.py:184
+msgid "A user with that username already exists."
+msgstr "ആ ഉപയോക്തൃനാമമുള്ള ഒരു ഉപയോക്താവ് ഇതിനകം നിലവിലുണ്ട്."
+
+#: care/users/reset_password_views.py:245
+msgid "There is no active user associated with this username or the password can not be changed"
+msgstr "ഈ ഉപയോക്തൃനാമവുമായി ബന്ധപ്പെട്ട സജീവ ഉപയോക്താവ് ഇല്ല അല്ലെങ്കിൽ പാസ്‌വേഡ് മാറ്റാൻ കഴിയില്ല"
+
+#: care/utils/models/validators.py:54
+msgid "Username must be 4 to 16 characters long. It may only contain lowercase alphabets, numbers, underscores, hyphens and dots. It shouldn't start or end with underscores, hyphens or dots. It shouldn't contain consecutive underscores, hyphens or dots."
+msgstr "ഉപയോക്തൃനാമം 4 മുതൽ 16 വരെ പ്രതീകങ്ങൾ ആയിരിക്കണം. അതിൽ ചെറിയ അക്ഷരങ്ങൾ, അക്കങ്ങൾ, അടിവരകൾ, ഹൈഫനുകൾ, ഡോട്ടുകൾ എന്നിവ മാത്രമേ അടങ്ങിയിട്ടുള്ളൂ. ഇത് അടിവരകളോ ഹൈഫനുകളോ ഡോട്ടുകളോ ഉപയോഗിച്ച് ആരംഭിക്കുകയോ അവസാനിക്കുകയോ ചെയ്യരുത്. അതിൽ തുടർച്ചയായ അടിവരകളോ ഹൈഫനുകളോ ഡോട്ടുകളോ അടങ്ങിയിരിക്കരുത്."
+
+#: care/utils/ulid/serializers.py:9
+#, python-brace-format
+msgid "\"{value}\" is not a valid ULID."
+msgstr "\"{value}\" ഒരു സാധുവായ ULID അല്ല."
+
+#: config/auth_views.py:19
+msgid "Too Many Requests Provide Captcha"
+msgstr "വളരെയധികം അഭ്യർത്ഥനകൾ ക്യാപ്‌ച നൽകുന്നു"
+
+#: config/auth_views.py:27
+msgid "No active account found with the given credentials"
+msgstr "നൽകിയിരിക്കുന്ന ക്രെഡൻഷ്യലുകൾക്കൊപ്പം സജീവ അക്കൗണ്ടുകളൊന്നും കണ്ടെത്തിയില്ല"
+
+#: config/authentication.py:141
+msgid "Authorization header must contain two space-delimited values"
+msgstr "അംഗീകൃത തലക്കെട്ടിൽ രണ്ട് സ്‌പെയ്‌സ് ഡിലിമിറ്റഡ് മൂല്യങ്ങൾ അടങ്ങിയിരിക്കണം"
+
+#: config/authentication.py:270
+msgid "Used for authenticating requests from the middleware. The scheme requires a valid JWT token in the Authorization header along with the facility id in the X-Facility-Id header. --The value field is just for preview, filling it will show allowed endpoints.--"
+msgstr "മിഡിൽവെയറിൽ നിന്നുള്ള അഭ്യർത്ഥനകൾ പ്രാമാണീകരിക്കുന്നതിന് ഉപയോഗിക്കുന്നു. സ്കീമിന്, എക്സ്-ഫെസിലിറ്റി-ഐഡി ഹെഡറിലെ ഫെസിലിറ്റി ഐഡിയ്‌ക്കൊപ്പം ഓതറൈസേഷൻ ഹെഡറിൽ സാധുവായ JWT ടോക്കൺ ആവശ്യമാണ്. --മൂല്യ ഫീൽഡ് പ്രിവ്യൂവിനുള്ളതാണ്, അത് പൂരിപ്പിക്കുന്നത് അനുവദനീയമായ എൻഡ് പോയിൻ്റുകൾ കാണിക്കും.--"
+
+#: config/authentication.py:289
+msgid "Used for authenticating requests from the middleware on behalf of assets. The scheme requires a valid JWT token in the Authorization header along with the facility id in the X-Facility-Id header. --The value field is just for preview, filling it will show allowed endpoints.--"
+msgstr "അസറ്റുകൾക്ക് വേണ്ടി മിഡിൽവെയറിൽ നിന്നുള്ള അഭ്യർത്ഥനകൾ പ്രാമാണീകരിക്കുന്നതിന് ഉപയോഗിക്കുന്നു. സ്കീമിന്, എക്സ്-ഫെസിലിറ്റി-ഐഡി ഹെഡറിലെ ഫെസിലിറ്റി ഐഡിയ്‌ക്കൊപ്പം ഓതറൈസേഷൻ ഹെഡറിൽ സാധുവായ JWT ടോക്കൺ ആവശ്യമാണ്. --മൂല്യ ഫീൽഡ് പ്രിവ്യൂവിനുള്ളതാണ്, അത് പൂരിപ്പിക്കുന്നത് അനുവദനീയമായ അവസാന പോയിൻ്റുകൾ കാണിക്കും.--"
+
+#: config/authentication.py:306 config/authentication.py:320
+msgid "Do not use this scheme for production."
+msgstr "ഉത്പാദനത്തിനായി ഈ സ്കീം ഉപയോഗിക്കരുത്."
+
+#: config/patient_otp_authentication.py:56
+msgid "Given token not valid for any token type"
+msgstr "നൽകിയിരിക്കുന്ന ടോക്കൺ ഏതെങ്കിലും ടോക്കൺ തരത്തിന് സാധുതയുള്ളതല്ല"
+
+#: config/settings/base.py:60
+msgid "English"
+msgstr "ഇംഗ്ലീഷ്"
+
+#: config/settings/base.py:61
+msgid "Malayalam"
+msgstr "മലയാളം"
+
+#: config/settings/base.py:62
+msgid "Hindi"
+msgstr "ഹിന്ദി"
+
+#: config/settings/base.py:63
+msgid "Tamil"
+msgstr "തമിഴ്"
+
+#: config/validators.py:12
+msgid "The password must contain at least 1 digit, 0-9."
+msgstr "പാസ്‌വേഡിൽ കുറഞ്ഞത് 0-9 അക്കമെങ്കിലും ഉണ്ടായിരിക്കണം."
+
+#: config/validators.py:17
+msgid "Your password must contain at least 1 digit, 0-9."
+msgstr "നിങ്ങളുടെ പാസ്‌വേഡിൽ കുറഞ്ഞത് 0-9 അക്കമെങ്കിലും ഉണ്ടായിരിക്കണം."
+
+#: config/validators.py:24
+msgid "The password must contain at least 1 uppercase letter, A-Z."
+msgstr "പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 വലിയക്ഷരമായ AZ ഉണ്ടായിരിക്കണം."
+
+#: config/validators.py:29
+msgid "Your password must contain at least 1 uppercase letter, A-Z."
+msgstr "നിങ്ങളുടെ പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 വലിയക്ഷരമായ AZ ഉണ്ടായിരിക്കണം."
+
+#: config/validators.py:36
+msgid "The password must contain at least 1 lowercase letter, a-z."
+msgstr "പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 ചെറിയക്ഷരമെങ്കിലും അടങ്ങിയിരിക്കണം, az."
+
+#: config/validators.py:41
+msgid "Your password must contain at least 1 lowercase letter, a-z."
+msgstr "നിങ്ങളുടെ പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 ചെറിയക്ഷരമെങ്കിലും അടങ്ങിയിരിക്കണം, az."
+
+#: config/validators.py:49
+msgid "The password must contain at least 1 symbol: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+msgstr "പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 ചിഹ്നമെങ്കിലും അടങ്ങിയിരിക്കണം: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+
+#: config/validators.py:57
+msgid "Your password must contain at least 1 symbol: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+msgstr "നിങ്ങളുടെ പാസ്‌വേഡിൽ കുറഞ്ഞത് 1 ചിഹ്നമെങ്കിലും അടങ്ങിയിരിക്കണം: ()[]{}|\\`~!@#$%^&*_-+=;:'\\\",<>./?"
+
+#: config/validators.py:66
+msgid "The domain name is invalid. It should not start with scheme and should not end with a trailing slash."
+msgstr "ഡൊമെയ്ൻ നാമം അസാധുവാണ്. ഇത് സ്കീമിൽ ആരംഭിക്കരുത്, ഒരു ട്രെയിലിംഗ് സ്ലാഷിൽ അവസാനിക്കരുത്."

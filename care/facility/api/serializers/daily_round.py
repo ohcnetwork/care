@@ -1,6 +1,8 @@
 from datetime import timedelta
+from typing import TYPE_CHECKING
 
 from django.db import transaction
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -15,11 +17,13 @@ from care.facility.models.bed import Bed
 from care.facility.models.daily_round import DailyRound
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import SuggestionChoices
-from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.user import UserBaseMinimumSerializer
 from care.utils.notification_handler import NotificationGenerator
 from care.utils.queryset.facility import get_home_facility_queryset
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
+
+if TYPE_CHECKING:
+    from care.facility.models.patient_consultation import PatientConsultation
 
 
 class DailyRoundSerializer(serializers.ModelSerializer):
@@ -38,49 +42,68 @@ class DailyRoundSerializer(serializers.ModelSerializer):
 
     taken_at = serializers.DateTimeField(required=True)
 
-    rounds_type = ChoiceField(choices=DailyRound.RoundsTypeChoice, required=True)
+    rounds_type = ChoiceField(choices=DailyRound.RoundsType.choices, required=True)
+
+    # Community Nurse's Log
+
+    bowel_issue = ChoiceField(
+        choices=DailyRound.BowelDifficultyType.choices, required=False
+    )
+    bladder_drainage = ChoiceField(
+        choices=DailyRound.BladderDrainageType.choices, required=False
+    )
+    bladder_issue = ChoiceField(
+        choices=DailyRound.BladderIssueType.choices, required=False
+    )
+    urination_frequency = ChoiceField(
+        choices=DailyRound.UrinationFrequencyType.choices, required=False
+    )
+    sleep = ChoiceField(choices=DailyRound.SleepType.choices, required=False)
+    nutrition_route = ChoiceField(
+        choices=DailyRound.NutritionRouteType.choices, required=False
+    )
+    oral_issue = ChoiceField(choices=DailyRound.OralIssueType.choices, required=False)
+    appetite = ChoiceField(choices=DailyRound.AppetiteType.choices, required=False)
 
     # Critical Care Components
 
     consciousness_level = ChoiceField(
-        choices=DailyRound.ConsciousnessChoice, required=False
+        choices=DailyRound.ConsciousnessTypeChoice.choices, required=False
     )
     left_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     right_pupil_light_reaction = ChoiceField(
-        choices=DailyRound.PupilReactionChoice, required=False
+        choices=DailyRound.PupilReactionType.choices, required=False
     )
     limb_response_upper_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_upper_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_left = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
     limb_response_lower_extremity_right = ChoiceField(
-        choices=DailyRound.LimbResponseChoice, required=False
+        choices=DailyRound.LimbResponseType.choices, required=False
     )
-    rhythm = ChoiceField(choices=DailyRound.RythmnChoice, required=False)
+    rhythm = ChoiceField(choices=DailyRound.RythmnType.choices, required=False)
     ventilator_interface = ChoiceField(
-        choices=DailyRound.VentilatorInterfaceChoice, required=False
+        choices=DailyRound.VentilatorInterfaceType.choices, required=False
     )
     ventilator_mode = ChoiceField(
-        choices=DailyRound.VentilatorModeChoice, required=False
+        choices=DailyRound.VentilatorModeType.choices, required=False
     )
     ventilator_oxygen_modality = ChoiceField(
-        choices=DailyRound.VentilatorOxygenModalityChoice, required=False
+        choices=DailyRound.VentilatorOxygenModalityType.choices, required=False
     )
     insulin_intake_frequency = ChoiceField(
-        choices=DailyRound.InsulinIntakeFrequencyChoice, required=False
+        choices=DailyRound.InsulinIntakeFrequencyType.choices, required=False
     )
 
     last_edited_by = UserBaseMinimumSerializer(read_only=True)
     created_by = UserBaseMinimumSerializer(read_only=True)
-
-    # bed_object = BedSerializer(read_only=True)
 
     class Meta:
         model = DailyRound
@@ -93,6 +116,14 @@ class DailyRoundSerializer(serializers.ModelSerializer):
             "consultation",
         )
         exclude = ("deleted",)
+
+    def validate_bp(self, value):
+        if value is not None:
+            sys, dia = value.get("systolic"), value.get("diastolic")
+            if sys is not None and dia is not None and sys < dia:
+                msg = "Systolic must be greater than diastolic"
+                raise ValidationError(msg)
+        return value
 
     def update(self, instance, validated_data):
         instance.last_edited_by = self.context["request"].user
@@ -266,24 +297,22 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 {"consultation": ["Discharged Consultation data cannot be updated"]}
             )
 
-        if "action" in validated:
-            if validated["action"] == PatientRegistration.ActionEnum.REVIEW:
-                if "consultation__review_interval" not in validated:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field is required as the patient has been requested Review."
-                            ]
-                        }
-                    )
-                if validated["consultation__review_interval"] <= 0:
-                    raise ValidationError(
-                        {
-                            "review_interval": [
-                                "This field value is must be greater than 0."
-                            ]
-                        }
-                    )
+        if (
+            "action" in validated
+            and validated["action"] == PatientRegistration.ActionEnum.REVIEW
+        ):
+            if "consultation__review_interval" not in validated:
+                raise ValidationError(
+                    {
+                        "review_interval": [
+                            "This field is required as the patient has been requested Review."
+                        ]
+                    }
+                )
+            if validated["consultation__review_interval"] <= 0:
+                raise ValidationError(
+                    {"review_interval": ["This field value is must be greater than 0."]}
+                )
 
         if "bed" in validated:
             external_id = validated.pop("bed")["external_id"]
@@ -295,3 +324,9 @@ class DailyRoundSerializer(serializers.ModelSerializer):
                 validated["bed_id"] = bed_object.id
 
         return validated
+
+    def validate_taken_at(self, value):
+        if value and value > timezone.now() + timedelta(minutes=2):
+            msg = "Cannot create an update in the future"
+            raise serializers.ValidationError(msg)
+        return value

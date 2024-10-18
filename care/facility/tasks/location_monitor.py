@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 @shared_task
 def check_location_status():
     location_content_type = ContentType.objects.get_for_model(AssetLocation)
-    logger.info(f"Checking Location Status: {timezone.now()}")
+    logger.info("Checking Location Status: %s", timezone.now())
     locations = AssetLocation.objects.all()
 
     for location in locations:
@@ -29,8 +29,9 @@ def check_location_status():
             )
 
             if not resolved_middleware:
-                logger.warn(
-                    f"No middleware hostname resolved for location {location.external_id}"
+                logger.warning(
+                    "No middleware hostname resolved for location %s",
+                    location.external_id,
                 )
                 continue
 
@@ -54,7 +55,7 @@ def check_location_status():
                     new_status = AvailabilityStatus.OPERATIONAL
 
             except Exception as e:
-                logger.warn(f"Middleware {resolved_middleware} is down", e)
+                logger.warning("Middleware %s is down: %s", resolved_middleware, e)
 
             # Fetching the last record of the location
             last_record = (
@@ -74,6 +75,8 @@ def check_location_status():
                     status=new_status.value,
                     timestamp=timezone.now(),
                 )
-            logger.info(f"Location {location.external_id} status: {new_status.value}")
+            logger.info(
+                "Location %s status: %s", location.external_id, new_status.value
+            )
         except Exception as e:
-            logger.error("Error in Location Status Check", e)
+            logger.error("Error in Location Status Check: %s", e)

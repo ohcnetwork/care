@@ -11,4 +11,4 @@ class Command(BaseCommand):
     help = "Generate JWKS"
 
     def handle(self, *args, **options):
-        print(generate_encoded_jwks())
+        self.stdout.write(generate_encoded_jwks())

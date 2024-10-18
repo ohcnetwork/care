@@ -58,12 +58,11 @@ class Command(BaseCommand):
             states = self.valid_states
         else:
             if state not in self.valid_states:
-                print("valid state options are ", self.valid_states)
-                raise Exception("State not found")
+                error = "State not found"
+                raise Exception(error)
             states = [state]
 
         for state in states:
             current_state_data = self.BASE_URL + state + "/lsg/"
-            print("Processing Files From", current_state_data)
             management.call_command("load_lsg_data", current_state_data)
             management.call_command("load_ward_data", current_state_data)

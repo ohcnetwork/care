@@ -19,6 +19,6 @@ class Command(BaseCommand):
             except Exception:
                 failed += 1
         if failed:
-            print(f"Failed for {failed} Patient")
+            self.stdout.write(f"Failed for {failed} Patient")
         else:
-            print("Successfully Synced Age")
+            self.stdout.write("Successfully Synced Age")

@@ -251,6 +251,10 @@
           "name": "HCX_IG_URL"
         },
         {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
+        },
+        {
           "valueFrom": "/care/backend/PLAUSIBLE_HOST",
           "name": "PLAUSIBLE_HOST"
         },
@@ -269,6 +273,10 @@
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
           "name": "ABDM_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-celery-beat"
@@ -518,6 +526,10 @@
           "name": "HCX_IG_URL"
         },
         {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
+        },
+        {
           "valueFrom": "/care/backend/PLAUSIBLE_HOST",
           "name": "PLAUSIBLE_HOST"
         },
@@ -536,6 +548,10 @@
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_SECRET",
           "name": "ABDM_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-celery-worker"

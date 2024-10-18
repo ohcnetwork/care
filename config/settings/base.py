@@ -2,13 +2,12 @@
 Base settings to build other settings files upon.
 """
 
-import base64
-import json
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import environ
-from authlib.jose import JsonWebKey
+from django.utils.translation import gettext_lazy as _
 from healthy_django.healthcheck.celery_queue_length import (
     DjangoCeleryQueueLengthHealthCheck,
 )
@@ -16,8 +15,9 @@ from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
-from care.utils.jwks.generate_jwk import generate_encoded_jwks
 from plug_config import manager
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
@@ -54,6 +54,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
+LANGUAGES = [
+    ("en-us", _("English")),
+    ("ml", _("Malayalam")),
+    ("hi", _("Hindi")),
+    ("ta", _("Tamil")),
+]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -121,7 +127,6 @@ LOCAL_APPS = [
     "care.facility",
     "care.users",
     "care.audit_log",
-    "care.hcx",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -191,6 +196,10 @@ MIDDLEWARE = [
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
 ]
+
+# add RequestTimeLoggingMiddleware based on the environment variable
+if env.bool("ENABLE_REQUEST_TIME_LOGGING", default=False):
+    MIDDLEWARE.insert(0, "config.middlewares.RequestTimeLoggingMiddleware")
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -268,7 +277,7 @@ X_FRAME_OPTIONS = "DENY"
 CSRF_TRUSTED_ORIGINS = env.json("CSRF_TRUSTED_ORIGINS", default=[])
 
 # https://github.com/adamchainz/django-cors-headers#cors_allowed_origin_regexes-sequencestr--patternstr
-# CORS_URLS_REGEX = r"^/api/.*$"
+# CORS_URLS_REGEX = r"^/api/.*$"  # noqa: ERA001
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -296,12 +305,12 @@ EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Care]")
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 # SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-# ADMINS = [("""👪""", "admin@ohc.network")]
+# ADMINS = [("""👪""", "admin@ohc.network")]  # noqa: ERA001
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
-# MANAGERS = ADMINS
+# MANAGERS = ADMINS  # noqa: ERA001
 
 # Django Admin URL.
-ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -315,14 +324,30 @@ LOGGING = {
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
             "%(process)d %(thread)d %(message)s"
-        }
+        },
+        "request_time": {
+            "format": "INFO %(asctime)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        }
+        },
+        "time_logging": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "request_time",
+        },
+    },
+    "loggers": {
+        "time_logging_middleware": {
+            "handlers": ["time_logging"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -339,6 +364,9 @@ REST_FRAMEWORK = {
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
@@ -353,7 +381,6 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
-    # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
 
 # Simple JWT (JWT Authentication)
@@ -516,7 +543,7 @@ BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOI
 BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
 
 if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
-    print(f"Warning Invalid CSP Found! {BUCKET_PROVIDER}")
+    logger.error("invalid CSP found: %s", BUCKET_PROVIDER)
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
@@ -589,10 +616,11 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
 # for setting the shifting mode
 PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
 
+# we are making this tz aware in the app so no need to make it aware here
 MIN_ENCOUNTER_DATE = env(
     "MIN_ENCOUNTER_DATE",
-    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),
-    default=datetime(2020, 1, 1),
+    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),  # noqa: DTZ007
+    default=datetime(2020, 1, 1),  # noqa: DTZ001
 )
 
 # for exporting csv
@@ -602,28 +630,9 @@ CSV_REQUEST_PARAMETER = "csv"
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
 BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
-# open id connect
-JWKS = JsonWebKey.import_key_set(
-    json.loads(base64.b64decode(env("JWKS_BASE64", default=generate_encoded_jwks())))
-)
-
 APP_VERSION = env("APP_VERSION", default="unknown")
 
 IS_PRODUCTION = False
-
-# HCX
-HCX_PROTOCOL_BASE_PATH = env(
-    "HCX_PROTOCOL_BASE_PATH", default="http://staging-hcx.swasth.app/api/v0.7"
-)
-HCX_AUTH_BASE_PATH = env(
-    "HCX_AUTH_BASE_PATH",
-    default="https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token",
-)
-HCX_PARTICIPANT_CODE = env("HCX_PARTICIPANT_CODE", default="")
-HCX_USERNAME = env("HCX_USERNAME", default="")
-HCX_PASSWORD = env("HCX_PASSWORD", default="")
-HCX_ENCRYPTION_PRIVATE_KEY_URL = env("HCX_ENCRYPTION_PRIVATE_KEY_URL", default="")
-HCX_IG_URL = env("HCX_IG_URL", default="https://ig.hcxprotocol.io/v0.7.1")
 
 PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
 PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
@@ -639,3 +648,6 @@ TASK_SUMMARIZE_PATIENT = env.bool("TASK_SUMMARIZE_PATIENT", default=True)
 TASK_SUMMARIZE_DISTRICT_PATIENT = env.bool(
     "TASK_SUMMARIZE_DISTRICT_PATIENT", default=True
 )
+
+# Timeout for middleware request (in seconds)
+MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)

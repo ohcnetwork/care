@@ -35,7 +35,11 @@
         },
         {
           "name": "CORS_ALLOWED_ORIGINS",
-          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\"]"
+          "value": "[\"https://care.coronasafe.in\", \"https://careapi.coronasafe.in\", \"https://care.ohc.network\", \"https://careapi.ohc.network\", \"https://status.10bedicu.org\", \"http://localhost:4000\"]"
+        },
+        {
+          "name": "CORS_ALLOWED_ORIGIN_REGEXES",
+          "value": "[\"^https://[a-zA-Z0-9-]+--care-ohc\\\\.netlify\\\\.app$\", \"^https://[a-zA-Z0-9-]+\\\\.care-fe\\\\.pages\\\\.dev$\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -264,6 +268,10 @@
           "name": "HCX_IG_URL"
         },
         {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
+        },
+        {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",
           "name": "ABDM_CLIENT_ID"
         },
@@ -282,6 +290,10 @@
         {
           "valueFrom": "/care/backend/PLAUSIBLE_AUTH_TOKEN",
           "name": "PLAUSIBLE_AUTH_TOKEN"
+        },
+        {
+          "valueFrom": "/care/backend/JWKS_BASE64",
+          "name": "JWKS_BASE64"
         }
       ],
       "name": "care-backend"

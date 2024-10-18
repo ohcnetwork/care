@@ -8,6 +8,13 @@ abdm_plugin = Plug(
     configs={},
 )
 
-plugs = [abdm_plugin]
+hcx_plugin = Plug(
+    name="hcx",
+    package_name="git+https://github.com/ohcnetwork/care_hcx.git",
+    version="@main",
+    configs={},
+)
+
+plugs = [hcx_plugin, abdm_plugin]
 
 manager = PlugManager(plugs)

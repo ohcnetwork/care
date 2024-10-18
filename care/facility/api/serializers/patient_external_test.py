@@ -23,13 +23,7 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
     )
     result_date = serializers.DateField(input_formats=["%Y-%m-%d"], required=False)
 
-    def validate_empty_values(self, data, *args, **kwargs):
-        # if "is_repeat" in data:
-        #     is_repeat = data["is_repeat"]
-        #     if is_repeat.lower() == "yes":
-        #         data["is_repeat"] = True
-        #     else:
-        #         data["is_repeat"] = False
+    def validate_empty_values(self, data, *args, **kwargs):  # noqa: PLR0912
         district_obj = None
         if "district" in data:
             district = data["district"]
@@ -76,8 +70,10 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         if "ward" in data and local_body_obj:
             try:
                 int(data["ward"])
-            except Exception:
-                raise ValidationError({"ward": ["Ward must be an integer value"]})
+            except Exception as e:
+                raise ValidationError(
+                    {"ward": ["Ward must be an integer value"]}
+                ) from e
             if data["ward"]:
                 ward_obj = Ward.objects.filter(
                     number=data["ward"], local_body=local_body_obj
@@ -92,11 +88,13 @@ class PatientExternalTestSerializer(serializers.ModelSerializer):
         return super().validate_empty_values(data, *args, **kwargs)
 
     def create(self, validated_data):
-        if "srf_id" in validated_data:
-            if PatientRegistration.objects.filter(
+        if (
+            "srf_id" in validated_data
+            and PatientRegistration.objects.filter(
                 srf_id__iexact=validated_data["srf_id"]
-            ).exists():
-                validated_data["patient_created"] = True
+            ).exists()
+        ):
+            validated_data["patient_created"] = True
         return super().create(validated_data)
 
     class Meta:

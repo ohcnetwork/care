@@ -44,6 +44,9 @@ class FacilityRelatedSummary(models.Model):
             models.Index(fields=["-created_date", "s_type"]),
         ]
 
+    def __str__(self):
+        return f"FacilityRelatedSummary - {self.facility} - {self.s_type}"
+
 
 DISTRICT_SUMMARY_CHOICES = (("PatientSummary", "PatientSummary"),)
 
@@ -78,6 +81,9 @@ class DistrictScopedSummary(models.Model):
             models.Index(fields=["-created_date", "s_type"]),
         ]
 
+    def __str__(self):
+        return f"DistrictScopedSummary - {self.district} - {self.s_type}"
+
 
 LSG_SUMMARY_CHOICES = (("PatientSummary", "PatientSummary"),)
 
@@ -109,3 +115,6 @@ class LocalBodyScopedSummary(models.Model):
             ),
             models.Index(fields=["-created_date", "s_type"]),
         ]
+
+    def __str__(self):
+        return f"LocalBodyScopedSummary - {self.lsg} - {self.s_type}"

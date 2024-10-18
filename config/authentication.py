@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime
 
 import jwt
 import requests
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from drf_spectacular.plumbing import build_bearer_security_scheme_object
@@ -20,6 +20,9 @@ from care.facility.models.asset import Asset
 from care.users.models import User
 
 logger = logging.getLogger(__name__)
+
+
+OPENID_REQUEST_TIMEOUT = 5
 
 
 def jwk_response_cache_key(url: str) -> str:
@@ -75,7 +78,7 @@ class MiddlewareAuthentication(JWTAuthentication):
     def get_public_key(self, url):
         public_key_json = cache.get(jwk_response_cache_key(url))
         if not public_key_json:
-            res = requests.get(url)
+            res = requests.get(url, timeout=OPENID_REQUEST_TIMEOUT)
             res.raise_for_status()
             public_key_json = res.json()
             cache.set(jwk_response_cache_key(url), public_key_json, timeout=60 * 5)
@@ -134,7 +137,7 @@ class MiddlewareAuthentication(JWTAuthentication):
             # Assume the header does not contain a JSON web token
             return None
 
-        if len(parts) != 2:
+        if len(parts) != 2:  # noqa: PLR2004
             raise AuthenticationFailed(
                 _("Authorization header must contain two space-delimited values"),
                 code="bad_authorization_header",
@@ -180,15 +183,15 @@ class MiddlewareAssetAuthentication(MiddlewareAuthentication):
         if not asset_user:
             password = User.objects.make_random_password()
             asset_user = User(
-                username=f"asset{str(asset_obj.external_id)}",
-                email="support@coronasafe.network",
-                password=f"{password}123",  # The 123 makes it inaccessible without hashing
+                username=f"asset{asset_obj.external_id!s}",
+                email="support@ohc.network",
+                password=f"{password}xyz",  # The xyz makes it inaccessible without hashing
                 gender=3,
                 phone_number="919999999999",
                 user_type=User.TYPE_VALUE_MAP["Nurse"],
                 verified=True,
                 asset=asset_obj,
-                date_of_birth=datetime.now().date(),
+                date_of_birth=timezone.now().date(),
             )
             asset_user.save()
         return asset_user
@@ -200,7 +203,9 @@ class CustomJWTAuthenticationScheme(OpenApiAuthenticationExtension):
 
     def get_security_definition(self, auto_schema):
         return build_bearer_security_scheme_object(
-            header_name="Authorization", token_prefix="Bearer", bearer_format="JWT"
+            header_name="Authorization",
+            token_prefix="Bearer",
+            bearer_format="JWT",
         )
 
 
