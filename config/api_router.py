@@ -26,6 +26,10 @@ from care.facility.api.viewsets.bed import (
     ConsultationBedViewSet,
     PatientAssetBedViewSet,
 )
+from care.facility.api.viewsets.camera_preset import (
+    AssetBedCameraPresetViewSet,
+    CameraPresetViewSet,
+)
 from care.facility.api.viewsets.consultation_diagnosis import (
     ConsultationDiagnosisViewSet,
 )
@@ -224,6 +228,9 @@ facility_nested_router.register(r"hubs", FacilityHubsViewSet, basename="facility
 router.register("asset", AssetViewSet, basename="asset")
 asset_nested_router = NestedSimpleRouter(router, r"asset", lookup="asset")
 asset_nested_router.register(
+    r"camera_presets", CameraPresetViewSet, basename="asset-camera-presets"
+)
+asset_nested_router.register(
     r"availability", AvailabilityViewSet, basename="asset-availability"
 )
 asset_nested_router.register(
@@ -234,8 +241,17 @@ router.register("asset_config", AssetRetrieveConfigViewSet, basename="asset-conf
 router.register("asset_transaction", AssetTransactionViewSet)
 
 router.register("bed", BedViewSet, basename="bed")
+bed_nested_router = NestedSimpleRouter(router, r"bed", lookup="bed")
+bed_nested_router.register(
+    r"camera_presets", CameraPresetViewSet, basename="bed-camera-presets"
+)
+
 router.register("assetbed", AssetBedViewSet, basename="asset-bed")
 router.register("consultationbed", ConsultationBedViewSet, basename="consultation-bed")
+assetbed_nested_router = NestedSimpleRouter(router, r"assetbed", lookup="assetbed")
+assetbed_nested_router.register(
+    r"camera_presets", AssetBedCameraPresetViewSet, basename="assetbed-camera-presets"
+)
 
 router.register("patient/search", PatientSearchViewSet, basename="patient-search")
 router.register("patient", PatientViewSet, basename="patient")
@@ -329,6 +345,8 @@ urlpatterns = [
     path("", include(facility_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
     path("", include(asset_nested_router.urls)),
+    path("", include(bed_nested_router.urls)),
+    path("", include(assetbed_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(patient_notes_nested_router.urls)),
     path("", include(consultation_nested_router.urls)),
