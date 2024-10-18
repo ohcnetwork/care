@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
@@ -10,8 +11,10 @@ from care.facility.tasks.cleanup import delete_old_notifications
 
 class DeleteOldNotificationsTest(TestCase):
     def test_delete_old_notifications(self):
-        # notifications created 90 days ago
-        with freeze_time(timezone.now() - timedelta(days=90)):
+        retention_days = settings.NOTIFICATION_RETENTION_DAYS
+
+        # notifications created at the threshold of retention
+        with freeze_time(timezone.now() - timedelta(days=retention_days)):
             notification1 = Notification.objects.create()
             notification2 = Notification.objects.create()
 

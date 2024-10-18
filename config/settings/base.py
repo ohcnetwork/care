@@ -530,6 +530,7 @@ VAPID_PRIVATE_KEY = env(
     "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
 )
 SEND_SMS_NOTIFICATION = False
+NOTIFICATION_RETENTION_DAYS = env.int("NOTIFICATION_RETENTION_DAYS", default=30)
 
 # Cloud and Buckets
 # ------------------------------------------------------------------------------
