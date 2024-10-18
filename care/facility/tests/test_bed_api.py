@@ -75,7 +75,7 @@ class BedViewSetTestCase(TestUtils, APITestCase):
         self.client.logout()
 
     def test_create_beds(self):
-        sample_data = {
+        base_data = {
             "name": "Sample Beds",
             "bed_type": 2,
             "location": self.asset_location.external_id,
@@ -83,23 +83,27 @@ class BedViewSetTestCase(TestUtils, APITestCase):
             "number_of_beds": 10,
             "description": "This is a sample bed description",
         }
+        sample_data = base_data.copy()  # Create a fresh copy of the base data
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Bed.objects.filter(bed_type=2).count(), 10)
 
         # without location
+        sample_data = base_data.copy()
         sample_data.update({"location": None})
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["location"][0], "This field may not be null.")
 
         # without facility
+        sample_data = base_data.copy()
         sample_data.update({"facility": None})
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["facility"][0], "This field may not be null.")
 
         # Test - if beds > 100
+        sample_data = base_data.copy()
         sample_data.update({"number_of_beds": 200})
         response = self.client.post("/api/v1/bed/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -107,6 +111,17 @@ class BedViewSetTestCase(TestUtils, APITestCase):
             response.data["number_of_beds"][0],
             "Cannot create more than 100 beds at once.",
         )
+
+        # creating bed in different facility
+        sample_data = base_data.copy()
+        sample_data.update(
+            {
+                "location": self.asset_location2.external_id,
+                "facility": self.facility2.external_id,
+            }
+        )
+        response = self.client.post("/api/v1/bed/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_retrieve_bed(self):
         response = self.client.get(f"/api/v1/bed/{self.bed1.external_id}/")
