@@ -4,7 +4,7 @@ from rest_framework import serializers
 from care.abdm.models import AbhaNumber
 from care.facility.api.serializers.patient import PatientDetailSerializer
 from care.facility.models import PatientRegistration
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
+from care.utils.serializers.fields import ExternalIdSerializerField
 
 
 class AbhaNumberSerializer(serializers.ModelSerializer):

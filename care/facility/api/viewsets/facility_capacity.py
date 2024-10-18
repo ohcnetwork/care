@@ -18,10 +18,7 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
     lookup_field = "external_id"
     serializer_class = FacilityCapacitySerializer
     queryset = FacilityCapacity.objects.filter(facility__deleted=False)
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
 
     def get_queryset(self):
         user = self.request.user
@@ -30,9 +27,9 @@ class FacilityCapacityViewSet(FacilityBaseViewset, ListModelMixin):
         )
         if user.is_superuser:
             return queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return queryset.filter(facility__state=user.state)
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return queryset.filter(facility__district=user.district)
         return queryset.filter(facility__users__id__exact=user.id)
 

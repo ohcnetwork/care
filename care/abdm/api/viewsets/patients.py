@@ -4,7 +4,6 @@ from django.core.cache import cache
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -17,7 +16,6 @@ from config.ratelimit import USER_READABLE_RATE_LIMIT_TIME, ratelimit
 
 
 class PatientsViewSet(GenericViewSet):
-    permission_classes = (IsAuthenticated,)
 
     @action(detail=False, methods=["POST"])
     def find(self, request):
@@ -57,7 +55,6 @@ class PatientsViewSet(GenericViewSet):
 
 
 class PatientsCallbackViewSet(GenericViewSet):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def patients__on_find(self, request):

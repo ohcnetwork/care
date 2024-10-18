@@ -99,7 +99,7 @@ def capture_goals():
         return
     today = now().date()
     yesterday = today - timedelta(days=1)
-    logger.info(f"Capturing Goals for {yesterday}")
+    logger.info("Capturing Goals for %s", yesterday)
 
     for goal in Goals:
         try:
@@ -121,7 +121,7 @@ def capture_goals():
             goal_entry_object.events = goal_data["results"]["events"]["value"]
             goal_entry_object.save()
 
-            logger.info(f"Saved goal entry for {goal_name} on {yesterday}")
+            logger.info("Saved goal entry for %s on %s", goal_name, yesterday)
 
             for property_name in goal.value:
                 goal_property_stats = get_goal_event_stats(
@@ -145,7 +145,11 @@ def capture_goals():
                     property_entry_object.events = property_statistic["events"]
                     property_entry_object.save()
                 logger.info(
-                    f"Saved goal property entry for {goal_name} and property {property_name} on {yesterday}"
+                    "Saved goal property entry for %s and property %s on %s",
+                    goal_name,
+                    property_name,
+                    yesterday,
                 )
+
         except Exception as e:
-            logger.error(f"Failed to process goal {goal_name} due to error: {str(e)}")
+            logger.error("Failed to process goal %s due to error: %s", goal_name, e)

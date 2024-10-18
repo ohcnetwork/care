@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import TypedDict
 
@@ -6,6 +7,9 @@ from redis_om import Field, Migrator
 
 from care.facility.models.icd11_diagnosis import ICD11Diagnosis
 from care.utils.static_data.models.base import BaseRedisModel
+
+logger = logging.getLogger(__name__)
+
 
 DISEASE_CODE_PATTERN = r"^(?:[A-Z]+\d|\d+[A-Z])[A-Z\d.]*\s"
 
@@ -33,7 +37,7 @@ class ICD11(BaseRedisModel):
 
 
 def load_icd11_diagnosis():
-    print("Loading ICD11 Diagnosis into the redis cache...", end="", flush=True)
+    logger.info("Loading ICD11 Diagnosis into the redis cache...")
 
     icd_objs = ICD11Diagnosis.objects.order_by("id").values_list(
         "id", "label", "meta_chapter_short"
@@ -49,7 +53,7 @@ def load_icd11_diagnosis():
                 vec=diagnosis[1].replace(".", "\\.", 1),
             ).save()
     Migrator().run()
-    print("Done")
+    logger.info("ICD11 Diagnosis Loaded")
 
 
 def get_icd11_diagnosis_object_by_id(

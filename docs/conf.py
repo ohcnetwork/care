@@ -10,19 +10,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-
-# import django
-# sys.path.insert(0, os.path.abspath('..'))
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
-# django.setup()
-
 
 # -- Project information -----------------------------------------------------
 
 project = "Care"
-copyright = """2023, Open Healthcare Network"""
+copyright = """2023, Open Healthcare Network"""  # noqa: A001
 author = "ohcnetwork"
 
 

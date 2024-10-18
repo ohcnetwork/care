@@ -14,7 +14,7 @@ from care.facility.api.viewsets.mixins.access import AssetUserAccessMixin
 from care.facility.models.daily_round import DailyRound
 from care.utils.queryset.consultation import get_consultation_queryset
 
-DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]
+DailyRoundAttributes = [f.name for f in DailyRound._meta.get_fields()]  # noqa: SLF001
 
 
 class DailyRoundFilterSet(filters.FilterSet):
@@ -23,10 +23,10 @@ class DailyRoundFilterSet(filters.FilterSet):
 
     def filter_rounds_type(self, queryset, name, value):
         rounds_type = set()
-        values = value.split(",")
+        values = value.upper().split(",")
         for v in values:
             try:
-                rounds_type.add(DailyRound.RoundsTypeDict[v])
+                rounds_type.add(DailyRound.RoundsType[v].value)
             except KeyError:
                 pass
         return queryset.filter(rounds_type__in=list(rounds_type))
@@ -41,10 +41,7 @@ class DailyRoundsViewSet(
     GenericViewSet,
 ):
     serializer_class = DailyRoundSerializer
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     queryset = DailyRound.objects.all().select_related("created_by", "last_edited_by")
     lookup_field = "external_id"
     filterset_class = DailyRoundFilterSet
@@ -100,9 +97,6 @@ class DailyRoundsViewSet(
             raise ValidationError(errors)
 
         page = request.data.get("page", 1)
-
-        # to_time = datetime.now() - timedelta(days=((page - 1) * self.DEFAULT_LOOKUP_DAYS))
-        # from_time = to_time - timedelta(days=self.DEFAULT_LOOKUP_DAYS)
 
         consultation = get_object_or_404(
             get_consultation_queryset(request.user).filter(

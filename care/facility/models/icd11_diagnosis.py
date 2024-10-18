@@ -102,7 +102,7 @@ class ConsultationDiagnosis(BaseModel, ConsultationRelatedPermissionMixin):
             ),
             # Diagnosis cannot be principal if verification status is one of refuted/entered-in-error.
             models.CheckConstraint(
-                check=(
+                condition=(
                     models.Q(is_principal=False)
                     | ~models.Q(
                         verification_status__in=INACTIVE_CONDITION_VERIFICATION_STATUSES

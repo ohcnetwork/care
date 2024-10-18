@@ -12,8 +12,7 @@ from care.facility.models.patient_sample import (
     PatientSampleFlow,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.utils.serializer.external_id_field import ExternalIdSerializerField
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
 class PatientSampleFlowSerializer(serializers.ModelSerializer):
@@ -79,7 +78,8 @@ class PatientSampleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientSample
-        read_only_fields = TIMESTAMP_FIELDS + (
+        read_only_fields = (
+            *TIMESTAMP_FIELDS,
             "id",
             "facility",
             "last_edited_by",
@@ -91,7 +91,7 @@ class PatientSampleSerializer(serializers.ModelSerializer):
         validated_data.pop("status", None)
         validated_data.pop("result", None)
 
-        sample = super(PatientSampleSerializer, self).create(validated_data)
+        sample = super().create(validated_data)
         sample.created_by = self.context["request"].user
         sample.last_edited_by = self.context["request"].user
         sample.save()
@@ -108,17 +108,19 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             is_completed = validated_data.get("result") in [1, 2]
             new_status = validated_data.get(
                 "status",
-                PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
-                if is_completed
-                else None,
+                (
+                    PatientSample.SAMPLE_TEST_FLOW_MAP["COMPLETED"]
+                    if is_completed
+                    else None
+                ),
             )
             choice = PatientSample.SAMPLE_TEST_FLOW_CHOICES[new_status - 1][1]
             if is_completed:
                 validated_data["status"] = PatientSample.SAMPLE_TEST_FLOW_MAP[
                     "COMPLETED"
                 ]
-        except KeyError:
-            raise ValidationError({"status": ["is required"]})
+        except KeyError as e:
+            raise ValidationError({"status": ["is required"]}) from e
         valid_choices = PatientSample.SAMPLE_FLOW_RULES[
             PatientSample.SAMPLE_TEST_FLOW_CHOICES[instance.status - 1][1]
         ]
@@ -132,7 +134,10 @@ class PatientSamplePatchSerializer(PatientSampleSerializer):
             )
         if choice == "COMPLETED" and not validated_data.get("result"):
             raise ValidationError({"result": ["is required as the test is complete"]})
-        if choice == "COMPLETED" and instance.result != 3:
+        if (
+            choice == "COMPLETED"
+            and instance.result != PatientSample.SAMPLE_TEST_RESULT_MAP["AWAITING"]
+        ):
             raise ValidationError(
                 {"result": ["cannot change result for completed test."]}
             )

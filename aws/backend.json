@@ -39,7 +39,7 @@
         },
         {
           "name": "CORS_ALLOWED_ORIGIN_REGEXES",
-          "value": "[\"^https://[a-zA-Z0-9-]+--care-ohc\\\\.netlify\\\\.app$\"]"
+          "value": "[\"^https://[a-zA-Z0-9-]+--care-ohc\\\\.netlify\\\\.app$\", \"^https://[a-zA-Z0-9-]+\\\\.care-fe\\\\.pages\\\\.dev$\"]"
         },
         {
           "name": "CURRENT_DOMAIN",
@@ -270,6 +270,10 @@
         {
           "valueFrom": "/care/backend/HCX_IG_URL",
           "name": "HCX_IG_URL"
+        },
+        {
+          "valueFrom": "/care/backend/HCX_CERT_URL",
+          "name": "HCX_CERT_URL"
         },
         {
           "valueFrom": "/care/backend/ABDM_CLIENT_ID",

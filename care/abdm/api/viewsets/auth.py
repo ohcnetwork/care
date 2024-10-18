@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from django.core.cache import cache
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.abdm.utils.api_call import AbdmGateway
@@ -19,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 
 class OnFetchView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -31,7 +29,6 @@ class OnFetchView(GenericAPIView):
 
 
 class OnInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -43,7 +40,6 @@ class OnInitView(GenericAPIView):
 
 
 class OnConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -76,7 +72,6 @@ class OnConfirmView(GenericAPIView):
 
 
 class AuthNotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -94,7 +89,6 @@ class AuthNotifyView(GenericAPIView):
 
 
 class OnAddContextsView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -102,7 +96,6 @@ class OnAddContextsView(GenericAPIView):
 
 
 class DiscoverView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -159,7 +152,7 @@ class DiscoverView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -171,7 +164,6 @@ class DiscoverView(GenericAPIView):
 
 
 class LinkInitView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -191,7 +183,6 @@ class LinkInitView(GenericAPIView):
 
 
 class LinkConfirmView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -213,7 +204,7 @@ class LinkConfirmView(GenericAPIView):
                     map(
                         lambda consultation: {
                             "id": str(consultation.external_id),
-                            "name": f"Encounter: {str(consultation.created_date.date())}",
+                            "name": f"Encounter: {consultation.created_date.date()!s}",
                         },
                         PatientConsultation.objects.filter(patient=patient),
                     )
@@ -225,7 +216,6 @@ class LinkConfirmView(GenericAPIView):
 
 
 class NotifyView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -243,7 +233,6 @@ class NotifyView(GenericAPIView):
 
 
 class RequestDataView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     authentication_classes = [ABDMAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -251,7 +240,7 @@ class RequestDataView(GenericAPIView):
 
         consent_id = data["hiRequest"]["consent"]["id"]
         consent = json.loads(cache.get(consent_id)) if consent_id in cache else None
-        if not consent or not consent["notification"]["status"] == "GRANTED":
+        if not consent or consent["notification"]["status"] != "GRANTED":
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         # TODO: check if from and to are in range and consent expiry is greater than today
@@ -269,7 +258,7 @@ class RequestDataView(GenericAPIView):
             {"request_id": data["requestId"], "transaction_id": data["transactionId"]}
         )
 
-        if not on_data_request_response.status_code == 202:
+        if on_data_request_response.status_code != 202:
             return Response({}, status=status.HTTP_202_ACCEPTED)
             return Response(
                 on_data_request_response, status=status.HTTP_400_BAD_REQUEST

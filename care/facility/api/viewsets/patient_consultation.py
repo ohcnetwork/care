@@ -70,12 +70,11 @@ class PatientConsultationViewSet(
     def get_serializer_class(self):
         if self.action == "patient_from_asset":
             return PatientConsultationIDSerializer
-        elif self.action == "discharge_patient":
+        if self.action == "discharge_patient":
             return PatientConsultationDischargeSerializer
-        elif self.action == "email_discharge_summary":
+        if self.action == "email_discharge_summary":
             return EmailDischargeSummarySerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class
 
     def get_permissions(self):
         if self.action == "patient_from_asset":
@@ -97,11 +96,11 @@ class PatientConsultationViewSet(
             )
         if self.request.user.is_superuser:
             return self.queryset
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
             return self.queryset.filter(
                 patient__facility__state=self.request.user.state
             )
-        elif self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
+        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
             return self.queryset.filter(
                 patient__facility__district=self.request.user.district
             )
@@ -304,14 +303,12 @@ def dev_preview_discharge_summary(request, consultation_id):
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
         discharge_summary.generate_discharge_summary_pdf(data, tmp_file)
+        tmp_file.seek(0)
 
-        with open(tmp_file.name, "rb") as pdf_file:
-            pdf_content = pdf_file.read()
+        response = HttpResponse(tmp_file, content_type="application/pdf")
+        response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
 
-    response = HttpResponse(pdf_content, content_type="application/pdf")
-    response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
-
-    return response
+        return response
 
 
 class PatientConsentViewSet(
