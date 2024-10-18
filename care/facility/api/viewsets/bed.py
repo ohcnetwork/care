@@ -30,6 +30,7 @@ from care.facility.models.patient_base import BedTypeChoices
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.queryset.asset_bed import get_asset_bed_queryset, get_bed_queryset
 
 inverse_bed_type = inverse_choices(BedTypeChoices)
 
@@ -76,27 +77,14 @@ class BedViewSet(
     filterset_class = BedFilter
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-
-        queryset = queryset.annotate(
+        queryset = self.queryset.annotate(
             is_occupied=Exists(
                 ConsultationBed.objects.filter(
                     bed__id=OuterRef("id"), end_date__isnull=True
                 )
             )
         )
-
-        if user.is_superuser:
-            pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(facility__state=user.state)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(facility__district=user.district)
-        else:
-            allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(facility__id__in=allowed_facilities)
-        return queryset
+        return get_bed_queryset(user=self.request.user, queryset=queryset)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -168,18 +156,7 @@ class AssetBedViewSet(
     lookup_field = "external_id"
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-        if user.is_superuser:
-            pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(bed__facility__state=user.state)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(bed__facility__district=user.district)
-        else:
-            allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
-        return queryset
+        return get_asset_bed_queryset(user=self.request.user, queryset=self.queryset)
 
 
 class PatientAssetBedFilter(filters.FilterSet):
@@ -212,20 +189,9 @@ class PatientAssetBedViewSet(ListModelMixin, GenericViewSet):
     ]
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-        if user.is_superuser:
-            pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(bed__facility__state=user.state)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(bed__facility__district=user.district)
-        else:
-            allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(bed__facility__id__in=allowed_facilities)
-        return queryset.filter(
-            bed__facility__external_id=self.kwargs["facility_external_id"]
-        )
+        return get_asset_bed_queryset(
+            user=self.request.user, queryset=self.queryset
+        ).filter(bed__facility__external_id=self.kwargs["facility_external_id"])
 
 
 class ConsultationBedFilter(filters.FilterSet):
