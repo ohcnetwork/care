@@ -447,6 +447,12 @@ class TestUtils:
         return Bed.objects.create(**data)
 
     @classmethod
+    def create_asset_bed(cls, asset: Asset, bed: Bed, **kwargs):
+        data = {"asset": asset, "bed": bed}
+        data.update(kwargs)
+        return AssetBed.objects.create(**data)
+
+    @classmethod
     def create_consultation_bed(
         cls,
         consultation: PatientConsultation,
