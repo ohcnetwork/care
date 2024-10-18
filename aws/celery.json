@@ -95,10 +95,6 @@
           "value": "True"
         },
         {
-          "name": "ENABLE_ABDM",
-          "value": "True"
-        },
-        {
           "name": "ABDM_GATEWAY_URL",
           "value": "https://dev.abdm.gov.in"
         },
@@ -376,19 +372,19 @@
           "value": "True"
         },
         {
-          "name": "ENABLE_ABDM",
-          "value": "True"
-        },
-        {
-          "name": "ABDM_URL",
+          "name": "ABDM_GATEWAY_URL",
           "value": "https://dev.abdm.gov.in"
         },
         {
-          "name": "HEALTH_SERVICE_API_URL",
-          "value": "https://healthidsbx.abdm.gov.in/api"
+          "name": "ABDM_ABHA_URL",
+          "value": "https://abhasbx.abdm.gov.in"
         },
         {
-          "name": "X_CM_ID",
+          "name": "ABDM_FACILITY_URL",
+          "value": "https://facilitysbx.abdm.gov.in"
+        },
+        {
+          "name": "ABDM_CM_ID",
           "value": "sbx"
         },
         {
