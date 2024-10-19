@@ -352,3 +352,5 @@ secrets.sh
 
 # Redis
 *.rdb
+
+/jwks.b64.txt
