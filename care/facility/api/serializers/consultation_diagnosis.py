@@ -14,7 +14,8 @@ from care.users.api.serializers.user import UserBaseMinimumSerializer
 class ConsultationCreateDiagnosisSerializer(serializers.ModelSerializer):
     def validate_verification_status(self, value):
         if value in INACTIVE_CONDITION_VERIFICATION_STATUSES:
-            raise serializers.ValidationError("Verification status not allowed")
+            msg = "Verification status not allowed"
+            raise serializers.ValidationError(msg)
         return value
 
     class Meta:
@@ -54,7 +55,8 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
 
     def validate_diagnosis(self, value):
         if self.instance and value != self.instance.diagnosis:
-            raise serializers.ValidationError("Diagnosis cannot be changed")
+            msg = "Diagnosis cannot be changed"
+            raise serializers.ValidationError(msg)
 
         if (
             not self.instance
@@ -63,15 +65,15 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
                 diagnosis=value,
             ).exists()
         ):
-            raise serializers.ValidationError(
-                "Diagnosis already exists for consultation"
-            )
+            msg = "Diagnosis already exists for consultation"
+            raise serializers.ValidationError(msg)
 
         return value
 
     def validate_verification_status(self, value):
         if not self.instance and value in INACTIVE_CONDITION_VERIFICATION_STATUSES:
-            raise serializers.ValidationError("Verification status not allowed")
+            msg = "Verification status not allowed"
+            raise serializers.ValidationError(msg)
         return value
 
     def validate_is_principal(self, value):
@@ -87,9 +89,8 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
             qs = qs.exclude(id=self.instance.id)
 
         if qs.exists():
-            raise serializers.ValidationError(
-                "Consultation already has a principal diagnosis. Unset the existing principal diagnosis first."
-            )
+            msg = "Consultation already has a principal diagnosis. Unset the existing principal diagnosis first."
+            raise serializers.ValidationError(msg)
 
         return value
 
@@ -112,7 +113,7 @@ class ConsultationDiagnosisSerializer(serializers.ModelSerializer):
         ):
             validated["is_principal"] = False
 
-        if "is_principal" in validated and validated["is_principal"]:
+        if validated.get("is_principal"):
             verification_status = validated.get(
                 "verification_status",
                 self.instance.verification_status if self.instance else None,

@@ -1,5 +1,4 @@
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient import (
@@ -14,7 +13,6 @@ class OTPPatientDataViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     authentication_classes = (JWTTokenPatientAuthentication,)
 
     lookup_field = "external_id"
-    permission_classes = (IsAuthenticated,)
     queryset = PatientRegistration.objects.all()
     serializer_class = PatientDetailSerializer
 
@@ -30,5 +28,4 @@ class OTPPatientDataViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return PatientListSerializer
-        else:
-            return self.serializer_class
+        return self.serializer_class

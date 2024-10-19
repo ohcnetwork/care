@@ -41,7 +41,9 @@ BREATHLESSNESS_CHOICES = [
     (40, "SEVERE"),
 ]
 
-REVERSE_SHIFTING_STATUS_CHOICES = reverse_choices(SHIFTING_STATUS_CHOICES)
+REVERSE_SHIFTING_STATUS_CHOICES: dict[int, str] = reverse_choices(
+    SHIFTING_STATUS_CHOICES
+)
 
 
 class ShiftingRequest(FacilityBaseModel):

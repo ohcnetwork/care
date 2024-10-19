@@ -9,16 +9,9 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import PublicJWKsView
 from care.facility.api.viewsets.patient_consultation import (
     dev_preview_discharge_summary,
-)
-from care.hcx.api.viewsets.listener import (
-    ClaimOnSubmitView,
-    CommunicationRequestView,
-    CoverageElibilityOnCheckView,
-    PreAuthOnSubmitView,
 )
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
@@ -40,7 +33,7 @@ urlpatterns = [
     path("ping/", ping, name="ping"),
     path("app_version/", app_version, name="app_version"),
     # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
+    path(f"{settings.ADMIN_URL.rstrip('/')}/", admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
@@ -72,39 +65,14 @@ urlpatterns = [
         name="change_password_view",
     ),
     path("api/v1/", include(api_router.urlpatterns)),
-    # Hcx Listeners
-    path(
-        "coverageeligibility/on_check",
-        CoverageElibilityOnCheckView.as_view(),
-        name="hcx_coverage_eligibility_on_check",
-    ),
-    path(
-        "preauth/on_submit",
-        PreAuthOnSubmitView.as_view(),
-        name="hcx_pre_auth_on_submit",
-    ),
-    path(
-        "claim/on_submit",
-        ClaimOnSubmitView.as_view(),
-        name="hcx_claim_on_submit",
-    ),
-    path(
-        "communication/request",
-        CommunicationRequestView.as_view(),
-        name="hcx_communication_on_request",
-    ),
     # Health check urls
     path("middleware/verify", MiddlewareAuthenticationVerifyView.as_view()),
     path("middleware/verify-asset", MiddlewareAssetAuthenticationVerifyView.as_view()),
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
     # OpenID Connect
     path(".well-known/jwks.json", PublicJWKsView.as_view(), name="jwks-json"),
-    # TODO: Remove the config url as its not a standard implementation
-    path(".well-known/openid-configuration", PublicJWKsView.as_view()),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if settings.ENABLE_ABDM:
-    urlpatterns += abdm_urlpatterns
+    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

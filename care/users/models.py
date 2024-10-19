@@ -1,3 +1,5 @@
+import secrets
+import string
 import uuid
 
 from django.conf import settings
@@ -8,12 +10,17 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-from care.utils.models.base import BaseModel
+from care.utils.models.base import BaseFlag, BaseModel
 from care.utils.models.validators import (
     UsernameValidator,
     mobile_or_landline_number_validator,
     mobile_validator,
 )
+from care.utils.registries.feature_flag import FlagName, FlagType
+
+USER_FLAG_CACHE_KEY = "user_flag_cache:{user_id}:{flag_name}"
+USER_ALL_FLAGS_CACHE_KEY = "user_all_flags_cache:{user_id}"
+USER_FLAG_CACHE_TTL = 60 * 60 * 24  # 1 Day
 
 
 def reverse_choices(choices):
@@ -123,7 +130,7 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False, is_active=True).select_related(
+        return qs.filter(deleted=False).select_related(
             "local_body", "district", "state"
         )
 
@@ -140,7 +147,7 @@ class CustomUserManager(UserManager):
                 f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
             )
             if proceed.lower() != "y":
-                raise Exception("Aborted Superuser Creation")
+                raise Exception
             district = None
 
         extra_fields["district"] = district
@@ -148,6 +155,35 @@ class CustomUserManager(UserManager):
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
+
+    def make_random_password(
+        self,
+        length: int = 10,
+        secure_random: bool = True,
+        allowed_chars: str = string.ascii_letters + string.digits + string.punctuation,
+    ) -> str:
+        """
+        Generate a random password with the specified length and allowed characters.
+
+        If secure_random is True the allowed_chars parameter is ignored and,
+        the generated password will contain:
+        - At least one lowercase letter.
+        - At least one uppercase letter.
+        - At least length // 4 digits.
+        """
+        if secure_random:
+            allowed_chars = string.ascii_letters + string.digits + string.punctuation
+            while True:
+                password = "".join(secrets.choice(allowed_chars) for i in range(length))
+                if (
+                    any(c.islower() for c in password)
+                    and any(c.isupper() for c in password)
+                    and sum(c.isdigit() for c in password) >= (length // 4)
+                ):
+                    break
+        else:
+            password = "".join(secrets.choice(allowed_chars) for _ in range(length))
+        return password
 
 
 class Skill(BaseModel):
@@ -247,6 +283,9 @@ class User(AbstractUser):
 
     gender = models.IntegerField(choices=GENDER_CHOICES, blank=False)
     date_of_birth = models.DateField(null=True, blank=True)
+    profile_picture_url = models.CharField(
+        blank=True, null=True, default=None, max_length=500
+    )
     skills = models.ManyToManyField("Skill", through=UserSkill)
     home_facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
@@ -255,7 +294,7 @@ class User(AbstractUser):
         validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
 
-    doctor_qualification = models.TextField(
+    qualification = models.TextField(
         blank=False,
         null=True,
     )
@@ -310,6 +349,11 @@ class User(AbstractUser):
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
+
+    def read_profile_picture_url(self):
+        if self.profile_picture_url:
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
+        return None
 
     @property
     def full_name(self):
@@ -368,6 +412,9 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
+    def get_all_flags(self):
+        return UserFlag.get_all_flags(self.id)
+
     def save(self, *args, **kwargs) -> None:
         """
         While saving, if the local body is not null, then district will be local body's district
@@ -391,3 +438,36 @@ class UserFacilityAllocation(models.Model):
     )
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.facility.name
+
+
+class UserFlag(BaseFlag):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+
+    cache_key_template = "user_flag_cache:{entity_id}:{flag_name}"
+    all_flags_cache_key_template = "user_all_flags_cache:{entity_id}"
+    flag_type = FlagType.USER
+    entity_field_name = "user"
+
+    def __str__(self):
+        return f"User Flag: {self.user.get_full_name()} - {self.flag}"
+
+    class Meta:
+        verbose_name = "User Flag"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "flag"],
+                condition=models.Q(deleted=False),
+                name="unique_user_flag",
+            )
+        ]
+
+    @classmethod
+    def check_user_has_flag(cls, user_id: int, flag_name: FlagName) -> bool:
+        return cls.check_entity_has_flag(user_id, flag_name)
+
+    @classmethod
+    def get_all_flags(cls, user_id: int) -> tuple[FlagName]:
+        return super().get_all_flags(user_id)

@@ -2,8 +2,10 @@ import requests
 from django.conf import settings
 from django_ratelimit.core import is_ratelimited
 
+VALIDATE_CAPTCHA_REQUEST_TIMEOUT = 5
 
-def GETKEY(group, request):
+
+def get_ratelimit_key(group, request):
     return "ratelimit"
 
 
@@ -16,44 +18,43 @@ def validatecaptcha(request):
         "response": recaptcha_response,
     }
     captcha_response = requests.post(
-        "https://www.google.com/recaptcha/api/siteverify", data=values
+        "https://www.google.com/recaptcha/api/siteverify",
+        data=values,
+        timeout=VALIDATE_CAPTCHA_REQUEST_TIMEOUT,
     )
     result = captcha_response.json()
 
-    if result["success"] is True:
-        return True
-    return False
+    return bool(result["success"])
 
 
 # refer https://django-ratelimit.readthedocs.io/en/stable/rates.html for rate
 def ratelimit(
-    request, group="", keys=[None], rate=settings.DJANGO_RATE_LIMIT, increment=True
+    request, group="", keys=None, rate=settings.DJANGO_RATE_LIMIT, increment=True
 ):
+    if keys is None:
+        keys = [None]
     if settings.DISABLE_RATELIMIT:
         return False
 
     checkcaptcha = False
     for key in keys:
         if key == "ip":
-            group = group
-            key = "ip"
+            _group = group
+            _key = "ip"
         else:
-            group = group + "-{}".format(key)
-            key = GETKEY
+            _group = group + f"-{key}"
+            _key = get_ratelimit_key
         if is_ratelimited(
             request,
-            group=group,
-            key=key,
+            group=_group,
+            key=_key,
             rate=rate,
             increment=increment,
         ):
             checkcaptcha = True
 
     if checkcaptcha:
-        if not validatecaptcha(request):
-            return True
-        else:
-            return False
+        return not validatecaptcha(request)
 
     return False
 

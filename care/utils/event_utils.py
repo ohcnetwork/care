@@ -4,7 +4,6 @@ from logging import getLogger
 
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Field, Model
-from multiselectfield.db.fields import MSFList, MultiSelectField
 
 logger = getLogger(__name__)
 
@@ -15,39 +14,34 @@ def is_null(data):
 
 def get_changed_fields(old: Model, new: Model) -> set[str]:
     changed_fields: set[str] = set()
-    for field in new._meta.fields:
+    for field in new._meta.fields:  # noqa: SLF001
         field_name = field.name
-        if isinstance(field, MultiSelectField):
-            old_val = set(getattr(old, field_name, []))
-            new_val = set(map(str, getattr(new, field_name, [])))
-            if old_val != new_val:
-                changed_fields.add(field_name)
-        elif getattr(old, field_name, None) != getattr(new, field_name, None):
+        if getattr(old, field_name, None) != getattr(new, field_name, None):
             changed_fields.add(field_name)
     return changed_fields
 
 
-def serialize_field(object: Model, field_name: str):
+def serialize_field(obj: Model, field_name: str):
     if "__" in field_name:
         field_name, sub_field = field_name.split("__", 1)
-        related_object = getattr(object, field_name, None)
-        return serialize_field(related_object, sub_field)
+        related_obj = getattr(obj, field_name, None)
+        return serialize_field(related_obj, sub_field)
 
     value = None
     try:
-        value = getattr(object, field_name)
+        value = getattr(obj, field_name)
     except AttributeError:
-        if object is not None:
+        if obj is not None:
             logger.warning(
-                f"Field {field_name} not found in {object.__class__.__name__}"
+                "Field %s not found in %s", field_name, obj.__class__.__name__
             )
         return None
 
     try:
         # serialize choice fields with display value
-        field = object._meta.get_field(field_name)
+        field = obj._meta.get_field(field_name)  # noqa: SLF001
         if issubclass(field.__class__, Field) and field.choices:
-            value = getattr(object, f"get_{field_name}_display", lambda: value)()
+            value = getattr(obj, f"get_{field_name}_display", lambda: value)()
     except FieldDoesNotExist:
         # the required field is a property and not a model field
         pass
@@ -57,14 +51,8 @@ def serialize_field(object: Model, field_name: str):
 
 def model_diff(old, new):
     diff = {}
-    for field in new._meta.fields:
+    for field in new._meta.fields:  # noqa: SLF001
         field_name = field.name
-        if isinstance(field, MultiSelectField):
-            old_val = set(getattr(old, field_name, []))
-            new_val = set(map(str, getattr(new, field_name, [])))
-            if old_val != new_val:
-                diff[field_name] = new_val
-            continue
         if getattr(old, field_name, None) != getattr(new, field_name, None):
             diff[field_name] = getattr(new, field_name, None)
 
@@ -73,11 +61,9 @@ def model_diff(old, new):
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, o):
-        if isinstance(o, MSFList):
-            return list(map(str, o))
         if isinstance(o, set):
             return list(o)
         if isinstance(o, datetime):
             return o.isoformat()
-        logger.warning(f"Serializing Unknown Type {type(o)}, {o}")
+        logger.warning("Serializing Unknown Type %s, %s", type(o), o)
         return str(o)

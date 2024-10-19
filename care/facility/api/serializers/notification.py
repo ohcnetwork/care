@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from care.facility.models.notification import Notification
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from config.serializers import ChoiceField
+from care.utils.serializers.fields import ChoiceField
 
 
 class NotificationSerializer(serializers.ModelSerializer):

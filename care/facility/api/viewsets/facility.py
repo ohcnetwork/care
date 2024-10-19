@@ -1,11 +1,13 @@
 from django.conf import settings
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as drf_filters
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,6 +16,7 @@ from care.facility.api.serializers.facility import (
     FacilityBasicInfoSerializer,
     FacilityImageUploadSerializer,
     FacilitySerializer,
+    FacilitySpokeSerializer,
 )
 from care.facility.models import (
     Facility,
@@ -21,8 +24,10 @@ from care.facility.models import (
     FacilityPatientStatsHistory,
     HospitalDoctors,
 )
-from care.facility.models.facility import FacilityUser
+from care.facility.models.facility import FacilityHubSpoke, FacilityUser
 from care.users.models import User
+from care.utils.file_uploads.cover_image import delete_cover_image
+from care.utils.queryset.facility import get_facility_queryset
 
 
 class FacilityFilter(filters.FilterSet):
@@ -74,10 +79,7 @@ class FacilityViewSet(
     queryset = Facility.objects.all().select_related(
         "ward", "local_body", "district", "state"
     )
-    permission_classes = (
-        IsAuthenticated,
-        DRYPermissions,
-    )
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         FacilityQSPermissions,
         filters.DjangoFilterBackend,
@@ -96,19 +98,13 @@ class FacilityViewSet(
         self.action = self.action_map.get(request.method.lower())
         return super().initialize_request(request, *args, **kwargs)
 
-    def get_parsers(self):
-        if self.action == "cover_image":
-            return [MultiPartParser()]
-        return super().get_parsers()
-
     def get_serializer_class(self):
         if self.request.query_params.get("all") == "true":
             return FacilityBasicInfoSerializer
         if self.action == "cover_image":
             # Check DRYpermissions before updating
             return FacilityImageUploadSerializer
-        else:
-            return FacilitySerializer
+        return FacilitySerializer
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -148,9 +144,10 @@ class FacilityViewSet(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping
             )
 
-        return super(FacilityViewSet, self).list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["facility"])
+    @method_decorator(parser_classes([MultiPartParser]))
     @action(methods=["POST"], detail=True)
     def cover_image(self, request, external_id):
         facility = self.get_object()
@@ -163,6 +160,7 @@ class FacilityViewSet(
     @cover_image.mapping.delete
     def cover_image_delete(self, *args, **kwargs):
         facility = self.get_object()
+        delete_cover_image(facility.cover_image_url, "cover_images")
         facility.cover_image_url = None
         facility.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -177,9 +175,48 @@ class AllFacilityViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
+    permission_classes = ()
     queryset = Facility.objects.all().select_related("local_body", "district", "state")
     serializer_class = FacilityBasicInfoSerializer
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     filterset_class = FacilityFilter
     lookup_field = "external_id"
     search_fields = ["name", "district__name", "state__name"]
+
+
+class FacilitySpokesViewSet(viewsets.ModelViewSet):
+    queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
+    serializer_class = FacilitySpokeSerializer
+    permission_classes = (IsAuthenticated, DRYPermissions)
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        return self.queryset.filter(hub=self.get_facility())
+
+    def get_facility(self):
+        facilities = get_facility_queryset(self.request.user)
+        return get_object_or_404(
+            facilities.filter(external_id=self.kwargs["facility_external_id"])
+        )
+
+    def get_serializer_context(self):
+        facility = self.get_facility()
+        context = super().get_serializer_context()
+        context["facility"] = facility
+        return context
+
+
+class FacilityHubsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = FacilityHubSpoke.objects.all().select_related("spoke", "hub")
+    serializer_class = FacilitySpokeSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "external_id"
+
+    def get_queryset(self):
+        return self.queryset.filter(spoke=self.get_facility())
+
+    def get_facility(self):
+        facilities = get_facility_queryset(self.request.user)
+        return get_object_or_404(
+            facilities.filter(external_id=self.kwargs["facility_external_id"])
+        )

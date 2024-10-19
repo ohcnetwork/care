@@ -9,49 +9,98 @@ omit = [
   "*/migrations*/*",
   "*/asgi.py",
   "*/wsgi.py",
+  "docs/*",
   "manage.py",
-  ".venv/*"
+  ".venv/*",
 ]
 
 [tool.coverage.report]
-exclude_lines = [
-  "pragma: no cover",
-  "raise NotImplementedError"
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 ignore_errors = true
 
 
-[tool.isort]
-profile = "black"
-known_third_party = [
-  "allauth",
-  "boto3",
-  "celery",
-  "crispy_forms",
-  "dateutil",
-  "django",
-  "django_filters",
-  "django_rest_passwordreset",
-  "djangoql",
-  "djqscsv",
-  "drf_spectacular",
-  "dry_rest_permissions",
-  "environ",
-  "freezegun",
-  "hardcopy",
-  "healthy_django",
-  "jsonschema",
-  "jwt",
-  "multiselectfield",
-  "phonenumber_field",
-  "phonenumbers",
-  "pytz",
-  "pywebpush",
-  "ratelimit",
-  "requests",
-  "rest_framework",
-  "rest_framework_nested",
-  "rest_framework_simplejwt",
-  "sentry_sdk",
-  "simple_history"
+[tool.ruff]
+target-version = "py312"
+extend-exclude = ["*/migrations*/*", "care/abdm/*"]
+include = ["*.py", "pyproject.toml"]
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules/
+select = [
+  "F",  # pyflakes
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "I",  # isort
+  "N",  # pep8-naming
+  "UP", # pyupgrade
+  # "ANN", # flake8-annotations
+  "S",   # flake8-bandit
+  "FBT", # flake8-boolean-trap
+  "B",   # flake8-bugbear
+  "A",   # flake8-builtins
+  "COM", # flake8-commas
+  "C4",  # flake8-comprehensions
+  "DTZ", # flake8-datetimez
+  "T10", # flake8-debugger
+  "DJ",  # flake8-django
+  "EM",  # flake8-errmsg
+  "ISC", # flake8-import-conventions
+  "ICN", # flake8-import-order
+  "LOG", # flake8-logging
+  "G",   # flake8-logging-format
+  "INP", # flake8-no-pep420
+  "PIE", # flake8-pie
+  "T20", # flake8-print
+  "Q",   # flake8-quotes
+  "RSE", # flake8-raise
+  "RET", # flake8-return
+  "SLF", # flake8-self
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TCH", # flake8-todo
+  "INT", # flake8-gettext
+  # "ARG",  # flake8-unused-arguments
+  "PTH",  # flake8-use-pathlib
+  # "TD",   # flake8-todo # disabling this for now
+  "ERA",  # eradicate
+  "PL",   # pylint
+  "FURB", # refurb
+  "RUF",  # ruff
 ]
+unfixable = [
+  "T20", # don't remove print statements
+]
+ignore = [
+  "E203",    # whitespace-before-punctuation
+  "E501",    # line-too-long
+  "FBT002",  # boolean-default-value-positional-argument
+  "SIM105",  # suppressible-exception
+  "PLR0913", # too-many-arguments
+  "DJ001",   # django-nullable-model-string-field
+  "ISC001",  # conflicts with format
+  "COM812",  # conflicts with format
+  "RUF012",  # Too hard
+  "FBT001",  # why not!
+  "S106",
+  "S105",
+]
+
+
+[tool.ruff.format]
+line-ending = "lf"
+
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["E402", "F401"] # for imports
+"**/tests/**" = ["DTZ001"]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id", "list", "filter"]
+
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true

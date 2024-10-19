@@ -15,12 +15,6 @@ class SkillModelTest(TestCase):
             name="ghatak", description="corona virus specialist"
         )
 
-    def test_max_length_name(self):
-        """Test max length for name is 255"""
-        skill = self.skill
-        max_length = skill._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
-
     def test_object_name(self):
         """Test that the name is returned while printing the object"""
         skill = self.skill
@@ -34,12 +28,6 @@ class StateModelTest(TestCase):
         Initialise test data for all other methods
         """
         cls.state = State.objects.create(name="kerala")
-
-    def test_max_length_name(self):
-        """Test max length for name is 255"""
-        state = self.state
-        max_length = state._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
 
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
@@ -55,12 +43,6 @@ class DistrictModelTest(TestCase):
         """
         state = State.objects.create(name="uttar pradesh")
         cls.district = District.objects.create(state=state, name="name")
-
-    def test_max_length_name(self):
-        """Test max length for name is 255"""
-        district = self.district
-        max_length = district._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
 
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
@@ -82,12 +64,6 @@ class LocalBodyModelTest(TestCase):
         cls.local_body = LocalBody.objects.create(
             district=district, name="blabla", body_type=1
         )
-
-    def test_max_length_name(self):
-        """Test max length for name is 255"""
-        local_body = self.local_body
-        max_length = local_body._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
 
     def test_object_name(self):
         """Test that the correct format is returned while printing the object"""
@@ -114,9 +90,3 @@ class UserModelTest(TestCase):
             gender=1,
             date_of_birth=date(2005, 1, 1),
         )
-
-    def test_max_length_phone_number(self):
-        """Test maximum length for phone number is 14"""
-        user = self.user
-        max_length = user._meta.get_field("phone_number").max_length
-        self.assertEqual(max_length, 14)

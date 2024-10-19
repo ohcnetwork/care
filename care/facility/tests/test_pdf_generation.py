@@ -1,4 +1,4 @@
-import os
+import hashlib
 import subprocess
 import tempfile
 from datetime import date
@@ -21,89 +21,65 @@ from care.facility.utils.reports.discharge_summary import compile_typ
 from care.utils.tests.test_utils import TestUtils
 
 
-def compare_pngs(png_path1, png_path2):
-    with Image.open(png_path1) as img1, Image.open(png_path2) as img2:
-        if img1.mode != img2.mode:
+def compare_images(image1_path: Path, image2_path: Path) -> bool:
+    with Image.open(image1_path) as img1, Image.open(image2_path) as img2:
+        if img1.mode != img2.mode or img1.size != img2.size:
             return False
 
-        if img1.size != img2.size:
-            return False
+        img1_hash = hashlib.sha256(img1.tobytes()).hexdigest()
+        img2_hash = hashlib.sha256(img2.tobytes()).hexdigest()
 
-        img1_data = list(img1.getdata())
-        img2_data = list(img2.getdata())
-
-    if img1_data == img2_data:
-        return True
-    else:
-        return False
+    return img1_hash == img2_hash
 
 
-def test_compile_typ(data):
-    sample_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "tests", "sample_reports", "sample{n}.png"
+def test_compile_typ(data) -> bool:
+    logo_path = (
+        Path(settings.BASE_DIR) / "staticfiles" / "images" / "logos" / "black-logo.svg"
     )
-    test_output_file_path = os.path.join(
-        os.getcwd(), "care", "facility", "tests", "sample_reports", "test_output{n}.png"
+    data["logo_path"] = str(logo_path)
+    content = render_to_string(
+        "reports/patient_discharge_summary_pdf_template.typ", context=data
     )
-    try:
-        logo_path = (
-            Path(settings.BASE_DIR)
-            / "staticfiles"
-            / "images"
-            / "logos"
-            / "black-logo.svg"
+
+    sample_files_dir: Path = (
+        settings.BASE_DIR / "care" / "facility" / "tests" / "sample_reports"
+    )
+
+    subprocess.run(  # noqa: S603
+        [  # noqa: S607
+            "typst",
+            "compile",
+            "-",
+            sample_files_dir / "test_output{n}.png",
+            "--format",
+            "png",
+        ],
+        input=content.encode("utf-8"),
+        capture_output=True,
+        check=True,
+        cwd="/",
+    )
+
+    sample_files = sorted(sample_files_dir.glob("sample*.png"))
+    test_generated_files = sorted(sample_files_dir.glob("test_output*.png"))
+
+    result = all(
+        compare_images(sample_image, test_output_image)
+        for sample_image, test_output_image in zip(
+            sample_files, test_generated_files, strict=True
         )
-        data["logo_path"] = str(logo_path)
-        content = render_to_string(
-            "reports/patient_discharge_summary_pdf_template.typ", context=data
-        )
-        subprocess.run(
-            ["typst", "compile", "-", test_output_file_path, "--format", "png"],
-            input=content.encode("utf-8"),
-            capture_output=True,
-            check=True,
-            cwd="/",
-        )
+    )
 
-        number_of_pngs_generated = 2
-        # To be updated only if the number of sample png increase in future
+    for file in test_generated_files:
+        file.unlink()
 
-        for i in range(1, number_of_pngs_generated + 1):
-            current_sample_file_path = sample_file_path
-            current_sample_file_path = str(current_sample_file_path).replace(
-                "{n}", str(i)
-            )
-
-            current_test_output_file_path = test_output_file_path
-            current_test_output_file_path = str(current_test_output_file_path).replace(
-                "{n}", str(i)
-            )
-
-            if not compare_pngs(
-                Path(current_sample_file_path), Path(current_test_output_file_path)
-            ):
-                return False
-        return True
-    except Exception:
-        return False
-    finally:
-        count = 1
-        while True:
-            current_test_output_file_path = test_output_file_path
-            current_test_output_file_path = current_test_output_file_path.replace(
-                "{n}", str(count)
-            )
-            if Path(current_test_output_file_path).exists():
-                os.remove(Path(current_test_output_file_path))
-            else:
-                break
-            count += 1
+    return result
 
 
 class TestTypstInstallation(TestCase):
     def test_typst_installed(self):
         try:
-            subprocess.run(["typst", "--version"], check=True)
+            subprocess.run(["typst", "--version"], check=True, capture_output=True)  # noqa: S603, S607
             typst_installed = True
         except subprocess.CalledProcessError:
             typst_installed = False
@@ -143,7 +119,6 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
             suggestion="A",
         )
         cls.create_patient_sample(cls.patient, cls.consultation, cls.facility, cls.user)
-        cls.create_policy(patient=cls.patient, user=cls.user)
         cls.create_encounter_symptom(cls.consultation, cls.user)
         cls.patient_investigation_group = cls.create_patient_investigation_group()
         cls.patient_investigation = cls.create_patient_investigation(
@@ -219,8 +194,8 @@ class TestGenerateDischargeSummaryPDF(TestCase, TestUtils):
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as file:
             compile_typ(file.name, test_data)
 
-        self.assertTrue(os.path.exists(file.name))
-        self.assertGreater(os.path.getsize(file.name), 0)
+        self.assertTrue(Path(file.name).exists())
+        self.assertGreater(Path(file.name).stat().st_size, 0)
 
     def test_pdf_generation(self):
         data = discharge_summary.get_discharge_summary_data(self.consultation)

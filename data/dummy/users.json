@@ -31,6 +31,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -67,6 +68,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -103,6 +105,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -139,6 +142,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -175,6 +179,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -211,6 +216,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -247,6 +253,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -283,6 +290,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -319,6 +327,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -355,6 +364,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -391,6 +401,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -427,6 +438,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -463,6 +475,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -499,6 +512,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -535,6 +549,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -571,6 +586,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -607,6 +623,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -643,6 +660,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -679,6 +697,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -715,6 +734,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -751,6 +771,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -787,6 +808,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -823,6 +845,7 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
         }
@@ -859,8 +882,51 @@
             "pf_p256dh": null,
             "pf_auth": null,
             "asset": null,
+            "profile_picture_url": null,
             "groups": [],
             "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 25,
+        "fields": {
+          "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bUNTR1MwejJYNXdXd2VUYjJHMmN5bw$alS6S9Ay3bvIHe9U18luyn7LyVaArgrgHIt+vh4ta48",
+          "last_login": null,
+          "is_superuser": false,
+          "first_name": "Dev",
+          "last_name": "Doctor Two",
+          "email": "devdoctor1@test.com",
+          "is_staff": false,
+          "is_active": true,
+          "date_joined": "2024-10-14T07:53:32.400Z",
+          "external_id": "009c4fc2-f7af-4a02-9383-6fbb4af2fdbb",
+          "username": "devdoctor1",
+          "user_type": 15,
+          "created_by": 2,
+          "ward": null,
+          "local_body": null,
+          "district": 7,
+          "state": 1,
+          "phone_number": "+917644536346",
+          "alt_phone_number": "+917644536346",
+          "video_connect_link": null,
+          "gender": 1,
+          "date_of_birth": "2005-01-01",
+          "profile_picture_url": null,
+          "home_facility": null,
+          "weekly_working_hours": null,
+          "qualification": "MBBS",
+          "doctor_experience_commenced_on": "2020-10-14",
+          "doctor_medical_council_registration": "23532093",
+          "verified": true,
+          "deleted": false,
+          "pf_endpoint": null,
+          "pf_p256dh": null,
+          "pf_auth": null,
+          "asset": null,
+          "groups": [],
+          "user_permissions": []
         }
     }
 ]

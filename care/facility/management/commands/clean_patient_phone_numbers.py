@@ -1,5 +1,4 @@
 import json
-from typing import Optional
 
 import phonenumbers
 from django.core.management.base import BaseCommand
@@ -24,7 +23,7 @@ class Command(BaseCommand):
 
     help = "Cleans the phone number field of patient to support E164 field"
 
-    def handle(self, *args, **options) -> Optional[str]:
+    def handle(self, *args, **options) -> str | None:
         qs = PatientRegistration.objects.all()
         failed = []
         for patient in qs:
@@ -34,5 +33,5 @@ class Command(BaseCommand):
             except Exception:
                 failed.append({"id": patient.id, "phone_number": patient.phone_number})
 
-        print(f"Completed for {qs.count()} | Failed for {len(failed)}")
-        print(f"Failed for {json.dumps(failed)}")
+        self.stdout.write(f"Completed for {qs.count()} | Failed for {len(failed)}")
+        self.stdout.write(f"Failed for {json.dumps(failed)}")
