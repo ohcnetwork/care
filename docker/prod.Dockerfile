@@ -20,7 +20,7 @@ WORKDIR $APP_HOME
 FROM base AS builder
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev libpq-dev git wget \
+  build-essential libjpeg-dev zlib1g-dev libgmp-dev libpq-dev git wget \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
