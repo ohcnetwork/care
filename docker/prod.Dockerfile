@@ -54,7 +54,7 @@ RUN python3 $APP_HOME/install_plugins.py
 FROM base AS runtime
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  libpq-dev gettext wget curl gnupg \
+  libpq-dev libgmp-dev gettext wget curl gnupg \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
