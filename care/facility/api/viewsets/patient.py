@@ -1,4 +1,5 @@
 import json
+import re
 from json import JSONDecodeError
 
 from django.conf import settings
@@ -39,6 +40,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from care.facility.api.serializers.file_upload import FileUploadListSerializer
 from care.facility.api.serializers.patient import (
     FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
@@ -60,6 +62,7 @@ from care.facility.models import (
     DailyRound,
     Facility,
     FacilityPatientStatsHistory,
+    FileUpload,
     PatientNotes,
     PatientNoteThreadChoices,
     PatientRegistration,
@@ -1061,7 +1064,7 @@ class PatientNotesViewSet(
         NotificationGenerator(
             event=Notification.Event.PUSH_MESSAGE,
             caused_by=self.request.user,
-            caused_object=instance,
+            caused_object=instance.consultation,
             message=message,
             facility=patient.facility,
             generate_for_facility=True,
@@ -1070,9 +1073,20 @@ class PatientNotesViewSet(
         NotificationGenerator(
             event=Notification.Event.PATIENT_NOTE_ADDED,
             caused_by=self.request.user,
-            caused_object=instance,
+            caused_object=instance.consultation,
             facility=patient.facility,
             generate_for_facility=True,
+        ).generate()
+
+        mentioned_users = set(re.findall(r"@(\w+)", instance.note))
+        users = User.objects.filter(username__in=mentioned_users)
+
+        NotificationGenerator(
+            event=Notification.Event.PATIENT_NOTE_MENTIONED,
+            caused_by=self.request.user,
+            caused_object=instance.consultation,
+            facility=patient.facility,
+            mentioned_users=users,
         ).generate()
 
         return instance
@@ -1096,3 +1110,35 @@ class PatientNotesViewSet(
             )
 
         return super().perform_update(serializer)
+
+
+class FileUploadFilter(filters.FilterSet):
+    file_category = filters.CharFilter(field_name="file_category")
+    is_archived = filters.BooleanFilter(field_name="is_archived")
+
+
+class PatientNotesForConsultationViewSet(
+    viewsets.GenericViewSet, mixins.ListModelMixin
+):
+    serializer_class = FileUploadListSerializer
+    queryset = (
+        FileUpload.objects.all().select_related("uploaded_by").order_by("-created_date")
+    )
+    lookup_field = "external_id"
+    permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FileUploadFilter
+
+    def get_queryset(self):
+        consultation_external_id = self.kwargs["consultation_external_id"]
+
+        patient_notes_external_ids = list(
+            PatientNotes.objects.filter(
+                consultation__external_id=consultation_external_id
+            ).values_list("external_id", flat=True)
+        )
+
+        return self.queryset.filter(
+            associating_id__in=patient_notes_external_ids,
+            file_type=FileUpload.FileType.NOTES.value,
+        )
