@@ -9,7 +9,6 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from care.abdm.urls import abdm_urlpatterns
 from care.facility.api.viewsets.open_id import PublicJWKsView
 from care.facility.api.viewsets.patient_consultation import (
     dev_preview_discharge_summary,
@@ -34,7 +33,7 @@ urlpatterns = [
     path("ping/", ping, name="ping"),
     path("app_version/", app_version, name="app_version"),
     # Django Admin, use {% url 'admin:index' %}
-    path(f"{settings.ADMIN_URL.rstrip("/")}/", admin.site.urls),
+    path(f"{settings.ADMIN_URL.rstrip('/')}/", admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
@@ -74,9 +73,6 @@ urlpatterns = [
     path(".well-known/jwks.json", PublicJWKsView.as_view(), name="jwks-json"),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
-
-if settings.ENABLE_ABDM:
-    urlpatterns += abdm_urlpatterns
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
