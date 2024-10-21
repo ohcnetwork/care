@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1c90ca755b86427eedcf4f48ff4aa792fd98b9ad9e0462f8463ba8e7283f9949"
+            "sha256": "4613b1fd478b40d5f98aa9268a7eda0fa96999481c6731ab6f40f20479ea777c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -2057,10 +2057,10 @@
         },
         "distlib": {
             "hashes": [
-                "sha256:034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784",
-                "sha256:1530ea13e350031b6312d8580ddb6b27a104275a31106523b8f123787f494f64"
+                "sha256:47f8c22fd27c27e25a65601af709b38e4f0a45ea4fc2e710f65755fa8caaaf87",
+                "sha256:a60f20dea646b8a33f3e7772f74dc0b2d0772d2837ee1342a00645c81edf9403"
             ],
-            "version": "==0.3.8"
+            "version": "==0.3.9"
         },
         "django": {
             "hashes": [
@@ -2370,12 +2370,12 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:8bb6494d4a20423842e198980c9ecf9f96607a07ea29549e180eef9ae80fe7af",
-                "sha256:9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f"
+                "sha256:80905ac375958c0444c65e9cebebd948b3cdb518f335a091a670a89d652139d2",
+                "sha256:efde913840816312445dc98787724647c65473daefe420785f885e8ed9a06878"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==3.8.0"
+            "version": "==4.0.1"
         },
         "prompt-toolkit": {
             "hashes": [
@@ -2623,11 +2623,11 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:280aede09a2a5c317e409a00102e7077c6432c5a38f0ef938e643805a7ad2c48",
-                "sha256:7345cc5b25405607a624d8418154577459c3e0277f5466dd79c49d5e492995f2"
+                "sha256:2ca56a68ed615b8fe4326d11a0dca5dfbe8fd68510fb6c6349163bed3c15f2b2",
+                "sha256:44a72c29cceb0ee08f300b314848c86e57bf8d1f13107a5e671fb9274138d655"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==20.26.6"
+            "markers": "python_version >= '3.8'",
+            "version": "==20.27.0"
         },
         "watchdog": {
             "hashes": [
