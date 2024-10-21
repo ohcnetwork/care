@@ -14,6 +14,7 @@ from care.facility.models.facility import Facility
 from care.facility.models.patient_base import BedType, BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
+from care.utils.models.validators import JSONFieldSchemaValidator
 
 
 class Bed(BaseModel):
@@ -63,10 +64,27 @@ class Bed(BaseModel):
         super().delete(*args, **kwargs)
 
 
+ASSET_BED_BOUNDARY_SCHEMA = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "x0": {"type": "number"},
+        "y0": {"type": "number"},
+        "x1": {"type": "number"},
+        "y1": {"type": "number"},
+    },
+    "required": ["x0", "y0", "x1", "y1"],
+    "additionalProperties": False,
+}
+
+
 class AssetBed(BaseModel):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, null=False, blank=False)
     bed = models.ForeignKey(Bed, on_delete=models.PROTECT, null=False, blank=False)
     meta = JSONField(default=dict, blank=True)
+    boundary = models.JSONField(
+        validators=[JSONFieldSchemaValidator(ASSET_BED_BOUNDARY_SCHEMA)], null=True
+    )
 
     class Meta:
         constraints = [

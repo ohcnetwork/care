@@ -379,6 +379,11 @@ class AssetViewSet(
         This API is used to operate assets. API accepts the asset_id and action as parameters.
         """
         try:
+            validated_data = DummyAssetOperateSerializer(
+                data=request.data, context=self.get_serializer_context()
+            )
+            validated_data.is_valid(raise_exception=True)
+
             action = request.data["action"]
             asset: Asset = self.get_object()
             middleware_hostname = (
