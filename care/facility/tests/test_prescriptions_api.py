@@ -285,3 +285,32 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
             self.assertEqual(
                 prescription["medicine_object"]["name"], self.medicine.name
             )
+
+    def test_max_dosage_greater_than_base_dosage(self):
+        data = self.prescription_data(base_dosage="500 mg", max_dosage="1000 mg")
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_max_dosage_equal_to_base_dosage(self):
+        data = self.prescription_data(base_dosage="500 mg", max_dosage="500 mg")
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_max_dosage_less_than_base_dosage(self):
+        data = self.prescription_data(base_dosage="500 mg", max_dosage="400 mg")
+        response = self.client.post(
+            f"/api/v1/consultation/{self.consultation.external_id}/prescriptions/",
+            data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("max_dosage", response.data)
+        self.assertEqual(
+            response.data["max_dosage"][0],
+            "Max dosage in 24 hours should be greater than or equal to base dosage."
+        )
