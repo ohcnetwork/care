@@ -60,6 +60,7 @@ from care.facility.models.asset import (
 )
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
+from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_bed import get_asset_queryset
@@ -366,7 +367,6 @@ class AssetViewSet(
         This API is used to operate assets. API accepts the asset_id and action as parameters.
         """
         try:
-            action = request.data["action"]
             asset: Asset = self.get_object()
             middleware_hostname = (
                 asset.meta.get(
@@ -382,7 +382,7 @@ class AssetViewSet(
                     "middleware_hostname": middleware_hostname,
                 }
             )
-            result = asset_class.handle_action(action)
+            result = asset_class.handle_action(**request.data["action"])
             return Response({"result": result}, status=status.HTTP_200_OK)
 
         except ValidationError as e:
