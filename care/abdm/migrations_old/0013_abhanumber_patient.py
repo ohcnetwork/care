@@ -11,9 +11,7 @@ class Migration(migrations.Migration):
         AbhaNumber = apps.get_model("abdm", "AbhaNumber")
 
         patients = (
-            Patient.objects.annotate(removed_field=RawSQL("abha_number_id", ()))
-            .filter(abha_number__isnull=False)
-            .select_related("abha_number")
+            Patient.objects.filter(abha_number__isnull=False)
         )
         abha_numbers_to_update = []
 
