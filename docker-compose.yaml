@@ -37,12 +37,6 @@ services:
     ports:
       - "4566:4566"
 
-  fidelius:
-    image: khavinshankar/fidelius:latest
-    restart: unless-stopped
-    ports:
-      - "8092:8090"
-
 volumes:
   postgres-data:
   redis-data:
