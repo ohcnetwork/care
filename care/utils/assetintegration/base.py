@@ -3,7 +3,7 @@ import json
 import requests
 from django.conf import settings
 from rest_framework import status
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, ValidationError
 
 from care.utils.jwks.token_generator import generate_jwt
 
@@ -36,16 +36,18 @@ class BaseAssetIntegration:
 
     def _validate_response(self, response: requests.Response):
         try:
-            if response.status_code >= status.HTTP_400_BAD_REQUEST:
-                raise APIException(response.text, response.status_code)
+            if response.status_code == status.HTTP_400_BAD_REQUEST:
+                raise ValidationError(response.text)
+            if response.status_code > status.HTTP_400_BAD_REQUEST:
+                raise APIException(response.text, str(response.status_code))
             return response.json()
 
         except requests.Timeout as e:
-            raise APIException({"error": "Request Timeout"}, 504) from e
+            raise APIException({"error": "Request Timeout"}, "504") from e
 
         except json.decoder.JSONDecodeError as e:
             raise APIException(
-                {"error": "Invalid Response"}, response.status_code
+                {"error": "Invalid Response"}, str(response.status_code)
             ) from e
 
     def api_post(self, url, data=None):

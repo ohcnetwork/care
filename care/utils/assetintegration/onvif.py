@@ -28,8 +28,11 @@ class OnvifAsset(BaseAssetIntegration):
             ) from e
 
     def handle_action(self, action):
+        from care.facility.models.bed import AssetBed
+
         action_type = action["type"]
         action_data = action.get("data", {})
+        action_options = action.get("options", {})
 
         request_body = {
             "hostname": self.host,
@@ -53,6 +56,19 @@ class OnvifAsset(BaseAssetIntegration):
             return self.api_post(self.get_url("absoluteMove"), request_body)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
+            action_asset_bed_id = action_options.get("asset_bed_id")
+
+            if action_asset_bed_id:
+                asset_bed = AssetBed.objects.filter(
+                    external_id=action_asset_bed_id
+                ).first()
+
+                if not asset_bed:
+                    raise ValidationError({"asset_bed_id": "Invalid Asset Bed ID"})
+
+                if asset_bed.boundary:
+                    request_body.update({"boundary": asset_bed.boundary})
+
             return self.api_post(self.get_url("relativeMove"), request_body)
 
         if action_type == self.OnvifActions.GET_STREAM_TOKEN.value:
