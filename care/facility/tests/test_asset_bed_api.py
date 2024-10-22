@@ -25,6 +25,9 @@ class AssetBedViewSetTestCase(TestUtils, APITestCase):
             cls.asset_location, asset_class=AssetClasses.ONVIF.name
         )
         cls.camera_asset_1 = cls.create_asset(
+            cls.asset_location, asset_class=AssetClasses.ONVIF.name, name="Camera 1"
+        )
+        cls.camera_asset_2 = cls.create_asset(
             cls.asset_location, asset_class=AssetClasses.ONVIF.name, name="Camera 2"
         )
         cls.bed = cls.create_bed(cls.facility, cls.asset_location)
@@ -54,13 +57,13 @@ class AssetBedViewSetTestCase(TestUtils, APITestCase):
 
     def test_linking_multiple_cameras_to_a_bed(self):
         data = {
-            "asset": self.camera_asset.external_id,
+            "asset": self.camera_asset_1.external_id,
             "bed": self.bed.external_id,
         }
         res = self.client.post("/api/v1/assetbed/", data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         # Attempt linking another camera to same bed.
-        data["asset"] = self.camera_asset_1.external_id
+        data["asset"] = self.camera_asset_2.external_id
         res = self.client.post("/api/v1/assetbed/", data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
