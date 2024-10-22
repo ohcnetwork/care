@@ -135,9 +135,7 @@ class AssetBedSerializer(ModelSerializer):
                 bed=bed, asset__asset_class=asset.asset_class
             ).exists():
                 raise ValidationError(
-                    {
-                        "asset": "Bed is already in use by another asset of the same class"
-                    }
+                    {"asset": "Another HL7 Monitor is already linked to this bed."}
                 )
         else:
             raise ValidationError(
