@@ -32,6 +32,7 @@ class OnvifAsset(BaseAssetIntegration):
 
         action_type = action["type"]
         action_data = action.get("data", {})
+        action_options = action.get("options", {})
 
         request_body = {
             "hostname": self.host,
@@ -55,7 +56,7 @@ class OnvifAsset(BaseAssetIntegration):
             return self.api_post(self.get_url("absoluteMove"), request_body)
 
         if action_type == self.OnvifActions.RELATIVE_MOVE.value:
-            action_asset_bed_id = action.get("asset_bed_id")
+            action_asset_bed_id = action_options.get("asset_bed_id")
 
             if action_asset_bed_id:
                 asset_bed = AssetBed.objects.filter(

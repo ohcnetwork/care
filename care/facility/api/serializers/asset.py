@@ -32,7 +32,6 @@ from care.facility.models.asset import (
     UserDefaultAssetLocation,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
@@ -424,23 +423,10 @@ class AssetActionSerializer(Serializer):
         required=True,
     )
     data = JSONField(required=False)
-    asset_bed_id = UUIDField(required=False)
+    options = JSONField(required=False)
 
     class Meta:
-        fields = ("type", "data", "asset_bed_id")
-
-    def validate(self, attrs):
-        user: User = self.context["request"].user
-
-        if (
-            user.user_type <= User.TYPE_VALUE_MAP["DistrictLabAdmin"]
-            or user.user_type in User.READ_ONLY_TYPES
-        ) and not attrs.get("asset_bed_id"):
-            raise serializers.ValidationError(
-                {"asset_bed_id": "This field is required for non-admin users."}
-            )
-
-        return super().validate(attrs)
+        fields = ("type", "data", "options")
 
 
 class DummyAssetOperateSerializer(Serializer):
