@@ -73,7 +73,7 @@ class AssetBedViewSetTestCase(TestUtils, APITestCase):
         res = self.client.post("/api/v1/assetbed/", data)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-    def test_link_multiple_hl7_monitor_to_same_bed(self):
+    def test_linking_multiple_hl7_monitors_to_a_bed(self):
         data = {
             "asset": self.monitor_asset_1.external_id,
             "bed": self.bed.external_id,
