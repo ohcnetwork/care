@@ -123,11 +123,7 @@ class AssetBedSerializer(ModelSerializer):
                     {"asset": "Should be in the same facility as the bed"}
                 )
             if (
-                asset.asset_class
-                in [
-                    AssetClasses.HL7MONITOR.name,
-                    AssetClasses.ONVIF.name,
-                ]
+                asset.asset_class in [AssetClasses.HL7MONITOR.name]
             ) and AssetBed.objects.filter(
                 bed=bed, asset__asset_class=asset.asset_class
             ).exists():
