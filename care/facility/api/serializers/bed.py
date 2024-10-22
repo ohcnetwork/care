@@ -111,6 +111,10 @@ class AssetBedSerializer(ModelSerializer):
                 not facilities.filter(id=asset.current_location.facility.id).exists()
             ) or (not facilities.filter(id=bed.facility.id).exists()):
                 raise PermissionError
+            if AssetBed.objects.filter(asset=asset, bed=bed).exists():
+                raise ValidationError(
+                    {"non_field_errors": "Asset is already linked to bed"}
+                )
             if asset.asset_class not in [
                 AssetClasses.HL7MONITOR.name,
                 AssetClasses.ONVIF.name,
