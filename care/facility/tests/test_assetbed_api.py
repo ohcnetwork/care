@@ -221,9 +221,8 @@ class AssetBedViewSetTests(TestUtils, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         # Trying to create a duplicate assetbed with bed2 and asset2 (assetbed already exist with same bed and asset)
-        # This also include linking same camera to the same bed again
         duplicate_asset_class_data = {
-            "asset": str(self.asset2.external_id),  # asset1 is already assigned to bed1
+            "asset": str(self.asset2.external_id),  # asset2 is already assigned to bed2
             "bed": str(self.bed2.external_id),
         }
         response = self.client.post(
@@ -371,6 +370,32 @@ class AssetBedViewSetTests(TestUtils, APITestCase):
         self.assertFalse(
             AssetBed.objects.filter(external_id=self.assetbed.external_id).exists()
         )
+
+    def test_linking_multiple_cameras_to_a_bed(self):
+        # We already have camera linked(asset2) to bed2
+        # Attempt linking another camera to same bed.
+        new_camera_asset = self.create_asset(
+            self.asset_location2, asset_class=AssetClasses.ONVIF.name
+        )
+        data = {
+            "bed": self.bed2.external_id,
+            "asset": new_camera_asset.external_id,
+        }
+        res = self.client.post(self.get_url(), data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_linking_multiple_hl7_monitors_to_a_bed(self):
+        # We already have hl7 monitor linked(asset1) to bed1)
+        # Attempt linking another hl7 monitor to same bed.
+        new_hl7_monitor_asset = self.create_asset(
+            self.asset_location2, asset_class=AssetClasses.HL7MONITOR.name
+        )
+        data = {
+            "bed": self.bed1.external_id,
+            "asset": new_hl7_monitor_asset.external_id,
+        }
+        res = self.client.post("/api/v1/assetbed/", data, format="json")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class AssetBedCameraPresetViewSetTestCase(TestUtils, APITestCase):
