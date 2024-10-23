@@ -21,8 +21,20 @@ class AssetBedViewSetTestCase(TestUtils, APITestCase):
         )
         cls.asset_location = cls.create_asset_location(cls.facility)
         cls.asset = cls.create_asset(cls.asset_location)
+        cls.monitor_asset_1 = cls.create_asset(
+            cls.asset_location, asset_class=AssetClasses.HL7MONITOR.name
+        )
+        cls.monitor_asset_2 = cls.create_asset(
+            cls.asset_location, asset_class=AssetClasses.HL7MONITOR.name
+        )
         cls.camera_asset = cls.create_asset(
             cls.asset_location, asset_class=AssetClasses.ONVIF.name
+        )
+        cls.camera_asset_1 = cls.create_asset(
+            cls.asset_location, asset_class=AssetClasses.ONVIF.name, name="Camera 1"
+        )
+        cls.camera_asset_2 = cls.create_asset(
+            cls.asset_location, asset_class=AssetClasses.ONVIF.name, name="Camera 2"
         )
         cls.bed = cls.create_bed(cls.facility, cls.asset_location)
 
@@ -48,6 +60,30 @@ class AssetBedViewSetTestCase(TestUtils, APITestCase):
         res = self.client.get("/api/v1/assetbed/", data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data["count"], 1)
+
+    def test_linking_multiple_cameras_to_a_bed(self):
+        data = {
+            "asset": self.camera_asset_1.external_id,
+            "bed": self.bed.external_id,
+        }
+        res = self.client.post("/api/v1/assetbed/", data)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        # Attempt linking another camera to same bed.
+        data["asset"] = self.camera_asset_2.external_id
+        res = self.client.post("/api/v1/assetbed/", data)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_linking_multiple_hl7_monitors_to_a_bed(self):
+        data = {
+            "asset": self.monitor_asset_1.external_id,
+            "bed": self.bed.external_id,
+        }
+        res = self.client.post("/api/v1/assetbed/", data)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        # Attempt linking another hl7 monitor to same bed.
+        data["asset"] = self.monitor_asset_2.external_id
+        res = self.client.post("/api/v1/assetbed/", data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class AssetBedCameraPresetViewSetTestCase(TestUtils, APITestCase):
