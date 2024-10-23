@@ -1,4 +1,5 @@
 import enum
+import re
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
@@ -812,6 +813,11 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
         return self
+
+    @property
+    def mentioned_users(self):
+        usernames = set(re.findall(r"@(\w+)", self.note))
+        return User.objects.filter(username__in=usernames)
 
 
 class PatientNotesEdit(models.Model):

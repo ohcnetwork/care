@@ -1,5 +1,4 @@
 import json
-import re
 from json import JSONDecodeError
 
 from django.conf import settings
@@ -1078,15 +1077,12 @@ class PatientNotesViewSet(
             generate_for_facility=True,
         ).generate()
 
-        mentioned_users = set(re.findall(r"@(\w+)", instance.note))
-        users = User.objects.filter(username__in=mentioned_users)
-
         NotificationGenerator(
             event=Notification.Event.PATIENT_NOTE_MENTIONED,
             caused_by=self.request.user,
             caused_object=instance.consultation,
             facility=patient.facility,
-            mentioned_users=users,
+            mentioned_users=instance.mentioned_users,
         ).generate()
 
         return instance

@@ -1,5 +1,3 @@
-import re
-
 from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import now
@@ -504,12 +502,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     files = serializers.SerializerMethodField()
     replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
     parent_note_object = serializers.SerializerMethodField()
-    mentioned_users = serializers.SerializerMethodField()
-
-    def get_mentioned_users(self, obj):
-        mentioned_users = set(re.findall(r"@(\w+)", obj.note))
-        users = User.objects.filter(username__in=mentioned_users)
-        return UserBaseMinimumSerializer(users, many=True).data
+    mentioned_users = UserBaseMinimumSerializer(many=True, read_only=True)
 
     def get_parent_note_object(self, obj):
         parent_note = obj
