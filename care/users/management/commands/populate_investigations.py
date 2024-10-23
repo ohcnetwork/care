@@ -49,20 +49,11 @@ class Command(BaseCommand):
             }
 
             try:
-                data["min_value"] = (
-                    float(investigation["min"])
-                    if investigation.get("min") is not None
-                    else None
-                )
+                data["min_value"] = float(investigation["min"])
             except (ValueError, TypeError, KeyError):
                 data["min_value"] = None
-
             try:
-                data["max_value"] = (
-                    float(investigation["max"])
-                    if investigation.get("max") is not None
-                    else None
-                )
+                data["max_value"] = float(investigation["max"])
             except (ValueError, TypeError, KeyError):
                 data["max_value"] = None
 
