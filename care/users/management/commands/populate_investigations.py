@@ -54,7 +54,7 @@ class Command(BaseCommand):
                     if investigation.get("min") is not None
                     else None
                 )
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, KeyError):
                 data["min_value"] = None
 
             try:
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                     if investigation.get("max") is not None
                     else None
                 )
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, KeyError):
                 data["max_value"] = None
 
             existing_obj = PatientInvestigation.objects.filter(
