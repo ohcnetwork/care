@@ -99,6 +99,7 @@ class Command(BaseCommand):
                 investigation_obj.save()
                 investigation_obj.groups.set(groups_to_add)
 
-        self.stdout.write(
-            self.style.SUCCESS("Successfully populated investigation data")
-        )
+        if kwargs.get("verbosity", 1) > 0:
+            self.stdout.write(
+                self.style.SUCCESS("Successfully populated investigation data")
+            )
