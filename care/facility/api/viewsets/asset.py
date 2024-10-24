@@ -63,6 +63,7 @@ from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.queryset.asset_bed import get_asset_queryset
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import MiddlewareAuthentication
@@ -313,21 +314,7 @@ class AssetViewSet(
     filterset_class = AssetFilter
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-        if user.is_superuser:
-            pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(current_location__facility__state=user.state)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(
-                current_location__facility__district=user.district
-            )
-        else:
-            allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(
-                current_location__facility__id__in=allowed_facilities
-            )
+        queryset = get_asset_queryset(user=self.request.user, queryset=self.queryset)
         return queryset.annotate(
             latest_status=Subquery(
                 AvailabilityRecord.objects.filter(

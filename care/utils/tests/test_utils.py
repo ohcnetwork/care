@@ -448,11 +448,7 @@ class TestUtils:
 
     @classmethod
     def create_asset_bed(cls, asset: Asset, bed: Bed, **kwargs):
-        data = {
-            "meta": "{}",
-            "asset": asset,
-            "bed": bed,
-        }
+        data = {"asset": asset, "bed": bed}
         data.update(kwargs)
         return AssetBed.objects.create(**data)
 
