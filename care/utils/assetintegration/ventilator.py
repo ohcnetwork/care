@@ -2,7 +2,7 @@ import enum
 
 from rest_framework.exceptions import ValidationError
 
-from care.utils.assetintegration.base import BaseAssetIntegration
+from care.utils.assetintegration.base import ActionParams, BaseAssetIntegration
 
 
 class VentilatorAsset(BaseAssetIntegration):
@@ -20,12 +20,13 @@ class VentilatorAsset(BaseAssetIntegration):
                 {key: f"{key} not found in asset metadata" for key in e.args}
             ) from e
 
-    def handle_action(self, action):
-        action_type = action["type"]
+    def handle_action(self, **kwargs: ActionParams):
+        action_type = kwargs["type"]
+        timeout = kwargs.get("timeout")
 
         if action_type == self.VentilatorActions.GET_VITALS.value:
             request_params = {"device_id": self.host}
-            return self.api_get(self.get_url("vitals"), request_params)
+            return self.api_get(self.get_url("vitals"), request_params, timeout)
 
         if action_type == self.VentilatorActions.GET_STREAM_TOKEN.value:
             return self.api_post(
@@ -34,6 +35,7 @@ class VentilatorAsset(BaseAssetIntegration):
                     "asset_id": self.id,
                     "ip": self.host,
                 },
+                timeout,
             )
 
         raise ValidationError({"action": "invalid action type"})
