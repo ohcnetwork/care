@@ -807,6 +807,13 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         related_name="replies",
     )
     note = models.TextField(default="", blank=True)
+    parent_note = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="child_notes",
+    )
 
     def get_related_consultation(self):
         # This is a temporary hack! this model does not have `assigned_to` field

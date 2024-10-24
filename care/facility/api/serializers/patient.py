@@ -458,12 +458,7 @@ class PatientNotesEditSerializer(serializers.ModelSerializer):
 class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="external_id", read_only=True)
     created_by_object = UserBaseMinimumSerializer(source="created_by", read_only=True)
-    reply_to_object = serializers.SerializerMethodField()
-
-    def get_reply_to_object(self, obj):
-        if obj.reply_to:
-            return ReplyToPatientNoteSerializer(obj.reply_to).data
-        return None
+    reply_to = serializers.CharField(source="reply_to.external_id", read_only=True)
 
     class Meta:
         model = PatientNotes
@@ -473,7 +468,7 @@ class ReplyToPatientNoteSerializer(serializers.ModelSerializer):
             "created_date",
             "user_type",
             "note",
-            "reply_to_object",
+            "reply_to",
         )
 
 
@@ -501,18 +496,11 @@ class PatientNotesSerializer(serializers.ModelSerializer):
     reply_to_object = ReplyToPatientNoteSerializer(source="reply_to", read_only=True)
     files = serializers.SerializerMethodField()
     replies = ReplyToPatientNoteSerializer(many=True, read_only=True)
-    parent_note_object = serializers.SerializerMethodField()
+    child_notes = ReplyToPatientNoteSerializer(many=True, read_only=True)
+    parent_note_object = ReplyToPatientNoteSerializer(
+        source="parent_note", read_only=True
+    )
     mentioned_users = UserBaseMinimumSerializer(many=True, read_only=True)
-
-    def get_parent_note_object(self, obj):
-        parent_note = obj
-        while parent_note.reply_to is not None:
-            parent_note = parent_note.reply_to
-        return (
-            ReplyToPatientNoteSerializer(parent_note).data
-            if parent_note != obj
-            else None
-        )
 
     def get_files(self, obj):
         from care.facility.api.serializers.file_upload import FileUploadListSerializer
@@ -559,6 +547,9 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             if reply_to_note.consultation != validated_data.get("consultation"):
                 msg = "Reply to note should be in the same consultation"
                 raise serializers.ValidationError(msg)
+
+            # Set the parent_note to the parent of the reply_to_note if it exists else set it to the reply_to_note
+            validated_data["parent_note"] = reply_to_note.parent_note or reply_to_note
 
         user = self.context["request"].user
         note = validated_data.get("note")
@@ -612,6 +603,7 @@ class PatientNotesSerializer(serializers.ModelSerializer):
             "reply_to_object",
             "files",
             "replies",
+            "child_notes",
             "parent_note_object",
             "mentioned_users",
         )
