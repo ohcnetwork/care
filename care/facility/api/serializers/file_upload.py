@@ -118,6 +118,7 @@ def check_permissions(file_type, associating_id, user, action="create"):  # noqa
         if file_type in (
             FileUpload.FileType.CLAIM.value,
             FileUpload.FileType.COMMUNICATION.value,
+            FileUpload.FileType.NOTES.value,
         ):
             return associating_id
         msg = "Undefined File Type"

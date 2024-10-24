@@ -1,4 +1,5 @@
 import enum
+import re
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
@@ -806,12 +807,24 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         related_name="replies",
     )
     note = models.TextField(default="", blank=True)
+    parent_note = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="child_notes",
+    )
 
     def get_related_consultation(self):
         # This is a temporary hack! this model does not have `assigned_to` field
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
         return self
+
+    @property
+    def mentioned_users(self):
+        usernames = set(re.findall(r"@(\w+)", self.note))
+        return User.objects.filter(username__in=usernames)
 
 
 class PatientNotesEdit(models.Model):
