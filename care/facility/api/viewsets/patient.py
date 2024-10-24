@@ -589,7 +589,7 @@ class PatientViewSet(
     @action(detail=True, methods=["POST"])
     def transfer(self, request, *args, **kwargs):
         patient = PatientRegistration.objects.get(external_id=kwargs["external_id"])
-        facility = Facility.objects.get(external_id=request.data["facility"])
+        facility = get_object_or_404(Facility, external_id=request.data["facility"])
 
         if patient.is_expired:
             return Response(
