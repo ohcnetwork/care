@@ -58,10 +58,12 @@ from care.facility.models.asset import (
     AvailabilityRecord,
     StatusChoices,
 )
+from care.facility.models.bed import AssetBed, ConsultationBed
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
+from care.utils.queryset.asset_bed import get_asset_queryset
 from care.utils.queryset.asset_location import get_asset_location_queryset
 from care.utils.queryset.facility import get_facility_queryset
 from config.authentication import MiddlewareAuthentication
@@ -83,6 +85,27 @@ def delete_asset_cache(sender, instance, created, **kwargs):
     cache.delete("asset:qr:" + str(instance.id))
 
 
+class AssetLocationFilter(filters.FilterSet):
+    bed_is_occupied = filters.BooleanFilter(method="filter_bed_is_occupied")
+
+    def filter_bed_is_occupied(self, queryset, name, value):
+        asset_locations = (
+            AssetBed.objects.select_related("asset", "bed")
+            .filter(asset__asset_class=AssetClasses.HL7MONITOR.name)
+            .values_list("bed__location_id", "bed__id")
+        )
+        if value:
+            asset_locations = asset_locations.filter(
+                bed__id__in=Subquery(
+                    ConsultationBed.objects.filter(
+                        bed__id=OuterRef("bed__id"), end_date__isnull=value
+                    ).values("bed__id")
+                )
+            )
+        asset_locations = asset_locations.values_list("bed__location_id", flat=True)
+        return queryset.filter(id__in=asset_locations)
+
+
 class AssetLocationViewSet(
     ListModelMixin,
     RetrieveModelMixin,
@@ -100,8 +123,9 @@ class AssetLocationViewSet(
     )
     serializer_class = AssetLocationSerializer
     lookup_field = "external_id"
-    filter_backends = (drf_filters.SearchFilter,)
+    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     search_fields = ["name"]
+    filterset_class = AssetLocationFilter
 
     def get_serializer_context(self):
         facility = self.get_facility()
@@ -290,21 +314,7 @@ class AssetViewSet(
     filterset_class = AssetFilter
 
     def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset
-        if user.is_superuser:
-            pass
-        elif user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            queryset = queryset.filter(current_location__facility__state=user.state)
-        elif user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            queryset = queryset.filter(
-                current_location__facility__district=user.district
-            )
-        else:
-            allowed_facilities = get_accessible_facilities(user)
-            queryset = queryset.filter(
-                current_location__facility__id__in=allowed_facilities
-            )
+        queryset = get_asset_queryset(user=self.request.user, queryset=self.queryset)
         return queryset.annotate(
             latest_status=Subquery(
                 AvailabilityRecord.objects.filter(
