@@ -59,7 +59,7 @@ pre-commit = "==3.8.0"
 requests-mock = "==1.12.1"
 tblib = "==3.0.0"
 watchdog = "==5.0.3"
-werkzeug = "==3.0.4"
+werkzeug = "==3.0.6"
 ruff = "==0.6.8"
 
 [docs]
