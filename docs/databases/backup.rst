@@ -9,7 +9,7 @@ This page explains how to automate the backup process of a Docker database on a 
 Here's how the script works
 ---------------------------
 
-The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file(``.dump``) using the pg_dump utility in PostgreSQL and stores these files in ``/home/$USER/care-backups.`` which is binded to ``/backups`` in the docker container. Backup files older than 7 days are deleted when the script is executed. The backup file is saved with the name ``care_backup_%Y%m%d%H%M%S.sql``.
+The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file(``.dump``) using the pg_dump utility in PostgreSQL and stores these files in the path configured in  ``$BACKUP_DIR`` environment variable which is binded to ``/backups`` in the docker container. Backup files older than ``$DB_BACKUP_RETENTION_PERIOD`` days are deleted when the script is executed by default it is set to 7 days. The backup file is saved with the name ``care_backup_%Y%m%d%H%M%S.sql``.
 
 Set up a cronjob
 ----------------
@@ -73,6 +73,9 @@ Restoration of the Database
 
 We are basically deleting the container's existing database and creating a new database with the same name. Then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
 
+   Make sure you have stopped all the containers except the db before proceeding.
+------------------------------------------------------------------------------
+
 Delete the existing database:
 
 .. code:: bash
@@ -89,7 +92,7 @@ Execute and copy the name of the file you want to restore the database with:
 
 .. code:: bash
 
-   sudo ls /home/$USER/care-backups/
+   sudo ls ./care-backups
 
 Restore the database:
 
@@ -102,6 +105,3 @@ Restore the database:
 ------------------------------------------------------------------------------------------------------------------
 
   There are way easier ways to do this. If anyone has any particular idea, feel free to make a PR :)
-
-
-
