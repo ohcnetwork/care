@@ -442,6 +442,7 @@ class UserFacilityAllocation(models.Model):
     def __str__(self):
         return self.facility.name
 
+
 class PlugConfig(models.Model):
     slug = models.CharField(max_length=255, unique=True)
     meta = models.JSONField(default=dict)

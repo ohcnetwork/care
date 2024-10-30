@@ -1,12 +1,9 @@
 from django.core.cache import cache
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from care.users.api.serializers.plug_config import PLugConfigSerializer
-from care.users.api.viewsets.lsg import PaginataionOverrideClass
 from care.users.models import PlugConfig
 
 
@@ -26,8 +23,8 @@ class PlugConfigViewset(
         if not response:
             serializer = self.get_serializer(self.queryset, many=True)
             response = serializer.data
-            cache.set(self.cache_key , response)
-        return Response({"configs" : [response]})
+            cache.set(self.cache_key, response)
+        return Response({"configs": [response]})
 
     def perform_create(self, serializer):
         cache.delete(self.cache_key)
