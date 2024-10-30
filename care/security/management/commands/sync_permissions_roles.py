@@ -2,7 +2,7 @@ from django.core.management import BaseCommand
 from django.db import transaction
 
 from care.security.models import PermissionModel, RoleModel, RolePermission
-from care.security.permissions.permissions import PermissionController
+from care.security.permissions.base import PermissionController
 from care.security.roles.role import RoleController
 from care.utils.lock import Lock
 

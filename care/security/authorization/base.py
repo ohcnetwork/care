@@ -1,4 +1,4 @@
-from care.security.permissions.permissions import PermissionController
+from care.security.permissions.base import PermissionController
 
 
 class PermissionDeniedError(Exception):

@@ -1,6 +1,6 @@
 import enum
 
-from care.security.permissions.permissions import Permission, PermissionContext
+from care.security.permissions.base import Permission, PermissionContext
 from care.security.roles.role import DOCTOR_ROLE, STAFF_ROLE
 
 

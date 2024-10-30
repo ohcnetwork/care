@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from care.security.permissions.permissions import PermissionContext
+from care.security.permissions.base import PermissionContext
 
 
 @dataclass

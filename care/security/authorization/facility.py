@@ -1,6 +1,6 @@
 from care.abdm.utils.api_call import Facility
 from care.facility.models import FacilityUser
-from care.security.controllers.controller import (
+from care.security.authorization.base import (
     AuthorizationHandler,
     PermissionDeniedError,
 )
