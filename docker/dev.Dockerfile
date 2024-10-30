@@ -28,7 +28,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
-RUN pip install pipenv
+RUN pip install pipenv==2024.2.0
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"
