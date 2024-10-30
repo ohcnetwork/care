@@ -229,6 +229,25 @@ class FacilityTests(TestUtils, APITestCase):
         )
         self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_hubs_list(self):
+        facility_a = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+        facility_b = self.create_facility(
+            self.super_user, self.district, self.local_body
+        )
+
+        FacilityHubSpoke.objects.create(hub=facility_a, spoke=facility_b)
+
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.get(f"/api/v1/facility/{facility_b.external_id}/hubs/")
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(
+            data["results"][0]["hub_object"]["id"], str(facility_a.external_id)
+        )
+
 
 class FacilityCoverImageTests(TestUtils, APITestCase):
     @classmethod

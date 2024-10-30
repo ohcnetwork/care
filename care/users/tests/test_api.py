@@ -46,7 +46,7 @@ class TestSuperUser(TestUtils, APITestCase):
             "pf_auth": obj.pf_auth,
             "doctor_experience_commenced_on": obj.doctor_experience_commenced_on,
             "doctor_medical_council_registration": obj.doctor_medical_council_registration,
-            "doctor_qualification": obj.doctor_qualification,
+            "qualification": obj.qualification,
             "weekly_working_hours": obj.weekly_working_hours,
             "video_connect_link": obj.video_connect_link,
             "read_profile_picture_url": obj.profile_picture_url,

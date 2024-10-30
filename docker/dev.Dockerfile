@@ -1,11 +1,11 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 ARG TYPST_VERSION=0.11.0
 
 ENV PATH=/venv/bin:$PATH
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev \
+  build-essential libjpeg-dev zlib1g-dev libgmp-dev \
   libpq-dev gettext wget curl gnupg git \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
@@ -28,7 +28,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
-RUN pip install pipenv
+RUN pip install pipenv==2024.2.0
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"

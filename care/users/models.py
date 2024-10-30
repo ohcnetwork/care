@@ -130,7 +130,7 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False, is_active=True).select_related(
+        return qs.filter(deleted=False).select_related(
             "local_body", "district", "state"
         )
 
@@ -294,7 +294,7 @@ class User(AbstractUser):
         validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
 
-    doctor_qualification = models.TextField(
+    qualification = models.TextField(
         blank=False,
         null=True,
     )
@@ -441,6 +441,14 @@ class UserFacilityAllocation(models.Model):
 
     def __str__(self):
         return self.facility.name
+
+
+class PlugConfig(models.Model):
+    slug = models.CharField(max_length=255, unique=True)
+    meta = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.slug
 
 
 class UserFlag(BaseFlag):
