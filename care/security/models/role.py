@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from care.security.models.permission import PermissionModel
 from care.utils.models.base import BaseModel
@@ -25,7 +26,9 @@ class RoleModel(BaseModel):
     temp_deleted = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ("name", "context")
+        constraints = [
+            UniqueConstraint(name="unique_order", fields=["name", "context"])
+        ]
 
 
 class RolePermission(BaseModel):
