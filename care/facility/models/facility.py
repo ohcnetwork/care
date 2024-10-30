@@ -148,7 +148,7 @@ DOCTOR_TYPES = [
     (16, "General Surgeon"),
     (17, "Geriatrician"),
     (18, "Hematologist"),
-    (29, "Immunologist"),
+    (19, "Immunologist"),
     (20, "Infectious Disease Specialist"),
     (21, "MBBS doctor"),
     (22, "Medical Officer"),
