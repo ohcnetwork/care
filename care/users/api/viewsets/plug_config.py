@@ -30,6 +30,14 @@ class PlugConfigViewset(
         cache.delete(self.cache_key)
         serializer.save()
 
+    def perform_update(self, serializer):
+        cache.delete(self.cache_key)
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        cache.delete(self.cache_key)
+        instance.delete()
+
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return []
