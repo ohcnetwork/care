@@ -46,7 +46,7 @@ def load_redis_index():
         except ModuleNotFoundError:
             logger.debug("Module %s not found", module_path)
         except Exception as e:
-            logger.exception("Error loading static data for %s: %s", plug.name, e)
+            logger.error("Error loading static data for %s: %s", plug.name, e)
 
     cache.delete("redis_index_loading")
     logger.info("Redis Index Loaded")
