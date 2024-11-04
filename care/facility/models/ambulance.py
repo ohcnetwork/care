@@ -8,7 +8,17 @@ from care.utils.models.validators import mobile_or_landline_number_validator
 
 User = get_user_model()
 
-AMBULANCE_TYPES = [(1, "Basic"), (2, "Cardiac"), (3, "Hearse")]
+
+class AmbulanceType(models.IntegerChoices):
+    BASIC = 1, "Basic"
+    CARDIAC = 2, "Cardiac"
+    HEARSE = 3, "Hearse"
+
+
+class InsuranceYearChoices(models.IntegerChoices):
+    YEAR_2020 = 2020, "2020"
+    YEAR_2021 = 2021, "2021"
+    YEAR_2022 = 2022, "2022"
 
 
 class Ambulance(FacilityBaseModel):
@@ -17,7 +27,6 @@ class Ambulance(FacilityBaseModel):
         message="Please Enter the vehicle number in all uppercase without spaces, eg: KL13AB1234",
         code="invalid_vehicle_number",
     )
-    INSURANCE_YEAR_CHOICES = ((2020, 2020), (2021, 2021), (2022, 2022))
 
     vehicle_number = models.CharField(
         max_length=20,
@@ -58,10 +67,12 @@ class Ambulance(FacilityBaseModel):
     has_suction_machine = models.BooleanField()
     has_defibrillator = models.BooleanField()
 
-    insurance_valid_till_year = models.IntegerField(choices=INSURANCE_YEAR_CHOICES)
+    insurance_valid_till_year = models.IntegerField(
+        choices=InsuranceYearChoices.choices
+    )
 
     ambulance_type = models.IntegerField(
-        choices=AMBULANCE_TYPES, blank=False, default=1
+        choices=AmbulanceType.choices, blank=False, default=AmbulanceType.BASIC
     )
 
     price_per_km = models.DecimalField(max_digits=7, decimal_places=2, null=True)

@@ -32,7 +32,7 @@ from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter, inverse_choices
 from care.utils.queryset.asset_bed import get_asset_bed_queryset, get_bed_queryset
 
-inverse_bed_type = inverse_choices(BedTypeChoices)
+inverse_bed_type = inverse_choices(BedTypeChoices.choices)
 
 
 class BedFilter(filters.FilterSet):

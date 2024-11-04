@@ -26,7 +26,8 @@ def patient_summary():
             # Get Total Counts
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value = bed_type_choice.value
+                text = bed_type_choice.label
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }
@@ -54,7 +55,8 @@ def patient_summary():
             ).count()
 
             for bed_type_choice in BedTypeChoices:
-                db_value, text = bed_type_choice
+                db_value = bed_type_choice.value
+                text = bed_type_choice.label
                 patient_filters = {
                     "last_consultation__" + "current_bed__bed__bed_type": db_value
                 }

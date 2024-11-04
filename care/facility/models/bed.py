@@ -11,7 +11,7 @@ from django.db.models import JSONField
 
 from care.facility.models.asset import Asset, AssetLocation
 from care.facility.models.facility import Facility
-from care.facility.models.patient_base import BedType, BedTypeChoices
+from care.facility.models.patient_base import BedTypeChoices
 from care.facility.models.patient_consultation import PatientConsultation
 from care.utils.models.base import BaseModel
 
@@ -20,7 +20,7 @@ class Bed(BaseModel):
     name = models.CharField(max_length=1024)
     description = models.TextField(default="", blank=True)
     bed_type = models.IntegerField(
-        choices=BedTypeChoices, default=BedType.REGULAR.value
+        choices=BedTypeChoices.choices, default=BedTypeChoices.REGULAR
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False

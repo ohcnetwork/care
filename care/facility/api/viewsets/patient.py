@@ -91,7 +91,7 @@ from config.authentication import (
 )
 
 REVERSE_FACILITY_TYPES = covert_choice_dict(FACILITY_TYPES)
-REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices)
+REVERSE_BED_TYPES = covert_choice_dict(BedTypeChoices.choices)
 DISCHARGE_REASONS = [choice[0] for choice in DISCHARGE_REASON_CHOICES]
 
 

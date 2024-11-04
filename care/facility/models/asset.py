@@ -1,4 +1,3 @@
-import enum
 import uuid
 
 from django.contrib.contenttypes.models import ContentType
@@ -22,10 +21,10 @@ def get_random_asset_id():
 
 
 class AvailabilityStatus(models.TextChoices):
-    NOT_MONITORED = "Not Monitored"
-    OPERATIONAL = "Operational"
-    DOWN = "Down"
-    UNDER_MAINTENANCE = "Under Maintenance"
+    NOT_MONITORED = "Not Monitored", "Not Monitored"
+    OPERATIONAL = "Operational", "Operational"
+    DOWN = "Down", "Down"
+    UNDER_MAINTENANCE = "Under Maintenance", "Under Maintenance"
 
 
 class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
@@ -34,17 +33,15 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     actual rooms in the hospital, Beds are also connected to this model to remove duplication of efforts
     """
 
-    class RoomType(enum.Enum):
-        OTHER = 1
-        ICU = 10
-        WARD = 20
-
-    RoomTypeChoices = [(e.value, e.name) for e in RoomType]
+    class RoomTypeChoices(models.IntegerChoices):
+        OTHER = 1, "Other"
+        ICU = 10, "ICU"
+        WARD = 20, "Ward"
 
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     location_type = models.IntegerField(
-        choices=RoomTypeChoices, default=RoomType.OTHER.value
+        choices=RoomTypeChoices.choices, default=RoomTypeChoices.OTHER
     )
     facility = models.ForeignKey(
         Facility, on_delete=models.PROTECT, null=False, blank=False
@@ -55,37 +52,35 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
     )
 
 
-class AssetType(enum.Enum):
-    INTERNAL = 50
-    EXTERNAL = 100
+class AssetTypeChoices(models.IntegerChoices):
+    INTERNAL = 50, "Internal"
+    EXTERNAL = 100, "External"
 
-
-AssetTypeChoices = [(e.value, e.name) for e in AssetType]
 
 AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]  # noqa: SLF001
 
 
-class Status(enum.Enum):
-    ACTIVE = 50
-    TRANSFER_IN_PROGRESS = 100
+class StatusChoices(models.IntegerChoices):
+    ACTIVE = 50, "Active"
+    TRANSFER_IN_PROGRESS = 100, "Transfer In Progress"
 
 
-StatusChoices = [(e.value, e.name) for e in Status]
-
-REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices)
-REVERSE_STATUS = reverse_choices(StatusChoices)
+REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices.choices)
+REVERSE_STATUS = reverse_choices(StatusChoices.choices)
 
 
 class Asset(BaseModel):
     name = models.CharField(max_length=1024, blank=False, null=False)
     description = models.TextField(default="", null=True, blank=True)
     asset_type = models.IntegerField(
-        choices=AssetTypeChoices, default=AssetType.INTERNAL.value
+        choices=AssetTypeChoices.choices, default=AssetTypeChoices.INTERNAL
     )
     asset_class = models.CharField(
         choices=AssetClassChoices, default=None, null=True, blank=True, max_length=20
     )
-    status = models.IntegerField(choices=StatusChoices, default=Status.ACTIVE.value)
+    status = models.IntegerField(
+        choices=StatusChoices.choices, default=StatusChoices.ACTIVE
+    )
     current_location = models.ForeignKey(
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
@@ -220,7 +215,7 @@ class AvailabilityRecord(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_external_id = models.UUIDField()
     status = models.CharField(
-        choices=AvailabilityStatus,
+        choices=AvailabilityStatus.choices,
         default=AvailabilityStatus.NOT_MONITORED,
         max_length=20,
     )

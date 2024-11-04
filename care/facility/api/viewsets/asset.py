@@ -74,8 +74,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-inverse_asset_type = inverse_choices(AssetTypeChoices)
-inverse_asset_status = inverse_choices(StatusChoices)
+inverse_asset_type = inverse_choices(AssetTypeChoices.choices)
+inverse_asset_status = inverse_choices(StatusChoices.choices)
 
 
 @receiver(post_save, sender=Asset)
