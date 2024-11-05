@@ -34,7 +34,7 @@ from care.facility.models import (
 )
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
-    NewDischargeReasonEnum,
+    NewDischargeReasonChoices,
 )
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
 from care.utils.filters.choicefilter import CareChoiceFilter
@@ -186,7 +186,7 @@ class ShiftingViewSet(
                 patient=patient, discharge_date__isnull=True
             ).update(
                 discharge_date=localtime(now()),
-                new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+                new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             )
             ConsultationBed.objects.filter(
                 consultation=patient.last_consultation,

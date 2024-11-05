@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import JSONField, Q
 
-from care.facility.models import reverse_choices
 from care.facility.models.facility import Facility
 from care.facility.models.json_schema.asset import ASSET_META
 from care.facility.models.mixins.permissions.facility import (
@@ -63,10 +62,6 @@ AssetClassChoices = [(e.name, e.value._name) for e in AssetClasses]  # noqa: SLF
 class StatusChoices(models.IntegerChoices):
     ACTIVE = 50, "Active"
     TRANSFER_IN_PROGRESS = 100, "Transfer In Progress"
-
-
-REVERSE_ASSET_TYPE = reverse_choices(AssetTypeChoices.choices)
-REVERSE_STATUS = reverse_choices(StatusChoices.choices)
 
 
 class Asset(BaseModel):
@@ -135,8 +130,14 @@ class Asset(BaseModel):
     }
 
     CSV_MAKE_PRETTY = {
-        "asset_type": (lambda x: REVERSE_ASSET_TYPE[x]),
-        "status": (lambda x: REVERSE_STATUS[x]),
+        "asset_type": (
+            lambda x: AssetTypeChoices(x).label
+            if x in AssetTypeChoices.values
+            else "Unknown"
+        ),
+        "status": (
+            lambda x: StatusChoices(x).label if x in StatusChoices.values else "Unknown"
+        ),
         "is_working": (lambda x: "WORKING" if x else "NOT WORKING"),
     }
 

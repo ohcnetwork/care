@@ -129,74 +129,75 @@ FACILITY_TYPES = [
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
 
-DOCTOR_TYPES = [
-    (1, "General Medicine"),
-    (2, "Pulmonology"),
-    (3, "Intensivist"),
-    (4, "Pediatrician"),
-    (5, "Others"),
-    (6, "Anesthesiologist"),
-    (7, "Cardiac Surgeon"),
-    (8, "Cardiologist"),
-    (9, "Dentist"),
-    (10, "Dermatologist"),
-    (11, "Diabetologist"),
-    (12, "Emergency Medicine Physician"),
-    (13, "Endocrinologist"),
-    (14, "Family Physician"),
-    (15, "Gastroenterologist"),
-    (16, "General Surgeon"),
-    (17, "Geriatrician"),
-    (18, "Hematologist"),
-    (19, "Immunologist"),
-    (20, "Infectious Disease Specialist"),
-    (21, "MBBS doctor"),
-    (22, "Medical Officer"),
-    (23, "Nephrologist"),
-    (24, "Neuro Surgeon"),
-    (25, "Neurologist"),
-    (26, "Obstetrician/Gynecologist (OB/GYN)"),
-    (27, "Oncologist"),
-    (28, "Oncology Surgeon"),
-    (29, "Ophthalmologist"),
-    (30, "Oral and Maxillofacial Surgeon"),
-    (31, "Orthopedic"),
-    (32, "Orthopedic Surgeon"),
-    (33, "Otolaryngologist (ENT)"),
-    (34, "Palliative care Physician"),
-    (35, "Pathologist"),
-    (36, "Pediatric Surgeon"),
-    (37, "Physician"),
-    (38, "Plastic Surgeon"),
-    (39, "Psychiatrist"),
-    (40, "Pulmonologist"),
-    (41, "Radio technician"),
-    (42, "Radiologist"),
-    (43, "Rheumatologist"),
-    (44, "Sports Medicine Specialist"),
-    (45, "Thoraco-Vascular Surgeon"),
-    (46, "Transfusion Medicine Specialist"),
-    (47, "Urologist"),
-    (48, "Nurse"),
-    (49, "Allergist/Immunologist"),
-    (50, "Cardiothoracic Surgeon"),
-    (51, "Gynecologic Oncologist"),
-    (52, "Hepatologist"),
-    (53, "Internist"),
-    (54, "Neonatologist"),
-    (55, "Pain Management Specialist"),
-    (56, "Physiatrist (Physical Medicine and Rehabilitation)"),
-    (57, "Podiatrist"),
-    (58, "Preventive Medicine Specialist"),
-    (59, "Radiation Oncologist"),
-    (60, "Sleep Medicine Specialist"),
-    (61, "Transplant Surgeon"),
-    (62, "Trauma Surgeon"),
-    (63, "Vascular Surgeon"),
-    (64, "Critical Care Physician"),
-]
 
-REVERSE_DOCTOR_TYPES = reverse_choices(DOCTOR_TYPES)
+class DoctorType(models.IntegerChoices):
+    GENERAL_MEDICINE = 1, _("General Medicine")
+    PULMONOLOGY = 2, _("Pulmonology")
+    INTENSIVIST = 3, _("Intensivist")
+    PEDIATRICIAN = 4, _("Pediatrician")
+    OTHERS = 5, _("Others")
+    ANESTHESIOLOGIST = 6, _("Anesthesiologist")
+    CARDIAC_SURGEON = 7, _("Cardiac Surgeon")
+    CARDIOLOGIST = 8, _("Cardiologist")
+    DENTIST = 9, _("Dentist")
+    DERMATOLOGIST = 10, _("Dermatologist")
+    DIABETOLOGIST = 11, _("Diabetologist")
+    EMERGENCY_MEDICINE_PHYSICIAN = 12, _("Emergency Medicine Physician")
+    ENDOCRINOLOGIST = 13, _("Endocrinologist")
+    FAMILY_PHYSICIAN = 14, _("Family Physician")
+    GASTROENTEROLOGIST = 15, _("Gastroenterologist")
+    GENERAL_SURGEON = 16, _("General Surgeon")
+    GERIATRICIAN = 17, _("Geriatrician")
+    HEMATOLOGIST = 18, _("Hematologist")
+    IMMUNOLOGIST = 19, _("Immunologist")
+    INFECTIOUS_DISEASE_SPECIALIST = 20, _("Infectious Disease Specialist")
+    MBBS_DOCTOR = 21, _("MBBS Doctor")
+    MEDICAL_OFFICER = 22, _("Medical Officer")
+    NEPHROLOGIST = 23, _("Nephrologist")
+    NEURO_SURGEON = 24, _("Neuro Surgeon")
+    NEUROLOGIST = 25, _("Neurologist")
+    OBSTETRICIAN_GYNECOLOGIST = 26, _("Obstetrician/Gynecologist (OB/GYN)")
+    ONCOLOGIST = 27, _("Oncologist")
+    ONCOLOGY_SURGEON = 28, _("Oncology Surgeon")
+    OPHTHALMOLOGIST = 29, _("Ophthalmologist")
+    ORAL_AND_MAXILLOFACIAL_SURGEON = 30, _("Oral and Maxillofacial Surgeon")
+    ORTHOPEDIC = 31, _("Orthopedic")
+    ORTHOPEDIC_SURGEON = 32, _("Orthopedic Surgeon")
+    OTOLARYNGOLOGIST = 33, _("Otolaryngologist (ENT)")
+    PALLIATIVE_CARE_PHYSICIAN = 34, _("Palliative Care Physician")
+    PATHOLOGIST = 35, _("Pathologist")
+    PEDIATRIC_SURGEON = 36, _("Pediatric Surgeon")
+    PHYSICIAN = 37, _("Physician")
+    PLASTIC_SURGEON = 38, _("Plastic Surgeon")
+    PSYCHIATRIST = 39, _("Psychiatrist")
+    PULMONOLOGIST = 40, _("Pulmonologist")
+    RADIO_TECHNICIAN = 41, _("Radio Technician")
+    RADIOLOGIST = 42, _("Radiologist")
+    RHEUMATOLOGIST = 43, _("Rheumatologist")
+    SPORTS_MEDICINE_SPECIALIST = 44, _("Sports Medicine Specialist")
+    THORACO_VASCULAR_SURGEON = 45, _("Thoraco-Vascular Surgeon")
+    TRANSFUSION_MEDICINE_SPECIALIST = 46, _("Transfusion Medicine Specialist")
+    UROLOGIST = 47, _("Urologist")
+    NURSE = 48, _("Nurse")
+    ALLERGIST_IMMUNOLOGIST = 49, _("Allergist/Immunologist")
+    CARDIOTHORACIC_SURGEON = 50, _("Cardiothoracic Surgeon")
+    GYNECOLOGIC_ONCOLOGIST = 51, _("Gynecologic Oncologist")
+    HEPATOLOGIST = 52, _("Hepatologist")
+    INTERNIST = 53, _("Internist")
+    NEONATOLOGIST = 54, _("Neonatologist")
+    PAIN_MANAGEMENT_SPECIALIST = 55, _("Pain Management Specialist")
+    PHYSIATRIST = 56, _("Physiatrist (Physical Medicine and Rehabilitation)")
+    PODIATRIST = 57, _("Podiatrist")
+    PREVENTIVE_MEDICINE_SPECIALIST = 58, _("Preventive Medicine Specialist")
+    RADIATION_ONCOLOGIST = 59, _("Radiation Oncologist")
+    SLEEP_MEDICINE_SPECIALIST = 60, _("Sleep Medicine Specialist")
+    TRANSPLANT_SURGEON = 61, _("Transplant Surgeon")
+    TRAUMA_SURGEON = 62, _("Trauma Surgeon")
+    VASCULAR_SURGEON = 63, _("Vascular Surgeon")
+    CRITICAL_CARE_PHYSICIAN = 64, _("Critical Care Physician")
+
+
+REVERSE_DOCTOR_TYPES = reverse_choices(DoctorType.choices)
 
 REVERSE_FEATURE_CHOICES = reverse_choices(FEATURE_CHOICES)
 
@@ -421,7 +422,7 @@ class HospitalDoctors(FacilityBaseModel, FacilityRelatedPermissionMixin):
     facility = models.ForeignKey(
         "Facility", on_delete=models.CASCADE, null=False, blank=False
     )
-    area = models.IntegerField(choices=DOCTOR_TYPES)
+    area = models.IntegerField(choices=DoctorType.choices)
     count = models.PositiveIntegerField()
 
     def __str__(self):

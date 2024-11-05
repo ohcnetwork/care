@@ -52,11 +52,11 @@ from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
-    CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
     DISCHARGE_REASON_CHOICES,
     FACILITY_TYPES,
     BedTypeChoices,
+    CategoryChoices,
     DailyRound,
     Facility,
     FacilityPatientStatsHistory,
@@ -75,7 +75,7 @@ from care.facility.models.notification import Notification
 from care.facility.models.patient import PatientNotesEdit, RationCardCategory
 from care.facility.models.patient_base import (
     DISEASE_STATUS_DICT,
-    NewDischargeReasonEnum,
+    NewDischargeReasonChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
@@ -122,7 +122,7 @@ class PatientFilterSet(filters.FilterSet):
     )
     category = filters.ChoiceFilter(
         method="filter_by_category",
-        choices=CATEGORY_CHOICES,
+        choices=CategoryChoices.choices,
     )
     ration_card_category = filters.ChoiceFilter(choices=RationCardCategory.choices)
 
@@ -210,7 +210,7 @@ class PatientFilterSet(filters.FilterSet):
     )
     last_consultation__new_discharge_reason = filters.ChoiceFilter(
         field_name=f"{last_consultation_field}__new_discharge_reason",
-        choices=NewDischargeReasonEnum.choices,
+        choices=NewDischargeReasonChoices.choices,
     )
     last_consultation_assigned_to = filters.NumberFilter(
         field_name=f"{last_consultation_field}__assigned_to"
@@ -357,7 +357,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
         if ordering in ("category_severity", "-category_severity"):
             category_ordering = {
                 category: index + 1
-                for index, (category, _) in enumerate(CATEGORY_CHOICES)
+                for index, (category, _) in enumerate(CategoryChoices.choices)
             }
             when_statements = [
                 When(last_consultation__category=cat, then=order)

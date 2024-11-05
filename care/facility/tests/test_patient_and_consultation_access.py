@@ -4,7 +4,7 @@ from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_base import NewDischargeReasonChoices
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -73,7 +73,7 @@ class TestPatientConsultationAccess(TestUtils, APITestCase):
         return self.client.post(
             f"/api/v1/consultation/{consultation.external_id}/discharge_patient/",
             data={
-                "new_discharge_reason": NewDischargeReasonEnum.RECOVERED,
+                "new_discharge_reason": NewDischargeReasonChoices.RECOVERED,
                 **kwargs,
             },
             format="json",

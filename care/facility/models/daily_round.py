@@ -6,8 +6,8 @@ from django.db.models import JSONField
 from django.shortcuts import get_object_or_404
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
+    CategoryChoices,
     PatientBaseModel,
 )
 from care.facility.models.bed import AssetBed
@@ -174,7 +174,7 @@ class DailyRound(PatientBaseModel):
         null=True,
     )  # Deprecated
     patient_category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
+        choices=CategoryChoices.choices, max_length=13, blank=False, null=True
     )
     other_details = models.TextField(null=True, blank=True)
 

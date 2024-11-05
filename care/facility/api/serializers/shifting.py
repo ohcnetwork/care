@@ -12,10 +12,10 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
-    CATEGORY_CHOICES,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
+    CategoryChoices,
     Facility,
     PatientRegistration,
     ShiftingRequest,
@@ -25,9 +25,8 @@ from care.facility.models import (
 from care.facility.models.bed import ConsultationBed
 from care.facility.models.notification import Notification
 from care.facility.models.patient_base import (
-    DISEASE_STATUS_CHOICES,
-    DiseaseStatusEnum,
-    NewDischargeReasonEnum,
+    DiseaseStatusChoices,
+    NewDischargeReasonChoices,
 )
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.api.serializers.lsg import StateSerializer
@@ -77,7 +76,7 @@ def discharge_patient(patient: PatientRegistration):
         PatientConsultation.objects.filter(patient=patient).order_by("-id").first()
     )
     if last_consultation:
-        reason = NewDischargeReasonEnum.REFERRED
+        reason = NewDischargeReasonChoices.REFERRED
         notes = "Patient Shifted to another facility"
         last_consultation.new_discharge_reason = reason
         last_consultation.discharge_notes = notes
@@ -225,7 +224,7 @@ class ShiftingSerializer(serializers.ModelSerializer):
     last_edited_by_object = UserBaseMinimumSerializer(
         source="last_edited_by", read_only=True
     )
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    patient_category = ChoiceField(choices=CategoryChoices.choices, required=False)
     ambulance_driver_name = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
     )
@@ -461,7 +460,8 @@ class PatientShiftingBareMinimumSerializer(serializers.ModelSerializer):
     )
     state_object = StateSerializer(source="state", read_only=True)
     disease_status = ChoiceField(
-        choices=DISEASE_STATUS_CHOICES, default=DiseaseStatusEnum.SUSPECTED.value
+        choices=DiseaseStatusChoices.choices,
+        default=DiseaseStatusChoices.SUSPECTED.value,
     )
     age = serializers.SerializerMethodField()
 

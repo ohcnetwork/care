@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import DiseaseStatusEnum
+from care.facility.models import DiseaseStatusChoices
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -22,11 +22,11 @@ class PatientRegistrationTest(TestUtils, APITestCase):
     def test_disease_state_recovery_is_aliased_to_recovered(self):
         patient = self.patient
 
-        patient.disease_status = DiseaseStatusEnum.RECOVERY.value
+        patient.disease_status = DiseaseStatusChoices.RECOVERY.value
         patient.save(update_fields=["disease_status"])
         patient.refresh_from_db()
 
-        self.assertEqual(patient.disease_status, DiseaseStatusEnum.RECOVERED.value)
+        self.assertEqual(patient.disease_status, DiseaseStatusChoices.RECOVERED.value)
 
     def test_date_of_birth_validation(self):
         dist_admin = self.create_user("dist_admin", self.district, user_type=30)

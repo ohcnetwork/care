@@ -13,9 +13,12 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
 )
-from care.facility.models.patient_base import NewDischargeReasonEnum, SuggestionChoices
+from care.facility.models.patient_base import (
+    NewDischargeReasonChoices,
+    SuggestionChoices,
+)
 from care.facility.models.patient_consultation import (
-    CATEGORY_CHOICES,
+    CategoryChoices,
     PatientConsultation,
 )
 from care.utils.tests.test_utils import TestUtils
@@ -40,7 +43,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
     def get_default_data(self):
         return {
             "route_to_facility": 10,
-            "category": CATEGORY_CHOICES[0][0],
+            "category": CategoryChoices.COMFORT,
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",
@@ -155,7 +158,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2002-04-01T16:30:00Z",
             discharge_notes="Discharge as recovered before admission",
         )
@@ -168,7 +171,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2319-04-01T15:30:00Z",
             discharge_notes="Discharge as recovered in the future",
         )
@@ -181,7 +184,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2020-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered after admission before future",
         )
@@ -194,7 +197,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
+            new_discharge_reason=NewDischargeReasonChoices.EXPIRED,
             death_datetime="2002-04-01T16:30:00Z",
             discharge_notes="Death before admission",
             death_confirmed_doctor="Dr. Test",
@@ -208,7 +211,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
+            new_discharge_reason=NewDischargeReasonChoices.EXPIRED,
             death_datetime="2319-04-01T15:30:00Z",
             discharge_notes="Death in the future",
             death_confirmed_doctor="Dr. Test",
@@ -222,7 +225,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.EXPIRED,
+            new_discharge_reason=NewDischargeReasonChoices.EXPIRED,
             death_datetime="2020-04-02T15:30:00Z",
             discharge_notes="Death after admission before future",
             death_confirmed_doctor="Dr. Test",
@@ -237,7 +240,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2023-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered with expired fields",
             death_datetime="2023-04-02T15:30:00Z",
@@ -261,7 +264,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         with patch.object(FileUpload, "put_object"):
             self.discharge_summary(
                 consultation,
-                new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+                new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
                 discharge_date="2020-04-02T15:30:00Z",
                 discharge_notes="Discharge as recovered after admission before future",
             )
@@ -281,7 +284,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with null referred_to_external",
             referred_to_external=None,
@@ -295,7 +298,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with empty referred_to_external",
             referred_to_external="",
@@ -309,7 +312,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with empty referred_to_external",
             referred_to=None,
@@ -323,7 +326,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with null referred_to_external",
             referred_to_external="External Facility",
@@ -339,7 +342,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         referred_to_external = "Test Hospital"
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             referred_to_external=referred_to_external,
         )
@@ -353,7 +356,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         referred_to_external = "Test Hospital"
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.REFERRED,
+            new_discharge_reason=NewDischargeReasonChoices.REFERRED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with valid referred_to_external",
             referred_to_external=referred_to_external,
@@ -413,7 +416,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         # Test Patch after discharge
         response = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2023-07-01T12:00:00Z",
             discharge_notes="Discharged with valid referred_to_external",
             medico_legal_case=False,
@@ -435,7 +438,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2020-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered after admission before future",
         )
@@ -622,7 +625,7 @@ class TestPatientConsultation(TestUtils, APITestCase):
         )
         res = self.discharge(
             consultation,
-            new_discharge_reason=NewDischargeReasonEnum.RECOVERED,
+            new_discharge_reason=NewDischargeReasonChoices.RECOVERED,
             discharge_date="2020-04-02T15:30:00Z",
             discharge_notes="Discharge as recovered after admission before future",
         )

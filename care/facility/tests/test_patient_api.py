@@ -10,7 +10,7 @@ from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
     ICD11Diagnosis,
 )
-from care.facility.models.patient_base import NewDischargeReasonEnum
+from care.facility.models.patient_base import NewDischargeReasonChoices
 from care.facility.models.patient_consultation import ConsentType, PatientCodeStatusType
 from care.utils.tests.test_utils import TestUtils
 
@@ -931,7 +931,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
 
         # Assert the consultation discharge reason and date are set correctly
         self.assertEqual(
-            self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
+            self.consultation.new_discharge_reason, NewDischargeReasonChoices.REFERRED
         )
         self.assertIsNotNone(self.consultation.discharge_date)
 
@@ -957,7 +957,7 @@ class PatientTransferTestCase(TestUtils, APITestCase):
 
     def test_transfer_with_expired_patient(self):
         # Mocking discharged as expired
-        self.consultation.new_discharge_reason = NewDischargeReasonEnum.EXPIRED
+        self.consultation.new_discharge_reason = NewDischargeReasonChoices.EXPIRED
         self.consultation.death_datetime = now()
         self.consultation.save()
 

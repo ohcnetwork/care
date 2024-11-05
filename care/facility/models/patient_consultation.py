@@ -5,8 +5,8 @@ from django.db.models import JSONField
 from django.utils import timezone
 
 from care.facility.models import (
-    CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
+    CategoryChoices,
     PatientBaseModel,
 )
 from care.facility.models.file_upload import FileUpload
@@ -15,9 +15,9 @@ from care.facility.models.mixins.permissions.patient import (
 )
 from care.facility.models.patient_base import (
     DISCHARGE_REASON_CHOICES,
-    NEW_DISCHARGE_REASON_CHOICES,
     REVERSE_CATEGORY_CHOICES,
     REVERSE_COVID_CATEGORY_CHOICES,
+    NewDischargeReasonChoices,
     RouteToFacility,
     SuggestionChoices,
     reverse_choices,
@@ -73,7 +73,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )  # Deprecated
     category = models.CharField(
-        choices=CATEGORY_CHOICES, max_length=13, blank=False, null=True
+        choices=CategoryChoices.choices, max_length=13, blank=False, null=True
     )
     examination_details = models.TextField(null=True, blank=True)
     history_of_present_illness = models.TextField(null=True, blank=True)
@@ -130,7 +130,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         null=True,
     )
     new_discharge_reason = models.SmallIntegerField(
-        choices=NEW_DISCHARGE_REASON_CHOICES,
+        choices=NewDischargeReasonChoices.choices,
         default=None,
         blank=True,
         null=True,

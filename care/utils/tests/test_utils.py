@@ -12,14 +12,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.facility.models import (
     BREATHLESSNESS_CHOICES,
-    CATEGORY_CHOICES,
-    DISEASE_CHOICES_MAP,
     FACILITY_TYPES,
     SHIFTING_STATUS_CHOICES,
     VEHICLE_CHOICES,
     Ambulance,
+    CategoryChoices,
     Disease,
-    DiseaseStatusEnum,
+    DiseaseChoices,
+    DiseaseStatusChoices,
     EncounterSymptom,
     Facility,
     InvestigationSession,
@@ -317,7 +317,7 @@ class TestUtils:
             {
                 "facility": facility,
                 "disease_status": getattr(
-                    DiseaseStatusEnum, patient_data["disease_status"]
+                    DiseaseStatusChoices, patient_data["disease_status"]
                 ).value,
             }
         )
@@ -327,7 +327,7 @@ class TestUtils:
         diseases = [
             Disease.objects.create(
                 patient=patient,
-                disease=DISEASE_CHOICES_MAP[mh["disease"]],
+                disease=DiseaseChoices[mh["disease"]].value,
                 details=mh["details"],
             )
             for mh in medical_history
@@ -339,7 +339,7 @@ class TestUtils:
     @classmethod
     def get_consultation_data(cls) -> dict:
         return {
-            "category": CATEGORY_CHOICES[0][0],
+            "category": CategoryChoices.COMFORT,
             "examination_details": "examination_details",
             "history_of_present_illness": "history_of_present_illness",
             "treatment_plan": "treatment_plan",

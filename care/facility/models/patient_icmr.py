@@ -3,13 +3,13 @@ from django.utils import timezone
 from django.utils.timezone import now
 
 from care.facility.models import (
-    DISEASE_CHOICES_MAP,
-    SYMPTOM_CHOICES,
+    DiseaseChoices,
     PatientConsultation,
     PatientContactDetails,
     PatientRegistration,
     PatientSample,
     Symptom,
+    SymptomChoices,
 )
 
 
@@ -155,7 +155,7 @@ class PatientSampleICMR(PatientSample):
         return [
             item.disease
             for item in self.patient.medical_history.all()
-            if item.disease != DISEASE_CHOICES_MAP["NO"]
+            if item.disease != DiseaseChoices.NO
         ]
 
     @property
@@ -182,7 +182,7 @@ class PatientConsultationICMR(PatientConsultation):
 
     def is_symptomatic(self):
         return bool(
-            SYMPTOM_CHOICES[0][0] not in self.symptoms.choices
+            SymptomChoices.ASYMPTOMATIC not in self.symptoms
             or self.symptoms_onset_date is not None
         )
 

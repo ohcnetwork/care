@@ -9,8 +9,8 @@ from rest_framework.exceptions import ValidationError
 
 from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
-    CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
+    CategoryChoices,
     PatientRegistration,
 )
 from care.facility.models.bed import Bed
@@ -31,7 +31,7 @@ class DailyRoundSerializer(serializers.ModelSerializer):
     deprecated_covid_category = ChoiceField(
         choices=COVID_CATEGORY_CHOICES, required=False
     )  # Deprecated
-    patient_category = ChoiceField(choices=CATEGORY_CHOICES, required=False)
+    patient_category = ChoiceField(choices=CategoryChoices.choices, required=False)
 
     action = ChoiceField(
         choices=PatientRegistration.ActionChoices, write_only=True, required=False
