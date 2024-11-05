@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("abdm", "0001_initial_squashed_0007_alter_abhanumber_id"),
+        # ("abdm", "0001_initial_squashed_0007_alter_abhanumber_id"),
         ("facility", "0373_remove_patientconsultation_hba1c"),
     ]
 
@@ -22,23 +22,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="historicalpatientregistration",
             name="abha_number",
-            field=models.ForeignKey(
+            field=models.IntegerField(
                 blank=True,
-                db_constraint=False,
                 null=True,
-                on_delete=django.db.models.deletion.DO_NOTHING,
-                related_name="+",
-                to="abdm.abhanumber",
             ),
         ),
         migrations.AddField(
             model_name="patientregistration",
             name="abha_number",
-            field=models.OneToOneField(
+            field=models.IntegerField(
                 blank=True,
                 null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                to="abdm.abhanumber",
             ),
         ),
     ]

@@ -208,6 +208,20 @@ class ResetPasswordRequestToken(GenericAPIView):
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
+        if settings.IS_PRODUCTION and (
+            not settings.EMAIL_HOST
+            or not settings.EMAIL_HOST_USER
+            or not settings.EMAIL_HOST_PASSWORD
+        ):
+            raise exceptions.ValidationError(
+                {
+                    "detail": [
+                        _(
+                            "There was a problem resetting your password. Please contact the administrator."
+                        )
+                    ]
+                }
+            )
         # before we continue, delete all existing expired tokens
         password_reset_token_validation_time = get_password_reset_token_expiry_time()
 

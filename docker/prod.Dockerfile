@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.13-slim-bookworm AS base
 
 ARG APP_HOME=/app
 ARG TYPST_VERSION=0.11.0
@@ -20,7 +20,7 @@ WORKDIR $APP_HOME
 FROM base AS builder
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev libpq-dev git wget \
+  build-essential libjpeg-dev zlib1g-dev libgmp-dev libpq-dev git wget \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -41,7 +41,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
-RUN pip install pipenv
+RUN pip install pipenv==2024.2.0
 
 COPY Pipfile Pipfile.lock $APP_HOME
 RUN pipenv sync --system --categories "packages"
@@ -54,7 +54,7 @@ RUN python3 $APP_HOME/install_plugins.py
 FROM base AS runtime
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  libpq-dev gettext wget curl gnupg \
+  libpq-dev libgmp-dev gettext wget curl gnupg \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 

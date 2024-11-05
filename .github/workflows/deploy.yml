@@ -102,6 +102,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             APP_VERSION=${{ github.sha }}
+            ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 

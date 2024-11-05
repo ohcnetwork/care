@@ -11,9 +11,7 @@
         }
       },
       "portMappings": [],
-      "command": [
-        "/app/celery_beat-ecs.sh"
-      ],
+      "command": ["/app/celery_beat-ecs.sh"],
       "cpu": 128,
       "environment": [
         {
@@ -97,28 +95,20 @@
           "value": "True"
         },
         {
-          "name": "ENABLE_ABDM",
-          "value": "True"
-        },
-        {
-          "name": "ABDM_URL",
+          "name": "ABDM_GATEWAY_URL",
           "value": "https://dev.abdm.gov.in"
         },
         {
-          "name": "HEALTH_SERVICE_API_URL",
-          "value": "https://healthidsbx.abdm.gov.in/api"
+          "name": "ABDM_ABHA_URL",
+          "value": "https://abhasbx.abdm.gov.in"
         },
         {
           "name": "ABDM_FACILITY_URL",
           "value": "https://facilitysbx.abdm.gov.in"
         },
         {
-          "name": "X_CM_ID",
+          "name": "ABDM_CM_ID",
           "value": "sbx"
-        },
-        {
-          "name": "FIDELIUS_URL",
-          "value": "https://fidelius.ohc.network"
         },
         {
           "name": "SENTRY_TRACES_SAMPLE_RATE",
@@ -296,9 +286,7 @@
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "command": [
-        "/app/celery_worker-ecs.sh"
-      ],
+      "command": ["/app/celery_worker-ecs.sh"],
       "cpu": 384,
       "memory": 1536,
       "memoryReservation": 1536,
@@ -384,24 +372,20 @@
           "value": "True"
         },
         {
-          "name": "ENABLE_ABDM",
-          "value": "True"
-        },
-        {
-          "name": "ABDM_URL",
+          "name": "ABDM_GATEWAY_URL",
           "value": "https://dev.abdm.gov.in"
         },
         {
-          "name": "HEALTH_SERVICE_API_URL",
-          "value": "https://healthidsbx.abdm.gov.in/api"
+          "name": "ABDM_ABHA_URL",
+          "value": "https://abhasbx.abdm.gov.in"
         },
         {
-          "name": "X_CM_ID",
+          "name": "ABDM_FACILITY_URL",
+          "value": "https://facilitysbx.abdm.gov.in"
+        },
+        {
+          "name": "ABDM_CM_ID",
           "value": "sbx"
-        },
-        {
-          "name": "FIDELIUS_URL",
-          "value": "https://fidelius.ohc.network"
         },
         {
           "name": "SENTRY_TRACES_SAMPLE_RATE",
