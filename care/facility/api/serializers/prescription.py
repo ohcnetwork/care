@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
@@ -9,7 +11,6 @@ from care.facility.models import (
     PrescriptionDosageType,
 )
 from care.users.api.serializers.user import UserBaseMinimumSerializer
-import re
 
 
 class MedibaseMedicineSerializer(serializers.ModelSerializer):
@@ -100,8 +101,9 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         def extract_numeric_value(dosage):
-
-            match = re.match(r"(\d+(\.\d+)?)", dosage)  # Matches digits and optional decimal part
+            match = re.match(
+                r"(\d+(\.\d+)?)", dosage
+            )  # Matches digits and optional decimal part
             if match:
                 return float(match.group(1))
             return None
@@ -147,7 +149,9 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             # Raise error if max_dosage is less than base_dosage
             if max_dosage_value < base_dosage_value:
                 raise serializers.ValidationError(
-                    {"max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."}
+                    {
+                        "max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."
+                    }
                 )
 
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:

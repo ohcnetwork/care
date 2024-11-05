@@ -312,5 +312,5 @@ class PrescriptionsApiTestCase(TestUtils, APITestCase):
         self.assertIn("max_dosage", response.data)
         self.assertEqual(
             response.data["max_dosage"][0],
-            "Max dosage in 24 hours should be greater than or equal to base dosage."
+            "Max dosage in 24 hours should be greater than or equal to base dosage.",
         )
