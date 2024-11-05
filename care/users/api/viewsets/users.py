@@ -125,7 +125,7 @@ class UserViewSet(
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return self.queryset  # fix this
+            return super().get_queryset()
         query = Q(id=self.request.user.id)
         if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateReadOnlyAdmin"]:
             query |= Q(
