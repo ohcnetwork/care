@@ -18,7 +18,7 @@ class OTPPatientDataViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         is_otp_login = getattr(self.request.user, "is_alternative_login", False)
-        queryset = self.queryset
+        queryset = super().get_queryset()
         if is_otp_login:
             queryset = queryset.filter(phone_number=self.request.user.phone_number)
         else:

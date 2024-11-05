@@ -95,7 +95,7 @@ class PatientExternalTestViewSet(
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = super().get_queryset()
         if not self.request.user.is_superuser:
             if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
                 queryset = queryset.filter(district__state=self.request.user.state)
