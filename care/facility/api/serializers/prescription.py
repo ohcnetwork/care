@@ -136,12 +136,12 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             with contextlib.suppress(ValueError):
                 base_dosage_value = float(base_dosage.split(" ", maxsplit=1)[0])
                 max_dosage_value = float(max_dosage.split(" ", maxsplit=1)[0])
-            if max_dosage_value < base_dosage_value:
-                raise serializers.ValidationError(
-                    {
-                        "max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."
-                    }
-                )
+                if max_dosage_value < base_dosage_value:
+                    raise serializers.ValidationError(
+                        {
+                            "max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."
+                        }
+                    )
 
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
