@@ -86,6 +86,7 @@ class ExpectedCreatedByObjectKeys(Enum):
     LAST_NAME = "last_name"
     USER_TYPE = "user_type"
     LAST_LOGIN = "last_login"
+    READ_PROFILE_PICTURE_URL = "read_profile_picture_url"
 
 
 class PatientNotesTestCase(TestUtils, APITestCase):
