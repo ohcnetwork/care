@@ -104,6 +104,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             match = re.match(r"(\d+(\.\d+)?)", dosage)  # Matches digits and optional decimal part
             if match:
                 return float(match.group(1))
+            return None
 
         if "medicine" in attrs:
             attrs["medicine"] = get_object_or_404(
