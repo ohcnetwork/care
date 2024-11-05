@@ -1,4 +1,4 @@
-import re
+import contextlib
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -100,14 +100,6 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
-        def extract_numeric_value(dosage):
-            match = re.match(
-                r"(\d+(\.\d+)?)", dosage
-            )  # Matches digits and optional decimal part
-            if match:
-                return float(match.group(1))
-            return None
-
         if "medicine" in attrs:
             attrs["medicine"] = get_object_or_404(
                 MedibaseMedicine, external_id=attrs["medicine"]
@@ -137,16 +129,13 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 {"base_dosage": "Base dosage is required."}
             )
 
-            # Validate max_dosage is greater than or equal to base_dosage
         base_dosage = attrs.get("base_dosage")
         max_dosage = attrs.get("max_dosage")
 
         if base_dosage and max_dosage:
-            # Extract numeric values from dosage strings
-            base_dosage_value = extract_numeric_value(base_dosage)
-            max_dosage_value = extract_numeric_value(max_dosage)
-
-            # Raise error if max_dosage is less than base_dosage
+            with contextlib.suppress(ValueError):
+                base_dosage_value = float(base_dosage.split(" ", maxsplit=1)[0])
+                max_dosage_value = float(max_dosage.split(" ", maxsplit=1)[0])
             if max_dosage_value < base_dosage_value:
                 raise serializers.ValidationError(
                     {
