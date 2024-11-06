@@ -97,12 +97,13 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "is_migrated",
         )
 
-    def validate(self, attrs):
-        if "medicine" in attrs:
-            attrs["medicine"] = get_object_or_404(
-                MedibaseMedicine, external_id=attrs["medicine"]
-            )
+    def validate_medicine(self, attrs):
+        """Validate the medicine field and check for duplicate prescriptions."""
+        attrs["medicine"] = get_object_or_404(
+            MedibaseMedicine, external_id=attrs["medicine"]
+        )
 
+        # Check for existing prescription
         if (
             not self.instance
             and Prescription.objects.filter(
@@ -122,13 +123,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 }
             )
 
-        if not attrs.get("base_dosage"):
+    def validate_dosage(self, attrs):
+        """Validate base and max dosage."""
+        base_dosage = attrs.get("base_dosage")
+        max_dosage = attrs.get("max_dosage")
+
+        if not base_dosage:
             raise serializers.ValidationError(
                 {"base_dosage": "Base dosage is required."}
             )
-
-        base_dosage = attrs.get("base_dosage")
-        max_dosage = attrs.get("max_dosage")
 
         if max_dosage:
             if not base_dosage:
@@ -136,10 +139,8 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                     {"max_dosage": "Max dosage cannot be set without base dosage."}
                 )
             try:
-                base_dosage_value = float(base_dosage.split(" ", maxsplit=1)[0])
-                max_dosage_value = float(max_dosage.split(" ", maxsplit=1)[0])
-                base_unit = base_dosage.split(" ", maxsplit=1)[1]
-                max_unit = max_dosage.split(" ", maxsplit=1)[1]
+                base_dosage_value, base_unit = self.parse_dosage(base_dosage)
+                max_dosage_value, max_unit = self.parse_dosage(max_dosage)
 
                 if base_unit != max_unit:
                     raise serializers.ValidationError(
@@ -154,12 +155,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                             "max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."
                         }
                     )
-            except (ValueError, IndexError) as e:
+            except ValueError as e:
                 raise serializers.ValidationError(
                     {
                         "max_dosage": "Invalid dosage format. Expected format: 'number unit' (e.g., '500 mg')"
                     }
                 ) from e
+
+    def validate_dosage_type_specific(self, attrs):
+        """Validate fields specific to dosage types."""
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
@@ -186,7 +190,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             else:
                 attrs.pop("target_dosage", None)
 
-        return super().validate(attrs)
+    DOSAGE_PARTS_REQUIRED = 2  # Define a constant for the required parts in dosage
+
+    def parse_dosage(self, dosage):
+        """Parse the dosage into value and unit parts."""
+        parts = dosage.split(" ", maxsplit=1)
+        if len(parts) != self.DOSAGE_PARTS_REQUIRED:
+            error_message = "Invalid dosage format"  # Assign message to a variable
+            raise ValueError(error_message)
+        return float(parts[0]), parts[1]
 
     def create(self, validated_data):
         if validated_data["consultation"].discharge_date:
