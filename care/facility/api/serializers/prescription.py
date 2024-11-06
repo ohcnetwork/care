@@ -132,17 +132,32 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         base_dosage = attrs.get("base_dosage")
         max_dosage = attrs.get("max_dosage")
 
-        if base_dosage and max_dosage:
-            with contextlib.suppress(ValueError):
+        if max_dosage:
+            if not base_dosage:
+                raise serializers.ValidationError(
+                    {"max_dosage": "Max dosage cannot be set without base dosage."}
+                )
+            try:
                 base_dosage_value = float(base_dosage.split(" ", maxsplit=1)[0])
                 max_dosage_value = float(max_dosage.split(" ", maxsplit=1)[0])
+                base_unit = base_dosage.split(" ", maxsplit=1)[1]
+                max_unit = max_dosage.split(" ", maxsplit=1)[1]
+                
+                if base_unit != max_unit:
+                    raise serializers.ValidationError(
+                        {"max_dosage": f"Max dosage units ({max_unit}) must match base dosage units ({base_unit})."}
+                    )
+
                 if max_dosage_value < base_dosage_value:
                     raise serializers.ValidationError(
                         {
                             "max_dosage": "Max dosage in 24 hours should be greater than or equal to base dosage."
                         }
                     )
-
+            except (ValueError, IndexError) as e:
+                raise serializers.ValidationError(
+                    {"max_dosage": "Invalid dosage format. Expected format: 'number unit' (e.g., '500 mg')"}
+                ) from e
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
