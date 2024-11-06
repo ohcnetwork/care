@@ -75,6 +75,13 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
+    ERROR_MESSAGES = {
+        "prn_indicator": "Indicator should be set for PRN prescriptions.",
+        "titrated_target": "Target dosage should be set for titrated prescriptions.",
+        "frequency": "Frequency should be set for prescriptions.",
+        "invalid_dosage_format": "Invalid dosage format. Expected 'number unit' but got '{}'",
+        "negative_dosage": "Dosage value cannot be negative: {}",
+    }
     # Class-level constants for field names
     PRN_FIELDS = {"indicator"}
     TITRATED_FIELDS = {"target_dosage"}
@@ -102,7 +109,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "is_migrated",
         )
 
-    def _remove_irrelevant_fields(self, attrs, keep_fields):
+    def _remove_irrelevant_fields(self, attrs: dict, keep_fields: set[str]) -> None:
         """Remove fields not relevant for the current dosage type"""
         all_fields = self.PRN_FIELDS | self.TITRATED_FIELDS | self.STANDARD_FIELDS
         for field in all_fields - keep_fields:
@@ -134,6 +141,20 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 }
             )
 
+    def _validate_max_dosage_presence(self, base_dosage: str, max_dosage: str) -> None:
+        if max_dosage and not base_dosage:
+            raise serializers.ValidationError(
+                {"max_dosage": "Max dosage cannot be set without base dosage"}
+            )
+
+    def _validate_dosage_units(self, base_unit: str, max_unit: str) -> None:
+        if base_unit != max_unit:
+            raise serializers.ValidationError(
+                {
+                    "max_dosage": f"Max dosage units ({max_unit}) must match base dosage units ({base_unit})."
+                }
+            )
+
     def validate_dosage(self, attrs):
         """Validate base and max dosage."""
         base_dosage = attrs.get("base_dosage")
@@ -144,21 +165,14 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 {"base_dosage": "Base dosage is required"}
             )
 
+        self._validate_max_dosage_presence(base_dosage, max_dosage)
+
         if max_dosage:
-            if not base_dosage:
-                raise serializers.ValidationError(
-                    {"max_dosage": "Max dosage cannot be set without base dosage"}
-                )
             try:
                 base_dosage_value, base_unit = self.parse_dosage(base_dosage)
                 max_dosage_value, max_unit = self.parse_dosage(max_dosage)
 
-                if base_unit != max_unit:
-                    raise serializers.ValidationError(
-                        {
-                            "max_dosage": f"Max dosage units ({max_unit}) must match base dosage units ({base_unit})."
-                        }
-                    )
+                self._validate_dosage_units(base_unit, max_unit)
 
                 if max_dosage_value < base_dosage_value:
                     raise serializers.ValidationError(
@@ -180,7 +194,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         if dosage_type == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
-                    {"indicator": "Indicator should be set for PRN prescriptions."}
+                    {"indicator": self.ERROR_MESSAGES["prn_indicator"]}
                 )
             # Remove irrelevant fields
             self._remove_irrelevant_fields(attrs, self.PRN_FIELDS)
@@ -215,13 +229,11 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         """Parse the dosage into value and unit parts."""
         parts = dosage.split(" ", maxsplit=1)
         if len(parts) != self.DOSAGE_PARTS_REQUIRED:
-            error_message = (
-                f"Invalid dosage format. Expected 'number unit' but got '{dosage}'"
-            )
+            error_message = self.ERROR_MESSAGES["invalid_dosage_format"].format(dosage)
             raise ValueError(error_message)
         value = float(parts[0])
         if value < 0:
-            error_message = f"Dosage value cannot be negative: {value}"
+            error_message = self.ERROR_MESSAGES["negative_dosage"].format(value)
             raise ValueError(error_message)
         return value, parts[1]
 
