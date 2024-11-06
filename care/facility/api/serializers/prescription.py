@@ -1,5 +1,3 @@
-import contextlib
-
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
@@ -142,10 +140,12 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 max_dosage_value = float(max_dosage.split(" ", maxsplit=1)[0])
                 base_unit = base_dosage.split(" ", maxsplit=1)[1]
                 max_unit = max_dosage.split(" ", maxsplit=1)[1]
-                
+
                 if base_unit != max_unit:
                     raise serializers.ValidationError(
-                        {"max_dosage": f"Max dosage units ({max_unit}) must match base dosage units ({base_unit})."}
+                        {
+                            "max_dosage": f"Max dosage units ({max_unit}) must match base dosage units ({base_unit})."
+                        }
                     )
 
                 if max_dosage_value < base_dosage_value:
@@ -156,7 +156,9 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                     )
             except (ValueError, IndexError) as e:
                 raise serializers.ValidationError(
-                    {"max_dosage": "Invalid dosage format. Expected format: 'number unit' (e.g., '500 mg')"}
+                    {
+                        "max_dosage": "Invalid dosage format. Expected format: 'number unit' (e.g., '500 mg')"
+                    }
                 ) from e
         if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
