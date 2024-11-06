@@ -82,8 +82,9 @@ class PatientConsultationViewSet(
         return super().get_permissions()
 
     def get_queryset(self):
+        queryset = super().get_queryset()
         if self.serializer_class == PatientConsultationSerializer:
-            self.queryset = self.queryset.prefetch_related(
+            queryset = queryset.prefetch_related(
                 "assigned_to",
                 Prefetch(
                     "assigned_to__skills",
@@ -95,13 +96,11 @@ class PatientConsultationViewSet(
                 "current_bed__assets__current_location",
             )
         if self.request.user.is_superuser:
-            return self.queryset
+            return queryset
         if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            return self.queryset.filter(
-                patient__facility__state=self.request.user.state
-            )
+            return queryset.filter(patient__facility__state=self.request.user.state)
         if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return self.queryset.filter(
+            return queryset.filter(
                 patient__facility__district=self.request.user.district
             )
         allowed_facilities = get_accessible_facilities(self.request.user)
@@ -111,7 +110,7 @@ class PatientConsultationViewSet(
         )
         # A user should be able to see all consultations part of their home facility
         applied_filters |= Q(facility=self.request.user.home_facility)
-        return self.queryset.filter(applied_filters)
+        return queryset.filter(applied_filters)
 
     @transaction.non_atomic_requests
     def create(self, request, *args, **kwargs) -> Response:

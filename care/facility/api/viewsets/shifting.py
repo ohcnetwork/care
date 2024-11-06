@@ -109,8 +109,9 @@ class ShiftingViewSet(
     filterset_class = ShiftingFilterSet
 
     def get_queryset(self) -> QuerySet:
+        queryset = super().get_queryset()
         if self.action == "list":
-            self.queryset = self.queryset.select_related(
+            queryset = queryset.select_related(
                 "origin_facility",
                 "shifting_approving_facility",
                 "assigned_facility",
@@ -118,7 +119,7 @@ class ShiftingViewSet(
             )
 
         else:
-            self.queryset = self.queryset.select_related(
+            queryset = queryset.select_related(
                 "origin_facility",
                 "origin_facility__ward",
                 "origin_facility__local_body",
@@ -148,7 +149,7 @@ class ShiftingViewSet(
                 "created_by",
                 "last_edited_by",
             )
-        return self.queryset
+        return queryset
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class

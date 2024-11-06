@@ -5,7 +5,7 @@ from config.authentication import MiddlewareAssetAuthentication
 
 class UserAccessMixin:
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = super().get_queryset()
         model = self.queryset.__dict__["model"]
 
         if not self.request.user.is_superuser:
