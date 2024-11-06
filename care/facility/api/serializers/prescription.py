@@ -75,6 +75,11 @@ class MedicineAdministrationSerializer(serializers.ModelSerializer):
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
+    # Class-level constants for field names
+    PRN_FIELDS = {"indicator"}
+    TITRATED_FIELDS = {"target_dosage"}
+    STANDARD_FIELDS = {"frequency", "days"}
+
     id = serializers.UUIDField(source="external_id", read_only=True)
     prescribed_by = UserBaseMinimumSerializer(read_only=True)
     last_administration = MedicineAdministrationSerializer(read_only=True)
@@ -97,6 +102,12 @@ class PrescriptionSerializer(serializers.ModelSerializer):
             "is_migrated",
         )
 
+    def _remove_irrelevant_fields(self, attrs, keep_fields):
+        """Remove fields not relevant for the current dosage type"""
+        all_fields = self.PRN_FIELDS | self.TITRATED_FIELDS | self.STANDARD_FIELDS
+        for field in all_fields - keep_fields:
+            attrs.pop(field, None)
+
     def validate_medicine(self, attrs):
         """Validate the medicine field and check for duplicate prescriptions."""
         attrs["medicine"] = get_object_or_404(
@@ -118,7 +129,7 @@ class PrescriptionSerializer(serializers.ModelSerializer):
                 {
                     "medicine": (
                         "This medicine is already prescribed to this patient. "
-                        "Please discontinue the existing prescription to prescribe again."
+                        "Discontinue the existing prescription to prescribe again."
                     )
                 }
             )
@@ -130,13 +141,13 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
         if not base_dosage:
             raise serializers.ValidationError(
-                {"base_dosage": "Base dosage is required."}
+                {"base_dosage": "Base dosage is required"}
             )
 
         if max_dosage:
             if not base_dosage:
                 raise serializers.ValidationError(
-                    {"max_dosage": "Max dosage cannot be set without base dosage."}
+                    {"max_dosage": "Max dosage cannot be set without base dosage"}
                 )
             try:
                 base_dosage_value, base_unit = self.parse_dosage(base_dosage)
@@ -164,31 +175,39 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     def validate_dosage_type_specific(self, attrs):
         """Validate fields specific to dosage types."""
-        if attrs.get("dosage_type") == PrescriptionDosageType.PRN:
+        dosage_type = attrs.get("dosage_type")
+
+        if dosage_type == PrescriptionDosageType.PRN:
             if not attrs.get("indicator"):
                 raise serializers.ValidationError(
                     {"indicator": "Indicator should be set for PRN prescriptions."}
                 )
-            attrs.pop("frequency", None)
-            attrs.pop("days", None)
+            # Remove irrelevant fields
+            self._remove_irrelevant_fields(attrs, self.PRN_FIELDS)
+
+        elif dosage_type == PrescriptionDosageType.TITRATED:
+            if not attrs.get("target_dosage"):
+                raise serializers.ValidationError(
+                    {
+                        "target_dosage": "Target dosage should be set for titrated prescriptions."
+                    }
+                )
+            # Remove irrelevant fields
+            self._remove_irrelevant_fields(attrs, self.TITRATED_FIELDS)
+
         else:
             if not attrs.get("frequency"):
                 raise serializers.ValidationError(
                     {"frequency": "Frequency should be set for prescriptions."}
                 )
+            # Remove irrelevant fields
+            self._remove_irrelevant_fields(attrs, self.STANDARD_FIELDS)
+
+            # If it's not PRN or TITRATED, ensure standard fields are respected
             attrs.pop("indicator", None)
             attrs.pop("max_dosage", None)
             attrs.pop("min_hours_between_doses", None)
-
-            if attrs.get("dosage_type") == PrescriptionDosageType.TITRATED:
-                if not attrs.get("target_dosage"):
-                    raise serializers.ValidationError(
-                        {
-                            "target_dosage": "Target dosage should be set for titrated prescriptions."
-                        }
-                    )
-            else:
-                attrs.pop("target_dosage", None)
+            attrs.pop("target_dosage", None)
 
     DOSAGE_PARTS_REQUIRED = 2  # Define a constant for the required parts in dosage
 
@@ -196,9 +215,15 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         """Parse the dosage into value and unit parts."""
         parts = dosage.split(" ", maxsplit=1)
         if len(parts) != self.DOSAGE_PARTS_REQUIRED:
-            error_message = "Invalid dosage format"  # Assign message to a variable
+            error_message = (
+                f"Invalid dosage format. Expected 'number unit' but got '{dosage}'"
+            )
             raise ValueError(error_message)
-        return float(parts[0]), parts[1]
+        value = float(parts[0])
+        if value < 0:
+            error_message = f"Dosage value cannot be negative: {value}"
+            raise ValueError(error_message)
+        return value, parts[1]
 
     def create(self, validated_data):
         if validated_data["consultation"].discharge_date:
