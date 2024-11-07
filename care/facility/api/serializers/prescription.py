@@ -117,29 +117,31 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     def validate_medicine(self, attrs):
         """Validate the medicine field and check for duplicate prescriptions."""
-        attrs["medicine"] = get_object_or_404(
-            MedibaseMedicine, external_id=attrs["medicine"]
-        )
-
-        # Check for existing prescription
-        if (
-            not self.instance
-            and Prescription.objects.filter(
-                consultation__external_id=self.context["request"].parser_context[
-                    "kwargs"
-                ]["consultation_external_id"],
-                medicine=attrs["medicine"],
-                discontinued=False,
-            ).exists()
-        ):
-            raise serializers.ValidationError(
-                {
-                    "medicine": (
-                        "This medicine is already prescribed to this patient. "
-                        "Discontinue the existing prescription to prescribe again."
-                    )
-                }
+        if "medicine" in attrs:
+            medicine_id = attrs["medicine"]
+            attrs["medicine"] = get_object_or_404(
+                MedibaseMedicine, external_id=medicine_id
             )
+
+            # Check for existing prescription
+            if (
+                not self.instance
+                and Prescription.objects.filter(
+                    consultation__external_id=self.context["request"].parser_context[
+                        "kwargs"
+                    ]["consultation_external_id"],
+                    medicine=attrs["medicine"],
+                    discontinued=False,
+                ).exists()
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "medicine": (
+                            "This medicine is already prescribed to this patient. "
+                            "Discontinue the existing prescription to prescribe again."
+                        )
+                    }
+                )
 
     def _validate_max_dosage_presence(self, base_dosage: str, max_dosage: str) -> None:
         if max_dosage and not base_dosage:
