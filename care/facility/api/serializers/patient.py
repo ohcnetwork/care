@@ -47,6 +47,25 @@ from care.utils.queryset.facility import get_home_facility_queryset
 from care.utils.serializers.fields import ChoiceField, ExternalIdSerializerField
 
 
+class PatientRegistrationSerializer(serializers.ModelSerializer):
+    member_id = serializers.CharField(required=True)
+    policy_id = serializers.CharField(required=True)
+    insurer_id = serializers.CharField(required=True)
+    insurer_name = serializers.CharField(required=True)
+
+    class Meta:
+        model = PatientRegistration
+        fields = "__all__"
+
+    def validate(self, data):
+        required_fields = ['member_id', 'policy_id', 'insurer_id', 'insurer_name']
+        for field in required_fields:
+            if not data.get(field):
+                error_message = f"{field.replace('_', ' ').title()} is required."
+                raise serializers.ValidationError({field: error_message})
+        return data
+
+
 class PatientMetaInfoSerializer(serializers.ModelSerializer):
     occupation = ChoiceField(
         choices=PatientMetaInfo.OccupationChoices, allow_null=True, required=False
