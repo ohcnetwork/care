@@ -55,7 +55,7 @@ class PatientRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PatientRegistration
-        fields = "__all__"
+        fields = ["member_id", "policy_id", "insurer_id", "insurer_name"]
 
     def validate(self, data):
         required_fields = ['member_id', 'policy_id', 'insurer_id', 'insurer_name']

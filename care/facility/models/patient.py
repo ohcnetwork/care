@@ -194,10 +194,38 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
         default="", blank=True, verbose_name="Patient's Known Allergies"
     )
 
-    member_id = models.CharField(max_length=255, blank=False, null=False)
-    policy_id = models.CharField(max_length=255, blank=False, null=False)
-    insurer_id = models.CharField(max_length=255, blank=False, null=False)
-    insurer_name = models.CharField(max_length=255, blank=False, null=False)
+    member_id = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        default="",
+        verbose_name="Insurance Member ID",
+        help_text="Unique identifier assigned to the insured member"
+    )
+    policy_id = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        default="",
+        verbose_name="Insurance Policy ID",
+        help_text="Unique identifier for the insurance policy"
+    )
+    insurer_id = models.CharField(
+        max_length=20,
+        blank=False,
+        null=False,
+        default="",
+        verbose_name="Insurer ID",
+        help_text="Unique identifier for the insurance provider"
+    )
+    insurer_name = models.CharField(
+        max_length=100,
+        blank=False,
+        null=False,
+        default="",
+        verbose_name="Insurer Name",
+        help_text="Name of the insurance provider"
+    )
 
     present_health = models.TextField(
         default="", blank=True, verbose_name="Patient's Current Health Details"
