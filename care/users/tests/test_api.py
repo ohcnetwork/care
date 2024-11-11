@@ -141,6 +141,17 @@ class TestUser(TestUtils, APITestCase):
         cls.user_3 = cls.create_user(**cls.data_3)
         cls.link_user_with_facility(cls.user_3, cls.facility, cls.super_user)
 
+        cls.data_4 = cls.get_user_data(cls.district)
+        cls.data_4.update(
+            {
+                "username": "user_4",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["DistrictAdmin"],
+            }
+        )
+        cls.user_4 = cls.create_user(**cls.data_4)
+        cls.link_user_with_facility(cls.user_4, cls.facility, cls.super_user)
+
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
         username = self.user.username
@@ -206,6 +217,48 @@ class TestUser(TestUtils, APITestCase):
             self.data_2[field],
             User.objects.get(username=self.data_2[field]).username,
         )
+
+    def test_user_cannot_change_password_of_others(self):
+        """Test a user cannot change password of others"""
+        username = self.data_2["username"]
+        password = self.data_2["password"]
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {
+                "username": username,
+                "old_password": password,
+                "new_password": "password2",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_with_districtadmin_access_can_modify_others(self):
+        """Test a user with district admin access can modify others underneath the hierarchy"""
+        self.client.force_authenticate(self.user_4)
+        username = self.data_2["username"]
+        response = self.client.patch(
+            f"/api/v1/users/{username}/",
+            {
+                "date_of_birth": date(2005, 4, 1),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["date_of_birth"], "2005-04-01")
+
+    def test_user_with_districtadmin_access_can_change_password_of_others(self):
+        """Test a user with district admin perms can change the password of other users underneath the hierarchy"""
+        self.client.force_authenticate(self.user_4)
+        username = self.data_2["username"]
+        password = self.data_2["password"]
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {
+                "username": username,
+                "old_password": password,
+                "new_password": "password2",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class TestUserFilter(TestUtils, APITestCase):
