@@ -29,7 +29,26 @@ class ChangePasswordView(UpdateAPIView):
     model = User
 
     def update(self, request, *args, **kwargs):
-        self.object = self.request.user
+        username = request.data.get("username")
+        if not username:
+            return Response(
+                {"message": ["Username is required"]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        self.object = User.objects.get(username=username)
+        if not self.object:
+            return Response(
+                {"message": ["User not found"]}, status=status.HTTP_404_NOT_FOUND
+            )
+        if not self.has_permission(request, self.object):
+            return Response(
+                {
+                    "message": [
+                        "User does not have elevated permissions to change password"
+                    ]
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -48,3 +67,11 @@ class ChangePasswordView(UpdateAPIView):
             return Response({"message": "Password updated successfully"})
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def has_permission(self, request, user):
+        authuser = request.user
+        return (
+            authuser == user
+            or authuser.is_superuser
+            or authuser.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+        )

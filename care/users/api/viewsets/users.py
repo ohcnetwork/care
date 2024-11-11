@@ -204,6 +204,31 @@ class UserViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(tags=["users"])
+    @action(detail=False, methods=["GET"])
+    def get_user(self, request):
+        username = request.query_params.get("username")
+        if not username:
+            raise ValidationError({"username": "This field is required"})
+        user = User.objects.filter(username=username).first()
+        if not user:
+            raise Http404({"user": "User not found"})
+        if not self.has_permission(user):
+            raise ValidationError({"user": "Cannot Access Higher Level User"})
+        return Response(
+            status=status.HTTP_200_OK,
+            data=UserSerializer(user, context={"request": request}).data,
+        )
+
+    def has_permission(self, user):
+        requesting_user = self.request.user
+        return (
+            requesting_user == user
+            or requesting_user.is_superuser
+            or requesting_user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
+            or requesting_user.user_type >= user.user_type
+        )
+
+    @extend_schema(tags=["users"])
     @action(detail=False, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         password = request.data.pop(
