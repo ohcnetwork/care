@@ -443,6 +443,14 @@ class UserFacilityAllocation(models.Model):
         return self.facility.name
 
 
+class PlugConfig(models.Model):
+    slug = models.CharField(max_length=255, unique=True)
+    meta = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.slug
+
+
 class UserFlag(BaseFlag):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
 

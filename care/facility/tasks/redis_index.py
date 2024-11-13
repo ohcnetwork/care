@@ -15,6 +15,13 @@ logger: Logger = get_task_logger(__name__)
 
 @shared_task
 def load_redis_index():
+    try:
+        deleted_count = cache.delete_pattern("care_static_data*", itersize=25_000)
+        logger.info("Deleted %s keys with prefix 'care_static_data'", deleted_count)
+    except Exception as e:
+        logger.error("Failed to delete keys with prefix 'care_static_data': %s", e)
+        return
+
     if cache.get("redis_index_loading"):
         logger.info("Redis Index already loading, skipping")
         return
@@ -37,9 +44,9 @@ def load_redis_index():
             if load_static_data:
                 load_static_data()
         except ModuleNotFoundError:
-            logger.info("Module %s not found", module_path)
+            logger.debug("Module %s not found", module_path)
         except Exception as e:
-            logger.info("Error loading static data for %s: %s", plug.name, e)
+            logger.error("Error loading static data for %s: %s", plug.name, e)
 
     cache.delete("redis_index_loading")
     logger.info("Redis Index Loaded")

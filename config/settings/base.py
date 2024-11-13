@@ -124,6 +124,7 @@ THIRD_PARTY_APPS = [
     "healthy_django",
 ]
 LOCAL_APPS = [
+    "care.security",
     "care.facility",
     "care.users",
     "care.audit_log",
@@ -529,6 +530,7 @@ VAPID_PRIVATE_KEY = env(
     "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
 )
 SEND_SMS_NOTIFICATION = False
+NOTIFICATION_RETENTION_DAYS = env.int("NOTIFICATION_RETENTION_DAYS", default=30)
 
 # Cloud and Buckets
 # ------------------------------------------------------------------------------

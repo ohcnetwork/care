@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 ARG TYPST_VERSION=0.11.0
 
@@ -28,7 +28,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 # use pipenv to manage virtualenv
 RUN python -m venv /venv
-RUN pip install pipenv
+RUN pip install pipenv==2024.2.0
 
 COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --categories "packages dev-packages"

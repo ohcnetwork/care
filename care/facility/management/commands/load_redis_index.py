@@ -17,6 +17,17 @@ class Command(BaseCommand):
     help = "Loads static data to redis"
 
     def handle(self, *args, **options):
+        try:
+            deleted_count = cache.delete_pattern("care_static_data*", itersize=25_000)
+            self.stdout.write(
+                f"Deleted {deleted_count} keys with prefix 'care_static_data'"
+            )
+        except Exception as e:
+            self.stdout.write(
+                f"Failed to delete keys with prefix 'care_static_data': {e}"
+            )
+            return
+
         if cache.get("redis_index_loading"):
             self.stdout.write("Redis Index already loading, skipping")
             return

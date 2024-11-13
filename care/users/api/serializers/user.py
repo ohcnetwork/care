@@ -375,6 +375,7 @@ class UserSerializer(SignUpSerializer):
 
 class UserBaseMinimumSerializer(serializers.ModelSerializer):
     user_type = ChoiceField(choices=User.TYPE_CHOICES, read_only=True)
+    read_profile_picture_url = serializers.URLField(read_only=True)
 
     class Meta:
         model = User
@@ -386,6 +387,7 @@ class UserBaseMinimumSerializer(serializers.ModelSerializer):
             "last_name",
             "user_type",
             "last_login",
+            "read_profile_picture_url",
         )
 
 
