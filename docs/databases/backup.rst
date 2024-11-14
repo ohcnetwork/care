@@ -33,6 +33,8 @@ For a debian based system:
 
 Automate the cronjob
 ~~~~~~~~~~~~~~~~~~~~
+   Note: Make sure you are inside the care directory at the time of executing the following.
+-------------------------------------------------------------------------------
 
 Open up a crontab:
 
@@ -44,7 +46,7 @@ Add the cronjob:
 
 .. code:: bash
 
- 0 0 * * * /home/care/scripts/backup.sh
+ 0 0 * * * "/scripts/backup.sh"
 
 List the cron jobs
 ~~~~~~~~~~~~~~~~~~
@@ -72,11 +74,12 @@ Verify the cron job
 ~~~~~~~~~~~~~~~~~
 To verify the cron job is working:
 
-1. Check the system logs for cron activity:
+1. Check the system logs for cron activity, which is usually somewhere in
    
    .. code:: bash
    
-      sudo grep CRON /var/log/syslog
+    /var/log/
+
 2. Monitor the backup directory for new files after the scheduled time
 
 Restoration of the Database
