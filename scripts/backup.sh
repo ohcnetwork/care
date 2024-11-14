@@ -7,6 +7,14 @@ if [[ ! -f "${ENV_FILE}" ]]; then
     exit 1
 fi
 source "${ENV_FILE}"
+# Validate required environment variables
+required_vars=("POSTGRES_USER" "POSTGRES_DB" "DB_BACKUP_RETENTION_PERIOD")
+for var in "${required_vars[@]}"; do
+    if [[ -z "${!var:-}" ]]; then
+        echo "Error: $var environment variable is not set" >&2
+        exit 1
+    fi
+done
 
 # Get exact container name and verify it's running
 container_name="$(docker ps --format '{{.Names}}' | grep '^care-db$')"
