@@ -348,6 +348,7 @@ class UserSerializer(SignUpSerializer):
             "pf_endpoint",
             "pf_p256dh",
             "pf_auth",
+            "last_login",
         )
 
     extra_kwargs = {"url": {"lookup_field": "username"}}
