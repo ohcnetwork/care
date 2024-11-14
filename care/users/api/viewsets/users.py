@@ -208,12 +208,12 @@ class UserViewSet(
     def get_user(self, request):
         username = request.query_params.get("username")
         if not username:
-            raise ValidationError({"username": "This field is required"})
+            raise ValidationError({"message": "Username is required"})
         user = User.objects.filter(username=username).first()
         if not user:
-            raise Http404({"user": "User not found"})
+            raise Http404({"message": "User not found"})
         if not self.has_permission(user):
-            raise ValidationError({"user": "Cannot Access Higher Level User"})
+            raise ValidationError({"message": "User cannot access higher level user"})
         return Response(
             status=status.HTTP_200_OK,
             data=UserSerializer(user, context={"request": request}).data,

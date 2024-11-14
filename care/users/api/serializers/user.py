@@ -335,6 +335,7 @@ class UserSerializer(SignUpSerializer):
             "pf_auth",
             "read_profile_picture_url",
             "user_flags",
+            "last_login",
         )
         read_only_fields = (
             "is_superuser",

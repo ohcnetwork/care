@@ -51,6 +51,7 @@ class TestSuperUser(TestUtils, APITestCase):
             "video_connect_link": obj.video_connect_link,
             "read_profile_picture_url": obj.profile_picture_url,
             "user_flags": [],
+            "last_login": obj.last_login,
             **self.get_local_body_district_state_representation(obj),
         }
 
@@ -137,7 +138,13 @@ class TestUser(TestUtils, APITestCase):
         cls.user_2 = cls.create_user(**cls.data_2)
 
         cls.data_3 = cls.get_user_data(cls.district)
-        cls.data_3.update({"username": "user_3", "password": "password"})
+        cls.data_3.update(
+            {
+                "username": "user_3",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["Doctor"],
+            }
+        )
         cls.user_3 = cls.create_user(**cls.data_3)
         cls.link_user_with_facility(cls.user_3, cls.facility, cls.super_user)
 
@@ -152,6 +159,17 @@ class TestUser(TestUtils, APITestCase):
         cls.user_4 = cls.create_user(**cls.data_4)
         cls.link_user_with_facility(cls.user_4, cls.facility, cls.super_user)
 
+        cls.data_5 = cls.get_user_data(cls.district)
+        cls.data_5.update(
+            {
+                "username": "user_5",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["WardAdmin"],
+            }
+        )
+        cls.user_5 = cls.create_user(**cls.data_5)
+        cls.link_user_with_facility(cls.user_5, cls.facility, cls.super_user)
+
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
         username = self.user.username
@@ -163,7 +181,7 @@ class TestUser(TestUtils, APITestCase):
         response = self.client.get("/api/v1/users/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
-        self.assertEqual(res_data_json["count"], 2)
+        self.assertEqual(res_data_json["count"], 3)
         results = res_data_json["results"]
         self.assertIn(self.user.id, {r["id"] for r in results})
         self.assertIn(self.user_3.id, {r["id"] for r in results})
@@ -259,6 +277,89 @@ class TestUser(TestUtils, APITestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_with_districtadmin_access_cannot_change_password_of_others_without_username(
+        self,
+    ):
+        """Test a user with district admin access cannot change the password of other users without username"""
+        self.client.force_authenticate(self.user_4)
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {"old_password": "password", "new_password": "password2"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["message"][0], "Username is required")
+
+    def test_user_with_district_admin_cannot_change_password_of_non_existing_user(self):
+        """Test a user with district admin access cannot change the password of a non existing user"""
+        self.client.force_authenticate(self.user_4)
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {
+                "username": "foobar",
+                "old_password": "password",
+                "new_password": "password2",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data["message"][0], "User not found")
+
+    def test_user_with_district_admin_cannot_change_password_of_others_with_invalid_old_password(
+        self,
+    ):
+        """Test a user with district admin access cannot change the password of other users with invalid old password"""
+        self.client.force_authenticate(self.user_4)
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {
+                "username": self.data_2["username"],
+                "old_password": "wrong_password",
+                "new_password": "password2",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["old_password"][0],
+            "Wrong password entered. Please check your password.",
+        )
+
+    def test_user_gets_error_when_accessing_user_details_without_username(self):
+        """Test a user gets error when accessing user details without username"""
+        response = self.client.get("/api/v1/users/get_user/")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["message"], "Username is required")
+
+    def test_user_gets_error_when_accessing_user_details_with_invalid_username(self):
+        """Test a user gets error when accessing user details with invalid username"""
+        response = self.client.get("/api/v1/users/get_user/", {"username": "foobar"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data["message"], "User not found")
+
+    def test_user_can_access_their_own_user_details(self):
+        """Test a user can access their own user details"""
+        response = self.client.get(
+            "/api/v1/users/get_user/", {"username": self.user.username}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["username"], self.user.username)
+
+    def test_user_cannot_access_user_details_of_others(self):
+        """Test a user cannot access the details of other users above their hierarchy"""
+        self.client.force_authenticate(self.user_2)
+        username = self.data_3["username"]
+        response = self.client.get("/api/v1/users/get_user/", {"username": username})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["message"], "User cannot access higher level user"
+        )
+
+    def test_user_with_higher_role_can_access_user_details_of_others(self):
+        """Test a user with higher role can access the details of other users below their hierarchy"""
+        self.client.force_authenticate(self.user_5)
+        username = self.data_2["username"]
+        response = self.client.get("/api/v1/users/get_user/", {"username": username})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["username"], username)
 
 
 class TestUserFilter(TestUtils, APITestCase):

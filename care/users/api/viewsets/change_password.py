@@ -35,7 +35,7 @@ class ChangePasswordView(UpdateAPIView):
                 {"message": ["Username is required"]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        self.object = User.objects.get(username=username)
+        self.object = User.objects.filter(username=username).first()
         if not self.object:
             return Response(
                 {"message": ["User not found"]}, status=status.HTTP_404_NOT_FOUND
