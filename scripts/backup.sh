@@ -28,12 +28,6 @@ fi
 
 date=$(date +%Y%m%d%H%M%S)
 
-# Validate database user
-if [[ -z "${POSTGRES_USER}" ]]; then
-    echo "Error: POSTGRES_USER environment variable is not set" >&2
-    exit 1
-fi
-
 # Set backup file name
 backup_file="${POSTGRES_DB}_backup_${date}.dump"
 
