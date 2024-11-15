@@ -87,7 +87,7 @@ Restoration of the Database
 
 We are basically deleting the container's existing database and creating a new database with the same name. Then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
 
-   Make sure you have stopped all the containers except the db before proceeding.
+   Make sure you have stopped all the containers except the db before proceeding. And be inside the care directory at the time of executing the following.
 ------------------------------------------------------------------------------
 
 Delete the existing database:
@@ -106,7 +106,7 @@ Execute and copy the name of the file you want to restore the database with:
 
 .. code:: bash
 
-   sudo ls "${BACKUP_DIR}"
+   sudo ls ./care-backups
 
 Restore the database:
 
