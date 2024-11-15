@@ -21,7 +21,7 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
             asset_class=AssetClasses.HL7MONITOR.name,
         )
         cls.bed = cls.create_bed(cls.facility, cls.asset_location_with_linked_bed)
-        cls.asset_bed = cls.create_asset_bed(cls.asset, cls.bed)
+        cls.asset_bed = cls.create_assetbed(cls.bed, cls.asset)
         cls.patient = cls.create_patient(cls.district, cls.facility)
         cls.consultation = cls.create_consultation(cls.patient, cls.facility)
         cls.consultation_bed = cls.create_consultation_bed(cls.consultation, cls.bed)
@@ -36,8 +36,8 @@ class AssetLocationViewSetTestCase(TestUtils, APITestCase):
             cls.asset_second_location, asset_class=AssetClasses.HL7MONITOR.name
         )
         cls.asset_bed_second = cls.create_bed(cls.facility, cls.asset_second_location)
-        cls.assetbed_second = cls.create_asset_bed(
-            cls.asset_second, cls.asset_bed_second
+        cls.assetbed_second = cls.create_assetbed(
+            cls.asset_bed_second, cls.asset_second
         )
 
     def test_list_asset_locations(self):
