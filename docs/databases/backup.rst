@@ -75,9 +75,9 @@ Verify the cron job
 To verify the cron job is working:
 
 1. Check the system logs for cron activity, which is usually somewhere in
-   
+
    .. code:: bash
-   
+
     /var/log/
 
 2. Monitor the backup directory for new files after the scheduled time
@@ -94,13 +94,13 @@ Delete the existing database:
 
 .. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' --filter name='^care-db$' --filter status=running | head -n1) psql -U postgres -c "DROP DATABASE IF EXISTS care;"
+   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "DROP DATABASE IF EXISTS care;"
 
 Create the new database:
 
 .. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' --filter name='^care-db$' --filter status=running | head -n1) psql -U postgres -c "CREATE DATABASE care;"
+   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
 
 Execute and copy the name of the file you want to restore the database with:
 
@@ -114,7 +114,7 @@ Restore the database:
 
 .. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' --filter name='^care-db$' --filter status=running | head -n1) pg_restore -U postgres -d care /backups/<file name>.dump
+   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') pg_restore -U postgres -d care /backups/<file name>.dump
 
 ------------------------------------------------------------------------------------------------------------------
 
