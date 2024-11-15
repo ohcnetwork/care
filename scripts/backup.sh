@@ -7,17 +7,8 @@ if [[ ! -f "${ENV_FILE}" ]]; then
     exit 1
 fi
 source "${ENV_FILE}"
-# Validate required environment variables
-required_vars=("POSTGRES_USER" "POSTGRES_DB" "DB_BACKUP_RETENTION_PERIOD")
-for var in "${required_vars[@]}"; do
-    if [[ -z "${!var:-}" ]]; then
-        echo "Error: $var environment variable is not set" >&2
-        exit 1
-    fi
-done
 
-# Get exact container name and verify it's running
-container_name="$(docker ps --format '{{.Names}}' | grep '^care-db$')"
+container_name="$(docker ps --format '{{.Names}}' | grep 'care-db')"
 if [[ -z "${container_name}" ]]; then
     echo "Error: PostgreSQL container 'care-db' is not running" >&2
     exit 1
@@ -27,14 +18,15 @@ if [[ -z "${container_name}" ]]; then
 fi
 
 date=$(date +%Y%m%d%H%M%S)
-
-# Set backup file name
+#name the file
 backup_file="${POSTGRES_DB}_backup_${date}.dump"
 
 # Remove old backup/backups
 docker exec -t ${container_name} find "/backups" -name "${POSTGRES_DB}_backup_*.dump" -type f -mtime +${DB_BACKUP_RETENTION_PERIOD} -exec rm {} \;
 
 #backup the database
+docker exec -t ${container_name} pg_dump -U ${POSTGRES_USER} -Fc -f /backups/${backup_file} ${POSTGRES_DB}
+
 if ! docker exec -t ${container_name} pg_dump -U ${POSTGRES_USER} -Fc -f /backups/${backup_file} ${POSTGRES_DB}; then
     echo "Error: Database backup failed" >&2
     exit 1
