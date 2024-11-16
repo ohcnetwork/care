@@ -4,7 +4,7 @@ from django.utils.timezone import now, timedelta
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models import PatientNoteThreadChoices
+from care.facility.models import PatientNoteThreadChoices, ShiftingRequest
 from care.facility.models.file_upload import FileUpload
 from care.facility.models.icd11_diagnosis import (
     ConditionVerificationStatus,
@@ -913,6 +913,8 @@ class PatientTransferTestCase(TestUtils, APITestCase):
         cls.patient.save()
 
     def test_patient_transfer(self):
+        # test transfer of patient to a outside facility with allow_transfer set to "True"
+        # test transfer patient with dob
         self.client.force_authenticate(user=self.super_user)
         response = self.client.post(
             f"/api/v1/patient/{self.patient.external_id}/transfer/",
@@ -999,6 +1001,166 @@ class PatientTransferTestCase(TestUtils, APITestCase):
             response.data["Patient"],
             "Patient transfer cannot be completed because the source facility does not permit it",
         )
+
+    def test_transfer_within_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "date_of_birth": "1992-04-01",
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(
+            response.data["Patient"],
+            "Patient transfer cannot be completed because the patient has an active consultation in the same facility",
+        )
+
+    def test_transfer_without_dob(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "age": "32",
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.patient.refresh_from_db()
+        self.consultation.refresh_from_db()
+
+        self.assertEqual(self.patient.facility, self.destination_facility)
+
+        self.assertEqual(
+            self.consultation.new_discharge_reason, NewDischargeReasonEnum.REFERRED
+        )
+        self.assertIsNotNone(self.consultation.discharge_date)
+
+    def test_transfer_with_no_active_consultation(self):
+        # Mocking discharge of the patient
+        self.consultation.discharge_date = now()
+        self.consultation.save()
+
+        # Ensure transfer succeeds when there's no active consultation
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Refresh patient data
+        self.patient.refresh_from_db()
+
+        # Assert the patient's facility has been updated
+        self.assertEqual(self.patient.facility, self.destination_facility)
+
+    def test_transfer_with_incorrect_year_of_birth(self):
+        # Set the patient's facility to allow transfers
+        self.patient.allow_transfer = True
+        self.patient.save()
+
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1990,  # Incorrect year of birth
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["year_of_birth"][0], "Year of birth does not match"
+        )
+
+    def test_auto_reject_active_shifting_requests_upon_transfer(self):
+        # Create a mock shifting request that is still active (PENDING status)
+        shifting_request = ShiftingRequest.objects.create(
+            patient=self.patient,
+            origin_facility=self.facility,
+            status=10,  # PENDING status
+            comments="Initial request",
+            created_by=self.super_user,
+        )
+
+        # Perform the patient transfer
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Refresh the shifting request and verify it was auto-rejected
+        shifting_request.refresh_from_db()
+        self.assertEqual(shifting_request.status, 30)  # REJECTED status
+        self.assertIn(
+            f"The shifting request was auto rejected by the system as the patient was moved to {self.destination_facility.name}",
+            shifting_request.comments,
+        )
+
+    def test_transfer_with_matching_year_of_birth(self):
+        # Set the patient's facility to allow transfers
+        self.patient.allow_transfer = True
+        self.patient.save()
+
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": self.patient.year_of_birth,  # Correct year of birth
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Refresh patient data
+        self.patient.refresh_from_db()
+
+        # Assert the patient's facility has been updated
+        self.assertEqual(self.patient.facility, self.destination_facility)
+
+    def test_transfer_to_non_existent_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": "dff237c5-9410-4714-9101-399941b60ede",  # Non-existent facility
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_transfer_with_invalid_data(self):
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": "invalid-year",  # Invalid year of birth
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("year_of_birth", response.data)
+
+    def test_unauthorized_transfer_request(self):
+        # Not authenticating the user to test unauthorized access
+        response = self.client.post(
+            f"/api/v1/patient/{self.patient.external_id}/transfer/",
+            {
+                "year_of_birth": 1992,
+                "facility": self.destination_facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class PatientSearchTestCase(TestUtils, APITestCase):
