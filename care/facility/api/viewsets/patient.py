@@ -769,15 +769,68 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "last_discharge_consultation__current_bed__bed__name",
         "date_declared_positive",
     ]
+    CSV_EXPORT_LIMIT = 7
 
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
-        return qs.filter(
+        if self.action == "list":
+            qs = qs.filter(
             id__in=PatientConsultation.objects.filter(
                 discharge_date__isnull=False,
                 facility__external_id=self.kwargs["facility_external_id"],
             ).values_list("patient_id")
-        )
+            )
+        return qs
+
+
+    def list(self, request, *args, **kwargs):
+        if settings.CSV_REQUEST_PARAMETER in request.GET:
+            # Start Date Validation
+            temp = filters.DjangoFilterBackend().get_filterset(
+                self.request, self.queryset, self
+            )
+            temp.is_valid()
+            within_limits = False
+            for field in self.date_range_fields:
+                slice_obj = temp.form.cleaned_data.get(field)
+                if slice_obj:
+                    if not slice_obj.start or not slice_obj.stop:
+                        raise ValidationError(
+                            {
+                                field: "both starting and ending date must be provided for export"
+                            }
+                        )
+                    days_difference = (
+                        temp.form.cleaned_data.get(field).stop
+                        - temp.form.cleaned_data.get(field).start
+                    ).days
+                    if days_difference <= self.CSV_EXPORT_LIMIT:
+                        within_limits = True
+                    else:
+                        raise ValidationError(
+                            {
+                                field: f"Cannot export more than {self.CSV_EXPORT_LIMIT} days at a time"
+                            }
+                        )
+            if not within_limits:
+                raise ValidationError(
+                    {
+                        "date": f"Atleast one date field must be filtered to be within {self.CSV_EXPORT_LIMIT} days"
+                    }
+                )
+            # End Date Limiting Validation
+            queryset = (
+                self.filter_queryset(self.get_queryset())
+                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
+                .values(*PatientRegistration.CSV_MAPPING.keys())
+            )
+            return render_to_csv_response(
+                queryset,
+                field_header_map=PatientRegistration.CSV_MAPPING,
+                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
+            )
+
+        return super().list(request, *args, **kwargs)
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
