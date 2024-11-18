@@ -70,9 +70,10 @@ class CSVExportViewSetMixin:
         filterset = filters.DjangoFilterBackend().get_filterset(
             request, self.queryset, self
         )
-        filterset.is_valid()
-        within_limits = False
+        if not filterset.is_valid():
+            raise ValidationError(filterset.errors)
 
+        within_limits = False
         for field in self.get_date_range_fields():
             slice_obj = filterset.form.cleaned_data.get(field)
             if slice_obj:
