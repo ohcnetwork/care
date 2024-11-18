@@ -708,7 +708,8 @@ class FacilityDischargedPatientViewSet(
     ]
 
     def get_queryset(self) -> QuerySet:
-        return self.get_queryset().filter(
+        qs = super().get_queryset()
+        return qs.filter(
             id__in=PatientConsultation.objects.filter(
                 discharge_date__isnull=False,
                 facility__external_id=self.kwargs["facility_external_id"],
