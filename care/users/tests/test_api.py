@@ -206,11 +206,18 @@ class TestUser(TestUtils, APITestCase):
         )
 
     def test_user_cannot_read_others(self):
-        """Test 1 user can read the attributes of the other user"""
+        """Test 1 user can read the attributes of the other user not in the same ditrict/state"""
         username = self.data_2["username"]
         response = self.client.get(f"/api/v1/users/{username}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.json()["detail"], "User not found")
+
+    def test_user_can_read_others_in_same_district_or_state(self):
+        """Test 1 user can read the attributes of the other user in the same district or state"""
+        username = self.user_3.username
+        response = self.client.get(f"/api/v1/users/{username}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["first_name"], self.user_3.first_name)
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""
@@ -323,43 +330,10 @@ class TestUser(TestUtils, APITestCase):
             "Wrong password entered. Please check your password.",
         )
 
-    def test_user_gets_error_when_accessing_user_details_without_username(self):
-        """Test a user gets error when accessing user details without username"""
-        response = self.client.get("/api/v1/users/get_user/")
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["message"], "Username is required")
-
     def test_user_gets_error_when_accessing_user_details_with_invalid_username(self):
         """Test a user gets error when accessing user details with invalid username"""
-        response = self.client.get("/api/v1/users/get_user/", {"username": "foobar"})
+        response = self.client.get("/api/v1/users/foobar/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["message"], "User not found")
-
-    def test_user_can_access_their_own_user_details(self):
-        """Test a user can access their own user details"""
-        response = self.client.get(
-            "/api/v1/users/get_user/", {"username": self.user.username}
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["username"], self.user.username)
-
-    def test_user_cannot_access_user_details_of_others(self):
-        """Test a user cannot access the details of other users above their hierarchy"""
-        self.client.force_authenticate(self.user_2)
-        username = self.data_3["username"]
-        response = self.client.get("/api/v1/users/get_user/", {"username": username})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["message"], "User cannot access higher level user"
-        )
-
-    def test_user_with_higher_role_can_access_user_details_of_others(self):
-        """Test a user with higher role can access the details of other users below their hierarchy"""
-        self.client.force_authenticate(self.user_5)
-        username = self.data_2["username"]
-        response = self.client.get("/api/v1/users/get_user/", {"username": username})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["username"], username)
 
 
 class TestUserFilter(TestUtils, APITestCase):

@@ -91,6 +91,18 @@ class UserFilterSet(filters.FilterSet):
         return queryset.filter(last_login__gte=date)
 
 
+class UserViewSetPermission(DRYPermissions):
+    def has_permission(self, request, view):
+        if request.method == "GET" and "username" in view.kwargs:
+            return True
+        return super().has_permission(request, view)
+
+    def has_object_permission(self, request, view, obj):
+        if request.method == "GET" and "username" in view.kwargs:
+            return True
+        return super().has_object_permission(request, view, obj)
+
+
 class UserViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -113,7 +125,7 @@ class UserViewSet(
     queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
-    permission_classes = (IsAuthenticated, DRYPermissions)
+    permission_classes = (IsAuthenticated, UserViewSetPermission)
     filter_backends = (
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
@@ -155,6 +167,16 @@ class UserViewSet(
 
     def get_object(self) -> User:
         try:
+            if self.request.method == "GET" and not self.kwargs.get("username"):
+                username = self.request.query_params.get("username")
+                if not username:
+                    raise ValidationError({"message": "Username is required"})
+                user = get_object_or_404(self.get_queryset(), username=username)
+                if not self.has_permission(user):
+                    raise ValidationError(
+                        {"message": "You do not have permission to access this user"}
+                    )
+                return user
             return super().get_object()
         except Http404 as e:
             error = "User not found"
@@ -203,29 +225,15 @@ class UserViewSet(
         user.save(update_fields=["is_active"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @extend_schema(tags=["users"])
-    @action(detail=False, methods=["GET"])
-    def get_user(self, request):
-        username = request.query_params.get("username")
-        if not username:
-            raise ValidationError({"message": "Username is required"})
-        user = User.objects.filter(username=username).first()
-        if not user:
-            raise Http404({"message": "User not found"})
-        if not self.has_permission(user):
-            raise ValidationError({"message": "User cannot access higher level user"})
-        return Response(
-            status=status.HTTP_200_OK,
-            data=UserSerializer(user, context={"request": request}).data,
-        )
-
     def has_permission(self, user):
         requesting_user = self.request.user
         return (
             requesting_user == user
             or requesting_user.is_superuser
-            or requesting_user.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
-            or requesting_user.user_type >= user.user_type
+            or (
+                requesting_user.state == user.state
+                or requesting_user.district == user.district
+            )
         )
 
     @extend_schema(tags=["users"])
