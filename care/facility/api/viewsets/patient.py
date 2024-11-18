@@ -19,7 +19,6 @@ from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from django_filters import rest_framework as filters
-from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
@@ -80,6 +79,7 @@ from care.facility.models.patient_base import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.exports.mixins import CSVExportViewSetMixin
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.notification_handler import NotificationGenerator
@@ -376,6 +376,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
 
 @extend_schema_view(history=extend_schema(tags=["patient"]))
 class PatientViewSet(
+    CSVExportViewSetMixin,
     HistoryMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -475,7 +476,6 @@ class PatientViewSet(
         "last_consultation_encounter_date",
         "last_consultation_discharge_date",
     ]
-    CSV_EXPORT_LIMIT = 7
 
     def get_queryset(self):
         queryset = super().get_queryset().order_by("modified_date")
@@ -519,71 +519,6 @@ class PatientViewSet(
             return queryset.filter(last_consultation__discharge_date__isnull=is_active)
 
         return super().filter_queryset(queryset)
-
-    def list(self, request, *args, **kwargs):
-        """
-        Patient List
-
-        `without_facility` accepts boolean - default is false -
-            if true: shows only patients without a facility mapped
-            if false (default behaviour): shows only patients with a facility mapped
-
-        `disease_status` accepts - string and int -
-            SUSPECTED = 1
-            POSITIVE = 2
-            NEGATIVE = 3
-            RECOVERY = 4
-            RECOVERED = 5
-            EXPIRED = 6
-
-        """
-        if settings.CSV_REQUEST_PARAMETER in request.GET:
-            # Start Date Validation
-            temp = filters.DjangoFilterBackend().get_filterset(
-                self.request, self.queryset, self
-            )
-            temp.is_valid()
-            within_limits = False
-            for field in self.date_range_fields:
-                slice_obj = temp.form.cleaned_data.get(field)
-                if slice_obj:
-                    if not slice_obj.start or not slice_obj.stop:
-                        raise ValidationError(
-                            {
-                                field: "both starting and ending date must be provided for export"
-                            }
-                        )
-                    days_difference = (
-                        temp.form.cleaned_data.get(field).stop
-                        - temp.form.cleaned_data.get(field).start
-                    ).days
-                    if days_difference <= self.CSV_EXPORT_LIMIT:
-                        within_limits = True
-                    else:
-                        raise ValidationError(
-                            {
-                                field: f"Cannot export more than {self.CSV_EXPORT_LIMIT} days at a time"
-                            }
-                        )
-            if not within_limits:
-                raise ValidationError(
-                    {
-                        "date": f"Atleast one date field must be filtered to be within {self.CSV_EXPORT_LIMIT} days"
-                    }
-                )
-            # End Date Limiting Validation
-            queryset = (
-                self.filter_queryset(self.get_queryset())
-                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
-                .values(*PatientRegistration.CSV_MAPPING.keys())
-            )
-            return render_to_csv_response(
-                queryset,
-                field_header_map=PatientRegistration.CSV_MAPPING,
-                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
-            )
-
-        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["patient"])
     @action(detail=True, methods=["POST"])
@@ -678,7 +613,9 @@ class DischargePatientFilterSet(PatientFilterSet):
 
 
 @extend_schema_view(tags=["patient"])
-class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
+class FacilityDischargedPatientViewSet(
+    CSVExportViewSetMixin, GenericViewSet, mixins.ListModelMixin
+):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
@@ -769,68 +706,14 @@ class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
         "last_discharge_consultation__current_bed__bed__name",
         "date_declared_positive",
     ]
-    CSV_EXPORT_LIMIT = 7
 
     def get_queryset(self) -> QuerySet:
-        qs = super().get_queryset()
-        if self.action == "list":
-            qs = qs.filter(
+        return self.get_queryset().filter(
             id__in=PatientConsultation.objects.filter(
                 discharge_date__isnull=False,
                 facility__external_id=self.kwargs["facility_external_id"],
             ).values_list("patient_id")
-            )
-        return qs
-
-
-    def list(self, request, *args, **kwargs):
-        if settings.CSV_REQUEST_PARAMETER in request.GET:
-            # Start Date Validation
-            temp = filters.DjangoFilterBackend().get_filterset(
-                self.request, self.queryset, self
-            )
-            temp.is_valid()
-            within_limits = False
-            for field in self.date_range_fields:
-                slice_obj = temp.form.cleaned_data.get(field)
-                if slice_obj:
-                    if not slice_obj.start or not slice_obj.stop:
-                        raise ValidationError(
-                            {
-                                field: "both starting and ending date must be provided for export"
-                            }
-                        )
-                    days_difference = (
-                        temp.form.cleaned_data.get(field).stop
-                        - temp.form.cleaned_data.get(field).start
-                    ).days
-                    if days_difference <= self.CSV_EXPORT_LIMIT:
-                        within_limits = True
-                    else:
-                        raise ValidationError(
-                            {
-                                field: f"Cannot export more than {self.CSV_EXPORT_LIMIT} days at a time"
-                            }
-                        )
-            if not within_limits:
-                raise ValidationError(
-                    {
-                        "date": f"Atleast one date field must be filtered to be within {self.CSV_EXPORT_LIMIT} days"
-                    }
-                )
-            # End Date Limiting Validation
-            queryset = (
-                self.filter_queryset(self.get_queryset())
-                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
-                .values(*PatientRegistration.CSV_MAPPING.keys())
-            )
-            return render_to_csv_response(
-                queryset,
-                field_header_map=PatientRegistration.CSV_MAPPING,
-                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
-            )
-
-        return super().list(request, *args, **kwargs)
+        )
 
 
 class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
