@@ -65,3 +65,46 @@ class PatientRegistrationTest(TestUtils, APITestCase):
         response = self.client.post("/api/v1/patient/", sample_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("year_of_birth", response.data)
+
+    def test_valid_patient_name(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "name": "Rithvik",
+            "gender": 1,
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "date_of_birth": "2000-01-01",
+            "year_of_birth": 2000,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "is_antenatal": False,
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        if response.status_code != status.HTTP_201_CREATED:
+            print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_invalid_patient_name(self):
+        dist_admin = self.create_user("dist_admin", self.district, user_type=30)
+        sample_data = {
+            "name": "Rithvik123",
+            "gender": 1,
+            "facility": self.facility.external_id,
+            "blood_group": "AB+",
+            "date_of_birth": "2000-01-01",
+            "year_of_birth": 2000,
+            "disease_status": "NEGATIVE",
+            "emergency_phone_number": "+919000000666",
+            "is_vaccinated": "false",
+            "number_of_doses": 0,
+            "phone_number": "+919000044343",
+            "is_antenatal": False,
+        }
+        self.client.force_authenticate(user=dist_admin)
+        response = self.client.post("/api/v1/patient/", sample_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("name", response.data)
