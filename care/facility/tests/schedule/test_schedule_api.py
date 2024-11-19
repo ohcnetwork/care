@@ -144,7 +144,7 @@ class TestAvailability(TestUtils, APITestCase):
             "availability": [
                 {
                     "name": "appointment",
-                    "slot_type": SlotType.APPOINTMENT,
+                    "slot_type": SlotType.APPOINTMENT.label,
                     "slot_size_in_minutes": 30,
                     "tokens_per_slot": 10,
                     "days_of_week": [1, 2, 3, 4, 5],
@@ -153,7 +153,7 @@ class TestAvailability(TestUtils, APITestCase):
                 },
                 {
                     "name": "open",
-                    "slot_type": SlotType.OPEN,
+                    "slot_type": SlotType.OPEN.label,
                     "start_time": "14:00",
                     "end_time": "16:00",
                     "days_of_week": [1, 2, 3, 4, 5],
@@ -244,3 +244,8 @@ class TestAvailability(TestUtils, APITestCase):
         # check if the response is as per the spec
         response_json_schema = self.get_list_response_schema()
         self.assert_response_schema(response, response_json_schema)
+
+        doctor_username = filter_params.pop("doctor_username")
+        doctor = User.objects.get(username=doctor_username)
+        schedules = Schedule.objects.filter_by_resource(doctor).filter(**filter_params)
+        self.assertEqual(response.json()["count"], schedules.count())

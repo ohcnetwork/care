@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django_filters import rest_framework as filters
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import status, viewsets
@@ -22,7 +23,10 @@ from care.facility.models.schedule import (
 from care.users.models import User
 
 RESOURCE_FILTER_KEYS = {
-    "doctor_id": RESOURCE_TO_MODEL[ScheduleResourceType.DOCTOR],
+    "doctor_username": {
+        "model": RESOURCE_TO_MODEL[ScheduleResourceType.DOCTOR],
+        "lookup_field": "username",
+    },
 }
 
 
@@ -49,9 +53,13 @@ class ScheduleDRYFilterSet(DRYPermissionFiltersBase):
         for key, model in RESOURCE_FILTER_KEYS.items():
             value = request.query_params.get(key)
             if value:
+                lookup_model = model["model"]
+                resource = lookup_model.objects.get(**{model["lookup_field"]: value})
                 return queryset.filter(
-                    resource__resource_id=value,
-                    resource__resource_type=model,
+                    resource__resource_id=resource.id,
+                    resource__resource_type=ContentType.objects.get_for_model(
+                        lookup_model
+                    ),
                 )
 
         return queryset.none()

@@ -7,12 +7,16 @@ from care.facility.models.base import FacilityBaseModel
 from care.facility.models.mixins.permissions.facility import (
     FacilityRelatedPermissionMixin,
 )
+from care.facility.models.patient_base import reverse_choices_with_label
 from care.users.models import User
 
 
 class SlotType(models.IntegerChoices):
     OPEN = 1, "Open"
     APPOINTMENT = 2, "Appointment"
+
+
+REVERSE_SLOT_TYPE = reverse_choices_with_label(SlotType.choices)
 
 
 class ScheduleResourceType(models.IntegerChoices):
@@ -33,11 +37,23 @@ class SchedulableResource(FacilityBaseModel):
     resource = GenericForeignKey("resource_type", "resource_id")
 
 
+class ScheduleBaseManager(models.Manager):
+    def filter_by_resource(self, resource):
+        return self.filter(
+            resource__resource_id=resource.id,
+            resource__resource_type=ContentType.objects.get_for_model(
+                resource.__class__
+            ),
+        )
+
+
 class Schedule(FacilityBaseModel, FacilityRelatedPermissionMixin):
     resource = models.ForeignKey(SchedulableResource, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, null=False, blank=False)
     valid_from = models.DateTimeField(null=False, blank=False)
     valid_to = models.DateTimeField(null=False, blank=False)
+
+    objects = ScheduleBaseManager()
 
 
 class Availability(FacilityBaseModel, FacilityRelatedPermissionMixin):

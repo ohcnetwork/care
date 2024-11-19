@@ -12,6 +12,13 @@ def reverse_choices(choices):
     return output
 
 
+def reverse_choices_with_label(choices):
+    output = {}
+    for choice in choices:
+        output[choice[1]] = choice[0]
+    return output
+
+
 SYMPTOM_CHOICES = [
     (1, "ASYMPTOMATIC"),
     (2, "FEVER"),

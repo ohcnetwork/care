@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from care.facility.models.facility import Facility, FacilityUser
 from care.facility.models.schedule import (
+    REVERSE_SLOT_TYPE,
     Availability,
     SchedulableResource,
     Schedule,
@@ -53,8 +54,13 @@ class ScheduleReadOnlySerializer(serializers.Serializer):
     valid_to = serializers.DateTimeField()
     availability = AvailabilityReadOnlySerializer(many=True, source="availability_set")
 
+    class Meta:
+        model = Schedule
+
 
 class AvailabilityCreateSerializer(serializers.ModelSerializer):
+    slot_type = serializers.ChoiceField(choices=SlotType.labels)
+
     class Meta:
         model = Availability
         fields = (
@@ -67,6 +73,9 @@ class AvailabilityCreateSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
         )
+
+    def validate_slot_type(self, value):
+        return REVERSE_SLOT_TYPE[value]
 
     def validate_days_of_week(self, value):
         # validate that days of week is a list of integers between 1 and 7
