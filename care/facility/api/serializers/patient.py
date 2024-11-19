@@ -210,6 +210,13 @@ class PatientDetailSerializer(PatientListSerializer):
             raise serializers.ValidationError(msg)
         return value
 
+    def validate_name(self, value):
+        if value is None:
+            raise serializers.ValidationError("Patient name is required.")
+        if any(char.isdigit() for char in value):
+            raise serializers.ValidationError("Patient name cannot contain numeric values.")
+        return value
+
     def validate(self, attrs):
         validated = super().validate(attrs)
         if not self.partial and not (
@@ -240,6 +247,9 @@ class PatientDetailSerializer(PatientListSerializer):
             )
 
     def create(self, validated_data):
+        name = validated_data.get("name")
+        if name:
+            self.validate_name(name)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
@@ -300,6 +310,9 @@ class PatientDetailSerializer(PatientListSerializer):
         return patient
 
     def update(self, instance, validated_data):
+        name = validated_data.get("name")
+        if name:
+            self.validate_name(name)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
