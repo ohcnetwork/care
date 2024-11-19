@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils.timezone import now
 from rest_framework import serializers
+import re
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.api.serializers.facility import (
@@ -211,12 +212,8 @@ class PatientDetailSerializer(PatientListSerializer):
         return value
 
     def validate_name(self, value):
-        if value is None:
-            raise serializers.ValidationError("Patient name is required.")
-        if not value.strip():
-            raise serializers.ValidationError("Patient name cannot be empty.")
-        if any(char.isdigit() for char in value):
-            raise serializers.ValidationError("Patient name cannot contain numeric values.")
+        if not re.match(r'^[a-zA-Z\s]+$', value):
+            raise serializers.ValidationError("Patient name should contain only alphabets and spaces")
         return value
 
     def validate(self, attrs):
