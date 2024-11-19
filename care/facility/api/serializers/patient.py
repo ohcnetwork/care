@@ -213,6 +213,8 @@ class PatientDetailSerializer(PatientListSerializer):
     def validate_name(self, value):
         if value is None:
             raise serializers.ValidationError("Patient name is required.")
+        if not value.strip():
+            raise serializers.ValidationError("Patient name cannot be empty.")
         if any(char.isdigit() for char in value):
             raise serializers.ValidationError("Patient name cannot contain numeric values.")
         return value
