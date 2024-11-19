@@ -75,7 +75,7 @@ class AvailabilityCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_slot_type(self, value):
-        return REVERSE_SLOT_TYPE[value]
+        return REVERSE_SLOT_TYPE[value.lower()]
 
     def validate_days_of_week(self, value):
         # validate that days of week is a list of integers between 1 and 7
