@@ -1,5 +1,4 @@
 from django.contrib.contenttypes.models import ContentType
-from psycopg.types.range import Range
 from rest_framework import serializers
 
 from care.facility.models.facility import Facility, FacilityUser
@@ -18,12 +17,12 @@ SUNDAY = 7
 
 
 class SimpleFacilitySerializer(serializers.Serializer):
-    id = serializers.IntegerField(source="external_id")
+    id = serializers.CharField(source="external_id")
     name = serializers.CharField()
 
 
 class ScheduleResourceSerializer(serializers.Serializer):
-    id = serializers.IntegerField(source="resource.external_id")
+    id = serializers.CharField(source="resource.external_id")
     facility = SimpleFacilitySerializer()
 
     def to_representation(self, instance: SchedulableResource) -> dict[str, any]:
@@ -36,7 +35,7 @@ class ScheduleResourceSerializer(serializers.Serializer):
 
 
 class AvailabilityReadOnlySerializer(serializers.Serializer):
-    id = serializers.IntegerField(source="external_id")
+    id = serializers.CharField(source="external_id")
     name = serializers.CharField()
     slot_type = serializers.ChoiceField(choices=SlotType.choices)
     slot_size_in_minutes = serializers.IntegerField()
@@ -47,7 +46,7 @@ class AvailabilityReadOnlySerializer(serializers.Serializer):
 
 
 class ScheduleReadOnlySerializer(serializers.Serializer):
-    id = serializers.IntegerField(source="external_id")
+    id = serializers.CharField(source="external_id")
     resource = ScheduleResourceSerializer()
     name = serializers.CharField()
     valid_from = serializers.DateTimeField()
@@ -75,7 +74,7 @@ class AvailabilityCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_slot_type(self, value):
-        return REVERSE_SLOT_TYPE[value.lower()]
+        return REVERSE_SLOT_TYPE[value.upper()]
 
     def validate_days_of_week(self, value):
         # validate that days of week is a list of integers between 1 and 7
@@ -198,31 +197,26 @@ class ScheduleUpdateSerializer(serializers.ModelSerializer):
 
 
 class ScheduleExceptionReadOnlySerializer(serializers.Serializer):
-    id = serializers.IntegerField(source="external_id")
+    id = serializers.CharField(source="external_id")
     name = serializers.CharField()
     is_available = serializers.BooleanField()
     slot_type = serializers.ChoiceField(choices=SlotType.choices)
     slot_size_in_minutes = serializers.IntegerField()
     tokens_per_slot = serializers.IntegerField()
+    valid_from = serializers.DateField()
+    valid_to = serializers.DateField()
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
 
     def to_representation(self, instance: ScheduleException) -> dict[str, any]:
         data = super().to_representation(instance)
-        if isinstance(instance.datetime_range, list):
-            data["datetime_range"] = instance.datetime_range
-        elif isinstance(instance.datetime_range, Range):
-            data["datetime_range"] = [
-                instance.datetime_range.lower,
-                instance.datetime_range.upper,
-            ]
-        else:
-            msg = f"Invalid datetime_range type: {type(instance.datetime_range)}"
-            raise ValueError(msg)
+        data["slot_type"] = SlotType(instance.slot_type).label.upper()
         return data
 
 
 class ScheduleExceptionCreateSerializer(serializers.ModelSerializer):
     doctor_username = serializers.CharField(required=False)
-    datetime_range = serializers.ListField(child=serializers.DateTimeField())
+    slot_type = serializers.ChoiceField(choices=SlotType.labels)
 
     class Meta:
         model = ScheduleException
@@ -230,11 +224,17 @@ class ScheduleExceptionCreateSerializer(serializers.ModelSerializer):
             "doctor_username",
             "name",
             "is_available",
-            "datetime_range",
+            "valid_from",
+            "valid_to",
+            "start_time",
+            "end_time",
             "slot_type",
             "slot_size_in_minutes",
             "tokens_per_slot",
         )
+
+    def validate_slot_type(self, value):
+        return REVERSE_SLOT_TYPE[value.upper()]
 
     def validate_doctor_username(self, value):
         if not FacilityUser.objects.filter(
@@ -267,24 +267,6 @@ class ScheduleExceptionCreateSerializer(serializers.ModelSerializer):
             validated_data["resource"] = resource
 
         return super().create(validated_data)
-
-    def to_representation(self, instance: ScheduleException) -> dict[str, any]:
-        return ScheduleExceptionReadOnlySerializer(instance).data
-
-
-class ScheduleExceptionUpdateSerializer(serializers.ModelSerializer):
-    datetime_range = serializers.ListField(child=serializers.DateTimeField())
-
-    class Meta:
-        model = ScheduleException
-        fields = (
-            "name",
-            "is_available",
-            "datetime_range",
-            "slot_type",
-            "slot_size_in_minutes",
-            "tokens_per_slot",
-        )
 
     def to_representation(self, instance: ScheduleException) -> dict[str, any]:
         return ScheduleExceptionReadOnlySerializer(instance).data

@@ -15,7 +15,7 @@ def reverse_choices(choices):
 def reverse_choices_with_label(choices):
     output = {}
     for choice in choices:
-        output[choice[1].lower()] = choice[0]
+        output[choice[1].upper()] = choice[0]
     return output
 
 

@@ -1,6 +1,5 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import DateTimeRangeField
 from django.db import models
 
 from care.facility.models.base import FacilityBaseModel
@@ -14,6 +13,7 @@ from care.users.models import User
 class SlotType(models.IntegerChoices):
     OPEN = 1, "Open"
     APPOINTMENT = 2, "Appointment"
+    CLOSED = 3, "Closed"
 
 
 REVERSE_SLOT_TYPE = reverse_choices_with_label(SlotType.choices)
@@ -66,6 +66,7 @@ class Availability(FacilityBaseModel, FacilityRelatedPermissionMixin):
     )
     slot_size_in_minutes = models.IntegerField(null=False, blank=False, default=0)
     tokens_per_slot = models.IntegerField(null=False, blank=False, default=0)
+    reason = models.TextField(null=True, blank=True)
 
     days_of_week = models.JSONField(default=list)
     start_time = models.TimeField(null=False, blank=False)
@@ -87,6 +88,11 @@ class ScheduleException(FacilityBaseModel, FacilityRelatedPermissionMixin):
     )
     slot_size_in_minutes = models.IntegerField(null=False, blank=False, default=0)
     tokens_per_slot = models.IntegerField(null=False, blank=False, default=0)
+    reason = models.TextField(null=True, blank=True)
 
     is_available = models.BooleanField(null=False, blank=False)
-    datetime_range = DateTimeRangeField(null=False, blank=False)
+
+    valid_from = models.DateField(null=False, blank=False)
+    valid_to = models.DateField(null=False, blank=False)
+    start_time = models.TimeField(null=False, blank=False)
+    end_time = models.TimeField(null=False, blank=False)

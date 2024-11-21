@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import time
 
 from freezegun import freeze_time
 from pydantic import BaseModel, ValidationError
@@ -74,7 +74,10 @@ class TestAvailability(TestUtils, APITestCase):
             is_available=False,
             slot_size_in_minutes=0,
             tokens_per_slot=0,
-            datetime_range=(datetime(2024, 11, 5), datetime(2024, 11, 7)),
+            valid_from="2024-11-05",
+            valid_to="2024-11-07",
+            start_time=time(hour=0, minute=0),
+            end_time=time(hour=23, minute=59),
         )
 
         # he compensates for appointment on 2024-11-09 Saturday from 10-12
@@ -83,10 +86,10 @@ class TestAvailability(TestUtils, APITestCase):
             is_available=True,
             slot_size_in_minutes=0,
             tokens_per_slot=0,
-            datetime_range=(
-                datetime(2024, 11, 9, hour=10),
-                datetime(2024, 11, 9, hour=12),
-            ),
+            valid_from="2024-11-09",
+            valid_to="2024-11-09",
+            start_time=time(hour=10),
+            end_time=time(hour=12),
         )
 
     def get_url(self, entry_id=None, action=None):
@@ -112,6 +115,7 @@ class TestAvailability(TestUtils, APITestCase):
         class AvailabilityResponseSchema(BaseModel):
             id: str
             name: str
+            reason: str | None
             slot_type: int
             slot_size_in_minutes: int
             tokens_per_slot: int
@@ -144,6 +148,7 @@ class TestAvailability(TestUtils, APITestCase):
             "availability": [
                 {
                     "name": "appointment",
+                    "reason": "some reason",
                     "slot_type": SlotType.APPOINTMENT.label,
                     "slot_size_in_minutes": 30,
                     "tokens_per_slot": 10,
@@ -153,6 +158,7 @@ class TestAvailability(TestUtils, APITestCase):
                 },
                 {
                     "name": "open",
+                    "reason": "some reason",
                     "slot_type": SlotType.OPEN.label,
                     "start_time": "14:00",
                     "end_time": "16:00",

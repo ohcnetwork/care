@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import time
 
 from freezegun import freeze_time
 from pydantic import BaseModel, ValidationError
@@ -74,7 +74,10 @@ class TestScheduleException(TestUtils, APITestCase):
             is_available=False,
             slot_size_in_minutes=0,
             tokens_per_slot=0,
-            datetime_range=(datetime(2024, 11, 5), datetime(2024, 11, 7)),
+            valid_from="2024-11-05",
+            valid_to="2024-11-07",
+            start_time=time(hour=10),
+            end_time=time(hour=12),
         )
 
         # he compensates for appointment on 2024-11-09 Saturday from 10-12
@@ -83,10 +86,10 @@ class TestScheduleException(TestUtils, APITestCase):
             is_available=True,
             slot_size_in_minutes=0,
             tokens_per_slot=0,
-            datetime_range=(
-                datetime(2024, 11, 9, hour=10),
-                datetime(2024, 11, 9, hour=12),
-            ),
+            valid_from="2024-11-09",
+            valid_to="2024-11-09",
+            start_time=time(hour=10),
+            end_time=time(hour=12),
         )
 
     def get_url(self, entry_id=None, action=None):
@@ -102,8 +105,11 @@ class TestScheduleException(TestUtils, APITestCase):
             id: str
             name: str
             is_available: bool
-            datetime_range: list[datetime]
-            slot_type: SlotType
+            valid_from: str
+            valid_to: str
+            start_time: str
+            end_time: str
+            slot_type: str
             slot_size_in_minutes: int
             tokens_per_slot: int
 
@@ -121,11 +127,11 @@ class TestScheduleException(TestUtils, APITestCase):
             "name": "test schedule",
             "doctor_username": self.doctor_user.username,
             "is_available": True,
-            "datetime_range": [
-                "2024-12-09T10:00:00",
-                "2024-12-09T12:00:00",
-            ],
-            "slot_type": SlotType.APPOINTMENT,
+            "valid_from": "2024-12-09",
+            "valid_to": "2024-12-09",
+            "start_time": "10:00:00",
+            "end_time": "12:00:00",
+            "slot_type": SlotType.APPOINTMENT.label,
             "slot_size_in_minutes": 30,
             "tokens_per_slot": 10,
         }
@@ -141,10 +147,10 @@ class TestScheduleException(TestUtils, APITestCase):
             resource=self.schedulable_resource,
             name="test schedule exception",
             is_available=True,
-            datetime_range=(
-                datetime(2024, 12, 9, hour=10),
-                datetime(2024, 12, 9, hour=12),
-            ),
+            valid_from="2024-12-09",
+            valid_to="2024-12-09",
+            start_time=time(hour=10),
+            end_time=time(hour=12),
             slot_size_in_minutes=30,
             tokens_per_slot=10,
             slot_type=SlotType.APPOINTMENT,
