@@ -42,7 +42,14 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
 
     def test_asset_class_initialization(self):
         asset = self.create_asset(
-            self.asset_location, asset_class=AssetClasses.ONVIF.name
+            self.asset_location,
+            asset_class=AssetClasses.ONVIF.name,
+            meta={
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": True,
+            },
         )
         asset_class = AssetClasses[asset.asset_class].value(
             {
