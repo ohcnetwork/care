@@ -246,9 +246,6 @@ class PatientDetailSerializer(PatientListSerializer):
             )
 
     def create(self, validated_data):
-        name = validated_data.get("name")
-        if name:
-            self.validate_name(name)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
@@ -309,9 +306,6 @@ class PatientDetailSerializer(PatientListSerializer):
         return patient
 
     def update(self, instance, validated_data):
-        name = validated_data.get("name")
-        if name:
-            self.validate_name(name)
         with transaction.atomic():
             medical_history = validated_data.pop("medical_history", [])
             meta_info = validated_data.pop("meta_info", {})
