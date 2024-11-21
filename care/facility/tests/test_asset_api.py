@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from care.facility.models import Asset, Bed
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
+from care.utils.assetintegration.base import BaseAssetIntegration
 from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
 from care.utils.assetintegration.onvif import OnvifAsset
 from care.utils.assetintegration.ventilator import VentilatorAsset
@@ -38,6 +39,26 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
     def validate_invalid_meta(self, asset_class, meta):
         with self.assertRaises(ValidationError):
             asset_class(meta)
+
+    def test_asset_class_initialization(self):
+        asset = self.create_asset(
+            self.asset_location,
+            asset_class=AssetClasses.ONVIF.name,
+            meta={
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": True,
+            },
+        )
+        asset_class = AssetClasses[asset.asset_class].value(
+            {
+                **asset.meta,
+                "id": str(asset.external_id),
+                "middleware_hostname": "middleware.local",
+            }
+        )
+        self.assertIsInstance(asset_class, BaseAssetIntegration)
 
     def test_meta_validations_for_onvif_asset(self):
         valid_meta = {
