@@ -38,7 +38,7 @@ jobs:
             *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
 
       - name: Start services
         run: |
@@ -58,7 +58,7 @@ jobs:
         run: make load-dummy-data
 
       - name: Dump db
-        # if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
         run: make dump-db
 
       - name: Run tests
@@ -82,7 +82,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
 
       - name: Upload db artifact
-        # if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
         uses: actions/upload-artifact@v4
         with:
           name: care-db-dump
