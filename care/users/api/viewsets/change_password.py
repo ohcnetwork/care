@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.generics import UpdateAPIView
@@ -35,11 +36,7 @@ class ChangePasswordView(UpdateAPIView):
                 {"message": ["Username is required"]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        self.object = User.objects.filter(username=username).first()
-        if not self.object:
-            return Response(
-                {"message": ["User not found"]}, status=status.HTTP_404_NOT_FOUND
-            )
+        self.object = get_object_or_404(User, username=username)
         if not self.has_permission(request, self.object):
             return Response(
                 {
@@ -70,8 +67,4 @@ class ChangePasswordView(UpdateAPIView):
 
     def has_permission(self, request, user):
         authuser = request.user
-        return (
-            authuser == user
-            or authuser.is_superuser
-            or authuser.user_type >= User.TYPE_VALUE_MAP["DistrictAdmin"]
-        )
+        return authuser == user or authuser.is_superuser
