@@ -57,7 +57,7 @@ dump-db:
 
 load-db:
 	docker compose cp care_db.dump db:/tmp/care_db.dump
-	docker compose exec db sh -c "pg_restore -U postgres -d care /tmp/care_db.dump"
+	docker compose exec db sh -c "pg_restore -U postgres --clean --if-exists -d care /tmp/care_db.dump"
 
 reset-db:
 	docker compose exec backend bash -c "python manage.py reset_db --noinput"
