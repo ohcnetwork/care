@@ -1,4 +1,4 @@
-.PHONY: build, re-build, up, down, list, logs, test, makemigrations, reset_db
+.PHONY: logs
 
 
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
