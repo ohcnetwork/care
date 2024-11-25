@@ -40,6 +40,9 @@ checkmigration:
 makemigrations:
 	docker compose exec backend bash -c "python manage.py makemigrations"
 
+migrate:
+	docker compose exec backend bash -c "python manage.py migrate"
+
 test:
 	docker compose exec backend bash -c "python manage.py test --keepdb --parallel --shuffle"
 
@@ -48,9 +51,16 @@ test-coverage:
 	docker compose exec backend bash -c "coverage combine || true; coverage xml"
 	docker compose cp backend:/app/coverage.xml coverage.xml
 
-reset_db:
+dump-db:
+	docker compose exec db sh -c "pg_dump -U postgres -Fc care > /tmp/care_db.dump"
+	docker compose cp db:/tmp/care_db.dump care_db.dump
+
+load-db:
+	docker compose cp care_db.dump db:/tmp/care_db.dump
+	docker compose exec db sh -c "pg_restore -U postgres -d care /tmp/care_db.dump"
+
+reset-db:
 	docker compose exec backend bash -c "python manage.py reset_db --noinput"
-	docker compose exec backend bash -c "python manage.py migrate"
 
 ruff-all:
 	ruff check .

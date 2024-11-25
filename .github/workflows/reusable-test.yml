@@ -57,6 +57,10 @@ jobs:
       - name: Validate integrity of fixtures
         run: make load-dummy-data
 
+      - name: Dump db
+        # if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        run: make dump-db
+
       - name: Run tests
         run: make test-coverage
 
@@ -76,3 +80,13 @@ jobs:
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
+
+      - name: Upload db artifact
+        # if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: care-db-dump
+          path: care_db.dump
+          retention-days: 30
+          compression-level: 0 # file is already compressed
+          overwrite: true # keep only the last artifact
