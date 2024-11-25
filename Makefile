@@ -19,6 +19,9 @@ re-build:
 build:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) build
 
+pull:
+	docker compose -f docker-compose.yaml -f $(docker_config_file) pull
+
 up:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) up -d --wait
 
