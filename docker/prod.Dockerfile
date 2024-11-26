@@ -22,9 +22,6 @@ ENV PATH=$APP_HOME/.venv/bin:$PATH
 # ---
 FROM base AS builder
 
-RUN addgroup --system django \
-  && adduser --system --ingroup django django
-
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev libgmp-dev libpq-dev git wget \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
@@ -59,10 +56,15 @@ RUN python3 $APP_HOME/install_plugins.py
 # ---
 FROM base AS runtime
 
+RUN addgroup --system django \
+  && adduser --system --ingroup django django
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev libgmp-dev gettext wget curl gnupg \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
+
+RUN chown django:django $APP_HOME
 
 COPY --from=builder --chmod=0755 /usr/local/bin/typst /usr/local/bin/typst
 
@@ -77,7 +79,8 @@ USER django
 HEALTHCHECK \
   --interval=30s \
   --timeout=5s \
-  --start-period=10s \
+  --start-period=5s \
+  --start-interval=1s \
   --retries=12 \
   CMD ["./healthcheck.sh"]
 

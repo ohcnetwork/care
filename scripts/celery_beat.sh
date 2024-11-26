@@ -9,7 +9,6 @@ set -euo pipefail
 python manage.py migrate --noinput
 python manage.py compilemessages -v 0
 python manage.py load_redis_index
-python manage.py load_event_types
 
 touch /tmp/healthy
 
