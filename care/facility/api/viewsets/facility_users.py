@@ -16,7 +16,6 @@ class UserFilter(filters.FilterSet):
         choices=[(key, key) for key in User.TYPE_VALUE_MAP],
         coerce=lambda role: User.TYPE_VALUE_MAP[role],
     )
-    username = filters.CharFilter(field_name="username", lookup_expr="icontains")
 
     class Meta:
         model = User
@@ -36,12 +35,21 @@ class FacilityUserViewSet(GenericViewSet, mixins.ListModelMixin):
 
     def get_queryset(self):
         try:
+            search_fields = {
+                key: self.request.query_params.get(key)
+                for key in self.search_fields
+                if self.request.query_params.get(key)
+            }
             facility = Facility.objects.get(
                 external_id=self.kwargs.get("facility_external_id"),
             )
             queryset = facility.users.filter(
                 deleted=False,
             ).order_by("-last_login")
+            if search_fields:
+                queryset = queryset.filter(
+                    **{key: value for key, value in search_fields.items() if value}
+                )
             return queryset.prefetch_related(
                 Prefetch(
                     "skills",
