@@ -354,3 +354,5 @@ secrets.sh
 *.rdb
 
 jwks.b64.txt
+
+care_db.dump

@@ -1,10 +1,6 @@
-from copy import copy
-
-from django.db import transaction
 from django.utils.timezone import now
 from rest_framework import serializers
 
-from care.facility.events.handler import create_consultation_events
 from care.facility.models.encounter_symptom import (
     ClinicalImpressionStatus,
     EncounterSymptom,
@@ -90,34 +86,12 @@ class EncounterSymptomSerializer(serializers.ModelSerializer):
         validated_data["consultation"] = self.context["consultation"]
         validated_data["created_by"] = self.context["request"].user
 
-        with transaction.atomic():
-            instance: EncounterSymptom = super().create(validated_data)
-
-            create_consultation_events(
-                instance.consultation_id,
-                instance,
-                instance.created_by_id,
-                instance.created_date,
-            )
-
-            return instance
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
         validated_data["updated_by"] = self.context["request"].user
 
-        with transaction.atomic():
-            old_instance = copy(instance)
-            instance = super().update(instance, validated_data)
-
-            create_consultation_events(
-                instance.consultation_id,
-                instance,
-                instance.updated_by_id,
-                instance.modified_date,
-                old=old_instance,
-            )
-
-            return instance
+        return super().update(instance, validated_data)
 
 
 class EncounterCreateSymptomSerializer(serializers.ModelSerializer):

@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import (
     Case,
@@ -19,7 +20,6 @@ from django.db.models.functions import Coalesce, ExtractDay, Now
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from django_filters import rest_framework as filters
-from djqscsv import render_to_csv_response
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
@@ -50,7 +50,6 @@ from care.facility.api.serializers.patient import (
 )
 from care.facility.api.serializers.patient_icmr import PatientICMRSerializer
 from care.facility.api.viewsets.mixins.history import HistoryMixin
-from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -78,8 +77,9 @@ from care.facility.models.patient_base import (
     NewDischargeReasonEnum,
 )
 from care.facility.models.patient_consultation import PatientConsultation
-from care.users.models import User
+from care.users.models import GENDER_CHOICES, User
 from care.utils.cache.cache_allowed_facilities import get_accessible_facilities
+from care.utils.exports.mixins import CSVExportViewSetMixin
 from care.utils.filters.choicefilter import CareChoiceFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.notification_handler import NotificationGenerator
@@ -108,14 +108,22 @@ class PatientFilterSet(filters.FilterSet):
     phone_number = filters.CharFilter(field_name="phone_number")
     emergency_phone_number = filters.CharFilter(field_name="emergency_phone_number")
     allow_transfer = filters.BooleanFilter(field_name="allow_transfer")
-    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    patient_no = filters.CharFilter(
-        field_name=f"{last_consultation_field}__patient_no", lookup_expr="iexact"
+    name = filters.CharFilter(
+        field_name="name", lookup_expr="icontains", max_length=200
     )
-    gender = filters.NumberFilter(field_name="gender")
-    age = filters.NumberFilter(field_name="age")
-    age_min = filters.NumberFilter(field_name="age", lookup_expr="gte")
-    age_max = filters.NumberFilter(field_name="age", lookup_expr="lte")
+    patient_no = filters.CharFilter(
+        field_name=f"{last_consultation_field}__patient_no",
+        lookup_expr="iexact",
+        max_length=100,
+    )
+    gender = filters.ChoiceFilter(field_name="gender", choices=GENDER_CHOICES)
+    age = filters.NumberFilter(field_name="age", validators=[MinValueValidator(0)])
+    age_min = filters.NumberFilter(
+        field_name="age", lookup_expr="gte", validators=[MinValueValidator(0)]
+    )
+    age_max = filters.NumberFilter(
+        field_name="age", lookup_expr="lte", validators=[MinValueValidator(0)]
+    )
     deprecated_covid_category = filters.ChoiceFilter(
         field_name=f"{last_consultation_field}__deprecated_covid_category",
         choices=COVID_CATEGORY_CHOICES,
@@ -142,7 +150,7 @@ class PatientFilterSet(filters.FilterSet):
 
     created_date = filters.DateFromToRangeFilter(field_name="created_date")
     modified_date = filters.DateFromToRangeFilter(field_name="modified_date")
-    srf_id = filters.CharFilter(field_name="srf_id")
+    srf_id = filters.CharFilter(field_name="srf_id", max_length=200)
     is_declared_positive = filters.BooleanFilter(field_name="is_declared_positive")
     date_declared_positive = filters.DateFromToRangeFilter(
         field_name="date_declared_positive"
@@ -160,14 +168,16 @@ class PatientFilterSet(filters.FilterSet):
     # Location Based Filtering
     district = filters.NumberFilter(field_name="district__id")
     district_name = filters.CharFilter(
-        field_name="district__name", lookup_expr="icontains"
+        field_name="district__name", lookup_expr="icontains", max_length=255
     )
     local_body = filters.NumberFilter(field_name="local_body__id")
     local_body_name = filters.CharFilter(
-        field_name="local_body__name", lookup_expr="icontains"
+        field_name="local_body__name", lookup_expr="icontains", max_length=255
     )
     state = filters.NumberFilter(field_name="state__id")
-    state_name = filters.CharFilter(field_name="state__name", lookup_expr="icontains")
+    state_name = filters.CharFilter(
+        field_name="state__name", lookup_expr="icontains", max_length=255
+    )
     # Consultation Fields
     is_kasp = filters.BooleanFilter(field_name=f"{last_consultation_field}__is_kasp")
     last_consultation_kasp_enabled_date = filters.DateFromToRangeFilter(
@@ -226,9 +236,12 @@ class PatientFilterSet(filters.FilterSet):
     )
 
     # Vaccination Filters
-    covin_id = filters.CharFilter(field_name="covin_id")
+    covin_id = filters.CharFilter(field_name="covin_id", max_length=15)
     is_vaccinated = filters.BooleanFilter(field_name="is_vaccinated")
-    number_of_doses = filters.NumberFilter(field_name="number_of_doses")
+    number_of_doses = filters.NumberFilter(
+        field_name="number_of_doses",
+        validators=[MinValueValidator(0), MaxValueValidator(3)],
+    )
     # Permission Filters
     assigned_to = filters.NumberFilter(field_name="assigned_to")
     # Other Filters
@@ -376,6 +389,7 @@ class PatientCustomOrderingFilter(BaseFilterBackend):
 
 @extend_schema_view(history=extend_schema(tags=["patient"]))
 class PatientViewSet(
+    CSVExportViewSetMixin,
     HistoryMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -475,7 +489,6 @@ class PatientViewSet(
         "last_consultation_encounter_date",
         "last_consultation_discharge_date",
     ]
-    CSV_EXPORT_LIMIT = 7
 
     def get_queryset(self):
         queryset = super().get_queryset().order_by("modified_date")
@@ -519,71 +532,6 @@ class PatientViewSet(
             return queryset.filter(last_consultation__discharge_date__isnull=is_active)
 
         return super().filter_queryset(queryset)
-
-    def list(self, request, *args, **kwargs):
-        """
-        Patient List
-
-        `without_facility` accepts boolean - default is false -
-            if true: shows only patients without a facility mapped
-            if false (default behaviour): shows only patients with a facility mapped
-
-        `disease_status` accepts - string and int -
-            SUSPECTED = 1
-            POSITIVE = 2
-            NEGATIVE = 3
-            RECOVERY = 4
-            RECOVERED = 5
-            EXPIRED = 6
-
-        """
-        if settings.CSV_REQUEST_PARAMETER in request.GET:
-            # Start Date Validation
-            temp = filters.DjangoFilterBackend().get_filterset(
-                self.request, self.queryset, self
-            )
-            temp.is_valid()
-            within_limits = False
-            for field in self.date_range_fields:
-                slice_obj = temp.form.cleaned_data.get(field)
-                if slice_obj:
-                    if not slice_obj.start or not slice_obj.stop:
-                        raise ValidationError(
-                            {
-                                field: "both starting and ending date must be provided for export"
-                            }
-                        )
-                    days_difference = (
-                        temp.form.cleaned_data.get(field).stop
-                        - temp.form.cleaned_data.get(field).start
-                    ).days
-                    if days_difference <= self.CSV_EXPORT_LIMIT:
-                        within_limits = True
-                    else:
-                        raise ValidationError(
-                            {
-                                field: f"Cannot export more than {self.CSV_EXPORT_LIMIT} days at a time"
-                            }
-                        )
-            if not within_limits:
-                raise ValidationError(
-                    {
-                        "date": f"Atleast one date field must be filtered to be within {self.CSV_EXPORT_LIMIT} days"
-                    }
-                )
-            # End Date Limiting Validation
-            queryset = (
-                self.filter_queryset(self.get_queryset())
-                .annotate(**PatientRegistration.CSV_ANNOTATE_FIELDS)
-                .values(*PatientRegistration.CSV_MAPPING.keys())
-            )
-            return render_to_csv_response(
-                queryset,
-                field_header_map=PatientRegistration.CSV_MAPPING,
-                field_serializer_map=PatientRegistration.CSV_MAKE_PRETTY,
-            )
-
-        return super().list(request, *args, **kwargs)
 
     @extend_schema(tags=["patient"])
     @action(detail=True, methods=["POST"])
@@ -678,7 +626,9 @@ class DischargePatientFilterSet(PatientFilterSet):
 
 
 @extend_schema_view(tags=["patient"])
-class FacilityDischargedPatientViewSet(GenericViewSet, mixins.ListModelMixin):
+class FacilityDischargedPatientViewSet(
+    CSVExportViewSetMixin, GenericViewSet, mixins.ListModelMixin
+):
     permission_classes = (IsAuthenticated, DRYPermissions)
     lookup_field = "external_id"
     serializer_class = PatientListSerializer
@@ -1043,13 +993,6 @@ class PatientNotesViewSet(
             patient=patient,
             consultation=patient.last_consultation,
             created_by=self.request.user,
-        )
-
-        create_consultation_events(
-            instance.consultation_id,
-            instance,
-            self.request.user.id,
-            instance.created_date,
         )
 
         message = {

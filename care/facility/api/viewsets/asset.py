@@ -401,7 +401,7 @@ class AssetViewSet(
             asset_class: BaseAssetIntegration = AssetClasses[asset.asset_class].value(
                 {
                     **asset.meta,
-                    "id": asset.external_id,
+                    "id": str(asset.external_id),
                     "middleware_hostname": middleware_hostname,
                 }
             )
