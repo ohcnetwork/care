@@ -1,4 +1,3 @@
-from copy import copy
 from datetime import timedelta
 
 from django.conf import settings
@@ -24,7 +23,6 @@ from care.facility.api.serializers.encounter_symptom import (
     EncounterSymptomSerializer,
 )
 from care.facility.api.serializers.facility import FacilityBasicInfoSerializer
-from care.facility.events.handler import create_consultation_events
 from care.facility.models import (
     CATEGORY_CHOICES,
     COVID_CATEGORY_CHOICES,
@@ -219,7 +217,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         return bed_number
 
     def update(self, instance, validated_data):
-        old_instance = copy(instance)
         instance.last_edited_by = self.context["request"].user
 
         if instance.discharge_date:
@@ -268,14 +265,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         _temp = instance.assigned_to
 
         consultation = super().update(instance, validated_data)
-
-        create_consultation_events(
-            consultation.id,
-            consultation,
-            self.context["request"].user.id,
-            consultation.modified_date,
-            old=old_instance,
-        )
 
         if (
             "assigned_to" in validated_data
@@ -415,7 +404,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             ):
                 consultation.is_readmission = True
 
-            diagnosis = ConsultationDiagnosis.objects.bulk_create(
+            ConsultationDiagnosis.objects.bulk_create(
                 [
                     ConsultationDiagnosis(
                         consultation=consultation,
@@ -428,7 +417,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 ]
             )
 
-            symptoms = EncounterSymptom.objects.bulk_create(
+            EncounterSymptom.objects.bulk_create(
                 EncounterSymptom(
                     consultation=consultation,
                     symptom=obj.get("symptom"),
@@ -468,13 +457,6 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
             consultation.save()
             patient.save()
-
-            create_consultation_events(
-                consultation.id,
-                (consultation, *diagnosis, *symptoms),
-                consultation.created_by.id,
-                consultation.created_date,
-            )
 
             NotificationGenerator(
                 event=Notification.Event.PATIENT_CONSULTATION_CREATED,
@@ -793,7 +775,6 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance: PatientConsultation, validated_data):
-        old_instance = copy(instance)
         with transaction.atomic():
             instance = super().update(instance, validated_data)
             patient: PatientRegistration = instance.patient
@@ -804,13 +785,6 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             ConsultationBed.objects.filter(
                 consultation=self.instance, end_date__isnull=True
             ).update(end_date=now())
-            create_consultation_events(
-                instance.id,
-                instance,
-                self.context["request"].user.id,
-                instance.modified_date,
-                old=old_instance,
-            )
 
             return instance
 

@@ -1,10 +1,15 @@
 from django.utils.timezone import now, timedelta
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from care.facility.models import Asset, Bed
 from care.users.models import User
 from care.utils.assetintegration.asset_classes import AssetClasses
+from care.utils.assetintegration.base import BaseAssetIntegration
+from care.utils.assetintegration.hl7monitor import HL7MonitorAsset
+from care.utils.assetintegration.onvif import OnvifAsset
+from care.utils.assetintegration.ventilator import VentilatorAsset
 from care.utils.tests.test_utils import TestUtils
 
 
@@ -30,6 +35,163 @@ class AssetViewSetTestCase(TestUtils, APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.asset = self.create_asset(self.asset_location)
+
+    def validate_invalid_meta(self, asset_class, meta):
+        with self.assertRaises(ValidationError):
+            asset_class(meta)
+
+    def test_asset_class_initialization(self):
+        asset = self.create_asset(
+            self.asset_location,
+            asset_class=AssetClasses.ONVIF.name,
+            meta={
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": True,
+            },
+        )
+        asset_class = AssetClasses[asset.asset_class].value(
+            {
+                **asset.meta,
+                "id": str(asset.external_id),
+                "middleware_hostname": "middleware.local",
+            }
+        )
+        self.assertIsInstance(asset_class, BaseAssetIntegration)
+
+    def test_meta_validations_for_onvif_asset(self):
+        valid_meta = {
+            "local_ip_address": "192.168.0.1",
+            "camera_access_key": "username:password:access_key",
+            "middleware_hostname": "middleware.local",
+            "insecure_connection": True,
+        }
+        onvif_asset = OnvifAsset(valid_meta)
+        self.assertEqual(onvif_asset.middleware_hostname, "middleware.local")
+        self.assertEqual(onvif_asset.host, "192.168.0.1")
+        self.assertEqual(onvif_asset.username, "username")
+        self.assertEqual(onvif_asset.password, "password")
+        self.assertEqual(onvif_asset.access_key, "access_key")
+        self.assertTrue(onvif_asset.insecure_connection)
+
+        invalid_meta_cases = [
+            # Invalid format for camera_access_key
+            {
+                "id": "123",
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+                "camera_access_key": "invalid_format",
+            },
+            # Missing username/password in camera_access_key
+            {
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+                "camera_access_key": "invalid_format",
+            },
+            # Missing middleware_hostname
+            {
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+            },
+            # Missing local_ip_address
+            {
+                "middleware_hostname": "middleware.local",
+                "camera_access_key": "username:password:access_key",
+            },
+            # Invalid value for insecure_connection
+            {
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": "invalid_value",
+            },
+        ]
+        for meta in invalid_meta_cases:
+            self.validate_invalid_meta(OnvifAsset, meta)
+
+    def test_meta_validations_for_ventilator_asset(self):
+        valid_meta = {
+            "id": "123",
+            "local_ip_address": "192.168.0.1",
+            "middleware_hostname": "middleware.local",
+            "insecure_connection": True,
+        }
+        ventilator_asset = VentilatorAsset(valid_meta)
+        self.assertEqual(ventilator_asset.middleware_hostname, "middleware.local")
+        self.assertEqual(ventilator_asset.host, "192.168.0.1")
+        self.assertTrue(ventilator_asset.insecure_connection)
+
+        invalid_meta_cases = [
+            # Missing id
+            {
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+            },
+            # Missing middleware_hostname
+            {"id": "123", "local_ip_address": "192.168.0.1"},
+            # Missing local_ip_address
+            {"id": "123", "middleware_hostname": "middleware.local"},
+            # Invalid insecure_connection
+            {
+                "id": "123",
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": "invalid_value",
+            },
+            # Camera access key not required for ventilator, invalid meta
+            {
+                "id": "21",
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": True,
+            },
+        ]
+        for meta in invalid_meta_cases:
+            self.validate_invalid_meta(VentilatorAsset, meta)
+
+    def test_meta_validations_for_hl7monitor_asset(self):
+        valid_meta = {
+            "id": "123",
+            "local_ip_address": "192.168.0.1",
+            "middleware_hostname": "middleware.local",
+            "insecure_connection": True,
+        }
+        hl7monitor_asset = HL7MonitorAsset(valid_meta)
+        self.assertEqual(hl7monitor_asset.middleware_hostname, "middleware.local")
+        self.assertEqual(hl7monitor_asset.host, "192.168.0.1")
+        self.assertEqual(hl7monitor_asset.id, "123")
+        self.assertTrue(hl7monitor_asset.insecure_connection)
+
+        invalid_meta_cases = [
+            # Missing id
+            {
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+            },
+            # Missing middleware_hostname
+            {"id": "123", "local_ip_address": "192.168.0.1"},
+            # Missing local_ip_address
+            {"id": "123", "middleware_hostname": "middleware.local"},
+            # Invalid insecure_connection
+            {
+                "id": "123",
+                "local_ip_address": "192.168.0.1",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": "invalid_value",
+            },
+            # Camera access key not required for HL7Monitor, invalid meta
+            {
+                "id": "123",
+                "local_ip_address": "192.168.0.1",
+                "camera_access_key": "username:password:access_key",
+                "middleware_hostname": "middleware.local",
+                "insecure_connection": True,
+            },
+        ]
+        for meta in invalid_meta_cases:
+            self.validate_invalid_meta(HL7MonitorAsset, meta)
 
     def test_list_assets(self):
         response = self.client.get("/api/v1/asset/")

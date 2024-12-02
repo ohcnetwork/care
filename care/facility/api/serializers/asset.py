@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.serializers import (
     CharField,
     JSONField,
@@ -174,11 +174,14 @@ class AssetSerializer(ModelSerializer):
 
             facilities = get_facility_queryset(user)
             if not facilities.filter(id=location.facility.id).exists():
-                raise PermissionError
+                error_message = (
+                    "You do not have permission to access this facility's asset."
+                )
+                raise PermissionDenied(error_message)
             del attrs["location"]
             attrs["current_location"] = location
 
-        # validate that warraty date is not in the past
+        # validate that warranty date is not in the past
         if warranty_amc_end_of_validity := attrs.get("warranty_amc_end_of_validity"):
             # pop out warranty date if it is not changed
             if (

@@ -38,7 +38,7 @@ jobs:
             *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
         env:
-          DOCKER_BUILD_NO_SUMMARY: true
+          DOCKER_BUILD_SUMMARY: false
 
       - name: Start services
         run: |
@@ -57,11 +57,15 @@ jobs:
       - name: Validate integrity of fixtures
         run: make load-dummy-data
 
+      - name: Dump db
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        run: make dump-db
+
       - name: Run tests
         run: make test-coverage
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -76,3 +80,13 @@ jobs:
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
+
+      - name: Upload db artifact
+        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: care-db-dump
+          path: care_db.dump
+          retention-days: 30
+          compression-level: 0 # file is already compressed
+          overwrite: true # keep only the last artifact

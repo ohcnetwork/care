@@ -65,7 +65,7 @@ def check_asset_status():  # noqa: PLR0912
                 ].value(
                     {
                         **asset.meta,
-                        "id": asset.external_id,
+                        "id": str(asset.external_id),
                         "middleware_hostname": resolved_middleware,
                     }
                 )

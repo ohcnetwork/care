@@ -136,7 +136,12 @@ class TestPasswordReset(TestUtils, APITestCase):
         self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
         self.assertTrue(ResetPasswordToken.objects.filter(user=self.user).exists())
 
-    @override_settings(IS_PRODUCTION=True)
+    @override_settings(
+        IS_PRODUCTION=True,
+        EMAIL_HOST="",
+        EMAIL_HOST_USER="",
+        EMAIL_HOST_PASSWORD="",
+    )
     def test_forgot_password_without_email_configration(self):
         response = self.client.post(
             "/api/v1/password_reset/",

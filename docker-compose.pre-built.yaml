@@ -4,7 +4,7 @@ services:
     image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
-    entrypoint: [ "bash", "start-ecs.sh" ]
+    entrypoint: [ "bash", "start.sh" ]
     restart: unless-stopped
     depends_on:
       db:
@@ -20,7 +20,7 @@ services:
     image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
-    entrypoint: [ "bash", "celery_worker-ecs.sh" ]
+    entrypoint: [ "bash", "celery_worker.sh" ]
     restart: unless-stopped
     depends_on:
       db:
@@ -34,7 +34,7 @@ services:
     image: "ghcr.io/ohcnetwork/care:latest"
     env_file:
       - ./docker/.prebuilt.env
-    entrypoint: [ "bash", "celery_beat-ecs.sh" ]
+    entrypoint: [ "bash", "celery_beat.sh" ]
     restart: unless-stopped
     depends_on:
       - db

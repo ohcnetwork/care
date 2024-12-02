@@ -83,6 +83,7 @@ ignore = [
   "FBT001",  # why not!
   "S106",
   "S105",
+  "UP038"    # this results in slower code
 ]
 
 

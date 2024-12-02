@@ -60,18 +60,12 @@ to load dummy data for testing run:
 make load-dummy-data
 ```
 
-> [!NOTE]
-> If you are unable to compose up care in windows, ensure line endings are set to `LF` (`docker-entrypoint.sh` won't
-> work with `CRLF` line endings).
-> ```
-> git config core.autocrlf false
-> ```
-
 #### Docker
 
 Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
+For backup and restore use [this](/docs/databases/backup.rst) documentation.
 ## Contributing
 
 We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.
