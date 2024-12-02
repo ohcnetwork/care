@@ -46,7 +46,7 @@ class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
         total_doctors = self.get_queryset().aggregate(total_doctors=Sum('count'))['total_doctors']
-        response.data["total_doctors"] = total_doctors
+        response.data["total_doctors"] = total_doctors or 0
         return response
 
     def perform_create(self, serializer):
