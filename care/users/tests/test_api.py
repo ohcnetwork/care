@@ -72,9 +72,11 @@ class TestSuperUser(TestUtils, APITestCase):
         data = self.user_data.copy()
         data["date_of_birth"] = str(data["date_of_birth"])
         data.pop("password")
+        user_data = self.get_detail_representation(self.user)
+        user_data.pop("created_by")
         self.assertDictEqual(
             res_data_json,
-            self.get_detail_representation(self.user),
+            user_data,
         )
 
     def test_superuser_can_modify(self):
@@ -264,19 +266,12 @@ class TestUser(TestUtils, APITestCase):
             User.objects.get(username=username).date_of_birth, date(2005, 4, 1)
         )
 
-    def test_user_cannot_read_others(self):
-        """Test 1 user can read the attributes of the other user not in the same ditrict/state"""
-        username = self.data_2["username"]
-        response = self.client.get(f"/api/v1/users/{username}/")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.json()["detail"], "User not found")
-
-    def test_user_can_read_others_in_same_district_or_state(self):
-        """Test 1 user can read the attributes of the other user in the same district or state"""
-        username = self.user_3.username
+    def test_user_can_read_others(self):
+        """Test 1 user can read the attributes of any other user"""
+        username = self.user_2.username
         response = self.client.get(f"/api/v1/users/{username}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["first_name"], self.user_3.first_name)
+        self.assertEqual(response.json()["first_name"], self.user_2.first_name)
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""

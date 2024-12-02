@@ -93,12 +93,12 @@ class UserFilterSet(filters.FilterSet):
 
 class UserViewSetPermission(DRYPermissions):
     def has_permission(self, request, view):
-        if request.method == "GET" and "username" in view.kwargs:
+        if request.method == "GET" and view.action == "retrieve":
             return True
         return super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
-        if request.method == "GET" and "username" in view.kwargs:
+        if request.method == "GET" and view.action == "retrieve":
             return True
         return super().has_object_permission(request, view, obj)
 
@@ -167,16 +167,9 @@ class UserViewSet(
 
     def get_object(self) -> User:
         try:
-            if self.request.method == "GET" and not self.kwargs.get("username"):
-                username = self.request.query_params.get("username")
-                if not username:
-                    raise ValidationError({"message": "Username is required"})
-                user = get_object_or_404(self.get_queryset(), username=username)
-                if not self.has_permission(user):
-                    raise ValidationError(
-                        {"message": "You do not have permission to access this user"}
-                    )
-                return user
+            if self.request.method == "GET" and self.action == "retrieve":
+                username = self.kwargs.get("username")
+                return get_object_or_404(User, username=username)
             return super().get_object()
         except Http404 as e:
             error = "User not found"
@@ -224,17 +217,6 @@ class UserViewSet(
         user.is_active = False
         user.save(update_fields=["is_active"])
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def has_permission(self, user):
-        requesting_user = self.request.user
-        return (
-            requesting_user == user
-            or requesting_user.is_superuser
-            or (
-                requesting_user.state == user.state
-                or requesting_user.district == user.district
-            )
-        )
 
     @extend_schema(tags=["users"])
     @action(detail=False, methods=["POST"])
