@@ -20,7 +20,7 @@ Welcome to Care's documentation!
    others/configuration
    glossary/configuration
    middleware/configuration
-
+   databases/backup
 
 
 Indices and tables
