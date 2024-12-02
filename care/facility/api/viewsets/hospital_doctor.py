@@ -2,6 +2,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Sum
 
 from care.facility.api.serializers.hospital_doctor import HospitalDoctorSerializer
 from care.facility.api.viewsets import FacilityBaseViewset
@@ -41,6 +42,12 @@ class HospitalDoctorViewSet(FacilityBaseViewset, ListModelMixin):
         if not self.request.user.is_superuser:
             facility_qs.filter(users__id__exact=self.request.user.id)
         return get_object_or_404(facility_qs)
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        total_doctors = self.get_queryset().aggregate(total_doctors=Sum('count'))['total_doctors']
+        response.data["total_doctors"] = total_doctors
+        return response
 
     def perform_create(self, serializer):
         serializer.save(facility=self.get_facility())
