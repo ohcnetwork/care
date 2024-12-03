@@ -303,6 +303,17 @@ class User(AbstractUser):
         blank=False,
         null=True,
     )
+    modified_date = models.DateTimeField(
+        default=None,
+        blank=False,
+        null=True,
+    )
+    updated_by = models.CharField(
+        max_length=255,
+        default=None,
+        blank=False,
+        null=True,
+    )
     doctor_medical_council_registration = models.CharField(
         max_length=255,
         default=None,
