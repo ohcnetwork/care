@@ -392,22 +392,28 @@ class DailyRound(PatientBaseModel):
         validators=[JSONFieldSchemaValidator(PAIN_SCALE_ENHANCED)],
     )
     ph = models.DecimalField(
-        decimal_places=2,
+        decimal_places=3,
         max_digits=4,
         blank=True,
         default=None,
         null=True,
         validators=[MinValueValidator(Decimal(0)), MaxValueValidator(Decimal(10))],
     )
-    pco2 = models.IntegerField(
+    pco2 = models.DecimalField(
+        decimal_places=2,
+        max_digits=5,
+        blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(10), MaxValueValidator(200)],
+        validators=[MinValueValidator(Decimal(10)), MaxValueValidator(Decimal(200))],
     )
-    po2 = models.IntegerField(
+    po2 = models.DecimalField(
+        decimal_places=2,
+        max_digits=5,
+        blank=True,
         default=None,
         null=True,
-        validators=[MinValueValidator(10), MaxValueValidator(400)],
+        validators=[MinValueValidator(Decimal(10)), MaxValueValidator(Decimal(400))],
     )
     hco3 = models.DecimalField(
         decimal_places=2,
