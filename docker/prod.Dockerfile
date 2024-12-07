@@ -47,11 +47,11 @@ RUN pip install pipenv==2024.4.0
 
 RUN python -m venv $APP_HOME/.venv
 COPY Pipfile Pipfile.lock $APP_HOME/
-RUN pipenv install --deploy --categories "packages"
+RUN --mount=type=cache,target=/root/.cache/pip pipenv install --deploy --categories "packages"
 
 COPY plugs/ $APP_HOME/plugs/
 COPY install_plugins.py plug_config.py $APP_HOME/
-RUN python3 $APP_HOME/install_plugins.py
+RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py
 
 # ---
 FROM base AS runtime

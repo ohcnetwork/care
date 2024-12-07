@@ -34,8 +34,8 @@ jobs:
         with:
           load: true
           set: |
-            *.cache-from=type=local,src=/tmp/.buildx-cache
-            *.cache-to=type=local,dest=/tmp/.buildx-cache-new
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
           files: docker-compose.yaml,docker-compose.local.yaml
         env:
           DOCKER_BUILD_SUMMARY: false
