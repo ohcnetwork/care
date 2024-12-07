@@ -77,10 +77,9 @@ COPY --chown=django:django . $APP_HOME
 USER django
 
 HEALTHCHECK \
-  --start-period=20s \
-  --start-interval=1s \
   --interval=30s \
   --timeout=5s \
+  --start-period=10s \
   --retries=12 \
   CMD ["./healthcheck.sh"]
 
