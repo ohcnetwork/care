@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models import Sum
 
 from care.facility.api.serializers import TIMESTAMP_FIELDS
 from care.facility.models import DOCTOR_TYPES, HospitalDoctors
@@ -19,11 +20,14 @@ class HospitalDoctorSerializer(serializers.ModelSerializer):
         )
         exclude = (*TIMESTAMP_FIELDS, "facility", "external_id")
 
-        def to_representation(self, instance):
-            representation = super().to_representation(instance)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        try:
             representation["total_doctors"] = (
                 HospitalDoctors.objects.filter(facility=instance.facility)
                 .aggregate(total_doctors=Sum("count"))["total_doctors"]
                 or 0
             )
-            return representation
+        except Exception as e:
+            representation["total_doctors"] = 0
+        return representation
