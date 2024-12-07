@@ -69,18 +69,6 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Move new cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Save Docker layers cache
-        if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
-        uses: actions/cache/save@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
-
       - name: Upload db artifact
         if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}
         uses: actions/upload-artifact@v4
