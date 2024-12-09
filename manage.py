@@ -24,6 +24,11 @@ def main():
             "Couldn't import Django. Are you sure it's installed and "
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
+
+            "\nIf You feel that Django is already installed via Docker,"
+            """you could run Django commands using"
+            'docker exec -it care-backend-1 bash'
+            """
         )
         raise ImportError(msg) from exc
 

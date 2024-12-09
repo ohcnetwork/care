@@ -143,7 +143,7 @@ Setting Up Your Users
 ~~~~~~~~~~~~~~~~~~~~~
 
 * To create an **superuser account**, run this command::
-
+    $ docker exec -it care-backend-1 bash
     $ python manage.py createsuperuser
 
 If the command prompts for username only and after entering if it goes to error
