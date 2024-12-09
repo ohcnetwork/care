@@ -91,18 +91,6 @@ class UserFilterSet(filters.FilterSet):
         return queryset.filter(last_login__gte=date)
 
 
-class UserViewSetPermission(DRYPermissions):
-    def has_permission(self, request, view):
-        if request.method == "GET" and view.action == "retrieve":
-            return True
-        return super().has_permission(request, view)
-
-    def has_object_permission(self, request, view, obj):
-        if request.method == "GET" and view.action == "retrieve":
-            return True
-        return super().has_object_permission(request, view, obj)
-
-
 class UserViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -125,7 +113,7 @@ class UserViewSet(
     queryset = queryset.filter(Q(asset__isnull=True))
     lookup_field = "username"
     lookup_value_regex = "[^/]+"
-    permission_classes = (IsAuthenticated, UserViewSetPermission)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     filter_backends = (
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
@@ -167,9 +155,6 @@ class UserViewSet(
 
     def get_object(self) -> User:
         try:
-            if self.request.method == "GET" and self.action == "retrieve":
-                username = self.kwargs.get("username")
-                return get_object_or_404(User, username=username)
             return super().get_object()
         except Http404 as e:
             error = "User not found"

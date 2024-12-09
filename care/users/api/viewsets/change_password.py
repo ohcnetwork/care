@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import serializers, status
 from rest_framework.generics import UpdateAPIView
@@ -30,22 +29,7 @@ class ChangePasswordView(UpdateAPIView):
     model = User
 
     def update(self, request, *args, **kwargs):
-        username = request.data.get("username")
-        if not username:
-            return Response(
-                {"message": ["Username is required"]},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        self.object = get_object_or_404(User, username=username)
-        if not self.has_permission(request, self.object):
-            return Response(
-                {
-                    "message": [
-                        "User does not have elevated permissions to change password"
-                    ]
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        self.object = self.request.user
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -64,7 +48,3 @@ class ChangePasswordView(UpdateAPIView):
             return Response({"message": "Password updated successfully"})
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def has_permission(self, request, user):
-        authuser = request.user
-        return authuser == user or authuser.is_superuser

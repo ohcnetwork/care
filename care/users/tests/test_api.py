@@ -113,61 +113,6 @@ class TestSuperUser(TestUtils, APITestCase):
                 deleted=False,
             )
 
-    def test_superuser_can_change_password_of_others(self):
-        """Test a user with superuser access can change the password of other users underneath the hierarchy"""
-        username = self.data_2["username"]
-        password = self.data_2["password"]
-        response = self.client.put(
-            "/api/v1/password_change/",
-            {
-                "username": username,
-                "old_password": password,
-                "new_password": "password2",
-            },
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_superuser_cannot_change_password_of_others_without_username(
-        self,
-    ):
-        """Test a user with superuser access cannot change the password of other users without username"""
-        response = self.client.put(
-            "/api/v1/password_change/",
-            {"old_password": "password", "new_password": "password2"},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["message"][0], "Username is required")
-
-    def test_superuser_cannot_change_password_of_non_existing_user(self):
-        """Test a user with superuser access cannot change the password of a non existing user"""
-        response = self.client.put(
-            "/api/v1/password_change/",
-            {
-                "username": "foobar",
-                "old_password": "password",
-                "new_password": "password2",
-            },
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_superuser_cannot_change_password_of_others_with_invalid_old_password(
-        self,
-    ):
-        """Test a user with superuser access cannot change the password of other users with invalid old password"""
-        response = self.client.put(
-            "/api/v1/password_change/",
-            {
-                "username": self.data_2["username"],
-                "old_password": "wrong_password",
-                "new_password": "password2",
-            },
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data["old_password"][0],
-            "Wrong password entered. Please check your password.",
-        )
-
 
 class TestUser(TestUtils, APITestCase):
     def get_detail_representation(self, obj=None) -> dict:
@@ -309,7 +254,7 @@ class TestUser(TestUtils, APITestCase):
                 "new_password": "password2",
             },
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_with_districtadmin_access_can_modify_others(self):
         """Test a user with district admin access can modify others underneath the hierarchy"""
