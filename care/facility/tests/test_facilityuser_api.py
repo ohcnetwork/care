@@ -20,6 +20,9 @@ class FacilityUserTest(TestUtils, APITestCase):
         cls.facility2 = cls.create_facility(
             cls.super_user, cls.district, cls.local_body
         )
+        cls.user2 = cls.create_user(
+            "dummystaff", cls.district, home_facility=cls.facility2
+        )
 
     def setUp(self) -> None:
         self.client.force_authenticate(self.super_user)
@@ -31,6 +34,15 @@ class FacilityUserTest(TestUtils, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNumQueries(2)
+
+    def test_get_queryset_with_search(self):
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility2.external_id}/get_users/?username={self.user2.username}"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["username"], self.user2.username)
 
     def test_link_new_facility(self):
         response = self.client.get("/api/v1/facility/")

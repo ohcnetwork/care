@@ -364,7 +364,7 @@ class User(AbstractUser):
         return True
 
     def has_object_read_permission(self, request):
-        return request.user.is_superuser or self == request.user
+        return True
 
     @staticmethod
     def has_write_permission(request):
