@@ -104,10 +104,10 @@ def get_slots_for_resource(
                 )
                 time_slots.append(slot_data)
 
-            slot_start = this_slot_end + timezone.timedelta(seconds=1)
-            # iterate only once if slot size is 0
             if availability.slot_size_in_minutes == 0:
-                break
+                slot_start = slot_start + timezone.timedelta(days=1)
+            else:
+                slot_start = this_slot_end + timezone.timedelta(seconds=1)
 
     for exception in open_exceptions:
         slot_start = datetime.combine(from_datetime.date(), exception.start_time)
