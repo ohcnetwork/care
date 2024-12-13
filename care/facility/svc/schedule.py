@@ -67,7 +67,6 @@ def get_slots_for_resource(
     }
 
     for availability in open_availabilities:
-        # Get slots based on availability schedule
         slot_start = timezone.make_aware(
             datetime.combine(from_datetime.date(), availability.start_time)
         )
@@ -76,17 +75,40 @@ def get_slots_for_resource(
         )
 
         while slot_start < slot_end:
+            # Get slots based on availability schedule
+            slot_size_in_minutes = availability.slot_size_in_minutes
+            if slot_size_in_minutes == 0:
+                slot_size_in_minutes = int(
+                    (
+                        datetime.combine(datetime.min, availability.end_time)
+                        - datetime.combine(datetime.min, availability.start_time)
+                    ).total_seconds()
+                    / 60
+                )
+
             this_slot_end = (
                 slot_start
-                + timezone.timedelta(minutes=availability.slot_size_in_minutes)
+                + timezone.timedelta(minutes=slot_size_in_minutes)
                 - timezone.timedelta(seconds=1)
             )
+
             if this_slot_end.time() > availability.end_time:
-                break
+                slot_start = timezone.make_aware(
+                    datetime.combine(
+                        slot_start.date() + timezone.timedelta(days=1),
+                        availability.start_time,
+                    )
+                )
+                continue
 
             # Check if current day is in availability's days_of_week
             if slot_start.weekday() not in availability.days_of_week:
-                slot_start += timezone.timedelta(days=1)
+                slot_start = timezone.make_aware(
+                    datetime.combine(
+                        slot_start.date() + timezone.timedelta(days=1),
+                        availability.start_time,
+                    )
+                )
                 continue
 
             # Check if slot overlaps with any exceptions
@@ -104,19 +126,26 @@ def get_slots_for_resource(
                 )
                 time_slots.append(slot_data)
 
-            if availability.slot_size_in_minutes == 0:
-                slot_start = slot_start + timezone.timedelta(days=1)
-            else:
-                slot_start = this_slot_end + timezone.timedelta(seconds=1)
+            slot_start = this_slot_end + timezone.timedelta(seconds=1)
 
     for exception in open_exceptions:
         slot_start = datetime.combine(from_datetime.date(), exception.start_time)
         slot_end = datetime.combine(to_datetime.date(), time(23, 59, 59))
 
         while slot_start < slot_end:
+            slot_size_in_minutes = exception.slot_size_in_minutes
+            if slot_size_in_minutes == 0:
+                slot_size_in_minutes = int(
+                    (
+                        datetime.combine(datetime.min, exception.end_time)
+                        - datetime.combine(datetime.min, exception.start_time)
+                    ).total_seconds()
+                    / 60
+                )
+
             this_slot_end = (
                 slot_start
-                + timezone.timedelta(minutes=exception.slot_size_in_minutes)
+                + timezone.timedelta(minutes=slot_size_in_minutes)
                 - timezone.timedelta(seconds=1)
             )
             if this_slot_end.time() > exception.end_time:
@@ -128,9 +157,6 @@ def get_slots_for_resource(
 
             time_slots.append(slot_data)
             slot_start = this_slot_end + timezone.timedelta(seconds=1)
-            # iterate only once if slot size is 0
-            if exception.slot_size_in_minutes == 0:
-                break
 
     return time_slots
 
