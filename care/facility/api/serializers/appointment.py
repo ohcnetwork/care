@@ -5,6 +5,7 @@ from care.facility.api.serializers.schedule import ScheduleResourceSerializer
 from care.facility.models.appointment import TokenBooking, TokenSlot
 from care.facility.models.patient import PatientRegistration
 from care.facility.models.schedule import SchedulableResource
+from care.users.api.serializers.user import UserBaseMinimumSerializer
 
 
 class DateTimeRangeQuerySerializer(serializers.Serializer):
@@ -64,12 +65,5 @@ class AppointmentBookingSerializer(serializers.Serializer):
         return AppointmentBookingReadOnlySerializer(instance).data
 
 
-class AvailableDoctorsSerializer(serializers.Serializer):
-    id = serializers.CharField(source="resource.external_id")
-    username = serializers.CharField(source="resource.username")
-    first_name = serializers.CharField(source="resource.first_name")
-    last_name = serializers.CharField(source="resource.last_name")
-
-    # for DRY Permissions
-    class Meta:
-        model = TokenBooking
+class AvailableDoctorsSerializer(UserBaseMinimumSerializer):
+    pass

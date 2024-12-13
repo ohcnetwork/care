@@ -102,16 +102,15 @@ class AppointmentViewSet(
         schedulable_doctor_resources = SchedulableResource.objects.filter(
             resource_type=ContentType.objects.get_for_model(User),
             resource_id__in=User.objects.filter(
-                user_type__in=[
-                    User.TYPE_VALUE_MAP["Doctor"],
-                    User.TYPE_VALUE_MAP["Nurse"],
-                ]
+                user_type=User.TYPE_VALUE_MAP["Doctor"]
             ),
             schedule__valid_from__lte=serializer.validated_data["valid_to"],
             schedule__valid_to__gte=serializer.validated_data["valid_from"],
-        )
+        ).values_list("resource_id", flat=True)
 
-        pagainated_queryset = self.paginate_queryset(schedulable_doctor_resources)
+        doctor_users = User.objects.filter(id__in=schedulable_doctor_resources)
+
+        pagainated_queryset = self.paginate_queryset(doctor_users)
         serializer = AvailableDoctorsSerializer(pagainated_queryset, many=True)
 
         return self.get_paginated_response(serializer.data)

@@ -208,6 +208,9 @@ class ScheduleExceptionReadOnlySerializer(serializers.Serializer):
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
 
+    class Meta:
+        model = ScheduleException
+
     def to_representation(self, instance: ScheduleException) -> dict[str, any]:
         data = super().to_representation(instance)
         data["slot_type"] = SlotType(instance.slot_type).label.upper()
