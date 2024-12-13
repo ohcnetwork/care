@@ -54,35 +54,42 @@ class AppointmentApiTestCase(TestUtils, ScheduleTestSetup, APITestCase):
             raise e
 
     def test_get_available_doctors(self):
-        url = self.get_url("available_doctors")
+        url = self.get_url(
+            "available_doctors",
+            query_params={"valid_from": "2024-11-01", "valid_to": "2024-11-30"},
+        )
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["id"], self.doctor_user.id)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.doctor_user.external_id)
+        )
 
     def test_get_slots(self):
         url = self.get_url(
             "slots",
             query_params={
-                "date_from": "2024-11-18",
-                "date_to": "2024-11-18",
+                "valid_from": "2024-11-18 10:00:00",
+                "valid_to": "2024-11-18 12:00:00",
                 "doctor_username": self.doctor_user.username,
             },
         )
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 4)
+        self.assertEqual(len(response.data), 4)
 
         class TokenSlotResponseSchema(BaseModel):
-            start_time: str
-            end_time: str
+            start_datetime: str
+            end_datetime: str
             tokens_count: int
             tokens_remaining: int
 
-        self.assert_response_schema(
-            response, self.get_list_response_schema(TokenSlotResponseSchema)
-        )
+        class TokenSlotListResponseSchema(BaseModel):
+            __root__: list[TokenSlotResponseSchema]
+
+        self.assert_response_schema(response, TokenSlotListResponseSchema)
 
     def test_book_appointment(self):
         url = self.get_url()

@@ -81,6 +81,8 @@ def get_slots_for_resource(
                 + timezone.timedelta(minutes=availability.slot_size_in_minutes)
                 - timezone.timedelta(seconds=1)
             )
+            if this_slot_end.time() > availability.end_time:
+                break
 
             # Check if current day is in availability's days_of_week
             if slot_start.weekday() not in availability.days_of_week:
@@ -93,25 +95,20 @@ def get_slots_for_resource(
             )
 
             if not is_closed:
-                slot_id = f"{int(slot_start.timestamp())}"
-                if slot_id in created_slots:
-                    slot_data = created_slots[slot_id]
-                else:
-                    slot_data = TokenSlot(
-                        resource=resource,
-                        start_datetime=slot_start,
-                        end_datetime=this_slot_end,
-                        tokens_count=availability.tokens_per_slot,
-                        tokens_remaining=availability.tokens_per_slot,
-                        availability=availability,
-                    )
+                slot_data = get_or_generate_slot(
+                    resource,
+                    created_slots,
+                    slot_start,
+                    this_slot_end,
+                    availability=availability,
+                )
                 time_slots.append(slot_data)
 
             slot_start = this_slot_end + timezone.timedelta(seconds=1)
 
     for exception in open_exceptions:
         slot_start = datetime.combine(from_datetime.date(), exception.start_time)
-        slot_end = datetime.combine(to_datetime.date(), exception.end_time)
+        slot_end = datetime.combine(to_datetime.date(), time(23, 59, 59))
 
         while slot_start < slot_end:
             this_slot_end = (
@@ -119,19 +116,12 @@ def get_slots_for_resource(
                 + timezone.timedelta(minutes=availability.slot_size_in_minutes)
                 - timezone.timedelta(seconds=1)
             )
+            if this_slot_end.time() > exception.end_time:
+                break
 
-            slot_id = f"{int(slot_start.timestamp())}"
-            if slot_id in created_slots:
-                slot_data = created_slots[slot_id]
-            else:
-                slot_data = TokenSlot(
-                    resource=resource,
-                    start_datetime=slot_start,
-                    end_datetime=this_slot_end,
-                    tokens_count=exception.tokens_per_slot,
-                    tokens_remaining=exception.tokens_per_slot,
-                    availability_exception=exception,
-                )
+            slot_data = get_or_generate_slot(
+                resource, created_slots, slot_start, this_slot_end, exception=exception
+            )
 
             time_slots.append(slot_data)
             slot_start = this_slot_end + timezone.timedelta(seconds=1)
@@ -139,7 +129,36 @@ def get_slots_for_resource(
     return time_slots
 
 
+def get_or_generate_slot(
+    resource,
+    created_slots,
+    slot_start,
+    this_slot_end,
+    exception=None,
+    availability=None,
+):
+    slot_id = f"{int(slot_start.timestamp())}"
+    if slot_id in created_slots:
+        slot_data = created_slots[slot_id]
+    else:
+        tokens_per_slot = (
+            availability.tokens_per_slot if availability else exception.tokens_per_slot
+        )
+        slot_data = TokenSlot(
+            resource=resource,
+            start_datetime=slot_start,
+            end_datetime=this_slot_end,
+            tokens_count=tokens_per_slot,
+            tokens_remaining=tokens_per_slot,
+            availability_exception=exception,
+            availability=availability,
+        )
+
+    return slot_data
+
+
 def check_is_slot_closed(closed_exceptions, slot_start, this_slot_end):
+    is_closed = False
     for exception in closed_exceptions:
         exception_start = datetime.combine(slot_start.date(), exception.start_time)
         exception_end = datetime.combine(slot_start.date(), exception.end_time)

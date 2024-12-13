@@ -11,6 +11,8 @@ from care.facility.api.serializers.appointment import (
     AppointmentBookingReadOnlySerializer,
     AppointmentBookingSerializer,
     AvailableDoctorsSerializer,
+    DateRangeQuerySerializer,
+    DateTimeRangeQuerySerializer,
     TokenSlotReadOnlySerializer,
 )
 from care.facility.models.appointment import TokenBooking
@@ -94,8 +96,8 @@ class AppointmentViewSet(
 
     @action(detail=False, methods=["get"])
     def available_doctors(self, request, *args, **kwargs):
-        valid_from = request.query_params.get("valid_from")
-        valid_to = request.query_params.get("valid_to")
+        serializer = DateRangeQuerySerializer(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
 
         schedulable_doctor_resources = SchedulableResource.objects.filter(
             resource_type=ContentType.objects.get_for_model(User),
@@ -105,14 +107,14 @@ class AppointmentViewSet(
                     User.TYPE_VALUE_MAP["Nurse"],
                 ]
             ),
-            schedule__valid_from__lte=valid_to,
-            schedule__valid_to__gte=valid_from,
+            schedule__valid_from__lte=serializer.validated_data["valid_to"],
+            schedule__valid_to__gte=serializer.validated_data["valid_from"],
         )
 
-        pagainated_queryset = self.paginate_queryset(
-            schedulable_doctor_resources, request
-        )
-        return self.get_paginated_response(pagainated_queryset)
+        pagainated_queryset = self.paginate_queryset(schedulable_doctor_resources)
+        serializer = AvailableDoctorsSerializer(pagainated_queryset, many=True)
+
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=False, methods=["get"])
     def slots(self, *args, **kwargs):
@@ -121,10 +123,13 @@ class AppointmentViewSet(
         except ObjectDoesNotExist:
             return Response({"detail": "Resource not found"}, status=404)
 
+        serializer = DateTimeRangeQuerySerializer(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
+
         slots = get_appointment_slots_for_resource(
             resource=resource,
-            from_datetime=self.request.query_params.get("date_from"),
-            to_datetime=self.request.query_params.get("date_to"),
+            from_datetime=serializer.validated_data["valid_from"],
+            to_datetime=serializer.validated_data["valid_to"],
         )
         serializer = TokenSlotReadOnlySerializer(slots, many=True)
         return Response(serializer.data)
