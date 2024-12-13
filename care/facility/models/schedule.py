@@ -10,6 +10,13 @@ from care.facility.models.patient_base import reverse_choices_with_label
 from care.users.models import User
 
 
+class TokenBookingStatus(models.IntegerChoices):
+    REQUESTED = 1, "Requested"
+    APPROVED = 2, "Approved"
+    DENIED = 3, "Denied"
+    CANCELED = 4, "Canceled"
+
+
 class SlotType(models.IntegerChoices):
     OPEN = 1, "Open"
     APPOINTMENT = 2, "Appointment"
@@ -71,6 +78,9 @@ class Availability(FacilityBaseModel, FacilityRelatedPermissionMixin):
     days_of_week = models.JSONField(default=list)
     start_time = models.TimeField(null=False, blank=False)
     end_time = models.TimeField(null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.name} - {self.start_time} - {self.end_time}"
 
     def has_object_read_permission(self, request):
         return self.schedule.has_object_read_permission(request)

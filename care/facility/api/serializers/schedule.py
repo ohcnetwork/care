@@ -12,8 +12,8 @@ from care.facility.models.schedule import (
 )
 from care.users.models import User
 
-MONDAY = 1
-SUNDAY = 7
+MONDAY = 0
+SUNDAY = 6
 
 
 class SimpleFacilitySerializer(serializers.Serializer):
@@ -160,7 +160,7 @@ class AvailabilityUpdateSerializer(serializers.ModelSerializer):
         # validate that days of week is a list of integers between 1 and 7
         # iso weekday is 1 (monday) to 7 (sunday)
         if not all(MONDAY <= day <= SUNDAY for day in value):
-            msg = "Days of week must be a list of integers between 1 and 7"
+            msg = "Days of week must be a list of integers between 0 and 6"
             raise serializers.ValidationError(msg)
         return value
 

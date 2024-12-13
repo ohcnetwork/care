@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
 from care.facility.api.viewsets.ambulance import AmbulanceViewSet
+from care.facility.api.viewsets.appointment import AppointmentViewSet
 from care.facility.api.viewsets.asset import (
     AssetLocationViewSet,
     AssetPublicQRViewSet,
@@ -232,6 +233,9 @@ facility_nested_router.register(
     "schedule_exceptions",
     ScheduleExceptionViewSet,
     basename="facility-schedule-exception",
+)
+facility_nested_router.register(
+    "appointments", AppointmentViewSet, basename="facility-appointments"
 )
 facility_nested_router.register(r"hubs", FacilityHubsViewSet, basename="facility-hubs")
 
