@@ -210,8 +210,12 @@ def book_slot(
     reason_for_visit: str | None = None,
 ) -> None:
     search_range = (
-        slot_start,
-        slot_start + timezone.timedelta(hours=12),
+        timezone.make_aware(
+            timezone.datetime.combine(slot_start.date(), time(0, 0, 0)),
+        ),
+        timezone.make_aware(
+            timezone.datetime.combine(slot_start.date(), time(23, 59, 59)),
+        ),
     )
     slots = get_slots_for_resource(
         resource,
