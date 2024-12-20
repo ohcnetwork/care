@@ -311,12 +311,12 @@ class User(AbstractUser):
     )
 
     verified = models.BooleanField(default=False)
-    deleted = models.BooleanField(default(False))
+    deleted = models.BooleanField(default=False)
 
     # Notification Data
     pf_endpoint = models.TextField(default=None, null=True)
     pf_p256dh = models.TextField(default=None, null=True)
-    pf_auth = models.TextField(default(None), null=True)
+    pf_auth = models.TextField(default=None, null=True)
 
     # Asset Fields
 
