@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, gettext_lazy
 
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
@@ -19,38 +19,38 @@ class ClinicalImpressionStatus(models.TextChoices):
 
 
 class Symptom(models.IntegerChoices):
-    OTHERS = 9
-    FEVER = 2
-    SORE_THROAT = 3
-    COUGH = 4
-    BREATHLESSNESS = 5
-    MYALGIA = 6
-    ABDOMINAL_DISCOMFORT = 7
-    VOMITING = 8
-    SPUTUM = 11
-    NAUSEA = 12
-    CHEST_PAIN = 13
-    HEMOPTYSIS = 14
-    NASAL_DISCHARGE = 15
-    BODY_ACHE = 16
-    DIARRHOEA = 17
-    PAIN = 18
-    PEDAL_EDEMA = 19
-    WOUND = 20
-    CONSTIPATION = 21
-    HEADACHE = 22
-    BLEEDING = 23
-    DIZZINESS = 24
-    CHILLS = 25
-    GENERAL_WEAKNESS = 26
-    IRRITABILITY = 27
-    CONFUSION = 28
-    ABDOMINAL_PAIN = 29
-    JOINT_PAIN = 30
-    REDNESS_OF_EYES = 31
-    ANOREXIA = 32
-    NEW_LOSS_OF_TASTE = 33
-    NEW_LOSS_OF_SMELL = 34
+    OTHERS = 9, gettext_lazy("Others")
+    FEVER = 2, gettext_lazy("Fever")
+    SORE_THROAT = 3, gettext_lazy("Sore Throat")
+    COUGH = 4, gettext_lazy("Cough")
+    BREATHLESSNESS = 5, gettext_lazy("Breathlessness")
+    MYALGIA = 6, gettext_lazy("Myalgia")
+    ABDOMINAL_DISCOMFORT = 7, gettext_lazy("Abdominal Discomfort")
+    VOMITING = 8, gettext_lazy("Vomiting")
+    SPUTUM = 11, gettext_lazy("Sputum")
+    NAUSEA = 12, gettext_lazy("Nausea")
+    CHEST_PAIN = 13, gettext_lazy("Chest Pain")
+    HEMOPTYSIS = 14, gettext_lazy("Hemoptysis")
+    NASAL_DISCHARGE = 15, gettext_lazy("Nasal Discharge")
+    BODY_ACHE = 16, gettext_lazy("Body Ache")
+    DIARRHOEA = 17, gettext_lazy("Diarrhoea")
+    PAIN = 18, gettext_lazy("Pain")
+    PEDAL_EDEMA = 19, gettext_lazy("Pedal Edema")
+    WOUND = 20, gettext_lazy("Wound")
+    CONSTIPATION = 21, gettext_lazy("Constipation")
+    HEADACHE = 22, gettext_lazy("Headache")
+    BLEEDING = 23, gettext_lazy("Bleeding")
+    DIZZINESS = 24, gettext_lazy("Dizziness")
+    CHILLS = 25, gettext_lazy("Chills")
+    GENERAL_WEAKNESS = 26, gettext_lazy("General Weakness")
+    IRRITABILITY = 27, gettext_lazy("Irritability")
+    CONFUSION = 28, gettext_lazy("Confusion")
+    ABDOMINAL_PAIN = 29, gettext_lazy("Abdominal Pain")
+    JOINT_PAIN = 30, gettext_lazy("Joint Pain")
+    REDNESS_OF_EYES = 31, gettext_lazy("Redness of Eyes")
+    ANOREXIA = 32, gettext_lazy("Anorexia")
+    NEW_LOSS_OF_TASTE = 33, gettext_lazy("New Loss of Taste")
+    NEW_LOSS_OF_SMELL = 34, gettext_lazy("New Loss of Smell")
 
 
 class EncounterSymptom(BaseModel, ConsultationRelatedPermissionMixin):

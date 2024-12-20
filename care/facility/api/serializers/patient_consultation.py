@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from django.utils.timezone import localtime, make_aware, now
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -159,14 +160,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         many=True,
         write_only=True,
         required=False,
-        help_text="Bulk create diagnoses for the consultation upon creation",
+        help_text=_("Bulk create diagnoses for the consultation upon creation"),
     )
     diagnoses = ConsultationDiagnosisSerializer(many=True, read_only=True)
     create_symptoms = EncounterCreateSymptomSerializer(
         many=True,
         write_only=True,
         required=False,
-        help_text="Bulk create symptoms for the consultation upon creation",
+        help_text=_("Bulk create symptoms for the consultation upon creation"),
     )
     symptoms = EncounterSymptomSerializer(many=True, read_only=True)
     medico_legal_case = serializers.BooleanField(default=False, required=False)
@@ -222,7 +223,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         if instance.discharge_date:
             if "medico_legal_case" not in validated_data:
                 raise ValidationError(
-                    {"consultation": ["Discharged Consultation data cannot be updated"]}
+                    {"consultation": [_("Discharged Consultation data cannot be updated")]}
                 )
             instance.medico_legal_case = validated_data.pop("medico_legal_case")
             instance.save()
@@ -309,7 +310,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "transferred_from_location": [
-                                "This field is required as the patient has been transferred from another location."
+                                _("This field is required as the patient has been transferred from another location.")
                             ]
                         }
                     )
@@ -323,7 +324,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "referred_from_facility": [
-                                "This field is required as the patient has been referred from another facility."
+                                _("This field is required as the patient has been referred from another facility.")
                             ]
                         }
                     )
@@ -334,15 +335,15 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                     raise ValidationError(
                         {
                             "referred_from_facility": [
-                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                                _("Only one of referred_from_facility and referred_from_facility_external can be set")
                             ],
                             "referred_from_facility_external": [
-                                "Only one of referred_from_facility and referred_from_facility_external can be set"
+                                _("Only one of referred_from_facility and referred_from_facility_external can be set")
                             ],
                         }
                     )
         else:
-            raise ValidationError({"route_to_facility": "This field is required"})
+            raise ValidationError({"route_to_facility": _("This field is required")})
 
         create_diagnosis = validated_data.pop("create_diagnoses")
         create_symptoms = validated_data.pop("create_symptoms")
@@ -358,7 +359,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             id=self.validated_data["patient"].facility_id
         ).exists():
             raise ValidationError(
-                {"facility": "Consultation creates are only allowed in home facility"}
+                {"facility": _("Consultation creates are only allowed in home facility")}
             )
 
         # End Authorisation Checks
@@ -372,13 +373,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 if patient.last_consultation.assigned_to == user:
                     raise ValidationError(
                         {
-                            "Permission Denied": "Only Facility Staff can create consultation for a Patient"
+                            "Permission Denied": _("Only Facility Staff can create consultation for a Patient")
                         },
                     )
 
                 if not patient.last_consultation.discharge_date:
                     raise ValidationError(
-                        {"consultation": "Exists please Edit Existing Consultation"}
+                        {"consultation": _("Exists please Edit Existing Consultation")}
                     )
 
             if validated_data.get("is_kasp"):
@@ -482,17 +483,17 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
     def validate_create_diagnoses(self, value):
         # Reject if create_diagnoses is present for edits
         if self.instance and value:
-            msg = "Bulk create diagnoses is not allowed on update"
+            msg = _("Bulk create diagnoses is not allowed on update")
             raise ValidationError(msg)
 
         # Reject if no diagnoses are provided
         if len(value) == 0:
-            msg = "Atleast one diagnosis is required"
+            msg = _("Atleast one diagnosis is required")
             raise ValidationError(msg)
 
         # Reject if duplicate diagnoses are provided
         if len(value) != len({obj["diagnosis"].id for obj in value}):
-            msg = "Duplicate diagnoses are not allowed"
+            msg = _("Duplicate diagnoses are not allowed")
             raise ValidationError(msg)
 
         principal_diagnosis, confirmed_diagnoses = None, []
@@ -503,7 +504,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             # Reject if there are more than one principal diagnosis
             if obj["is_principal"]:
                 if principal_diagnosis:
-                    msg = "Only one diagnosis can be set as principal diagnosis"
+                    msg = _("Only one diagnosis can be set as principal diagnosis")
                     raise ValidationError(msg)
                 principal_diagnosis = obj
 
@@ -514,14 +515,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             and principal_diagnosis["verification_status"]
             != ConditionVerificationStatus.CONFIRMED
         ):
-            msg = "Only confirmed diagnosis can be set as principal diagnosis if it is present"
+            msg = _("Only confirmed diagnosis can be set as principal diagnosis if it is present")
             raise ValidationError(msg)
 
         return value
 
     def validate_create_symptoms(self, value):
         if self.instance:
-            msg = "Bulk create symptoms is not allowed on update"
+            msg = _("Bulk create symptoms is not allowed on update")
             raise ValidationError(msg)
 
         counter: set[int | str] = set()
@@ -532,13 +533,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 if not other_symptom:
                     raise ValidationError(
                         {
-                            "other_symptom": "Other symptom should not be empty when symptom type is OTHERS"
+                            "other_symptom": _("Other symptom should not be empty when symptom type is OTHERS")
                         }
                     )
                 item: str = other_symptom.strip().lower()
             if item in counter:
                 # Reject if duplicate symptoms are provided
-                msg = "Duplicate symptoms are not allowed"
+                msg = _("Duplicate symptoms are not allowed")
                 raise ValidationError(msg)
             if not obj.get("cure_date"):
                 # skip duplicate symptom check for ones that has cure date
@@ -548,13 +549,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
         for obj in value:
             if obj["onset_date"] > current_time:
                 raise ValidationError(
-                    {"onset_date": "Onset date cannot be in the future"}
+                    {"onset_date": _("Onset date cannot be in the future")}
                 )
 
             if cure_date := obj.get("cure_date"):
                 if cure_date < obj["onset_date"]:
                     raise ValidationError(
-                        {"cure_date": "Cure date should be after onset date"}
+                        {"cure_date": _("Cure date should be after onset date")}
                     )
                 obj["clinical_impression_status"] = ClinicalImpressionStatus.COMPLETED
             else:
@@ -567,13 +568,13 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "encounter_date": [
-                        f"This field value must be greater than {MIN_ENCOUNTER_DATE.strftime('%Y-%m-%d')}"
+                        _("This field value must be greater than {date}").format(date=MIN_ENCOUNTER_DATE.strftime('%Y-%m-%d'))
                     ]
                 }
             )
         if value > now():
             raise ValidationError(
-                {"encounter_date": "This field value cannot be in the future."}
+                {"encounter_date": _("This field value cannot be in the future.")}
             )
         return value
 
@@ -594,7 +595,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
 
             if suggestion == SuggestionChoices.A and not patient_no:
                 raise ValidationError(
-                    {"patient_no": "This field is required for admission."}
+                    {"patient_no": _("This field is required for admission.")}
                 )
 
         if "suggestion" in validated and validated["suggestion"] not in [
@@ -606,12 +607,12 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {
                         "treating_physician": [
-                            "This field is required as the suggestion is not 'Declared Death'"
+                            _("This field is required as the suggestion is not 'Declared Death'")
                         ]
                     }
                 )
             if treating_physician.user_type != User.TYPE_VALUE_MAP["Doctor"]:
-                msg = "Only Doctors can verify a Consultation"
+                msg = _("Only Doctors can verify a Consultation")
                 raise ValidationError(msg)
 
             facility = (
@@ -621,14 +622,14 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
             )
             # Check if the Doctor is associated with the Facility (.facilities)
             if not treating_physician.facilities.filter(id=facility.id).exists():
-                msg = "The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding."
+                msg = _("The treating doctor is no longer linked to this facility. Please update the respective field in the form before proceeding.")
                 raise ValidationError(msg)
 
             if (
                 treating_physician.home_facility
                 and treating_physician.home_facility != facility
             ):
-                msg = "Home Facility of the Doctor must be the same as the Consultation Facility"
+                msg = _("Home Facility of the Doctor must be the same as the Consultation Facility")
                 raise ValidationError(msg)
 
         if "suggestion" in validated and validated["suggestion"] is SuggestionChoices.R:
@@ -638,7 +639,7 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {
                         "referred_to": [
-                            f"This field is required as the suggestion is {SuggestionChoices.R}."
+                            _("This field is required as the suggestion is {suggestion}.").format(suggestion=SuggestionChoices.R)
                         ]
                     }
                 )
@@ -655,20 +656,20 @@ class PatientConsultationSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {
                         "review_interval": [
-                            "This field is required as the patient has been requested Review."
+                            _("This field is required as the patient has been requested Review.")
                         ]
                     }
                 )
             if validated["review_interval"] <= 0:
                 raise ValidationError(
-                    {"review_interval": ["This field value is must be greater than 0."]}
+                    {"review_interval": [_("This field value is must be greater than 0.")]}
                 )
 
         if not self.instance and "create_diagnoses" not in validated:
-            raise ValidationError({"create_diagnoses": ["This field is required."]})
+            raise ValidationError({"create_diagnoses": [_("This field is required.")]})
 
         if not self.instance and "create_symptoms" not in validated:
-            raise ValidationError({"create_symptoms": ["This field is required."]})
+            raise ValidationError({"create_symptoms": [_("This field is required.")]})
 
         return validated
 
@@ -731,10 +732,10 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "referred_to": [
-                        "Only one of referred_to and referred_to_external can be set"
+                        _("Only one of referred_to and referred_to_external can be set")
                     ],
                     "referred_to_external": [
-                        "Only one of referred_to and referred_to_external can be set"
+                        _("Only one of referred_to and referred_to_external can be set")
                     ],
                 }
             )
@@ -744,32 +745,32 @@ class PatientConsultationDischargeSerializer(serializers.ModelSerializer):
 
         if attrs.get("new_discharge_reason") == NewDischargeReasonEnum.EXPIRED:
             if not attrs.get("death_datetime"):
-                raise ValidationError({"death_datetime": "This field is required"})
+                raise ValidationError({"death_datetime": _("This field is required")})
             if attrs.get("death_datetime") > now():
                 raise ValidationError(
-                    {"death_datetime": "This field value cannot be in the future."}
+                    {"death_datetime": _("This field value cannot be in the future.")}
                 )
             if attrs.get("death_datetime") < self.instance.encounter_date:
                 raise ValidationError(
                     {
-                        "death_datetime": "This field value cannot be before the encounter date."
+                        "death_datetime": _("This field value cannot be before the encounter date.")
                     }
                 )
             if not attrs.get("death_confirmed_doctor"):
                 raise ValidationError(
-                    {"death_confirmed_doctor": "This field is required"}
+                    {"death_confirmed_doctor": _("This field is required")}
                 )
             attrs["discharge_date"] = attrs["death_datetime"]
         elif not attrs.get("discharge_date"):
-            raise ValidationError({"discharge_date": "This field is required"})
+            raise ValidationError({"discharge_date": _("This field is required")})
         elif attrs.get("discharge_date") > now():
             raise ValidationError(
-                {"discharge_date": "This field value cannot be in the future."}
+                {"discharge_date": _("This field value cannot be in the future.")}
             )
         elif attrs.get("discharge_date") < self.instance.encounter_date:
             raise ValidationError(
                 {
-                    "discharge_date": "This field value cannot be before the encounter date."
+                    "discharge_date": _("This field value cannot be before the encounter date.")
                 }
             )
         return attrs
@@ -805,7 +806,7 @@ class PatientConsultationIDSerializer(serializers.Serializer):
 class EmailDischargeSummarySerializer(serializers.Serializer):
     email = serializers.EmailField(
         required=False,
-        help_text=(
+        help_text=_(
             "Email address to send the discharge summary to. If not provided, "
             "the email address of the current user will be used."
         ),
@@ -871,7 +872,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
 
     def validate_patient_code_status(self, value):
         if value == PatientCodeStatusType.NOT_SPECIFIED:
-            msg = "Specify a correct Patient Code Status for the Consent"
+            msg = _("Specify a correct Patient Code Status for the Consent")
             raise ValidationError(msg)
         return value
 
@@ -881,7 +882,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             user.user_type < User.TYPE_VALUE_MAP["DistrictAdmin"]
             and self.context["consultation"].facility_id != user.home_facility_id
         ):
-            msg = "Only Home Facility Staff can create consent for a Consultation"
+            msg = _("Only Home Facility Staff can create consent for a Consultation")
             raise ValidationError(msg)
 
         if (
@@ -892,7 +893,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "patient_code_status": [
-                        "This field is required for Patient Code Status Consent"
+                        _("This field is required for Patient Code Status Consent")
                     ]
                 }
             )
@@ -905,7 +906,7 @@ class PatientConsentSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 {
                     "patient_code_status": [
-                        "This field is not required for this type of Consent"
+                        _("This field is not required for this type of Consent")
                     ]
                 }
             )

@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -27,21 +28,21 @@ from care.utils.models.base import BaseModel
 
 
 class ConsentType(models.IntegerChoices):
-    CONSENT_FOR_ADMISSION = 1, "Consent for Admission"
-    PATIENT_CODE_STATUS = 2, "Patient Code Status"
-    CONSENT_FOR_PROCEDURE = 3, "Consent for Procedure"
-    HIGH_RISK_CONSENT = 4, "High Risk Consent"
-    OTHERS = 5, "Others"
+    CONSENT_FOR_ADMISSION = 1, _("Consent for Admission")
+    PATIENT_CODE_STATUS = 2, _("Patient Code Status")
+    CONSENT_FOR_PROCEDURE = 3, _("Consent for Procedure")
+    HIGH_RISK_CONSENT = 4, _("High Risk Consent")
+    OTHERS = 5, _("Others")
 
 
 class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     SUGGESTION_CHOICES = [
-        (SuggestionChoices.HI, "HOME ISOLATION"),
-        (SuggestionChoices.A, "ADMISSION"),
-        (SuggestionChoices.R, "REFERRAL"),
-        (SuggestionChoices.OP, "OP CONSULTATION"),
-        (SuggestionChoices.DC, "DOMICILIARY CARE"),
-        (SuggestionChoices.DD, "DECLARE DEATH"),
+        (SuggestionChoices.HI, _("HOME ISOLATION")),
+        (SuggestionChoices.A, _("ADMISSION")),
+        (SuggestionChoices.R, _("REFERRAL")),
+        (SuggestionChoices.OP, _("OP CONSULTATION")),
+        (SuggestionChoices.DC, _("DOMICILIARY CARE")),
+        (SuggestionChoices.DD, _("DECLARE DEATH")),
     ]
     REVERSE_SUGGESTION_CHOICES = reverse_choices(SUGGESTION_CHOICES)
 
@@ -56,7 +57,7 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         default=None,
         null=True,
         blank=True,
-        help_text=(
+        help_text=_(
             "Patient's unique number in the facility. "
             "IP number for inpatients and OP number for outpatients."
         ),
@@ -199,13 +200,13 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     height = models.FloatField(
         default=None,
         null=True,
-        verbose_name="Patient's Height in CM",
+        verbose_name=_("Patient's Height in CM"),
         validators=[MinValueValidator(0)],
     )
     weight = models.FloatField(
         default=None,
         null=True,
-        verbose_name="Patient's Weight in KG",
+        verbose_name=_("Patient's Weight in KG"),
         validators=[MinValueValidator(0)],
     )
 
@@ -227,14 +228,14 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return self
 
     CSV_MAPPING = {
-        "consultation_created_date": "Date of Consultation",
-        "encounter_date": "Date of Admission",
-        "deprecated_symptoms_onset_date": "Date of Onset of Symptoms",
-        "deprecated_symptoms": "Symptoms at time of consultation",
-        "deprecated_covid_category": "Covid Category",
-        "category": "Category",
-        "examination_details": "Examination Details",
-        "suggestion": "Suggestion",
+        "consultation_created_date": _("Date of Consultation"),
+        "encounter_date": _("Date of Admission"),
+        "deprecated_symptoms_onset_date": _("Date of Onset of Symptoms"),
+        "deprecated_symptoms": _("Symptoms at time of consultation"),
+        "deprecated_covid_category": _("Covid Category"),
+        "category": _("Category"),
+        "examination_details": _("Examination Details"),
+        "suggestion": _("Suggestion"),
     }
 
     CSV_MAKE_PRETTY = {
@@ -323,11 +324,11 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
 
 
 class PatientCodeStatusType(models.IntegerChoices):
-    NOT_SPECIFIED = 0, "Not Specified"
-    DNH = 1, "Do Not Hospitalize"
-    DNR = 2, "Do Not Resuscitate"
-    COMFORT_CARE = 3, "Comfort Care Only"
-    ACTIVE_TREATMENT = 4, "Active Treatment"
+    NOT_SPECIFIED = 0, _("Not Specified")
+    DNH = 1, _("Do Not Hospitalize")
+    DNR = 2, _("Do Not Resuscitate")
+    COMFORT_CARE = 3, _("Comfort Care Only")
+    ACTIVE_TREATMENT = 4, _("Active Treatment")
 
 
 class ConsultationClinician(models.Model):
@@ -366,7 +367,7 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
     )
     is_migrated = models.BooleanField(
         default=False,
-        help_text="This field is to throw caution to data that was previously ported over",
+        help_text=_("This field is to throw caution to data that was previously ported over"),
     )
 
     class Meta:
@@ -401,7 +402,7 @@ class PatientConsent(BaseModel, ConsultationRelatedPermissionMixin):
             files.update(
                 is_archived=True,
                 archived_datetime=timezone.now(),
-                archive_reason="Consent Archived",
+                archive_reason=_("Consent Archived"),
                 archived_by=self.archived_by,
             )
 

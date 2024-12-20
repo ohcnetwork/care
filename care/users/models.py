@@ -30,24 +30,24 @@ def reverse_choices(choices):
     return output
 
 
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
+GENDER_CHOICES = [(1, _("Male")), (2, _("Female")), (3, _("Non-binary"))]
 REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
 
 DISTRICT_CHOICES = [
-    (1, "Thiruvananthapuram"),
-    (2, "Kollam"),
-    (3, "Pathanamthitta"),
-    (4, "Alappuzha"),
-    (5, "Kottayam"),
-    (6, "Idukki"),
-    (7, "Ernakulam"),
-    (8, "Thrissur"),
-    (9, "Palakkad"),
-    (10, "Malappuram"),
-    (11, "Kozhikode"),
-    (12, "Wayanad"),
-    (13, "Kannur"),
-    (14, "Kasargode"),
+    (1, _("Thiruvananthapuram")),
+    (2, _("Kollam")),
+    (3, _("Pathanamthitta")),
+    (4, _("Alappuzha")),
+    (5, _("Kottayam")),
+    (6, _("Idukki")),
+    (7, _("Ernakulam")),
+    (8, _("Thrissur")),
+    (9, _("Palakkad")),
+    (10, _("Malappuram")),
+    (11, _("Kozhikode")),
+    (12, _("Wayanad")),
+    (13, _("Kannur")),
+    (14, _("Kasargode")),
 ]
 
 
@@ -68,16 +68,16 @@ class District(models.Model):
 
 LOCAL_BODY_CHOICES = (
     # Panchayath levels
-    (1, "Grama Panchayath"),
-    (2, "Block Panchayath"),
-    (3, "District Panchayath"),
-    (4, "Nagar Panchayath"),
+    (1, _("Grama Panchayath")),
+    (2, _("Block Panchayath")),
+    (3, _("District Panchayath")),
+    (4, _("Nagar Panchayath")),
     # Municipality levels
-    (10, "Municipality"),
+    (10, _("Municipality")),
     # Corporation levels
-    (20, "Corporation"),
+    (20, _("Corporation")),
     # Unknown
-    (50, "Others"),
+    (50, _("Others")),
 )
 
 
@@ -104,8 +104,8 @@ class LocalBody(models.Model):
             "body_type",
             "name",
         )
-        verbose_name = "Local Body"
-        verbose_name_plural = "Local Bodies"
+        verbose_name = _("Local Body")
+        verbose_name_plural = _("Local Bodies")
 
     def __str__(self):
         return f"{self.name} ({self.body_type})"
@@ -247,7 +247,7 @@ class User(AbstractUser):
         TYPE_VALUE_MAP["StateReadOnlyAdmin"],
     )
 
-    TYPE_CHOICES = [(value, name) for name, value in TYPE_VALUE_MAP.items()]
+    TYPE_CHOICES = [(value, _(name)) for name, value in TYPE_VALUE_MAP.items()]
 
     REVERSE_TYPE_MAP = reverse_choices(TYPE_CHOICES)
 
@@ -311,12 +311,12 @@ class User(AbstractUser):
     )
 
     verified = models.BooleanField(default=False)
-    deleted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default(False))
 
     # Notification Data
     pf_endpoint = models.TextField(default=None, null=True)
     pf_p256dh = models.TextField(default=None, null=True)
-    pf_auth = models.TextField(default=None, null=True)
+    pf_auth = models.TextField(default(None), null=True)
 
     # Asset Fields
 
@@ -335,17 +335,17 @@ class User(AbstractUser):
     ]
 
     CSV_MAPPING = {
-        "username": "Username",
-        "first_name": "First Name",
-        "last_name": "Last Name",
-        "phone_number": "Phone Number",
-        "gender": "Gender",
-        "date_of_birth": "Date of Birth",
-        "verified": "verified",
-        "local_body__name": "Local Body",
-        "district__name": "District",
-        "state__name": "State",
-        "user_type": "User Type",
+        "username": _("Username"),
+        "first_name": _("First Name"),
+        "last_name": _("Last Name"),
+        "phone_number": _("Phone Number"),
+        "gender": _("Gender"),
+        "date_of_birth": _("Date of Birth"),
+        "verified": _("verified"),
+        "local_body__name": _("Local Body"),
+        "district__name": _("District"),
+        "state__name": _("State"),
+        "user_type": _("User Type"),
     }
 
     CSV_MAKE_PRETTY = {"user_type": (lambda x: User.REVERSE_TYPE_MAP[x])}
@@ -463,7 +463,7 @@ class UserFlag(BaseFlag):
         return f"User Flag: {self.user.get_full_name()} - {self.flag}"
 
     class Meta:
-        verbose_name = "User Flag"
+        verbose_name = _("User Flag")
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "flag"],
