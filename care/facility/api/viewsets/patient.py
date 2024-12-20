@@ -23,7 +23,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from dry_rest_permissions.generics import DRYPermissionFiltersBase, DRYPermissions
 from rest_framework import filters as rest_framework_filters
-from rest_framework import mixins, serializers, status, viewsets
+from rest_framework import mixins, serializers, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import BaseFilterBackend
@@ -40,7 +40,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from care.facility.api.serializers.patient import (
-    FacilityPatientStatsHistorySerializer,
     PatientDetailSerializer,
     PatientListSerializer,
     PatientNotesEditSerializer,
@@ -58,7 +57,6 @@ from care.facility.models import (
     BedTypeChoices,
     DailyRound,
     Facility,
-    FacilityPatientStatsHistory,
     PatientNotes,
     PatientNoteThreadChoices,
     PatientRegistration,
@@ -728,62 +726,6 @@ class FacilityDischargedPatientViewSet(
                 facility__external_id=self.kwargs["facility_external_id"],
             ).values_list("patient_id")
         )
-
-
-class FacilityPatientStatsHistoryFilterSet(filters.FilterSet):
-    entry_date = filters.DateFromToRangeFilter(field_name="entry_date")
-
-
-class FacilityPatientStatsHistoryViewSet(viewsets.ModelViewSet):
-    lookup_field = "external_id"
-    permission_classes = (IsAuthenticated, DRYPermissions)
-    queryset = FacilityPatientStatsHistory.objects.filter(
-        facility__deleted=False
-    ).order_by("-entry_date")
-    serializer_class = FacilityPatientStatsHistorySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = FacilityPatientStatsHistoryFilterSet
-    http_method_names = ["get", "post", "delete"]
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = self.queryset.filter(
-            facility__external_id=self.kwargs.get("facility_external_id")
-        )
-        if user.is_superuser:
-            return queryset
-        if self.request.user.user_type >= User.TYPE_VALUE_MAP["StateLabAdmin"]:
-            return queryset.filter(facility__state=user.state)
-        if self.request.user.user_type >= User.TYPE_VALUE_MAP["DistrictLabAdmin"]:
-            return queryset.filter(facility__district=user.district)
-        return queryset.filter(facility__users__id__exact=user.id)
-
-    def get_object(self):
-        return get_object_or_404(
-            self.get_queryset(), external_id=self.kwargs.get("external_id")
-        )
-
-    def get_facility(self):
-        facility_qs = Facility.objects.filter(
-            external_id=self.kwargs.get("facility_external_id")
-        )
-        if not self.request.user.is_superuser:
-            facility_qs.filter(users__id__exact=self.request.user.id)
-        return get_object_or_404(facility_qs)
-
-    def perform_create(self, serializer):
-        return serializer.save(facility=self.get_facility())
-
-    def list(self, request, *args, **kwargs):
-        """
-        Patient Stats - List
-
-        Available Filters
-        - entry_date_before: date in YYYY-MM-DD format, inclusive of this date
-        - entry_date_before: date in YYYY-MM-DD format, inclusive of this date
-
-        """
-        return super().list(request, *args, **kwargs)
 
 
 class PatientSearchSetPagination(PageNumberPagination):

@@ -19,8 +19,9 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic", *INSTALLED_APPS]
 # django-silk
 # ------------------------------------------------------------------------------
 # https://github.com/jazzband/django-silk#requirements
-INSTALLED_APPS += ["silk"]
-MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
+if env("ENABLE_SILK", default=False):
+    INSTALLED_APPS += ["silk"]
+    MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 # https://github.com/jazzband/django-silk#profiling
 SILKY_PYTHON_PROFILER = True
 

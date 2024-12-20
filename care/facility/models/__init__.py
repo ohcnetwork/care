@@ -20,4 +20,3 @@ from .patient_sample import *  # noqa
 from .prescription import *  # noqa
 from .resources import *  # noqa
 from .shifting import *  # noqa
-from .summary import *  # noqa

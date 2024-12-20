@@ -59,6 +59,16 @@ to load dummy data for testing run:
 ```bash
 make load-dummy-data
 ```
+Stops and removes the containers without affecting the volumes:
+
+```bash
+make down
+```
+Stops and removes the containers and their volumes:
+
+```bash
+make teardown
+```
 
 #### Docker
 

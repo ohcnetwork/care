@@ -53,7 +53,6 @@ from care.facility.api.viewsets.inventory import (
 from care.facility.api.viewsets.notification import NotificationViewSet
 from care.facility.api.viewsets.patient import (
     FacilityDischargedPatientViewSet,
-    FacilityPatientStatsHistoryViewSet,
     PatientNotesEditViewSet,
     PatientNotesViewSet,
     PatientSearchViewSet,
@@ -85,13 +84,6 @@ from care.facility.api.viewsets.resources import (
 from care.facility.api.viewsets.shifting import (
     ShifitngRequestCommentViewSet,
     ShiftingViewSet,
-)
-from care.facility.api.viewsets.summary import (
-    DistrictPatientSummaryViewSet,
-    FacilityCapacitySummaryViewSet,
-    PatientSummaryViewSet,
-    TestsSummaryViewSet,
-    TriageSummaryViewSet,
 )
 from care.users.api.viewsets.lsg import (
     DistrictViewSet,
@@ -133,21 +125,6 @@ router.register("otp/patient", OTPPatientDataViewSet, basename="otp-patient")
 
 router.register("notification", NotificationViewSet, basename="notification")
 
-# Summarisation
-router.register(
-    "facility_summary", FacilityCapacitySummaryViewSet, basename="summary-facility"
-)
-router.register("patient_summary", PatientSummaryViewSet, basename="summary-patient")
-router.register("tests_summary", TestsSummaryViewSet, basename="summary-tests")
-router.register("triage_summary", TriageSummaryViewSet, basename="summary-triage")
-
-# District Summary
-router.register(
-    "district_patient_summary",
-    DistrictPatientSummaryViewSet,
-    basename="district-summary-patient",
-)
-
 router.register("items", FacilityInventoryItemViewSet, basename="items")
 
 router.register("shift", ShiftingViewSet, basename="patient-shift")
@@ -178,11 +155,6 @@ facility_nested_router.register(
 )
 facility_nested_router.register(
     r"capacity", FacilityCapacityViewSet, basename="facility-capacity"
-)
-facility_nested_router.register(
-    r"patient_stats",
-    FacilityPatientStatsHistoryViewSet,
-    basename="facility-patient-stats",
 )
 facility_nested_router.register(
     r"inventory", FacilityInventoryLogViewSet, basename="facility-inventory"

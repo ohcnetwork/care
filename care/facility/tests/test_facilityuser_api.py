@@ -20,6 +20,9 @@ class FacilityUserTest(TestUtils, APITestCase):
         cls.facility2 = cls.create_facility(
             cls.super_user, cls.district, cls.local_body
         )
+        cls.user2 = cls.create_user(
+            "dummystaff", cls.district, home_facility=cls.facility2
+        )
 
     def setUp(self) -> None:
         self.client.force_authenticate(self.super_user)
@@ -31,6 +34,15 @@ class FacilityUserTest(TestUtils, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNumQueries(2)
+
+    def test_get_queryset_with_search(self):
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility2.external_id}/get_users/?username={self.user2.username}"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["username"], self.user2.username)
 
     def test_link_new_facility(self):
         response = self.client.get("/api/v1/facility/")
@@ -65,3 +77,26 @@ class FacilityUserTest(TestUtils, APITestCase):
         self.client.force_authenticate(user=district_lab_admin)
         response = self.client.get(f"/api/v1/facility/{self.facility.external_id}/")
         self.assertIs(response.status_code, status.HTTP_200_OK)
+
+    def test_user_is_not_listed_if_deleted(self):
+        # Testing FE's delete functionality (soft delete/is_active is set to false when user is deleted)
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/get_users/"
+        )
+        response_json = response.json()
+        results = response_json["results"]
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 2)
+        self.assertIn(self.super_user.username, [user["username"] for user in results])
+        self.assertIn(self.user.username, [user["username"] for user in results])
+        self.user.is_active = False
+        self.user.save()
+        response = self.client.get(
+            f"/api/v1/facility/{self.facility.external_id}/get_users/"
+        )
+        response_json = response.json()
+        results = response_json["results"]
+        self.assertIs(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 1)
+        self.assertIn(self.super_user.username, [user["username"] for user in results])
+        self.assertNotIn(self.user.username, [user["username"] for user in results])

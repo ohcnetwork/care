@@ -764,7 +764,7 @@ class TestUtils:
         response.update(self.get_state_representation(getattr(obj, "state", None)))
         return response
 
-    def get_local_body_representation(self, local_body: LocalBody):
+    def get_local_body_representation(self, local_body: LocalBody | None):
         if local_body is None:
             return {"local_body": None, "local_body_object": None}
         return {
@@ -778,7 +778,7 @@ class TestUtils:
             },
         }
 
-    def get_district_representation(self, district: District):
+    def get_district_representation(self, district: District | None):
         if district is None:
             return {"district": None, "district_object": None}
         return {
@@ -790,7 +790,7 @@ class TestUtils:
             },
         }
 
-    def get_state_representation(self, state: State):
+    def get_state_representation(self, state: State | None):
         if state is None:
             return {"state": None, "state_object": None}
         return {"state": state.id, "state_object": {"id": state.id, "name": state.name}}

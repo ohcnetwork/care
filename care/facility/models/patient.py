@@ -24,9 +24,6 @@ from care.facility.models import (
     Ward,
 )
 from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
-from care.facility.models.mixins.permissions.facility import (
-    FacilityRelatedPermissionMixin,
-)
 from care.facility.models.mixins.permissions.patient import (
     ConsultationRelatedPermissionMixin,
     PatientPermissionMixin,
@@ -735,33 +732,6 @@ class Disease(models.Model):
 
     def get_disease_display(self):
         return DISEASE_CHOICES[self.disease - 1][1]
-
-
-class FacilityPatientStatsHistory(FacilityBaseModel, FacilityRelatedPermissionMixin):
-    facility = models.ForeignKey("Facility", on_delete=models.PROTECT)
-    entry_date = models.DateField()
-    num_patients_visited = models.IntegerField(default=0)
-    num_patients_home_quarantine = models.IntegerField(default=0)
-    num_patients_isolation = models.IntegerField(default=0)
-    num_patient_referred = models.IntegerField(default=0)
-    num_patient_confirmed_positive = models.IntegerField(default=0)
-
-    CSV_RELATED_MAPPING = {
-        "facilitypatientstatshistory__entry_date": "Entry Date",
-        "facilitypatientstatshistory__num_patients_visited": "Vistited Patients",
-        "facilitypatientstatshistory__num_patients_home_quarantine": "Home Quarantined Patients",
-        "facilitypatientstatshistory__num_patients_isolation": "Patients Isolated",
-        "facilitypatientstatshistory__num_patient_referred": "Patients Referred",
-        "facilitypatientstatshistory__num_patient_confirmed_positive": "Patients Confirmed Positive",
-    }
-
-    CSV_MAKE_PRETTY = {}
-
-    class Meta:
-        unique_together = (
-            "facility",
-            "entry_date",
-        )
 
 
 class PatientMobileOTP(BaseModel):

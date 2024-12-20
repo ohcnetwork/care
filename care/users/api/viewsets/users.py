@@ -155,6 +155,9 @@ class UserViewSet(
 
     def get_object(self) -> User:
         try:
+            if self.action == "retrieve":
+                username = self.kwargs.get("username")
+                return get_object_or_404(User, username=username)
             return super().get_object()
         except Http404 as e:
             error = "User not found"

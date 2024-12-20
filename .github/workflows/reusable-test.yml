@@ -29,6 +29,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Create new cache
+        run: |
+          mkdir -p /tmp/.buildx-cache-new
+
       - name: Bake docker images
         uses: docker/bake-action@v5
         with:

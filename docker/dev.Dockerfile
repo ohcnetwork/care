@@ -31,9 +31,9 @@ RUN ARCH=$(dpkg --print-architecture) && \
     rm -rf typst.tar.xz typst-${TYPST_ARCH}
 
 # use pipenv to manage virtualenv
-RUN pip install pipenv==2024.4.0
-
 RUN python -m venv /.venv
+RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
+
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"
 

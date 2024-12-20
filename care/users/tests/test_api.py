@@ -22,6 +22,10 @@ class TestSuperUser(TestUtils, APITestCase):
         cls.user = cls.create_user("staff1", cls.district)
         cls.user_data = cls.get_user_data(cls.district, 40)
 
+        cls.data_2 = cls.get_user_data(cls.district)
+        cls.data_2.update({"username": "user_2", "password": "password"})
+        cls.user_2 = cls.create_user(**cls.data_2)
+
     def setUp(self):
         self.client.force_authenticate(self.super_user)
 
@@ -51,6 +55,7 @@ class TestSuperUser(TestUtils, APITestCase):
             "video_connect_link": obj.video_connect_link,
             "read_profile_picture_url": obj.profile_picture_url,
             "user_flags": [],
+            "last_login": obj.last_login,
             **self.get_local_body_district_state_representation(obj),
         }
 
@@ -67,9 +72,11 @@ class TestSuperUser(TestUtils, APITestCase):
         data = self.user_data.copy()
         data["date_of_birth"] = str(data["date_of_birth"])
         data.pop("password")
+        user_data = self.get_detail_representation(self.user)
+        user_data.pop("created_by")
         self.assertDictEqual(
             res_data_json,
-            self.get_detail_representation(self.user),
+            user_data,
         )
 
     def test_superuser_can_modify(self):
@@ -137,9 +144,37 @@ class TestUser(TestUtils, APITestCase):
         cls.user_2 = cls.create_user(**cls.data_2)
 
         cls.data_3 = cls.get_user_data(cls.district)
-        cls.data_3.update({"username": "user_3", "password": "password"})
+        cls.data_3.update(
+            {
+                "username": "user_3",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["Doctor"],
+            }
+        )
         cls.user_3 = cls.create_user(**cls.data_3)
         cls.link_user_with_facility(cls.user_3, cls.facility, cls.super_user)
+
+        cls.data_4 = cls.get_user_data(cls.district)
+        cls.data_4.update(
+            {
+                "username": "user_4",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["DistrictAdmin"],
+            }
+        )
+        cls.user_4 = cls.create_user(**cls.data_4)
+        cls.link_user_with_facility(cls.user_4, cls.facility, cls.super_user)
+
+        cls.data_5 = cls.get_user_data(cls.district)
+        cls.data_5.update(
+            {
+                "username": "user_5",
+                "password": "password",
+                "user_type": User.TYPE_VALUE_MAP["WardAdmin"],
+            }
+        )
+        cls.user_5 = cls.create_user(**cls.data_5)
+        cls.link_user_with_facility(cls.user_5, cls.facility, cls.super_user)
 
     def test_user_can_access_url(self):
         """Test user can access the url by location"""
@@ -152,7 +187,7 @@ class TestUser(TestUtils, APITestCase):
         response = self.client.get("/api/v1/users/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res_data_json = response.json()
-        self.assertEqual(res_data_json["count"], 2)
+        self.assertEqual(res_data_json["count"], 3)
         results = res_data_json["results"]
         self.assertIn(self.user.id, {r["id"] for r in results})
         self.assertIn(self.user_3.id, {r["id"] for r in results})
@@ -176,12 +211,12 @@ class TestUser(TestUtils, APITestCase):
             User.objects.get(username=username).date_of_birth, date(2005, 4, 1)
         )
 
-    def test_user_cannot_read_others(self):
-        """Test 1 user can read the attributes of the other user"""
-        username = self.data_2["username"]
+    def test_user_can_read_others(self):
+        """Test 1 user can read the attributes of any other user"""
+        username = self.user_2.username
         response = self.client.get(f"/api/v1/users/{username}/")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.json()["detail"], "User not found")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["first_name"], self.user_2.first_name)
 
     def test_user_cannot_modify_others(self):
         """Test a user can't modify others"""
@@ -206,6 +241,38 @@ class TestUser(TestUtils, APITestCase):
             self.data_2[field],
             User.objects.get(username=self.data_2[field]).username,
         )
+
+    def test_user_cannot_change_password_of_others(self):
+        """Test a user cannot change password of others"""
+        username = self.data_2["username"]
+        password = self.data_2["password"]
+        response = self.client.put(
+            "/api/v1/password_change/",
+            {
+                "username": username,
+                "old_password": password,
+                "new_password": "password2",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_user_with_districtadmin_access_can_modify_others(self):
+        """Test a user with district admin access can modify others underneath the hierarchy"""
+        self.client.force_authenticate(self.user_4)
+        username = self.data_2["username"]
+        response = self.client.patch(
+            f"/api/v1/users/{username}/",
+            {
+                "date_of_birth": date(2005, 4, 1),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["date_of_birth"], "2005-04-01")
+
+    def test_user_gets_error_when_accessing_user_details_with_invalid_username(self):
+        """Test a user gets error when accessing user details with invalid username"""
+        response = self.client.get("/api/v1/users/foobar/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class TestUserFilter(TestUtils, APITestCase):

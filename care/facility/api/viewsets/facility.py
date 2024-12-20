@@ -21,7 +21,6 @@ from care.facility.api.serializers.facility import (
 from care.facility.models import (
     Facility,
     FacilityCapacity,
-    FacilityPatientStatsHistory,
     HospitalDoctors,
 )
 from care.facility.models.facility import FacilityHubSpoke, FacilityUser
@@ -134,11 +133,6 @@ class FacilityViewSet(
             elif self.FACILITY_DOCTORS_CSV_KEY in request.GET:
                 mapping.update(HospitalDoctors.CSV_RELATED_MAPPING.copy())
                 pretty_mapping.update(HospitalDoctors.CSV_MAKE_PRETTY.copy())
-            elif self.FACILITY_TRIAGE_CSV_KEY in request.GET:
-                mapping.update(FacilityPatientStatsHistory.CSV_RELATED_MAPPING.copy())
-                pretty_mapping.update(
-                    FacilityPatientStatsHistory.CSV_MAKE_PRETTY.copy()
-                )
             queryset = self.filter_queryset(self.get_queryset()).values(*mapping.keys())
             return render_to_csv_response(
                 queryset, field_header_map=mapping, field_serializer_map=pretty_mapping

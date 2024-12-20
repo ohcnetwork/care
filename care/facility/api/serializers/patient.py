@@ -16,7 +16,6 @@ from care.facility.models import (
     GENDER_CHOICES,
     Disease,
     Facility,
-    FacilityPatientStatsHistory,
     PatientContactDetails,
     PatientMetaInfo,
     PatientNotes,
@@ -356,33 +355,6 @@ class PatientDetailSerializer(PatientListSerializer):
             ).generate()
 
             return patient
-
-
-class FacilityPatientStatsHistorySerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="external_id", read_only=True)
-    entry_date = serializers.DateField(default=lambda: now().date())
-    facility = ExternalIdSerializerField(
-        queryset=Facility.objects.all(), read_only=True
-    )
-
-    class Meta:
-        model = FacilityPatientStatsHistory
-        exclude = (
-            "deleted",
-            "external_id",
-        )
-        read_only_fields = (
-            "id",
-            "facility",
-        )
-
-    def create(self, validated_data):
-        instance, _ = FacilityPatientStatsHistory.objects.update_or_create(
-            facility=validated_data["facility"],
-            entry_date=validated_data["entry_date"],
-            defaults={**validated_data, "deleted": False},
-        )
-        return instance
 
 
 class PatientSearchSerializer(serializers.ModelSerializer):

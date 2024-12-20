@@ -38,7 +38,7 @@ class AssetBedCameraPresetViewSet(ModelViewSet):
 
 class CameraPresetViewSet(GenericViewSet, ListModelMixin):
     serializer_class = CameraPresetSerializer
-    queryset = CameraPreset.objects.all().select_related(
+    queryset = CameraPreset.objects.filter(asset_bed__deleted=False).select_related(
         "asset_bed", "created_by", "updated_by"
     )
     lookup_field = "external_id"

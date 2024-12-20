@@ -16,7 +16,7 @@ Using Docker Compose
     - care (main repo)
     - redis (in-memory cache)
     - celery (task queue)
-    - localstack (to mimic AWS services locally)
+    - minio (to mimic AWS services locally)
 
 This is the most recommended way of setting up care locally,
 as it installs appropriate dependencies in containers so there
