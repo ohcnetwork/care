@@ -45,7 +45,7 @@ django-anymail = {extras = ["amazon-ses"], version = "*"}
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
-coverage = "==7.6.4"
+coverage = "==7.6.10"
 debugpy = "==1.8.11"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
