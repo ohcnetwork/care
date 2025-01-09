@@ -1,6 +1,7 @@
 from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -17,6 +18,20 @@ from care.emr.resources.condition.spec import (
 from care.emr.resources.questionnaire.spec import SubjectType
 
 
+class ValidateEncounterMixin:
+    """
+    Mixin to validate encounter and its relationship with the patient.
+    """
+
+    def validate_data(self, instance, model_obj=None):
+        # Ensure the encounter exists and matches the patient's external ID
+        encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+        if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
+            raise ValidationError(
+                "Patient external ID mismatch with encounter's patient"
+            )
+
+
 class ConditionFilters(FilterSet):
     encounter = UUIDFilter(field_name="encounter__external_id")
     clinical_status = CharFilter(field_name="clinical_status", lookup_expr="iexact")
@@ -27,7 +42,10 @@ class ConditionFilters(FilterSet):
 
 
 class SymptomViewSet(
-    EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
+    ValidateEncounterMixin,
+    EncounterBasedAuthorizationBase,
+    EMRQuestionnaireResponseMixin,
+    EMRModelViewSet,
 ):
     database_model = Condition
     pydantic_model = ConditionSpec
@@ -43,11 +61,6 @@ class SymptomViewSet(
 
     def perform_create(self, instance):
         instance.category = CategoryChoices.problem_list_item.value
-
-        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
-        if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
-            err = "Malformed request"
-            raise PermissionDenied(err)
         super().perform_create(instance)
 
     def get_queryset(self):
@@ -68,7 +81,10 @@ InternalQuestionnaireRegistry.register(SymptomViewSet)
 
 
 class DiagnosisViewSet(
-    EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
+    ValidateEncounterMixin,
+    EncounterBasedAuthorizationBase,
+    EMRQuestionnaireResponseMixin,
+    EMRModelViewSet,
 ):
     database_model = Condition
     pydantic_model = ConditionSpec
@@ -83,10 +99,6 @@ class DiagnosisViewSet(
     questionnaire_subject_type = SubjectType.patient.value
 
     def perform_create(self, instance):
-        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
-        if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
-            err = "Malformed request"
-            raise PermissionDenied(err)
         instance.category = CategoryChoices.encounter_diagnosis.value
         super().perform_create(instance)
 
