@@ -4,7 +4,7 @@ from rest_framework.generics import get_object_or_404
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
-    EMRDeleteMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRModelViewSet,
     EMRRetrieveMixin,
@@ -74,7 +74,7 @@ class ResourceRequestViewSet(EMRModelViewSet):
 
 
 class ResourceRequestCommentViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRListMixin, EMRDeleteMixin, EMRBaseViewSet
+    EMRCreateMixin, EMRRetrieveMixin, EMRListMixin, EMRDestroyMixin, EMRBaseViewSet
 ):
     database_model = ResourceRequestComment
     pydantic_model = ResourceRequestCommentCreateSpec

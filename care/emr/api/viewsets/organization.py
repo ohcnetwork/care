@@ -78,7 +78,7 @@ class OrganizationViewSet(EMRModelViewSet):
         ):
             raise ValidationError("Organization already exists with same name")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if Organization.objects.filter(parent=instance).exists():
             raise PermissionDenied("Cannot delete organization with children")
 
@@ -246,7 +246,7 @@ class OrganizationUsersViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("User does not have permission for this action")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         organization = self.get_organization_obj()
         if not AuthorizationController.call(
             "can_manage_organization_users_obj",

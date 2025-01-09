@@ -89,7 +89,7 @@ class QuestionnaireViewSet(EMRModelViewSet):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Only Superusers can edit a questionnaire")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Only Superusers can delete a questionnaire")
 

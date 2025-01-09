@@ -70,7 +70,7 @@ class FacilityViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to create Facilities")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Only Super Admins can delete Facilities")
 

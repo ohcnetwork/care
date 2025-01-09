@@ -174,18 +174,18 @@ class EMRUpdateMixin:
         return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
 
 
-class EMRDeleteMixin:
-    def authorize_delete(self, instance):
+class EMRDestroyMixin:
+    def authorize_destroy(self, instance):
         pass
 
-    def perform_delete(self, instance):
+    def perform_destroy(self, instance):
         instance.deleted = True
         instance.save(update_fields=["deleted"])
 
-    def delete(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.authorize_delete(instance)
-        self.perform_delete(instance)
+        self.authorize_destroy(instance)
+        self.perform_destroy(instance)
         return Response(status=204)
 
 
@@ -271,7 +271,7 @@ class EMRModelViewSet(
     EMRRetrieveMixin,
     EMRUpdateMixin,
     EMRListMixin,
-    EMRDeleteMixin,
+    EMRDestroyMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):

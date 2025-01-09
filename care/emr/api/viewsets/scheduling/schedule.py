@@ -52,7 +52,7 @@ class ScheduleViewSet(EMRModelViewSet):
         with Lock(f"booking:resource:{instance.resource.id}"):
             super().perform_update(instance)
 
-    def perform_delete(self, instance):
+    def perform_destroy(self, instance):
         with Lock(f"booking:resource:{instance.resource.id}"), transaction.atomic():
             # Check if there are any tokens allocated for this schedule in the future
             availabilities = instance.availability_set.all()
@@ -71,7 +71,7 @@ class ScheduleViewSet(EMRModelViewSet):
                 resource=instance.resource,
                 availability_id__in=availabilities.values_list("id", flat=True),
             ).update(deleted=True)
-            super().perform_delete(instance)
+            super().perform_destroy(instance)
 
     def validate_data(self, instance, model_obj=None):
         # Validate user is part of the facility
@@ -103,7 +103,7 @@ class ScheduleViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to view user schedule")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         self.authorize_update({}, instance)
 
     def clean_create_data(self, request_data):
@@ -165,7 +165,7 @@ class AvailabilityViewSet(EMRModelViewSet):
         with Lock(f"booking:resource:{instance.schedule.resource.id}"):
             super().perform_update(instance)
 
-    def perform_delete(self, instance):
+    def perform_destroy(self, instance):
         with Lock(f"booking:resource:{instance.schedule.resource.id}"):
             has_future_bookings = TokenSlot.objects.filter(
                 availability_id=instance.id,
@@ -176,7 +176,7 @@ class AvailabilityViewSet(EMRModelViewSet):
                 raise ValidationError(
                     "Cannot delete availability as there are future bookings associated with it"
                 )
-            super().perform_delete(instance)
+            super().perform_destroy(instance)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
@@ -189,5 +189,5 @@ class AvailabilityViewSet(EMRModelViewSet):
     def authorize_update(self, request_obj, model_instance):
         self.authorize_create(model_instance)
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         self.authorize_update({}, instance)

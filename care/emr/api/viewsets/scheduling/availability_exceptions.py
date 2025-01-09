@@ -35,7 +35,7 @@ class AvailabilityExceptionsViewSet(EMRModelViewSet):
         request_data["facility"] = self.kwargs["facility_external_id"]
         return request_data
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         self.authorize_update({}, instance)
 
     def authorize_create(self, instance):
