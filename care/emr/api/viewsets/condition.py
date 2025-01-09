@@ -23,11 +23,9 @@ class ValidateEncounterMixin:
     Mixin to validate encounter and its relationship with the patient.
     """
 
-    def validate_data(self, instance):
+    def validate_data(self, instance, model_obj=None):
         # Ensure the encounter exists and matches the patient's external ID
-        encounter = get_object_or_404(
-            Encounter, external_id=instance.encounter.external_id
-        )
+        encounter = get_object_or_404(Encounter, external_id=instance.encounter)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             raise ValidationError(
                 "Patient external ID mismatch with encounter's patient"
