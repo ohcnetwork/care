@@ -44,7 +44,7 @@ class SymptomViewSet(
     def perform_create(self, instance):
         encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
-            err = "Malformed request"
+            err = "Patient external ID mismatch with encounter's patient"
             raise ValidationError(err)
 
         instance.category = CategoryChoices.problem_list_item.value
@@ -85,7 +85,7 @@ class DiagnosisViewSet(
     def perform_create(self, instance):
         encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
-            err = "Malformed request"
+            err = "Patient external ID mismatch with encounter's patient"
             raise ValidationError(err)
 
         instance.category = CategoryChoices.encounter_diagnosis.value
