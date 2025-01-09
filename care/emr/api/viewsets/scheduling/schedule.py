@@ -5,13 +5,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRDestroyMixin,
+    EMRModelViewSet,
+)
 from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
     AvailabilityForScheduleSpec,
-    AvailabilityUpdateSpec,
     ScheduleReadSpec,
     ScheduleUpdateSpec,
     ScheduleWriteSpec,
@@ -125,11 +129,9 @@ class ScheduleViewSet(EMRModelViewSet):
         )
 
 
-class AvailabilityViewSet(EMRModelViewSet):
+class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
     database_model = Availability
     pydantic_model = AvailabilityForScheduleSpec
-    pydantic_update_model = AvailabilityUpdateSpec
-    pydantic_read_model = AvailabilityForScheduleSpec
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -161,9 +163,10 @@ class AvailabilityViewSet(EMRModelViewSet):
             .order_by("-modified_date")
         )
 
-    def perform_update(self, instance):
-        with Lock(f"booking:resource:{instance.schedule.resource.id}"):
-            super().perform_update(instance)
+    def perform_create(self, instance):
+        schedule = self.get_schedule_obj()
+        instance.schedule = schedule
+        super().perform_create(instance)
 
     def perform_destroy(self, instance):
         with Lock(f"booking:resource:{instance.schedule.resource.id}"):
@@ -186,8 +189,5 @@ class AvailabilityViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to create schedule")
 
-    def authorize_update(self, request_obj, model_instance):
-        self.authorize_create(model_instance)
-
-    def authorize_destroy(self, instance):
-        self.authorize_update({}, instance)
+    def authorize_delete(self, instance):
+        self.authorize_create(instance)
