@@ -1,6 +1,6 @@
 from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -42,15 +42,13 @@ class SymptomViewSet(
     questionnaire_subject_type = SubjectType.patient.value
 
     def perform_create(self, instance):
-        instance.category = CategoryChoices.problem_list_item.value
-        super().perform_create(instance)
-
-    def authorize_create(self, instance: ConditionSpec):
-        encounter = Encounter.objects.get(external_id=instance.encounter)
+        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             err = "Malformed request"
-            raise PermissionDenied(err)
-        # Check if the user has access to the patient and write access to the encounter
+            raise ValidationError(err)
+
+        instance.category = CategoryChoices.problem_list_item.value
+        super().perform_create(instance)
 
     def get_queryset(self):
         # Check if the user has read access to the patient and their EMR Data
@@ -85,15 +83,13 @@ class DiagnosisViewSet(
     questionnaire_subject_type = SubjectType.patient.value
 
     def perform_create(self, instance):
-        instance.category = CategoryChoices.encounter_diagnosis.value
-        super().perform_create(instance)
-
-    def authorize_create(self, instance: ConditionSpec):
-        encounter = Encounter.objects.get(external_id=instance.encounter)
+        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             err = "Malformed request"
-            raise PermissionDenied(err)
-        # Check if the user has access to the patient and write access to the encounter
+            raise ValidationError(err)
+
+        instance.category = CategoryChoices.encounter_diagnosis.value
+        super().perform_create(instance)
 
     def get_queryset(self):
         # Check if the user has read access to the patient and their EMR Data
