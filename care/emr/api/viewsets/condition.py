@@ -43,14 +43,12 @@ class SymptomViewSet(
 
     def perform_create(self, instance):
         instance.category = CategoryChoices.problem_list_item.value
-        super().perform_create(instance)
 
-    def authorize_create(self, instance: ConditionSpec):
-        encounter = Encounter.objects.get(external_id=instance.encounter)
+        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             err = "Malformed request"
             raise PermissionDenied(err)
-        # Check if the user has access to the patient and write access to the encounter
+        super().perform_create(instance)
 
     def get_queryset(self):
         # Check if the user has read access to the patient and their EMR Data
@@ -85,15 +83,12 @@ class DiagnosisViewSet(
     questionnaire_subject_type = SubjectType.patient.value
 
     def perform_create(self, instance):
-        instance.category = CategoryChoices.encounter_diagnosis.value
-        super().perform_create(instance)
-
-    def authorize_create(self, instance: ConditionSpec):
-        encounter = Encounter.objects.get(external_id=instance.encounter)
+        encounter = Encounter.objects.get(external_id=instance.encounter.external_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             err = "Malformed request"
             raise PermissionDenied(err)
-        # Check if the user has access to the patient and write access to the encounter
+        instance.category = CategoryChoices.encounter_diagnosis.value
+        super().perform_create(instance)
 
     def get_queryset(self):
         # Check if the user has read access to the patient and their EMR Data
