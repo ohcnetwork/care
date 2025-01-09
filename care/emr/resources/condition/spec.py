@@ -1,14 +1,12 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, Field, field_validator
+from pydantic import UUID4, field_validator
 
 from care.emr.fhir.schema.base import Coding
 from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
-from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 
 
@@ -59,16 +57,16 @@ class ConditionSpec(BaseConditionSpec):
     clinical_status: ClinicalStatusChoices | None = None
     verification_status: VerificationStatusChoices
     severity: SeverityChoices | None = None
-    code: Coding = Field(json_schema_extra={"slug": CARE_CODITION_CODE_VALUESET.slug})
+    # code: Coding = Field(json_schema_extra={"slug": CARE_CODITION_CODE_VALUESET.slug})
     encounter: UUID4
     onset: ConditionOnSetSpec = {}
 
-    @field_validator("code")
-    @classmethod
-    def validate_code(cls, code: int):
-        return validate_valueset(
-            "code", cls.model_fields["code"].json_schema_extra["slug"], code
-        )
+    # @field_validator("code")
+    # @classmethod
+    # def validate_code(cls, code: int):
+    #     return validate_valueset(
+    #         "code", cls.model_fields["code"].json_schema_extra["slug"], code
+    #     )
 
     @field_validator("encounter")
     @classmethod

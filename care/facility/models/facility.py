@@ -365,7 +365,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityOrganizationUser.objects.create(
                 organization=facility_organization,
                 user=self.created_by,
-                role=RoleModel.objects.get(name=FACILITY_ADMIN_ROLE.name),
+                role=RoleModel.objects.get_or_create(name=FACILITY_ADMIN_ROLE.name)[0],
             )
             FacilityUser.objects.create(
                 facility=self, user=self.created_by, created_by=self.created_by

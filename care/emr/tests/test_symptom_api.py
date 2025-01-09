@@ -5,7 +5,6 @@ from care.emr.resources.condition.spec import ConditionSpec
 from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
-from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -30,7 +29,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_list_symptoms_with_permissions(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[PatientPermissions.can_view_clinical_data.name],
         )
 
@@ -48,7 +46,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_list_symptoms_with_permissions_and_encounter_status_as_completed(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[PatientPermissions.can_view_clinical_data.name],
         )
 
@@ -68,9 +65,7 @@ class TestSymptomViewset(CareAPITestBase):
 
     def test_list_symptoms_without_permissions(self):
         user = self.create_user()
-        role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name, permissions=[]
-        )
+        role = self.create_role_with_permissions(permissions=[])
 
         facility = self.create_facility(user=user)
         organization = self.create_facility_organization(facility=facility)
@@ -86,7 +81,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_list_symptoms_for_single_encounter_with_permissions(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[EncounterPermissions.can_read_encounter.name],
         )
 
@@ -108,7 +102,6 @@ class TestSymptomViewset(CareAPITestBase):
     ):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[EncounterPermissions.can_read_encounter.name],
         )
 
@@ -130,9 +123,7 @@ class TestSymptomViewset(CareAPITestBase):
 
     def test_list_symptoms_for_single_encounter_without_permissions(self):
         user = self.create_user()
-        role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name, permissions=[]
-        )
+        role = self.create_role_with_permissions(permissions=[])
 
         facility = self.create_facility(user=user)
         organization = self.create_facility_organization(facility=facility)
@@ -149,9 +140,7 @@ class TestSymptomViewset(CareAPITestBase):
 
     def test_create_symptom_without_permissions(self):
         user = self.create_user()
-        role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name, permissions=[]
-        )
+        role = self.create_role_with_permissions(permissions=[])
 
         facility = self.create_facility(user=user)
         organization = self.create_facility_organization(facility=facility)
@@ -172,7 +161,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_create_symptom_with_permissions(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[EncounterPermissions.can_write_encounter.name],
         )
 
@@ -195,7 +183,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_create_symptom_with_permissions_and_encounter_status_completed(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[EncounterPermissions.can_write_encounter.name],
         )
 
@@ -221,7 +208,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_retrieve_symptom_with_permissions(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[
                 PatientPermissions.can_view_clinical_data.name,
                 EncounterPermissions.can_write_encounter.name,
@@ -258,7 +244,6 @@ class TestSymptomViewset(CareAPITestBase):
     def test_retrieve_symptom_without_permissions(self):
         user = self.create_user()
         role = self.create_role_with_permissions(
-            role_name=FACILITY_ADMIN_ROLE.name,
             permissions=[
                 EncounterPermissions.can_write_encounter.name,
             ],
