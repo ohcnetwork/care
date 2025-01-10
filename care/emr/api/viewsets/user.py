@@ -79,7 +79,7 @@ class UserViewSet(EMRModelViewSet):
         if not AuthorizationController.call("can_create_user", self.request.user):
             raise PermissionDenied("You do not have permission to create Users")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         return self.request.user.is_superuser
 
     @action(detail=False, methods=["GET"])

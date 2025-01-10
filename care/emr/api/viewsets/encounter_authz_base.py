@@ -24,7 +24,7 @@ class EncounterBasedAuthorizationBase:
         ):
             raise PermissionDenied("You do not have permission to update encounter")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not AuthorizationController.call(
             "can_update_encounter_obj", self.request.user, instance.encounter
         ):

@@ -155,10 +155,10 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             TokenSlot.objects.create(
                 resource=schedulable_resource_obj,
                 start_datetime=datetime.datetime.combine(
-                    request_data.day, slot["start_time"], tzinfo=timezone.now().tzinfo
+                    request_data.day, slot["start_time"], tzinfo=None
                 ),
                 end_datetime=datetime.datetime.combine(
-                    request_data.day, slot["end_time"], tzinfo=timezone.now().tzinfo
+                    request_data.day, slot["end_time"], tzinfo=None
                 ),
                 availability_id=slot["availability_id"],
             )
@@ -251,12 +251,16 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             # Calculate all matching schedules
             current_schedules = []
             for schedule in schedules:
-                if schedule["valid_from"].date() <= day <= schedule["valid_to"].date():
+                valid_from = timezone.make_naive(schedule["valid_from"]).date()
+                valid_to = timezone.make_naive(schedule["valid_to"]).date()
+                if valid_from <= day <= valid_to:
                     current_schedules.append(schedule)
             # Calculate availability exception for that day
             exceptions = []
             for exception in availability_exceptions:
-                if exception["valid_from"] <= day <= exception["valid_to"]:
+                valid_from = timezone.make_naive(exception["valid_from"]).date()
+                valid_to = timezone.make_naive(exception["valid_to"]).date()
+                if valid_from <= day <= valid_to:
                     exceptions.append(exception)
             # Calculate slots based on these data
 
@@ -301,8 +305,12 @@ def calculate_slots(
             for available_slot in availability["availability"]:
                 if available_slot["day_of_week"] != day_of_week:
                     continue
-                start_time = time.fromisoformat(available_slot["start_time"])
-                end_time = time.fromisoformat(available_slot["end_time"])
+                start_time = datetime.datetime.combine(
+                    date, time.fromisoformat(available_slot["start_time"]), tzinfo=None
+                )
+                end_time = datetime.datetime.combine(
+                    date, time.fromisoformat(available_slot["end_time"]), tzinfo=None
+                )
                 while start_time <= end_time:
                     conflicting = False
                     for exception in exceptions:
@@ -311,10 +319,9 @@ def calculate_slots(
                             and exception["end_time"] >= start_time
                         ):
                             conflicting = True
-                    start_time = (
-                        datetime.datetime.combine(date.today(), start_time)
-                        + timedelta(minutes=availability["slot_size_in_minutes"])
-                    ).time()
+                    start_time = start_time + timedelta(
+                        minutes=availability["slot_size_in_minutes"]
+                    )
                     if conflicting:
                         continue
                     slots += availability["tokens_per_slot"]

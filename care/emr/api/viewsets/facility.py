@@ -70,7 +70,7 @@ class FacilityViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to create Facilities")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Only Super Admins can delete Facilities")
 
@@ -108,9 +108,15 @@ class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
         )
 
 
+class FacilityUserFilter(FilterSet):
+    username = CharFilter(field_name="username", lookup_expr="icontains")
+
+
 class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
+    filterset_class = FacilityUserFilter
+    filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
         return User.objects.filter(

@@ -33,14 +33,21 @@ from care.emr.api.viewsets.organization import (
     OrganizationViewSet,
 )
 from care.emr.api.viewsets.patient import PatientViewSet
-from care.emr.api.viewsets.questionnaire import QuestionnaireViewSet
+from care.emr.api.viewsets.questionnaire import (
+    QuestionnaireTagsViewSet,
+    QuestionnaireViewSet,
+)
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
     ResourceRequestViewSet,
 )
 from care.emr.api.viewsets.roles import RoleViewSet
-from care.emr.api.viewsets.scheduling import ScheduleViewSet, SlotViewSet
+from care.emr.api.viewsets.scheduling import (
+    AvailabilityViewSet,
+    ScheduleViewSet,
+    SlotViewSet,
+)
 from care.emr.api.viewsets.scheduling.availability_exceptions import (
     AvailabilityExceptionsViewSet,
 )
@@ -82,6 +89,10 @@ router.register("batch_requests", BatchRequestView, basename="batch-requests")
 router.register("valueset", ValueSetViewSet, basename="value-set")
 
 router.register("questionnaire", QuestionnaireViewSet, basename="questionnaire")
+
+router.register(
+    "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
+)
 
 router.register("organization", OrganizationViewSet, basename="organization")
 
@@ -168,6 +179,12 @@ facility_organization_nested_router.register(
 )
 
 facility_nested_router.register(r"schedule", ScheduleViewSet, basename="schedule")
+schedule_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"schedule", lookup="schedule"
+)
+schedule_nested_router.register(
+    r"availability", AvailabilityViewSet, basename="schedule-availability"
+)
 
 facility_nested_router.register(r"slots", SlotViewSet, basename="slot")
 
@@ -290,6 +307,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
+    path("", include(schedule_nested_router.urls)),
     # path("", include(facility_location_nested_router.urls)),
     # path("", include(asset_nested_router.urls)),
     # path("", include(bed_nested_router.urls)),

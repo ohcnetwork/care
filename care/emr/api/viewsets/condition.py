@@ -1,7 +1,7 @@
+from django.shortcuts import get_object_or_404
 from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase

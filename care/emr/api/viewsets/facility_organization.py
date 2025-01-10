@@ -65,7 +65,7 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         ):
             raise ValidationError("Organization already exists with same name")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if instance.type == "root":
             raise PermissionDenied("Cannot delete root organization")
 
@@ -189,7 +189,7 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         if queryset.exists():
             raise ValidationError("User association already exists")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         organization = self.get_organization_obj()
         if not AuthorizationController.call(
             "can_manage_facility_organization_users_obj",

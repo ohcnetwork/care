@@ -60,7 +60,9 @@ class ValueSetViewSet(EMRModelViewSet):
         Coding(**request.data)  # Validate
         result = (
             CodeConceptResource()
-            .filter(code=request.data["code"], system=request.data["system"])
+            .filter(
+                code=request.data["code"], system=request.data["system"], property="*"
+            )
             .get()
         )
         return Response(result)

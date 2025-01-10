@@ -103,6 +103,7 @@ class FileUploadViewSet(
                 .filter(
                     file_type=self.request.GET.get("file_type"),
                     associating_id=self.request.GET.get("associating_id"),
+                    upload_completed=True,
                 )
             )
         obj = get_object_or_404(FileUpload, external_id=self.kwargs["external_id"])

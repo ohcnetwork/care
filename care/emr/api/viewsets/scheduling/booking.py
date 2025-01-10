@@ -1,5 +1,9 @@
-from django_filters import CharFilter, DateFilter, FilterSet, UUIDFilter
+from typing import Literal
+
+from django.db import transaction
+from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from pydantic import BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
@@ -7,24 +11,31 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
-    EMRDeleteMixin,
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
 from care.emr.models.scheduling import SchedulableUserResource, TokenBooking
 from care.emr.resources.scheduling.slot.spec import (
+    CANCELLED_STATUS_CHOICES,
+    BookingStatusChoices,
     TokenBookingReadSpec,
-    TokenBookingUpdateSpec,
+    TokenBookingWriteSpec,
 )
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility, FacilityOrganizationUser
 from care.security.authorization import AuthorizationController
 
 
+class CancelBookingSpec(BaseModel):
+    reason: Literal[
+        BookingStatusChoices.cancelled, BookingStatusChoices.entered_in_error
+    ]
+
+
 class TokenBookingFilters(FilterSet):
     status = CharFilter(field_name="status")
-    date = DateFilter(field_name="token_slot__start_datetime__date")
+    date = DateFromToRangeFilter(field_name="token_slot__start_datetime__date")
     slot = UUIDFilter(field_name="token_slot__external_id")
     user = UUIDFilter(method="filter_by_user")
     patient = UUIDFilter(field_name="patient__external_id")
@@ -41,12 +52,12 @@ class TokenBookingFilters(FilterSet):
 
 
 class TokenBookingViewSet(
-    EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRDeleteMixin, EMRBaseViewSet
+    EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
 ):
     database_model = TokenBooking
-    pydantic_model = TokenBookingReadSpec
+    pydantic_model = TokenBookingWriteSpec
     pydantic_read_model = TokenBookingReadSpec
-    pydantic_update_model = TokenBookingUpdateSpec
+    pydantic_update_model = TokenBookingWriteSpec
 
     filterset_class = TokenBookingFilters
     filter_backends = [DjangoFilterBackend]
@@ -57,10 +68,6 @@ class TokenBookingViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def authorize_delete(self, instance):
-        # TODO, need more depth to handle this case
-        pass
-
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
             "can_write_user_booking",
@@ -68,7 +75,7 @@ class TokenBookingViewSet(
             model_instance.token_slot.resource.facility,
             model_instance.token_slot.resource.user,
         ):
-            raise PermissionDenied("You do not have permission to view user schedule")
+            raise PermissionDenied("You do not have permission to update bookings")
 
     def get_queryset(self):
         facility = self.get_facility_obj()
@@ -89,6 +96,27 @@ class TokenBookingViewSet(
             .order_by("-modified_date")
         )
 
+    @classmethod
+    def cancel_appointment_handler(cls, instance, request_data, user):
+        request_data = CancelBookingSpec(**request_data)
+        with transaction.atomic():
+            if instance.status not in CANCELLED_STATUS_CHOICES:
+                # Free up the slot if it is not cancelled already
+                instance.token_slot.allocated -= 1
+                instance.token_slot.save()
+            instance.status = request_data.reason
+            instance.updated_by = user
+            instance.save()
+        return Response(
+            TokenBookingReadSpec.serialize(instance).model_dump(exclude=["meta"])
+        )
+
+    @action(detail=True, methods=["POST"])
+    def cancel(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        return self.cancel_appointment_handler(instance, request.data, request.user)
+
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):
         facility = Facility.objects.get(external_id=self.kwargs["facility_external_id"])
@@ -102,7 +130,7 @@ class TokenBookingViewSet(
         return Response(
             {
                 "users": [
-                    UserSpec.serialize(facility_user.user).model_dump(exclude=["meta"])
+                    UserSpec.serialize(facility_user.user).to_json()
                     for facility_user in facility_users
                 ]
             }

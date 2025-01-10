@@ -30,13 +30,13 @@ class AvailabilityExceptionBaseSpec(EMRResource):
 
 class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     facility: UUID4 | None = None
-    resource: UUID4
+    user: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             resource = None
             try:
-                user = User.objects.get(external_id=self.resource)
+                user = User.objects.get(external_id=self.user)
                 resource = SchedulableUserResource.objects.get(
                     user=user,
                     facility=Facility.objects.get(external_id=self.facility),

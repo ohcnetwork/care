@@ -6,6 +6,37 @@ from django.db import models
 from care.emr.models import EMRBaseModel
 from care.emr.models.organization import FacilityOrganization, Organization
 
+TAG_CACHE = {}  # TODO change to Redis with LRU Cache in process
+MAX_QUESTIONNAIRE_TAGS_COUNT = 1000
+
+
+class QuestionnaireTag(EMRBaseModel):
+    name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255, default=uuid.uuid4, unique=True)
+
+    @classmethod
+    def serialize_model(cls, obj):
+        return {"name": obj.name, "slug": obj.slug}
+
+    @classmethod
+    def get_tag(cls, tag_id):
+        if tag_id in TAG_CACHE:
+            return TAG_CACHE[tag_id]
+        try:
+            tag = cls.objects.get(id=tag_id)
+            TAG_CACHE[tag_id] = cls.serialize_model(tag)
+            return TAG_CACHE[tag_id]
+        except Exception:  # noqa S110
+            pass
+        return {}
+
+    def save(self, *args, **kwargs):
+        if self.__class__.objects.all().count() > MAX_QUESTIONNAIRE_TAGS_COUNT:
+            err = f"An instance can have only upto {MAX_QUESTIONNAIRE_TAGS_COUNT} tags"
+            raise ValueError(err)
+        super().save(*args, **kwargs)
+        TAG_CACHE[self.id] = self.serialize_model(self)
+
 
 class Questionnaire(EMRBaseModel):
     version = models.CharField(max_length=255)
@@ -18,6 +49,7 @@ class Questionnaire(EMRBaseModel):
     questions = models.JSONField(default=dict)
     organization_cache = ArrayField(models.IntegerField(), default=list)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
+    tags = ArrayField(models.IntegerField(), default=list)
 
 
 class QuestionnaireResponse(EMRBaseModel):

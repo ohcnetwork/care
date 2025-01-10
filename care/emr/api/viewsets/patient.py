@@ -46,7 +46,7 @@ class PatientViewSet(EMRModelViewSet):
         if not AuthorizationController.call("can_create_patient", self.request.user):
             raise PermissionDenied("Cannot Create Patient")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Cannot delete patient")
 

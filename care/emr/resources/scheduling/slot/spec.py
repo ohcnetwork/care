@@ -2,6 +2,7 @@ import datetime
 from enum import Enum
 
 from pydantic import UUID4
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models import TokenBooking
 from care.emr.models.scheduling.booking import TokenSlot
@@ -64,8 +65,12 @@ class TokenBookingBaseSpec(EMRResource):
     __exclude__ = ["token_slot", "patient"]
 
 
-class TokenBookingUpdateSpec(TokenBookingBaseSpec):
+class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.status in CANCELLED_STATUS_CHOICES:
+            raise ValidationError("Cannot cancel a booking. Use the cancel endpoint")
 
 
 class TokenBookingReadSpec(TokenBookingBaseSpec):
