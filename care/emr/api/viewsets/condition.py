@@ -14,6 +14,7 @@ from care.emr.resources.condition.spec import (
     CategoryChoices,
     ConditionSpec,
     ConditionSpecRead,
+    ConditionSpecUpdate,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 
@@ -25,7 +26,10 @@ class ValidateEncounterMixin:
 
     def validate_data(self, instance, model_obj=None):
         # Ensure the encounter exists and matches the patient's external ID
-        encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+        encounter_id = (
+            model_obj.encounter.external_id if model_obj else instance.encounter
+        )
+        encounter = get_object_or_404(Encounter, external_id=encounter_id)
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             raise ValidationError(
                 "Patient external ID mismatch with encounter's patient"
@@ -50,6 +54,7 @@ class SymptomViewSet(
     database_model = Condition
     pydantic_model = ConditionSpec
     pydantic_read_model = ConditionSpecRead
+    pydantic_update_model = ConditionSpecUpdate
     # Filters
     filterset_class = ConditionFilters
     filter_backends = [DjangoFilterBackend]
@@ -89,6 +94,8 @@ class DiagnosisViewSet(
     database_model = Condition
     pydantic_model = ConditionSpec
     pydantic_read_model = ConditionSpecRead
+    pydantic_update_model = ConditionSpecUpdate
+
     # Filters
     filterset_class = ConditionFilters
     filter_backends = [DjangoFilterBackend]

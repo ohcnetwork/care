@@ -1,276 +1,505 @@
-from django.urls import reverse
-from polyfactory.factories.pydantic_factory import ModelFactory
+from unittest.mock import patch
 
-from care.emr.resources.condition.spec import ConditionSpec
+from django.forms import model_to_dict
+from django.urls import reverse
+
 from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
-class ConditionFactory(ModelFactory[ConditionSpec]):
-    __model__ = ConditionSpec
-
-
 class TestSymptomViewset(CareAPITestBase):
     def setUp(self):
-        """Set up test data for all tests"""
         super().setUp()
         self.user = self.create_user()
-        self.client.force_authenticate(user=self.user)
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
+        self.client.force_authenticate(user=self.user)
+
         self.base_url = reverse(
             "symptom-list", kwargs={"patient_external_id": self.patient.external_id}
         )
+        self.valid_code = {
+            "display": "Low blood pressure",
+            "system": "http://snomed.info/sct",
+            "code": "45007003",
+        }
+        # Mocking validate_valueset
+        self.patcher = patch(
+            "care.emr.resources.condition.spec.validate_valueset", return_value=True
+        )
+        self.mock_validate_valueset = self.patcher.start()
 
-    def generate_symptom_data(self, encounter_id, **kwargs):
-        return ConditionFactory.build(encounter=encounter_id, **kwargs)
+    def tearDown(self):
+        self.patcher.stop()
 
+    def _get_symptom_url(self, symptom_id):
+        """Helper to get the detail URL for a specific symptom."""
+        return reverse(
+            "symptom-detail",
+            kwargs={
+                "patient_external_id": self.patient.external_id,
+                "external_id": symptom_id,
+            },
+        )
+
+    #                            LIST TESTS
     def test_list_symptoms_with_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[PatientPermissions.can_view_clinical_data.name],
+        """
+        Users with `can_view_clinical_data` on a non-completed encounter
+        can list symptoms (HTTP 200).
+        """
+        # Attach the needed role/permission
+        permissions = [PatientPermissions.can_view_clinical_data.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Create an active encounter
+        self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
         )
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
-        )
-
-        self.client.force_authenticate(user=user)
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 200)
 
     def test_list_symptoms_with_permissions_and_encounter_status_as_completed(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[PatientPermissions.can_view_clinical_data.name],
-        )
+        """
+        Users with `can_view_clinical_data` but a completed encounter => (HTTP 403).
+        """
+        permissions = [PatientPermissions.can_view_clinical_data.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
+        self.create_encounter(
             patient=self.patient,
-            facility=facility,
-            organization=organization,
+            facility=self.facility,
+            organization=self.organization,
             status=StatusChoices.completed.value,
         )
-
-        self.client.force_authenticate(user=user)
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 403)
 
     def test_list_symptoms_without_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(permissions=[])
-
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
+        """
+        Users without `can_view_clinical_data` => (HTTP 403).
+        """
+        # No permission attached
+        self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
         )
-
-        self.client.force_authenticate(user=user)
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 403)
 
     def test_list_symptoms_for_single_encounter_with_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_read_encounter.name],
+        """
+        Users with `can_read_encounter` can list symptoms for that encounter (HTTP 200).
+        """
+        permissions = [EncounterPermissions.can_read_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
         )
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
-        )
-
-        self.client.force_authenticate(user=user)
-        response = self.client.get(
-            f"{self.base_url}?encounter={self.encounter.external_id}"
-        )
+        url = f"{self.base_url}?encounter={encounter.external_id}"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_list_symptoms_for_single_encounter_with_permissions_and_encounter_status_completed(
         self,
     ):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_read_encounter.name],
-        )
+        """
+        Users with `can_read_encounter` on a completed encounter can still list symptoms (HTTP 200).
+        """
+        permissions = [EncounterPermissions.can_read_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
+        encounter = self.create_encounter(
             patient=self.patient,
-            facility=facility,
-            organization=organization,
+            facility=self.facility,
+            organization=self.organization,
             status=StatusChoices.completed.value,
         )
-
-        self.client.force_authenticate(user=user)
-        response = self.client.get(
-            f"{self.base_url}?encounter={self.encounter.external_id}"
-        )
+        url = f"{self.base_url}?encounter={encounter.external_id}"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_list_symptoms_for_single_encounter_without_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(permissions=[])
-
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
+        """
+        Users without `can_read_encounter` or `can_view_clinical_data` => (HTTP 403).
+        """
+        # No relevant permission
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
         )
-
-        self.client.force_authenticate(user=user)
-        response = self.client.get(
-            f"{self.base_url}?encounter={self.encounter.external_id}"
-        )
+        url = f"{self.base_url}?encounter={encounter.external_id}"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
+    #                           CREATE TESTS
     def test_create_symptom_without_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(permissions=[])
+        """
+        Users who lack `can_write_encounter` get (HTTP 403) when creating.
+        """
+        # No permission attached
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
+        )
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
-        )
-
-        self.client.force_authenticate(user=user)
-        symptom_data = self.generate_symptom_data(
-            encounter_id=self.encounter.external_id
-        )
-        response = self.client.post(
-            self.base_url, symptom_data.model_dump(mode="json"), format="json"
-        )
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 403)
 
     def test_create_symptom_with_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name],
-        )
+        """
+        Users with `can_write_encounter` on a non-completed encounter => (HTTP 200).
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
         )
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
 
-        self.client.force_authenticate(user=user)
-        symptom_data = self.generate_symptom_data(
-            encounter_id=self.encounter.external_id
-        )
-        response = self.client.post(
-            self.base_url, symptom_data.model_dump(mode="json"), format="json"
-        )
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 200)
 
     def test_create_symptom_with_permissions_and_encounter_status_completed(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name],
-        )
+        """
+        Users with `can_write_encounter` on a completed encounter => (HTTP 403).
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
+        encounter = self.create_encounter(
             patient=self.patient,
-            facility=facility,
-            organization=organization,
+            facility=self.facility,
+            organization=self.organization,
             status=StatusChoices.completed.value,
         )
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
 
-        self.client.force_authenticate(user=user)
-        symptom_data = self.generate_symptom_data(
-            encounter_id=self.encounter.external_id
-        )
-        response = self.client.post(
-            self.base_url, symptom_data.model_dump(mode="json"), format="json"
-        )
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 403)
 
+    #                         RETRIEVE TESTS
     def test_retrieve_symptom_with_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[
-                PatientPermissions.can_view_clinical_data.name,
-                EncounterPermissions.can_write_encounter.name,
-            ],
-        )
+        """
+        Users with `can_view_clinical_data` => (HTTP 200).
+        """
+        permissions = [PatientPermissions.can_view_clinical_data.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
 
-        self.client.force_authenticate(user=user)
-        symptom_data = self.generate_symptom_data(
-            encounter_id=self.encounter.external_id
-        )
-        response = self.client.post(
-            self.base_url, symptom_data.model_dump(mode="json"), format="json"
-        )
-        self.assertEqual(response.status_code, 200)
+        url = self._get_symptom_url(symptom.external_id)
+        retrieve_response = self.client.get(url)
+        self.assertEqual(retrieve_response.status_code, 200)
+        self.assertEqual(retrieve_response.data["id"], str(symptom.external_id))
 
-        url = reverse(
-            "symptom-detail",
-            kwargs={
-                "patient_external_id": self.patient.external_id,
-                "external_id": response.json()["id"],
-            },
+    def test_retrieve_symptom_for_single_encounter_with_permissions(self):
+        """
+        Users with `can_read_encounter` => (HTTP 200).
+        """
+        permissions = [EncounterPermissions.can_read_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["id"], str(response.json()["id"]))
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        retrieve_response = self.client.get(f"{url}?encounter={encounter.external_id}")
+        self.assertEqual(retrieve_response.status_code, 200)
+        self.assertEqual(retrieve_response.data["id"], str(symptom.external_id))
+
+    def test_retrieve_symptom_for_single_encounter_without_permissions(self):
+        """
+        Lacking `can_read_encounter` => (HTTP 403).
+        """
+        # No relevant permission
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        retrieve_response = self.client.get(f"{url}?encounter={encounter.external_id}")
+        self.assertEqual(retrieve_response.status_code, 403)
 
     def test_retrieve_symptom_without_permissions(self):
-        user = self.create_user()
-        role = self.create_role_with_permissions(
-            permissions=[
-                EncounterPermissions.can_write_encounter.name,
-            ],
+        """
+        Users who have only `can_write_encounter` => (HTTP 403).
+        """
+        # No relevant permission
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
 
-        facility = self.create_facility(user=user)
-        organization = self.create_facility_organization(facility=facility)
-        self.attach_role_facility_organization_user(organization, user, role)
-        self.encounter = self.create_encounter(
-            patient=self.patient, facility=facility, organization=organization
-        )
+        url = self._get_symptom_url(symptom.external_id)
+        retrieve_response = self.client.get(url)
+        self.assertEqual(retrieve_response.status_code, 403)
 
-        self.client.force_authenticate(user=user)
-        symptom_data = self.generate_symptom_data(
-            encounter_id=self.encounter.external_id
+    #                         UPDATE TESTS
+    def test_update_symptom_with_permissions(self):
+        """
+        Users with `can_write_encounter` + `can_view_clinical_data`
+        => (HTTP 200) when updating.
+        """
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
-        response = self.client.post(
-            self.base_url, symptom_data.model_dump(mode="json"), format="json"
-        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        symptom_data_updated = model_to_dict(symptom)
+        symptom_data_updated["severity"] = "mild"
+        symptom_data_updated["code"] = self.valid_code
+
+        response = self.client.put(url, symptom_data_updated, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["severity"], "mild")
 
-        url = reverse(
-            "symptom-detail",
-            kwargs={
-                "patient_external_id": self.patient.external_id,
-                "external_id": response.json()["id"],
-            },
+    def test_update_symptom_for_single_encounter_with_permissions(self):
+        """
+        Users with `can_write_encounter` + `can_read_encounter`
+        => (HTTP 200).
+        """
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_read_encounter.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 403)
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        symptom_data_updated = model_to_dict(symptom)
+        symptom_data_updated["severity"] = "mild"
+        symptom_data_updated["code"] = self.valid_code
+
+        update_response = self.client.put(
+            f"{url}?encounter={encounter.external_id}",
+            symptom_data_updated,
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(update_response.json()["severity"], "mild")
+
+    def test_update_symptom_for_single_encounter_without_permissions(self):
+        """
+        Lacking `can_read_encounter` => (HTTP 403).
+        """
+        # Only write permission
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        symptom_data_updated = model_to_dict(symptom)
+        symptom_data_updated["severity"] = "mild"
+
+        update_response = self.client.put(
+            f"{url}?encounter={encounter.external_id}",
+            symptom_data_updated,
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 403)
+
+    def test_update_symptom_without_permissions(self):
+        """
+        Users with only `can_write_encounter` but not `can_view_clinical_data`
+        => (HTTP 403).
+        """
+        # Only write permission (same scenario as above but no read or view clinical)
+
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        symptom_data_updated = model_to_dict(symptom)
+        symptom_data_updated["severity"] = "mild"
+
+        update_response = self.client.put(url, symptom_data_updated, format="json")
+        self.assertEqual(update_response.status_code, 403)
+
+    def test_update_symptom_for_closed_encounter_with_permissions(self):
+        """
+        Encounter completed => (HTTP 403) on update,
+        even if user has `can_write_encounter` + `can_view_clinical_data`.
+        """
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=StatusChoices.completed.value,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        symptom_data_updated = model_to_dict(symptom)
+        symptom_data_updated["severity"] = "mild"
+
+        update_response = self.client.put(url, symptom_data_updated, format="json")
+        self.assertEqual(update_response.status_code, 403)
+
+    #                         DELETE TESTS
+    def test_delete_symptom_with_permission(self):
+        """
+        Users with `can_write_encounter` + `can_view_clinical_data` => (HTTP 204).
+        """
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        delete_response = self.client.delete(url, {}, format="json")
+        self.assertEqual(delete_response.status_code, 204)
+
+    def test_delete_symptom_for_single_encounter_with_permission(self):
+        """
+        Users with `can_write_encounter` + `can_read_encounter` => (HTTP 204).
+        """
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_read_encounter.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = f"{self._get_symptom_url(symptom.external_id)}?encounter={encounter.external_id}"
+        delete_response = self.client.delete(url, {}, format="json")
+        self.assertEqual(delete_response.status_code, 204)
+
+    def test_delete_symptom_for_single_encounter_without_permission(self):
+        """
+        Lacking `can_read_encounter` => (HTTP 403) on delete.
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = f"{self._get_symptom_url(symptom.external_id)}?encounter={encounter.external_id}"
+        delete_response = self.client.delete(url, {}, format="json")
+        self.assertEqual(delete_response.status_code, 403)
+
+    def test_delete_symptom_without_permission(self):
+        """
+        Users who only have `can_write_encounter` but not `can_view_clinical_data`
+        => (HTTP 403) on delete.
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+
+        url = self._get_symptom_url(symptom.external_id)
+        delete_response = self.client.delete(url, {}, format="json")
+        self.assertEqual(delete_response.status_code, 403)
