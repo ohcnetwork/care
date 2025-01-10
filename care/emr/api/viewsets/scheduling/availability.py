@@ -142,7 +142,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             resource=schedulable_resource_obj,
         )
         for slot in created_slots:
-            slot_key = f"{slot.start_datetime.time()}-{slot.end_datetime.time()}"
+            slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
             if (
                 slot_key in slots
                 and slots[slot_key]["availability_id"] == slot.availability.id
