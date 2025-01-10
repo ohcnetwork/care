@@ -26,10 +26,11 @@ class ValidateEncounterMixin:
 
     def validate_data(self, instance, model_obj=None):
         # Ensure the encounter exists and matches the patient's external ID
-        encounter_id = (
-            model_obj.encounter.external_id if model_obj else instance.encounter
-        )
-        encounter = get_object_or_404(Encounter, external_id=encounter_id)
+        if model_obj:
+            encounter = model_obj
+        else:
+            encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+
         if str(encounter.patient.external_id) != self.kwargs["patient_external_id"]:
             raise ValidationError(
                 "Patient external ID mismatch with encounter's patient"

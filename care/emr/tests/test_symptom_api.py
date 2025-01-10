@@ -1,8 +1,17 @@
+from secrets import choice
 from unittest.mock import patch
 
 from django.forms import model_to_dict
 from django.urls import reverse
+from model_bakery import baker
 
+from care.emr.models import Condition
+from care.emr.resources.condition.spec import (
+    CategoryChoices,
+    ClinicalStatusChoices,
+    SeverityChoices,
+    VerificationStatusChoices,
+)
 from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
@@ -45,6 +54,45 @@ class TestSymptomViewset(CareAPITestBase):
                 "external_id": symptom_id,
             },
         )
+
+    def create_symptom(self, encounter, patient, **kwargs):
+        clinical_status = kwargs.pop(
+            "clinical_status", choice(list(ClinicalStatusChoices)).value
+        )
+        verification_status = kwargs.pop(
+            "verification_status", choice(list(VerificationStatusChoices)).value
+        )
+        severity = kwargs.pop("severity", choice(list(SeverityChoices)).value)
+
+        return baker.make(
+            Condition,
+            encounter=encounter,
+            patient=patient,
+            category=CategoryChoices.problem_list_item.value,
+            clinical_status=clinical_status,
+            verification_status=verification_status,
+            severity=severity,
+            **kwargs,
+        )
+
+    def generate_data_for_symptom(self, encounter, **kwargs):
+        clinical_status = kwargs.pop(
+            "clinical_status", choice(list(ClinicalStatusChoices)).value
+        )
+        verification_status = kwargs.pop(
+            "verification_status", choice(list(VerificationStatusChoices)).value
+        )
+        severity = kwargs.pop("severity", choice(list(SeverityChoices)).value)
+        code = self.valid_code
+        return {
+            "encounter": encounter.external_id,
+            "category": CategoryChoices.problem_list_item.value,
+            "clinical_status": clinical_status,
+            "verification_status": verification_status,
+            "severity": severity,
+            "code": code,
+            **kwargs,
+        }
 
     #                            LIST TESTS
     def test_list_symptoms_with_permissions(self):
