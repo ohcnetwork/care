@@ -36,7 +36,9 @@ class Encounter(EMRBaseModel):
         facility_root_org = FacilityOrganization.objects.filter(
             org_type="root", facility=self.facility
         ).first()
-        orgs = orgs.union({facility_root_org.id})
+        if facility_root_org:
+            orgs = orgs.union({facility_root_org.id})
+
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])
 

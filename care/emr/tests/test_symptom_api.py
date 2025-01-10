@@ -28,7 +28,8 @@ class TestSymptomViewset(CareAPITestBase):
         }
         # Mocking validate_valueset
         self.patcher = patch(
-            "care.emr.resources.condition.spec.validate_valueset", return_value=True
+            "care.emr.resources.condition.spec.validate_valueset",
+            return_value=self.valid_code,
         )
         self.mock_validate_valueset = self.patcher.start()
 
@@ -187,6 +188,8 @@ class TestSymptomViewset(CareAPITestBase):
 
         response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["severity"], symptom_data_dict["severity"])
+        self.assertEqual(response.json()["code"], symptom_data_dict["code"])
 
     def test_create_symptom_with_permissions_and_encounter_status_completed(self):
         """
