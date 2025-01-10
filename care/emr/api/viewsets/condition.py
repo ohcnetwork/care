@@ -27,7 +27,7 @@ class ValidateEncounterMixin:
     def validate_data(self, instance, model_obj=None):
         # Ensure the encounter exists and matches the patient's external ID
         if model_obj:
-            encounter = model_obj
+            encounter = model_obj.encounter
         else:
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
 

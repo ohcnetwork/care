@@ -68,68 +68,6 @@ class CareAPITestBase(APITestCase):
         )
         return encounter
 
-    def create_symptom(self, encounter, patient, **kwargs):
-        from secrets import choice
-
-        from care.emr.models import Condition
-        from care.emr.resources.condition.spec import (
-            CategoryChoices,
-            ClinicalStatusChoices,
-            SeverityChoices,
-            VerificationStatusChoices,
-        )
-
-        clinical_status = kwargs.pop(
-            "clinical_status", choice(list(ClinicalStatusChoices)).value
-        )
-        verification_status = kwargs.pop(
-            "verification_status", choice(list(VerificationStatusChoices)).value
-        )
-        severity = kwargs.pop("severity", choice(list(SeverityChoices)).value)
-
-        return baker.make(
-            Condition,
-            encounter=encounter,
-            patient=patient,
-            category=CategoryChoices.problem_list_item.value,
-            clinical_status=clinical_status,
-            verification_status=verification_status,
-            severity=severity,
-            **kwargs,
-        )
-
-    def generate_data_for_symptom(self, encounter, **kwargs):
-        from secrets import choice
-
-        from care.emr.resources.condition.spec import (
-            CategoryChoices,
-            ClinicalStatusChoices,
-            SeverityChoices,
-            VerificationStatusChoices,
-        )
-
-        clinical_status = kwargs.pop(
-            "clinical_status", choice(list(ClinicalStatusChoices)).value
-        )
-        verification_status = kwargs.pop(
-            "verification_status", choice(list(VerificationStatusChoices)).value
-        )
-        severity = kwargs.pop("severity", choice(list(SeverityChoices)).value)
-        code = {
-            "display": "Low blood pressure",
-            "system": "http://snomed.info/sct",
-            "code": "45007003",
-        }
-        return {
-            "encounter": encounter.external_id,
-            "category": CategoryChoices.problem_list_item.value,
-            "clinical_status": clinical_status,
-            "verification_status": verification_status,
-            "severity": severity,
-            "code": code,
-            **kwargs,
-        }
-
     def attach_role_organization_user(self, organization, user, role):
         OrganizationUser.objects.create(organization=organization, user=user, role=role)
 
