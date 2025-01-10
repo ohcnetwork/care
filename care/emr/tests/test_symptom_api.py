@@ -220,13 +220,19 @@ class TestSymptomViewSet(CareAPITestBase):
 
     def test_create_symptom_without_permissions_on_facility(self):
         """
-        Users who lack `can_write_encounter` get (HTTP 403) when creating.
+        Tests that a user with `can_write_encounter` permissions but belonging to a different
+        organization receives (HTTP 403) when attempting to create a symptom.
         """
-        # No permission attached
         permissions = [EncounterPermissions.can_write_encounter.name]
         role = self.create_role_with_permissions(permissions)
-        organization = self.create_organization(org_type="govt")
-        self.attach_role_organization_user(organization, self.user, role)
+        external_user = self.create_user()
+        external_facility = self.create_facility(user=external_user)
+        external_organization = self.create_facility_organization(
+            facility=external_facility
+        )
+        self.attach_role_facility_organization_user(
+            external_organization, self.user, role
+        )
 
         encounter = self.create_encounter(
             patient=self.patient,
@@ -237,6 +243,43 @@ class TestSymptomViewSet(CareAPITestBase):
         symptom_data_dict = self.generate_data_for_symptom(encounter)
 
         response = self.client.post(self.base_url, symptom_data_dict, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_symptom_with_organisation_user_with_permissions(self):
+        """
+        Ensures that a user from a certain organization, who has both
+        `can_write_encounter` and `can_view_clinical_data`, can successfully
+        view symptom data (HTTP 200) but still receives (HTTP 403) when attempting
+        to create a symptom for an encounter.
+        """
+        organization = self.create_organization(org_type="govt")
+        patient = self.create_patient(geo_organization=organization)
+
+        permissions = [
+            EncounterPermissions.can_write_encounter.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(organization, self.user, role)
+
+        # Verify the user can view symptom data (HTTP 200)
+        test_url = reverse(
+            "symptom-list", kwargs={"patient_external_id": patient.external_id}
+        )
+        response = self.client.get(test_url)
+        self.assertEqual(response.status_code, 200)
+
+        encounter = self.create_encounter(
+            patient=patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
+        )
+
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
+        response = self.client.post(test_url, symptom_data_dict, format="json")
+
+        # User gets 403 because the encounter belongs to a different organization
         self.assertEqual(response.status_code, 403)
 
     def test_create_symptom_with_permissions(self):

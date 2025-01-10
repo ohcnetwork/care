@@ -53,7 +53,7 @@ migrate:
 	docker compose exec backend bash -c "python manage.py migrate"
 
 test:
-	docker compose exec backend bash -c "python manage.py test --keepdb --parallel --shuffle"
+	docker compose exec backend bash -c "python manage.py test $(path) --keepdb --parallel --shuffle"
 
 test-coverage:
 	docker compose exec backend bash -c "coverage run manage.py test --settings=config.settings.test --keepdb --parallel --shuffle"
