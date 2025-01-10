@@ -322,7 +322,7 @@ class TestSymptomViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 403)
 
-    #                         RETRIEVE TESTS
+    # RETRIEVE TESTS
     def test_retrieve_symptom_with_permissions(self):
         """
         Users with `can_view_clinical_data` => (HTTP 200).
@@ -395,7 +395,7 @@ class TestSymptomViewSet(CareAPITestBase):
         retrieve_response = self.client.get(url)
         self.assertEqual(retrieve_response.status_code, 403)
 
-    #                         UPDATE TESTS
+    # UPDATE TESTS
     def test_update_symptom_with_permissions(self):
         """
         Users with `can_write_encounter` + `can_view_clinical_data`
@@ -535,7 +535,7 @@ class TestSymptomViewSet(CareAPITestBase):
         update_response = self.client.put(url, symptom_data_updated, format="json")
         self.assertEqual(update_response.status_code, 403)
 
-    #                         DELETE TESTS
+    # DELETE TESTS
     def test_delete_symptom_with_permission(self):
         """
         Users with `can_write_encounter` + `can_view_clinical_data` => (HTTP 204).
