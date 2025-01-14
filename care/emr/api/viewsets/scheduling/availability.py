@@ -18,6 +18,7 @@ from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, SchedulableUserResource
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
+    CANCELLED_STATUS_CHOICES,
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
@@ -80,8 +81,19 @@ def convert_availability_to_slots(availabilities):
 
 def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
+        if token_slot.start_datetime < timezone.now():
+            raise ValidationError("Slot is already past")
         if token_slot.allocated >= token_slot.availability.tokens_per_slot:
             raise ValidationError("Slot is already full")
+        if (
+            TokenBooking.objects.filter(
+                token_slot=token_slot,
+                patient=patient,
+            )
+            .exclude(status__in=CANCELLED_STATUS_CHOICES)
+            .exists()
+        ):
+            raise ValidationError("Patient already has a booking for this slot")
         token_slot.allocated += 1
         token_slot.save()
         return TokenBooking.objects.create(
@@ -185,8 +197,6 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         patient = Patient.objects.filter(external_id=request_data.patient).first()
         if not patient:
             raise ValidationError({"Patient not found"})
-        if obj.start_datetime < timezone.now():
-            raise ValidationError("Slot is already past")
         appointment = lock_create_appointment(
             obj, patient, user, request_data.reason_for_visit
         )
