@@ -11,6 +11,7 @@ from care.emr.api.viewsets.batch_request import BatchRequestView
 from care.emr.api.viewsets.condition import DiagnosisViewSet, SymptomViewSet
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (
+    AllFacilityViewSet,
     FacilitySchedulableUsersViewSet,
     FacilityUsersViewSet,
     FacilityViewSet,
@@ -54,7 +55,6 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
-from care.facility.api.viewsets.facility import AllFacilityViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 

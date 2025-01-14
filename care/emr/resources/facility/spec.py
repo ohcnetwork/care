@@ -45,6 +45,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     features: list[int]
     cover_image_url: str
     read_cover_image_url: str
+    geo_organization: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -52,19 +53,17 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
-
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()
 
 
 class FacilityRetrieveSpec(FacilityReadSpec):
-    geo_organization: dict = {}
     flags: list[str] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if obj.geo_organization:
-            mapping["geo_organization"] = OrganizationReadSpec.serialize(
-                obj.geo_organization
-            ).to_json()
         mapping["flags"] = obj.get_facility_flags()

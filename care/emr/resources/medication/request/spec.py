@@ -108,7 +108,7 @@ class DoseAndRate(BaseModel):
 
 class TimingRepeat(BaseModel):
     frequency: int | None = None
-    period: float = 1
+    period: float | None = None
     period_unit: TimingUnit
     bounds_duration: DosageQuantity | None = None
 

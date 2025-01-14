@@ -1,14 +1,24 @@
+from secrets import choice
+
+import phonenumbers
 from django.urls import reverse
-from polyfactory.factories.pydantic_factory import ModelFactory
+from phonenumbers import PhoneNumberFormat, PhoneNumberType
 from rest_framework import status
 
-from care.emr.resources.patient.spec import PatientCreateSpec
+from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
-class PatientFactory(ModelFactory[PatientCreateSpec]):
-    __model__ = PatientCreateSpec
+def generate_random_valid_phone_number() -> str:
+    regions = ["US", "IN", "GB", "DE", "FR", "JP", "AU", "CA"]
+    random_region = choice(regions)
+    example_number = phonenumbers.example_number_for_type(
+        random_region, PhoneNumberType.MOBILE
+    )
+    if example_number:
+        return phonenumbers.format_number(example_number, PhoneNumberFormat.E164)
+    raise ValueError("Unable to generate a valid phone number")
 
 
 class TestPatientViewSet(CareAPITestBase):
@@ -27,10 +37,22 @@ class TestPatientViewSet(CareAPITestBase):
         super().setUp()  # Call parent's setUp to ensure proper initialization
         self.base_url = reverse("patient-list")
 
-    def generate_patient_data(self, **kwargs):
+    def generate_patient_data(self, geo_organization, **kwargs):
+        data = {
+            "name": self.fake.name(),
+            "gender": choice(list(GenderChoices)),
+            "address": self.fake.address(),
+            "permanent_address": self.fake.address(),
+            "pincode": self.fake.random_int(min=100000, max=999999),
+            "blood_group": choice(list(BloodGroupChoices)),
+            "phone_number": generate_random_valid_phone_number(),
+            "emergency_phone_number": generate_random_valid_phone_number(),
+            "geo_organization": geo_organization,
+        }
         if "age" not in kwargs and "date_of_birth" not in kwargs:
             kwargs["age"] = self.fake.random_int(min=1, max=100)
-        return PatientFactory.build(meta={}, gender="male", **kwargs)
+        data.update(**kwargs)
+        return data
 
     def test_create_patient_unauthenticated(self):
         """Test that unauthenticated users cannot create patients"""
@@ -57,9 +79,7 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.attach_role_organization_user(organization, user, role)
         self.client.force_authenticate(user=user)
-        response = self.client.post(
-            self.base_url, patient_data.model_dump(mode="json"), format="json"
-        )
+        response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_patient_unauthorization(self):
@@ -75,7 +95,45 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.attach_role_organization_user(organization, user, role)
         self.client.force_authenticate(user=user)
-        response = self.client.post(
-            self.base_url, patient_data.model_dump(mode="json"), format="json"
-        )
+        response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_patient_with_invalid_phone_number(self):
+        """Test patient creation with invalid phone number"""
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        invalid_phone_numbers = ["12345", "abcdef", "+1234567890123456", ""]
+
+        organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(organization, user, role)
+        self.client.force_authenticate(user=user)
+
+        for invalid_number in invalid_phone_numbers:
+            patient_data = self.generate_patient_data(
+                geo_organization=geo_organization.external_id,
+                phone_number=invalid_number,
+            )
+            response = self.client.post(self.base_url, patient_data, format="json")
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_patient_with_valid_phone_number(self):
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        valid_phone_numbers = [generate_random_valid_phone_number() for _ in range(5)]
+
+        organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(organization, user, role)
+        self.client.force_authenticate(user=user)
+
+        for valid_number in valid_phone_numbers:
+            patient_data = self.generate_patient_data(
+                geo_organization=geo_organization.external_id, phone_number=valid_number
+            )
+            response = self.client.post(self.base_url, patient_data, format="json")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -45,9 +45,6 @@ from care.emr.tasks.discharge_summary import (
     email_discharge_summary_task,
     generate_discharge_summary_task,
 )
-from care.facility.api.serializers.patient_consultation import (
-    EmailDischargeSummarySerializer,
-)
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 
@@ -287,12 +284,6 @@ class EncounterViewSet(
             django_validate_email(value)
             return value
 
-    @extend_schema(
-        description="Email the discharge summary to the user",
-        request=EmailDischargeSummarySerializer,
-        responses={200: "Success"},
-        tags=["encounter"],
-    )
     @action(detail=True, methods=["POST"])
     def email_discharge_summary(self, request, *args, **kwargs):
         encounter = self.get_object()

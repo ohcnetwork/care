@@ -6,7 +6,6 @@ from rest_framework import exceptions, serializers
 from care.emr.models import Organization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.organization.spec import OrganizationReadSpec
-from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models import Facility, FacilityUser
 from care.security.models import RolePermission
 from care.users.api.serializers.lsg import (
@@ -22,6 +21,17 @@ from care.utils.models.validators import (
     custom_image_extension_validator,
 )
 from care.utils.serializers.fields import ChoiceField
+
+
+class FacilityBareMinimumSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = (
+            "id",
+            "name",
+        )
 
 
 class SignUpSerializer(serializers.ModelSerializer):
