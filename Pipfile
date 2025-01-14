@@ -35,7 +35,7 @@ pydantic = "==2.9.2"
 pyjwt = "==2.9.0"
 python-slugify = "==8.0.4"
 pywebpush = "==2.0.1"
-redis = { extras = ["hiredis"], version = "==5.2.0" }
+redis = { extras = ["hiredis"], version = "==5.2.1" }
 redis-om = "==0.3.3"
 requests = "==2.32.3"
 simplejson = "==3.19.3"
