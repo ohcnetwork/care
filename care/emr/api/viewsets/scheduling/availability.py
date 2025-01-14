@@ -185,6 +185,8 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         patient = Patient.objects.filter(external_id=request_data.patient).first()
         if not patient:
             raise ValidationError({"Patient not found"})
+        if obj.start_datetime < timezone.now():
+            raise ValidationError("Slot is already past")
         appointment = lock_create_appointment(
             obj, patient, user, request_data.reason_for_visit
         )
