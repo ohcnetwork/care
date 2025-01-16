@@ -3,7 +3,7 @@ from typing import Literal
 from django.db import transaction
 from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from pydantic import BaseModel
+from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
@@ -15,6 +15,8 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.api.viewsets.scheduling import lock_create_appointment
+from care.emr.models import TokenSlot
 from care.emr.models.scheduling import SchedulableUserResource, TokenBooking
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
@@ -29,8 +31,14 @@ from care.security.authorization import AuthorizationController
 
 class CancelBookingSpec(BaseModel):
     reason: Literal[
-        BookingStatusChoices.cancelled, BookingStatusChoices.entered_in_error
+        BookingStatusChoices.cancelled,
+        BookingStatusChoices.entered_in_error,
+        BookingStatusChoices.rescheduled,
     ]
+
+
+class RescheduleBookingSpec(BaseModel):
+    new_slot: UUID4
 
 
 class TokenBookingFilters(FilterSet):
@@ -116,6 +124,37 @@ class TokenBookingViewSet(
         instance = self.get_object()
         self.authorize_update({}, instance)
         return self.cancel_appointment_handler(instance, request.data, request.user)
+
+    @action(detail=True, methods=["POST"])
+    def reschedule(self, request, *args, **kwargs):
+        request_data = RescheduleBookingSpec(**request.data)
+        existing_booking = self.get_object()
+        facility = self.get_facility_obj()
+        self.authorize_update({}, existing_booking)
+        if not AuthorizationController.call(
+            "can_create_appointment", self.request.user, facility
+        ):
+            raise PermissionDenied("You do not have permission to create appointments")
+        new_slot = get_object_or_404(
+            TokenSlot,
+            external_id=request_data.new_slot,
+            resource=existing_booking.token_slot.resource,
+        )
+        with transaction.atomic():
+            self.cancel_appointment_handler(
+                existing_booking,
+                {"reason": BookingStatusChoices.rescheduled},
+                request.user,
+            )
+            appointment = lock_create_appointment(
+                new_slot,
+                existing_booking.patient,
+                request.user,
+                existing_booking.reason_for_visit,
+            )
+            return Response(
+                TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
+            )
 
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):

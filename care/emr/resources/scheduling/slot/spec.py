@@ -8,8 +8,10 @@ from care.emr.models import TokenBooking
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability
 from care.emr.resources.base import EMRResource
+from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.facility.models import Facility
 from care.users.models import User
 
 
@@ -52,11 +54,13 @@ class BookingStatusChoices(str, Enum):
     checked_in = "checked_in"
     waitlist = "waitlist"
     in_consultation = "in_consultation"
+    rescheduled = "rescheduled"
 
 
 CANCELLED_STATUS_CHOICES = [
     BookingStatusChoices.entered_in_error.value,
     BookingStatusChoices.cancelled.value,
+    BookingStatusChoices.rescheduled.value,
 ]
 
 
@@ -83,6 +87,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     status: str
     reason_for_visit: str
     user: dict = {}
+    facility: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -95,4 +100,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
         )
         mapping["user"] = UserSpec.serialize(
             User.objects.get(id=obj.token_slot.resource.user_id)
+        ).model_dump(exclude=["meta"])
+        mapping["facility"] = FacilityBareMinimumSpec.serialize(
+            Facility.objects.get(id=obj.token_slot.resource.facility_id)
         ).model_dump(exclude=["meta"])
