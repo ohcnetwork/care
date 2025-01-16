@@ -16,14 +16,14 @@ class TestScheduleViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
         self.client.force_authenticate(user=self.user)
 
         self.base_url = reverse(
             "schedule-list", kwargs={"facility_external_id": self.facility.external_id}
-        )
-        self.resource = SchedulableUserResource.objects.create(
-            user=self.user,
-            facility=self.facility,
         )
 
     def _get_schedule_url(self, schedule_id):
@@ -221,15 +221,15 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
         self.client.force_authenticate(user=self.user)
 
         self.base_url = reverse(
             "schedule-exceptions-list",
             kwargs={"facility_external_id": self.facility.external_id},
-        )
-        self.resource = SchedulableUserResource.objects.create(
-            user=self.user,
-            facility=self.facility,
         )
 
     def _get_exception_url(self, exception_id):
@@ -399,6 +399,10 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.resource = SchedulableUserResource.objects.create(
             user=self.user, facility=self.facility
         )
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
         self.schedule = self.create_schedule()
 
         self.base_url = reverse(
@@ -407,10 +411,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
                 "facility_external_id": self.facility.external_id,
                 "schedule_external_id": self.schedule.external_id,
             },
-        )
-        self.resource = SchedulableUserResource.objects.create(
-            user=self.user,
-            facility=self.facility,
         )
 
     def _get_availability_url(self, availability_id):
@@ -446,7 +446,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
             slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
             slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
             tokens_per_slot=kwargs.get("tokens_per_slot", 1),
-            create_tokens=kwargs.get("create_tokens", True),
+            create_tokens=kwargs.get("create_tokens", False),
             reason=kwargs.get("reason", "Regular schedule"),
             availability=kwargs.get(
                 "availability",
