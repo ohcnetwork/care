@@ -206,7 +206,6 @@ class TestBookingViewSet(CareAPITestBase):
         )
         data = {"reason": BookingStatusChoices.cancelled.value}
         response = self.client.post(cancel_url, data, format="json")
-        print(response.data)
         self.assertContains(
             response,
             status_code=403,
@@ -303,4 +302,195 @@ class TestBookingViewSet(CareAPITestBase):
 
 
 class TestSlotViewSet(CareAPITestBase):
-    pass
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
+        self.schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now() - timedelta(days=30),
+            valid_to=datetime.now() + timedelta(days=30),
+        )
+        self.availability = self.create_availability()
+        self.slot = self.create_slot()
+        self.client.force_authenticate(user=self.user)
+
+    def _get_create_appointment_url(self, slot_id):
+        """Helper to get the detail URL for a specific booking."""
+        return reverse(
+            "slot-create-appointment",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": slot_id,
+            },
+        )
+
+    def create_appointment(self, **kwargs):
+        data = {
+            "token_slot": self.slot,
+            "patient": self.patient,
+            "booked_by": self.user,
+            "status": BookingStatusChoices.booked.value,
+        }
+        data.update(kwargs)
+        return TokenBooking.objects.create(**data)
+
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now() + timedelta(minutes=30),
+            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
+    def create_availability(self, **kwargs):
+        return Availability.objects.create(
+            schedule=self.schedule,
+            name=kwargs.get("name", "Test Availability"),
+            slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
+            slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
+            tokens_per_slot=kwargs.get("tokens_per_slot", 1),
+            create_tokens=kwargs.get("create_tokens", False),
+            reason=kwargs.get("reason", "Regular schedule"),
+            availability=kwargs.get(
+                "availability",
+                [
+                    {
+                        "day_of_week": 0,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 1,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 2,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 3,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 4,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 5,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 6,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                ],
+            ),
+        )
+
+    def get_appointment_data(self, **kwargs):
+        data = {
+            "patient": self.patient.external_id,
+            "reason_for_visit": "Testing",
+        }
+        data.update(kwargs)
+        return data
+
+    def test_create_appointment_with_permission(self):
+        """Users with can_create_appointment permission can create appointments."""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_appointment_without_permission(self):
+        """Users without can_create_appointment permission cannot create appointments."""
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_appointment_with_slot_in_past(self):
+        """Users cannot create appointments on a past slot."""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        slot = self.create_slot(
+            start_datetime=datetime.now() - timedelta(minutes=30),
+            end_datetime=datetime.now() - timedelta(minutes=15),
+        )
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertContains(response, status_code=400, text="Slot is already past")
+
+    def test_create_multiple_appointments_on_same_slot(self):
+        """Users cannot create multiple appointments on the same slot (as long as previous ones are cancelled)"""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_appointment()
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+        )
+        self.assertContains(
+            response,
+            status_code=400,
+            text="Patient already has a booking for this slot",
+        )
+
+    def test_cancel_and_create_appointment_on_same_slot(self):
+        """Users can create an appointment on the same slot if the previous one is cancelled"""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_appointment(status=BookingStatusChoices.cancelled.value)
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_over_booking_a_slot(self):
+        """Users cannot create an appointment on a slot if it is already fully booked"""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        availability = self.create_availability(tokens_per_slot=10)
+        slot = self.create_slot(availability=availability, allocated=10)
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertContains(response, status_code=400, text="Slot is already full")
