@@ -189,5 +189,5 @@ class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
         ):
             raise PermissionDenied("You do not have permission to create schedule")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         self.authorize_create(instance)

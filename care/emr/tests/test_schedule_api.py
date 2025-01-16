@@ -184,13 +184,8 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # First create a schedule
-        schedule_data = self.generate_schedule_data()
-        create_response = self.client.post(self.base_url, schedule_data, format="json")
-        schedule_id = create_response.data["id"]
-
-        # Then delete it
-        delete_url = self._get_schedule_url(schedule_id)
+        schedule = self.create_schedule()
+        delete_url = self._get_schedule_url(schedule.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -204,7 +199,6 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule = self.create_schedule()
-
         delete_url = self._get_schedule_url(schedule.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -390,4 +384,142 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_exception_with_bookings(self):
+        pass
+
+
+class TestAvailabilityViewSet(CareAPITestBase):
+    def setUp(self):
+        from care.emr.models import SchedulableUserResource
+
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user, facility=self.facility
+        )
+        self.schedule = self.create_schedule()
+
+        self.base_url = reverse(
+            "schedule-availability-list",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "schedule_external_id": self.schedule.external_id,
+            },
+        )
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
+
+    def _get_availability_url(self, availability_id):
+        """Helper to get the detail url for a specific availability."""
+        return reverse(
+            "schedule-availability-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "schedule_external_id": self.schedule.external_id,
+                "external_id": availability_id,
+            },
+        )
+
+    def create_schedule(self, **kwargs):
+        from care.emr.models import Schedule
+
+        schedule = Schedule.objects.create(
+            resource=self.resource,
+            name=kwargs.get("name", "Test Schedule"),
+            valid_from=kwargs.get("valid_from", datetime.now()),
+            valid_to=kwargs.get("valid_to", datetime.now() + timedelta(days=30)),
+        )
+        for availability in kwargs.get("availabilities", []):
+            schedule.availabilities.create(**availability)
+        return schedule
+
+    def create_availability(self, **kwargs):
+        from care.emr.models import Availability
+
+        return Availability.objects.create(
+            schedule=self.schedule,
+            name=kwargs.get("name", "Test Availability"),
+            slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
+            slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
+            tokens_per_slot=kwargs.get("tokens_per_slot", 1),
+            create_tokens=kwargs.get("create_tokens", True),
+            reason=kwargs.get("reason", "Regular schedule"),
+            availability=kwargs.get(
+                "availability",
+                [
+                    {
+                        "day_of_week": 1,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    }
+                ],
+            ),
+        )
+
+    def generate_availability_data(self, **kwargs):
+        """Helper to generate valid availability data."""
+        return {
+            "name": "Morning Slot",
+            "slot_type": SlotTypeOptions.appointment.value,
+            "slot_size_in_minutes": 30,
+            "tokens_per_slot": 1,
+            "create_tokens": True,
+            "reason": "Regular schedule",
+            "availability": [
+                {
+                    "day_of_week": 1,
+                    "start_time": "09:00:00",
+                    "end_time": "13:00:00",
+                }
+            ],
+            **kwargs,
+        }
+
+    def test_create_availability_with_permissions(self):
+        """Users with can_write_user_schedule permission can create availability."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        availability_data = self.generate_availability_data()
+        response = self.client.post(self.base_url, availability_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], availability_data["name"])
+
+    def test_create_availability_without_permissions(self):
+        """Users without can_write_user_schedule permission cannot create availability."""
+        availability_data = self.generate_availability_data()
+        response = self.client.post(self.base_url, availability_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_availability_with_permissions(self):
+        """Users with can_write_user_schedule permission can delete availability."""
+        permissions = [
+            UserSchedulePermissions.can_list_user_schedule.name,
+            UserSchedulePermissions.can_write_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        availability = self.create_availability()
+        delete_url = self._get_availability_url(availability.external_id)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_availability_without_permissions(self):
+        """Users without can_write_user_schedule permission cannot delete availability."""
+        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        availability = self.create_availability()
+        delete_url = self._get_availability_url(availability.external_id)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_availability_with_bookings(self):
         pass
