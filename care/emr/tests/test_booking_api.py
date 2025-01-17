@@ -1,9 +1,12 @@
+from http.client import responses
+
 from care.emr.models import (
     SchedulableUserResource,
     Schedule,
     Availability,
     TokenSlot,
     TokenBooking,
+    AvailabilityException,
 )
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
@@ -494,3 +497,59 @@ class TestSlotViewSet(CareAPITestBase):
             self._get_create_appointment_url(slot.external_id), data, format="json"
         )
         self.assertContains(response, status_code=400, text="Slot is already full")
+
+    def test_get_slots_for_day(self):
+        """Get slots for a specific day."""
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_slots_for_day_for_non_schedulable_user(self):
+        """Cannot get slots for non-schedulable user."""
+        user = self.create_user()
+        facility = self.create_facility(user=user)
+        data = {
+            "user": user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response, status_code=400, text="Resource is not schedulable"
+        )
+
+    def test_get_slots_for_day_with_exception(self):
+        """Get no slots for day with whole day exception"""
+
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
+
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now() - timedelta(days=1),
+            valid_to=datetime.now() + timedelta(days=1),
+            start_time="00:00:00",
+            end_time="23:59:59",
+        )
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
