@@ -528,7 +528,7 @@ class TestSlotViewSet(CareAPITestBase):
             response, status_code=400, text="Resource is not schedulable"
         )
 
-    def test_get_slots_for_day_with_exception(self):
+    def test_get_slots_for_day_with_full_day_exception(self):
         """Get no slots for day with whole day exception"""
 
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
@@ -553,3 +553,81 @@ class TestSlotViewSet(CareAPITestBase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 0)
+
+    def test_get_slots_for_day_with_exception_left_overlap(self):
+        """Get fewer slots for day with partially overlapping exception"""
+
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
+
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now() - timedelta(days=1),
+            valid_to=datetime.now() + timedelta(days=1),
+            start_time="00:00:00",
+            end_time="12:00:00",
+        )
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_get_slots_for_day_with_exception_right_overlap(self):
+        """Get fewer slots for day with partially overlapping exception"""
+
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
+
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now() - timedelta(days=1),
+            valid_to=datetime.now() + timedelta(days=1),
+            start_time="10:00:00",
+            end_time="23:59:59",
+        )
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_get_slots_for_day_with_exception_overlap_in_between(self):
+        """Get fewer slots for day with partially overlapping exception"""
+
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
+
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now() - timedelta(days=1),
+            valid_to=datetime.now() + timedelta(days=1),
+            start_time="10:00:00",
+            end_time="12:00:00",
+        )
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 4)

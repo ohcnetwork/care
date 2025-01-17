@@ -76,8 +76,8 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
                 )
                 if (
                     exception_start_time
-                    <= (current_time + datetime.timedelta(minutes=slot_size_in_minutes))
-                ) and exception_end_time >= current_time:
+                    < (current_time + datetime.timedelta(minutes=slot_size_in_minutes))
+                ) and exception_end_time > current_time:
                     conflicting = True
 
             if not conflicting:
@@ -352,8 +352,8 @@ def calculate_slots(
                             date, exception["end_time"], tzinfo=None
                         )
                         if (
-                            exception_start_time <= end_time
-                            and exception_end_time >= start_time
+                            exception_start_time < end_time
+                            and exception_end_time > start_time
                         ):
                             conflicting = True
                     start_time = start_time + timedelta(
