@@ -2,7 +2,7 @@ import datetime
 from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
-from pydantic import UUID4, model_validator
+from pydantic import UUID4
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models import AvailabilityException, TokenSlot

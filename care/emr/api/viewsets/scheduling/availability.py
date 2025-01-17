@@ -46,9 +46,10 @@ class AvailabilityStatsRequestSpec(BaseModel):
     def validate_period(self):
         max_period = 32
         if self.from_date > self.to_date:
-            raise ValidationError("From Date cannot be greater than To Date")
-        if self.from_date - self.to_date > datetime.timedelta(days=max_period):
-            raise ValidationError("Period cannot be be greater than max days")
+            raise ValidationError("From Date cannot be after To Date")
+        if self.to_date - self.from_date > datetime.timedelta(days=max_period):
+            msg = f"Period cannot be be greater than {max_period} days"
+            raise ValidationError(msg)
 
 
 def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day):
@@ -215,7 +216,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         request_data = AppointmentBookingSpec(**request_data)
         patient = Patient.objects.filter(external_id=request_data.patient).first()
         if not patient:
-            raise ValidationError({"Patient not found"})
+            raise ValidationError("Patient not found")
         appointment = lock_create_appointment(
             obj, patient, user, request_data.reason_for_visit
         )

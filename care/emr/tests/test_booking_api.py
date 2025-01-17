@@ -78,6 +78,9 @@ class TestBookingViewSet(CareAPITestBase):
             "status": BookingStatusChoices.booked.value,
         }
         data.update(kwargs)
+        slot = data["token_slot"]
+        slot.allocated += 1
+        slot.save()
         return TokenBooking.objects.create(**data)
 
     def create_slot(self, **kwargs):
@@ -104,6 +107,31 @@ class TestBookingViewSet(CareAPITestBase):
         """Users without can_list_user_booking permission cannot list bookings."""
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 403)
+
+    def test_list_booking_filtered_by_schedulable_user(self):
+        """Users can list bookings filtered by schedulable user resource."""
+        permissions = [UserSchedulePermissions.can_list_user_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_booking()
+
+        response = self.client.get(self.base_url, data={"user": self.user.external_id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+
+    def test_list_booking_filtered_by_non_schedulable_user(self):
+        """Users can list bookings filtered by non-schedulable user resource, but it'd be empty queryset."""
+        permissions = [UserSchedulePermissions.can_list_user_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        non_schedulable_user = self.create_user()
+        response = self.client.get(
+            self.base_url, data={"user": non_schedulable_user.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
 
     def test_retrieve_booking_with_permissions(self):
         """Users with can_list_user_booking permission can retrieve bookings."""
@@ -180,6 +208,8 @@ class TestBookingViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         booking = self.create_booking()
+        tokens_allocated_before = booking.token_slot.allocated
+
         cancel_url = reverse(
             "appointments-cancel",
             kwargs={
@@ -190,6 +220,10 @@ class TestBookingViewSet(CareAPITestBase):
         data = {"reason": BookingStatusChoices.cancelled.value}
         response = self.client.post(cancel_url, data, format="json")
         self.assertEqual(response.status_code, 200)
+
+        booking.token_slot.refresh_from_db()
+        tokens_allocated_after = booking.token_slot.allocated
+        self.assertEqual(tokens_allocated_before - 1, tokens_allocated_after)
 
     def test_cancel_booking_without_permission(self):
         """Users cannot cancel bookings via the cancel endpoint."""
@@ -214,6 +248,39 @@ class TestBookingViewSet(CareAPITestBase):
             status_code=403,
             text="You do not have permission to update bookings",
         )
+
+    def test_cancel_cancelled_booking(self):
+        """Users can cancel bookings to another cancelled status even if already cancelled. However, tokens allocated on slot won't be changed."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking()
+        cancel_url = reverse(
+            "appointments-cancel",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+
+        data = {"reason": BookingStatusChoices.cancelled.value}
+        response = self.client.post(cancel_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        booking.token_slot.refresh_from_db()
+        tokens_allocated_before = booking.token_slot.allocated
+
+        data = {"reason": BookingStatusChoices.entered_in_error.value}
+        response = self.client.post(cancel_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        booking.token_slot.refresh_from_db()
+        tokens_allocated_after = booking.token_slot.allocated
+        self.assertEqual(tokens_allocated_before, tokens_allocated_after)
 
     def test_reschedule_booking_with_permission(self):
         """Users can reschedule bookings via the re-schedule endpoint."""
@@ -435,6 +502,18 @@ class TestSlotViewSet(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_create_appointment_with_invalid_patient(self):
+        """Users with can_create_appointment permission can create appointments."""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        data = self.get_appointment_data(patient="76aab2d8-93ef-4c9b-b344-b48167a082d0")
+        response = self.client.post(
+            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+        )
+        self.assertContains(response, status_code=400, text="Patient not found")
+
     def test_create_appointment_with_slot_in_past(self):
         """Users cannot create appointments on a past slot."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
@@ -631,3 +710,134 @@ class TestSlotViewSet(CareAPITestBase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 4)
+
+    def test_availability_stats(self):
+        """Get heatmap availability stats for few days"""
+        data = {
+            "user": self.user.external_id,
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_availability_stats_invalid_period(self):
+        """Get heatmap availability stats for from date after to date"""
+        data = {
+            "user": self.user.external_id,
+            "from_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response, status_code=400, text="From Date cannot be after To Date"
+        )
+
+    def test_availability_stats_exceed_period(self):
+        """Get heatmap availability stats for more than max days"""
+        data = {
+            "user": self.user.external_id,
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=40)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response, status_code=400, text="Period cannot be be greater than 32 days"
+        )
+
+    def test_availability_stats_for_invalid_user(self):
+        """Get heatmap availability stats for an invalid user"""
+        data = {
+            "user": "98c763ba-5bbb-44b9-ac03-56414fbb3021",
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(response, status_code=400, text="User does not exist")
+
+    def test_availability_stats_for_non_schedulable_user(self):
+        """Get heatmap availability stats for a non-schedulable user"""
+        non_schedulable_user = self.create_user()
+        data = {
+            "user": non_schedulable_user.external_id,
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response, status_code=400, text="Resource is not schedulable"
+        )
+
+    def test_availability_heatmap_slots_same_as_get_slots_for_day(self):
+        """Get heatmap availability stats for 7 days and verify same slot stats as get_slots_for_day"""
+        ## TODO: figure out what's happening here; getting expected results in front-end;
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
+        #
+        # AvailabilityException.objects.create(
+        #     resource=self.resource,
+        #     name="Test Exception",
+        #     valid_from=datetime.now(),
+        #     valid_to=datetime.now() + timedelta(days=1),
+        #     start_time="00:00:00",
+        #     end_time="11:59:59",
+        # )
+        # AvailabilityException.objects.create(
+        #     resource=self.resource,
+        #     name="Test Exception",
+        #     valid_from=datetime.now() + timedelta(days=2),
+        #     valid_to=datetime.now() + timedelta(days=3),
+        #     start_time="12:00:00",
+        #     end_time="14:00:00",
+        # )
+        data = {
+            "user": self.user.external_id,
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d"),
+        }
+        availability_stats_url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(availability_stats_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        slots_for_day_url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        for day, slot_stats in response.data.items():
+            data = {"user": self.user.external_id, "day": day}
+            response = self.client.post(slots_for_day_url, data, format="json")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                slot_stats["booked_slots"],
+                sum(x["allocated"] for x in response.data["results"]),
+            )
+            self.assertEqual(
+                slot_stats["total_slots"],
+                sum(
+                    x["availability"]["tokens_per_slot"]
+                    for x in response.data["results"]
+                ),
+            )
