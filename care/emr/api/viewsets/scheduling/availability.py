@@ -55,8 +55,18 @@ class AvailabilityStatsRequestSpec(BaseModel):
 def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day):
     slots = {}
     for availability in availabilities:
-        start_time = parse(availability["availability"]["start_time"])
-        end_time = parse(availability["availability"]["end_time"])
+        start_time = datetime.datetime.combine(
+            day,
+            time.fromisoformat(availability["availability"]["start_time"]),
+            tzinfo=None,
+        )
+        end_time = datetime.datetime.combine(
+            day,
+            time.fromisoformat(availability["availability"]["end_time"]),
+            tzinfo=None,
+        )
+        # start_time = parse(availability["availability"]["start_time"])
+        # end_time = parse(availability["availability"]["end_time"])
         slot_size_in_minutes = availability["slot_size_in_minutes"]
         availability_id = availability["availability_id"]
         current_time = start_time
@@ -343,7 +353,7 @@ def calculate_slots(
                 end_time = datetime.datetime.combine(
                     date, time.fromisoformat(available_slot["end_time"]), tzinfo=None
                 )
-                while start_time <= end_time:
+                while start_time < end_time:
                     conflicting = False
                     for exception in exceptions:
                         exception_start_time = datetime.datetime.combine(
