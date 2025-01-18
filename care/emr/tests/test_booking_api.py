@@ -811,19 +811,50 @@ class TestSlotViewSet(CareAPITestBase):
             response, status_code=400, text="Resource is not schedulable"
         )
 
-    def test_availability_heatmap_slots_same_as_get_slots_for_day(self):
+    def test_availability_heatmap_slots_same_as_get_slots_for_day_without_exceptions(
+        self,
+    ):
         """Get heatmap availability stats for 7 days and verify same slot stats as get_slots_for_day"""
-        ## TODO: figure out what's happening here; getting expected results in front-end;
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
-        #
+        data = {
+            "user": self.user.external_id,
+            "from_date": datetime.now().strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d"),
+        }
+        availability_stats_url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(availability_stats_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        slots_for_day_url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        for day, slot_stats in response.data.items():
+            data = {"user": self.user.external_id, "day": day}
+            response = self.client.post(slots_for_day_url, data, format="json")
+            self.assertEqual(response.status_code, 200)
+            booked_slots_for_day = sum(x["allocated"] for x in response.data["results"])
+            total_slots_for_day = sum(
+                x["availability"]["tokens_per_slot"] for x in response.data["results"]
+            )
+            self.assertEqual(slot_stats["booked_slots"], booked_slots_for_day)
+            self.assertEqual(slot_stats["total_slots"], total_slots_for_day)
+
+    def test_availability_heatmap_slots_same_as_get_slots_for_day_with_exceptions(self):
+        """Get heatmap availability stats for 7 days and verify same slot stats as get_slots_for_day"""
+        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
+        self.slot.delete()
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
             valid_from=datetime.now(),
             valid_to=datetime.now() + timedelta(days=1),
             start_time="00:00:00",
-            end_time="11:59:59",
+            end_time="23:59:59",
         )
         AvailabilityException.objects.create(
             resource=self.resource,
@@ -853,14 +884,9 @@ class TestSlotViewSet(CareAPITestBase):
             data = {"user": self.user.external_id, "day": day}
             response = self.client.post(slots_for_day_url, data, format="json")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                slot_stats["booked_slots"],
-                sum(x["allocated"] for x in response.data["results"]),
+            booked_slots_for_day = sum(x["allocated"] for x in response.data["results"])
+            total_slots_for_day = sum(
+                x["availability"]["tokens_per_slot"] for x in response.data["results"]
             )
-            self.assertEqual(
-                slot_stats["total_slots"],
-                sum(
-                    x["availability"]["tokens_per_slot"]
-                    for x in response.data["results"]
-                ),
-            )
+            self.assertEqual(slot_stats["booked_slots"], booked_slots_for_day)
+            self.assertEqual(slot_stats["total_slots"], total_slots_for_day)
