@@ -750,12 +750,12 @@ class TestSlotViewSet(CareAPITestBase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
-    def test_availability_stats_outside_schedule_validity(self):
-        """Get heatmap availability stats for few days"""
+    def test_availability_stats_partially_outside_schedule_validity(self):
+        """Get heatmap availability stats for days partially outside schedule validity"""
         data = {
             "user": self.user.external_id,
-            "from_date": (datetime.now() + timedelta(days=90)).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=100)).strftime("%Y-%m-%d"),
+            "from_date": (datetime.now() + timedelta(days=25)).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=35)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
