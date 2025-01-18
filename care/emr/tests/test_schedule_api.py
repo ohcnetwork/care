@@ -275,6 +275,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_schedule_validity_with_booking_within_new_validity(self):
+        """Test that schedule validity can be updated when bookings fall within the new validity period."""
         permissions = [
             UserSchedulePermissions.can_write_user_schedule.name,
             UserSchedulePermissions.can_list_user_schedule.name,
@@ -294,6 +295,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_schedule_validity_with_booking_outside_new_validity(self):
+        """Test that schedule validity cannot be updated when bookings fall outside the new validity period."""
         permissions = [
             UserSchedulePermissions.can_write_user_schedule.name,
             UserSchedulePermissions.can_list_user_schedule.name,
@@ -780,7 +782,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         )
 
     def test_create_availability_validate_availability(self):
-        """Test that creating availability with overlapping time ranges fails."""
+        """Test validation rules for overlapping time ranges when creating availability slots."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -847,7 +849,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_availability_validate_slot_type(self):
-        """Test slot type validation rules for availability creation."""
+        """Test validation rules for different slot types when creating availability slots."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)

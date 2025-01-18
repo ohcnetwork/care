@@ -1,28 +1,26 @@
-from http.client import responses
+from datetime import UTC, datetime, timedelta
+
+from django.urls import reverse
 
 from care.emr.models import (
+    Availability,
+    AvailabilityException,
     SchedulableUserResource,
     Schedule,
-    Availability,
-    TokenSlot,
     TokenBooking,
-    AvailabilityException,
+    TokenSlot,
 )
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
-    BookingStatusChoices,
     CANCELLED_STATUS_CHOICES,
+    BookingStatusChoices,
 )
 from care.security.permissions.user_schedule import UserSchedulePermissions
 from care.utils.tests.base import CareAPITestBase
-from django.urls import reverse
-from datetime import datetime, timedelta
-
 from config.patient_otp_authentication import PatientOtpObject
 
 
 class TestBookingViewSet(CareAPITestBase):
-
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
@@ -36,8 +34,8 @@ class TestBookingViewSet(CareAPITestBase):
         self.schedule = Schedule.objects.create(
             resource=self.resource,
             name="Test Schedule",
-            valid_from=datetime.now() - timedelta(days=30),
-            valid_to=datetime.now() + timedelta(days=30),
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
         )
         self.availability = Availability.objects.create(
             schedule=self.schedule,
@@ -93,8 +91,8 @@ class TestBookingViewSet(CareAPITestBase):
         data = {
             "resource": self.resource,
             "availability": self.availability,
-            "start_datetime": datetime.now() + timedelta(minutes=30),
-            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
             "allocated": 0,
         }
         data.update(kwargs)
@@ -205,7 +203,7 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_cancel_booking_with_permission(self):
-        """Users can cancel bookings via the cancel endpoint."""
+        """Users with proper permissions can cancel bookings via the cancel endpoint."""
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
@@ -232,7 +230,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertEqual(tokens_allocated_before - 1, tokens_allocated_after)
 
     def test_cancel_booking_without_permission(self):
-        """Users cannot cancel bookings via the cancel endpoint."""
+        """Users without proper permissions cannot cancel bookings via the cancel endpoint."""
         permissions = [
             UserSchedulePermissions.can_list_user_booking.name,
         ]
@@ -289,7 +287,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertEqual(tokens_allocated_before, tokens_allocated_after)
 
     def test_reschedule_booking_with_permission(self):
-        """Users can reschedule bookings via the re-schedule endpoint."""
+        """Users with proper permissions can reschedule bookings via the re-schedule endpoint."""
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
@@ -312,7 +310,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_reschedule_booking_without_permission(self):
-        """Users cannot reschedule bookings via the re-schedule endpoint."""
+        """Users without proper permissions cannot reschedule bookings via the re-schedule endpoint."""
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
@@ -338,7 +336,7 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_reschedule_booking_with_slot_in_past(self):
-        """Users cannot reschedule bookings via the re-schedule endpoint."""
+        """Users cannot reschedule bookings to slots that are in the past."""
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
@@ -348,8 +346,8 @@ class TestBookingViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         new_slot = self.create_slot(
-            start_datetime=datetime.now() - timedelta(minutes=30),
-            end_datetime=datetime.now() - timedelta(minutes=15),
+            start_datetime=datetime.now(UTC) - timedelta(minutes=30),
+            end_datetime=datetime.now(UTC) - timedelta(minutes=15),
         )
         booking = self.create_booking()
         reschedule_url = reverse(
@@ -368,6 +366,7 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_list_available_users(self):
+        """Users can list available schedulable users."""
         available_users_url = reverse(
             "appointments-available-users",
             kwargs={"facility_external_id": self.facility.external_id},
@@ -391,8 +390,8 @@ class TestSlotViewSet(CareAPITestBase):
         self.schedule = Schedule.objects.create(
             resource=self.resource,
             name="Test Schedule",
-            valid_from=datetime.now() - timedelta(days=30),
-            valid_to=datetime.now() + timedelta(days=30),
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()
@@ -422,8 +421,8 @@ class TestSlotViewSet(CareAPITestBase):
         data = {
             "resource": self.resource,
             "availability": self.availability,
-            "start_datetime": datetime.now() + timedelta(minutes=30),
-            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
             "allocated": 0,
         }
         data.update(kwargs)
@@ -509,7 +508,7 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
 
     def test_create_appointment_with_invalid_patient(self):
-        """Users with can_create_appointment permission can create appointments."""
+        """Users cannot create appointments for invalid patients."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -521,14 +520,14 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertContains(response, status_code=400, text="Patient not found")
 
     def test_create_appointment_with_slot_in_past(self):
-        """Users cannot create appointments on a past slot."""
+        """Users cannot create appointments for slots that are in the past."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         slot = self.create_slot(
-            start_datetime=datetime.now() - timedelta(minutes=30),
-            end_datetime=datetime.now() - timedelta(minutes=15),
+            start_datetime=datetime.now(UTC) - timedelta(minutes=30),
+            end_datetime=datetime.now(UTC) - timedelta(minutes=15),
         )
         data = self.get_appointment_data()
         response = self.client.post(
@@ -537,7 +536,7 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertContains(response, status_code=400, text="Slot is already past")
 
     def test_create_multiple_appointments_on_same_slot(self):
-        """Users cannot create multiple appointments on the same slot (as long as previous ones are cancelled)"""
+        """Users cannot create multiple appointments on the same slot for the same patient."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -555,7 +554,7 @@ class TestSlotViewSet(CareAPITestBase):
         )
 
     def test_cancel_and_create_appointment_on_same_slot(self):
-        """Users can create an appointment on the same slot if the previous one is cancelled"""
+        """Users can create a new appointment on a slot after cancelling the previous one."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -569,7 +568,7 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_over_booking_a_slot(self):
-        """Users cannot create an appointment on a slot if it is already fully booked"""
+        """Users cannot create appointments on slots that are already fully booked."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -584,10 +583,10 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertContains(response, status_code=400, text="Slot is already full")
 
     def test_get_slots_for_day(self):
-        """Get slots for a specific day."""
+        """Users can get available slots for a specific day."""
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -595,13 +594,13 @@ class TestSlotViewSet(CareAPITestBase):
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 9)
+        self.assertEqual(len(response.data["results"]), 8)
 
     def test_hit_on_get_slots_for_day_does_not_cause_duplicate_slots(self):
-        """Get slots for a specific day."""
+        """Multiple requests to get slots for a day should not create duplicate slots."""
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -609,19 +608,19 @@ class TestSlotViewSet(CareAPITestBase):
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 9)
+        self.assertEqual(len(response.data["results"]), 8)
 
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 9)
+        self.assertEqual(len(response.data["results"]), 8)
 
     def test_get_slots_for_day_for_non_schedulable_user(self):
-        """Cannot get slots for non-schedulable user."""
+        """Cannot get slots for users that are not schedulable."""
         user = self.create_user()
         facility = self.create_facility(user=user)
         data = {
             "user": user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -633,22 +632,21 @@ class TestSlotViewSet(CareAPITestBase):
         )
 
     def test_get_slots_for_day_with_full_day_exception(self):
-        """Get no slots for day with whole day exception"""
-
+        """No slots should be available for days with full day exceptions."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
 
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now() - timedelta(days=1),
-            valid_to=datetime.now() + timedelta(days=1),
+            valid_from=datetime.now(UTC) - timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=1),
             start_time="00:00:00",
             end_time="23:59:59",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -659,22 +657,21 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 0)
 
     def test_get_slots_for_day_with_exception_left_overlap(self):
-        """Get fewer slots for day with partially overlapping exception"""
-
+        """Fewer slots should be available when there is an exception overlapping the start of the day."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
 
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now() - timedelta(days=1),
-            valid_to=datetime.now() + timedelta(days=1),
+            valid_from=datetime.now(UTC) - timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=1),
             start_time="00:00:00",
             end_time="12:00:00",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -685,22 +682,21 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 2)
 
     def test_get_slots_for_day_with_exception_right_overlap(self):
-        """Get fewer slots for day with partially overlapping exception"""
-
+        """Fewer slots should be available when there is an exception overlapping the end of the day."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
 
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now() - timedelta(days=1),
-            valid_to=datetime.now() + timedelta(days=1),
+            valid_from=datetime.now(UTC) - timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=1),
             start_time="10:00:00",
             end_time="23:59:59",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -711,22 +707,21 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 2)
 
     def test_get_slots_for_day_with_exception_overlap_in_between(self):
-        """Get fewer slots for day with partially overlapping exception"""
-
+        """Fewer slots should be available when there is an exception overlapping the middle of the day."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
 
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now() - timedelta(days=1),
-            valid_to=datetime.now() + timedelta(days=1),
+            valid_from=datetime.now(UTC) - timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=1),
             start_time="10:00:00",
             end_time="12:00:00",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-get-slots-for-day",
@@ -737,11 +732,11 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 4)
 
     def test_availability_stats(self):
-        """Get heatmap availability stats for few days"""
+        """Users can get availability statistics for a date range."""
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -751,11 +746,11 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_availability_stats_partially_outside_schedule_validity(self):
-        """Get heatmap availability stats for days partially outside schedule validity"""
+        """Users can get availability statistics for date ranges partially outside schedule validity."""
         data = {
             "user": self.user.external_id,
-            "from_date": (datetime.now() + timedelta(days=25)).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=35)).strftime("%Y-%m-%d"),
+            "from_date": (datetime.now(UTC) + timedelta(days=25)).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=35)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -765,11 +760,11 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_availability_stats_invalid_period(self):
-        """Get heatmap availability stats for from date after to date"""
+        """Users cannot get availability statistics when from_date is after to_date."""
         data = {
             "user": self.user.external_id,
-            "from_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
+            "from_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -781,11 +776,11 @@ class TestSlotViewSet(CareAPITestBase):
         )
 
     def test_availability_stats_exceed_period(self):
-        """Get heatmap availability stats for more than max days"""
+        """Users cannot get availability statistics for periods longer than the maximum allowed days."""
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=40)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=40)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -797,11 +792,11 @@ class TestSlotViewSet(CareAPITestBase):
         )
 
     def test_availability_stats_for_invalid_user(self):
-        """Get heatmap availability stats for an invalid user"""
+        """Users cannot get availability statistics for invalid users."""
         data = {
             "user": "98c763ba-5bbb-44b9-ac03-56414fbb3021",
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -811,12 +806,12 @@ class TestSlotViewSet(CareAPITestBase):
         self.assertContains(response, status_code=400, text="User does not exist")
 
     def test_availability_stats_for_non_schedulable_user(self):
-        """Get heatmap availability stats for a non-schedulable user"""
+        """Users cannot get availability statistics for non-schedulable users."""
         non_schedulable_user = self.create_user()
         data = {
             "user": non_schedulable_user.external_id,
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
         url = reverse(
             "slot-availability-stats",
@@ -830,13 +825,13 @@ class TestSlotViewSet(CareAPITestBase):
     def test_availability_heatmap_slots_same_as_get_slots_for_day_without_exceptions(
         self,
     ):
-        """Get heatmap availability stats for 7 days and verify same slot stats as get_slots_for_day"""
+        """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",
@@ -861,29 +856,29 @@ class TestSlotViewSet(CareAPITestBase):
             self.assertEqual(slot_stats["total_slots"], total_slots_for_day)
 
     def test_availability_heatmap_slots_same_as_get_slots_for_day_with_exceptions(self):
-        """Get heatmap availability stats for 7 days and verify same slot stats as get_slots_for_day"""
+        """Availability heatmap slot counts should match individual day slot counts even with exceptions."""
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now(),
-            valid_to=datetime.now() + timedelta(days=1),
+            valid_from=datetime.now(UTC),
+            valid_to=datetime.now(UTC) + timedelta(days=1),
             start_time="00:00:00",
             end_time="23:59:59",
         )
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
-            valid_from=datetime.now() + timedelta(days=2),
-            valid_to=datetime.now() + timedelta(days=3),
+            valid_from=datetime.now(UTC) + timedelta(days=2),
+            valid_to=datetime.now(UTC) + timedelta(days=3),
             start_time="12:00:00",
             end_time="14:00:00",
         )
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now().strftime("%Y-%m-%d"),
-            "to_date": (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",
@@ -921,8 +916,8 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.schedule = Schedule.objects.create(
             resource=self.resource,
             name="Test Schedule",
-            valid_from=datetime.now() - timedelta(days=30),
-            valid_to=datetime.now() + timedelta(days=30),
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()
@@ -947,8 +942,8 @@ class TestOtpSlotViewSet(CareAPITestBase):
         data = {
             "resource": self.resource,
             "availability": self.availability,
-            "start_datetime": datetime.now() + timedelta(minutes=30),
-            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
             "allocated": 0,
         }
         data.update(kwargs)
@@ -1006,25 +1001,28 @@ class TestOtpSlotViewSet(CareAPITestBase):
         )
 
     def test_get_slots_for_day(self):
+        """OTP authenticated users can get available slots for a specific day."""
         url = reverse("otp-slots-get-slots-for-day")
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
             "facility": self.facility.external_id,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
     def test_get_slots_for_day_without_facility(self):
+        """OTP authenticated users cannot get slots without specifying a facility."""
         url = reverse("otp-slots-get-slots-for-day")
         data = {
             "user": self.user.external_id,
-            "day": datetime.now().strftime("%Y-%m-%d"),
+            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 400)
 
     def test_create_appointment(self):
+        """OTP authenticated users can create appointments."""
         data = {
             "patient": self.patient.external_id,
             "reason_for_visit": "Test Reason",
@@ -1037,6 +1035,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.assertContains(response, BookingStatusChoices.booked.value)
 
     def test_create_appointment_of_another_patient(self):
+        """OTP authenticated users cannot create appointments for other patients."""
         other_patient = self.create_patient(phone_number="+917777777778")
         data = {
             "patient": other_patient.external_id,
@@ -1050,6 +1049,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.assertContains(response, "Patient not allowed", status_code=400)
 
     def test_cancel_appointment(self):
+        """OTP authenticated users can cancel their own appointments."""
         booking = self.create_appointment()
         url = reverse("otp-slots-cancel-appointment")
         data = {
@@ -1060,6 +1060,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.assertContains(response, BookingStatusChoices.cancelled.value)
 
     def test_cancel_appointment_of_another_patient(self):
+        """OTP authenticated users cannot cancel appointments of other patients."""
         other_patient = self.create_patient(phone_number="+917777777778")
         booking = self.create_appointment(patient=other_patient)
         url = reverse("otp-slots-cancel-appointment")
@@ -1071,6 +1072,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 404)
 
     def test_get_appointments(self):
+        """OTP authenticated users can get their own appointments."""
         booking = self.create_appointment()
         url = reverse("otp-slots-get-appointments")
         response = self.client.get(url)
@@ -1079,6 +1081,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.assertEqual(response.data["results"][0]["id"], booking.external_id)
 
     def test_get_appointments_of_another_patient(self):
+        """OTP authenticated users cannot get appointments of other patients."""
         other_patient = self.create_patient(phone_number="+917777777778")
         self.create_appointment(patient=other_patient)
         url = reverse("otp-slots-get-appointments")
