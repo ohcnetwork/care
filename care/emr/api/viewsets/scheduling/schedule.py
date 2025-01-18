@@ -16,9 +16,9 @@ from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
     AvailabilityForScheduleSpec,
+    ScheduleCreateSpec,
     ScheduleReadSpec,
     ScheduleUpdateSpec,
-    ScheduleCreateSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController

@@ -291,7 +291,6 @@ class TestScheduleViewSet(CareAPITestBase):
         }
         update_url = self._get_schedule_url(self.schedule.external_id)
         response = self.client.put(update_url, updated_data, format="json")
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_schedule_validity_with_booking_outside_new_validity(self):
