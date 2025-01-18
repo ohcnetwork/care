@@ -86,7 +86,7 @@ class ScheduleBaseSpec(EMRResource):
     id: UUID4 | None = None
 
 
-class ScheduleWriteSpec(ScheduleBaseSpec):
+class ScheduleCreateSpec(ScheduleBaseSpec):
     user: UUID4
     facility: UUID4
     name: str
@@ -101,17 +101,16 @@ class ScheduleWriteSpec(ScheduleBaseSpec):
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            user = get_object_or_404(User, external_id=self.user)
-            # TODO Validation that user is in given facility
-            obj.facility = Facility.objects.get(external_id=self.facility)
+        user = get_object_or_404(User, external_id=self.user)
+        # TODO Validation that user is in given facility
+        obj.facility = Facility.objects.get(external_id=self.facility)
 
-            resource, _ = SchedulableUserResource.objects.get_or_create(
-                facility=obj.facility,
-                user=user,
-            )
-            obj.resource = resource
-            obj.availabilities = self.availabilities
+        resource, _ = SchedulableUserResource.objects.get_or_create(
+            facility=obj.facility,
+            user=user,
+        )
+        obj.resource = resource
+        obj.availabilities = self.availabilities
 
 
 class ScheduleUpdateSpec(ScheduleBaseSpec):

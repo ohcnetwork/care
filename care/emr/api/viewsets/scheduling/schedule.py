@@ -18,7 +18,7 @@ from care.emr.resources.scheduling.schedule.spec import (
     AvailabilityForScheduleSpec,
     ScheduleReadSpec,
     ScheduleUpdateSpec,
-    ScheduleWriteSpec,
+    ScheduleCreateSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
@@ -32,7 +32,7 @@ class ScheduleFilters(FilterSet):
 
 class ScheduleViewSet(EMRModelViewSet):
     database_model = Schedule
-    pydantic_model = ScheduleWriteSpec
+    pydantic_model = ScheduleCreateSpec
     pydantic_update_model = ScheduleUpdateSpec
     pydantic_read_model = ScheduleReadSpec
     filterset_class = ScheduleFilters

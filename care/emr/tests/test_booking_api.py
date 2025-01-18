@@ -18,6 +18,8 @@ from care.utils.tests.base import CareAPITestBase
 from django.urls import reverse
 from datetime import datetime, timedelta
 
+from config.patient_otp_authentication import PatientOtpObject
+
 
 class TestBookingViewSet(CareAPITestBase):
 
@@ -748,6 +750,20 @@ class TestSlotViewSet(CareAPITestBase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
+    def test_availability_stats_outside_schedule_validity(self):
+        """Get heatmap availability stats for few days"""
+        data = {
+            "user": self.user.external_id,
+            "from_date": (datetime.now() + timedelta(days=90)).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now() + timedelta(days=100)).strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
     def test_availability_stats_invalid_period(self):
         """Get heatmap availability stats for from date after to date"""
         data = {
@@ -890,3 +906,182 @@ class TestSlotViewSet(CareAPITestBase):
             )
             self.assertEqual(slot_stats["booked_slots"], booked_slots_for_day)
             self.assertEqual(slot_stats["total_slots"], total_slots_for_day)
+
+
+class TestOtpSlotViewSet(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient(phone_number="+917777777777")
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user, facility=self.facility
+        )
+        self.schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now() - timedelta(days=30),
+            valid_to=datetime.now() + timedelta(days=30),
+        )
+        self.availability = self.create_availability()
+        self.slot = self.create_slot()
+        self.client.force_authenticate(user=self.get_patient_otp_object())
+
+    def get_patient_otp_object(self):
+        obj = PatientOtpObject()
+        obj.phone_number = self.patient.phone_number
+        return obj
+
+    def create_appointment(self, **kwargs):
+        data = {
+            "token_slot": self.slot,
+            "patient": self.patient,
+            "booked_by": self.user,
+            "status": BookingStatusChoices.booked.value,
+        }
+        data.update(kwargs)
+        return TokenBooking.objects.create(**data)
+
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now() + timedelta(minutes=30),
+            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
+    def create_availability(self, **kwargs):
+        return Availability.objects.create(
+            schedule=self.schedule,
+            name=kwargs.get("name", "Test Availability"),
+            slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
+            slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
+            tokens_per_slot=kwargs.get("tokens_per_slot", 1),
+            create_tokens=kwargs.get("create_tokens", False),
+            reason=kwargs.get("reason", "Regular schedule"),
+            availability=kwargs.get(
+                "availability",
+                [
+                    {
+                        "day_of_week": 0,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 1,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 2,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 3,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 4,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 5,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 6,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                ],
+            ),
+        )
+
+    def test_get_slots_for_day(self):
+        url = reverse("otp-slots-get-slots-for-day")
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+            "facility": self.facility.external_id,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_slots_for_day_without_facility(self):
+        url = reverse("otp-slots-get-slots-for-day")
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_appointment(self):
+        data = {
+            "patient": self.patient.external_id,
+            "reason_for_visit": "Test Reason",
+        }
+        url = reverse(
+            "otp-slots-create-appointment",
+            kwargs={"external_id": self.slot.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(response, BookingStatusChoices.booked.value)
+
+    def test_create_appointment_of_another_patient(self):
+        other_patient = self.create_patient(phone_number="+917777777778")
+        data = {
+            "patient": other_patient.external_id,
+            "reason_for_visit": "Test Reason",
+        }
+        url = reverse(
+            "otp-slots-create-appointment",
+            kwargs={"external_id": self.slot.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(response, "Patient not allowed", status_code=400)
+
+    def test_cancel_appointment(self):
+        booking = self.create_appointment()
+        url = reverse("otp-slots-cancel-appointment")
+        data = {
+            "patient": booking.patient.external_id,
+            "appointment": booking.external_id,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertContains(response, BookingStatusChoices.cancelled.value)
+
+    def test_cancel_appointment_of_another_patient(self):
+        other_patient = self.create_patient(phone_number="+917777777778")
+        booking = self.create_appointment(patient=other_patient)
+        url = reverse("otp-slots-cancel-appointment")
+        data = {
+            "patient": booking.patient.external_id,
+            "appointment": booking.external_id,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_appointments(self):
+        booking = self.create_appointment()
+        url = reverse("otp-slots-get-appointments")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], booking.external_id)
+
+    def test_get_appointments_of_another_patient(self):
+        other_patient = self.create_patient(phone_number="+917777777778")
+        self.create_appointment(patient=other_patient)
+        url = reverse("otp-slots-get-appointments")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)

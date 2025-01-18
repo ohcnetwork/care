@@ -154,7 +154,6 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # CREATE TESTS
     def test_create_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can create schedules."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
@@ -190,7 +189,19 @@ class TestScheduleViewSet(CareAPITestBase):
             response, "Valid from cannot be greater than valid to", status_code=400
         )
 
-    # UPDATE TESTS
+    def test_create_schedule_with_user_not_part_of_facility(self):
+        """Users cannot write schedules for user not belonging to the facility."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        user = self.create_user()
+        schedule_data = self.generate_schedule_data(user=user.external_id)
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response, "Schedule User is not part of the facility", status_code=400
+        )
+
     def test_update_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can update schedules."""
         permissions = [
@@ -439,6 +450,19 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         exception_data = self.generate_exception_data()
         response = self.client.post(self.base_url, exception_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_exception_with_invalid_user_resource(self):
+        """Users with can_write_user_schedule permission can create exceptions."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Resource doesn't exist
+        self.resource.delete()
+
+        exception_data = self.generate_exception_data()
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(response, "Object does not exist", status_code=400)
 
     def test_update_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can update exceptions."""
