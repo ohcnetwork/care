@@ -1,7 +1,6 @@
 import datetime
 from datetime import time, timedelta
 
-from dateutil.parser import parse
 from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
