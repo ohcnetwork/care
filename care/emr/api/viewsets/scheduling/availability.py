@@ -65,8 +65,6 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
             time.fromisoformat(availability["availability"]["end_time"]),
             tzinfo=None,
         )
-        # start_time = parse(availability["availability"]["start_time"])
-        # end_time = parse(availability["availability"]["end_time"])
         slot_size_in_minutes = availability["slot_size_in_minutes"]
         availability_id = availability["availability_id"]
         current_time = start_time
