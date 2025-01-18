@@ -3,15 +3,24 @@ from datetime import datetime, timedelta
 from django.urls import reverse
 from rest_framework import status
 
+from care.emr.models import (
+    Availability,
+    SchedulableUserResource,
+    Schedule,
+    TokenBooking,
+    TokenSlot,
+)
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
+from care.emr.resources.scheduling.slot.spec import (
+    CANCELLED_STATUS_CHOICES,
+    BookingStatusChoices,
+)
 from care.security.permissions.user_schedule import UserSchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 
 
 class TestScheduleViewSet(CareAPITestBase):
     def setUp(self):
-        from care.emr.models import SchedulableUserResource
-
         super().setUp()
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
@@ -20,8 +29,34 @@ class TestScheduleViewSet(CareAPITestBase):
             user=self.user,
             facility=self.facility,
         )
-        self.client.force_authenticate(user=self.user)
+        self.patient = self.create_patient()
+        self.schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now() - timedelta(days=30),
+            valid_to=datetime.now() + timedelta(days=30),
+        )
+        self.availability = Availability.objects.create(
+            schedule=self.schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=120,
+            tokens_per_slot=30,
+            create_tokens=False,
+            reason="",
+            availability=[
+                {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 1, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 2, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 3, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 4, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 5, "start_time": "09:00:00", "end_time": "13:00:00"},
+                {"day_of_week": 6, "start_time": "09:00:00", "end_time": "13:00:00"},
+            ],
+        )
+        self.slot = self.create_slot()
 
+        self.client.force_authenticate(user=self.user)
         self.base_url = reverse(
             "schedule-list", kwargs={"facility_external_id": self.facility.external_id}
         )
@@ -48,6 +83,31 @@ class TestScheduleViewSet(CareAPITestBase):
         for availability in kwargs.get("availabilities", []):
             schedule.availabilities.create(**availability)
         return schedule
+
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now() + timedelta(minutes=30),
+            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
+    def create_booking(self, **kwargs):
+        data = {
+            "token_slot": self.slot,
+            "patient": self.patient,
+            "booked_by": self.user,
+            "status": BookingStatusChoices.booked.value,
+        }
+        data.update(kwargs)
+        if data["status"] not in CANCELLED_STATUS_CHOICES:
+            slot = data["token_slot"]
+            slot.allocated += 1
+            slot.save()
+        return TokenBooking.objects.create(**data)
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
@@ -203,20 +263,98 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_schedule_validity_with_booking_outside_validity(self):
-        pass
+    def test_update_schedule_validity_with_booking_within_new_validity(self):
+        permissions = [
+            UserSchedulePermissions.can_write_user_schedule.name,
+            UserSchedulePermissions.can_list_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-    def test_delete_schedule_with_bookings(self):
-        pass
+        self.create_booking()
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to - timedelta(days=1),
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_availability_with_bookings(self):
-        pass
+    def test_update_schedule_validity_with_booking_outside_new_validity(self):
+        permissions = [
+            UserSchedulePermissions.can_write_user_schedule.name,
+            UserSchedulePermissions.can_list_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_booking(
+            token_slot=self.create_slot(
+                start_datetime=datetime.now() + timedelta(days=4),
+                end_datetime=datetime.now() + timedelta(days=5),
+            )
+        )
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_from + timedelta(days=1),
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertContains(
+            response,
+            status_code=400,
+            text="Cannot modify schedule validity as it would exclude some allocated slots. Old range has 1 allocated slots while new range has 0 allocated slots.",
+        )
+
+    def test_delete_schedule_with_future_bookings(self):
+        """Users cannot delete schedules with bookings present in the future."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_schedule.name,
+            UserSchedulePermissions.can_list_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_booking(
+            token_slot=self.create_slot(
+                start_datetime=datetime.now() + timedelta(days=4),
+                end_datetime=datetime.now() + timedelta(days=5),
+            )
+        )
+        delete_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.delete(delete_url)
+        self.assertContains(
+            response,
+            status_code=400,
+            text="Cannot delete schedule as there are future bookings associated with it",
+        )
+
+    def test_delete_schedule_with_future_cancelled_bookings(self):
+        """Users cannot delete schedules with bookings present in the future."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_schedule.name,
+            UserSchedulePermissions.can_list_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_booking(
+            token_slot=self.create_slot(
+                start_datetime=datetime.now() + timedelta(days=4),
+                end_datetime=datetime.now() + timedelta(days=5),
+            ),
+            status=BookingStatusChoices.cancelled.value,
+        )
+        delete_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class TestAvailabilityExceptionsViewSet(CareAPITestBase):
     def setUp(self):
-        from care.emr.models import SchedulableUserResource
-
         super().setUp()
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
@@ -271,7 +409,6 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             **kwargs,
         }
 
-    # LIST TESTS
     def test_list_exceptions_with_permissions(self):
         """Users with can_list_user_schedule permission can list exceptions."""
         permissions = [UserSchedulePermissions.can_list_user_schedule.name]
@@ -286,7 +423,6 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # CREATE TESTS
     def test_create_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can create exceptions."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
@@ -304,7 +440,6 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, exception_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # UPDATE TESTS
     def test_update_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can update exceptions."""
         permissions = [
@@ -352,7 +487,6 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         response = self.client.put(update_url, updated_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # DELETE TESTS
     def test_delete_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can delete exceptions."""
         permissions = [
@@ -384,13 +518,75 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_exception_with_bookings(self):
-        pass
+        """Test that creating an exception fails when there are conflicting bookings."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Create a schedule
+        schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now() - timedelta(days=30),
+            valid_to=datetime.now() + timedelta(days=30),
+        )
+
+        # Create an availability
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=30,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {
+                    "day_of_week": datetime.now().weekday(),
+                    "start_time": "09:00:00",
+                    "end_time": "17:00:00",
+                }
+            ],
+        )
+
+        # Create a slot for today
+        slot_start = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        slot = TokenSlot.objects.create(
+            resource=self.resource,
+            availability=availability,
+            start_datetime=slot_start,
+            end_datetime=slot_start + timedelta(minutes=30),
+            allocated=1,
+        )
+
+        # Create a booking for the slot
+        patient = self.create_patient()
+        TokenBooking.objects.create(
+            token_slot=slot,
+            patient=patient,
+            booked_by=self.user,
+            status=BookingStatusChoices.booked.value,
+        )
+
+        # Try to create an exception that overlaps with the booking
+        exception_data = self.generate_exception_data(
+            valid_from=slot_start.date().isoformat(),
+            valid_to=slot_start.date().isoformat(),
+            start_time="09:00:00",
+            end_time="17:00:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "There are bookings during this exception",
+            status_code=400,
+        )
 
 
 class TestAvailabilityViewSet(CareAPITestBase):
     def setUp(self):
-        from care.emr.models import SchedulableUserResource
-
         super().setUp()
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
@@ -521,5 +717,149 @@ class TestAvailabilityViewSet(CareAPITestBase):
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_availability_with_bookings(self):
-        pass
+    def test_delete_availability_without_queryset_list_permissions(self):
+        """Users without can_list_user_schedule permission cannot delete availability."""
+        availability = self.create_availability()
+        delete_url = self._get_availability_url(availability.external_id)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_availability_with_future_bookings(self):
+        """Users cannot delete availability with future bookings."""
+        permissions = [
+            UserSchedulePermissions.can_list_user_schedule.name,
+            UserSchedulePermissions.can_write_user_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        availability = self.create_availability()
+        token_slot = TokenSlot.objects.create(
+            resource=self.resource,
+            availability=availability,
+            start_datetime=datetime.now() + timedelta(days=4),
+            end_datetime=datetime.now() + timedelta(days=5),
+        )
+        TokenBooking.objects.create(
+            token_slot=token_slot,
+            patient=self.create_patient(),
+            booked_by=self.user,
+        )
+        token_slot.allocated = 1
+        token_slot.save()
+        delete_url = self._get_availability_url(availability.external_id)
+        response = self.client.delete(delete_url)
+        self.assertContains(
+            response,
+            status_code=400,
+            text="Cannot delete availability as there are future bookings associated with it",
+        )
+
+    def test_create_availability_validate_availability(self):
+        """Test that creating availability with overlapping time ranges fails."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Try to create availability with overlapping time ranges for same day
+        data = self.generate_availability_data(
+            availability=[
+                {
+                    "day_of_week": 1,  # Monday
+                    "start_time": "09:00:00",
+                    "end_time": "13:00:00",
+                },
+                {
+                    "day_of_week": 1,  # Same day (Monday)
+                    "start_time": "12:00:00",  # Overlaps with previous range
+                    "end_time": "17:00:00",
+                },
+            ]
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "Availability time ranges are overlapping",
+            status_code=400,
+        )
+
+        # Verify that non-overlapping ranges on same day are allowed
+        data = self.generate_availability_data(
+            availability=[
+                {
+                    "day_of_week": 1,
+                    "start_time": "09:00:00",
+                    "end_time": "12:00:00",
+                },
+                {
+                    "day_of_week": 1,
+                    "start_time": "13:00:00",  # No overlap
+                    "end_time": "17:00:00",
+                },
+            ]
+        )
+
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verify that overlapping times on different days are allowed
+        data = self.generate_availability_data(
+            availability=[
+                {
+                    "day_of_week": 1,  # Monday
+                    "start_time": "09:00:00",
+                    "end_time": "17:00:00",
+                },
+                {
+                    "day_of_week": 2,  # Tuesday
+                    "start_time": "09:00:00",  # Same time range but different day
+                    "end_time": "17:00:00",
+                },
+            ]
+        )
+
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_availability_validate_slot_type(self):
+        """Test slot type validation rules for availability creation."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Test appointment type without slot_size_in_minutes
+        data = self.generate_availability_data(
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=None,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(
+            response,
+            "Slot size in minutes is required for appointment slots",
+            status_code=400,
+        )
+
+        # Test appointment type without tokens_per_slot
+        data = self.generate_availability_data(
+            slot_type=SlotTypeOptions.appointment.value,
+            tokens_per_slot=None,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(
+            response,
+            "Tokens per slot is required for appointment slots",
+            status_code=400,
+        )
+
+        # Test open slot type (should accept without slot_size and tokens)
+        data = self.generate_availability_data(
+            slot_type=SlotTypeOptions.open.value,
+            slot_size_in_minutes=30,  # These should be ignored
+            tokens_per_slot=1,  # These should be ignored
+        )
+
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data["slot_size_in_minutes"])
+        self.assertIsNone(response.data["tokens_per_slot"])

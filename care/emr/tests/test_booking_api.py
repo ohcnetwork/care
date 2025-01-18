@@ -9,7 +9,10 @@ from care.emr.models import (
     AvailabilityException,
 )
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
-from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
+from care.emr.resources.scheduling.slot.spec import (
+    BookingStatusChoices,
+    CANCELLED_STATUS_CHOICES,
+)
 from care.security.permissions.user_schedule import UserSchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 from django.urls import reverse
@@ -78,9 +81,10 @@ class TestBookingViewSet(CareAPITestBase):
             "status": BookingStatusChoices.booked.value,
         }
         data.update(kwargs)
-        slot = data["token_slot"]
-        slot.allocated += 1
-        slot.save()
+        if data["status"] not in CANCELLED_STATUS_CHOICES:
+            slot = data["token_slot"]
+            slot.allocated += 1
+            slot.save()
         return TokenBooking.objects.create(**data)
 
     def create_slot(self, **kwargs):
@@ -589,6 +593,25 @@ class TestSlotViewSet(CareAPITestBase):
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 9)
+
+    def test_hit_on_get_slots_for_day_does_not_cause_duplicate_slots(self):
+        """Get slots for a specific day."""
+        data = {
+            "user": self.user.external_id,
+            "day": datetime.now().strftime("%Y-%m-%d"),
+        }
+        url = reverse(
+            "slot-get-slots-for-day",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 9)
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 9)
 
     def test_get_slots_for_day_for_non_schedulable_user(self):
         """Cannot get slots for non-schedulable user."""
@@ -794,22 +817,22 @@ class TestSlotViewSet(CareAPITestBase):
         # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
         self.slot.delete()
         #
-        # AvailabilityException.objects.create(
-        #     resource=self.resource,
-        #     name="Test Exception",
-        #     valid_from=datetime.now(),
-        #     valid_to=datetime.now() + timedelta(days=1),
-        #     start_time="00:00:00",
-        #     end_time="11:59:59",
-        # )
-        # AvailabilityException.objects.create(
-        #     resource=self.resource,
-        #     name="Test Exception",
-        #     valid_from=datetime.now() + timedelta(days=2),
-        #     valid_to=datetime.now() + timedelta(days=3),
-        #     start_time="12:00:00",
-        #     end_time="14:00:00",
-        # )
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now(),
+            valid_to=datetime.now() + timedelta(days=1),
+            start_time="00:00:00",
+            end_time="11:59:59",
+        )
+        AvailabilityException.objects.create(
+            resource=self.resource,
+            name="Test Exception",
+            valid_from=datetime.now() + timedelta(days=2),
+            valid_to=datetime.now() + timedelta(days=3),
+            start_time="12:00:00",
+            end_time="14:00:00",
+        )
         data = {
             "user": self.user.external_id,
             "from_date": datetime.now().strftime("%Y-%m-%d"),

@@ -38,8 +38,18 @@ class AvailabilityBaseSpec(EMRResource):
 
     # TODO Check if Availability Types are coinciding at any point
 
+
+class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
+    name: str
+    slot_type: SlotTypeOptions
+    slot_size_in_minutes: int | None = Field(ge=1)
+    tokens_per_slot: int | None = Field(ge=1)
+    create_tokens: bool = False
+    reason: str = ""
+    availability: list[AvailabilityDateTimeSpec]
+
+    @field_validator("availability")
     @classmethod
-    @field_validator("availability", mode="after")
     def validate_availability(cls, availabilities: list[AvailabilityDateTimeSpec]):
         # Validates if availability overlaps for the same day
         for i in range(len(availabilities)):
@@ -53,16 +63,6 @@ class AvailabilityBaseSpec(EMRResource):
                 ):
                     raise ValueError("Availability time ranges are overlapping")
         return availabilities
-
-
-class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
-    name: str
-    slot_type: SlotTypeOptions
-    slot_size_in_minutes: int | None = Field(ge=1)
-    tokens_per_slot: int | None = Field(ge=1)
-    create_tokens: bool = False
-    reason: str = ""
-    availability: list[AvailabilityDateTimeSpec]
 
     @model_validator(mode="after")
     def validate_for_slot_type(self):

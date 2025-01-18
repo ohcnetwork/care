@@ -63,7 +63,7 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
         i = 0
         while current_time < end_time:
             i += 1
-            if i == 30:  # noqa PLR2004
+            if i == 30:  # noqa PLR2004 pragma: no cover
                 # Failsafe to prevent infinite loop
                 break
 
