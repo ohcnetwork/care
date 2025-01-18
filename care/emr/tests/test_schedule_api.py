@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from django.urls import reverse
 from rest_framework import status
@@ -33,8 +33,8 @@ class TestScheduleViewSet(CareAPITestBase):
         self.schedule = Schedule.objects.create(
             resource=self.resource,
             name="Test Schedule",
-            valid_from=datetime.now() - timedelta(days=30),
-            valid_to=datetime.now() + timedelta(days=30),
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
         )
         self.availability = Availability.objects.create(
             schedule=self.schedule,
@@ -77,8 +77,8 @@ class TestScheduleViewSet(CareAPITestBase):
         schedule = Schedule.objects.create(
             resource=self.resource,
             name=kwargs.get("name", "Test Schedule"),
-            valid_from=kwargs.get("valid_from", datetime.now()),
-            valid_to=kwargs.get("valid_to", datetime.now() + timedelta(days=30)),
+            valid_from=kwargs.get("valid_from", datetime.now(UTC)),
+            valid_to=kwargs.get("valid_to", datetime.now(UTC) + timedelta(days=30)),
         )
         for availability in kwargs.get("availabilities", []):
             schedule.availabilities.create(**availability)
@@ -88,8 +88,8 @@ class TestScheduleViewSet(CareAPITestBase):
         data = {
             "resource": self.resource,
             "availability": self.availability,
-            "start_datetime": datetime.now() + timedelta(minutes=30),
-            "end_datetime": datetime.now() + timedelta(minutes=60),
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
             "allocated": 0,
         }
         data.update(kwargs)
@@ -111,7 +111,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
-        valid_from = datetime.now()
+        valid_from = datetime.now(UTC)
         valid_to = valid_from + timedelta(days=30)
 
         return {
@@ -177,7 +177,7 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        valid_from = datetime.now()
+        valid_from = datetime.now(UTC)
         valid_to = valid_from - timedelta(days=1)  # Invalid: end before start
 
         schedule_data = self.generate_schedule_data(
@@ -305,8 +305,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
         self.create_booking(
             token_slot=self.create_slot(
-                start_datetime=datetime.now() + timedelta(days=4),
-                end_datetime=datetime.now() + timedelta(days=5),
+                start_datetime=datetime.now(UTC) + timedelta(days=4),
+                end_datetime=datetime.now(UTC) + timedelta(days=5),
             )
         )
         updated_data = {
@@ -333,8 +333,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
         self.create_booking(
             token_slot=self.create_slot(
-                start_datetime=datetime.now() + timedelta(days=4),
-                end_datetime=datetime.now() + timedelta(days=5),
+                start_datetime=datetime.now(UTC) + timedelta(days=4),
+                end_datetime=datetime.now(UTC) + timedelta(days=5),
             )
         )
         delete_url = self._get_schedule_url(self.schedule.external_id)
@@ -356,8 +356,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
         self.create_booking(
             token_slot=self.create_slot(
-                start_datetime=datetime.now() + timedelta(days=4),
-                end_datetime=datetime.now() + timedelta(days=5),
+                start_datetime=datetime.now(UTC) + timedelta(days=4),
+                end_datetime=datetime.now(UTC) + timedelta(days=5),
             ),
             status=BookingStatusChoices.cancelled.value,
         )
@@ -396,8 +396,8 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
     def create_exception(self, **kwargs):
         from care.emr.models import AvailabilityException
 
-        valid_from = datetime.now().date()
-        valid_to = (datetime.now() + timedelta(days=1)).date()
+        valid_from = datetime.now(UTC).date()
+        valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
         return AvailabilityException.objects.create(
             resource=self.resource,
             valid_from=valid_from,
@@ -409,8 +409,8 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def generate_exception_data(self, **kwargs):
         """Helper to generate valid availability exception data."""
-        valid_from = datetime.now().date()
-        valid_to = (datetime.now() + timedelta(days=1)).date()
+        valid_from = datetime.now(UTC).date()
+        valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
 
         return {
             "user": str(self.user.external_id),
@@ -553,8 +553,8 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         schedule = Schedule.objects.create(
             resource=self.resource,
             name="Test Schedule",
-            valid_from=datetime.now() - timedelta(days=30),
-            valid_to=datetime.now() + timedelta(days=30),
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
         )
 
         # Create an availability
@@ -568,7 +568,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             reason="Regular schedule",
             availability=[
                 {
-                    "day_of_week": datetime.now().weekday(),
+                    "day_of_week": datetime.now(UTC).weekday(),
                     "start_time": "09:00:00",
                     "end_time": "17:00:00",
                 }
@@ -576,7 +576,9 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         )
 
         # Create a slot for today
-        slot_start = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        slot_start = datetime.now(UTC).replace(
+            hour=10, minute=0, second=0, microsecond=0
+        )
         slot = TokenSlot.objects.create(
             resource=self.resource,
             availability=availability,
@@ -652,8 +654,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
         schedule = Schedule.objects.create(
             resource=self.resource,
             name=kwargs.get("name", "Test Schedule"),
-            valid_from=kwargs.get("valid_from", datetime.now()),
-            valid_to=kwargs.get("valid_to", datetime.now() + timedelta(days=30)),
+            valid_from=kwargs.get("valid_from", datetime.now(UTC)),
+            valid_to=kwargs.get("valid_to", datetime.now(UTC) + timedelta(days=30)),
         )
         for availability in kwargs.get("availabilities", []):
             schedule.availabilities.create(**availability)
@@ -763,8 +765,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
         token_slot = TokenSlot.objects.create(
             resource=self.resource,
             availability=availability,
-            start_datetime=datetime.now() + timedelta(days=4),
-            end_datetime=datetime.now() + timedelta(days=5),
+            start_datetime=datetime.now(UTC) + timedelta(days=4),
+            end_datetime=datetime.now(UTC) + timedelta(days=5),
         )
         TokenBooking.objects.create(
             token_slot=token_slot,
