@@ -376,7 +376,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertGreaterEqual(len(response.data["users"]), 1)
 
 
-class TestSlotViewSet(CareAPITestBase):
+class TestSlotViewSetAppointmentApi(CareAPITestBase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
@@ -384,8 +384,7 @@ class TestSlotViewSet(CareAPITestBase):
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
         self.resource = SchedulableUserResource.objects.create(
-            user=self.user,
-            facility=self.facility,
+            user=self.user, facility=self.facility
         )
         self.schedule = Schedule.objects.create(
             resource=self.resource,
@@ -582,17 +581,99 @@ class TestSlotViewSet(CareAPITestBase):
         )
         self.assertContains(response, status_code=400, text="Slot is already full")
 
+
+class TestSlotViewSetSlotStatsApis(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.resource = SchedulableUserResource.objects.create(
+            user=self.user,
+            facility=self.facility,
+        )
+        self.schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+        )
+        self.availability = self.create_availability()
+        self.client.force_authenticate(user=self.user)
+
+    def create_availability(self, **kwargs):
+        return Availability.objects.create(
+            schedule=self.schedule,
+            name=kwargs.get("name", "Test Availability"),
+            slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
+            slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
+            tokens_per_slot=kwargs.get("tokens_per_slot", 1),
+            create_tokens=kwargs.get("create_tokens", False),
+            reason=kwargs.get("reason", "Regular schedule"),
+            availability=kwargs.get(
+                "availability",
+                [
+                    {
+                        "day_of_week": 0,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 1,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 2,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 3,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 4,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 5,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                    {
+                        "day_of_week": 6,
+                        "start_time": "09:00:00",
+                        "end_time": "13:00:00",
+                    },
+                ],
+            ),
+        )
+
+    def _get_slot_for_day_url(self, facility_id=None):
+        return reverse(
+            "slot-get-slots-for-day",
+            kwargs={
+                "facility_external_id": facility_id or self.facility.external_id,
+            },
+        )
+
+    def _get_availability_stats_url(self, facility_id=None):
+        return reverse(
+            "slot-availability-stats",
+            kwargs={"facility_external_id": facility_id or self.facility.external_id},
+        )
+
     def test_get_slots_for_day(self):
         """Users can get available slots for a specific day."""
         data = {
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 8)
 
@@ -602,10 +683,8 @@ class TestSlotViewSet(CareAPITestBase):
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
+        url = self._get_slot_for_day_url()
+
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 8)
@@ -622,20 +701,15 @@ class TestSlotViewSet(CareAPITestBase):
             "user": user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": facility.external_id},
+        response = self.client.post(
+            self._get_slot_for_day_url(facility.external_id), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertContains(
             response, status_code=400, text="Resource is not schedulable"
         )
 
     def test_get_slots_for_day_with_full_day_exception(self):
         """No slots should be available for days with full day exceptions."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
-
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
@@ -648,19 +722,12 @@ class TestSlotViewSet(CareAPITestBase):
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 0)
 
     def test_get_slots_for_day_with_exception_left_overlap(self):
         """Fewer slots should be available when there is an exception overlapping the start of the day."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
-
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
@@ -673,19 +740,12 @@ class TestSlotViewSet(CareAPITestBase):
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 2)
 
     def test_get_slots_for_day_with_exception_right_overlap(self):
         """Fewer slots should be available when there is an exception overlapping the end of the day."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
-
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
@@ -698,19 +758,12 @@ class TestSlotViewSet(CareAPITestBase):
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 2)
 
     def test_get_slots_for_day_with_exception_overlap_in_between(self):
         """Fewer slots should be available when there is an exception overlapping the middle of the day."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
-
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
@@ -723,11 +776,7 @@ class TestSlotViewSet(CareAPITestBase):
             "user": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 4)
 
@@ -738,11 +787,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
     def test_availability_stats_partially_outside_schedule_validity(self):
@@ -752,11 +799,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": (datetime.now(UTC) + timedelta(days=25)).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=35)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
     def test_availability_stats_invalid_period(self):
@@ -766,11 +811,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertContains(
             response, status_code=400, text="From Date cannot be after To Date"
         )
@@ -782,11 +825,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=40)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertContains(
             response, status_code=400, text="Period cannot be be greater than 32 days"
         )
@@ -798,11 +839,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertContains(response, status_code=400, text="User does not exist")
 
     def test_availability_stats_for_non_schedulable_user(self):
@@ -813,11 +852,9 @@ class TestSlotViewSet(CareAPITestBase):
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
-        url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(url, data, format="json")
         self.assertContains(
             response, status_code=400, text="Resource is not schedulable"
         )
@@ -826,27 +863,21 @@ class TestSlotViewSet(CareAPITestBase):
         self,
     ):
         """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
         data = {
             "user": self.user.external_id,
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
         }
-        availability_stats_url = reverse(
-            "slot-availability-stats",
-            kwargs={"facility_external_id": self.facility.external_id},
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
         )
-        response = self.client.post(availability_stats_url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
-        slots_for_day_url = reverse(
-            "slot-get-slots-for-day",
-            kwargs={"facility_external_id": self.facility.external_id},
-        )
         for day, slot_stats in response.data.items():
             data = {"user": self.user.external_id, "day": day}
-            response = self.client.post(slots_for_day_url, data, format="json")
+            response = self.client.post(
+                self._get_slot_for_day_url(), data, format="json"
+            )
             self.assertEqual(response.status_code, 200)
             booked_slots_for_day = sum(x["allocated"] for x in response.data["results"])
             total_slots_for_day = sum(
@@ -857,8 +888,6 @@ class TestSlotViewSet(CareAPITestBase):
 
     def test_availability_heatmap_slots_same_as_get_slots_for_day_with_exceptions(self):
         """Availability heatmap slot counts should match individual day slot counts even with exceptions."""
-        # we don't want the slot that was created in setUp; create availability exception would've done this for us anyways.
-        self.slot.delete()
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
