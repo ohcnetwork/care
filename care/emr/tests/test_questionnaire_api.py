@@ -1,4 +1,7 @@
+import uuid
+
 from django.urls import reverse
+from model_bakery import baker
 
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
@@ -69,6 +72,11 @@ class QuestionnaireTestBase(CareAPITestBase):
                 {"question_id": question_id, "values": [{"value": answer_value}]}
             ],
         }
+
+    def create_questionnaire_tag(self, **kwargs):
+        from care.emr.models import QuestionnaireTag
+
+        return baker.make(QuestionnaireTag, **kwargs)
 
 
 class QuestionnaireValidationTests(QuestionnaireTestBase):
@@ -679,4 +687,150 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             "questionnaire-get-organizations", kwargs={"slug": questionnaire["slug"]}
         )
         response = self.client.get(organization_list_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_tag_setting_unauthorized_access(self):
+        """
+        Verifies that users without any permissions cannot set tags on questionnaires.
+
+        """
+        questionnaire = self.create_questionnaire_instance()
+        tag_url = reverse(
+            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        payload = {"tags": [self.create_questionnaire_tag().slug]}
+        response = self.client.post(tag_url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_tag_setting_read_only_access(self):
+        """
+        Verifies that users with only read permissions cannot set tags on questionnaires.
+
+        """
+        questionnaire = self.create_questionnaire_instance()
+        tag_url = reverse(
+            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [QuestionnairePermissions.can_read_questionnaire.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"tags": [self.create_questionnaire_tag().slug]}
+        response = self.client.post(tag_url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_tag_setting_invalid_tag_validation(self):
+        """
+        Verifies that attempts to set non-existent tags are properly validated and rejected.
+        """
+        questionnaire = self.create_questionnaire_instance()
+        tag_url = reverse(
+            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [
+            QuestionnairePermissions.can_read_questionnaire.name,
+            QuestionnairePermissions.can_write_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"tags": ["non-existing-questionnaire-tag-slug"]}
+        response = self.client.post(tag_url, payload, format="json")
+        self.assertEqual(response.status_code, 404)
+
+    def test_set_tags_for_questionnaire_with_permissions(self):
+        permissions = [
+            QuestionnairePermissions.can_read_questionnaire.name,
+            QuestionnairePermissions.can_write_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse("questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]})
+        payload = {"tags": [self.create_questionnaire_tag().slug]}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_set_organizations_without_authentication(self):
+        """Tests that setting organizations without authentication returns 403 forbidden."""
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse(
+            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        payload = {"organizations": [self.create_organization().external_id]}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_set_organizations_with_read_only_access(self):
+        """Tests that setting organizations with read-only permissions returns 403 forbidden."""
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse(
+            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [QuestionnairePermissions.can_read_questionnaire.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"organizations": [self.create_organization().external_id]}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_set_organizations_with_invalid_organization_id(self):
+        """Tests that setting organizations with non-existent organization ID returns 404 not found."""
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse(
+            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [
+            QuestionnairePermissions.can_read_questionnaire.name,
+            QuestionnairePermissions.can_write_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"organizations": [uuid.uuid4()]}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 404)
+
+    def test_set_organizations_without_organization_access(self):
+        """Tests that setting organizations without access to target organization returns 403 forbidden."""
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse(
+            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [
+            QuestionnairePermissions.can_read_questionnaire.name,
+            QuestionnairePermissions.can_write_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"organizations": [self.create_organization().external_id]}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_set_organizations_with_valid_access(self):
+        """Tests that setting organizations succeeds with proper permissions and organization access."""
+        questionnaire = self.create_questionnaire_instance()
+        url = reverse(
+            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+        )
+
+        permissions = [
+            QuestionnairePermissions.can_read_questionnaire.name,
+            QuestionnairePermissions.can_write_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        payload = {"organizations": [self.organization.external_id]}
+        response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
