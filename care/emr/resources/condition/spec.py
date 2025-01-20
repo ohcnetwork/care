@@ -62,6 +62,7 @@ class ConditionSpec(BaseConditionSpec):
     code: Coding = Field(json_schema_extra={"slug": CARE_CODITION_CODE_VALUESET.slug})
     encounter: UUID4
     onset: ConditionOnSetSpec = {}
+    note: str = ""
 
     @field_validator("code")
     @classmethod
@@ -103,6 +104,7 @@ class ConditionSpecRead(BaseConditionSpec):
     onset: ConditionOnSetSpec = dict
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    note: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -121,6 +123,7 @@ class ConditionSpecUpdate(BaseConditionSpec):
     severity: SeverityChoices | None = None
     code: Coding = Field(json_schema_extra={"slug": CARE_CODITION_CODE_VALUESET.slug})
     onset: ConditionOnSetSpec = {}
+    note: str = ""
 
     @field_validator("code")
     @classmethod
