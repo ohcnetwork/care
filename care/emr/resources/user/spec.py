@@ -8,6 +8,8 @@ from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.period import PeriodSpec
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
 from care.users.models import User
@@ -27,6 +29,12 @@ class UserTypeRoleMapping(Enum):
     volunteer = VOLUNTEER_ROLE
 
 
+class QualificationSpec(EMRResource):
+    identifier: str
+    code: Coding
+    period: PeriodSpec
+
+
 class UserBaseSpec(EMRResource):
     __model__ = User
     __exclude__ = ["geo_organization"]
@@ -37,9 +45,7 @@ class UserBaseSpec(EMRResource):
     last_name: str
     phone_number: str = Field(max_length=14)
     alt_phone_number: str = Field(max_length=14)
-    qualification: str
-    doctor_experience_commenced_on: str
-    doctor_medical_council_registration: str
+    qualification: list[QualificationSpec]
 
 
 class UserUpdateSpec(UserBaseSpec):

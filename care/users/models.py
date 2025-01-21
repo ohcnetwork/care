@@ -305,17 +305,20 @@ class User(AbstractUser):
     weekly_working_hours = models.IntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
-
-    qualification = models.TextField(
+    qualification = models.JSONField(
+        blank=False,
+        default=list,
+    )
+    qualification_old = models.TextField(
         blank=False,
         null=True,
     )
-    doctor_experience_commenced_on = models.DateField(
+    doctor_experience_commenced_on_old = models.DateField(
         default=None,
         blank=False,
         null=True,
     )
-    doctor_medical_council_registration = models.CharField(
+    doctor_medical_council_registration_old = models.CharField(
         max_length=255,
         default=None,
         blank=False,
