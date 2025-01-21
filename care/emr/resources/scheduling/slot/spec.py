@@ -6,21 +6,12 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models import TokenBooking
 from care.emr.models.scheduling.booking import TokenSlot
-from care.emr.models.scheduling.schedule import Availability
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.users.models import User
-
-
-class AvailabilityforTokenSpec(EMRResource):
-    __model__ = Availability
-
-    id: UUID4 | None = None
-    name: str
-    tokens_per_slot: int
 
 
 class TokenSlotBaseSpec(EMRResource):

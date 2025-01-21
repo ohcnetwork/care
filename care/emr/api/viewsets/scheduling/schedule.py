@@ -16,9 +16,9 @@ from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
     AvailabilityForScheduleSpec,
+    ScheduleCreateSpec,
     ScheduleReadSpec,
     ScheduleUpdateSpec,
-    ScheduleWriteSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
@@ -32,7 +32,7 @@ class ScheduleFilters(FilterSet):
 
 class ScheduleViewSet(EMRModelViewSet):
     database_model = Schedule
-    pydantic_model = ScheduleWriteSpec
+    pydantic_model = ScheduleCreateSpec
     pydantic_update_model = ScheduleUpdateSpec
     pydantic_read_model = ScheduleReadSpec
     filterset_class = ScheduleFilters
@@ -189,5 +189,5 @@ class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
         ):
             raise PermissionDenied("You do not have permission to create schedule")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         self.authorize_create(instance)

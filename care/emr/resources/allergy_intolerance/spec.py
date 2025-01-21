@@ -23,7 +23,7 @@ class VerificationStatusChoices(str, Enum):
     presumed = "presumed"
     confirmed = "confirmed"
     refuted = "refuted"
-    entered_in_error = "entered-in-error"
+    entered_in_error = "entered_in_error"
 
 
 class CategoryChoices(str, Enum):
@@ -36,7 +36,7 @@ class CategoryChoices(str, Enum):
 class CriticalityChoices(str, Enum):
     low = "low"
     high = "high"
-    unable_to_assess = "unable-to-assess"
+    unable_to_assess = "unable_to_assess"
 
 
 class AllergyIntoleranceOnSetSpec(EMRResource):

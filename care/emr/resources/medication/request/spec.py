@@ -221,6 +221,7 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
     encounter: UUID4
 
     dosage_instruction: list[DosageInstruction] = Field()
+    authored_on: datetime
 
     note: str | None = Field(None)
 

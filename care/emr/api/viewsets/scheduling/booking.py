@@ -49,8 +49,6 @@ class TokenBookingFilters(FilterSet):
     patient = UUIDFilter(field_name="patient__external_id")
 
     def filter_by_user(self, queryset, name, value):
-        if not value:
-            return queryset
         resource = SchedulableUserResource.objects.filter(
             user__external_id=value
         ).first()
