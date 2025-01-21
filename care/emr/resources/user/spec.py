@@ -36,6 +36,10 @@ class UserBaseSpec(EMRResource):
     first_name: str
     last_name: str
     phone_number: str = Field(max_length=14)
+    alt_phone_number: str = Field(max_length=14)
+    qualification: str
+    doctor_experience_commenced_on: str
+    doctor_medical_council_registration: str
 
 
 class UserUpdateSpec(UserBaseSpec):
