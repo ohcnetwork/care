@@ -86,7 +86,7 @@ def reverse_migrate(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('facility', '0483_patientnotes_and_notesedit'),
+        ('facility', '0484_migrate_symptoms'),
     ]
 
     operations = [
