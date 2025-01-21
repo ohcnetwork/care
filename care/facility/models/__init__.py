@@ -23,3 +23,4 @@ from .resources import *  # noqa
 from .shifting import *  # noqa
 from .stats import *  # noqa
 from .notification import *  # noqa
+from .migration_tracking import *  # noqa

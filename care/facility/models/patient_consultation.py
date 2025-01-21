@@ -223,6 +223,8 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         default=list,
     )
 
+    migrated_emr_encounter_id = models.BigIntegerField(null=True, blank=True)
+
     def get_related_consultation(self):
         return self
 
