@@ -16,3 +16,4 @@ class MedicationRequest(EMRBaseModel):
     encounter = models.ForeignKey("emr.Encounter", on_delete=models.CASCADE)
     dosage_instruction = models.JSONField(default=list, null=True, blank=True)
     note = models.TextField(null=True, blank=True)
+    authored_on = models.DateTimeField(null=True, blank=True, default=None)
