@@ -80,7 +80,8 @@ class PatientCreateSpec(PatientBaseSpec):
 
 class PatientListSpec(PatientBaseSpec):
     date_of_birth: datetime.date | None = None
-    age: int | None = None
+    year_of_birth: datetime.date | None = None
+
     created_date: datetime.datetime
     modified_date: datetime.datetime
 
