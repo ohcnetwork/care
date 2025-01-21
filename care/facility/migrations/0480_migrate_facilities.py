@@ -6,6 +6,29 @@ logger = logging.getLogger(__name__)
 
 MIGRARION_ID = 413370
 
+USER_TYPE_TO_ROLE = {
+    2: "Staff",   # Transportation
+    3: "Staff",   # Pharmacist
+    5: "Staff",   # Volunteer
+    9: "Staff",   # StaffReadOnly
+    10: "Staff",  # Staff
+    13: "Nurse",  # NurseReadOnly
+    14: "Nurse",  # Nurse
+    15: "Doctor", # Doctor
+    20: "Doctor", # Reserved
+    21: "Geo Admin", # WardAdmin
+    23: "Geo Admin", # LocalBodyAdmin
+    25: "Geo Admin", # DistrictLabAdmin
+    29: "Geo Admin", # DistrictReadOnlyAdmin
+    30: "Geo Admin", # DistrictAdmin
+    35: "Geo Admin", # StateLabAdmin
+    39: "Geo Admin", # StateReadOnlyAdmin
+    40: "Geo Admin", # StateAdmin
+}
+
+def get_role_for_user_type(RoleModel, user_type):
+    role_name = USER_TYPE_TO_ROLE.get(user_type)
+    return RoleModel.objects.filter(name=role_name).first() if role_name else None
 
 def _get_org(Organization, obj):
     state = None
@@ -73,6 +96,56 @@ def reverse_migrate_facilities(apps, schema_editor):
         geo_organization=None
     )
 
+def migrate_facility_users(apps, schema_editor):
+    FacilityOrganization = apps.get_model("emr", "FacilityOrganization")
+    Facility = apps.get_model("facility", "Facility")
+    FacilityOrganizationUser = apps.get_model("emr", "FacilityOrganizationUser")
+    RoleModel = apps.get_model("security", "RoleModel")
+
+    for facility in Facility.objects.all():
+        # Check if the root org exists
+        root_org = FacilityOrganization.objects.filter(
+            org_type="root",
+            name="Administration",
+            facility=facility
+        ).first()
+        # If the root org does not exist, create it
+        if not root_org:
+            root_org = FacilityOrganization.objects.create(
+                org_type="root",
+                name="Administration",
+                system_generated=True,
+                parent=None,
+                facility=facility,
+                meta={"migration_id": MIGRARION_ID},
+                created_by=facility.created_by,
+                created_date=facility.created_date,
+            )
+        for facility_user in facility.users.all():
+            role = get_role_for_user_type(RoleModel, facility_user.old_user_type)
+            if not role:
+                logger.warning(f"Could not find role for user {facility_user.id} with type {facility_user.old_user_type}")
+                continue
+
+            FacilityOrganizationUser.objects.create(
+                organization=root_org,
+                user=facility_user,
+                role=role,
+                meta={"migration_id": MIGRARION_ID},
+                created_by=facility_user.created_by,
+                created_date=facility.created_date,
+            )
+
+
+def reverse_migrate_facility_users(apps, schema_editor):
+    FacilityOrganizationUser = apps.get_model("emr", "FacilityOrganizationUser")
+    FacilityOrganization = apps.get_model("emr", "FacilityOrganization")
+    FacilityOrganizationUser.objects.filter(
+        meta__migration_id=MIGRARION_ID
+    ).delete()
+    FacilityOrganization.objects.filter(
+        meta__migration_id=MIGRARION_ID
+    ).delete()
 
 class Migration(migrations.Migration):
 
@@ -82,4 +155,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(migrate_facilities, reverse_migrate_facilities),
+        migrations.RunPython(migrate_facility_users, reverse_migrate_facility_users),
     ]
