@@ -93,7 +93,7 @@ def migrate_organizations(apps, schema_editor):
 
 def reverse_migrate_organizations(apps, schema_editor):
     logger.debug("Reversing Migration Organization")
-    schema_editor.execute("DELETE FROM emr_organization WHERE meta->>'migration_id' = %s", [MIGRARION_ID])
+    schema_editor.execute("DELETE FROM emr_organization WHERE meta->>'migration_id' = %s", [str(MIGRARION_ID)])
 
 
 class Migration(migrations.Migration):

@@ -92,7 +92,9 @@ def migrate_consultations(apps, schema_editor):
 
 
 def reverse_migrate_consultations(apps, schema_editor):
-    pass
+    PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    PatientConsultation.objects.update(migrated_emr_encounter_id=None)
+    schema_editor.execute("DELETE FROM emr_encounter WHERE meta->>'migration_id' = %s", [str(MIGRARION_ID)])
 
 
 class Migration(migrations.Migration):

@@ -110,7 +110,7 @@ def migrate_patient_registrations(apps, schema_editor):
 def reverse_migrate_patient_registrations(apps, schema_editor):
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
     PatientRegistration.objects.update(migrated_emr_patient_id=None)
-    schema_editor.execute("DELETE FROM emr_patient WHERE meta->>'migration_id' = %s", [MIGRARION_ID])
+    schema_editor.execute("DELETE FROM emr_patient WHERE meta->>'migration_id' = %s", [str(MIGRARION_ID)])
 
 
 
