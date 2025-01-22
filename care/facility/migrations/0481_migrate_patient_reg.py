@@ -123,8 +123,9 @@ def migrate_patient_registrations(apps, schema_editor):
     Organization = apps.get_model("emr", "Organization")
     Questionnaire = apps.get_model("facility", "Questionnaire")
     QuestionnaireResponse = apps.get_model("facility", "QuestionnaireResponse")
-    Observation = apps.get_model("facility", "Observation")
     QuestionnaireOrganization = apps.get_model("facility", "QuestionnaireOrganization")
+    NoteThread = apps.get_model("emr", "NoteThread")
+    NoteMessage = apps.get_model("emr", "NoteMessage")
 
     meta_info_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="patient_meta_information_internal_a2e6ef7e",
@@ -234,14 +235,18 @@ def migrate_patient_registrations(apps, schema_editor):
                     responses.append(
                         {
                             "question": "a41c5beb-9b33-4d32-8b04-335bf8a91d28",
-                            "answer": socioeconomic_status_map[meta_information.socioeconomic_status],
+                            "answer": socioeconomic_status_map[
+                                meta_information.socioeconomic_status
+                            ],
                         }
                     )
                 if meta_information.domestic_healthcare_support is not None:
                     responses.append(
                         {
                             "question": "176e29eb-f80b-42cc-a11f-5f9f997989a2",
-                            "answer": domestic_healthcare_support_map[meta_information.domestic_healthcare_support],
+                            "answer": domestic_healthcare_support_map[
+                                meta_information.domestic_healthcare_support
+                            ],
                         }
                     )
                 if meta_information.head_of_household is not None:
@@ -255,7 +260,7 @@ def migrate_patient_registrations(apps, schema_editor):
                     questionnaire=meta_info_questionnaire,
                     patient=patient,
                     subject_id=str(patient.external_id),
-                    responses = [{"values": responses}],
+                    responses=[{"values": responses}],
                     created_by=patient_registration.created_by,
                     created_date=patient_registration.created_date,
                     modified_date=patient_registration.modified_date,
@@ -263,6 +268,44 @@ def migrate_patient_registrations(apps, schema_editor):
                         "migration_id": MIGRATION_ID,
                     },
                 )
+
+            note_thread, created = NoteThread.objects.get_or_create(
+                title="Patient Health Information",
+                patient=patient,
+                defaults={
+                    "meta": {
+                        "migration_id": MIGRATION_ID,
+                    },
+                    # "created_by": patient_registration.created_by,
+                    "created_date": patient_registration.created_date,
+                    # "modified_date": patient_registration.modified_date,
+                },
+            )
+
+            if created:
+                messages = []
+                if patient_registration.allergies:
+                    messages.append(f"Reported Allergies: {patient_registration.allergies}")
+                if patient_registration.present_health:
+                    messages.append(f"Present Health: {patient_registration.present_health}")
+                if patient_registration.ongoing_medication:
+                    messages.append(
+                        f"Ongoing Medication: {patient_registration.ongoing_medication}"
+                    )
+                NoteMessage.objects.bulk_create(
+                    [NoteMessage(
+                        message=message,
+                        thread=note_thread,
+                        meta={
+                            "migration_id": MIGRATION_ID,
+                        },
+                        created_date=patient.created_date,
+                        modified_date=patient.modified_date,
+                        created_by=patient.created_by,
+                        updated_by=patient.created_by,
+                    ) for message in messages]
+                )
+
             patient_registration.migrated_emr_patient_id = patient.id
             bulk.append(patient_registration)
             logger.debug(f"Created Patient: {patient.name=}")
