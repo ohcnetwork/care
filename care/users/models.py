@@ -307,7 +307,7 @@ class User(AbstractUser):
     )
     qualification = models.JSONField(
         blank=False,
-        default=list,
+        default=dict,
     )
     qualification_old = models.TextField(
         blank=False,

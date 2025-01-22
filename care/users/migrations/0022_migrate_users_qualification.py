@@ -27,6 +27,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='qualification',
-            field=models.JSONField(null=True, blank=True),
+            field=models.JSONField(blank=False, default=dict),
         ),
     ]

@@ -7,7 +7,7 @@ from pydantic import UUID4, Field, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.period import PeriodSpec
 from care.emr.resources.patient.spec import GenderChoices
@@ -43,8 +43,8 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
-    phone_number: str = Field(max_length=14)
-    alt_phone_number: str = Field(max_length=14)
+    phone_number: PhoneNumber = Field(max_length=14)
+    alt_phone_number: PhoneNumber | None = Field(None, max_length=14)
     qualification: list[QualificationSpec]
 
 
