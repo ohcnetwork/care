@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('emr', '0009_disable_auto_time'),
+        ('emr', '0010_disable_auto_time'),
         ('facility', '0484_migrate_symptoms'),#TODO: Add dependency to the last facility app migration
     ]
 

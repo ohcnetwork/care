@@ -156,7 +156,7 @@ class Migration(migrations.Migration):
             "facility",
             "0477_historicalpatientregistration_migrated_emr_patient_id_and_more",
         ),
-        ("emr", "0009_disable_auto_time"),
+        ("emr", "0010_disable_auto_time"),
     ]
 
     operations = [
