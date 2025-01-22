@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
+from urllib.parse import urlparse
 
-from dateutil import parser
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
@@ -27,7 +27,19 @@ def check_required(questionnaire, questionnaire_ref):
     return False
 
 
-def validate_data(values, value_type, questionnaire_ref):
+def get_valid_choices(question):
+    """
+    Extracts valid choices from a choice question dictionary.
+    """
+    answer_options = question.get("answer_option", [])
+    if not answer_options:
+        error = f"No 'answer_option' found in question with id {question.get('id')}."
+        raise ValueError(error)
+
+    return [option["value"] for option in answer_options if "value" in option]
+
+
+def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     """
     Validate the type of the value based on the question type.
     Args:
@@ -51,11 +63,18 @@ def validate_data(values, value_type, questionnaire_ref):
                 if value.value.lower() not in ["true", "false", "1", "0"]:
                     errors.append(f"Invalid boolean value: {value.value}")
             elif value_type == QuestionType.date.value:
-                parser.parse(value.value).date()
+                datetime.strptime(value.value, "%Y-%m-%d").date()  # noqa DTZ007
             elif value_type == QuestionType.datetime.value:
-                parser.parse(value.value)
+                datetime.strptime(value.value, "%Y-%m-%dT%H:%M:%S")  # noqa DTZ007
             elif value_type == QuestionType.time.value:
                 datetime.strptime(value.value, "%H:%M:%S")  # noqa DTZ007
+            elif value_type == QuestionType.choice.value:
+                if value.value not in get_valid_choices(questionnaire_ref):
+                    errors.append(f"Invalid {value_type}")
+            elif value_type == QuestionType.url.value:
+                parsed = urlparse(value.value)
+                if not all([parsed.scheme, parsed.netloc]):
+                    errors.append(f"Invalid {value_type}")
         except ValueError:
             errors.append(f"Invalid {value_type}")
         except Exception:

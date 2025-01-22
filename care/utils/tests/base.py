@@ -13,6 +13,11 @@ class CareAPITestBase(APITestCase):
 
         return baker.make(User, **kwargs)
 
+    def create_super_user(self, **kwargs):
+        from care.users.models import User
+
+        return baker.make(User, is_superuser=True, **kwargs)
+
     def create_organization(self, **kwargs):
         from care.emr.models import Organization
 

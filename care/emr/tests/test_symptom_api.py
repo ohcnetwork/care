@@ -1,3 +1,4 @@
+import uuid
 from secrets import choice
 from unittest.mock import patch
 
@@ -343,6 +344,57 @@ class TestSymptomViewSet(CareAPITestBase):
 
         response = self.client.post(self.base_url, symptom_data_dict, format="json")
         self.assertEqual(response.status_code, 403)
+
+    def test_create_symptoms_with_permissions_with_mismatched_patient_id(self):
+        """
+        Users with `can_write_encounter` on a encounter with different patient => (HTTP 400).
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.create_patient(),
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
+        )
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
+
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
+        response_data = response.json()
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errors", response_data)
+        error = response_data["errors"][0]
+        self.assertEqual(error["type"], "validation_error")
+        self.assertIn(
+            "Patient external ID mismatch with encounter's patient", error["msg"]
+        )
+
+    def test_create_symptom_with_permissions_with_invalid_encounter_id(self):
+        """
+        Users with `can_write_encounter` on a incomplete encounter => (HTTP 400).
+        """
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.create_patient(),
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
+        )
+        symptom_data_dict = self.generate_data_for_symptom(encounter)
+        symptom_data_dict["encounter"] = uuid.uuid4()
+
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
+        response_data = response.json()
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errors", response_data)
+        error = response_data["errors"][0]
+        self.assertEqual(error["type"], "value_error")
+        self.assertIn("Encounter not found", error["msg"])
 
     # RETRIEVE TESTS
     def test_retrieve_symptom_with_permissions(self):
