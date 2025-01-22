@@ -14,7 +14,7 @@ def migrate_patient_notes(apps, schema_editor):
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
     DOCTORS = 10
-    for patient_note in PatientNotes.objects.all():
+    for patient_note in PatientNotes.objects.filter(patient__migrated_emr_patient_id__isnull=False).select_related("patient", "consultation"):
         note_thread = NoteThread.objects.create(
             title=patient_note.thread == DOCTORS and "Doctors Discussion" or "Nurses Discussion",
             patient_id=patient_note.patient.migrated_emr_patient_id,

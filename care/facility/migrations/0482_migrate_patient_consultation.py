@@ -78,7 +78,10 @@ def migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
 
     paginator = Paginator(
-        PatientConsultation.objects.all().select_related("patient").order_by("id"),
+        PatientConsultation.objects.filter(
+            migrated_emr_encounter_id__isnull=True,
+            patient__migrated_emr_patient_id__isnull=False
+        ).select_related("patient").order_by("id"),
         2000
     )
     for page_number in paginator.page_range:
@@ -94,8 +97,9 @@ def migrate_consultations(apps, schema_editor):
 
 def reverse_migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    Encounter = apps.get_model("emr", "Encounter")
     PatientConsultation.objects.update(migrated_emr_encounter_id=None)
-    schema_editor.execute("DELETE FROM emr_encounter WHERE meta->>'migration_id' = %s", [str(MIGRARION_ID)])
+    Encounter.objects.filter(meta__migration_id=MIGRARION_ID).delete()
 
 
 class Migration(migrations.Migration):

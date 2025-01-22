@@ -121,9 +121,9 @@ def migrate_patient_registrations(apps, schema_editor):
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
     Patient = apps.get_model("emr", "Patient")
     Organization = apps.get_model("emr", "Organization")
-    Questionnaire = apps.get_model("facility", "Questionnaire")
-    QuestionnaireResponse = apps.get_model("facility", "QuestionnaireResponse")
-    QuestionnaireOrganization = apps.get_model("facility", "QuestionnaireOrganization")
+    Questionnaire = apps.get_model("emr", "Questionnaire")
+    QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
+    QuestionnaireOrganization = apps.get_model("emr", "QuestionnaireOrganization")
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
 
@@ -193,7 +193,7 @@ def migrate_patient_registrations(apps, schema_editor):
     logger.debug("Migrating Patient Registrations")
     patient_registrations = (
         PatientRegistration.objects.filter(migrated_emr_patient_id__isnull=True)
-        .select_related("state", "district", "local_body", "ward", "meta_information")
+        .select_related("state", "district", "local_body", "ward", "meta_info")
         .order_by("id")
     )
     paginator = Paginator(patient_registrations, 2000)
@@ -222,38 +222,38 @@ def migrate_patient_registrations(apps, schema_editor):
                 created_date=patient_registration.created_date,
                 modified_date=patient_registration.modified_date,
             )
-            if meta_information := patient_registration.meta_information:
+            if meta_info := patient_registration.meta_info:
                 responses = []
-                if meta_information.occupation is not None:
+                if meta_info.occupation is not None:
                     responses.append(
                         {
                             "question": "91b29d71-a2a4-4a98-bfb7-69188170c960",
-                            "answer": occupation_map[meta_information.occupation],
+                            "answer": occupation_map[meta_info.occupation],
                         }
                     )
-                if meta_information.socioeconomic_status is not None:
+                if meta_info.socioeconomic_status is not None:
                     responses.append(
                         {
                             "question": "a41c5beb-9b33-4d32-8b04-335bf8a91d28",
                             "answer": socioeconomic_status_map[
-                                meta_information.socioeconomic_status
+                                meta_info.socioeconomic_status
                             ],
                         }
                     )
-                if meta_information.domestic_healthcare_support is not None:
+                if meta_info.domestic_healthcare_support is not None:
                     responses.append(
                         {
                             "question": "176e29eb-f80b-42cc-a11f-5f9f997989a2",
                             "answer": domestic_healthcare_support_map[
-                                meta_information.domestic_healthcare_support
+                                meta_info.domestic_healthcare_support
                             ],
                         }
                     )
-                if meta_information.head_of_household is not None:
+                if meta_info.head_of_household is not None:
                     responses.append(
                         {
                             "question": "c5b95c32-c2d1-41fd-805b-6062edd52cee",
-                            "answer": bool(meta_information.head_of_household),
+                            "answer": bool(meta_info.head_of_household),
                         }
                     )
                 QuestionnaireResponse.objects.create(
@@ -314,10 +314,13 @@ def migrate_patient_registrations(apps, schema_editor):
 
 def reverse_migrate_patient_registrations(apps, schema_editor):
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
+    Patient = apps.get_model("emr", "Patient")
+    NoteThread = apps.get_model("emr", "NoteThread")
+    Questionnaire = apps.get_model("emr", "Questionnaire")
+    Questionnaire.objects.filter(meta__migration_id=MIGRATION_ID).delete()
+    NoteThread.objects.filter(meta__migration_id=MIGRATION_ID).delete()
     PatientRegistration.objects.update(migrated_emr_patient_id=None)
-    schema_editor.execute(
-        "DELETE FROM emr_patient WHERE meta->>'migration_id' = %s", [str(MIGRATION_ID)]
-    )
+    Patient.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):
