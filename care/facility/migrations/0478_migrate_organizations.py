@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 MIGRARION_ID = 413370
 COUNTRY = "India"
 
+
 def migrate_organizations(apps, schema_editor):
     Organization = apps.get_model("emr", "Organization")
     State = apps.get_model("users", "State")
@@ -26,80 +27,136 @@ def migrate_organizations(apps, schema_editor):
     }
 
     logger.debug("Migrating Organization")
+    state_metadata = {
+        "country": COUNTRY,
+        "govt_org_type": "state",
+        "govt_org_children_type": "district",
+    }
     for state_obj in State.objects.all():
-        state_org = Organization.objects.create(
-            name=state_obj.name,
+        state_org, _ = Organization.objects.filter(
+            name__iexact=state_obj.name,
             org_type="govt",
-            system_generated=True,
-            metadata={
-                "country": COUNTRY,
-                "govt_org_type": "state",
-                "govt_org_children_type": "district",
-            },
-            meta= {"migration_id": MIGRARION_ID},
+            parent=None,
+            metadata=state_metadata,
+        ).get_or_create(
+            defaults={
+                "name": state_obj.name,
+                "org_type": "govt",
+                "system_generated": True,
+                "metadata": state_metadata,
+                "meta": {"migration_id": MIGRARION_ID},
+            }
         )
         logger.debug(f"Created State: {state_org.name=}")
+        district_metadata = {
+            "country": COUNTRY,
+            "govt_org_type": "district",
+            "govt_org_children_type": "local_body",
+        }
         for district_obj in District.objects.filter(state=state_obj):
-            district_org = Organization.objects.create(
-                name=district_obj.name,
+            district_org, created = Organization.objects.filter(
+                name__iexact=district_obj.name,
                 root_org=state_org,
                 parent=state_org,
                 org_type="govt",
-                system_generated=True,
-                metadata={
-                    "country": COUNTRY,
-                    "govt_org_type": "district",
-                    "govt_org_children_type": "local_body",
+                metadata=district_metadata,
+            ).get_or_create(
+                defaults={
+                    "name": district_obj.name,
+                    "org_type": "govt",
+                    "root_org": state_org,
+                    "parent": state_org,
+                    "system_generated": True,
+                    "metadata": district_metadata,
+                    "meta": {"migration_id": MIGRARION_ID},
                 },
-                meta= {"migration_id": MIGRARION_ID},
             )
             logger.debug(f"Created District: {state_org.name=}, {district_org.name=}")
+            local_body_metadata = {
+                "country": COUNTRY,
+                "govt_org_type": "local_body",
+                "govt_org_children_type": "ward",
+            }
             for local_body_obj in LocalBody.objects.filter(district=district_obj):
                 lb_type = local_body_type_map.get(local_body_obj.body_type, "others")
-                local_body_org = Organization.objects.create(
-                    name=local_body_obj.name,
+                local_body_org, created = Organization.objects.filter(
+                    name__iexact=local_body_obj.name,
                     root_org=state_org,
                     parent=district_org,
                     org_type="govt",
-                    system_generated=True,
                     metadata={
-                        "country": COUNTRY,
-                        "govt_org_type": "local_body",
                         "govt_org_local_body_type": lb_type,
-                        "govt_org_children_type": "ward",
+                        **local_body_metadata,
                     },
-                    meta= {"migration_id": MIGRARION_ID},
+                ).get_or_create(
+                    defaults={
+                        "name": local_body_obj.name,
+                        "org_type": "govt",
+                        "root_org": state_org,
+                        "parent": district_org,
+                        "system_generated": True,
+                        "metadata": {
+                            "govt_org_local_body_type": lb_type,
+                            **local_body_metadata,
+                        },
+                        "meta": {"migration_id": MIGRARION_ID},
+                    },
                 )
-                logger.debug(f"Created Local Body: {state_org.name=}, \
-                             {district_org.name=}, {local_body_org.name=}")
+                logger.debug(
+                    f"Created Local Body: {state_org.name=}, \
+                             {district_org.name=}, {local_body_org.name=}"
+                )
+                ward_metadata = {
+                    "country": COUNTRY,
+                    "govt_org_type": "ward",
+                }
                 for ward_obj in Ward.objects.filter(local_body=local_body_obj):
-                    ward_org = Organization.objects.create(
-                        name=ward_obj.name,
+                    ward_org, created = Organization.objects.filter(
+                        name__iexact=ward_obj.name,
                         root_org=state_org,
                         parent=local_body_org,
                         org_type="govt",
-                        system_generated=True,
                         metadata={
-                            "country": COUNTRY,
-                            "govt_org_type": "ward",
                             "govt_org_ward_number": ward_obj.number,
+                            **ward_metadata,
                         },
-                        meta= {"migration_id": MIGRARION_ID},
+                    ).get_or_create(
+                        defaults={
+                            "name": ward_obj.name,
+                            "org_type": "govt",
+                            "root_org": state_org,
+                            "parent": local_body_org,
+                            "system_generated": True,
+                            "metadata": {
+                                "govt_org_ward_number": ward_obj.number,
+                                **ward_metadata,
+                            },
+                            "meta": {"migration_id": MIGRARION_ID},
+                        },
                     )
-                    logger.debug(f"Created Ward: {state_org.name=}, \
+                    logger.debug(
+                        f"Created Ward: {state_org.name=}, \
                                  {district_org.name=}, {local_body_org.name=}, \
-                                    {ward_org.name=}")
+                                    {ward_org.name=}"
+                    )
 
 
 def reverse_migrate_organizations(apps, schema_editor):
     logger.debug("Reversing Migration Organization")
-    schema_editor.execute("DELETE FROM emr_organization WHERE meta->>'migration_id' = %s", [str(MIGRARION_ID)])
+    schema_editor.execute(
+        "DELETE FROM emr_organization WHERE meta->>'migration_id' = %s",
+        [str(MIGRARION_ID)],
+    )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0477_historicalpatientregistration_migrated_emr_patient_id_and_more'),
+        (
+            "facility",
+            "0477_historicalpatientregistration_migrated_emr_patient_id_and_more",
+        ),
+        ("emr", "0009_disable_auto_time"),
     ]
 
     operations = [

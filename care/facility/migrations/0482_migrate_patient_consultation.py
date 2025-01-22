@@ -51,12 +51,13 @@ def _get_org(Organization, obj):
     return ward or local_body or district or state or None
 
 
-def _create_encounter(Encounter, consultation):
+def _create_encounter(apps, consultation):
+    Encounter = apps.get_model("emr", "Encounter")
     period = {
         "start": consultation.encounter_date.replace(tzinfo=UTC).isoformat(),
         "end": consultation.discharge_date.replace(tzinfo=UTC).isoformat() if consultation.discharge_date else None,
     }
-    return Encounter.objects.create(
+    encounter = Encounter.objects.create(
             status="completed" if consultation.discharge_date else "in-progress",
             patient_id=consultation.patient.migrated_emr_patient_id,
             external_identifier=consultation.patient_no,
@@ -70,11 +71,11 @@ def _create_encounter(Encounter, consultation):
             created_date=consultation.created_date,
             modified_date=consultation.modified_date,
         )
+    return encounter
 
 
 def migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
-    Encounter = apps.get_model("emr", "Encounter")
 
     paginator = Paginator(
         PatientConsultation.objects.all().select_related("patient").order_by("id"),
@@ -84,7 +85,7 @@ def migrate_consultations(apps, schema_editor):
         page = paginator.page(page_number)
         bulk = []
         for patient_consultation in page.object_list:
-            encounter = _create_encounter(Encounter, patient_consultation)
+            encounter = _create_encounter(apps, patient_consultation)
             patient_consultation.migrated_emr_encounter_id = encounter.id
             bulk.append(patient_consultation)
             logger.debug(f"Created Encounter: {encounter.id=}")

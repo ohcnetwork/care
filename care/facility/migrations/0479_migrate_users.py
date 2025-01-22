@@ -14,9 +14,7 @@ def _get_org(Organization, obj):
     ward = None
     if obj.state:
         state = Organization.objects.filter(
-            name=obj.state.name,
-            root_org__isnull=True,
-            level_cache=0
+            name=obj.state.name, root_org__isnull=True, level_cache=0
         ).first()
     if obj.district:
         query = {
@@ -49,13 +47,14 @@ def _get_org(Organization, obj):
     return ward or local_body or district or state or None
 
 
-
 def migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
     Organization = apps.get_model("emr", "Organization")
     logger.debug("Migrating Users")
     bulk_update = []
-    for user in User.objects.filter(geo_organization__isnull=True).select_related("state", "district", "local_body", "ward"):
+    for user in User.objects.filter(geo_organization__isnull=True).select_related(
+        "state", "district", "local_body", "ward"
+    ):
         if user.geo_organization:
             continue
         geo_org = _get_org(Organization, user)
@@ -69,9 +68,7 @@ def migrate_users(apps, schema_editor):
 
 def reverse_migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
-    User.objects.filter(
-        geo_organization__meta__migration_id=MIGRARION_ID
-    ).update(
+    User.objects.filter(geo_organization__meta__migration_id=MIGRARION_ID).update(
         geo_organization=None
     )
 
@@ -79,8 +76,8 @@ def reverse_migrate_users(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0478_migrate_organizations'),
-        ('users', '0021_rename_gender_user_old_gender_user_geo_organization_and_more'),
+        ("facility", "0478_migrate_organizations"),
+        ("users", "0021_rename_gender_user_old_gender_user_geo_organization_and_more"),
     ]
 
     operations = [
