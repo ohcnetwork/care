@@ -1,27 +1,39 @@
 [tool.coverage.run]
 branch = true
-source = ["care"]
-parallel = true
-concurrency = ["multiprocessing"]
-relative_files = true
+source = ["care", "config", "plugs"]
+# parallel = true
+# concurrency = ["multiprocessing"]
+# relative_files = true
 omit = [
-  "*/tests/*",
-  "*/migrations*/*",
-  "*/asgi.py",
-  "*/wsgi.py",
-  "docs/*",
-  "manage.py",
-  ".venv/*",
+ "care/facility/**",
+ "care/users/**",
+ "*/tests/**",
+ "*/migrations/**"
 ]
 
+
 [tool.coverage.report]
-exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+exclude_also = [
+  'def __repr__',
+  'if self.debug:',
+  'if settings.DEBUG',
+  'raise AssertionError',
+  'raise NotImplementedError',
+  'if __name__ == .__main__.:',
+  'if TYPE_CHECKING:',
+]
 ignore_errors = true
+omit = [
+ "care/facility/**",
+ "care/users/**",
+ "*/tests/**",
+ "*/migrations*/**"
+]
 
 
 [tool.ruff]
-target-version = "py312"
-extend-exclude = ["*/migrations*/*", "care/abdm/*"]
+target-version = "py313"
+extend-exclude = ["*/migrations*/*"]
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]

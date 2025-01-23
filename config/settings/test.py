@@ -68,7 +68,11 @@ LOGGING = {
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
-        }
+        },
+        "audit_log": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }

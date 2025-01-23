@@ -16,7 +16,7 @@ class RequestInformation(NamedTuple):
     exception: Exception | None
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("audit_log")
 
 
 class AuditLogMiddleware:
