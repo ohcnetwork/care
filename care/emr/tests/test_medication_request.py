@@ -1,10 +1,12 @@
+from datetime import UTC, datetime
+from unittest.mock import patch
+
+from django.urls import reverse
+from model_bakery import baker
+
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
-from django.urls import reverse
-from unittest.mock import patch
-from model_bakery import baker
-from datetime import datetime, UTC
 
 
 class TestMedicationRequestApi(CareAPITestBase):
