@@ -4,6 +4,7 @@ from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
+from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
@@ -16,7 +17,6 @@ from care.emr.resources.medication.request.spec import (
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-from care.emr.models.encounter import Encounter
 
 
 class MedicationRequestFilter(filters.FilterSet):
@@ -60,15 +60,14 @@ class MedicationRequestViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         super().authorize_update(request_obj, model_instance)
-        if model_instance.requester:
-            if not AuthorizationController.call(
-                "can_update_encounter_obj",
-                model_instance.requester,
-                model_instance.encounter,
-            ):
-                raise PermissionDenied(
-                    "Requester does not have permission to update encounter"
-                )
+        if model_instance.requester and not AuthorizationController.call(
+            "can_update_encounter_obj",
+            model_instance.requester,
+            model_instance.encounter,
+        ):
+            raise PermissionDenied(
+                "Requester does not have permission to update encounter"
+            )
 
 
 InternalQuestionnaireRegistry.register(MedicationRequestViewSet)
