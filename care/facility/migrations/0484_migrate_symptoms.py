@@ -67,14 +67,20 @@ def migrate_symptoms(apps, schema_editor):
 
     logger.debug("Migrating Patient Registrations")
     symptoms = Symptom.objects.filter(
-        consultation__migrated_emr_encounter_id__isnull=False,
-    ).order_by("id")
+        # consultation__migrated_emr_encounter_id__isnull=False,
+    ).order_by("id").select_related("consultation__patient", "consultation")
     paginator = Paginator(symptoms, 2000)
 
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
         bulk = []
         for symptom in page.object_list:
+            if symptom.consultation.deleted:
+                print("consultation deleted", symptom.consultation.id)
+                continue
+            if symptom.consultation.patient.deleted:
+                print("patient deleted", symptom.consultation.patient.id)
+                continue
             condition = Condition(
                 **clinical_status_map.get(symptom.clinical_impression_status, {}),
                 category="problem_list_item",
@@ -119,7 +125,7 @@ def reverse_migrate_symptoms(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0483_patientnotes_and_notesedit'),
+        ('facility', '0483_migrate_patientnotes'),
     ]
 
     operations = [

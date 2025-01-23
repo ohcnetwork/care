@@ -802,6 +802,7 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         related_name="replies",
     )
     note = models.TextField(default="", blank=True)
+    meta = JSONField(default=dict)
 
     def get_related_consultation(self):
         # This is a temporary hack! this model does not have `assigned_to` field

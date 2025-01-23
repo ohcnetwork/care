@@ -194,14 +194,14 @@ def migrate_patient_registrations(apps, schema_editor):
     patient_registrations = (
         PatientRegistration.objects.filter(migrated_emr_patient_id__isnull=True)
         .select_related("state", "district", "local_body", "ward", "meta_info")
+        .exclude(deleted=True)
         .order_by("id")
     )
     paginator = Paginator(patient_registrations, 2000)
 
+    bulk = []
     for page_number in paginator.page_range:
-        page = paginator.page(page_number)
-        bulk = []
-        for patient_registration in page.object_list:
+        for patient_registration in paginator.page(page_number).object_list:
             patient = Patient.objects.create(
                 name=patient_registration.name,
                 gender=gender_map.get(patient_registration.gender, ""),
@@ -285,31 +285,44 @@ def migrate_patient_registrations(apps, schema_editor):
             if created:
                 messages = []
                 if patient_registration.allergies:
-                    messages.append(f"Reported Allergies: {patient_registration.allergies}")
+                    messages.append(
+                        f"Reported Allergies: {patient_registration.allergies}"
+                    )
                 if patient_registration.present_health:
-                    messages.append(f"Present Health: {patient_registration.present_health}")
+                    messages.append(
+                        f"Present Health: {patient_registration.present_health}"
+                    )
                 if patient_registration.ongoing_medication:
                     messages.append(
                         f"Ongoing Medication: {patient_registration.ongoing_medication}"
                     )
                 NoteMessage.objects.bulk_create(
-                    [NoteMessage(
-                        message=message,
-                        thread=note_thread,
-                        meta={
-                            "migration_id": MIGRATION_ID,
-                        },
-                        created_date=patient.created_date,
-                        modified_date=patient.modified_date,
-                        created_by=patient.created_by,
-                        updated_by=patient.created_by,
-                    ) for message in messages]
+                    [
+                        NoteMessage(
+                            message=message,
+                            thread=note_thread,
+                            meta={
+                                "migration_id": MIGRATION_ID,
+                            },
+                            created_date=patient.created_date,
+                            modified_date=patient.modified_date,
+                            created_by=patient.created_by,
+                            updated_by=patient.created_by,
+                        )
+                        for message in messages
+                    ]
                 )
 
             patient_registration.migrated_emr_patient_id = patient.id
-            bulk.append(patient_registration)
+            bulk.append((patient_registration.id, patient.id))
             logger.debug(f"Created Patient: {patient.name=}")
-        PatientRegistration.objects.bulk_update(bulk, ["migrated_emr_patient_id"])
+    PatientRegistration.objects.bulk_update(
+        [
+            PatientRegistration(id=id, migrated_emr_patient_id=patient_id)
+            for id, patient_id in bulk
+        ],
+        ["migrated_emr_patient_id"],
+    )
 
 
 def reverse_migrate_patient_registrations(apps, schema_editor):

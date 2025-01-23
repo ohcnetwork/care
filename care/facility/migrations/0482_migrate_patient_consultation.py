@@ -16,9 +16,7 @@ def _get_org(Organization, obj):
     ward = None
     if obj.state:
         state = Organization.objects.filter(
-            name=obj.state.name,
-            root_org__isnull=True,
-            level_cache=0
+            name=obj.state.name, root_org__isnull=True, level_cache=0
         ).first()
     if obj.district:
         query = {
@@ -55,22 +53,26 @@ def _create_encounter(apps, consultation):
     Encounter = apps.get_model("emr", "Encounter")
     period = {
         "start": consultation.encounter_date.replace(tzinfo=UTC).isoformat(),
-        "end": consultation.discharge_date.replace(tzinfo=UTC).isoformat() if consultation.discharge_date else None,
+        "end": (
+            consultation.discharge_date.replace(tzinfo=UTC).isoformat()
+            if consultation.discharge_date
+            else None
+        ),
     }
     encounter = Encounter.objects.create(
-            status="completed" if consultation.discharge_date else "in-progress",
-            patient_id=consultation.patient.migrated_emr_patient_id,
-            external_identifier=consultation.patient_no,
-            period=period,
-            facility=consultation.facility,
-            meta={
-                "migration_id": MIGRARION_ID,
-            },
-            created_by=consultation.created_by,
-            updated_by=consultation.last_edited_by,
-            created_date=consultation.created_date,
-            modified_date=consultation.modified_date,
-        )
+        status="completed" if consultation.discharge_date else "in-progress",
+        patient_id=consultation.patient.migrated_emr_patient_id,
+        external_identifier=consultation.patient_no,
+        period=period,
+        facility=consultation.facility,
+        meta={
+            "migration_id": MIGRARION_ID,
+        },
+        created_by=consultation.created_by,
+        updated_by=consultation.last_edited_by,
+        created_date=consultation.created_date,
+        modified_date=consultation.modified_date,
+    )
     return encounter
 
 
@@ -78,21 +80,26 @@ def migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
 
     paginator = Paginator(
-        PatientConsultation.objects.filter(
-            migrated_emr_encounter_id__isnull=True,
-            patient__migrated_emr_patient_id__isnull=False
-        ).select_related("patient").order_by("id"),
-        2000
+        PatientConsultation.objects.filter(migrated_emr_encounter_id__isnull=True)
+        .select_related("patient")
+        .exclude(deleted=True, patient__deleted=True)
+        .order_by("id"),
+        2000,
     )
+    bulk = []
     for page_number in paginator.page_range:
-        page = paginator.page(page_number)
-        bulk = []
-        for patient_consultation in page.object_list:
+        for patient_consultation in paginator.page(page_number).object_list:
             encounter = _create_encounter(apps, patient_consultation)
             patient_consultation.migrated_emr_encounter_id = encounter.id
-            bulk.append(patient_consultation)
+            bulk.append((patient_consultation.id, encounter.id))
             logger.debug(f"Created Encounter: {encounter.id=}")
-        PatientConsultation.objects.bulk_update(bulk, ["migrated_emr_encounter_id"])
+    PatientConsultation.objects.bulk_update(
+        [
+            PatientConsultation(id=pc_id, migrated_emr_encounter_id=encounter_id)
+            for pc_id, encounter_id in bulk
+        ],
+        ["migrated_emr_encounter_id"],
+    )
 
 
 def reverse_migrate_consultations(apps, schema_editor):
@@ -105,7 +112,7 @@ def reverse_migrate_consultations(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0481_migrate_patient_reg'),
+        ("facility", "0481_migrate_patient_reg"),
     ]
 
     operations = [

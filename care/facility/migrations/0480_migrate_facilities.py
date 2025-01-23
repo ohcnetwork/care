@@ -153,6 +153,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("facility", "0479_migrate_users"),
+        ("emr", "0010_disable_auto_time"),
     ]
 
     operations = [
