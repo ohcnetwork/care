@@ -4,7 +4,7 @@ import re
 from datetime import UTC
 
 from django.core.paginator import Paginator
-from django.db import migrations
+from django.db import migrations, models
 
 logger = logging.getLogger(__name__)
 
@@ -409,6 +409,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='prescription',
+            name='migrated_emr_prescription_id',
+            field=models.BigIntegerField(blank=True, null=True),
+        ),
         migrations.RunPython(
             migrate_prescriptions, reverse_code=reverse_migrate_prescriptions
         )

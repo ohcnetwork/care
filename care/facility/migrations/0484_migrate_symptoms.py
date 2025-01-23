@@ -126,7 +126,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('facility', '0483_migrate_patientnotes'),
-        ('emr', '0013_enable_auto_time'),
     ]
 
     operations = [
