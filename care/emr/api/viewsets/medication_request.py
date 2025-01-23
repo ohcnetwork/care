@@ -1,4 +1,6 @@
 from django_filters import rest_framework as filters
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -12,6 +14,9 @@ from care.emr.resources.medication.request.spec import (
     MedicationRequestUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
+from care.security.authorization import AuthorizationController
+from care.users.models import User
+from care.emr.models.encounter import Encounter
 
 
 class MedicationRequestFilter(filters.FilterSet):
@@ -40,6 +45,30 @@ class MedicationRequestViewSet(
             .filter(patient__external_id=self.kwargs["patient_external_id"])
             .select_related("patient", "encounter", "created_by", "updated_by")
         )
+
+    def authorize_create(self, instance):
+        super().authorize_create(instance)
+        if instance.requester:
+            encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+            requester = get_object_or_404(User, external_id=instance.requester)
+            if not AuthorizationController.call(
+                "can_update_encounter_obj", requester, encounter
+            ):
+                raise PermissionDenied(
+                    "Requester does not have permission to update encounter"
+                )
+
+    def authorize_update(self, request_obj, model_instance):
+        super().authorize_update(request_obj, model_instance)
+        if model_instance.requester:
+            if not AuthorizationController.call(
+                "can_update_encounter_obj",
+                model_instance.requester,
+                model_instance.encounter,
+            ):
+                raise PermissionDenied(
+                    "Requester does not have permission to update encounter"
+                )
 
 
 InternalQuestionnaireRegistry.register(MedicationRequestViewSet)

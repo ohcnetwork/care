@@ -18,3 +18,6 @@ class MedicationRequest(EMRBaseModel):
     dosage_instruction = models.JSONField(default=list, null=True, blank=True)
     note = models.TextField(null=True, blank=True)
     authored_on = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    requester = models.ForeignKey(
+        "users.User", on_delete=models.SET_NULL, null=True, blank=True
+    )
