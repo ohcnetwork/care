@@ -202,11 +202,11 @@ class TestMedicationRequestApi(CareAPITestBase):
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
 
-    def test_update_medication_request_with_permission_for_requester(self):
+    def test_update_medication_request_requester(self):
         """
-        Users with `can_write_encounter_obj` permission can update medication requests as long as requester has the same permissions (HTTP 200).
+        Requester cannot be updated.
         """
-        requester = self.create_user()
+        requester_initial, requester_updated = self.create_user(), self.create_user()
 
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
@@ -214,37 +214,17 @@ class TestMedicationRequestApi(CareAPITestBase):
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
-        self.attach_role_facility_organization_user(self.organization, requester, role)
-
-        obj = self.create_medication_request(requester=requester)
-        url = self._get_medication_request_url(obj.external_id)
-        data = self.get_medication_request_data()
-        response = self.client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 200)
-
-    def test_update_medication_request_without_permission_for_requester(self):
-        """
-        Requester without `can_write_encounter_obj` permission cannot update medication requests (HTTP 403).
-        """
-        permissions = [
-            PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        requester = self.create_user()
-        requester_role = self.create_role_with_permissions([])
         self.attach_role_facility_organization_user(
-            self.organization, requester, requester_role
+            self.organization, requester_initial, role
+        )
+        self.attach_role_facility_organization_user(
+            self.organization, requester_updated, role
         )
 
-        obj = self.create_medication_request(requester=requester)
+        obj = self.create_medication_request(requester=requester_initial)
         url = self._get_medication_request_url(obj.external_id)
-        data = self.get_medication_request_data(requester=requester.external_id)
-        response = self.client.put(url, data, format="json")
-        self.assertContains(
-            response,
-            "Requester does not have permission to update encounter",
-            status_code=403,
-        )
+        data = self.get_medication_request_data(requester=requester_updated.external_id)
+        self.client.put(url, data, format="json")
+
+        obj.refresh_from_db()
+        self.assertEqual(obj.requester, requester_initial)

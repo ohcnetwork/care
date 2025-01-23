@@ -58,16 +58,5 @@ class MedicationRequestViewSet(
                     "Requester does not have permission to update encounter"
                 )
 
-    def authorize_update(self, request_obj, model_instance):
-        super().authorize_update(request_obj, model_instance)
-        if model_instance.requester and not AuthorizationController.call(
-            "can_update_encounter_obj",
-            model_instance.requester,
-            model_instance.encounter,
-        ):
-            raise PermissionDenied(
-                "Requester does not have permission to update encounter"
-            )
-
 
 InternalQuestionnaireRegistry.register(MedicationRequestViewSet)

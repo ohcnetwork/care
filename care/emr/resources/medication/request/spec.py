@@ -224,12 +224,13 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 
     dosage_instruction: list[DosageInstruction] = Field()
     authored_on: datetime
-    requester: UUID4 | None = None
 
     note: str | None = Field(None)
 
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):
+    requester: UUID4 | None = None
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
