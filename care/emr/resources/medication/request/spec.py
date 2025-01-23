@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator
 
 from care.emr.models.encounter import Encounter
@@ -21,6 +22,7 @@ from care.emr.resources.medication.valueset.body_site import CARE_BODY_SITE_VALU
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.users.models import User
 
 
 class MedicationRequestStatus(str, Enum):
@@ -197,7 +199,7 @@ class DosageInstruction(BaseModel):
 
 class MedicationRequestResource(EMRResource):
     __model__ = MedicationRequest
-    __exclude__ = ["patient", "encounter"]
+    __exclude__ = ["patient", "encounter", "requester"]
 
 
 class BaseMedicationRequestSpec(MedicationRequestResource):
@@ -227,6 +229,8 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):
+    requester: UUID4 | None = None
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
@@ -245,11 +249,10 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
         )
 
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            obj.encounter = Encounter.objects.get(
-                external_id=self.encounter
-            )  # Needs more validation
-            obj.patient = obj.encounter.patient
+        obj.encounter = Encounter.objects.get(external_id=self.encounter)
+        obj.patient = obj.encounter.patient
+        if self.requester:
+            obj.requester = get_object_or_404(User, external_id=self.requester)
 
 
 class MedicationRequestUpdateSpec(MedicationRequestResource):

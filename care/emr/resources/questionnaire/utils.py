@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 from urllib.parse import urlparse
 
+from dateutil.parser import isoparse
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
@@ -63,9 +64,9 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
                 if value.value.lower() not in ["true", "false", "1", "0"]:
                     errors.append(f"Invalid boolean value: {value.value}")
             elif value_type == QuestionType.date.value:
-                datetime.strptime(value.value, "%Y-%m-%d").date()  # noqa DTZ007
+                isoparse(value.value).date()
             elif value_type == QuestionType.datetime.value:
-                datetime.strptime(value.value, "%Y-%m-%dT%H:%M:%S")  # noqa DTZ007
+                isoparse(value.value)
             elif value_type == QuestionType.time.value:
                 datetime.strptime(value.value, "%H:%M:%S")  # noqa DTZ007
             elif value_type == QuestionType.choice.value:
