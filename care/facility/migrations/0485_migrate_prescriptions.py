@@ -353,7 +353,7 @@ def _create_medication_request(MedicationRequest, prescription):
         meta["discontinued_reason"] = prescription.discontinued_reason
         if discontinued_date := prescription.discontinued_date:
             meta["discontinued_date"] = discontinued_date.astimezone(UTC).isoformat()
-    return MedicationRequest(
+    return MedicationRequest.objects.create(
         status=status,
         intent="order",
         category=category,
@@ -385,12 +385,21 @@ def migrate_prescriptions(apps, schema_editor):
         .order_by("id"),
         100,
     )
+    bulk = []
     for page_num in paginator.page_range:
         page = paginator.page(page_num)
-        bulk = []
-        for prescription in page.object_list:
-            bulk.append(_create_medication_request(MedicationRequest, prescription))
-        MedicationRequest.objects.bulk_create(bulk)
+        prescriptions = page.object_list
+        for prescription in prescriptions:
+            obj = _create_medication_request(MedicationRequest, prescription)
+            bulk.append((prescription.id, obj.id))
+            logger.debug(f"Migrated Prescription {prescription.id} -> {obj.id}")
+    Prescription.objects.bulk_update(
+        [
+            Prescription(id=p_id, migrated_emr_prescription_id=mr_id)
+            for p_id, mr_id in bulk
+        ],
+        ["migrated_emr_prescription_id"],
+    )
     logger.debug("Migrating Prescriptions Done")
 
 
@@ -410,11 +419,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='prescription',
-            name='migrated_emr_prescription_id',
+            model_name="prescription",
+            name="migrated_emr_prescription_id",
             field=models.BigIntegerField(blank=True, null=True),
         ),
         migrations.RunPython(
             migrate_prescriptions, reverse_code=reverse_migrate_prescriptions
-        )
+        ),
     ]
