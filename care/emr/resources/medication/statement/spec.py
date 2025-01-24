@@ -46,14 +46,14 @@ class BaseMedicationStatementSpec(EMRResource):
 
     effective_period: Period | None = None
 
-    encounter: UUID4
-
     information_source: MedicationStatementInformationSourceType | None = None
 
     note: str | None = None
 
 
 class MedicationStatementSpec(BaseMedicationStatementSpec):
+    encounter: UUID4
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
@@ -77,6 +77,17 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
                 external_id=self.encounter
             )  # Needs more validation
             obj.patient = obj.encounter.patient
+
+
+class MedicationStatementUpdateSpec(BaseMedicationStatementSpec):
+    @field_validator("medication")
+    @classmethod
+    def validate_medication(cls, medication):
+        return validate_valueset(
+            "medication",
+            cls.model_fields["medication"].json_schema_extra["slug"],
+            medication,
+        )
 
 
 class MedicationStatementReadSpec(BaseMedicationStatementSpec):
