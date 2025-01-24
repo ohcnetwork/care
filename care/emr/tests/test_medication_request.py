@@ -182,9 +182,12 @@ class TestMedicationRequestApi(CareAPITestBase):
 
         obj = self.create_medication_request()
         url = self._get_medication_request_url(obj.external_id)
-        data = self.get_medication_request_data()
+        data = self.get_medication_request_data(intent="instance_order")
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
+
+        obj.refresh_from_db()
+        self.assertEqual(obj.intent, "instance_order")
 
     def test_update_medication_request_without_permission(self):
         """
