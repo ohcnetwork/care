@@ -31,6 +31,11 @@ ROUTE_MAP = {
         "display": "Subcutaneous route",
         "system": "http://snomed.info/sct",
     },
+    "S/C": {
+        "code": "34206005",
+        "display": "Subcutaneous route",
+        "system": "http://snomed.info/sct",
+    },
     "INHALATION": {
         "code": "447694001",
         "display": "Respiratory tract route",
@@ -263,27 +268,21 @@ def get_medication_request_category(prescription):
 def get_dosage_instruction_timing(prescription):
     if prescription.dosage_type == "PRN":
         return None
-    if prescription.frequency == "STAT":
-        return None
-    if prescription.frequency not in FREQUENCY_MAP:
-        raise ValueError(f"Unsupported frequency: {prescription.frequency}")
-    timing = FREQUENCY_MAP[prescription.frequency]
-    if prescription.days:
-        timing["repeat"]["bounds_duration"] = {
-            "value": prescription.days,
-            "unit": "d",
-        }
-    return timing
+    if prescription.frequency in FREQUENCY_MAP:
+        timing = FREQUENCY_MAP[prescription.frequency]
+        if prescription.days:
+            timing["repeat"]["bounds_duration"] = {
+                "value": prescription.days,
+                "unit": "d",
+            }
+        return timing
 
 
 def _create_medication_request(MedicationRequest, prescription):
     meta = {
         **prescription.meta,
         "migration_id": MIGRATION_ID,
-        "migration_errors": [],
     }
-    errors = meta["migration_errors"]
-
     status, priority = "active", "routine"
     medication = get_medication_request_medication(prescription)
     category = get_medication_request_category(prescription)
@@ -301,21 +300,21 @@ def _create_medication_request(MedicationRequest, prescription):
                 "display": prescription.route,
                 "system": "http://care.ohc.network",
             }
-            errors.append(f"Unsupported route: {prescription.route}")
 
     try:
         base_dosage = parse_dosage_str(prescription.base_dosage)
     except (ValueError, TypeError) as e:
         base_dosage = None
-        errors.append(f"Error parsing base_dosage: {e}")
 
     dosage_instruction["dose_and_rate"] = {"type": "ordered"}
     if prescription.dosage_type == "TITRATED":
+        dosage_instruction["text"] = (
+            f"{prescription.base_dosage} to {prescription.target_dosage}"
+        )
         try:
             target_dosage = parse_dosage_str(prescription.target_dosage)
         except (ValueError, TypeError) as e:
             target_dosage = None
-            errors.append(f"Error parsing target_dosage: {e}")
         low, high = base_dosage, target_dosage
         # if the units are the same and the low value is greater than the high value, swap them
         if (
@@ -330,6 +329,7 @@ def _create_medication_request(MedicationRequest, prescription):
             "high": high,
         }
     else:
+        dosage_instruction["text"] = prescription.base_dosage
         dosage_instruction["dose_and_rate"]["dose_quantity"] = base_dosage
 
     if prescription.dosage_type == "PRN":
@@ -339,18 +339,19 @@ def _create_medication_request(MedicationRequest, prescription):
             "code": prescription.indicator,
             "display": prescription.indicator,
         }
-        meta["max_dosage_in_24_hours"] = prescription.max_dosage
-        meta["min_hours_between_doses"] = prescription.min_hours_between_doses
+        if prescription.max_dosage:
+            meta["max_dosage_in_24_hours"] = prescription.max_dosage
+        if prescription.min_hours_between_doses:
+            meta["min_hours_between_doses"] = prescription.min_hours_between_doses
     else:
+        dosage_instruction["timing"] = get_dosage_instruction_timing(prescription)
         if prescription.frequency == "STAT":
             priority = "stat"
-        try:
-            dosage_instruction["timing"] = get_dosage_instruction_timing(prescription)
-        except ValueError as e:
-            errors.append(str(e))
+
     if prescription.discontinued:
         status = "ended"
-        meta["discontinued_reason"] = prescription.discontinued_reason
+        if prescription.discontinued_reason:
+            meta["discontinued_reason"] = prescription.discontinued_reason
         if discontinued_date := prescription.discontinued_date:
             meta["discontinued_date"] = discontinued_date.astimezone(UTC).isoformat()
     return MedicationRequest.objects.create(
