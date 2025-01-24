@@ -220,8 +220,6 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
         json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
     )
 
-    encounter: UUID4
-
     dosage_instruction: list[DosageInstruction] = Field()
     authored_on: datetime
 
@@ -230,6 +228,7 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):
     requester: UUID4 | None = None
+    encounter: UUID4
 
     @field_validator("encounter")
     @classmethod
@@ -255,7 +254,7 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
             obj.requester = get_object_or_404(User, external_id=self.requester)
 
 
-class MedicationRequestUpdateSpec(MedicationRequestResource):
+class MedicationRequestUpdateSpec(BaseMedicationRequestSpec):
     status: MedicationRequestStatus
 
 
