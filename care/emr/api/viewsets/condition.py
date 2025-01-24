@@ -174,7 +174,13 @@ class ChronicConditionViewSet(
             raise PermissionDenied("You do not have permission to update encounter")
 
     def authorize_update(self, request_obj, model_instance):
-        self.authorize_create({})
+        encounter = get_object_or_404(Encounter, external_id=request_obj.encounter)
+        if not AuthorizationController.call(
+            "can_update_encounter_obj",
+            self.request.user,
+            encounter,
+        ):
+            raise PermissionDenied("You do not have permission to update encounter")
 
     def perform_create(self, instance):
         instance.category = CategoryChoices.chronic_condition.value
@@ -182,13 +188,6 @@ class ChronicConditionViewSet(
 
     def clean_update_data(self, request_data):
         return super().clean_update_data(request_data, keep_fields={"encounter"})
-
-    def perform_update(self, instance):
-        if not AuthorizationController.call(
-            "can_update_encounter_obj", self.request.user, instance.encounter
-        ):
-            raise PermissionDenied("You do not have permission to update encounter")
-        super().perform_update(instance)
 
     def get_queryset(self):
         if not AuthorizationController.call(

@@ -548,7 +548,7 @@ class TestChronicConditionViewSet(CareAPITestBase):
 
         url = self._get_chronic_condition_url(chronic_condition.external_id)
         chronic_condition_data_updated = model_to_dict(chronic_condition)
-        chronic_condition_data_updated.pop("encounter", None)
+        chronic_condition_data_updated["encounter"] = encounter.external_id
         chronic_condition_data_updated["severity"] = "mild"
         chronic_condition_data_updated["code"] = self.valid_code
 
@@ -580,7 +580,7 @@ class TestChronicConditionViewSet(CareAPITestBase):
 
         url = self._get_chronic_condition_url(chronic_condition.external_id)
         chronic_condition_data_updated = model_to_dict(chronic_condition)
-        chronic_condition_data_updated.pop("encounter", None)
+        chronic_condition_data_updated["encounter"] = encounter.external_id
         chronic_condition_data_updated["severity"] = "mild"
         chronic_condition_data_updated["code"] = self.valid_code
 

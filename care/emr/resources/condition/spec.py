@@ -147,7 +147,7 @@ class ConditionUpdateSpec(BaseConditionSpec):
 
 
 class ChronicConditionUpdateSpec(ConditionUpdateSpec):
-    encounter: UUID4 | None = None
+    encounter: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.encounter:
