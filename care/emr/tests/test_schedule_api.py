@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from django.test.utils import ignore_warnings
 from django.urls import reverse
 from rest_framework import status
 
@@ -19,6 +20,7 @@ from care.security.permissions.user_schedule import UserSchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestScheduleViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -365,6 +367,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestAvailabilityExceptionsViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -612,6 +615,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         )
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestAvailabilityViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()

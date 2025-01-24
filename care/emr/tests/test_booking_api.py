@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from django.test.utils import ignore_warnings
 from django.urls import reverse
 
 from care.emr.models import (
@@ -20,6 +21,7 @@ from care.utils.tests.base import CareAPITestBase
 from config.patient_otp_authentication import PatientOtpObject
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestBookingViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -376,6 +378,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertGreaterEqual(len(response.data["users"]), 1)
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestSlotViewSetAppointmentApi(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -582,6 +585,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         self.assertContains(response, status_code=400, text="Slot is already full")
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestSlotViewSetSlotStatsApis(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -932,6 +936,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             self.assertEqual(slot_stats["total_slots"], total_slots_for_day)
 
 
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestOtpSlotViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()

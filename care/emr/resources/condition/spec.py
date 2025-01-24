@@ -2,6 +2,7 @@ import datetime
 from enum import Enum
 
 from pydantic import UUID4, Field, field_validator
+from rest_framework.generics import get_object_or_404
 
 from care.emr.fhir.schema.base import Coding
 from care.emr.models.condition import Condition
@@ -96,7 +97,7 @@ class ConditionSpec(BaseConditionSpec):
             obj.patient = obj.encounter.patient
 
 
-class ConditionSpecRead(BaseConditionSpec):
+class ConditionReadSpec(BaseConditionSpec):
     """
     Validation for deeper models may not be required on read, Just an extra optimisation
     """
@@ -119,7 +120,8 @@ class ConditionSpecRead(BaseConditionSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["encounter"] = obj.encounter.external_id
+        if obj.encounter:
+            mapping["encounter"] = obj.encounter.external_id
 
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
@@ -127,7 +129,7 @@ class ConditionSpecRead(BaseConditionSpec):
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
 
 
-class ConditionSpecUpdate(BaseConditionSpec):
+class ConditionUpdateSpec(BaseConditionSpec):
     clinical_status: ClinicalStatusChoices | None = None
     verification_status: VerificationStatusChoices
     severity: SeverityChoices | None = None
@@ -142,3 +144,11 @@ class ConditionSpecUpdate(BaseConditionSpec):
         return validate_valueset(
             "code", cls.model_fields["code"].json_schema_extra["slug"], code
         )
+
+
+class ChronicConditionUpdateSpec(ConditionUpdateSpec):
+    encounter: UUID4
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.encounter:
+            obj.encounter = get_object_or_404(Encounter, external_id=self.encounter)
