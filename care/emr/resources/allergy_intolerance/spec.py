@@ -52,6 +52,27 @@ class BaseAllergyIntoleranceSpec(EMRResource):
     id: UUID4 = None
 
 
+class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
+    clinical_status: ClinicalStatusChoices
+    verification_status: VerificationStatusChoices
+    criticality: CriticalityChoices
+    last_occurrence: datetime.datetime | None = None
+    note: str | None = None
+    encounter: UUID4
+
+    @field_validator("encounter")
+    @classmethod
+    def validate_encounter_exists(cls, encounter):
+        if not Encounter.objects.filter(external_id=encounter).exists():
+            err = "Encounter not found"
+            raise ValueError(err)
+        return encounter
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.encounter:
+            obj.encounter = Encounter.objects.get(external_id=self.encounter)
+
+
 class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
     clinical_status: ClinicalStatusChoices
     verification_status: VerificationStatusChoices
@@ -59,20 +80,11 @@ class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
     criticality: CriticalityChoices
     last_occurrence: datetime.datetime | None = None
     recorded_date: datetime.datetime | None = None
-
-    onset: AllergyIntoleranceOnSetSpec = {}
-
-    def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            obj.encounter = Encounter.objects.get(external_id=self.encounter)
-            obj.patient = obj.encounter.patient
-
-
-class AllergyIntoleranceSpec(AllergyIntoleranceWriteSpec):
     encounter: UUID4
     code: Coding = Field(
         {}, json_schema_extra={"slug": CARE_ALLERGY_CODE_VALUESET.slug}
     )
+    onset: AllergyIntoleranceOnSetSpec = {}
 
     @field_validator("code")
     @classmethod
@@ -89,8 +101,12 @@ class AllergyIntoleranceSpec(AllergyIntoleranceWriteSpec):
             raise ValueError(err)
         return encounter
 
+    def perform_extra_deserialization(self, is_update, obj):
+        obj.encounter = Encounter.objects.get(external_id=self.encounter)
+        obj.patient = obj.encounter.patient
 
-class AllergyIntrolanceSpecRead(BaseAllergyIntoleranceSpec):
+
+class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     """
     Validation for deeper models may not be required on read, Just an extra optimisation
     """
@@ -115,3 +131,5 @@ class AllergyIntrolanceSpecRead(BaseAllergyIntoleranceSpec):
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        if obj.encounter:
+            mapping["encounter"] = obj.encounter.external_id

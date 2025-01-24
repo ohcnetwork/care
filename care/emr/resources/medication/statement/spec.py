@@ -53,6 +53,15 @@ class BaseMedicationStatementSpec(EMRResource):
     note: str | None = None
 
 
+class MedicationStatementUpdateSpec(EMRResource):
+    __model__ = MedicationStatement
+    __exclude__ = ["patient", "encounter"]
+
+    status: MedicationStatementStatus
+    effective_period: Period | None = None
+    note: str | None = None
+
+
 class MedicationStatementSpec(BaseMedicationStatementSpec):
     @field_validator("encounter")
     @classmethod

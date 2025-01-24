@@ -257,6 +257,7 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
 
 class MedicationRequestUpdateSpec(MedicationRequestResource):
     status: MedicationRequestStatus
+    note: str | None = None
 
 
 class MedicationRequestReadSpec(BaseMedicationRequestSpec):
