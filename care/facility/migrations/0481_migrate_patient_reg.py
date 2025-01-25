@@ -134,6 +134,8 @@ def migrate_patient_registrations(apps, schema_editor):
     Questionnaire = apps.get_model("emr", "Questionnaire")
     QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
     QuestionnaireOrganization = apps.get_model("emr", "QuestionnaireOrganization")
+    Observation = apps.get_model("emr", "Observation")
+
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
 
@@ -280,16 +282,78 @@ def migrate_patient_registrations(apps, schema_editor):
                     },
                 )
 
-            note_thread, created = NoteThread.objects.get_or_create(
+            observations = []
+            if patient_registration.is_antenatal:
+                # we are only sure if the patient is pregnant
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "82810-3",
+                            "display": "Pregnancy status",
+                        },
+                        "value": {
+                            "value_code": {
+                                "system": "http://snomed.info/sct",
+                                "code": "77386006",
+                                "display": "Pregnant",
+                            }
+                        },
+                        "value_type": "choice",
+                    }
+                )
+            if patient_registration.last_menstruation_start_date:
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "8665-2",
+                            "display": "Last menstrual period start date",
+                        },
+                        "value": {
+                            "value": patient_registration.last_menstruation_start_date.isoformat(),
+                        },
+                        "value_type": "date",
+                    }
+                )
+            if patient_registration.date_of_delivery:
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "11778-8",
+                            "display": "Delivery date Estimated",
+                        },
+                        "value": {
+                            "value": patient_registration.date_of_delivery.isoformat(),
+                        },
+                        "value_type": "date",
+                    }
+                )
+            if observations:
+                Observation.objects.bulk_create(
+                    [
+                        Observation(
+                            patient=patient,
+                            subject_type="patient",
+                            effective_datetime=patient_registration.created_date,
+                            alternate_coding={},
+                            **observation,
+                        )
+                        for observation in observations
+                    ]
+                )
+
+            health_info_note_thread, created = NoteThread.objects.get_or_create(
                 title="Patient Health Information",
                 patient=patient,
                 defaults={
                     "meta": {
                         "migration_id": MIGRATION_ID,
                     },
-                    # "created_by": patient_registration.created_by,
+                    "created_by": patient_registration.created_by,
                     "created_date": patient_registration.created_date,
-                    # "modified_date": patient_registration.modified_date,
+                    "modified_date": patient_registration.modified_date,
                 },
             )
 
@@ -310,26 +374,70 @@ def migrate_patient_registrations(apps, schema_editor):
                 for item in patient_registration.medical_history.all():
                     if item.deleted or item.disease == 1:
                         continue
-                    message = disease_choices_map.get(item.disease, 'Other Disease/Condition')
+                    message = disease_choices_map.get(
+                        item.disease, "Other Disease/Condition"
+                    )
                     if item.details:
                         message += f": {item.details}"
                     messages.append(message)
-                NoteMessage.objects.bulk_create(
-                    [
-                        NoteMessage(
-                            message=message,
-                            thread=note_thread,
-                            meta={
-                                "migration_id": MIGRATION_ID,
-                            },
-                            created_date=patient.created_date,
-                            modified_date=patient.modified_date,
-                            created_by=patient.created_by,
-                            updated_by=patient.created_by,
-                        )
-                        for message in messages
-                    ]
-                )
+                if messages:
+                    NoteMessage.objects.bulk_create(
+                        [
+                            NoteMessage(
+                                message=message,
+                                thread=health_info_note_thread,
+                                meta={
+                                    "migration_id": MIGRATION_ID,
+                                },
+                                created_date=patient.created_date,
+                                modified_date=patient.modified_date,
+                                created_by=patient.created_by,
+                            )
+                            for message in messages
+                        ]
+                    )
+                else:
+                    # delete the thread if no messages
+                    NoteThread.objects.filter(id=health_info_note_thread.id).delete()
+
+            demographic_info_note_thread, created = NoteThread.objects.get_or_create(
+                title="Patient Identifiers",
+                patient=patient,
+                defaults={
+                    "meta": {
+                        "migration_id": MIGRATION_ID,
+                    },
+                    "created_by": patient_registration.created_by,
+                    "created_date": patient_registration.created_date,
+                    "modified_date": patient_registration.modified_date,
+                },
+            )
+
+            if created:
+                messages = []
+                if patient_registration.passport_no:
+                    messages.append(f"Passport No: {patient_registration.passport_no}")
+                if messages:
+                    NoteMessage.objects.bulk_create(
+                        [
+                            NoteMessage(
+                                message=message,
+                                thread=demographic_info_note_thread,
+                                meta={
+                                    "migration_id": MIGRATION_ID,
+                                },
+                                created_date=patient.created_date,
+                                modified_date=patient.modified_date,
+                                created_by=patient.created_by,
+                            )
+                            for message in messages
+                        ]
+                    )
+                else:
+                    # delete the thread if no messages
+                    NoteThread.objects.filter(
+                        id=demographic_info_note_thread.id
+                    ).delete()
 
             patient_registration.migrated_emr_patient_id = patient.id
             bulk.append((patient_registration.id, patient.id))
