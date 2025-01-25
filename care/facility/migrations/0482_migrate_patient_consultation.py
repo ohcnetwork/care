@@ -9,46 +9,6 @@ logger = logging.getLogger(__name__)
 MIGRARION_ID = 413370
 
 
-def _get_org(Organization, obj):
-    state = None
-    district = None
-    local_body = None
-    ward = None
-    if obj.state:
-        state = Organization.objects.filter(
-            name=obj.state.name, root_org__isnull=True, level_cache=0
-        ).first()
-    if obj.district:
-        query = {
-            "name": obj.district.name,
-            "level_cache": 1,
-        }
-        if state:
-            query["root_org"] = state
-        district = Organization.objects.filter(**query).first()
-    if obj.local_body:
-        query = {
-            "name": obj.local_body.name,
-            "level_cache": 2,
-        }
-        if state:
-            query["root_org"] = state
-        if district:
-            query["parent"] = district
-        local_body = Organization.objects.filter(**query).first()
-    if obj.ward:
-        query = {
-            "name": obj.ward.name,
-            "level_cache": 3,
-        }
-        if state:
-            query["root_org"] = state
-        if local_body:
-            query["parent"] = local_body
-        ward = Organization.objects.filter(**query).first()
-    return ward or local_body or district or state or None
-
-
 def _create_encounter(apps, consultation):
     Encounter = apps.get_model("emr", "Encounter")
     period = {
