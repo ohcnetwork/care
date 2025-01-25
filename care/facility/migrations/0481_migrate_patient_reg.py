@@ -76,6 +76,16 @@ blood_group_map = {
     "UNK": "unknown",
 }
 
+disease_choices_map = {
+    2: "Diabetes",
+    3: "Heart Disease",
+    4: "HyperTension",
+    5: "Kidney Diseases",
+    6: "Lung Diseases/Asthma",
+    7: "Cancer",
+    8: "Other Disease/Condition",
+}
+
 
 def _get_org(Organization, obj):
     state = None
@@ -194,6 +204,7 @@ def migrate_patient_registrations(apps, schema_editor):
     patient_registrations = (
         PatientRegistration.objects.filter(migrated_emr_patient_id__isnull=True)
         .select_related("state", "district", "local_body", "ward", "meta_info")
+        .prefetch_related("medical_history")
         .exclude(deleted=True)
         .order_by("id")
     )
@@ -296,6 +307,13 @@ def migrate_patient_registrations(apps, schema_editor):
                     messages.append(
                         f"Ongoing Medication: {patient_registration.ongoing_medication}"
                     )
+                for item in patient_registration.medical_history.all():
+                    if item.deleted or item.disease == 1:
+                        continue
+                    message = disease_choices_map.get(item.disease, 'Other Disease/Condition')
+                    if item.details:
+                        message += f": {item.details}"
+                    messages.append(message)
                 NoteMessage.objects.bulk_create(
                     [
                         NoteMessage(
