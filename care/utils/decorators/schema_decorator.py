@@ -3,7 +3,7 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 
 def generate_swagger_schema_decorator(cls):
     if not hasattr(cls, "tags"):
-        cls.tags = [cls.__name__]
+        cls.tags = [cls.__name__.replace("ViewSet", "")]
 
     base_actions = {
         "create": {
