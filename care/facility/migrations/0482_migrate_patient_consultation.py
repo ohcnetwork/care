@@ -6,52 +6,626 @@ from django.core.paginator import Paginator
 
 logger = logging.getLogger(__name__)
 
-MIGRARION_ID = 413370
+MIGRATION_ID = 413370
 
 
-def _create_encounter(apps, consultation):
-    Encounter = apps.get_model("emr", "Encounter")
-    period = {
-        "start": consultation.encounter_date.replace(tzinfo=UTC).isoformat(),
-        "end": (
-            consultation.discharge_date.replace(tzinfo=UTC).isoformat()
-            if consultation.discharge_date
-            else None
-        ),
-    }
-    encounter = Encounter.objects.create(
-        status="completed" if consultation.discharge_date else "in-progress",
-        patient_id=consultation.patient.migrated_emr_patient_id,
-        external_identifier=consultation.patient_no,
-        period=period,
-        facility=consultation.facility,
-        meta={
-            "migration_id": MIGRARION_ID,
-        },
-        created_by=consultation.created_by,
-        updated_by=consultation.last_edited_by,
-        created_date=consultation.created_date,
-        modified_date=consultation.modified_date,
-    )
-    return encounter
+category_to_priority_map = {
+    "Comfort": "as_needed",
+    "Stable": "routine",
+    "Moderate": "urgent",
+    "Critical": "stat",
+    "ActivelyDying": "as_needed",
+}
+
+category_choice_map = {
+    "Comfort": "Comfort Care",
+    "Stable": "Mild",
+    "Moderate": "Moderate",
+    "Critical": "Critical",
+    "ActivelyDying": "Actively Dying",
+}
+
+discharge_reason_map = {
+    -1: "oth",
+    1: "home",
+    2: "other_hcf",
+    3: "exp",
+    4: "aadvice",
+}
+
+suggestion_to_class_map = {
+    "HI": "vr",
+    "A": "imp",
+    "RR": "amb",
+    "DC": "hh",
+    # in the context of an icu most of the cases are emergency
+    "DD": "emer",
+    "R": "emer",
+}
+
+
+def procedure_to_text(procedure):
+    if not procedure.get("procedure"):
+        return None
+    text = procedure["procedure"]
+    if procedure.get("repetitive", False) and procedure.get("frequency"):
+        text += f", Every {procedure['frequency']}"
+    if time:=procedure.get("time"):
+        time.replace("T", " ")
+        text += f", At {time}"
+    if notes:=procedure.get("notes"):
+        text += f"\nNotes: {notes}"
+
+def investigation_to_text(investigation):
+    if not investigation.get("type"):
+        return None
+    text = ", ".join(investigation["type"])
+    if investigation.get("repetitive", False) and investigation.get("frequency"):
+        text += f", Every {investigation['frequency']}"
+    if time:=investigation.get("time"):
+        time.replace("T", " ")
+        text += f", At {time}"
+    if notes:=investigation.get("notes"):
+        text += f"\nNotes: {notes}"
 
 
 def migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    Encounter = apps.get_model("emr", "Encounter")
+
+    Questionnaire = apps.get_model("emr", "Questionnaire")
+    QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
+    Observation = apps.get_model("emr", "Observation")
+
+    consultation_questionnaire, created = Questionnaire.objects.get_or_create(
+        slug="consultation_876e89eb",
+        defaults={
+            "title": "Consultation",
+            "description": "Consultation",
+            "meta": {
+                "migration_id": MIGRATION_ID,
+            },
+            "questions": [
+                {
+                    "id": "53c8a423-9d2a-4c2e-8f23-7e8908be734c",
+                    "link_id": "1",
+                    "question": "Consultation Examination",
+                    "type": "group",
+                    "required": False,
+                    "questions": [
+                        {
+                            "id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                            "link_id": "1.1",
+                            "question": "Examination Details",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                            "link_id": "1.2",
+                            "question": "History of Present Illness",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "b14bfb28-306a-4061-b8f0-282b3ae61613",
+                            "link_id": "1.3",
+                            "question": "Treatment Plan",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "f069fce2-cdba-4004-830e-a24aa2b3be20",
+                            "link_id": "1.4",
+                            "question": "Consultation Notes",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "baff36ec-a102-4981-9988-5bac39858d8b",
+                            "link_id": "1.5",
+                            "question": "Transferred From Location",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "61a42107-7532-408c-8761-b54b37aea631",
+                            "link_id": "1.6",
+                            "question": "Referred From Facility",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "f848a229-0406-461e-8f2d-4123286904bc",
+                            "link_id": "1.7",
+                            "question": "Referred By",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "8f0b2c23-f026-427c-9529-d1320b39ee71",
+                            "link_id": "1.8",
+                            "question": "Special Instruction",
+                            "type": "text",
+                            "required": False,
+                        },
+                        {
+                            "id": "fe4b1c2b-2f06-47b1-8b23-20ba06803e9e",
+                            "link_id": "1.9",
+                            "question": "Consultation Category",
+                            "type": "choice",
+                            "required": False,
+                            "answer_options": [
+                                {"value": "Comfort Care"},
+                                {"value": "Mild"},
+                                {"value": "Moderate"},
+                                {"value": "Critical"},
+                                {"value": "Actively Dying"},
+                            ],
+                        },
+                        {
+                            "id": "104a588f-2868-4b8a-97e4-a459587b0883",
+                            "link_id": "1.10",
+                            "question": "Investigations",
+                            "type": "text",
+                            "required": False,
+                            "repeats": True,
+                        },
+                        {
+                            "id": "167e952f-6f29-4196-9362-49c2c12a1a91",
+                            "link_id": "1.11",
+                            "question": "Procedures",
+                            "type": "text",
+                            "required": False,
+                            "repeats": True,
+                        },
+                    ],
+                },
+                {
+                    "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
+                    "link_id": "2",
+                    "question": "Death Report",
+                    "type": "group",
+                    "required": False,
+                    "questions": [
+                        {
+                            "id": "cc629f7a-5607-4d26-b840-0c024c4ee957",
+                            "link_id": "2.1",
+                            "question": "Death Date and Time",
+                            "type": "datetime",
+                            "required": True,
+                        },
+                        {
+                            "id": "6b0ae91d-06ae-4408-8843-73e1b1733f09",
+                            "link_id": "2.2",
+                            "question": "Death Confirmed By Doctor",
+                            "type": "text",
+                            "required": True,
+                        },
+                        {
+                            "id": "f763249d-f6f9-4142-84d0-b86a8e93536d",
+                            "link_id": "2.3",
+                            "question": "Cause of Death",
+                            "type": "text",
+                            "required": True,
+                        },
+                    ],
+                },
+                {
+                    "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
+                    "link_id": "3",
+                    "question": "Discharge Notes",
+                    "type": "group",
+                    "required": False,
+                    "questions": [
+                        {
+                            "id": "3b3816b1-09f5-4c41-af99-5d3b66de5b75",
+                            "link_id": "3.1",
+                            "question": "Discharge Notes",
+                            "type": "text",
+                            "required": False,
+                        },
+                    ],
+                },
+                {
+                    "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
+                    "link_id": "4",
+                    "question": "Physical Measurements",
+                    "type": "group",
+                    "required": False,
+                    "questions": [
+                        {
+                            "id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                            "link_id": "4.1",
+                            "question": "Height",
+                            "type": "decimal",
+                            "required": False,
+                            "code": {
+                                "system": "http://loinc.org",
+                                "code": "8302-2",
+                                "display": "Body height",
+                            },
+                            "unit": {
+                                "system": "http://unitsofmeasure.org",
+                                "code": "cm",
+                                "display": "cm",
+                            },
+                            "is_observation": True,
+                        },
+                        {
+                            "id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                            "link_id": "4.2",
+                            "question": "Weight",
+                            "type": "decimal",
+                            "required": False,
+                            "code": {
+                                "system": "http://loinc.org",
+                                "code": "29463-7",
+                                "display": "Body weight",
+                            },
+                            "unit": {
+                                "system": "http://unitsofmeasure.org",
+                                "code": "kg",
+                                "display": "kg",
+                            },
+                            "is_observation": True,
+                        },
+                    ],
+                },
+            ],
+        },
+    )
 
     paginator = Paginator(
         PatientConsultation.objects.filter(migrated_emr_encounter_id__isnull=True)
-        .select_related("patient")
+        .select_related("patient", "referred_from_facility", "referred_by")
         .exclude(deleted=True, patient__deleted=True)
         .order_by("id"),
         2000,
     )
     bulk = []
     for page_number in paginator.page_range:
-        for patient_consultation in paginator.page(page_number).object_list:
-            encounter = _create_encounter(apps, patient_consultation)
-            patient_consultation.migrated_emr_encounter_id = encounter.id
-            bulk.append((patient_consultation.id, encounter.id))
+        for consultation in paginator.page(page_number).object_list:
+            period = {
+                "start": consultation.encounter_date.replace(tzinfo=UTC).isoformat(),
+                "end": (
+                    consultation.discharge_date.replace(tzinfo=UTC).isoformat()
+                    if consultation.discharge_date
+                    else None
+                ),
+            }
+
+            hospitalization = {}
+            if consultation.suggestion == "A":
+                hospitalization = {
+                    "re_admission": consultation.is_readmission,
+                    "discharge_disposition": discharge_reason_map.get(
+                        consultation.new_discharge_reason, "oth"
+                    ),
+                }
+                if consultation.transferred_from_location:
+                    hospitalization["admit_source"] = "other"
+                elif (
+                    consultation.referred_from_facility
+                    or consultation.referred_from_facility_external
+                ):
+                    hospitalization["admit_source"] = "hosp_trans"
+                elif consultation:
+                    hospitalization["admit_source"] = "outp"
+
+            encounter = Encounter.objects.create(
+                status="completed" if consultation.discharge_date else "in-progress",
+                priority=category_to_priority_map.get(consultation.category, "routine"),
+                patient_id=consultation.patient.migrated_emr_patient_id,
+                external_identifier=consultation.patient_no,
+                period=period,
+                hospitalization=hospitalization,
+                facility=consultation.facility,
+                meta={
+                    "migration_id": MIGRATION_ID,
+                },
+                encounter_class=suggestion_to_class_map.get(
+                    consultation.suggestion, "amb"
+                ),
+                created_by=consultation.created_by,
+                updated_by=consultation.last_edited_by,
+                created_date=consultation.created_date,
+                modified_date=consultation.modified_date,
+            )
+
+            consultation_questionnaire_responses = []
+            if consultation.consultation_notes:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                        "values": [
+                            {
+                                "value": consultation.consultation_notes,
+                            }
+                        ],
+                    }
+                )
+            if consultation.history_of_present_illness:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                        "values": [
+                            {
+                                "value": consultation.history_of_present_illness,
+                            }
+                        ],
+                    }
+                )
+            if consultation.treatment_plan:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "b14bfb28-306a-4061-b8f0-282b3ae61613",
+                        "values": [
+                            {
+                                "value": consultation.treatment_plan,
+                            }
+                        ],
+                    }
+                )
+            if consultation.consultation_notes:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "f069fce2-cdba-4004-830e-a24aa2b3be20",
+                        "values": [
+                            {
+                                "value": consultation.consultation_notes,
+                            }
+                        ],
+                    }
+                )
+            if consultation.transferred_from_location:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "baff36ec-a102-4981-9988-5bac39858d8b",
+                        "values": [
+                            {
+                                "value": consultation.transferred_from_location,
+                            }
+                        ],
+                    }
+                )
+            if consultation.special_instruction:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "8f0b2c23-f026-427c-9529-d1320b39ee71",
+                        "values": [
+                            {
+                                "value": consultation.special_instruction,
+                            }
+                        ],
+                    }
+                )
+            # we are combining referred_from_facility and referred_from_facility_external
+            # in a single response taking just the facility name
+            if consultation.referred_from_facility:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "61a42107-7532-408c-8761-b54b37aea631",
+                        "values": [
+                            {
+                                "value": f"{consultation.referred_from_facility.name} ({consultation.referred_from_facility.external_id})",
+                            }
+                        ],
+                        "meta": {
+                            "facility_id": consultation.referred_from_facility.external_id,
+                        },
+                    }
+                )
+            if consultation.referred_from_facility_external:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "61a42107-7532-408c-8761-b54b37aea631",
+                        "values": [
+                            {
+                                "value": consultation.referred_from_facility_external,
+                            }
+                        ],
+                    }
+                )
+            if consultation.referred_by:
+                name = consultation.referred_by.get_full_name()
+                if name:
+                    name += f" ({consultation.referred_by.username})"
+                else:
+                    name = consultation.referred_by.username
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "f848a229-0406-461e-8f2d-4123286904bc",
+                        "values": [
+                            {
+                                "value": name,
+                            }
+                        ],
+                        "meta": {
+                            "user_id": consultation.referred_by.external_id,
+                        },
+                    }
+                )
+            if consultation.category:
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "fe4b1c2b-2f06-47b1-8b23-20ba06803e9e",
+                        "values": [
+                            {
+                                "value": category_choice_map.get(
+                                    consultation.category, "Mild"
+                                ),
+                            }
+                        ],
+                    }
+                )
+
+            if consultation.new_discharge_reason == 3:
+                if consultation.death_confirmed_doctor:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "6b0ae91d-06ae-4408-8843-73e1b1733f09",
+                            "values": [
+                                {
+                                    "value": consultation.death_confirmed_doctor,
+                                }
+                            ],
+                        }
+                    )
+                if consultation.death_datetime:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "cc629f7a-5607-4d26-b840-0c024c4ee957",
+                            "values": [
+                                {
+                                    "value": consultation.death_datetime.replace(
+                                        tzinfo=UTC
+                                    ).isoformat(),
+                                }
+                            ],
+                        }
+                    )
+                if consultation.discharge_notes:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "f763249d-f6f9-4142-84d0-b86a8e93536d",
+                            "values": [
+                                {
+                                    "value": consultation.discharge_notes,
+                                }
+                            ],
+                        }
+                    )
+            elif consultation.new_discharge_reason is not None:
+                if consultation.discharge_notes:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "3b3816b1-09f5-4c41-af99-5d3b66de5b75",
+                            "values": [
+                                {
+                                    "value": consultation.discharge_notes,
+                                }
+                            ],
+                        }
+                    )
+            if consultation.procedure:
+                values = []
+                for procedure in consultation.procedure:
+                    if text:= procedure_to_text(procedure):
+                        values.append({"value": text})
+                if values:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "167e952f-6f29-4196-9362-49c2c12a1a91",
+                            "values": values,
+                        }
+                    )
+            if consultation.investigation:
+                values = []
+                for investigation in consultation.investigation:
+                    if text:= investigation_to_text(investigation):
+                        values.append({"value": text})
+                if values:
+                    consultation_questionnaire_responses.append(
+                        {
+                            "question_id": "104a588f-2868-4b8a-97e4-a459587b0883",
+                            "values": values,
+                        }
+                    )
+            consultation_questionnaire_responses_observations = []
+            if consultation.height:
+                value = {
+                    "value": consultation.height,
+                    "unit": {
+                        "system": "http://unitsofmeasure.org",
+                        "code": "cm",
+                        "display": "cm",
+                    },
+                }
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                        "values": [{"value": value}],
+                    }
+                )
+                consultation_questionnaire_responses_observations.append(
+                    dict(
+                        main_code={
+                            "system": "http://loinc.org",
+                            "code": "8302-2",
+                            "display": "Body height",
+                        },
+                        value_type="decimal",
+                        value=value,
+                    )
+                )
+            if consultation.weight:
+                value = {
+                    "value": consultation.weight,
+                    "unit": {
+                        "system": "http://unitsofmeasure.org",
+                        "code": "kg",
+                        "display": "kg",
+                    },
+                }
+                consultation_questionnaire_responses.append(
+                    {
+                        "question_id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                        "values": [{"value": value}],
+                    }
+                )
+                consultation_questionnaire_responses_observations.append(
+                    dict(
+                        main_code={
+                            "system": "http://loinc.org",
+                            "code": "29463-7",
+                            "display": "Body weight",
+                        },
+                        value_type="decimal",
+                        value=value,
+                    )
+                )
+
+            if consultation_questionnaire_responses:
+                questionnaire_response = QuestionnaireResponse.objects.create(
+                    questionnaire_id=consultation_questionnaire.id,
+                    subject_id=encounter.patient_id,
+                    encounter_id=encounter.id,
+                    status="completed",
+                    source_id=consultation.id,
+                    source_type="PatientConsultation",
+                    created_by=consultation.created_by,
+                    updated_by=consultation.last_edited_by,
+                    created_date=consultation.created_date,
+                    modified_date=consultation.modified_date,
+                )
+
+            if consultation_questionnaire_responses_observations:
+                Observation.objects.bulk_create(
+                    [
+                        Observation(
+                            **observation,
+                            status="final",
+                            subject_type="encounter",
+                            subject_id=encounter.external_id,
+                            patient_id=encounter.patient_id,
+                            encounter_id=encounter.id,
+                            effective_datetime=consultation.encounter_date,
+                            data_entered_by=consultation.created_by,
+                            questionnaire_response_id=questionnaire_response.id,
+                            created_by=consultation.created_by,
+                            updated_by=consultation.last_edited_by,
+                            created_date=consultation.created_date,
+                            updated_date=consultation.modified_date,
+                            meta={
+                                "migration_id": MIGRATION_ID,
+                            },
+                        )
+                        for observation in consultation_questionnaire_responses_observations
+                    ]
+                )
+
+            bulk.append((consultation.id, encounter.id))
             logger.debug(f"Created Encounter: {encounter.id=}")
     PatientConsultation.objects.bulk_update(
         [
@@ -66,7 +640,7 @@ def reverse_migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     Encounter = apps.get_model("emr", "Encounter")
     PatientConsultation.objects.update(migrated_emr_encounter_id=None)
-    Encounter.objects.filter(meta__migration_id=MIGRARION_ID).delete()
+    Encounter.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):

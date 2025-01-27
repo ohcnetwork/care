@@ -37,7 +37,7 @@ class QuestionnaireResponseReadSpec(EMRResource):
     id: UUID4
     questionnaire: QuestionnaireReadSpec
     subject_id: str
-    responses: list
+    responses: list[QuestionnaireSubmitResult] = []
     encounter: str | None = None
     structured_responses: dict
     structured_response_type: str
