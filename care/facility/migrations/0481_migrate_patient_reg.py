@@ -76,14 +76,14 @@ blood_group_map = {
     "UNK": "unknown",
 }
 
-disease_choices_map = {
-    2: "Diabetes",
-    3: "Heart Disease",
-    4: "HyperTension",
-    5: "Kidney Diseases",
-    6: "Lung Diseases/Asthma",
-    7: "Cancer",
-    8: "Other Disease/Condition",
+
+disease_to_condition_map = {
+    2: ("73211009", "Diabetes mellitus"),
+    3: ("128238001", "Chronic heart disease"),
+    4: ("38341003", "Hypertensive disorder"),
+    5: ("709044004", "Chronic kidney disease"),
+    6: ("413839001", "Chronic lung disease"),
+    7: ("363346000", "Malignant neoplastic disease"),
 }
 
 
@@ -138,6 +138,8 @@ def migrate_patient_registrations(apps, schema_editor):
 
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
+
+    Condition = apps.get_model("emr", "Condition")
 
     meta_info_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="patient_meta_information_internal_a2e6ef7e",
@@ -240,33 +242,49 @@ def migrate_patient_registrations(apps, schema_editor):
                 if meta_info.occupation is not None:
                     responses.append(
                         {
-                            "question": "91b29d71-a2a4-4a98-bfb7-69188170c960",
-                            "answer": occupation_map[meta_info.occupation],
+                            "question_id": "91b29d71-a2a4-4a98-bfb7-69188170c960",
+                            "values": [
+                                {
+                                    "value": occupation_map[meta_info.occupation],
+                                }
+                            ],
                         }
                     )
                 if meta_info.socioeconomic_status is not None:
                     responses.append(
                         {
-                            "question": "a41c5beb-9b33-4d32-8b04-335bf8a91d28",
-                            "answer": socioeconomic_status_map[
-                                meta_info.socioeconomic_status
+                            "question_id": "a41c5beb-9b33-4d32-8b04-335bf8a91d28",
+                            "values": [
+                                {
+                                    "value": socioeconomic_status_map[
+                                        meta_info.socioeconomic_status
+                                    ],
+                                }
                             ],
                         }
                     )
                 if meta_info.domestic_healthcare_support is not None:
                     responses.append(
                         {
-                            "question": "176e29eb-f80b-42cc-a11f-5f9f997989a2",
-                            "answer": domestic_healthcare_support_map[
-                                meta_info.domestic_healthcare_support
+                            "question_id": "176e29eb-f80b-42cc-a11f-5f9f997989a2",
+                            "values": [
+                                {
+                                    "value": domestic_healthcare_support_map[
+                                        meta_info.domestic_healthcare_support
+                                    ],
+                                }
                             ],
                         }
                     )
                 if meta_info.head_of_household is not None:
                     responses.append(
                         {
-                            "question": "c5b95c32-c2d1-41fd-805b-6062edd52cee",
-                            "answer": bool(meta_info.head_of_household),
+                            "question_id": "c5b95c32-c2d1-41fd-805b-6062edd52cee",
+                            "values": [
+                                {
+                                    "value": bool(meta_info.head_of_household),
+                                }
+                            ],
                         }
                     )
                 QuestionnaireResponse.objects.create(
@@ -372,13 +390,10 @@ def migrate_patient_registrations(apps, schema_editor):
                         f"Ongoing Medication: {patient_registration.ongoing_medication}"
                     )
                 for item in patient_registration.medical_history.all():
-                    if item.deleted or item.disease == 1:
-                        continue
-                    message = disease_choices_map.get(
-                        item.disease, "Other Disease/Condition"
-                    )
-                    if item.details:
-                        message += f": {item.details}"
+                    if not item.deleted and item.disease == 7:
+                        message = "Comorbidity: Other Disease/Condition"
+                        if item.details:
+                            message += f": {item.details}"
                     messages.append(message)
                 if messages:
                     NoteMessage.objects.bulk_create(
@@ -400,7 +415,7 @@ def migrate_patient_registrations(apps, schema_editor):
                     # delete the thread if no messages
                     NoteThread.objects.filter(id=health_info_note_thread.id).delete()
 
-            demographic_info_note_thread, created = NoteThread.objects.get_or_create(
+            patient_identifier_note_thread, created = NoteThread.objects.get_or_create(
                 title="Patient Identifiers",
                 patient=patient,
                 defaults={
@@ -422,7 +437,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         [
                             NoteMessage(
                                 message=message,
-                                thread=demographic_info_note_thread,
+                                thread=patient_identifier_note_thread,
                                 meta={
                                     "migration_id": MIGRATION_ID,
                                 },
@@ -436,10 +451,34 @@ def migrate_patient_registrations(apps, schema_editor):
                 else:
                     # delete the thread if no messages
                     NoteThread.objects.filter(
-                        id=demographic_info_note_thread.id
+                        id=patient_identifier_note_thread.id
                     ).delete()
 
-            patient_registration.migrated_emr_patient_id = patient.id
+            chronic_conditions = []
+            for disease in patient_registration.medical_history.all():
+                if disease.deleted or disease.disease not in disease_to_condition_map:
+                    continue
+                chronic_conditions.append(
+                    Condition(
+                        patient=patient,
+                        verification_status="unconfirmed",
+                        category="chronic_condition",
+                        code={
+                            "system": "http://snomed.info/sct",
+                            "code": disease_to_condition_map[disease.disease][0],
+                            "display": disease_to_condition_map[disease.disease][1],
+                        },
+                        recorded_date=patient_registration.created_date,
+                        note=disease.details.strip() or None,
+                        meta={
+                            "migration_id": MIGRATION_ID,
+                        },
+                        created_by=patient_registration.created_by,
+                        created_date=patient_registration.created_date,
+                    )
+                )
+            Condition.objects.bulk_create(chronic_conditions)
+
             bulk.append((patient_registration.id, patient.id))
             logger.debug(f"Created Patient: {patient.name=}")
     PatientRegistration.objects.bulk_update(
