@@ -149,10 +149,14 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         ]
         return Response({"count": len(data), "results": data})
 
+class FacilityOrganizationUserFilter(filters.FilterSet):
+    username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
 
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     database_model = FacilityOrganizationUser
     pydantic_model = FacilityOrganizationUserWriteSpec
+    filterset_class = FacilityOrganizationUserFilter
+    filter_backends = [filters.DjangoFilterBackend]
     pydantic_read_model = FacilityOrganizationUserReadSpec
     pydantic_update_model = FacilityOrganizationUserUpdateSpec
 
