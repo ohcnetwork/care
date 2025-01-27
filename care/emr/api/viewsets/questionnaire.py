@@ -80,7 +80,6 @@ class QuestionnaireViewSet(EMRModelViewSet):
     lookup_field = "slug"
     filterset_class = QuestionnaireFilter
     filter_backends = [filters.DjangoFilterBackend]
-    tags = ["Questionnaire"]
 
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve", "get_organizations"]:

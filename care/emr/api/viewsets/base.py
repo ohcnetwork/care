@@ -225,7 +225,6 @@ class EMRBaseViewSet(GenericViewSet):
     pydantic_retrieve_model: EMRResource = None
     database_model: EMRBaseModel = None
     lookup_field = "external_id"
-    tags = [__name__]
 
     def get_exception_handler(self):
         return emr_exception_handler
