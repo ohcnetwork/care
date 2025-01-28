@@ -54,6 +54,10 @@ class PatientViewSet(EMRModelViewSet):
             raise PermissionDenied("Cannot delete patient")
 
     def get_queryset(self):
+        if getattr(
+            self, "swagger_fake_view", False
+        ):  # This is used to avoid making db calls during schema generation
+            return None
         qs = (
             super()
             .get_queryset()

@@ -130,6 +130,10 @@ class QuestionnaireViewSet(EMRModelViewSet):
                 raise PermissionDenied("Permission Denied for Organization")
 
     def get_queryset(self):
+        if getattr(
+            self, "swagger_fake_view", False
+        ):  # This is used to avoid making db calls during schema generation
+            return None
         queryset = super().get_queryset()
         queryset = AuthorizationController.call(
             "get_filtered_questionnaires", queryset, self.request.user
