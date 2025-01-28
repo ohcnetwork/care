@@ -7,3 +7,4 @@ from .patient import *  # noqa
 from .facility import *  # noqa
 from .user import *  # noqa
 from .user_schedule import *  # noqa
+from .facility_location import *  # noqa

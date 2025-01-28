@@ -75,6 +75,7 @@ class EncounterFilters(filters.FilterSet):
         field_name="patient__phone_number", lookup_expr="icontains"
     )
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
 
 
@@ -123,7 +124,14 @@ class EncounterViewSet(
         qs = (
             super()
             .get_queryset()
-            .select_related("patient", "facility", "appointment")
+            .select_related(
+                "patient",
+                "facility",
+                "appointment",
+                "current_location",
+                "created_by",
+                "updated_by",
+            )
             .order_by("-created_date")
         )
         if (

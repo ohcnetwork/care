@@ -1,9 +1,9 @@
-from care.security.models import RoleAssociation, RolePermission
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.facility import FacilityPermissions
 from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
 )
+from care.security.permissions.location import FacilityLocationPermissions
 from care.security.permissions.organization import OrganizationPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.security.permissions.questionnaire import QuestionnairePermissions
@@ -33,6 +33,7 @@ class PermissionController:
         PatientPermissions,
         UserPermissions,
         UserSchedulePermissions,
+        FacilityLocationPermissions,
     ]
 
     cache = {}
@@ -47,29 +48,6 @@ class PermissionController:
         ):
             for permission in handler:
                 cls.cache[permission.name] = permission.value
-
-    @classmethod
-    def has_permission(cls, user, permission, context, context_id):
-        # TODO : Cache permissions and invalidate when they change
-        # TODO : Fetch the user role from the previous role management implementation as well.
-        #        Need to maintain some sort of mapping from previous generation to new generation of roles
-        from care.security.roles.role import RoleController
-
-        mapped_role = RoleController.map_old_role_to_new(user.role)
-        permission_roles = RolePermission.objects.filter(
-            permission__slug=permission, permission__context=context
-        ).values("role_id")
-        if RoleAssociation.objects.filter(
-            context_id=context_id, context=context, role__in=permission_roles, user=user
-        ).exists():
-            return True
-        # Check for old cases
-        return RolePermission.objects.filter(
-            permission__slug=permission,
-            permission__context=context,
-            role__name=mapped_role.name,
-            role__context=mapped_role.context.value,
-        ).exists()
 
     @classmethod
     def get_permissions(cls):
