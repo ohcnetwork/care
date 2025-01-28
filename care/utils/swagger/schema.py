@@ -5,6 +5,7 @@ from drf_spectacular.plumbing import (
     build_basic_type,
     build_parameter_type,
     follow_model_field_lookup,
+    get_view_model,
     resolve_django_path_parameter,
     resolve_regex_path_parameter,
 )
@@ -20,8 +21,9 @@ from care.emr.api.viewsets.base import EMRListMixin
 
 class AutoSchema(SpectacularAutoSchema):
     def get_tags(self):
+        if hasattr(self.view, "basename"):
+            return [self.view.basename]
         tokenized_path = self._tokenize_path()
-        # use last non-parameter path part as default tag
         return [tokenized_path[-1]]
 
     def get_request_serializer(self):
@@ -35,7 +37,7 @@ class AutoSchema(SpectacularAutoSchema):
             if hasattr(view, "pydantic_model"):
                 return view.pydantic_model
         elif self.method == "GET":
-            return None  # can be improved I guess
+            return None  # Can be improved later, if required
         return self._get_serializer()
 
     def get_response_serializers(self):
@@ -76,11 +78,10 @@ class AutoSchema(SpectacularAutoSchema):
         return self._get_serializer()
 
     def _resolve_path_parameters(self, variables):
-        # if hasattr(self.view, "database_model"):
-        #     model = self.view.database_model
-        # else:
-        #     model = get_view_model(self.view)
-        model = None
+        if hasattr(self.view, "database_model"):
+            model = self.view.database_model
+        else:
+            model = get_view_model(self.view)
         parameters = []
         for variable in variables:
             schema = build_basic_type(OpenApiTypes.STR)
