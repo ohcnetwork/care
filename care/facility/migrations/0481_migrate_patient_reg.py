@@ -218,6 +218,7 @@ def migrate_patient_registrations(apps, schema_editor):
     for page_number in paginator.page_range:
         for patient_registration in paginator.page(page_number).object_list:
             patient = Patient.objects.create(
+                external_id=patient_registration.external_id,
                 name=patient_registration.name,
                 gender=gender_map.get(patient_registration.gender, ""),
                 phone_number=patient_registration.phone_number,

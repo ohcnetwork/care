@@ -314,6 +314,7 @@ def migrate_consultations(apps, schema_editor):
                     hospitalization["admit_source"] = "outp"
 
             encounter = Encounter.objects.create(
+                external_id=consultation.external_id,
                 status="completed" if consultation.discharge_date else "in-progress",
                 priority=category_to_priority_map.get(consultation.category, "routine"),
                 patient_id=consultation.patient.migrated_emr_patient_id,
@@ -386,7 +387,11 @@ def migrate_consultations(apps, schema_editor):
                             {
                                 "value": consultation.transferred_from_location,
                             }
+
                         ],
+                        "meta": {
+                            # "location_id": consultation.transferred_from_location, #TODO: add the new location id
+                        }
                     }
                 )
             if consultation.special_instruction:
