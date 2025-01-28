@@ -144,11 +144,6 @@ class OrganizationViewSet(EMRModelViewSet):
         return True
 
     def get_queryset(self):
-        if getattr(
-            self, "swagger_fake_view", False
-        ):  # This is used to avoid making db calls during schema generation
-            return None
-
         queryset = (
             super()
             .get_queryset()
