@@ -114,11 +114,13 @@ class UserViewSet(EMRModelViewSet):
             serializer.save()
             return Response(status=200)
         if request.method == "DELETE":
+            if not user.profile_picture_url:
+                return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(user.profile_picture_url, "avatars")
             user.profile_picture_url = None
             user.save()
             return Response(status=204)
-        return Response(data="Method Not Allowed", status=405)
+        return Response({"detail": "Method not allowed"}, status=405)
 
     @action(
         detail=True,

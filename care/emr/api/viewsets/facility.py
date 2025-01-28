@@ -125,11 +125,13 @@ class FacilityViewSet(EMRModelViewSet):
             serializer.save()
             return Response(serializer.data)
         if request.method == "DELETE":
+            if not facility.cover_image_url:
+                return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(facility.cover_image_url, "cover_images")
             facility.cover_image_url = None
             facility.save()
             return Response(status=204)
-        return Response(data="Method Not Allowed", status=405)
+        return Response({"detail": "Method not allowed"}, status=405)
 
 
 @generate_swagger_schema_decorator
