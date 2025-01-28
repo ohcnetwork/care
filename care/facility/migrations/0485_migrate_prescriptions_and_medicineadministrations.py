@@ -4,7 +4,7 @@ import re
 from datetime import UTC
 
 from django.core.paginator import Paginator
-from django.db import migrations, models
+from django.db import migrations
 
 logger = logging.getLogger(__name__)
 
@@ -278,7 +278,7 @@ def get_dosage_instruction_timing(prescription):
         return timing
 
 
-def _create_medication_request(MedicationRequest, prescription):
+def migrate_medication_request(MedicationRequest, prescription):
     meta = {
         **prescription.meta,
         "migration_id": MIGRATION_ID,
@@ -313,7 +313,7 @@ def _create_medication_request(MedicationRequest, prescription):
         )
         try:
             target_dosage = parse_dosage_str(prescription.target_dosage)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             target_dosage = None
         low, high = base_dosage, target_dosage
         # if the units are the same and the low value is greater than the high value, swap them
@@ -354,7 +354,7 @@ def _create_medication_request(MedicationRequest, prescription):
             meta["discontinued_reason"] = prescription.discontinued_reason
         if discontinued_date := prescription.discontinued_date:
             meta["discontinued_date"] = discontinued_date.astimezone(UTC).isoformat()
-    return MedicationRequest.objects.create(
+    obj = MedicationRequest.objects.create(
         status=status,
         intent="order",
         category=category,
@@ -372,42 +372,93 @@ def _create_medication_request(MedicationRequest, prescription):
         modified_date=prescription.modified_date,
         meta=meta,
     )
+    return obj
 
 
-def migrate_prescriptions(apps, schema_editor):
+def _get_administration_objects(
+    MedicationAdministration, prescription, medication_request
+):
+    objects = []
+    for administration in prescription.administrations.all():
+        status = "completed"
+        meta = {
+            "migration_id": MIGRATION_ID,
+        }
+        dosage_instruction = medication_request.dosage_instruction[0]
+        dosage = {
+            "site": dosage_instruction.get("site"),
+            "route": dosage_instruction.get("route"),
+            "method": dosage_instruction.get("method"),
+        }
+        try:
+            dosage["dose"] = parse_dosage_str(administration.dosage)
+        except (ValueError, TypeError):
+            dosage["text"] = administration.dosage
+        if administration.archived_on:
+            status = "entered-in-error"
+            meta["archived_on"] = administration.archived_on.astimezone(UTC).isoformat()
+            meta["archived_by"] = str(administration.archived_by.external_id)
+        objects.append(
+            MedicationAdministration(
+                status=status,
+                category="inpatient",
+                medication=medication_request.medication,
+                patient_id=medication_request.patient_id,
+                encounter_id=medication_request.encounter_id,
+                request_id=medication_request.id,
+                authored_on=medication_request.authored_on,
+                occurrence_period_start=administration.administered_date,
+                occurrence_period_end=administration.administered_date,
+                recorded=administration.created_date,
+                performer=[],
+                dosage=dosage,
+                note=administration.notes,
+                meta=meta,
+            )
+        )
+    return objects
+
+
+def migrate_prescriptions_and_administrations(apps, schema_editor):
     logger.debug("Migrating Prescriptions")
     Prescription = apps.get_model("facility", "Prescription")
     MedicationRequest = apps.get_model("emr", "MedicationRequest")
+    MedicationAdministration = apps.get_model("emr", "MedicationAdministration")
     paginator = Paginator(
         Prescription.objects.all()
         .select_related(
             "consultation", "consultation__patient", "medicine", "prescribed_by"
         )
+        .prefetch_related("administrations")
         .order_by("id"),
-        100,
+        1000,
     )
-    bulk = []
     for page_num in paginator.page_range:
         page = paginator.page(page_num)
-        prescriptions = page.object_list
-        for prescription in prescriptions:
-            obj = _create_medication_request(MedicationRequest, prescription)
-            bulk.append((prescription.id, obj.id))
-            logger.debug(f"Migrated Prescription {prescription.id} -> {obj.id}")
-    Prescription.objects.bulk_update(
-        [
-            Prescription(id=p_id, migrated_emr_prescription_id=mr_id)
-            for p_id, mr_id in bulk
-        ],
-        ["migrated_emr_prescription_id"],
-    )
-    logger.debug("Migrating Prescriptions Done")
+        administrations = []
+        for prescription in page.object_list:
+            medication_request = migrate_medication_request(
+                MedicationRequest, prescription
+            )
+            administrations += _get_administration_objects(
+                MedicationAdministration, prescription, medication_request
+            )
+            logger.debug(
+                f"Migrated Prescription {prescription.id} -> {medication_request.id}"
+            )
+        MedicationAdministration.objects.bulk_create(administrations)
+    logger.debug("Migrating Prescriptions and Medicine Administrations Done")
 
 
-def reverse_migrate_prescriptions(apps, schema_editor):
+def reverse_migrate_prescriptions_and_administrations(apps, schema_editor):
     logger.debug("Reversing Migration of Prescriptions")
     schema_editor.execute(
         "DELETE FROM emr_medicationrequest WHERE meta->>'migration_id' = %s",
+        [str(MIGRATION_ID)],
+    )
+    logger.debug("Reversing Migration of Medicine Administrations")
+    schema_editor.execute(
+        "DELETE FROM emr_medicationadministration WHERE meta->>'migration_id' = %s",
         [str(MIGRATION_ID)],
     )
 
@@ -419,12 +470,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name="prescription",
-            name="migrated_emr_prescription_id",
-            field=models.BigIntegerField(blank=True, null=True),
-        ),
         migrations.RunPython(
-            migrate_prescriptions, reverse_code=reverse_migrate_prescriptions
+            migrate_prescriptions_and_administrations,
+            reverse_code=reverse_migrate_prescriptions_and_administrations,
         ),
     ]

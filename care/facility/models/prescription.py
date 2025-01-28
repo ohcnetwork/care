@@ -150,8 +150,6 @@ class Prescription(BaseModel, ConsultationRelatedPermissionMixin):
     discontinued_reason = models.TextField(default="", blank=True)
     discontinued_date = models.DateTimeField(null=True, blank=True)
 
-    migrated_emr_prescription_id = models.BigIntegerField(null=True, blank=True)
-
     is_migrated = models.BooleanField(
         default=False
     )  # This field is to throw caution to data that was previously ported over
