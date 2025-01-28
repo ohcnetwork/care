@@ -7,7 +7,6 @@ from care.emr.models import Encounter, Patient
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.questionnaire_response.spec import QuestionnaireResponseReadSpec
 from care.security.authorization import AuthorizationController
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class QuestionnaireResponseFilters(filters.FilterSet):
@@ -17,7 +16,6 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
 
 
-@generate_swagger_schema_decorator
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
     database_model = QuestionnaireResponse
     pydantic_model = QuestionnaireResponseReadSpec

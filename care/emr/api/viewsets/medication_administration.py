@@ -11,7 +11,6 @@ from care.emr.resources.medication.administration.spec import (
     MedicationAdministrationSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class MedicationAdministrationFilter(filters.FilterSet):
@@ -21,7 +20,6 @@ class MedicationAdministrationFilter(filters.FilterSet):
     occurrence_period_end = filters.DateTimeFromToRangeFilter()
 
 
-@generate_swagger_schema_decorator
 class MedicationAdministrationViewSet(
     EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
 ):

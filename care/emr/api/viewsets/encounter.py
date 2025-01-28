@@ -47,7 +47,6 @@ from care.emr.tasks.discharge_summary import (
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class LiveFilter(filters.CharFilter):
@@ -79,7 +78,6 @@ class EncounterFilters(filters.FilterSet):
     live = LiveFilter()
 
 
-@generate_swagger_schema_decorator
 class EncounterViewSet(
     EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
 ):

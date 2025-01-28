@@ -23,7 +23,6 @@ from care.emr.resources.scheduling.slot.spec import (
 )
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from care.utils.lock import Lock
 
 
@@ -127,7 +126,6 @@ def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
         )
 
 
-@generate_swagger_schema_decorator
 class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     database_model = TokenSlot
     pydantic_read_model = TokenSlotBaseSpec

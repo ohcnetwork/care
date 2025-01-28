@@ -10,7 +10,6 @@ from care.emr.models.observation import Observation
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.spec import ObservationReadSpec
 from care.emr.resources.questionnaire.spec import QuestionType
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class MultipleCodeFilter(filters.CharFilter):
@@ -39,7 +38,6 @@ class ObservationAnalyseRequest(BaseModel):
     page_size: int = Field(10, le=30)
 
 
-@generate_swagger_schema_decorator
 class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSet):
     database_model = Observation
     pydantic_model = ObservationReadSpec

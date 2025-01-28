@@ -22,7 +22,6 @@ from care.emr.resources.organization.spec import (
 )
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from care.utils.pagination.care_pagination import CareLimitOffsetPagination
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
@@ -34,7 +33,6 @@ class OrganizationFilter(filters.FilterSet):
     level_cache = filters.NumberFilter(field_name="level_cache")
 
 
-@generate_swagger_schema_decorator
 class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
     database_model = Organization
     pydantic_read_model = OrganizationReadSpec
@@ -50,7 +48,6 @@ class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
         return queryset
 
 
-@generate_swagger_schema_decorator
 class OrganizationViewSet(EMRModelViewSet):
     database_model = Organization
     pydantic_model = OrganizationWriteSpec
@@ -210,7 +207,6 @@ class OrganizationUserFilter(filters.FilterSet):
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
 
 
-@generate_swagger_schema_decorator
 class OrganizationUsersViewSet(EMRModelViewSet):
     database_model = OrganizationUser
     pydantic_model = OrganizationUserWriteSpec

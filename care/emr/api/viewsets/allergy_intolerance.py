@@ -26,14 +26,12 @@ from care.emr.resources.allergy_intolerance.spec import (
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class AllergyIntoleranceFilters(FilterSet):
     clinical_status = CharFilter(field_name="clinical_status")
 
 
-@generate_swagger_schema_decorator
 @extend_schema_view(
     create=extend_schema(request=AllergyIntoleranceWriteSpec),
 )

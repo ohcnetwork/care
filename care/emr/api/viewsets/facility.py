@@ -23,7 +23,6 @@ from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
 from care.utils.models.validators import (
     cover_image_validator,
@@ -72,7 +71,6 @@ class FacilityFilters(filters.FilterSet):
     phone_number = CharFilter(field_name="phone_number", lookup_expr="iexact")
 
 
-@generate_swagger_schema_decorator
 class FacilityViewSet(EMRModelViewSet):
     database_model = Facility
     pydantic_model = FacilityCreateSpec
@@ -134,7 +132,6 @@ class FacilityViewSet(EMRModelViewSet):
         return Response({"detail": "Method not allowed"}, status=405)
 
 
-@generate_swagger_schema_decorator
 class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
@@ -153,7 +150,6 @@ class FacilityUserFilter(FilterSet):
     username = CharFilter(field_name="username", lookup_expr="icontains")
 
 
-@generate_swagger_schema_decorator
 class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
@@ -168,7 +164,6 @@ class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
         )
 
 
-@generate_swagger_schema_decorator
 class AllFacilityViewSet(EMRModelReadOnlyViewSet):
     permission_classes = ()
     authentication_classes = ()

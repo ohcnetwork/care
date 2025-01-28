@@ -22,7 +22,6 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
 from care.users.models import User
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from care.utils.file_uploads.cover_image import delete_cover_image
 
 
@@ -35,7 +34,6 @@ class UserFilter(filters.FilterSet):
     user_type = filters.CharFilter(field_name="username", lookup_expr="iexact")
 
 
-@generate_swagger_schema_decorator
 class UserViewSet(EMRModelViewSet):
     database_model = User
     pydantic_model = UserCreateSpec

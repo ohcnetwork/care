@@ -30,7 +30,6 @@ from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireSubmitRequest,
 )
 from care.security.authorization import AuthorizationController
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class QuestionnaireTagFilter(filters.FilterSet):
@@ -38,7 +37,6 @@ class QuestionnaireTagFilter(filters.FilterSet):
     slug = filters.CharFilter(field_name="slug", lookup_expr="iexact")
 
 
-@generate_swagger_schema_decorator
 class QuestionnaireTagsViewSet(EMRModelViewSet):
     database_model = QuestionnaireTag
     pydantic_model = QuestionnaireTagSpec
@@ -71,7 +69,6 @@ class QuestionnaireFilter(filters.FilterSet):
     tag_slug = QuestionnaireTagSlugFilter(field_name="tag_slug")
 
 
-@generate_swagger_schema_decorator
 class QuestionnaireViewSet(EMRModelViewSet):
     database_model = Questionnaire
     pydantic_model = QuestionnaireSpec
@@ -130,10 +127,6 @@ class QuestionnaireViewSet(EMRModelViewSet):
                 raise PermissionDenied("Permission Denied for Organization")
 
     def get_queryset(self):
-        if getattr(
-            self, "swagger_fake_view", False
-        ):  # This is used to avoid making db calls during schema generation
-            return None
         queryset = super().get_queryset()
         queryset = AuthorizationController.call(
             "get_filtered_questionnaires", queryset, self.request.user

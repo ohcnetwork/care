@@ -4,14 +4,12 @@ from care.emr.resources.patient.otp_based_flow import (
     PatientOTPReadSpec,
     PatientOTPWriteSpec,
 )
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from config.patient_otp_authentication import (
     JWTTokenPatientAuthentication,
     OTPAuthenticatedPermission,
 )
 
 
-@generate_swagger_schema_decorator
 class PatientOTPView(EMRCreateMixin, EMRListMixin, EMRBaseViewSet):
     authentication_classes = [JWTTokenPatientAuthentication]
     permission_classes = [OTPAuthenticatedPermission]

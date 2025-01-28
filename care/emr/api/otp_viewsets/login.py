@@ -12,7 +12,6 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import PatientMobileOTP
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 from care.utils.models.validators import mobile_validator
 from care.utils.sms.send_sms import send_sms
 from config.patient_otp_token import PatientToken
@@ -43,7 +42,6 @@ class OTPLoginSpec(OTPLoginRequestSpec):
     otp: str = Field(min_length=settings.OTP_LENGTH, max_length=settings.OTP_LENGTH)
 
 
-@generate_swagger_schema_decorator
 class OTPLoginView(EMRBaseViewSet):
     authentication_classes = []
     permission_classes = []

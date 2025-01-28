@@ -20,7 +20,6 @@ from care.emr.resources.facility_organization.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class FacilityOrganizationFilter(filters.FilterSet):
@@ -29,7 +28,6 @@ class FacilityOrganizationFilter(filters.FilterSet):
     org_type = filters.CharFilter(field_name="org_type", lookup_expr="iexact")
 
 
-@generate_swagger_schema_decorator
 class FacilityOrganizationViewSet(EMRModelViewSet):
     database_model = FacilityOrganization
     pydantic_model = FacilityOrganizationWriteSpec
@@ -152,7 +150,6 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         return Response({"count": len(data), "results": data})
 
 
-@generate_swagger_schema_decorator
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     database_model = FacilityOrganizationUser
     pydantic_model = FacilityOrganizationUserWriteSpec

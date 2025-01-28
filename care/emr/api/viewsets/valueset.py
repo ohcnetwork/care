@@ -8,7 +8,6 @@ from care.emr.fhir.resources.code_concept import CodeConceptResource
 from care.emr.fhir.schema.base import Coding
 from care.emr.models.valueset import ValueSet
 from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class ExpandRequest(BaseModel):
@@ -17,7 +16,6 @@ class ExpandRequest(BaseModel):
     display_language: str = "en-gb"
 
 
-@generate_swagger_schema_decorator
 class ValueSetViewSet(EMRModelViewSet):
     database_model = ValueSet
     pydantic_model = ValueSetSpec

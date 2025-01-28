@@ -12,14 +12,12 @@ from care.emr.resources.medication.statement.spec import (
     MedicationStatementUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class MedicationStatementFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
 
 
-@generate_swagger_schema_decorator
 class MedicationStatementViewSet(
     EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
 ):

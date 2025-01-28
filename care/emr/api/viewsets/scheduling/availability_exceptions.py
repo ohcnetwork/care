@@ -12,14 +12,12 @@ from care.emr.resources.scheduling.availability_exception.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-from care.utils.decorators.schema_decorator import generate_swagger_schema_decorator
 
 
 class AvailabilityExceptionFilters(FilterSet):
     user = UUIDFilter(field_name="resource__user__external_id")
 
 
-@generate_swagger_schema_decorator
 class AvailabilityExceptionsViewSet(EMRModelViewSet):
     database_model = AvailabilityException
     pydantic_model = AvailabilityExceptionWriteSpec
