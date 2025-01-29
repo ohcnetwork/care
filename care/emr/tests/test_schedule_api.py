@@ -851,6 +851,54 @@ class TestAvailabilityViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_create_availability_validate_duration_multiple_of_slot_size_in_minutes(
+        self,
+    ):
+        """Test validation rules for ensuring availability duration is multiple of slot size in minutes."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Try to create availability with overlapping time ranges for same day
+        data = self.generate_availability_data(
+            availability=[
+                {
+                    "day_of_week": 1,  # Monday
+                    "start_time": "09:00:00",
+                    "end_time": "13:10:00",
+                },
+            ]
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(
+            response,
+            "Availability duration must be a multiple of slot size in minutes",
+            status_code=400,
+        )
+
+    def test_create_availability_start_time_greater_than_end_time(self):
+        """Test validation rules for ensuring availability duration is multiple of slot size in minutes."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # Try to create availability with overlapping time ranges for same day
+        data = self.generate_availability_data(
+            availability=[
+                {
+                    "day_of_week": 1,  # Monday
+                    "start_time": "13:00:00",
+                    "end_time": "09:00:00",
+                },
+            ]
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(
+            response,
+            "Start time must be earlier than end time",
+            status_code=400,
+        )
+
     def test_create_availability_validate_slot_type(self):
         """Test validation rules for different slot types when creating availability slots."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]

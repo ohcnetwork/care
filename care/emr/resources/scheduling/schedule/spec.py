@@ -62,6 +62,9 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                     and availabilities[j].start_time <= availabilities[i].end_time
                 ):
                     raise ValueError("Availability time ranges are overlapping")
+        for availability in availabilities:
+            if availability.start_time >= availability.end_time:
+                raise ValueError("Start time must be earlier than end time")
         return availabilities
 
     @model_validator(mode="after")
@@ -73,6 +76,19 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                 )
             if not self.tokens_per_slot:
                 raise ValueError("Tokens per slot is required for appointment slots")
+
+            for availability in self.availability:
+                start_time = datetime.datetime.combine(
+                    datetime.date.today(), availability.start_time, tzinfo=None
+                )
+                end_time = datetime.datetime.combine(
+                    datetime.date.today(), availability.end_time, tzinfo=None
+                )
+                slot_size_in_seconds = self.slot_size_in_minutes * 60
+                if (end_time - start_time).total_seconds() % slot_size_in_seconds != 0:
+                    raise ValueError(
+                        "Availability duration must be a multiple of slot size in minutes"
+                    )
         else:
             self.slot_size_in_minutes = None
             self.tokens_per_slot = None
