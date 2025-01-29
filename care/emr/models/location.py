@@ -71,9 +71,9 @@ class FacilityLocation(EMRBaseModel):
                 level_cache = 0
                 root_location = None
         if root_location:
-            queryset = queryset.filter(root_org=root_location)
+            queryset = queryset.filter(root_location=root_location)
         else:
-            queryset = queryset.filter(root_org__isnull=True)
+            queryset = queryset.filter(root_location__isnull=True)
         queryset = queryset.filter(level_cache=level_cache, name=name)
         return queryset.exists()
 

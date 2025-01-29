@@ -170,7 +170,6 @@ class FacilityLocationViewSet(EMRModelViewSet):
     @action(detail=True, methods=["POST"])
     def organizations_remove(self, request, *args, **kwargs):
         instance = self.get_object()
-        # self.authorize_update({}, instance)
         request_data = self.FacilityLocationOrganizationManageSpec(**request.data)
         organization = get_object_or_404(
             FacilityOrganization, external_id=request_data.organization
@@ -178,7 +177,7 @@ class FacilityLocationViewSet(EMRModelViewSet):
         self.authorize_update({}, instance)
         self.authorize_organization(instance.facility, organization)
         encounter_organization = FacilityLocationOrganization.objects.filter(
-            encounter=instance, organization=organization
+            location=instance, organization=organization
         )
         if not encounter_organization.exists():
             raise ValidationError("Organization does not exist")
