@@ -28,7 +28,7 @@ class StatusChoices(str, Enum):
     unknown = "unknown"
 
 
-class FacilityLocationStatusChoices(str, Enum):
+class FacilityLocationOperationalStatusChoices(str, Enum):
     C = "C"
     H = "H"
     O = "O"  # noqa E741
@@ -62,14 +62,14 @@ class FacilityLocationFormChoices(str, Enum):
 
 class FacilityLocationBaseSpec(EMRResource):
     __model__ = FacilityLocation
-    __exclude__ = ["parent", "facility", "organizations"]
+    __exclude__ = ["parent", "facility", "organizations", "root_location"]
 
     id: UUID4 | None = None
 
 
 class FacilityLocationSpec(FacilityLocationBaseSpec):
     status: StatusChoices
-    operational_status: FacilityLocationStatusChoices
+    operational_status: FacilityLocationOperationalStatusChoices
     name: str
     description: str
     location_type: Coding | None = None
@@ -90,7 +90,7 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
         if (
             self.parent
             and not FacilityLocation.objects.filter(
-                external_id=self.parent, mode=FacilityLocationModeChoices.instance.value
+                external_id=self.parent, mode=FacilityLocationModeChoices.kind.value
             ).exists()
         ):
             err = "Parent not found"

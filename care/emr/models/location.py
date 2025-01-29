@@ -111,7 +111,7 @@ class FacilityLocation(EMRBaseModel):
                     self.parent.has_children = True
                     self.parent.save(update_fields=["has_children"])
         else:
-            self.cached_parent_json = dict
+            self.cached_parent_json = dict()
             super().save(*args, **kwargs)
         self.sync_organization_cache()
 

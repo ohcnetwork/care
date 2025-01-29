@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from django.views.decorators.cache import cache_page
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -102,8 +103,7 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
     urlpatterns += [
         path(
             "api/schema/",
-            # cache_page(None, cache="swagger_cache")(SpectacularAPIView.as_view()),
-            SpectacularAPIView.as_view(),
+            cache_page(None, cache="swagger_cache")(SpectacularAPIView.as_view()),
             name="schema",
         ),
         path(

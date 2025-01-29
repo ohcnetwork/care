@@ -66,9 +66,10 @@ class FacilityLocationViewSet(EMRModelViewSet):
         # TODO Add validation to check if patient association exists
 
     def validate_data(self, instance, model_obj=None):
+        facility = self.get_facility_obj()
         if not model_obj and instance.parent:
             parent = get_object_or_404(FacilityLocation, external_id=instance.parent)
-            if parent.facility_id != instance.facility_id:
+            if parent.facility_id != facility.id:
                 raise PermissionDenied("Parent Incompatible with Location")
             if parent.mode == FacilityLocationModeChoices.instance.value:
                 raise ValidationError("Instances cannot have children")
