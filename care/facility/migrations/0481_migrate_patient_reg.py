@@ -134,7 +134,6 @@ def migrate_patient_registrations(apps, schema_editor):
     Questionnaire = apps.get_model("emr", "Questionnaire")
     QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
     QuestionnaireOrganization = apps.get_model("emr", "QuestionnaireOrganization")
-    Observation = apps.get_model("emr", "Observation")
 
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
@@ -301,68 +300,6 @@ def migrate_patient_registrations(apps, schema_editor):
                     },
                 )
 
-            observations = []
-            if patient_registration.is_antenatal:
-                # we are only sure if the patient is pregnant
-                observations.append(
-                    {
-                        "main_code": {
-                            "system": "http://loinc.org",
-                            "code": "82810-3",
-                            "display": "Pregnancy status",
-                        },
-                        "value": {
-                            "value_code": {
-                                "system": "http://snomed.info/sct",
-                                "code": "77386006",
-                                "display": "Pregnant",
-                            }
-                        },
-                        "value_type": "choice",
-                    }
-                )
-            if patient_registration.last_menstruation_start_date:
-                observations.append(
-                    {
-                        "main_code": {
-                            "system": "http://loinc.org",
-                            "code": "8665-2",
-                            "display": "Last menstrual period start date",
-                        },
-                        "value": {
-                            "value": patient_registration.last_menstruation_start_date.isoformat(),
-                        },
-                        "value_type": "date",
-                    }
-                )
-            if patient_registration.date_of_delivery:
-                observations.append(
-                    {
-                        "main_code": {
-                            "system": "http://loinc.org",
-                            "code": "11778-8",
-                            "display": "Delivery date Estimated",
-                        },
-                        "value": {
-                            "value": patient_registration.date_of_delivery.isoformat(),
-                        },
-                        "value_type": "date",
-                    }
-                )
-            if observations:
-                Observation.objects.bulk_create(
-                    [
-                        Observation(
-                            patient=patient,
-                            subject_type="patient",
-                            effective_datetime=patient_registration.created_date,
-                            alternate_coding={},
-                            **observation,
-                        )
-                        for observation in observations
-                    ]
-                )
-
             health_info_note_thread, created = NoteThread.objects.get_or_create(
                 title="Patient Health Information",
                 patient=patient,
@@ -395,7 +332,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         message = "Comorbidity: Other Disease/Condition"
                         if item.details:
                             message += f": {item.details}"
-                    messages.append(message)
+                        messages.append(message)
                 if messages:
                     NoteMessage.objects.bulk_create(
                         [
@@ -470,7 +407,7 @@ def migrate_patient_registrations(apps, schema_editor):
                             "display": disease_to_condition_map[disease.disease][1],
                         },
                         recorded_date=patient_registration.created_date,
-                        note=disease.details.strip() or None,
+                        note=(disease.details or "").strip() or None,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },

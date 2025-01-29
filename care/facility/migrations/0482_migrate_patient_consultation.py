@@ -50,11 +50,12 @@ def procedure_to_text(procedure):
     text = procedure["procedure"]
     if procedure.get("repetitive", False) and procedure.get("frequency"):
         text += f", Every {procedure['frequency']}"
-    if time:=procedure.get("time"):
+    if time := procedure.get("time"):
         time.replace("T", " ")
         text += f", At {time}"
-    if notes:=procedure.get("notes"):
+    if notes := procedure.get("notes"):
         text += f"\nNotes: {notes}"
+
 
 def investigation_to_text(investigation):
     if not investigation.get("type"):
@@ -62,10 +63,10 @@ def investigation_to_text(investigation):
     text = ", ".join(investigation["type"])
     if investigation.get("repetitive", False) and investigation.get("frequency"):
         text += f", Every {investigation['frequency']}"
-    if time:=investigation.get("time"):
+    if time := investigation.get("time"):
         time.replace("T", " ")
         text += f", At {time}"
-    if notes:=investigation.get("notes"):
+    if notes := investigation.get("notes"):
         text += f"\nNotes: {notes}"
 
 
@@ -278,7 +279,7 @@ def migrate_consultations(apps, schema_editor):
 
     paginator = Paginator(
         PatientConsultation.objects.filter(migrated_emr_encounter_id__isnull=True)
-        .select_related("patient", "referred_from_facility", "referred_by")
+        .select_related("patient", "referred_from_facility")
         .exclude(deleted=True, patient__deleted=True)
         .order_by("id"),
         2000,
@@ -387,11 +388,10 @@ def migrate_consultations(apps, schema_editor):
                             {
                                 "value": consultation.transferred_from_location,
                             }
-
                         ],
                         "meta": {
                             # "location_id": consultation.transferred_from_location, #TODO: add the new location id
-                        }
+                        },
                     }
                 )
             if consultation.special_instruction:
@@ -432,23 +432,15 @@ def migrate_consultations(apps, schema_editor):
                         ],
                     }
                 )
-            if consultation.referred_by:
-                name = consultation.referred_by.get_full_name()
-                if name:
-                    name += f" ({consultation.referred_by.username})"
-                else:
-                    name = consultation.referred_by.username
+            if consultation.referred_by_external:
                 consultation_questionnaire_responses.append(
                     {
                         "question_id": "f848a229-0406-461e-8f2d-4123286904bc",
                         "values": [
                             {
-                                "value": name,
+                                "value": consultation.referred_by_external,
                             }
                         ],
-                        "meta": {
-                            "user_id": consultation.referred_by.external_id,
-                        },
                     }
                 )
             if consultation.category:
@@ -514,9 +506,15 @@ def migrate_consultations(apps, schema_editor):
                         }
                     )
             if consultation.procedure:
+                procedures = consultation.procedure
+                if isinstance(procedures, dict):
+                    procedures = [procedures]
+                elif not isinstance(consultation.procedure, list):
+                    continue
+
                 values = []
-                for procedure in consultation.procedure:
-                    if text:= procedure_to_text(procedure):
+                for procedure in procedures:
+                    if text := procedure_to_text(procedure):
                         values.append({"value": text})
                 if values:
                     consultation_questionnaire_responses.append(
@@ -528,7 +526,7 @@ def migrate_consultations(apps, schema_editor):
             if consultation.investigation:
                 values = []
                 for investigation in consultation.investigation:
-                    if text:= investigation_to_text(investigation):
+                    if text := investigation_to_text(investigation):
                         values.append({"value": text})
                 if values:
                     consultation_questionnaire_responses.append(
@@ -593,12 +591,10 @@ def migrate_consultations(apps, schema_editor):
 
             if consultation_questionnaire_responses:
                 questionnaire_response = QuestionnaireResponse.objects.create(
+                    patient_id=consultation.patient.migrated_emr_patient_id,
                     questionnaire_id=consultation_questionnaire.id,
                     subject_id=encounter.patient_id,
                     encounter_id=encounter.id,
-                    status="completed",
-                    source_id=consultation.id,
-                    source_type="PatientConsultation",
                     created_by=consultation.created_by,
                     updated_by=consultation.last_edited_by,
                     created_date=consultation.created_date,
@@ -616,12 +612,12 @@ def migrate_consultations(apps, schema_editor):
                             patient_id=encounter.patient_id,
                             encounter_id=encounter.id,
                             effective_datetime=consultation.encounter_date,
-                            data_entered_by=consultation.created_by,
+                            data_entered_by_id=consultation.created_by_id or 1,
                             questionnaire_response_id=questionnaire_response.id,
-                            created_by=consultation.created_by,
+                            created_by_id=consultation.created_by_id or 1,
                             updated_by=consultation.last_edited_by,
                             created_date=consultation.created_date,
-                            updated_date=consultation.modified_date,
+                            modified_date=consultation.modified_date,
                             meta={
                                 "migration_id": MIGRATION_ID,
                             },
@@ -639,6 +635,87 @@ def migrate_consultations(apps, schema_editor):
         ],
         ["migrated_emr_encounter_id"],
     )
+
+    PatientRegistration = apps.get_model("facility", "PatientRegistration")
+    paginator = Paginator(
+        PatientRegistration.objects.filter(
+            migrated_emr_patient_id__isnull=False, last_consultation__isnull=False
+        ).order_by("id"),
+        2000,
+    )
+    for page_number in paginator.page_range:
+        bulk = []
+        for patient_registration in paginator.page(page_number).object_list:
+            observations = []
+            if patient_registration.is_antenatal:
+                # we are only sure if the patient is pregnant
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "82810-3",
+                            "display": "Pregnancy status",
+                        },
+                        "value": {
+                            "value_code": {
+                                "system": "http://snomed.info/sct",
+                                "code": "77386006",
+                                "display": "Pregnant",
+                            }
+                        },
+                        "value_type": "choice",
+                    }
+                )
+            if patient_registration.last_menstruation_start_date:
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "8665-2",
+                            "display": "Last menstrual period start date",
+                        },
+                        "value": {
+                            "value": patient_registration.last_menstruation_start_date.isoformat(),
+                        },
+                        "value_type": "date",
+                    }
+                )
+            if patient_registration.date_of_delivery:
+                observations.append(
+                    {
+                        "main_code": {
+                            "system": "http://loinc.org",
+                            "code": "11778-8",
+                            "display": "Delivery date Estimated",
+                        },
+                        "value": {
+                            "value": patient_registration.date_of_delivery.isoformat(),
+                        },
+                        "value_type": "date",
+                    }
+                )
+            if observations:
+                bulk.extend(
+                    [
+                        Observation(
+                            patient_id=patient_registration.migrated_emr_patient_id,
+                            subject_type="patient",
+                            subject_id=str(
+                                patient_registration.external_id
+                            ),  # we are reusing the external_id of the patient registration
+                            encounter_id=patient_registration.last_consultation.migrated_emr_encounter_id,
+                            effective_datetime=patient_registration.created_date,
+                            data_entered_by=patient_registration.created_by,
+                            created_by=patient_registration.created_by,
+                            created_date=patient_registration.created_date,
+                            modified_date=patient_registration.modified_date,
+                            alternate_coding={},
+                            **observation,
+                        )
+                        for observation in observations
+                    ]
+                )
+        Observation.objects.bulk_create(bulk)
 
 
 def reverse_migrate_consultations(apps, schema_editor):

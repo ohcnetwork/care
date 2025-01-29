@@ -6,10 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("emr", "0013_disable_auto_time"),
+        ("emr", "0016_disable_auto_time"),
         (
             "facility",
-            "0485_migrate_prescriptions_and_medicineadministrations",
+            "0486_migrate_file_uploads",
         ),  # TODO: Add dependency to the last facility app migration
     ]
 

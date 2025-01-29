@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('emr', '0012_alter_condition_encounter'),
+        ('emr', '0015_facilitylocation_availability_status_and_more'),
     ]
 
     operations = [
