@@ -391,7 +391,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
-    "DISABLE_ERRORS_AND_WARNINGS": False,
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
 # Simple JWT (JWT Authentication)
