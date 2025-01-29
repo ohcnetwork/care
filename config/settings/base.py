@@ -376,7 +376,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "care.utils.pagination.care_pagination.CareLimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
-    "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
@@ -387,6 +387,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
 # Simple JWT (JWT Authentication)

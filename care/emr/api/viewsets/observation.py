@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -55,6 +56,9 @@ class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSe
 
         return queryset.order_by("-modified_date")
 
+    @extend_schema(
+        request=ObservationAnalyseRequest,
+    )
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
         request_params = ObservationAnalyseRequest(**request.data)

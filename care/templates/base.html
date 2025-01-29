@@ -5,10 +5,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>{% block title %}Care{% endblock title %}</title>
+  <title>{% block title %}Open HealthCare Network | Care{% endblock title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta name="robots" content="noindex">
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -21,7 +22,6 @@
 
   <!-- Latest compiled and minified Bootstrap CSS -->
   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://unpkg.com/@tailwindcss/custom-forms@0.2.1/dist/custom-forms.min.css" rel="stylesheet">
 
 
   <!-- Your stuff: Third-party CSS libraries go here -->
@@ -50,14 +50,6 @@
 
   <div class="px-6 py-4 md:px-14 md:py-10 mx-auto">
 
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
-        class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-
     {% block content %}
 
     {% endblock content %}
@@ -71,10 +63,6 @@
   <!-- Placed at the end of the document so the pages load faster -->
   {% block javascript %}
 
-  <!-- Your stuff: Third-party javascript libraries go here -->
-  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
-
-
   <!-- place project specific Javascript in this file -->
 
   <script src="{% static 'js/project.js' %}"></script>
@@ -82,17 +70,6 @@
 
   {% endblock javascript %}
   <script src='https://www.google.com/recaptcha/api.js'></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160173841-21"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'UA-160173841-21');
-
-  </script>
 
   <footer class="mt-auto p-0">
     <div class="container-fluid bg-white m-0">

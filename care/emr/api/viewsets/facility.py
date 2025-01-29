@@ -112,23 +112,24 @@ class FacilityViewSet(EMRModelViewSet):
             raise PermissionDenied("Only Super Admins can delete Facilities")
 
     @method_decorator(parser_classes([MultiPartParser]))
-    @action(methods=["POST"], detail=True)
+    @action(methods=["POST", "DELETE"], detail=True)
     def cover_image(self, request, external_id):
         facility = self.get_object()
         self.authorize_update({}, facility)
-        serializer = FacilityImageUploadSerializer(facility, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
 
-    @cover_image.mapping.delete
-    def cover_image_delete(self, *args, **kwargs):
-        facility = self.get_object()
-        self.authorize_update({}, facility)
-        delete_cover_image(facility.cover_image_url, "cover_images")
-        facility.cover_image_url = None
-        facility.save()
-        return Response(status=204)
+        if request.method == "POST":
+            serializer = FacilityImageUploadSerializer(facility, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        if request.method == "DELETE":
+            if not facility.cover_image_url:
+                return Response({"detail": "No cover image to delete"}, status=404)
+            delete_cover_image(facility.cover_image_url, "cover_images")
+            facility.cover_image_url = None
+            facility.save()
+            return Response(status=204)
+        return Response({"detail": "Method not allowed"}, status=405)
 
 
 class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):

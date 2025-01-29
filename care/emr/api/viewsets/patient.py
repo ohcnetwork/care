@@ -2,6 +2,7 @@ import datetime
 
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -81,6 +82,9 @@ class PatientViewSet(EMRModelViewSet):
         date_of_birth: datetime.date | None = None
         year_of_birth: int | None = None
 
+    @extend_schema(
+        request=SearchRequestSpec,
+    )
     @action(detail=False, methods=["POST"])
     def search(self, request, *args, **kwargs):
         max_page_size = 200
@@ -102,6 +106,9 @@ class PatientViewSet(EMRModelViewSet):
         year_of_birth: int
         partial_id: str
 
+    @extend_schema(
+        request=SearchRetrieveRequestSpec, responses={200: PatientRetrieveSpec}
+    )
     @action(detail=False, methods=["POST"])
     def search_retrieve(self, request, *args, **kwargs):
         request_data = self.SearchRetrieveRequestSpec(**request.data)
@@ -126,6 +133,7 @@ class PatientViewSet(EMRModelViewSet):
         user: UUID4
         role: UUID4
 
+    @extend_schema(request=PatientUserCreateSpec, responses={200: UserSpec})
     @action(detail=True, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         request_data = self.PatientUserCreateSpec(**self.request.data)
@@ -141,6 +149,7 @@ class PatientViewSet(EMRModelViewSet):
     class PatientUserDeleteSpec(BaseModel):
         user: UUID4
 
+    @extend_schema(request=PatientUserDeleteSpec, responses={200: {}})
     @action(detail=True, methods=["POST"])
     def delete_user(self, request, *args, **kwargs):
         request_data = self.PatientUserDeleteSpec(**self.request.data)

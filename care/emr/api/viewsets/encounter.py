@@ -75,6 +75,7 @@ class EncounterFilters(filters.FilterSet):
         field_name="patient__phone_number", lookup_expr="icontains"
     )
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
 
 
@@ -123,7 +124,14 @@ class EncounterViewSet(
         qs = (
             super()
             .get_queryset()
-            .select_related("patient", "facility", "appointment")
+            .select_related(
+                "patient",
+                "facility",
+                "appointment",
+                "current_location",
+                "created_by",
+                "updated_by",
+            )
             .order_by("-created_date")
         )
         if (
@@ -175,6 +183,10 @@ class EncounterViewSet(
     class EncounterOrganizationManageSpec(BaseModel):
         organization: UUID4
 
+    @extend_schema(
+        request=EncounterOrganizationManageSpec,
+        responses={200: FacilityOrganizationReadSpec},
+    )
     @action(detail=True, methods=["POST"])
     def organizations_add(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -195,6 +207,9 @@ class EncounterViewSet(
         )
         return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
 
+    @extend_schema(
+        request=EncounterOrganizationManageSpec,
+    )
     @action(detail=True, methods=["DELETE"])
     def organizations_remove(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -213,7 +228,7 @@ class EncounterViewSet(
         EncounterOrganization.objects.filter(
             encounter=instance, organization=organization
         ).delete()
-        return Response({}, status=204)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def _check_discharge_summary_access(self, encounter):
         if not AuthorizationController.call(
@@ -284,6 +299,9 @@ class EncounterViewSet(
             django_validate_email(value)
             return value
 
+    @extend_schema(
+        request=EmailDischargeSummarySpec,
+    )
     @action(detail=True, methods=["POST"])
     def email_discharge_summary(self, request, *args, **kwargs):
         encounter = self.get_object()
