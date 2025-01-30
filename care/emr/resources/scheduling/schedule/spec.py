@@ -98,14 +98,12 @@ class AvailabilityCreateSpec(AvailabilityForScheduleSpec):
         all_availabilities = [*self.availability]
         for availability in availabilities:
             all_availabilities.extend(
-                [
-                    AvailabilityDateTimeSpec(
-                        day_of_week=availability["day_of_week"],
-                        start_time=availability["start_time"],
-                        end_time=availability["end_time"],
-                    )
-                    for availability in availability.availability
-                ]
+                AvailabilityDateTimeSpec(
+                    day_of_week=availability["day_of_week"],
+                    start_time=availability["start_time"],
+                    end_time=availability["end_time"],
+                )
+                for availability in availability.availability
             )
         if has_overlapping_availability(all_availabilities):
             raise ValueError("Availability time ranges are overlapping")
