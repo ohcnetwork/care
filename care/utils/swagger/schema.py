@@ -28,10 +28,18 @@ class AutoSchema(SpectacularAutoSchema):
 
     def get_request_serializer(self):
         view = self.view
-        suffix = getattr(view, "suffix", None)
 
-        if suffix not in {"List", "Instance"}:
-            return self._get_serializer()
+        action = getattr(view, "action", None)
+
+        if action not in [
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "list",
+            "retrieve",
+        ]:
+            return None
 
         if self.method == "POST":
             return getattr(view, "pydantic_model", None)
@@ -45,10 +53,17 @@ class AutoSchema(SpectacularAutoSchema):
 
     def get_response_serializers(self):
         view = self.view
-        suffix = getattr(view, "suffix", None)
+        action = getattr(view, "action", None)
 
-        if suffix not in ["List", "Instance"]:
-            return self._get_serializer()
+        if action not in [
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "list",
+            "retrieve",
+        ]:
+            return None
 
         if self.method == "DELETE":
             return {"204": {"description": "No response body"}}
@@ -73,9 +88,9 @@ class AutoSchema(SpectacularAutoSchema):
                 view, "pydantic_model", None
             )
         else:
-            return self._get_serializer()
+            return None
 
-        return {200: model} if model else self._get_serializer()
+        return {200: model} if model else None
 
     def _resolve_path_parameters(self, variables):
         if hasattr(self.view, "database_model"):
