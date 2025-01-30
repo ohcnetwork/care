@@ -186,9 +186,53 @@ class TestScheduleViewSet(CareAPITestBase):
             valid_from=valid_from.isoformat(), valid_to=valid_to.isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertContains(
             response, "Valid from cannot be greater than valid to", status_code=400
+        )
+
+    def test_create_schedule_with_overlapping_availability(self):
+        """Schedule creation fails when availability sessions overlap"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            availabilities=[
+                {
+                    "name": "Availability 1",
+                    "slot_type": SlotTypeOptions.appointment.value,
+                    "slot_size_in_minutes": 30,
+                    "tokens_per_slot": 1,
+                    "create_tokens": True,
+                    "reason": "Regular schedule",
+                    "availability": [
+                        {
+                            "day_of_week": 1,
+                            "start_time": "09:00:00",
+                            "end_time": "13:00:00",
+                        },
+                    ],
+                },
+                {
+                    "name": "Availability 2",
+                    "slot_type": SlotTypeOptions.appointment.value,
+                    "slot_size_in_minutes": 30,
+                    "tokens_per_slot": 1,
+                    "create_tokens": True,
+                    "reason": "Regular schedule",
+                    "availability": [
+                        {
+                            "day_of_week": 1,
+                            "start_time": "08:00:00",
+                            "end_time": "10:00:00",
+                        },
+                    ],
+                },
+            ]
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response, "Availability time ranges are overlapping", status_code=400
         )
 
     def test_create_schedule_with_user_not_part_of_facility(self):
@@ -715,6 +759,40 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], availability_data["name"])
 
+    def test_create_availability_overlapping_with_existing_availabilities(self):
+        """Users cannot create availability that overlaps with existing availabilities."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_availability(
+            availability=[
+                {"day_of_week": 1, "start_time": "08:00:00", "end_time": "10:00:00"},
+            ]
+        )
+
+        availability_data = self.generate_availability_data()
+        response = self.client.post(self.base_url, availability_data, format="json")
+        self.assertContains(
+            response, "Availability time ranges are overlapping", status_code=400
+        )
+
+    def test_create_availability_not_overlapping_with_existing_availabilities(self):
+        """Users can create availability that does not overlap with existing availabilities."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_availability(
+            availability=[
+                {"day_of_week": 1, "start_time": "14:00:00", "end_time": "20:00:00"},
+            ]
+        )
+
+        availability_data = self.generate_availability_data()
+        response = self.client.post(self.base_url, availability_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_create_availability_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create availability."""
         availability_data = self.generate_availability_data()
@@ -865,7 +943,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
                 {
                     "day_of_week": 1,  # Monday
                     "start_time": "09:00:00",
-                    "end_time": "13:10:00",
+                    "end_time": "13:13:00",
                 },
             ]
         )

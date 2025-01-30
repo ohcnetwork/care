@@ -51,17 +51,8 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
     @field_validator("availability")
     @classmethod
     def validate_availability(cls, availabilities: list[AvailabilityDateTimeSpec]):
-        # Validates if availability overlaps for the same day
-        for i in range(len(availabilities)):
-            for j in range(i + 1, len(availabilities)):
-                if availabilities[i].day_of_week != availabilities[j].day_of_week:
-                    continue
-                # Check if time ranges overlap
-                if (
-                    availabilities[i].start_time <= availabilities[j].end_time
-                    and availabilities[j].start_time <= availabilities[i].end_time
-                ):
-                    raise ValueError("Availability time ranges are overlapping")
+        if has_overlapping_availability(availabilities):
+            raise ValueError("Availability time ranges are overlapping")
         for availability in availabilities:
             if availability.start_time >= availability.end_time:
                 raise ValueError("Start time must be earlier than end time")
@@ -95,6 +86,31 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
         return self
 
 
+class AvailabilityCreateSpec(AvailabilityForScheduleSpec):
+    schedule: UUID4
+
+    @model_validator(mode="after")
+    def check_for_overlaps(self):
+        availabilities = Availability.objects.filter(
+            schedule__external_id=self.schedule
+        )
+        all_availabilities = [*self.availability]
+        for availability in availabilities:
+            all_availabilities.extend(
+                [
+                    AvailabilityDateTimeSpec(
+                        day_of_week=availability["day_of_week"],
+                        start_time=availability["start_time"],
+                        end_time=availability["end_time"],
+                    )
+                    for availability in availability.availability
+                ]
+            )
+        if has_overlapping_availability(all_availabilities):
+            raise ValueError("Availability time ranges are overlapping")
+        return self
+
+
 class ScheduleBaseSpec(EMRResource):
     __model__ = Schedule
     __exclude__ = ["resource", "facility"]
@@ -115,6 +131,18 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
         if self.valid_from > self.valid_to:
             raise ValidationError("Valid from cannot be greater than valid to")
         return self
+
+    @field_validator("availabilities")
+    @classmethod
+    def validate_availabilities_not_overlapping(
+        cls, availabilities: list[AvailabilityForScheduleSpec]
+    ):
+        all_availabilities = []
+        for availability in availabilities:
+            all_availabilities.extend(availability.availability)
+        if has_overlapping_availability(all_availabilities):
+            raise ValueError("Availability time ranges are overlapping")
+        return availabilities
 
     def perform_extra_deserialization(self, is_update, obj):
         user = get_object_or_404(User, external_id=self.user)
@@ -188,3 +216,18 @@ class ScheduleReadSpec(ScheduleBaseSpec):
             AvailabilityForScheduleSpec.serialize(o)
             for o in Availability.objects.filter(schedule=obj)
         ]
+
+
+def has_overlapping_availability(availabilities: list[AvailabilityDateTimeSpec]):
+    for i in range(len(availabilities)):
+        for j in range(i + 1, len(availabilities)):
+            # Skip checking for overlap if it's not the same day of week
+            if availabilities[i].day_of_week != availabilities[j].day_of_week:
+                continue
+            # Check if time ranges overlap
+            if (
+                availabilities[i].start_time <= availabilities[j].end_time
+                and availabilities[j].start_time <= availabilities[i].end_time
+            ):
+                return True
+    return False
