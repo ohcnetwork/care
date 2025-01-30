@@ -884,11 +884,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
             ]
         )
         response = self.client.post(self.base_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertContains(
-            response,
-            "Availability time ranges are overlapping",
-            status_code=400,
+            response, "Availability time ranges are overlapping", status_code=400
         )
 
         # Verify that non-overlapping ranges on same day are allowed
@@ -914,12 +911,12 @@ class TestAvailabilityViewSet(CareAPITestBase):
         data = self.generate_availability_data(
             availability=[
                 {
-                    "day_of_week": 1,  # Monday
+                    "day_of_week": 2,  # Tuesday
                     "start_time": "09:00:00",
                     "end_time": "17:00:00",
                 },
                 {
-                    "day_of_week": 2,  # Tuesday
+                    "day_of_week": 3,  # Wednesday
                     "start_time": "09:00:00",  # Same time range but different day
                     "end_time": "17:00:00",
                 },

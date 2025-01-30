@@ -15,11 +15,11 @@ from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
+    AvailabilityCreateSpec,
     AvailabilityForScheduleSpec,
     ScheduleCreateSpec,
     ScheduleReadSpec,
     ScheduleUpdateSpec,
-    AvailabilityCreateSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController

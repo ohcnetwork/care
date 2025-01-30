@@ -1,4 +1,5 @@
 import datetime
+from datetime import UTC
 from enum import Enum
 
 from django.db.models import Sum
@@ -70,10 +71,10 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
 
             for availability in self.availability:
                 start_time = datetime.datetime.combine(
-                    datetime.date.today(), availability.start_time, tzinfo=None
+                    datetime.datetime.now(tz=UTC).date(), availability.start_time
                 )
                 end_time = datetime.datetime.combine(
-                    datetime.date.today(), availability.end_time, tzinfo=None
+                    datetime.datetime.now(tz=UTC).date(), availability.end_time
                 )
                 slot_size_in_seconds = self.slot_size_in_minutes * 60
                 if (end_time - start_time).total_seconds() % slot_size_in_seconds != 0:
