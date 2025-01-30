@@ -48,7 +48,7 @@ jobs:
           mkdir -p ${{ runner.temp }}/.buildx-mounted-cache
 
       - name: Bake docker images
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
           load: true
           pull: true
