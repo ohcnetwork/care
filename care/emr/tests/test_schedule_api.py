@@ -973,6 +973,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
             "Start time must be earlier than end time",
             status_code=400,
         )
+
     def test_create_availability_validate_slot_type(self):
         """Test validation rules for different slot types when creating availability slots."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
