@@ -281,7 +281,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         days = {}
         response_days = {}
         day = request_data.from_date
-        while day < request_data.to_date:
+        while day <= request_data.to_date:
             days[day] = {"total_slots": 0, "booked_slots": 0}
             response_days[str(day)] = {"total_slots": 0, "booked_slots": 0}
             day += timedelta(days=1)

@@ -21,6 +21,10 @@ class Encounter(EMRBaseModel):
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
 
+    current_location = models.ForeignKey(
+        "emr.FacilityLocation", on_delete=models.SET_NULL, null=True, blank=True
+    )  # Cached field, used for easier querying
+
     def sync_organization_cache(self):
         orgs = set()
         for encounter_organization in EncounterOrganization.objects.filter(

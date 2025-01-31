@@ -98,25 +98,27 @@ class UserViewSet(EMRModelViewSet):
         return Response(status=200)
 
     @method_decorator(parser_classes([MultiPartParser]))
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True, methods=["POST", "DELETE"], permission_classes=[IsAuthenticated]
+    )
     def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
         if not self.authorize_update({}, user):
             raise PermissionDenied("Permission Denied")
-        serializer = UserImageUploadSerializer(user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=200)
 
-    @profile_picture.mapping.delete
-    def profile_picture_delete(self, request, *args, **kwargs):
-        user = self.get_object()
-        if not self.authorize_update({}, user):
-            raise PermissionDenied("Permission Denied")
-        delete_cover_image(user.profile_picture_url, "avatars")
-        user.profile_picture_url = None
-        user.save()
-        return Response(status=204)
+        if request.method == "POST":
+            serializer = UserImageUploadSerializer(user, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(status=200)
+        if request.method == "DELETE":
+            if not user.profile_picture_url:
+                return Response({"detail": "No cover image to delete"}, status=404)
+            delete_cover_image(user.profile_picture_url, "avatars")
+            user.profile_picture_url = None
+            user.save()
+            return Response(status=204)
+        return Response({"detail": "Method not allowed"}, status=405)
 
     @action(
         detail=True,

@@ -33,7 +33,7 @@ Care backend makes the following features possible:
 
 ### Docs and Guides
 
-You can find the docs at https://care-be-docs.coronasafe.network
+You can find the docs at https://care-be-docs.ohc.network
 
 ### Staging Deployments
 

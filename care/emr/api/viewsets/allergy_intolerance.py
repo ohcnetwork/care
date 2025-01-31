@@ -1,4 +1,5 @@
 from django_filters import CharFilter, FilterSet
+from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.exceptions import PermissionDenied
@@ -29,6 +30,7 @@ from care.security.authorization import AuthorizationController
 
 
 class AllergyIntoleranceFilters(FilterSet):
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
     clinical_status = CharFilter(field_name="clinical_status")
 
 

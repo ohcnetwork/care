@@ -15,6 +15,7 @@ class Quantity(BaseModel):
     )
     unit: Coding | None = Field(None, description="A human-readable form of the unit.")
     meta: dict | None = Field(None)
-    code: Coding = Field(
+    code: Coding | None = Field(
+        None,
         description="A computer processable form of the unit in some unit representation system.",
     )

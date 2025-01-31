@@ -213,16 +213,12 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # First create a schedule
-        schedule = self.create_schedule()
-
-        # Then update it
         updated_data = {
             "name": "Updated Schedule Name",
-            "valid_from": schedule.valid_from,
-            "valid_to": schedule.valid_to,
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to,
         }
-        update_url = self._get_schedule_url(schedule.external_id)
+        update_url = self._get_schedule_url(self.schedule.external_id)
         response = self.client.put(update_url, updated_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Updated Schedule Name")
@@ -236,14 +232,12 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        schedule = self.create_schedule()
-
         updated_data = {
             "name": "Updated Schedule Name",
-            "valid_from": schedule.valid_from,
-            "valid_to": schedule.valid_to,
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to,
         }
-        update_url = self._get_schedule_url(schedule.external_id)
+        update_url = self._get_schedule_url(self.schedule.external_id)
         response = self.client.put(update_url, updated_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -257,10 +251,15 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        schedule = self.create_schedule()
-        delete_url = self._get_schedule_url(schedule.external_id)
+        delete_url = self._get_schedule_url(self.schedule.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        self.availability.refresh_from_db()
+        self.slot.refresh_from_db()
+
+        self.assertTrue(self.availability.deleted)
+        self.assertTrue(self.slot.deleted)
 
     def test_delete_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot delete schedules."""
@@ -271,8 +270,7 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        schedule = self.create_schedule()
-        delete_url = self._get_schedule_url(schedule.external_id)
+        delete_url = self._get_schedule_url(self.schedule.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -631,6 +629,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
             facility=self.facility,
         )
         self.schedule = self.create_schedule()
+        self.availability = self.create_availability()
+        self.slot = self.create_slot()
 
         self.base_url = reverse(
             "schedule-availability-list",
@@ -687,6 +687,17 @@ class TestAvailabilityViewSet(CareAPITestBase):
             ),
         )
 
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
     def generate_availability_data(self, **kwargs):
         """Helper to generate valid availability data."""
         return {
@@ -732,10 +743,15 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        availability = self.create_availability()
-        delete_url = self._get_availability_url(availability.external_id)
+        delete_url = self._get_availability_url(self.availability.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        self.availability.refresh_from_db()
+        self.slot.refresh_from_db()
+
+        self.assertTrue(self.availability.deleted)
+        self.assertTrue(self.slot.deleted)
 
     def test_delete_availability_without_permissions(self):
         """Users without can_write_user_schedule permission cannot delete availability."""
@@ -743,15 +759,13 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        availability = self.create_availability()
-        delete_url = self._get_availability_url(availability.external_id)
+        delete_url = self._get_availability_url(self.availability.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_availability_without_queryset_list_permissions(self):
         """Users without can_list_user_schedule permission cannot delete availability."""
-        availability = self.create_availability()
-        delete_url = self._get_availability_url(availability.external_id)
+        delete_url = self._get_availability_url(self.availability.external_id)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -764,10 +778,9 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        availability = self.create_availability()
         token_slot = TokenSlot.objects.create(
             resource=self.resource,
-            availability=availability,
+            availability=self.availability,
             start_datetime=datetime.now(UTC) + timedelta(days=4),
             end_datetime=datetime.now(UTC) + timedelta(days=5),
         )
@@ -778,7 +791,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         )
         token_slot.allocated = 1
         token_slot.save()
-        delete_url = self._get_availability_url(availability.external_id)
+        delete_url = self._get_availability_url(self.availability.external_id)
         response = self.client.delete(delete_url)
         self.assertContains(
             response,

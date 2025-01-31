@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -110,6 +111,7 @@ class FileUploadViewSet(
         file_authorizer(self.request.user, obj.file_type, obj.associating_id, "read")
         return super().get_queryset()
 
+    @extend_schema(responses={200: FileUploadListSpec})
     @action(detail=True, methods=["POST"])
     def mark_upload_completed(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -121,6 +123,10 @@ class FileUploadViewSet(
     class ArchiveRequestSpec(BaseModel):
         archive_reason: str
 
+    @extend_schema(
+        request=ArchiveRequestSpec,
+        responses={200: FileUploadListSpec},
+    )
     @action(detail=True, methods=["POST"])
     def archive(self, request, *args, **kwargs):
         obj = self.get_object()
