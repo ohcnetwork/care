@@ -29,6 +29,9 @@ class ResourceRequestFilters(filters.FilterSet):
     )
     assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
     related_patient = filters.UUIDFilter(field_name="related_patient__external_id")
+    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    category = filters.CharFilter(field_name="category", lookup_expr="iexact")
 
 
 class ResourceRequestViewSet(EMRModelViewSet):

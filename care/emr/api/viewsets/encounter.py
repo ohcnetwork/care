@@ -228,7 +228,7 @@ class EncounterViewSet(
         EncounterOrganization.objects.filter(
             encounter=instance, organization=organization
         ).delete()
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+        return Response({})
 
     def _check_discharge_summary_access(self, encounter):
         if not AuthorizationController.call(

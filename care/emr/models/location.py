@@ -79,13 +79,15 @@ class FacilityLocation(EMRBaseModel):
 
     def sync_organization_cache(self):
         orgs = set()
-        for encounter_organization in FacilityLocationOrganization.objects.filter(
-            location=self
-        ):
+        if self.parent:
+            orgs = orgs.union(set(self.parent.facility_organization_cache))
+        for (
+            facility_location_organization
+        ) in FacilityLocationOrganization.objects.filter(location=self):
             orgs = orgs.union(
                 {
-                    *encounter_organization.organization.parent_cache,
-                    encounter_organization.organization.id,
+                    *facility_location_organization.organization.parent_cache,
+                    facility_location_organization.organization.id,
                 }
             )
 
@@ -111,7 +113,7 @@ class FacilityLocation(EMRBaseModel):
                     self.parent.has_children = True
                     self.parent.save(update_fields=["has_children"])
         else:
-            self.cached_parent_json = dict
+            self.cached_parent_json = {}
             super().save(*args, **kwargs)
         self.sync_organization_cache()
 
@@ -152,6 +154,6 @@ def handle_cascade(base_location):
     Cascade changes to a location organization to all its children
     """
 
-    for child in FacilityLocation.objects.filter(parent_location_id=base_location):
+    for child in FacilityLocation.objects.filter(parent_id=base_location):
         child.save(update_fields=["cached_parent_json"])
         handle_cascade(child)

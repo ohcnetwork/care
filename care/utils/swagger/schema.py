@@ -28,54 +28,69 @@ class AutoSchema(SpectacularAutoSchema):
 
     def get_request_serializer(self):
         view = self.view
+
+        action = getattr(view, "action", None)
+
+        if action not in [
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "list",
+            "retrieve",
+        ]:
+            return None
+
         if self.method == "POST":
-            if hasattr(view, "pydantic_model"):
-                return view.pydantic_model
-        elif self.method in ["PUT", "PATCH"]:
-            if hasattr(view, "pydantic_update_model"):
-                return view.pydantic_update_model
-            if hasattr(view, "pydantic_model"):
-                return view.pydantic_model
-        elif self.method == "GET":
-            return None  # Can be improved later, if required
-        return self._get_serializer()
+            return getattr(view, "pydantic_model", None)
+
+        if self.method in {"PUT", "PATCH"}:
+            return getattr(view, "pydantic_update_model", None) or getattr(
+                view, "pydantic_model", None
+            )
+
+        return None
 
     def get_response_serializers(self):
         view = self.view
+        action = getattr(view, "action", None)
 
-        if self.method in ["POST", "PUT", "PATCH"] and (
-            hasattr(view, "pydantic_model") or hasattr(view, "pydantic_read_model")
-        ):
-            return {200: view.pydantic_read_model or view.pydantic_model}
+        if action not in [
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "list",
+            "retrieve",
+        ]:
+            return None
 
         if self.method == "DELETE":
             return {"204": {"description": "No response body"}}
 
-        if (
-            self.method == "GET"
-            and (
-                isinstance(self.view, ListModelMixin)
+        if self.method == "GET":
+            if (
+                isinstance(self.view, (ListModelMixin, EMRListMixin))
                 or self.view.action == "list"
-                or isinstance(self.view, EMRListMixin)
-            )
-            and (
-                hasattr(view, "pydantic_model") or hasattr(view, "pydantic_read_model")
-            )
-        ):
-            return {200: view.pydantic_read_model or view.pydantic_model}
+            ):
+                model = getattr(view, "pydantic_read_model", None) or getattr(
+                    view, "pydantic_model", None
+                )
+            else:
+                model = (
+                    getattr(view, "pydantic_retrieve_model", None)
+                    or getattr(view, "pydantic_read_model", None)
+                    or getattr(view, "pydantic_model", None)
+                )
 
-        if self.method == "GET" and (
-            hasattr(view, "pydantic_retrieve_model")
-            or hasattr(view, "pydantic_read_model")
-            or hasattr(view, "pydantic_model")
-        ):
-            return {
-                200: view.pydantic_retrieve_model
-                or view.pydantic_read_model
-                or view.pydantic_model
-            }
+        elif self.method in ["POST", "PUT", "PATCH"]:
+            model = getattr(view, "pydantic_read_model", None) or getattr(
+                view, "pydantic_model", None
+            )
+        else:
+            return None
 
-        return self._get_serializer()
+        return {200: model} if model else None
 
     def _resolve_path_parameters(self, variables):
         if hasattr(self.view, "database_model"):

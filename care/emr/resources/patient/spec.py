@@ -71,11 +71,12 @@ class PatientCreateSpec(PatientBaseSpec):
         obj.geo_organization = Organization.objects.get(
             external_id=self.geo_organization
         )
-        if not is_update:
-            if self.age:
-                obj.year_of_birth = timezone.now().date().year - self.age
-            else:
-                obj.year_of_birth = self.date_of_birth.year
+        if self.age:
+            # override dob if user chooses to update age
+            obj.date_of_birth = None
+            obj.year_of_birth = timezone.now().date().year - self.age
+        else:
+            obj.year_of_birth = self.date_of_birth.year
 
 
 class PatientListSpec(PatientBaseSpec):

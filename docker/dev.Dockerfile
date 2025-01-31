@@ -1,11 +1,10 @@
 FROM python:3.13-slim-bookworm
 
-ARG TYPST_VERSION=0.12.0
 ARG APP_HOME=/app
+ARG TYPST_VERSION=0.12.0
 
 WORKDIR $APP_HOME
 
-ENV PATH=/.venv/bin:$PATH
 ENV PIPENV_CACHE_DIR=/root/.cache/pip
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -31,6 +30,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
     rm -rf typst.tar.xz typst-${TYPST_ARCH}
 
 # use pipenv to manage virtualenv
+ENV PATH=/.venv/bin:$PATH
 RUN python -m venv /.venv
 RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
 

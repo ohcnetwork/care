@@ -89,7 +89,11 @@ CACHES = {
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
         },
-    }
+    },
+    "swagger_cache": {  # In-memory cache (only for Swagger)
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "swagger-schema-cache",
+    },
 }
 
 # URLS

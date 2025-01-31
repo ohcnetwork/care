@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -65,9 +66,10 @@ class FacilityLocationViewSet(EMRModelViewSet):
         # TODO Add validation to check if patient association exists
 
     def validate_data(self, instance, model_obj=None):
+        facility = self.get_facility_obj()
         if not model_obj and instance.parent:
             parent = get_object_or_404(FacilityLocation, external_id=instance.parent)
-            if parent.facility_id != instance.facility_id:
+            if parent.facility_id != facility.id:
                 raise PermissionDenied("Parent Incompatible with Location")
             if parent.mode == FacilityLocationModeChoices.instance.value:
                 raise ValidationError("Instances cannot have children")
@@ -148,6 +150,10 @@ class FacilityLocationViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to given organizations")
 
+    @extend_schema(
+        request=FacilityLocationOrganizationManageSpec,
+        responses={200: FacilityOrganizationReadSpec},
+    )
     @action(detail=True, methods=["POST"])
     def organizations_add(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -167,6 +173,9 @@ class FacilityLocationViewSet(EMRModelViewSet):
         )
         return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
 
+    @extend_schema(
+        request=FacilityLocationOrganizationManageSpec, responses={200: None}
+    )
     @action(detail=True, methods=["POST"])
     def organizations_remove(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -182,15 +191,16 @@ class FacilityLocationViewSet(EMRModelViewSet):
         if not encounter_organization.exists():
             raise ValidationError("Organization does not exist")
         FacilityLocationOrganization.objects.filter(
-            encounter=instance, organization=organization
+            location=instance, organization=organization
         ).delete()
         instance.save()  # Recalculate Metadata
         instance.cascade_changes()  # Recalculate Metadata for children as well.
-        return Response({}, status=204)
+        return Response({})
 
     class FacilityLocationEncounterAssignSpec(BaseModel):
         encounter: UUID4
 
+    @extend_schema(request=FacilityLocationEncounterAssignSpec)
     @action(detail=True, methods=["POST"])
     def associate_encounter(self, request, *args, **kwargs):
         instance = self.get_object()
