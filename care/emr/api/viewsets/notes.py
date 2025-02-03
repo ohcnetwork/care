@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 
@@ -24,6 +25,10 @@ from care.emr.resources.notes.thread_spec import (
 from care.security.authorization import AuthorizationController
 
 
+class NoteThreadFilters(filters.FilterSet):
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
+
+
 class NoteThreadViewSet(
     EMRCreateMixin,
     EMRRetrieveMixin,
@@ -35,6 +40,8 @@ class NoteThreadViewSet(
     pydantic_model = NoteThreadCreateSpec
     pydantic_read_model = NoteThreadUpdateSpec
     pydantic_update_model = NoteThreadReadSpec
+    filterset_class = NoteThreadFilters
+    filter_backends = [filters.DjangoFilterBackend]
 
     def get_patient(self):
         return get_object_or_404(

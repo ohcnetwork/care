@@ -867,16 +867,25 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self,
     ):
         """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
+        from_date = datetime.now(UTC).date()
+        end_date = from_date + timedelta(days=7)
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": from_date.strftime("%Y-%m-%d"),
+            "to_date": end_date.strftime("%Y-%m-%d"),
         }
         response = self.client.post(
             self._get_availability_stats_url(), data, format="json"
         )
         self.assertEqual(response.status_code, 200)
 
+        # verify all days are present
+        date = from_date
+        while date <= end_date:
+            self.assertContains(response, text=date.strftime("%Y-%m-%d"))
+            date += timedelta(days=1)
+
+        # verify booked slots and total slots from get slots for day matches heatmap
         for day, slot_stats in response.data.items():
             data = {"user": self.user.external_id, "day": day}
             response = self.client.post(

@@ -108,6 +108,11 @@ class FacilityLocationViewSet(EMRModelViewSet):
     def get_queryset(self):
         facility = self.get_facility_obj()
         base_qs = FacilityLocation.objects.filter(facility=facility)
+
+        if "parent" in self.request.GET and not self.request.GET.get("parent"):
+            # Filter for root location, For some reason its not working as intended in Django Filters
+            base_qs = base_qs.filter(parent__isnull=True)
+
         if "mine" in self.request.GET:
             # Filter based on direct association
             organization_ids = list(
