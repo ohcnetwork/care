@@ -128,12 +128,11 @@ def _get_org(Organization, obj):
 
 
 def migrate_patient_registrations(apps, schema_editor):
+    from care.emr.models import Patient, QuestionnaireOrganization
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
-    Patient = apps.get_model("emr", "Patient")
     Organization = apps.get_model("emr", "Organization")
     Questionnaire = apps.get_model("emr", "Questionnaire")
     QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
-    QuestionnaireOrganization = apps.get_model("emr", "QuestionnaireOrganization")
 
     NoteThread = apps.get_model("emr", "NoteThread")
     NoteMessage = apps.get_model("emr", "NoteMessage")
@@ -199,8 +198,8 @@ def migrate_patient_registrations(apps, schema_editor):
         root_orgs = Organization.objects.filter(root_org__isnull=True)
         for org in root_orgs:
             QuestionnaireOrganization.objects.get_or_create(
-                questionnaire=meta_info_questionnaire,
-                organization=org,
+                questionnaire_id=meta_info_questionnaire.id,
+                organization_id=org.id,
             )
 
     logger.debug("Migrating Patient Registrations")
@@ -229,11 +228,11 @@ def migrate_patient_registrations(apps, schema_editor):
                 year_of_birth=patient_registration.year_of_birth,
                 deceased_datetime=patient_registration.death_datetime,
                 blood_group=blood_group_map.get(patient_registration.blood_group, ""),
-                geo_organization=_get_org(Organization, patient_registration),
+                geo_organization_id=getattr(_get_org(Organization, patient_registration), "id", None),
                 meta={
                     "migration_id": MIGRATION_ID,
                 },
-                created_by=patient_registration.created_by,
+                created_by_id=patient_registration.created_by_id ,
                 created_date=patient_registration.created_date,
                 modified_date=patient_registration.modified_date,
             )
@@ -289,10 +288,10 @@ def migrate_patient_registrations(apps, schema_editor):
                     )
                 QuestionnaireResponse.objects.create(
                     questionnaire=meta_info_questionnaire,
-                    patient=patient,
+                    patient_id=patient.id,
                     subject_id=str(patient.external_id),
                     responses=[{"values": responses}],
-                    created_by=patient_registration.created_by,
+                    created_by_id=patient_registration.created_by_id,
                     created_date=patient_registration.created_date,
                     modified_date=patient_registration.modified_date,
                     meta={
@@ -302,12 +301,12 @@ def migrate_patient_registrations(apps, schema_editor):
 
             health_info_note_thread, created = NoteThread.objects.get_or_create(
                 title="Patient Health Information",
-                patient=patient,
+                patient_id=patient.id,
                 defaults={
                     "meta": {
                         "migration_id": MIGRATION_ID,
                     },
-                    "created_by": patient_registration.created_by,
+                    "created_by_id": patient_registration.created_by_id,
                     "created_date": patient_registration.created_date,
                     "modified_date": patient_registration.modified_date,
                 },
@@ -344,7 +343,7 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by=patient.created_by,
+                                created_by_id=patient.created_by_id,
                             )
                             for message in messages
                         ]
@@ -355,7 +354,7 @@ def migrate_patient_registrations(apps, schema_editor):
 
             patient_identifier_note_thread, created = NoteThread.objects.get_or_create(
                 title="Patient Identifiers",
-                patient=patient,
+                patient_id=patient.id,
                 defaults={
                     "meta": {
                         "migration_id": MIGRATION_ID,
@@ -381,7 +380,7 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by=patient.created_by,
+                                created_by_id=patient.created_by_id,
                             )
                             for message in messages
                         ]
@@ -398,7 +397,7 @@ def migrate_patient_registrations(apps, schema_editor):
                     continue
                 chronic_conditions.append(
                     Condition(
-                        patient=patient,
+                        patient_id=patient.id,
                         verification_status="unconfirmed",
                         category="chronic_condition",
                         code={

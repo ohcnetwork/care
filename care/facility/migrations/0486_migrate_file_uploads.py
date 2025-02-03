@@ -72,7 +72,7 @@ def migrate_file_uploads(apps, schema_editor):
 
             bulk_create_data.append(
                 NewFileUpload(
-                    id=None,
+                    external_id=old_file_upload.external_id,
                     name=old_file_upload.name,
                     internal_name=old_file_upload.internal_name,
                     file_type=file_type,

@@ -10,7 +10,7 @@ COUNTRY = "India"
 
 
 def migrate_organizations(apps, schema_editor):
-    Organization = apps.get_model("emr", "Organization")
+    from care.emr.models import Organization
     State = apps.get_model("users", "State")
     District = apps.get_model("users", "District")
     LocalBody = apps.get_model("users", "LocalBody")

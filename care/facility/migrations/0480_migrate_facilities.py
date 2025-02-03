@@ -98,15 +98,15 @@ def reverse_migrate_facilities(apps, schema_editor):
 
 
 def migrate_facility_users(apps, schema_editor):
-    FacilityOrganization = apps.get_model("emr", "FacilityOrganization")
-    Facility = apps.get_model("facility", "Facility")
-    FacilityOrganizationUser = apps.get_model("emr", "FacilityOrganizationUser")
+    from care.emr.models.organization import FacilityOrganization
+    from care.emr.models.organization import FacilityOrganizationUser
+    from care.facility.models import Facility
     RoleModel = apps.get_model("security", "RoleModel")
 
     for facility in Facility.objects.all():
         # Check if the root org exists
         root_org = FacilityOrganization.objects.filter(
-            org_type="root", name="Administration", facility=facility
+            org_type="root", name="Administration", facility_id=facility.id
         ).first()
         # If the root org does not exist, create it
         if not root_org:
@@ -115,11 +115,14 @@ def migrate_facility_users(apps, schema_editor):
                 name="Administration",
                 system_generated=True,
                 parent=None,
-                facility=facility,
+                facility_id=facility.id,
                 meta={"migration_id": MIGRARION_ID},
-                created_by=facility.created_by,
+                created_by_id=facility.created_by_id,
                 created_date=facility.created_date,
             )
+        if not facility.default_internal_organization:
+            facility.default_internal_organization = root_org
+            facility.save()
         for facility_user in facility.users.all():
             role = get_role_for_user_type(RoleModel, facility_user.old_user_type)
             if not role:
@@ -129,11 +132,11 @@ def migrate_facility_users(apps, schema_editor):
                 continue
 
             FacilityOrganizationUser.objects.create(
-                organization=root_org,
-                user=facility_user,
-                role=role,
+                organization_id=root_org.id,
+                user_id=facility_user.id,
+                role_id=role.id,
                 meta={"migration_id": MIGRARION_ID},
-                created_by=facility_user.created_by,
+                created_by_id=facility_user.created_by_id,
                 created_date=facility.created_date,
             )
 

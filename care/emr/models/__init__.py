@@ -1,3 +1,4 @@
+# isort: skip_file
 from .allergy_intolerance import *  # noqa F403
 from .condition import *  # noqa F403
 from .observation import *  # noqa F403

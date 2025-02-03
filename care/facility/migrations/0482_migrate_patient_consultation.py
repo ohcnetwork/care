@@ -71,12 +71,13 @@ def investigation_to_text(investigation):
 
 
 def migrate_consultations(apps, schema_editor):
+    from care.emr.models import Encounter, QuestionnaireOrganization
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
-    Encounter = apps.get_model("emr", "Encounter")
 
     Questionnaire = apps.get_model("emr", "Questionnaire")
     QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
     Observation = apps.get_model("emr", "Observation")
+    Organization = apps.get_model("emr", "Organization")
 
     consultation_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="consultation_876e89eb",
@@ -277,6 +278,14 @@ def migrate_consultations(apps, schema_editor):
         },
     )
 
+    if created:
+        root_orgs = Organization.objects.filter(root_org__isnull=True)
+        for org in root_orgs:
+            QuestionnaireOrganization.objects.get_or_create(
+                questionnaire_id=consultation_questionnaire.id,
+                organization_id=org.id,
+            )
+
     paginator = Paginator(
         PatientConsultation.objects.filter(migrated_emr_encounter_id__isnull=True)
         .select_related("patient", "referred_from_facility")
@@ -316,21 +325,23 @@ def migrate_consultations(apps, schema_editor):
 
             encounter = Encounter.objects.create(
                 external_id=consultation.external_id,
-                status="completed" if consultation.discharge_date else "in-progress",
+                status="completed" if consultation.discharge_date else "in_progress",
                 priority=category_to_priority_map.get(consultation.category, "routine"),
                 patient_id=consultation.patient.migrated_emr_patient_id,
                 external_identifier=consultation.patient_no,
                 period=period,
                 hospitalization=hospitalization,
-                facility=consultation.facility,
+                facility_id=consultation.facility_id,
+                status_history={"history":[]},
+                encounter_class_history={"history":[]},
                 meta={
                     "migration_id": MIGRATION_ID,
                 },
                 encounter_class=suggestion_to_class_map.get(
                     consultation.suggestion, "amb"
                 ),
-                created_by=consultation.created_by,
-                updated_by=consultation.last_edited_by,
+                created_by_id=consultation.created_by_id,
+                updated_by_id=consultation.last_edited_by_id,
                 created_date=consultation.created_date,
                 modified_date=consultation.modified_date,
             )
