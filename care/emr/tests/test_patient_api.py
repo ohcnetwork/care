@@ -1,3 +1,4 @@
+import datetime
 from secrets import choice
 
 import phonenumbers
@@ -137,3 +138,40 @@ class TestPatientViewSet(CareAPITestBase):
             )
             response = self.client.post(self.base_url, patient_data, format="json")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_patient_age_and_date_of_birth(self):
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_create_patient.name,
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            date_of_birth=datetime.date(1993, 1, 10),
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["date_of_birth"], "1993-01-10")
+        self.assertEqual(response.data["year_of_birth"], 1993)
+        patient_id = response.data["id"]
+        reverse_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        patient_data["age"] = 33
+        response = self.client.put(reverse_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["date_of_birth"], None)
+        self.assertEqual(
+            response.data["year_of_birth"],
+            datetime.datetime.now(datetime.UTC).year - 33,
+        )
+        patient_data["date_of_birth"] = datetime.date(1992, 1, 10)
+        del patient_data["age"]
+        response = self.client.put(reverse_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["date_of_birth"], "1992-01-10")
+        self.assertEqual(response.data["year_of_birth"], 1992)

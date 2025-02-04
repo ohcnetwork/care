@@ -3,6 +3,7 @@ import json
 from django.db import transaction
 from django.http.response import Http404
 from pydantic import ValidationError
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
 from rest_framework.generics import get_object_or_404
@@ -183,11 +184,15 @@ class EMRDestroyMixin:
         instance.deleted = True
         instance.save(update_fields=["deleted"])
 
+    def validate_destroy(self, instance):
+        pass
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        self.validate_destroy(instance)
         self.authorize_destroy(instance)
         self.perform_destroy(instance)
-        return Response(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EMRUpsertMixin:

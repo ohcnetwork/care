@@ -3,12 +3,12 @@ from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field, field_validator
 
-from care.emr.fhir.schema.base import Coding, Quantity
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_administration import MedicationAdministration
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common import Coding, Quantity
 from care.emr.resources.medication.valueset.administration_method import (
     CARE_ADMINISTRATION_METHOD_VALUESET,
 )
@@ -142,10 +142,8 @@ class BaseMedicationAdministrationSpec(EMRResource):
     occurrence_period_start: datetime = Field(
         description="When the medication was administration started",
     )
-    occurrence_period_end: datetime | None = Field(
-        None,
-        description="When the medication administration ended. If not provided, it is assumed to be ongoing",
-    )
+    occurrence_period_end: datetime | None = None
+
     recorded: datetime | None = Field(
         None,
         description="When administration was recorded",
@@ -167,10 +165,7 @@ class BaseMedicationAdministrationSpec(EMRResource):
         description="The dosage of the medication",
     )
 
-    note: str | None = Field(
-        None,
-        description="Any additional notes about the medication",
-    )
+    note: str | None = None
 
 
 class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
@@ -215,6 +210,15 @@ class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
             )  # Needs more validation
             obj.patient = obj.encounter.patient
             obj.request = MedicationRequest.objects.get(external_id=self.request)
+
+
+class MedicationAdministrationUpdateSpec(EMRResource):
+    __model__ = MedicationAdministration
+    __exclude__ = ["patient", "encounter", "request"]
+
+    status: MedicationAdministrationStatus
+    note: str | None = None
+    occurrence_period_end: datetime | None = None
 
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):

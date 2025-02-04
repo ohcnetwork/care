@@ -89,7 +89,11 @@ CACHES = {
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
         },
-    }
+    },
+    "swagger_cache": {  # In-memory cache (only for Swagger)
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "swagger-schema-cache",
+    },
 }
 
 # URLS
@@ -376,7 +380,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "care.utils.pagination.care_pagination.CareLimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
-    "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
@@ -387,6 +391,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
 # Simple JWT (JWT Authentication)
@@ -438,12 +443,6 @@ DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
-
-# Hardcopy settings (pdf generation)
-# ------------------------------------------------------------------------------
-# https://github.com/loftylabs/django-hardcopy#installation
-CHROME_WINDOW_SIZE = "2480,3508"
-CHROME_PATH = "/usr/bin/chromium"
 
 # Health Django (Health Check Config)
 # ------------------------------------------------------------------------------

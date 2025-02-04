@@ -186,6 +186,7 @@ class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
                 raise ValidationError(
                     "Cannot delete availability as there are future bookings associated with it"
                 )
+            TokenSlot.objects.filter(availability_id=instance.id).update(deleted=True)
             super().perform_destroy(instance)
 
     def authorize_create(self, instance):

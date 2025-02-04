@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field, field_validator
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -45,6 +46,9 @@ class OTPLoginView(EMRBaseViewSet):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(
+        request=OTPLoginRequestSpec,
+    )
     @action(detail=False, methods=["POST"])
     def send(self, request):
         data = OTPLoginRequestSpec(**request.data)
@@ -76,6 +80,9 @@ class OTPLoginView(EMRBaseViewSet):
         otp_obj.save()
         return Response({"otp": "generated"})
 
+    @extend_schema(
+        request=OTPLoginSpec,
+    )
     @action(detail=False, methods=["POST"])
     def login(self, request):
         data = OTPLoginSpec(**request.data)

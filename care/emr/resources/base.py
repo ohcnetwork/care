@@ -145,6 +145,15 @@ class EMRResource(BaseModel):
     def to_json(self):
         return self.model_dump(mode="json", exclude=["meta"])
 
+    @classmethod
+    def serialize_audit_users(cls, mapping, obj):
+        from care.emr.resources.user.spec import UserSpec
+
+        if obj.created_by:
+            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        if obj.updated_by:
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+
 
 PhoneNumber = Annotated[
     Union[str, phonenumbers.PhoneNumber()],  # noqa: UP007

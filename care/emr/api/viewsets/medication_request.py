@@ -19,8 +19,17 @@ from care.security.authorization import AuthorizationController
 from care.users.models import User
 
 
+class StatusFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if value:
+            statuses = value.split(",")
+            return qs.filter(status__in=statuses)
+        return qs
+
+
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    status = StatusFilter()
 
 
 class MedicationRequestViewSet(

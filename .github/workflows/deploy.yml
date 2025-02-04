@@ -28,6 +28,7 @@ env:
 
 jobs:
   test:
+    name: Test
     uses: ./.github/workflows/reusable-test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -36,10 +37,114 @@ jobs:
 
   build:
     needs: test
-    name: Build & Push to container registries
-    runs-on: ubuntu-24.04-arm
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Generate docker tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/.buildx-cache
+          key: ${{ runner.os }}-${{ runner.arch }}-buildx-prod-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-buildx-prod-
+
+      - name: Create new cache
+        run: |
+          mkdir -p ${{ runner.temp }}/.buildx-cache
+          mkdir -p ${{ runner.temp }}/.buildx-cache-new
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/prod.Dockerfile
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
+          build-args: |
+            APP_VERSION=${{ github.sha }}
+            ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Move cache
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+
+  merge-manifests:
+    needs: build
+    name: Merge & Push Manifests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Generate docker tags
         id: meta
@@ -55,49 +160,12 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
             type=raw,value=latest-${{ github.run_number }},enable=${{ github.ref == 'refs/heads/develop' }}
             type=semver,pattern={{version}}
-          flavor: |
-            latest=false
 
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-build-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-build-
-
-      - name: Create new cache
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
         run: |
-          mkdir -p /tmp/.buildx-cache
-          mkdir -p /tmp/.buildx-cache-new
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/prod.Dockerfile
-          push: true
-          provenance: false
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
-          build-args: |
-            APP_VERSION=${{ github.sha }}
-            ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
@@ -107,16 +175,9 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           version: ${{ github.sha }}
-      - name: Update cache
-        if: always() # Run even if previous steps fail
-        run: |
-          if [ -d "/tmp/.buildx-cache-new" ]; then
-            rm -rf /tmp/.buildx-cache
-            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          fi
 
   notify-release:
-    needs: build
+    needs: merge-manifests
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Notify release
     runs-on: ubuntu-24.04-arm
@@ -126,7 +187,7 @@ jobs:
           echo "Release ${{ github.sha }} is ready to be deployed to production"
 
   deploy-staging-egov:
-    needs: build
+    needs: merge-manifests
     if: github.ref == 'refs/heads/develop'
     name: Deploy to ECS API Egov
     runs-on: ubuntu-24.04-arm

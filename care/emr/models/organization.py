@@ -46,8 +46,7 @@ class OrganizationCommonBase(EMRBaseModel):
                 self.cached_parent_json["cache_expiry"]
             ):
                 return self.cached_parent_json
-            if self.parent:
-                self.parent.get_parent_json()
+            self.parent.get_parent_json()
             self.cached_parent_json = {
                 "id": str(self.parent.external_id),
                 "name": self.parent.name,

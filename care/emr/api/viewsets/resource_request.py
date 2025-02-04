@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django_filters import rest_framework as filters
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -21,11 +22,25 @@ from care.emr.resources.resource_request.spec import (
 )
 
 
+class ResourceRequestFilters(filters.FilterSet):
+    origin_facility = filters.UUIDFilter(field_name="origin_facility__external_id")
+    approving_facility = filters.UUIDFilter(
+        field_name="approving_facility__external_id"
+    )
+    assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
+    related_patient = filters.UUIDFilter(field_name="related_patient__external_id")
+    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    category = filters.CharFilter(field_name="category", lookup_expr="iexact")
+
+
 class ResourceRequestViewSet(EMRModelViewSet):
     database_model = ResourceRequest
     pydantic_model = ResourceRequestCreateSpec
     pydantic_read_model = ResourceRequestListSpec
     pydantic_retrieve_model = ResourceRequestRetrieveSpec
+    filterset_class = ResourceRequestFilters
+    filter_backends = [filters.DjangoFilterBackend]
 
     @classmethod
     def build_queryset(cls, queryset, user):
