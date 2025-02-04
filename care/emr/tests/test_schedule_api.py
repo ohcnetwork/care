@@ -753,7 +753,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
             "reason": "Regular schedule",
             "availability": [
                 {
-                    "day_of_week": 1,
+                    "day_of_week": 2,
                     "start_time": "09:00:00",
                     "end_time": "13:00:00",
                 }
@@ -887,12 +887,12 @@ class TestAvailabilityViewSet(CareAPITestBase):
         data = self.generate_availability_data(
             availability=[
                 {
-                    "day_of_week": 1,  # Monday
+                    "day_of_week": 2,  # Monday
                     "start_time": "09:00:00",
                     "end_time": "13:00:00",
                 },
                 {
-                    "day_of_week": 1,  # Same day (Monday)
+                    "day_of_week": 2,  # Same day (Monday)
                     "start_time": "12:00:00",  # Overlaps with previous range
                     "end_time": "17:00:00",
                 },
@@ -907,12 +907,12 @@ class TestAvailabilityViewSet(CareAPITestBase):
         data = self.generate_availability_data(
             availability=[
                 {
-                    "day_of_week": 1,
+                    "day_of_week": 2,
                     "start_time": "09:00:00",
                     "end_time": "12:00:00",
                 },
                 {
-                    "day_of_week": 1,
+                    "day_of_week": 2,
                     "start_time": "13:00:00",  # No overlap
                     "end_time": "17:00:00",
                 },
@@ -926,12 +926,12 @@ class TestAvailabilityViewSet(CareAPITestBase):
         data = self.generate_availability_data(
             availability=[
                 {
-                    "day_of_week": 2,  # Tuesday
+                    "day_of_week": 3,  # Tuesday
                     "start_time": "09:00:00",
                     "end_time": "17:00:00",
                 },
                 {
-                    "day_of_week": 3,  # Wednesday
+                    "day_of_week": 4,  # Wednesday
                     "start_time": "09:00:00",  # Same time range but different day
                     "end_time": "17:00:00",
                 },
@@ -953,7 +953,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         data = self.generate_availability_data(
             availability=[
                 {
-                    "day_of_week": 1,  # Monday
+                    "day_of_week": 2,  # Monday
                     "start_time": "09:00:00",
                     "end_time": "13:13:00",
                 },
