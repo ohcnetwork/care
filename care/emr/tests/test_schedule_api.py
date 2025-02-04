@@ -965,6 +965,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
             "Availability duration must be a multiple of slot size in minutes",
             status_code=400,
         )
+
     def test_create_availability_start_time_greater_than_end_time(self):
         """Test validation rules for ensuring start time is before end time."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
