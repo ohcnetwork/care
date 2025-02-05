@@ -123,6 +123,7 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     recorded_date: datetime.datetime | None = None
     created_by: dict = {}
     updated_by: dict = {}
+    note: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
