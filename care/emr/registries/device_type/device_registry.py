@@ -32,6 +32,12 @@ class DeviceTypeBase:
         """
         return {}
 
+    def perform_action(self , obj, action,  request):
+        """
+        Perform some kind of action on an asset, the HTTP request is proxied through as is.
+        an HTTP response object is expected as the return.
+        """
+        return None # Return an HTTP Response
 
 class DeviceTypeRegistry:
     _device_types = {}

@@ -19,7 +19,7 @@ class Device(EMRBaseModel):
     model_number = models.CharField(max_length=1024, null=True, blank=True)
     part_number = models.CharField(max_length=1024, null=True, blank=True)
     contact = models.JSONField(default=dict)
-    care_type = models.CharField(max_length=1024, null=True, blank=True)
+    care_type = models.CharField(max_length=1024, null=True, blank=True , default=None)
 
     # Relations
     facility = models.ForeignKey("facility.Facility", on_delete=models.CASCADE)
