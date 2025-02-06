@@ -156,7 +156,7 @@ class EMRResource(BaseModel):
 
 
 PhoneNumber = Annotated[
-    Union[str, phonenumbers.PhoneNumber()],  # noqa: UP007
+    Union[str, phonenumbers.PhoneNumber],  # noqa: UP007
     PhoneNumberValidator(
         default_region=None,
         supported_regions=[],
