@@ -33,7 +33,7 @@ class DeviceTypeBase:
         return {}
 
 
-class InternalQuestionnaireRegistry:
+class DeviceTypeRegistry:
     _device_types = {}
 
     @classmethod
