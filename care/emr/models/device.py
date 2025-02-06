@@ -36,6 +36,25 @@ class Device(EMRBaseModel):
     # metadata
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
 
+    def save(self, *args, **kwargs):
+        from care.emr.models.organization import FacilityOrganization
+
+        facility_root_org = FacilityOrganization.objects.filter(
+            org_type="root", facility=self.facility
+        ).first()
+        orgs = set()
+        if facility_root_org:
+            orgs = orgs.union({facility_root_org.id})
+        if self.managing_organization:
+            orgs = orgs.union(
+                {
+                    *self.managing_organization.parent_cache,
+                    self.managing_organization.id,
+                }
+            )
+        self.facility_organization_cache = list(orgs)
+        return super().save(*args, **kwargs)
+
 
 class DeviceEncounterHistory(EMRBaseModel):
     device = models.ForeignKey("emr.Device", on_delete=models.CASCADE)
