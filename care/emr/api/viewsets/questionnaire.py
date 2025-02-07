@@ -67,6 +67,7 @@ class QuestionnaireFilter(filters.FilterSet):
     title = filters.CharFilter(field_name="title", lookup_expr="icontains")
     subject_type = filters.CharFilter(field_name="subject_type", lookup_expr="iexact")
     tag_slug = QuestionnaireTagSlugFilter(field_name="tag_slug")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
 class QuestionnaireViewSet(EMRModelViewSet):

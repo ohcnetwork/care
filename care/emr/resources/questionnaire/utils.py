@@ -225,21 +225,22 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         for value in responses[questionnaire["id"]].values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] == QuestionType.choice.value and value.value_code:
-                observation["value"] = {
-                    "value_code": (value.value_code.model_dump(exclude_defaults=True))
-                }
+            if questionnaire["type"] == QuestionType.choice.value and value.code:
+                observation["value"] = value.value_code.model_dump(
+                    exclude_defaults=True
+                )
+
             elif (
                 questionnaire["type"] == QuestionType.quantity.value
                 and value.value_quantity
             ):
-                observation["value"] = {
-                    "value_quantity": (
-                        value.value_quantity.model_dump(exclude_defaults=True)
-                    )
-                }
+                observation["value"] = value.value_quantity.model_dump(
+                    exclude_defaults=True
+                )
             elif value:
                 observation["value"] = {"value": value.value}
+                if "unit" in questionnaire:
+                    observation["value"]["unit"] = questionnaire["unit"]
             if responses[questionnaire["id"]].note:
                 observation["note"] = responses[questionnaire["id"]].note
         if parent_id:

@@ -43,6 +43,14 @@ from care.utils.lock import Lock
 class FacilityLocationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    mode = filters.CharFilter(field_name="mode", lookup_expr="iexact")
+    availability_status = filters.CharFilter(
+        field_name="availability_status", lookup_expr="iexact"
+    )
+    operational_status = filters.CharFilter(
+        field_name="operational_status", lookup_expr="iexact"
+    )
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
 class FacilityLocationViewSet(EMRModelViewSet):

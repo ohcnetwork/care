@@ -444,12 +444,6 @@ DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
 
-# Hardcopy settings (pdf generation)
-# ------------------------------------------------------------------------------
-# https://github.com/loftylabs/django-hardcopy#installation
-CHROME_WINDOW_SIZE = "2480,3508"
-CHROME_PATH = "/usr/bin/chromium"
-
 # Health Django (Health Check Config)
 # ------------------------------------------------------------------------------
 # https://github.com/vigneshhari/healthy_django

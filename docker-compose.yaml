@@ -19,7 +19,7 @@ services:
     image: redis:7.2-alpine
     restart: unless-stopped
     volumes:
-      - redis-data:/data
+      - care-redis-data:/data
     ports:
       - "6380:6379"
 
@@ -47,4 +47,4 @@ services:
 
 volumes:
   postgres-data:
-  redis-data:
+  care-redis-data:

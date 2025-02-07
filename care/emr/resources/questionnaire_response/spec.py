@@ -4,15 +4,19 @@ from pydantic import UUID4, BaseModel
 
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.base import EMRResource
-from care.emr.resources.common import Coding, Quantity
+from care.emr.resources.common import Coding
 from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec
 from care.emr.resources.user.spec import UserSpec
 
 
 class QuestionnaireSubmitResultValue(BaseModel):
     value: str | None = None
-    value_code: Coding | None = None
-    value_quantity: Quantity | None = None
+    # For Quantity
+    unit: Coding | None = None
+    # For Codes
+    system: str | None = None
+    code: str | None = None
+    display: str | None = None
 
 
 class QuestionnaireSubmitResult(BaseModel):

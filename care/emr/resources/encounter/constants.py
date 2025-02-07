@@ -59,7 +59,7 @@ class DischargeDispositionChoices(str, Enum):
 
 class DietPreferenceChoices(str, Enum):
     vegetarian = "vegetarian"
-    diary_free = "diary_free"
+    dairy_free = "dairy_free"
     nut_free = "nut_free"
     gluten_free = "gluten_free"
     vegan = "vegan"
