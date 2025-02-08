@@ -1,8 +1,19 @@
+from django.db import transaction
+from django.utils import timezone
 from django_filters import rest_framework as filters
+from pydantic import UUID4, BaseModel
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 
-from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.models import Device
+from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
+from care.emr.models import (
+    Device,
+    DeviceEncounterHistory,
+    DeviceLocationHistory,
+    Encounter,
+    FacilityLocation,
+)
 from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.resources.device.spec import (
     DeviceCreateSpec,
@@ -64,7 +75,67 @@ class DeviceViewSet(EMRModelViewSet):
 
         return queryset
 
-    # TODO Action for Associating Encounter
-    # TODO Action for Associating Location
-    # TODO RO API's for Device Location and Encounter History
-    # TODO Serialize current location and history in the retrieve API
+    class DeviceEncounterAssociationRequest(BaseModel):
+        encounter: UUID4
+
+    @action(detail=True, methods=["POST"])
+    def associate_encounter(self, request, *args, **kwargs):
+        request_data = self.DeviceEncounterAssociationRequest(**request.data)
+        encounter = get_object_or_404(Encounter, external_id=request_data.encounter)
+        device = self.get_object()
+        # TODO Perform Authz for encounter
+        if device.current_encounter_id == encounter.id:
+            raise ValidationError("Encounter already associated")
+        with transaction.atomic():
+            if device.current_encounter:
+                old_obj = DeviceEncounterHistory.objects.filter(
+                    device=device, encounter=device.current_encounter, end__isnull=True
+                ).first()
+                if old_obj:
+                    old_obj.end = timezone.now()
+                    old_obj.save()
+            device.current_encounter = encounter
+            device.save(update_fields=["current_encounter"])
+            DeviceEncounterHistory.objects.create(
+                device=device, encounter=encounter, start=timezone.now()
+            )
+
+    class DeviceLocationAssociationRequest(BaseModel):
+        location: UUID4
+
+    @action(detail=True, methods=["POST"])
+    def associate_location(self, request, *args, **kwargs):
+        request_data = self.DeviceLocationAssociationRequest(**request.data)
+        location = get_object_or_404(
+            FacilityLocation, external_id=request_data.location
+        )
+        device = self.get_object()
+        # TODO Perform Authz for location
+        if device.current_location == location.id:
+            raise ValidationError("Location already associated")
+        with transaction.atomic():
+            if device.current_encounter:
+                old_obj = DeviceLocationHistory.objects.filter(
+                    device=device, location=device.current_location, end__isnull=True
+                ).first()
+                if old_obj:
+                    old_obj.end = timezone.now()
+                    old_obj.save()
+            device.current_location = location
+            device.save(update_fields=["current_location"])
+            DeviceLocationHistory.objects.create(
+                device=device, location=location, start=timezone.now()
+            )
+
+
+class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
+    pass
+
+
+class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
+    pass
+
+
+# TODO AuthZ
+# TODO RO API's for Device Location and Encounter History
+# TODO Serialize current location and history in the retrieve API
