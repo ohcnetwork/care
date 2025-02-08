@@ -342,7 +342,7 @@ class FacilityLocationEncounterViewSet(
         self.reset_encounter_location_association(instance.location)
         self.reset_location_availability_status(instance.location)
 
-    def _validate_data(self, instance, model_obj=None):
+    def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
         This method will be called separately to maintain a lock when the validation is being performed
         """
@@ -357,13 +357,12 @@ class FacilityLocationEncounterViewSet(
             base_qs = base_qs.exclude(id=model_obj.id)
 
         status = instance.status or model_obj.status
-        end_datetime = (
-            instance.end_datetime
-            if instance.end_datetime is not None
-            else model_obj.end_datetime
-            if model_obj
-            else None
-        )
+        if instance.end_datetime is not None:
+            end_datetime = instance.end_datetime
+        elif model_obj:
+            end_datetime = model_obj.end_datetime
+        else:
+            end_datetime = None
 
         # Active status should not have end_datetime
         if status in (LocationEncounterAvailabilityStatusChoices.active.value):

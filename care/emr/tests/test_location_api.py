@@ -179,6 +179,11 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         data = self.generate_data_for_facility_location(parent=parent_location1["id"])
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertIn("errors", response_data)
+        error = response_data["errors"][0]
+        self.assertEqual(error["type"], "value_error")
+        self.assertIn("Instances cannot have children", error["msg"])
 
         # Invalid parent UUID
         data = self.generate_data_for_facility_location(parent=uuid.uuid4())
