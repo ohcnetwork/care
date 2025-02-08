@@ -72,8 +72,9 @@ class UserViewSet(EMRModelViewSet):
 
     def authorize_update(self, request_obj, model_instance):
         if self.request.user.is_superuser:
-            return True
-        return self.request.user.id == model_instance.id
+            return
+        if not self.request.user.id == model_instance.id:
+            raise PermissionDenied("You do not have permission to update this user")
 
     def authorize_create(self, instance):
         if not AuthorizationController.call("can_create_user", self.request.user):
