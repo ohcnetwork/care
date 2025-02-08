@@ -354,12 +354,21 @@ class FacilityLocationEncounterViewSet(
         base_qs = FacilityLocationEncounter.objects.filter(location=location)
         if model_obj:
             # Validate if the current dates are not in conflict with other dates
-            end_datetime = model_obj.end_datetime
             base_qs = base_qs.exclude(id=model_obj.id)
-            status = model_obj.status
-        else:
-            status = instance.status
-            end_datetime = instance.end_datetime
+
+        status = instance.status or model_obj.status
+        end_datetime = (
+            instance.end_datetime
+            if instance.end_datetime is not None
+            else model_obj.end_datetime
+            if model_obj
+            else None
+        )
+
+        # Active status should not have end_datetime
+        if status in (LocationEncounterAvailabilityStatusChoices.active.value):
+            end_datetime = None
+
         # Validate end time is greater than start time
         if end_datetime and start_datetime > end_datetime:
             raise ValidationError("End Datetime should be greater than Start Datetime")
