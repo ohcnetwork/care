@@ -96,6 +96,9 @@ class DeviceLocationHistoryListSpec(EMRResource):
     id: UUID4 = None
     location: dict
     created_by: dict
+    start : datetime
+    end: datetime | None = None
+
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -116,6 +119,8 @@ class DeviceEncounterHistoryListSpec(EMRResource):
     id: UUID4 = None
     encounter: dict
     created_by: dict
+    start : datetime
+    end: datetime | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

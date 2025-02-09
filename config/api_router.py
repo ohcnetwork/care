@@ -180,14 +180,14 @@ device_nested_router = NestedSimpleRouter(
     facility_nested_router, r"device", lookup="device"
 )
 
-facility_nested_router.register(
+device_nested_router.register(
     r"location_history",
     DeviceLocationHistoryViewSet,
     basename="device_location_history",
 )
 
 
-facility_nested_router.register(
+device_nested_router.register(
     r"encounter_history",
     DeviceEncounterHistoryViewSet,
     basename="device_encounter_history",
@@ -271,4 +271,6 @@ urlpatterns = [
     path("", include(organization_nested_router.urls)),
     path("", include(facility_organization_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
+    path("", include(device_nested_router.urls)),
+
 ]
