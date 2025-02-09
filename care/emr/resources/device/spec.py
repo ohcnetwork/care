@@ -3,9 +3,11 @@ from enum import Enum
 
 from pydantic import UUID4
 
-from care.emr.models import Device
+from care.emr.models import Device, DeviceEncounterHistory, DeviceLocationHistory
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.contact_point import ContactPoint
+from care.emr.resources.encounter.spec import EncounterListSpec
+from care.emr.resources.location.spec import FacilityLocationListSpec
 
 
 class DeviceStatusChoices(str, Enum):
@@ -57,8 +59,67 @@ class DeviceUpdateSpec(DeviceSpecBase):
 
 
 class DeviceListSpec(DeviceCreateSpec):
-    pass
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
 
 
 class DeviceRetrieveSpec(DeviceListSpec):
-    pass
+    current_encounter: dict | None = None
+    current_location: dict
+
+    created_by: dict | None = None
+    updated_by: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["current_location"] = None
+        mapping["current_encounter"] = None
+        if obj.current_location:
+            mapping["current_location"] = FacilityLocationListSpec.serialize(
+                obj.current_location
+            ).to_json()
+        if obj.current_encounter:
+            mapping["current_encounter"] = EncounterListSpec.serialize(
+                obj.current_encounter
+            ).to_json()
+        cls.serialize_audit_users(mapping, obj)
+
+
+class DeviceLocationHistoryListSpec(EMRResource):
+    __model__ = DeviceLocationHistory
+    __exclude__ = [
+        "device",
+        "location",
+    ]
+    id: UUID4 = None
+    location: dict
+    created_by: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        if obj.location:
+            mapping["location"] = FacilityLocationListSpec.serialize(
+                obj.location
+            ).to_json()
+        cls.serialize_audit_users(mapping, obj)
+
+
+class DeviceEncounterHistoryListSpec(EMRResource):
+    __model__ = DeviceEncounterHistory
+    __exclude__ = [
+        "device",
+        "encounter",
+    ]
+    id: UUID4 = None
+    encounter: dict
+    created_by: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        if obj.encounter:
+            mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
+        cls.serialize_audit_users(mapping, obj)

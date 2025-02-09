@@ -17,7 +17,9 @@ from care.emr.models import (
 from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.resources.device.spec import (
     DeviceCreateSpec,
+    DeviceEncounterHistoryListSpec,
     DeviceListSpec,
+    DeviceLocationHistoryListSpec,
     DeviceRetrieveSpec,
     DeviceUpdateSpec,
 )
@@ -25,7 +27,8 @@ from care.facility.models import Facility
 
 
 class DeviceFilters(filters.FilterSet):
-    pass
+    current_location = filters.UUIDFilter(field_name="current_location__external_id")
+    current_encounter = filters.UUIDFilter(field_name="current_encounter__external_id")
 
 
 class DeviceViewSet(EMRModelViewSet):
@@ -114,7 +117,7 @@ class DeviceViewSet(EMRModelViewSet):
         if device.current_location == location.id:
             raise ValidationError("Location already associated")
         with transaction.atomic():
-            if device.current_encounter:
+            if device.current_location:
                 old_obj = DeviceLocationHistory.objects.filter(
                     device=device, location=device.current_location, end__isnull=True
                 ).first()
@@ -129,13 +132,32 @@ class DeviceViewSet(EMRModelViewSet):
 
 
 class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
-    pass
+    database_model = DeviceLocationHistory
+    pydantic_read_model = DeviceLocationHistoryListSpec
+
+    def get_device(self):
+        return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
+
+    def get_queryset(self):
+        return DeviceLocationHistory.objects.filter(
+            device=self.get_device()
+        ).select_related("location")
+
+    # TODO Authz
 
 
 class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
-    pass
+    database_model = DeviceLocationHistory
+    pydantic_read_model = DeviceEncounterHistoryListSpec
+
+    def get_device(self):
+        return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
+
+    def get_queryset(self):
+        return DeviceLocationHistory.objects.filter(
+            device=self.get_device()
+        ).select_related("encounter")
 
 
 # TODO AuthZ
-# TODO RO API's for Device Location and Encounter History
 # TODO Serialize current location and history in the retrieve API

@@ -13,7 +13,11 @@ from care.emr.api.viewsets.condition import (
     DiagnosisViewSet,
     SymptomViewSet,
 )
-from care.emr.api.viewsets.device import DeviceViewSet
+from care.emr.api.viewsets.device import (
+    DeviceEncounterHistoryViewSet,
+    DeviceLocationHistoryViewSet,
+    DeviceViewSet,
+)
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
@@ -170,6 +174,23 @@ facility_nested_router.register(
     r"device",
     DeviceViewSet,
     basename="device",
+)
+
+device_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"device", lookup="device"
+)
+
+facility_nested_router.register(
+    r"location_history",
+    DeviceLocationHistoryViewSet,
+    basename="device_location_history",
+)
+
+
+facility_nested_router.register(
+    r"encounter_history",
+    DeviceEncounterHistoryViewSet,
+    basename="device_encounter_history",
 )
 
 facility_location_nested_router = NestedSimpleRouter(
