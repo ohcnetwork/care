@@ -272,5 +272,4 @@ urlpatterns = [
     path("", include(facility_organization_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
     path("", include(device_nested_router.urls)),
-
 ]

@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
 from care.emr.models import (
     Device,
@@ -107,11 +108,13 @@ class DeviceViewSet(EMRModelViewSet):
             device.save(update_fields=["current_encounter"])
             if encounter:
                 obj = DeviceEncounterHistory.objects.create(
-                    device=device, encounter=encounter, start=timezone.now() , created_by = request.user
+                    device=device,
+                    encounter=encounter,
+                    start=timezone.now(),
+                    created_by=request.user,
                 )
                 return Response(DeviceEncounterHistoryListSpec.serialize(obj).to_json())
-            else:
-                return Response({})
+            return Response({})
 
     class DeviceLocationAssociationRequest(BaseModel):
         location: UUID4 | None = None
@@ -129,7 +132,7 @@ class DeviceViewSet(EMRModelViewSet):
         # TODO Perform Authz for location and device
         if location and device.current_location_id == location.id:
             raise ValidationError("Location already associated")
-        if location and  location.facility_id != facility.id:
+        if location and location.facility_id != facility.id:
             raise ValidationError("Location is not part of given facility")
         with transaction.atomic():
             if device.current_location:
@@ -143,10 +146,14 @@ class DeviceViewSet(EMRModelViewSet):
             device.save(update_fields=["current_location"])
             if location:
                 obj = DeviceLocationHistory.objects.create(
-                    device=device, location=location, start=timezone.now() , created_by = request.user
+                    device=device,
+                    location=location,
+                    start=timezone.now(),
+                    created_by=request.user,
                 )
                 return Response(DeviceLocationHistoryListSpec.serialize(obj).to_json())
             return Response({})
+
 
 class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
     database_model = DeviceLocationHistory
@@ -158,9 +165,11 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
     def get_queryset(self):
         # Todo Check access to device
 
-        return DeviceLocationHistory.objects.filter(
-            device=self.get_device()
-        ).select_related("location").order_by("-end")
+        return (
+            DeviceLocationHistory.objects.filter(device=self.get_device())
+            .select_related("location")
+            .order_by("-end")
+        )
 
 
 class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
@@ -171,10 +180,10 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
     def get_queryset(self):
-
         # Todo Check access to device
 
-        return DeviceEncounterHistory.objects.filter(
-            device=self.get_device()
-        ).select_related("encounter" ,"encounter__patient" , "encounter__facility").order_by("-end")
-
+        return (
+            DeviceEncounterHistory.objects.filter(device=self.get_device())
+            .select_related("encounter", "encounter__patient", "encounter__facility")
+            .order_by("-end")
+        )
