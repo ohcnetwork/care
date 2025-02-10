@@ -40,7 +40,7 @@ redis-om = "==0.3.3"
 requests = "==2.32.3"
 simplejson = "==3.19.3"
 sentry-sdk = "==2.18.0"
-whitenoise = "==6.8.2"
+whitenoise = "==6.9.0"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
 pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
