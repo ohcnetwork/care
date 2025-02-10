@@ -61,6 +61,7 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
     AvailabilityExceptionsViewSet,
 )
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
+from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 
@@ -99,6 +100,8 @@ router.register(
 router.register("role", RoleViewSet, basename="role")
 
 router.register("encounter", EncounterViewSet, basename="encounter")
+
+router.register("totp", TOTPViewSet, basename="totp")
 
 organization_nested_router = NestedSimpleRouter(
     router, r"organization", lookup="organization"
