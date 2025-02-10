@@ -1,17 +1,24 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import PasswordField
 from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework_simplejwt.views import TokenVerifyView, TokenViewBase
 
 from config.ratelimit import ratelimit
 
 User = get_user_model()
+
+ACCESS_TOKEN_INVALIDATION_PREFIX = "ACCESS_TOKEN_INVALIDATE:"
+REFRESH_TOKEN_INVALIDATION_PREFIX = "REFRESH_TOKEN_INVALIDATE:"
 
 
 class CaptchaRequiredException(AuthenticationFailed):
@@ -84,6 +91,9 @@ class TokenRefreshSerializer(serializers.Serializer):
     def validate(self, attrs):
         refresh = RefreshToken(attrs["refresh"])
 
+        if cache.get(REFRESH_TOKEN_INVALIDATION_PREFIX + attrs["refresh"]):
+            raise PermissionDenied("Invalid Token")
+
         data = {"access": str(refresh.access_token)}
 
         if api_settings.ROTATE_REFRESH_TOKENS:
@@ -142,6 +152,43 @@ class TokenObtainPairView(TokenViewBase):
     @extend_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class LogoutView(APIView):
+    """
+    Logout a user
+    """
+
+    def post(self, request, *args, **kwargs):
+        if "access" not in request.data or "refresh" not in request.data:
+            return Response({"detail": "Missing access or refresh token"}, status=400)
+        try:
+            refresh_token = RefreshToken(request.data["refresh"])
+            refresh_token_payload = refresh_token.payload
+
+            if refresh_token_payload["user_id"] != str(request.user.external_id):
+                raise Exception("Invalid Token")
+
+            access_token = AccessToken(request.data["access"])
+            access_token_payload = access_token.payload
+
+            if access_token_payload["user_id"] != str(request.user.external_id):
+                raise Exception("Invalid Token")
+
+            cache.set(
+                ACCESS_TOKEN_INVALIDATION_PREFIX + request.data["access"],
+                "1",
+                timeout=1800,
+            )
+            cache.set(
+                REFRESH_TOKEN_INVALIDATION_PREFIX + request.data["refresh"],
+                "1",
+                timeout=1800,
+            )
+
+        except:  # noqa E722
+            return Response({}, status=400)
+        return Response({})
 
 
 class TokenRefreshView(TokenViewBase):

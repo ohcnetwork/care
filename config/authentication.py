@@ -1,5 +1,6 @@
 import logging
 
+from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from drf_spectacular.plumbing import build_bearer_security_scheme_object
@@ -38,6 +39,10 @@ class CustomJWTAuthentication(JWTAuthentication):
         return ""
 
     def get_validated_token(self, raw_token):
+        from config.auth_views import ACCESS_TOKEN_INVALIDATION_PREFIX
+
+        if cache.get(ACCESS_TOKEN_INVALIDATION_PREFIX + raw_token.decode()):
+            raise InvalidToken("Invalid Token")
         try:
             return super().get_validated_token(raw_token)
         except InvalidToken as e:

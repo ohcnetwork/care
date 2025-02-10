@@ -15,3 +15,6 @@ class AllergyIntolerance(EMRBaseModel):
     recorded_date = models.DateTimeField(null=True, blank=True)
     last_occurrence = models.DateTimeField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
+    copied_from = models.BigIntegerField(
+        default=None, null=True, blank=True
+    )  # If True, the record is a copy maintained of the given ID

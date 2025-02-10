@@ -15,6 +15,7 @@ from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
+    AvailabilityCreateSpec,
     AvailabilityForScheduleSpec,
     ScheduleCreateSpec,
     ScheduleReadSpec,
@@ -132,7 +133,8 @@ class ScheduleViewSet(EMRModelViewSet):
 
 class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
     database_model = Availability
-    pydantic_model = AvailabilityForScheduleSpec
+    pydantic_model = AvailabilityCreateSpec
+    pydantic_retrieve_model = AvailabilityForScheduleSpec
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -163,6 +165,10 @@ class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
             )
             .order_by("-modified_date")
         )
+
+    def clean_create_data(self, request_data):
+        request_data["schedule"] = self.kwargs["schedule_external_id"]
+        return request_data
 
     def perform_create(self, instance):
         schedule = self.get_schedule_obj()

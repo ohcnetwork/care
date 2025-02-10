@@ -19,7 +19,12 @@ from care.users.reset_password_views import (
 )
 from config import api_router
 
-from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
+from .auth_views import (
+    AnnotatedTokenVerifyView,
+    LogoutView,
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from .views import app_version, home_view, ping
 
 urlpatterns = [
@@ -30,6 +35,7 @@ urlpatterns = [
     path(f"{settings.ADMIN_URL.rstrip('/')}/", admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/auth/logout/", LogoutView.as_view(), name="token_obtain_pair"),
     path(
         "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),

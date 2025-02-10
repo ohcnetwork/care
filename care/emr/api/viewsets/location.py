@@ -43,6 +43,14 @@ from care.utils.lock import Lock
 class FacilityLocationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    mode = filters.CharFilter(field_name="mode", lookup_expr="iexact")
+    availability_status = filters.CharFilter(
+        field_name="availability_status", lookup_expr="iexact"
+    )
+    operational_status = filters.CharFilter(
+        field_name="operational_status", lookup_expr="iexact"
+    )
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
 class FacilityLocationViewSet(EMRModelViewSet):
@@ -334,7 +342,7 @@ class FacilityLocationEncounterViewSet(
         self.reset_encounter_location_association(instance.location)
         self.reset_location_availability_status(instance.location)
 
-    def _validate_data(self, instance, model_obj=None):
+    def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
         This method will be called separately to maintain a lock when the validation is being performed
         """
@@ -346,12 +354,20 @@ class FacilityLocationEncounterViewSet(
         base_qs = FacilityLocationEncounter.objects.filter(location=location)
         if model_obj:
             # Validate if the current dates are not in conflict with other dates
-            end_datetime = model_obj.end_datetime
             base_qs = base_qs.exclude(id=model_obj.id)
-            status = model_obj.status
-        else:
-            status = instance.status
+
+        status = instance.status or model_obj.status
+        if instance.end_datetime is not None:
             end_datetime = instance.end_datetime
+        elif model_obj:
+            end_datetime = model_obj.end_datetime
+        else:
+            end_datetime = None
+
+        # Active status should not have end_datetime
+        if status in (LocationEncounterAvailabilityStatusChoices.active.value):
+            end_datetime = None
+
         # Validate end time is greater than start time
         if end_datetime and start_datetime > end_datetime:
             raise ValidationError("End Datetime should be greater than Start Datetime")

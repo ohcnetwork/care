@@ -87,14 +87,13 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
 
     @model_validator(mode="after")
     def validate_parent_organization(self):
-        if (
-            self.parent
-            and not FacilityLocation.objects.filter(
-                external_id=self.parent, mode=FacilityLocationModeChoices.kind.value
-            ).exists()
-        ):
-            err = "Parent not found"
-            raise ValueError(err)
+        if self.parent:
+            try:
+                parent_location = FacilityLocation.objects.get(external_id=self.parent)
+            except FacilityLocation.DoesNotExist as e:
+                raise ValueError("Parent not found") from e
+            if parent_location.mode == FacilityLocationModeChoices.instance.value:
+                raise ValueError("Instances cannot have children")
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -159,6 +158,26 @@ class FacilityLocationEncounterUpdateSpec(FacilityLocationEncounterBaseSpec):
 
     start_datetime: datetime.datetime
     end_datetime: datetime.datetime | None = None
+
+
+class FacilityLocationEncounterListSpec(FacilityLocationEncounterBaseSpec):
+    encounter: UUID4
+    start_datetime: datetime.datetime
+    end_datetime: datetime.datetime | None = None
+    status: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+
+
+class FacilityLocationEncounterListSpecWithLocation(FacilityLocationEncounterListSpec):
+    location: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
 
 
 class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):

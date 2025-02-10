@@ -1,3 +1,6 @@
+import uuid
+
+from django.db import transaction
 from django_filters import CharFilter, FilterSet
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -68,6 +71,22 @@ class AllergyIntoleranceViewSet(
         ):
             raise PermissionDenied("You do not have permission to update encounter")
 
+    def perform_update(self, instance):
+        """
+        Updates need to check if the encounter of the instance has been changed, If, so a copy object needs to be created.
+        """
+        database_copy = AllergyIntolerance.objects.get(id=instance.id)
+        with transaction.atomic():
+            if database_copy.encounter != instance.encounter:
+                database_copy.copied_from = database_copy.id
+                database_copy.id = None
+                database_copy.external_id = uuid.uuid4()
+                database_copy.save()
+                AllergyIntolerance.objects.filter(
+                    encounter=instance.encounter, copied_from=instance.id
+                ).delete()
+            return super().perform_update(instance)
+
     def authorize_update(self, request_obj, model_instance):
         encounter = get_object_or_404(Encounter, external_id=request_obj.encounter)
         if not AuthorizationController.call(
@@ -81,17 +100,31 @@ class AllergyIntoleranceViewSet(
         return super().clean_update_data(request_data, keep_fields={"encounter"})
 
     def get_queryset(self):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, self.get_patient_obj()
-        ):
-            raise PermissionDenied("Permission denied for patient data")
-        return (
+        queryset = (
             super()
             .get_queryset()
             .filter(patient__external_id=self.kwargs["patient_external_id"])
             .select_related("patient", "encounter", "created_by", "updated_by")
             .order_by("-modified_date")
         )
+
+        if not AuthorizationController.call(
+            "can_view_clinical_data", self.request.user, self.get_patient_obj()
+        ):
+            encounter = Encounter.objects.filter(
+                external_id=self.request.GET.get("encounter")
+            ).first()
+
+            # Check for encounter access
+            if not encounter or not AuthorizationController.call(
+                "can_view_encounter_obj", self.request.user, encounter
+            ):
+                raise PermissionDenied("Permission denied to user")
+            queryset = queryset.filter(encounter=encounter)
+
+        else:
+            queryset = queryset.filter(copied_from__isnull=True)
+        return queryset
 
 
 InternalQuestionnaireRegistry.register(AllergyIntoleranceViewSet)
