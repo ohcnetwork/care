@@ -33,6 +33,7 @@ pillow = "==11.1.0"
 psycopg = { extras = ["c"], version = "==3.2.3" }
 pydantic = "==2.9.2"
 pyjwt = "==2.10.1"
+pyotp = "==2.9.0"
 python-slugify = "==8.0.4"
 pywebpush = "==2.0.1"
 redis = { extras = ["hiredis"], version = "==5.2.1" }
