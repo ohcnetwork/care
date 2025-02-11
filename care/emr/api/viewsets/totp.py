@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.utils.encryption import decrypt_string, encrypt_string
@@ -148,6 +148,21 @@ class TOTPViewSet(EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def verify_login(self, request):
+        auth_header = request.META.get("HTTP_AUTHORIZATION", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            try:
+                validated_token = AccessToken(token)
+                if not validated_token.get("temp_token", False):
+                    return Response(
+                        {"error": "Invalid token type"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            except Exception:
+                return Response(
+                    {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+                )
+
         verify_data = TOTPLoginRequest(code=request.data.get("code"))
         user = request.user
 

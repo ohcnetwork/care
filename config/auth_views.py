@@ -126,24 +126,44 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
 
     @classmethod
     def get_token(cls, user):
-        return RefreshToken.for_user(user)
+        refresh = RefreshToken.for_user(user)
+        # Mark token as requiring MFA
+        refresh["mfa_verified"] = False
+        refresh.access_token["mfa_verified"] = False
+        return refresh
 
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        # Get tokens
-        refresh = self.get_token(self.user)
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-
         # Check MFA status
         mfa_settings = self.user.mfa_settings or {}
         totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
-        data["mfa_required"] = totp_enabled
 
-        # Update last login
+        if totp_enabled:
+            # Generate temporary token for MFA verification
+            refresh = self.get_token(self.user)
+            refresh["temp_token"] = True  # Mark as temporary
+            refresh.access_token["temp_token"] = True
+
+            return {
+                "mfa_required": True,
+                "temp_token": str(refresh.access_token),  # Send temporary token
+                "message": "MFA verification required",
+            }
+        # No MFA needed, return fully valid tokens
+        refresh = self.get_token(self.user)
+        refresh["mfa_verified"] = True
+        refresh.access_token["mfa_verified"] = True
+
+        data.update(
+            {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "mfa_required": False,
+            }
+        )
+
         User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
-
         return data
 
 
