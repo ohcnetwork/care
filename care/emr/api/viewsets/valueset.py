@@ -29,6 +29,7 @@ class ValueSetViewSet(EMRModelViewSet):
             "lookup_code",
             "expand",
             "validate_code",
+            "preview_search",
         ]:
             return True
         # Only superusers have write permission over valuesets
@@ -45,6 +46,18 @@ class ValueSetViewSet(EMRModelViewSet):
     def expand(self, request, *args, **kwargs):
         request_params = ExpandRequest(**request.data).model_dump()
         results = self.get_object().search(**request_params)
+        return Response({"results": [result.model_dump() for result in results]})
+
+    @extend_schema(request=ValueSetSpec, responses={200: None}, methods=["POST"])
+    @action(detail=False, methods=["POST"])
+    def preview_search(self, request, *args, **kwargs):
+        # Create temporary ValueSet object from request data
+        valueset_data = ValueSetSpec(**request.data)
+        temp_valueset = ValueSet(**valueset_data.model_dump())
+
+        # Use the same parameters as expand endpoint
+        search_params = ExpandRequest().model_dump()
+        results = temp_valueset.search(**search_params)
         return Response({"results": [result.model_dump() for result in results]})
 
     @extend_schema(request=Coding, responses={200: None}, methods=["POST"])
