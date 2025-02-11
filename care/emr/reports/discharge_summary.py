@@ -2,13 +2,11 @@ import logging
 import subprocess
 import tempfile
 import time
-from collections.abc import Iterable
 from pathlib import Path
 from uuid import uuid4
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -226,19 +224,6 @@ def generate_and_upload_discharge_summary(encounter: Encounter):
         clear_lock(encounter.external_id)
 
     return summary_file
-
-
-def email_discharge_summary(summary_file: FileUpload, emails: Iterable[str]):
-    msg = EmailMessage(
-        "Patient Discharge Summary",
-        "Please find the attached file",
-        settings.DEFAULT_FROM_EMAIL,
-        emails,
-    )
-    msg.content_subtype = "html"
-    _, data = summary_file.files_manager.file_contents(summary_file)
-    msg.attach(summary_file.name, data, "application/pdf")
-    return msg.send()
 
 
 def generate_discharge_report_signed_url(patient_external_id: str):
