@@ -204,6 +204,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
+    "care.utils.middleware.mfa.MFAMiddleware",
 ]
 
 # add RequestTimeLoggingMiddleware based on the environment variable

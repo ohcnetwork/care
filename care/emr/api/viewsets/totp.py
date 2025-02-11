@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.utils.encryption import decrypt_string, encrypt_string
@@ -27,6 +28,15 @@ class TOTPVerifyRequest(BaseModel):
 class TOTPVerifyResponse(BaseModel):
     message: str
     backup_codes: list[str]
+
+
+class TOTPLoginRequest(BaseModel):
+    code: str
+
+
+class TOTPLoginResponse(BaseModel):
+    message: str
+    status: str
 
 
 class TOTPViewSet(EMRBaseViewSet):
@@ -125,5 +135,52 @@ class TOTPViewSet(EMRBaseViewSet):
                 backup_codes=backup_codes,
             )
             return Response(response_data.model_dump())
+
+        return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        description="Verify TOTP code during login",
+        request=TOTPLoginRequest,
+        responses={
+            200: TOTPLoginResponse,
+            400: {"type": "object", "properties": {"error": {"type": "string"}}},
+        },
+    )
+    @action(detail=False, methods=["POST"])
+    def verify_login(self, request):
+        verify_data = TOTPLoginRequest(code=request.data.get("code"))
+        user = request.user
+
+        mfa_settings = user.mfa_settings or {}
+        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+
+        if not totp_enabled:
+            return Response(
+                {"error": "TOTP not configured"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        secret = decrypt_string(user.totp_secret)
+        totp = TOTP(secret)
+
+        if totp.verify(verify_data.code):
+            refresh = RefreshToken.for_user(user)
+
+            # Add required claims
+            refresh["mfa_verified"] = True
+            refresh["mfa_verified_at"] = timezone.now().isoformat()
+            refresh["user_id"] = str(user.external_id)  # Add user identifier
+
+            # Add these claims to access token as well
+            refresh.access_token["mfa_verified"] = True
+            refresh.access_token["mfa_verified_at"] = timezone.now().isoformat()
+
+            return Response(
+                {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "message": "Two-factor authentication successful",
+                    "status": "success",
+                }
+            )
 
         return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)

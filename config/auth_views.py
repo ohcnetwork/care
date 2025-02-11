@@ -122,6 +122,7 @@ class TokenRefreshSerializer(serializers.Serializer):
 class TokenObtainPairSerializer(TokenObtainSerializer):
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
+    mfa_required = serializers.BooleanField(read_only=True)
 
     @classmethod
     def get_token(cls, user):
@@ -130,10 +131,17 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        # Get tokens
         refresh = self.get_token(self.user)
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
 
+        # Check MFA status
+        mfa_settings = self.user.mfa_settings or {}
+        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+        data["mfa_required"] = totp_enabled
+
+        # Update last login
         User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
 
         return data
