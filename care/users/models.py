@@ -314,7 +314,7 @@ class User(AbstractUser):
     pf_endpoint = models.TextField(default=None, null=True)
     pf_p256dh = models.TextField(default=None, null=True)
     pf_auth = models.TextField(default=None, null=True)
-    totp_secret = models.CharField(max_length=32, blank=True, null=True)
+    totp_secret = models.TextField(blank=True, null=True)
     mfa_settings = models.JSONField(default=dict, blank=True)
 
     # Asset Fields
