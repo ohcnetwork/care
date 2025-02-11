@@ -101,7 +101,7 @@ router.register("role", RoleViewSet, basename="role")
 
 router.register("encounter", EncounterViewSet, basename="encounter")
 
-router.register("totp", TOTPViewSet, basename="totp")
+router.register("mfa/totp", TOTPViewSet, basename="mfa-totp")
 
 organization_nested_router = NestedSimpleRouter(
     router, r"organization", lookup="organization"
