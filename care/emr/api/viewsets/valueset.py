@@ -51,13 +51,16 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=ValueSetSpec, responses={200: None}, methods=["POST"])
     @action(detail=False, methods=["POST"])
     def preview_search(self, request, *args, **kwargs):
-        # Create temporary ValueSet object from request data
+        # Get search parameters from query params
+        search_text = request.query_params.get("search", "")
+        count = int(request.query_params.get("count", 10))
+
+        # Create temporary ValueSet object from request body
         valueset_data = ValueSetSpec(**request.data)
         temp_valueset = ValueSet(**valueset_data.model_dump())
 
-        # Use the same parameters as expand endpoint
-        search_params = ExpandRequest().model_dump()
-        results = temp_valueset.search(**search_params)
+        # Use the search parameters from query params
+        results = temp_valueset.search(search=search_text, count=count)
         return Response({"results": [result.model_dump() for result in results]})
 
     @extend_schema(request=Coding, responses={200: None}, methods=["POST"])
