@@ -37,9 +37,14 @@ class TOTPViewSet(EMRBaseViewSet):
     def setup(self, request):
         user = request.user
 
-        if user.totp_secret:
+        mfa_settings = user.mfa_settings or {}
+        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+
+        if totp_enabled:
             return Response(
-                {"error": "TOTP is already configured"},
+                {
+                    "error": "Two-factor authentication is already set up and enabled for your account"
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
