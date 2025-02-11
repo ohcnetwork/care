@@ -1,6 +1,7 @@
 from secrets import choice
 from string import digits
 
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
@@ -11,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.utils.encryption import decrypt_string, encrypt_string
 
 
 class TOTPSetupResponse(BaseModel):
@@ -53,11 +55,12 @@ class TOTPViewSet(EMRBaseViewSet):
             )
 
         secret = random_base32()
+        encrypted_secret = encrypt_string(secret)
 
         totp = TOTP(secret)
         uri = totp.provisioning_uri(name=user.email, issuer_name="CARE")
 
-        user.totp_secret = secret
+        user.totp_secret = encrypted_secret
         user.save(update_fields=["totp_secret"])
 
         response_data = TOTPSetupResponse(uri=uri, secret_key=secret)
@@ -95,7 +98,9 @@ class TOTPViewSet(EMRBaseViewSet):
                 {"error": "Code is required"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        totp = TOTP(user.totp_secret)
+        secret = decrypt_string(user.totp_secret)
+        totp = TOTP(secret)
+
         if totp.verify(verify_data.code):
             backup_codes = self._generate_backup_codes()
 
@@ -105,7 +110,7 @@ class TOTPViewSet(EMRBaseViewSet):
                 "verified_at": timezone.now().isoformat(),
                 "backup_codes": [
                     {
-                        "code": code,
+                        "code": make_password(code),
                         "used": False,
                         "created_at": timezone.now().isoformat(),
                     }
