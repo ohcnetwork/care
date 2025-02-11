@@ -220,30 +220,6 @@ class EncounterViewSet(
         ).delete()
         return Response({})
 
-    def _check_discharge_summary_access(self, encounter):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, encounter.patient
-        ):
-            raise PermissionDenied("Permission denied to user")
-
-    def _generate_discharge_summary(self, encounter_ext_id: str):
-        if current_progress := discharge_summary.get_progress(encounter_ext_id):
-            return Response(
-                {
-                    "detail": (
-                        "Discharge Summary is already being generated, "
-                        f"current progress {current_progress}%"
-                    )
-                },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
-            )
-        discharge_summary.set_lock(encounter_ext_id, 1)
-        generate_discharge_summary_task.delay(encounter_ext_id)
-        return Response(
-            {"detail": "Discharge Summary will be generated shortly"},
-            status=status.HTTP_202_ACCEPTED,
-        )
-
     @extend_schema(
         description="Generate a discharge summary",
         responses={
@@ -254,8 +230,27 @@ class EncounterViewSet(
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
         encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
-        return self._generate_discharge_summary(encounter.external_id)
+        if not AuthorizationController.call(
+            "can_view_clinical_data", self.request.user, encounter.patient
+        ):
+            raise PermissionDenied("Permission denied to user")
+        encounter_ext_id = encounter.external_id
+        if current_progress := discharge_summary.get_progress(encounter_ext_id):
+            return Response(
+                {
+                    "detail": (
+                        "Discharge Summary is already being generated, "
+                        f"current progress {current_progress}%"
+                    )
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
+        discharge_summary.set_lock(encounter_ext_id, 1)
+        generate_discharge_summary_task.delay(encounter_ext_id)
+        return Response(
+            {"detail": "Discharge Summary will be generated shortly"},
+            status=status.HTTP_202_ACCEPTED,
+        )
 
 
 def dev_preview_discharge_summary(request, encounter_id):
