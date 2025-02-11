@@ -1,3 +1,6 @@
+from secrets import choice
+from string import digits
+
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
@@ -21,6 +24,7 @@ class TOTPVerifyRequest(BaseModel):
 
 class TOTPVerifyResponse(BaseModel):
     message: str
+    backup_codes: list[str]
 
 
 class TOTPViewSet(EMRBaseViewSet):
@@ -59,6 +63,15 @@ class TOTPViewSet(EMRBaseViewSet):
         response_data = TOTPSetupResponse(uri=uri, secret_key=secret)
         return Response(response_data.model_dump())
 
+    @staticmethod
+    def _generate_backup_codes(count: int = 10) -> list[str]:
+        """Generate 8-digit backup codes."""
+        codes = []
+        for _ in range(count):
+            code = "".join(choice(digits) for _ in range(8))
+            codes.append(code)
+        return codes
+
     @extend_schema(
         description="Verify TOTP code and enable 2FA",
         request=TOTPVerifyRequest,
@@ -84,16 +97,27 @@ class TOTPViewSet(EMRBaseViewSet):
 
         totp = TOTP(user.totp_secret)
         if totp.verify(verify_data.code):
+            backup_codes = self._generate_backup_codes()
+
             mfa_settings = user.mfa_settings or {}
             mfa_settings["totp"] = {
                 "enabled": True,
                 "verified_at": timezone.now().isoformat(),
+                "backup_codes": [
+                    {
+                        "code": code,
+                        "used": False,
+                        "created_at": timezone.now().isoformat(),
+                    }
+                    for code in backup_codes
+                ],
             }
             user.mfa_settings = mfa_settings
             user.save(update_fields=["mfa_settings"])
 
             response_data = TOTPVerifyResponse(
-                message="TOTP verified and enabled successfully"
+                message="Two-factor authentication has been enabled successfully. Please save your backup codes in a secure location.",
+                backup_codes=backup_codes,
             )
             return Response(response_data.model_dump())
 
