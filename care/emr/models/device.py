@@ -7,7 +7,7 @@ from care.emr.models import EMRBaseModel
 class Device(EMRBaseModel):
     # Device Data
     identifier = models.CharField(max_length=1024, null=True, blank=True)
-    status = models.CharField(max_length=14)
+    status = models.CharField(max_length=16)
     availability_status = models.CharField(max_length=14)
     manufacturer = models.CharField(max_length=1024)
     manufacture_date = models.DateTimeField(null=True, blank=True)

@@ -20,6 +20,8 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.models import (
+    Device,
+    DeviceEncounterHistory,
     Encounter,
     EncounterOrganization,
     FacilityOrganization,
@@ -95,6 +97,22 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            if instance.status in COMPLETED_CHOICES:
+                device_ids = list(
+                    Device.objects.filter(current_encounter=instance).values_list(
+                        "id", flat=True
+                    )
+                )
+                Device.objects.filter(id__in=device_ids).update(current_encounter=None)
+
+                DeviceEncounterHistory.objects.filter(
+                    device_id__in=device_ids, encounter=instance, end__isnull=True
+                ).update(end=timezone.now())
+
+            super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(

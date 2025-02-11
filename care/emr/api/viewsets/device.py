@@ -3,7 +3,7 @@ from django.utils import timezone
 from django_filters import rest_framework as filters
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -25,6 +25,7 @@ from care.emr.resources.device.spec import (
     DeviceUpdateSpec,
 )
 from care.facility.models import Facility
+from care.security.authorization import AuthorizationController
 
 
 class DeviceFilters(filters.FilterSet):
@@ -45,6 +46,18 @@ class DeviceViewSet(EMRModelViewSet):
         return get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
+
+    def authorize_create(self, instance):
+        if not AuthorizationController.call("can_manage_devices", self.request.user):
+            raise PermissionDenied("You do not have permission to create device")
+
+    def authorize_update(self, instance, model_instance):
+        if not AuthorizationController.call("can_manage_devices", self.request.user):
+            raise PermissionDenied("You do not have permission to update device")
+
+    def authorize_destroy(self, instance):
+        if not AuthorizationController.call("can_manage_devices", self.request.user):
+            raise PermissionDenied("You do not have permission to delete device")
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
@@ -91,7 +104,14 @@ class DeviceViewSet(EMRModelViewSet):
             encounter = get_object_or_404(Encounter, external_id=request_data.encounter)
         device = self.get_object()
         facility = self.get_facility_obj()
-        # TODO Perform Authz for encounter and device
+
+        if not AuthorizationController.call(
+            "can_associate_device_encounter", self.request.user, facility
+        ):
+            raise PermissionDenied(
+                "You do not have permission to associate encounter to this device"
+            )
+
         if encounter and device.current_encounter_id == encounter.id:
             raise ValidationError("Encounter already associated")
         if encounter and encounter.facility_id != facility.id:
@@ -129,7 +149,13 @@ class DeviceViewSet(EMRModelViewSet):
             )
         facility = self.get_facility_obj()
         device = self.get_object()
-        # TODO Perform Authz for location and device
+
+        if not AuthorizationController.call(
+            "can_associate_device_location", self.request.user, facility
+        ):
+            raise PermissionDenied(
+                "You do not have permission to associate location to this device"
+            )
         if location and device.current_location_id == location.id:
             raise ValidationError("Location already associated")
         if location and location.facility_id != facility.id:
@@ -163,7 +189,11 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
     def get_queryset(self):
-        # Todo Check access to device
+        if not AuthorizationController.call(
+            "can_list_devices",
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to access the device")
 
         return (
             DeviceLocationHistory.objects.filter(device=self.get_device())
@@ -180,7 +210,11 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
     def get_queryset(self):
-        # Todo Check access to device
+        if not AuthorizationController.call(
+            "can_list_devices",
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to access the device")
 
         return (
             DeviceEncounterHistory.objects.filter(device=self.get_device())
