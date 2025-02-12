@@ -153,7 +153,7 @@ class TOTPViewSet(EMRBaseViewSet):
         permission_classes=[],
         authentication_classes=[],
     )
-    def verify_login(self, request):
+    def login(self, request):
         code = request.data.get("code")
         temp_token = request.data.get("temp_token")
 
@@ -175,17 +175,8 @@ class TOTPViewSet(EMRBaseViewSet):
             totp = TOTP(decrypt_string(user.totp_secret))
 
             if totp.verify(code):
-                # TOTP verified - create new actual tokens
                 refresh = RefreshToken.for_user(user)
 
-                # Add verified claims
-                now = timezone.now().isoformat()
-                refresh["mfa_verified"] = True
-                refresh["mfa_verified_at"] = now
-                refresh.access_token["mfa_verified"] = True
-                refresh.access_token["mfa_verified_at"] = now
-
-                # Invalidate the temporary token
                 try:
                     token.blacklist()
                 except AttributeError:
@@ -195,7 +186,6 @@ class TOTPViewSet(EMRBaseViewSet):
                     {
                         "access": str(refresh.access_token),
                         "refresh": str(refresh),
-                        "message": "Two-factor authentication successful",
                     }
                 )
 

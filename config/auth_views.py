@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.utils import timezone
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -92,10 +91,8 @@ class TokenRefreshSerializer(serializers.Serializer):
     def validate(self, attrs):
         refresh = RefreshToken(attrs["refresh"])
 
-        # Preserve MFA verification status
-        mfa_verified = refresh.get("mfa_verified", False)
-        mfa_verified_at = refresh.get("mfa_verified_at")
-        temp_token = refresh.get("temp_token", False)
+        if refresh.get("temp_token"):
+            raise PermissionDenied("Temporary tokens cannot be used to refresh")
 
         if cache.get(REFRESH_TOKEN_INVALIDATION_PREFIX + attrs["refresh"]):
             raise PermissionDenied("Invalid Token")
@@ -115,14 +112,6 @@ class TokenRefreshSerializer(serializers.Serializer):
             refresh.set_jti()
             refresh.set_exp()
 
-            # Transfer all MFA-related claims to new tokens
-            refresh["mfa_verified"] = mfa_verified
-            refresh["mfa_verified_at"] = mfa_verified_at
-            refresh["temp_token"] = temp_token
-            refresh.access_token["mfa_verified"] = mfa_verified
-            refresh.access_token["mfa_verified_at"] = mfa_verified_at
-            refresh.access_token["temp_token"] = temp_token
-
             data["refresh"] = str(refresh)
 
         # Updating users active status
@@ -136,47 +125,29 @@ class TokenRefreshSerializer(serializers.Serializer):
 class TokenObtainPairSerializer(TokenObtainSerializer):
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
-    mfa_required = serializers.BooleanField(read_only=True)
+    temp_token = serializers.CharField(read_only=True)
 
     @classmethod
     def get_token(cls, user):
-        refresh = RefreshToken.for_user(user)
-        # Mark token as requiring MFA
-        refresh["mfa_verified"] = False
-        refresh.access_token["mfa_verified"] = False
-        return refresh
+        return RefreshToken.for_user(user)
 
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        # Check MFA status
         mfa_settings = self.user.mfa_settings or {}
         totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
 
         if totp_enabled:
-            # For MFA users, only generate a temporary token
             temp_token = RefreshToken.for_user(self.user)
             temp_token["temp_token"] = True
 
             return {
-                "mfa_required": True,
                 "temp_token": str(temp_token),
-                "message": "MFA verification required",
             }
-        # No MFA needed, return fully valid tokens
         refresh = self.get_token(self.user)
-        refresh["mfa_verified"] = True
-        refresh["mfa_verified_at"] = timezone.now().isoformat()
-        refresh.access_token["mfa_verified"] = True
-        refresh.access_token["mfa_verified_at"] = timezone.now().isoformat()
 
-        data.update(
-            {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-                "mfa_required": False,
-            }
-        )
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
 
         User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
         return data
