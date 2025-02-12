@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -91,6 +92,11 @@ class TokenRefreshSerializer(serializers.Serializer):
     def validate(self, attrs):
         refresh = RefreshToken(attrs["refresh"])
 
+        # Preserve MFA verification status
+        mfa_verified = refresh.get("mfa_verified", False)
+        mfa_verified_at = refresh.get("mfa_verified_at")
+        temp_token = refresh.get("temp_token", False)
+
         if cache.get(REFRESH_TOKEN_INVALIDATION_PREFIX + attrs["refresh"]):
             raise PermissionDenied("Invalid Token")
 
@@ -108,6 +114,14 @@ class TokenRefreshSerializer(serializers.Serializer):
 
             refresh.set_jti()
             refresh.set_exp()
+
+            # Transfer all MFA-related claims to new tokens
+            refresh["mfa_verified"] = mfa_verified
+            refresh["mfa_verified_at"] = mfa_verified_at
+            refresh["temp_token"] = temp_token
+            refresh.access_token["mfa_verified"] = mfa_verified
+            refresh.access_token["mfa_verified_at"] = mfa_verified_at
+            refresh.access_token["temp_token"] = temp_token
 
             data["refresh"] = str(refresh)
 
@@ -140,20 +154,21 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
 
         if totp_enabled:
-            # Generate temporary token for MFA verification
-            refresh = self.get_token(self.user)
-            refresh["temp_token"] = True  # Mark as temporary
-            refresh.access_token["temp_token"] = True
+            # For MFA users, only generate a temporary token
+            temp_token = RefreshToken.for_user(self.user)
+            temp_token["temp_token"] = True
 
             return {
                 "mfa_required": True,
-                "temp_token": str(refresh.access_token),  # Send temporary token
+                "temp_token": str(temp_token),
                 "message": "MFA verification required",
             }
         # No MFA needed, return fully valid tokens
         refresh = self.get_token(self.user)
         refresh["mfa_verified"] = True
+        refresh["mfa_verified_at"] = timezone.now().isoformat()
         refresh.access_token["mfa_verified"] = True
+        refresh.access_token["mfa_verified_at"] = timezone.now().isoformat()
 
         data.update(
             {

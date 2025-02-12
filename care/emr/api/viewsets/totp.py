@@ -10,9 +10,10 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.users.models import User
 from care.utils.encryption import decrypt_string, encrypt_string
 
 
@@ -146,56 +147,60 @@ class TOTPViewSet(EMRBaseViewSet):
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
     )
-    @action(detail=False, methods=["POST"])
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[],
+        authentication_classes=[],
+    )
     def verify_login(self, request):
-        auth_header = request.META.get("HTTP_AUTHORIZATION", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header.split(" ")[1]
-            try:
-                validated_token = AccessToken(token)
-                if not validated_token.get("temp_token", False):
-                    return Response(
-                        {"error": "Invalid token type"},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-            except Exception:
+        code = request.data.get("code")
+        temp_token = request.data.get("temp_token")
+
+        if not code or not temp_token:
+            return Response(
+                {"error": "Code and temporary token required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            # Validate the temporary token
+            token = RefreshToken(temp_token)
+            if not token.get("temp_token"):
                 return Response(
-                    {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+                    {"error": "Invalid token type"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-        verify_data = TOTPLoginRequest(code=request.data.get("code"))
-        user = request.user
+            user = User.objects.get(external_id=token["user_id"])
+            totp = TOTP(decrypt_string(user.totp_secret))
 
-        mfa_settings = user.mfa_settings or {}
-        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+            if totp.verify(code):
+                # TOTP verified - create new actual tokens
+                refresh = RefreshToken.for_user(user)
 
-        if not totp_enabled:
+                # Add verified claims
+                now = timezone.now().isoformat()
+                refresh["mfa_verified"] = True
+                refresh["mfa_verified_at"] = now
+                refresh.access_token["mfa_verified"] = True
+                refresh.access_token["mfa_verified_at"] = now
+
+                # Invalidate the temporary token
+                try:
+                    token.blacklist()
+                except AttributeError:
+                    pass
+
+                return Response(
+                    {
+                        "access": str(refresh.access_token),
+                        "refresh": str(refresh),
+                        "message": "Two-factor authentication successful",
+                    }
+                )
+
             return Response(
-                {"error": "TOTP not configured"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST
             )
-
-        secret = decrypt_string(user.totp_secret)
-        totp = TOTP(secret)
-
-        if totp.verify(verify_data.code):
-            refresh = RefreshToken.for_user(user)
-
-            # Add required claims
-            refresh["mfa_verified"] = True
-            refresh["mfa_verified_at"] = timezone.now().isoformat()
-            refresh["user_id"] = str(user.external_id)  # Add user identifier
-
-            # Add these claims to access token as well
-            refresh.access_token["mfa_verified"] = True
-            refresh.access_token["mfa_verified_at"] = timezone.now().isoformat()
-
-            return Response(
-                {
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                    "message": "Two-factor authentication successful",
-                    "status": "success",
-                }
-            )
-
-        return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
