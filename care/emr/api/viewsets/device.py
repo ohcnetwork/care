@@ -16,6 +16,7 @@ from care.emr.models import (
     FacilityLocation,
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
+from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
 from care.emr.resources.device.spec import (
     DeviceCreateSpec,
     DeviceEncounterHistoryListSpec,
@@ -65,7 +66,31 @@ class DeviceViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
-        super().perform_create(instance)
+        with transaction.atomic():
+            super().perform_create(instance)
+            if instance.care_type:
+                care_device_class = DeviceTypeRegistry.get_care_device_class(
+                    instance.care_type
+                )
+                care_device_class().handle_create(self.request.data, instance)
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            super().perform_update(instance)
+            if instance.care_type:
+                care_device_class = DeviceTypeRegistry.get_care_device_class(
+                    instance.care_type
+                )
+                care_device_class().handle_update(self.request.data, instance)
+
+    def perform_destroy(self, instance):
+        with transaction.atomic():
+            if instance.care_type:
+                care_device_class = DeviceTypeRegistry.get_care_device_class(
+                    instance.care_type
+                )
+                care_device_class().handle_update(self.request.data, instance)
+            super().perform_destroy(instance)
 
     def get_queryset(self):
         """

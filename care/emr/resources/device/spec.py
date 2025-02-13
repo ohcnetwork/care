@@ -1,9 +1,10 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, field_validator
 
 from care.emr.models import Device, DeviceEncounterHistory, DeviceLocationHistory
+from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.contact_point import ContactPoint
 from care.emr.resources.encounter.spec import EncounterListSpec
@@ -30,9 +31,10 @@ class DeviceSpecBase(EMRResource):
         "managing_organization",
         "current_location",
         "current_encounter",
+        "care_metadata",
     ]
 
-    id: UUID4 = None
+    id: UUID4 | None = None
 
     identifier: str | None = None
     status: DeviceStatusChoices
@@ -47,21 +49,32 @@ class DeviceSpecBase(EMRResource):
     model_number: str | None = None
     part_number: str | None = None
     contact: list[ContactPoint] = []
-    care_type: str | None = None
 
 
 class DeviceCreateSpec(DeviceSpecBase):
-    pass
+    care_type: str | None = None
+    care_metadata: dict = {}
+
+    @field_validator("care_type")
+    @classmethod
+    def validate_care_type(cls, value):
+        DeviceTypeRegistry.get_care_device_class(value)
+        return value
 
 
 class DeviceUpdateSpec(DeviceSpecBase):
-    pass
+    care_metadata: dict = {}
 
 
 class DeviceListSpec(DeviceCreateSpec):
+    care_metadata: dict = {}
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        if obj.care_type:
+            care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
+            mapping["care_metadata"] = care_device_class().list(obj)
 
 
 class DeviceRetrieveSpec(DeviceListSpec):
@@ -73,7 +86,7 @@ class DeviceRetrieveSpec(DeviceListSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
+        mapping["id"] = obj.external_id
         mapping["current_location"] = None
         mapping["current_encounter"] = None
         if obj.current_location:
@@ -85,6 +98,9 @@ class DeviceRetrieveSpec(DeviceListSpec):
                 obj.current_encounter
             ).to_json()
         cls.serialize_audit_users(mapping, obj)
+        if obj.care_type:
+            care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
+            mapping["care_metadata"] = care_device_class().retrieve(obj)
 
 
 class DeviceLocationHistoryListSpec(EMRResource):
