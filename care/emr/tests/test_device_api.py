@@ -16,6 +16,9 @@ from care.emr.resources.encounter.constants import (
 from care.emr.tests.test_location_api import FacilityLocationMixin
 from care.security.permissions.device import DevicePermissions
 from care.security.permissions.encounter import EncounterPermissions
+from care.security.permissions.facility_organization import (
+    FacilityOrganizationPermissions,
+)
 from care.security.permissions.location import FacilityLocationPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -24,9 +27,6 @@ class DeviceBaseTest(CareAPITestBase, FacilityLocationMixin):
     def setUp(self):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
-        self.facility_organization = self.create_facility_organization(
-            facility=self.facility
-        )
         self.client.force_authenticate(user=self.user)
         self.patient = self.create_patient()
         self.super_user = self.create_super_user()
@@ -54,7 +54,7 @@ class DeviceBaseTest(CareAPITestBase, FacilityLocationMixin):
     def add_permissions(self, permissions):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(
-            self.facility_organization, self.user, role
+            self.facility.default_internal_organization, self.user, role
         )
 
     def get_device_detail_url(self, device):
@@ -137,7 +137,7 @@ class TestDeviceViewSet(DeviceBaseTest):
     def test_associate_device_encounter_without_device_permission(self):
         device = self.create_device()
         encounter = self.create_encounter(
-            self.patient, self.facility, self.facility_organization
+            self.patient, self.facility, self.facility.default_internal_organization
         )
         # Only encounter permission attached (missing device permission).
         self.add_permissions([EncounterPermissions.can_write_encounter.name])
@@ -187,7 +187,7 @@ class TestDeviceViewSet(DeviceBaseTest):
     def test_associate_device_encounter_success(self):
         device = self.create_device()
         encounter = self.create_encounter(
-            self.patient, self.facility, self.facility_organization
+            self.patient, self.facility, self.facility.default_internal_organization
         )
         self.add_permissions(
             [
@@ -206,7 +206,7 @@ class TestDeviceViewSet(DeviceBaseTest):
     def test_associate_device_encounter_duplicate(self):
         device = self.create_device()
         encounter = self.create_encounter(
-            self.patient, self.facility, self.facility_organization
+            self.patient, self.facility, self.facility.default_internal_organization
         )
         self.add_permissions(
             [
@@ -331,7 +331,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         encounter = self.create_encounter(
             self.patient,
             self.facility,
-            self.facility_organization,
+            self.facility.default_internal_organization,
             status_history={"history": []},
             encounter_class=ClassChoices.imp.value,
         )
@@ -362,6 +362,67 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(update_response.status_code, 200)
         device_instance.refresh_from_db()
         self.assertIsNone(device_instance.current_encounter)
+
+    def test_add_managing_organization(self):
+        device = self.create_device()
+        managing_org = self.create_facility_organization(self.facility)
+        self.add_permissions(
+            [
+                DevicePermissions.can_manage_devices.name,
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+            ]
+        )
+        add_url = reverse(
+            "device-add-managing-organization",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": device["id"],
+            },
+        )
+        data = {"managing_organization": managing_org.external_id}
+        response = self.client.post(add_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        updated_device = Device.objects.get(external_id=device["id"])
+        self.assertEqual(updated_device.managing_organization, managing_org)
+
+    def test_remove_managing_organization(self):
+        # First, add the managing organization
+        device = self.create_device()
+        managing_org = self.create_facility_organization(self.facility)
+        self.add_permissions(
+            [
+                DevicePermissions.can_manage_devices.name,
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+            ]
+        )
+        add_url = reverse(
+            "device-add-managing-organization",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": device["id"],
+            },
+        )
+        data = {"managing_organization": managing_org.external_id}
+        response = self.client.post(add_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Device.objects.get(external_id=device["id"]).managing_organization,
+            managing_org,
+        )
+
+        # Now remove the managing organization
+        remove_url = reverse(
+            "device-remove-managing-organization",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": device["id"],
+            },
+        )
+        response = self.client.post(remove_url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(
+            Device.objects.get(external_id=device["id"]).managing_organization
+        )
 
 
 class TestDeviceLocationHistoryViewSet(DeviceBaseTest):
@@ -419,7 +480,7 @@ class TestDeviceEncounterHistoryViewSet(DeviceBaseTest):
         super().setUp()
         self.device = self.create_device()
         self.encounter = self.create_encounter(
-            self.patient, self.facility, self.facility_organization
+            self.patient, self.facility, self.facility.default_internal_organization
         )
         self.base_url = reverse(
             "device_encounter_history-list",
@@ -442,7 +503,12 @@ class TestDeviceEncounterHistoryViewSet(DeviceBaseTest):
         self.associate_encounter_with_device(self.device, self.encounter)
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 403)
-        self.add_permissions([DevicePermissions.can_list_devices.name])
+        self.add_permissions(
+            [
+                DevicePermissions.can_list_devices.name,
+                EncounterPermissions.can_list_encounter.name,
+            ]
+        )
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 1)
@@ -459,7 +525,12 @@ class TestDeviceEncounterHistoryViewSet(DeviceBaseTest):
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
-        self.add_permissions([DevicePermissions.can_list_devices.name])
+        self.add_permissions(
+            [
+                DevicePermissions.can_list_devices.name,
+                FacilityLocationPermissions.can_list_facility_locations.name,
+            ]
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["id"], history["id"])

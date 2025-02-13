@@ -19,9 +19,8 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.api.viewsets.device import disassociate_device_from_encounter
 from care.emr.models import (
-    Device,
-    DeviceEncounterHistory,
     Encounter,
     EncounterOrganization,
     FacilityOrganization,
@@ -100,18 +99,7 @@ class EncounterViewSet(
 
     def perform_update(self, instance):
         with transaction.atomic():
-            if instance.status in COMPLETED_CHOICES:
-                device_ids = list(
-                    Device.objects.filter(current_encounter=instance).values_list(
-                        "id", flat=True
-                    )
-                )
-                Device.objects.filter(id__in=device_ids).update(current_encounter=None)
-
-                DeviceEncounterHistory.objects.filter(
-                    device_id__in=device_ids, encounter=instance, end__isnull=True
-                ).update(end=timezone.now())
-
+            disassociate_device_from_encounter(instance)
             super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):
