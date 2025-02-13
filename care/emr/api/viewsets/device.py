@@ -30,7 +30,6 @@ from care.security.authorization import AuthorizationController
 
 
 class DeviceFilters(filters.FilterSet):
-    current_location = filters.UUIDFilter(field_name="current_location__external_id")
     current_encounter = filters.UUIDFilter(field_name="current_encounter__external_id")
 
 
@@ -49,21 +48,20 @@ class DeviceViewSet(EMRModelViewSet):
         )
 
     def authorize_create(self, instance):
-        if not AuthorizationController.call("can_manage_devices", self.request.user):
+        facility = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_create_device", self.request.user, facility
+        ):
             raise PermissionDenied("You do not have permission to create device")
 
     def authorize_update(self, instance, model_instance):
         if not AuthorizationController.call(
-            "can_manage_devices", self.request.user, model_instance
+            "can_manage_device", self.request.user, model_instance
         ):
             raise PermissionDenied("You do not have permission to update device")
 
     def authorize_destroy(self, instance):
-        device = self.get_object()
-        if not AuthorizationController.call(
-            "can_manage_devices", self.request.user, device
-        ):
-            raise PermissionDenied("You do not have permission to delete device")
+        self.authorize_update(None, instance)
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
@@ -86,12 +84,18 @@ class DeviceViewSet(EMRModelViewSet):
         ).values_list("organization_id", flat=True)
 
         if "location" in self.request.GET:
-            queryset = queryset.filter(
-                facility_organization_cache__overlap=users_facility_organizations
+            location = get_object_or_404(
+                FacilityLocation, external_id=self.request.GET["location"]
             )
-            # TODO Check access to location with permission and then allow filter with or,
-            # Access should not be limited by location if the device has org access
-            # If location access then allow all, otherwise apply organization filter
+            if AuthorizationController.call(
+                "can_read_devices_on_location", self.request.user, location
+            ):
+                queryset = queryset.filter(current_location=location)
+            else:
+                queryset = queryset.filter(
+                    facility_organization_cache__overlap=users_facility_organizations,
+                    location=location,
+                )
         else:
             queryset = queryset.filter(
                 facility_organization_cache__overlap=users_facility_organizations
@@ -111,17 +115,20 @@ class DeviceViewSet(EMRModelViewSet):
         device = self.get_object()
         facility = self.get_facility_obj()
 
-        if not AuthorizationController.call(
-            "can_associate_device_encounter", self.request.user, device, facility
+        if encounter and device.current_encounter_id == encounter.id:
+            raise ValidationError("Encounter already associated")
+        if encounter and encounter.facility_id != facility.id:
+            raise ValidationError("Encounter is not part of given facility")
+
+        self.authorize_update(None, device)
+
+        if encounter and not AuthorizationController.call(
+            "can_update_encounter_obj", self.request.user, encounter
         ):
             raise PermissionDenied(
                 "You do not have permission to associate encounter to this device"
             )
 
-        if encounter and device.current_encounter_id == encounter.id:
-            raise ValidationError("Encounter already associated")
-        if encounter and encounter.facility_id != facility.id:
-            raise ValidationError("Encounter is not part of given facility")
         with transaction.atomic():
             if device.current_encounter:
                 old_obj = DeviceEncounterHistory.objects.filter(
@@ -156,16 +163,19 @@ class DeviceViewSet(EMRModelViewSet):
         facility = self.get_facility_obj()
         device = self.get_object()
 
-        if not AuthorizationController.call(
-            "can_associate_device_location", self.request.user, device, facility
-        ):
-            raise PermissionDenied(
-                "You do not have permission to associate location to this device"
-            )
         if location and device.current_location_id == location.id:
             raise ValidationError("Location already associated")
         if location and location.facility_id != facility.id:
             raise ValidationError("Location is not part of given facility")
+
+        self.authorize_update(None, device)
+
+        if location and not AuthorizationController.call(
+            "can_update_facility_location_obj", self.request.user, location
+        ):
+            raise PermissionDenied(
+                "You do not have permission to associate location to this device"
+            )
         with transaction.atomic():
             if device.current_location:
                 old_obj = DeviceLocationHistory.objects.filter(
@@ -197,20 +207,16 @@ class DeviceViewSet(EMRModelViewSet):
         organization = get_object_or_404(
             FacilityOrganization, external_id=request_data.managing_organization
         )
+        if organization.facility_id != facility.id:
+            raise ValidationError("Organization is not part of given facility")
 
-        if not AuthorizationController.call("can_manage_devices", request.user, device):
-            raise PermissionDenied(
-                "You do not have permission to remove organization from this device"
-            )
+        self.authorize_update(None, device)
         if not AuthorizationController.call(
             "can_manage_facility_organization_obj", request.user, organization
         ):
             raise PermissionDenied(
                 "You do not have permission to manage facility organization"
             )
-
-        if organization.facility_id != facility.id:
-            raise ValidationError("Organization is not part of given facility")
         if Device.objects.filter(
             id=device.id, managing_organization=organization
         ).exists():
@@ -227,10 +233,7 @@ class DeviceViewSet(EMRModelViewSet):
             raise ValidationError(
                 "No managing organization is associated with this device"
             )
-        if not AuthorizationController.call("can_manage_devices", request.user, device):
-            raise PermissionDenied(
-                "You do not have permission to remove organization from this device"
-            )
+        self.authorize_update(None, device)
         if not AuthorizationController.call(
             "can_manage_facility_organization_obj",
             request.user,
@@ -253,13 +256,14 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
     def get_queryset(self):
+        device = self.get_device()
         if not AuthorizationController.call(
-            "can_list_devices", self.request.user, self.get_device()
+            "can_read_device", self.request.user, device
         ):
             raise PermissionDenied("You do not have permission to access the device")
 
         return (
-            DeviceLocationHistory.objects.filter(device=self.get_device())
+            DeviceLocationHistory.objects.filter(device=device)
             .select_related("location")
             .order_by("-end")
         )
@@ -273,15 +277,18 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
     def get_queryset(self):
+        """
+        Encounter history access is limited to everyone within the location or associated with the managing org
+        """
+        device = self.get_device()
         if not AuthorizationController.call(
-            "can_list_devices",
+            "can_read_device",
             self.request.user,
-            self.get_device(),
+            device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
-
         return (
-            DeviceEncounterHistory.objects.filter(device=self.get_device())
+            DeviceEncounterHistory.objects.filter(device=device)
             .select_related("encounter", "encounter__patient", "encounter__facility")
             .order_by("-end")
         )
@@ -289,13 +296,14 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
 
 def disassociate_device_from_encounter(instance):
     if instance.status in COMPLETED_CHOICES:
-        device_ids = list(
-            Device.objects.filter(current_encounter=instance).values_list(
-                "id", flat=True
+        with transaction.atomic():
+            device_ids = list(
+                Device.objects.filter(current_encounter=instance).values_list(
+                    "id", flat=True
+                )
             )
-        )
-        Device.objects.filter(id__in=device_ids).update(current_encounter=None)
+            Device.objects.filter(id__in=device_ids).update(current_encounter=None)
 
-        DeviceEncounterHistory.objects.filter(
-            device_id__in=device_ids, encounter=instance, end__isnull=True
-        ).update(end=timezone.now())
+            DeviceEncounterHistory.objects.filter(
+                device_id__in=device_ids, encounter=instance, end__isnull=True
+            ).update(end=timezone.now())
