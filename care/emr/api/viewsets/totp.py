@@ -1,7 +1,11 @@
 from secrets import choice
 from string import digits
 
+from celery import shared_task
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
@@ -38,6 +42,31 @@ class TOTPLoginRequest(BaseModel):
 class TOTPLoginResponse(BaseModel):
     message: str
     status: str
+
+
+@shared_task(
+    autoretry_for=(Exception,),
+    retry_kwargs={"max_retries": 3},
+    expires=10 * 60,
+)
+def send_totp_enabled_email(user_email: str, user_name: str):
+    """Send email notification when TOTP is enabled"""
+    context = {
+        "username": user_name,
+        "email": user_email,
+        "enabled_at": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+    }
+
+    email_html_message = render_to_string("email/totp_enabled.html", context)
+
+    msg = EmailMessage(
+        "Two-Factor Authentication Enabled",
+        email_html_message,
+        settings.DEFAULT_FROM_EMAIL,
+        (user_email,),
+    )
+    msg.content_subtype = "html"
+    msg.send()
 
 
 class TOTPViewSet(EMRBaseViewSet):
@@ -118,7 +147,7 @@ class TOTPViewSet(EMRBaseViewSet):
             mfa_settings = user.mfa_settings or {}
             mfa_settings["totp"] = {
                 "enabled": True,
-                "verified_at": timezone.now().isoformat(),
+                "totp_enabled_at": timezone.now().isoformat(),
                 "backup_codes": [
                     {
                         "code": make_password(code),
@@ -130,6 +159,8 @@ class TOTPViewSet(EMRBaseViewSet):
             }
             user.mfa_settings = mfa_settings
             user.save(update_fields=["mfa_settings"])
+
+            send_totp_enabled_email.delay(user.email, user.username)
 
             response_data = TOTPVerifyResponse(
                 message="Two-factor authentication has been enabled successfully. Please save your backup codes in a secure location.",
