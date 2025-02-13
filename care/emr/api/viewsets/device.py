@@ -119,7 +119,7 @@ class DeviceViewSet(EMRModelViewSet):
             else:
                 queryset = queryset.filter(
                     facility_organization_cache__overlap=users_facility_organizations,
-                    location=location,
+                    current_location=location,
                 )
         else:
             queryset = queryset.filter(
