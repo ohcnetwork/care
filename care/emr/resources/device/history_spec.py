@@ -10,7 +10,7 @@ from care.users.models import User
 
 class DeviceServiceHistorySpecBase(EMRResource):
     __model__ = DeviceServiceHistory
-    __exclude__ = ["device" , "edit_history"]
+    __exclude__ = ["device", "edit_history"]
     id: UUID4 | None = None
 
 
@@ -20,7 +20,6 @@ class DeviceServiceHistoryWriteSpec(DeviceServiceHistorySpecBase):
 
 
 class DeviceServiceHistoryListSpec(DeviceServiceHistoryWriteSpec):
-
     created_date: datetime
     modified_date: datetime
 
@@ -46,8 +45,6 @@ class DeviceServiceHistoryRetrieveSpec(DeviceServiceHistoryListSpec):
             if user_obj:
                 history["updated_by"] = UserSpec.serialize(user_obj).to_json()
             else:
-                history["updated_by"] = {} # Edge Case
-            edit_history.append(
-                history
-            )
+                history["updated_by"] = {}  # Edge Case
+            edit_history.append(history)
         mapping["edit_history"] = edit_history

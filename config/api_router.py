@@ -16,7 +16,8 @@ from care.emr.api.viewsets.condition import (
 from care.emr.api.viewsets.device import (
     DeviceEncounterHistoryViewSet,
     DeviceLocationHistoryViewSet,
-    DeviceViewSet, DeviceServiceHistoryViewSet,
+    DeviceServiceHistoryViewSet,
+    DeviceViewSet,
 )
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (

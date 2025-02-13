@@ -26,8 +26,11 @@ from care.emr.models import (
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
-from care.emr.resources.device.history_spec import DeviceServiceHistoryWriteSpec, DeviceServiceHistoryRetrieveSpec, \
-    DeviceServiceHistoryListSpec
+from care.emr.resources.device.history_spec import (
+    DeviceServiceHistoryListSpec,
+    DeviceServiceHistoryRetrieveSpec,
+    DeviceServiceHistoryWriteSpec,
+)
 from care.emr.resources.device.spec import (
     DeviceCreateSpec,
     DeviceEncounterHistoryListSpec,
@@ -372,7 +375,7 @@ class DeviceServiceHistoryViewSet(
             {
                 "serviced_on": str(current_instance.serviced_on),
                 "note": current_instance.note,
-                "updated_by" : current_instance.updated_by.id
+                "updated_by": current_instance.updated_by.id,
             }
         )
         super().perform_update(instance)
