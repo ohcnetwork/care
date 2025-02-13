@@ -7,16 +7,27 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRModelReadOnlyViewSet,
+    EMRModelViewSet,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models import (
     Device,
     DeviceEncounterHistory,
     DeviceLocationHistory,
+    DeviceServiceHistory,
     Encounter,
     FacilityLocation,
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
+from care.emr.resources.device.history_spec import DeviceServiceHistoryWriteSpec, DeviceServiceHistoryRetrieveSpec, \
+    DeviceServiceHistoryListSpec
 from care.emr.resources.device.spec import (
     DeviceCreateSpec,
     DeviceEncounterHistoryListSpec,
@@ -316,6 +327,69 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
             DeviceEncounterHistory.objects.filter(device=device)
             .select_related("encounter", "encounter__patient", "encounter__facility")
             .order_by("-end")
+        )
+
+
+class DeviceServiceHistoryViewSet(
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+):
+    database_model = DeviceServiceHistory
+    pydantic_model = DeviceServiceHistoryWriteSpec
+    pydantic_read_model = DeviceServiceHistoryListSpec
+    pydantic_retrieve_model = DeviceServiceHistoryRetrieveSpec
+
+    def get_device(self):
+        return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
+
+    def perform_create(self, instance):
+        device = self.get_device()
+        instance.device = device
+        super().perform_create(instance)
+
+    def authorize_create(self, instance):
+        device = self.get_device()
+        if not AuthorizationController.call(
+            "can_manage_device",
+            self.request.user,
+            device,
+        ):
+            raise PermissionDenied("You do not have permission to access the device")
+
+    def authorize_update(self, request_obj, model_instance):
+        self.authorize_create(model_instance)
+
+    def perform_update(self, instance):
+        if instance.edit_history and len(instance.edit_history) >= 50:
+            raise ValidationError("Cannot Edit instance anymore")
+        if not instance.edit_history:
+            instance.edit_history = []
+        current_instance = DeviceServiceHistory.objects.get(id=instance.id)
+        instance.edit_history.append(
+            {
+                "serviced_on": str(current_instance.serviced_on),
+                "note": current_instance.note,
+                "updated_by" : current_instance.updated_by.id
+            }
+        )
+        super().perform_update(instance)
+
+    def get_queryset(self):
+        """
+        Encounter history access is limited to everyone within the location or associated with the managing org
+        """
+        device = self.get_device()
+        if not AuthorizationController.call(
+            "can_read_device",
+            self.request.user,
+            device,
+        ):
+            raise PermissionDenied("You do not have permission to access the device")
+        return DeviceServiceHistory.objects.filter(device=device).order_by(
+            "-serviced_on"
         )
 
 

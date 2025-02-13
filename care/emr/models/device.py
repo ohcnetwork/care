@@ -75,6 +75,6 @@ class DeviceServiceHistory(EMRBaseModel):
     device = models.ForeignKey(
         Device, on_delete=models.PROTECT, null=False, blank=False
     )
-    serviced_on = models.DateField(default=None, null=True, blank=False)
+    serviced_on = models.DateTimeField(default=None, null=True, blank=False)
     note = models.TextField(default="", null=True, blank=True)
     edit_history = models.JSONField(default=list)
