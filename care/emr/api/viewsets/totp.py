@@ -37,11 +37,20 @@ class TOTPVerifyResponse(BaseModel):
 
 class TOTPLoginRequest(BaseModel):
     code: str
+    temp_token: str
 
 
 class TOTPLoginResponse(BaseModel):
     message: str
     status: str
+
+
+class TOTPDisableRequest(BaseModel):
+    password: str
+
+
+class TOTPDisableResponse(BaseModel):
+    message: str
 
 
 @shared_task(
@@ -125,7 +134,7 @@ class TOTPViewSet(EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def verify(self, request):
-        verify_data = TOTPVerifyRequest(code=request.data.get("code"))
+        request_data = TOTPVerifyRequest(**request.data)
         user = request.user
 
         if not user.totp_secret:
@@ -133,15 +142,10 @@ class TOTPViewSet(EMRBaseViewSet):
                 {"error": "TOTP not configured"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        if not verify_data.code:
-            return Response(
-                {"error": "Code is required"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         secret = decrypt_string(user.totp_secret)
         totp = TOTP(secret)
 
-        if totp.verify(verify_data.code):
+        if totp.verify(request_data.code):
             backup_codes = self._generate_backup_codes()
 
             mfa_settings = user.mfa_settings or {}
@@ -185,18 +189,10 @@ class TOTPViewSet(EMRBaseViewSet):
         authentication_classes=[],
     )
     def login(self, request):
-        code = request.data.get("code")
-        temp_token = request.data.get("temp_token")
-
-        if not code or not temp_token:
-            return Response(
-                {"error": "Code and temporary token required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        request_data = TOTPLoginRequest(**request.data)
 
         try:
-            # Validate the temporary token
-            token = RefreshToken(temp_token)
+            token = RefreshToken(request_data.temp_token)
             if not token.get("temp_token"):
                 return Response(
                     {"error": "Invalid token type"}, status=status.HTTP_400_BAD_REQUEST
@@ -205,7 +201,7 @@ class TOTPViewSet(EMRBaseViewSet):
             user = User.objects.get(external_id=token["user_id"])
             totp = TOTP(decrypt_string(user.totp_secret))
 
-            if totp.verify(code):
+            if totp.verify(request_data.code):
                 refresh = RefreshToken.for_user(user)
 
                 try:
@@ -225,3 +221,44 @@ class TOTPViewSet(EMRBaseViewSet):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        description="Disable TOTP-based two-factor authentication",
+        request=TOTPDisableRequest,
+        responses={
+            200: TOTPDisableResponse,
+            400: {"type": "object", "properties": {"error": {"type": "string"}}},
+        },
+    )
+    @action(detail=False, methods=["POST"])
+    def disable(self, request):
+        password = TOTPDisableRequest(**request.data).password
+
+        if not request.user.check_password(password):
+            return Response(
+                {"error": "Invalid Password"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = request.user
+        mfa_settings = user.mfa_settings or {}
+        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+
+        if not totp_enabled:
+            return Response(
+                {"error": "Two-factor authentication is not enabled for your account"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        mfa_settings["totp"] = {
+            "enabled": False,
+            "totp_disabled_at": timezone.now().isoformat(),
+            "backup_codes": [],
+        }
+        user.mfa_settings = mfa_settings
+        user.totp_secret = None
+        user.save(update_fields=["mfa_settings", "totp_secret"])
+
+        response_data = TOTPDisableResponse(
+            message="Two-factor authentication has been disabled successfully"
+        )
+        return Response(response_data.model_dump())
