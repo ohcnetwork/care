@@ -8,6 +8,7 @@ from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.contact_point import ContactPoint
 from care.emr.resources.encounter.spec import EncounterListSpec
+from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 
 
@@ -83,6 +84,7 @@ class DeviceRetrieveSpec(DeviceListSpec):
 
     created_by: dict | None = None
     updated_by: dict | None = None
+    managing_organization : dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -102,6 +104,8 @@ class DeviceRetrieveSpec(DeviceListSpec):
             care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
             mapping["care_metadata"] = care_device_class().retrieve(obj)
 
+        if obj.managing_organization:
+            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(obj.managing_organization).to_json()
 
 class DeviceLocationHistoryListSpec(EMRResource):
     __model__ = DeviceLocationHistory
