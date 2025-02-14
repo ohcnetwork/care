@@ -88,17 +88,16 @@ class TOTPViewSet(EMRBaseViewSet):
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
     )
-    @action(detail=False, methods=["GET"])
+    @action(detail=False, methods=["POST"])
     def setup(self, request):
         user = request.user
 
         mfa_settings = user.mfa_settings or {}
-        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
 
-        if totp_enabled:
+        if self._check_totp_enabled(mfa_settings) is None:
             return Response(
                 {
-                    "error": "Two-factor authentication is already set up and enabled for your account"
+                    "error": "Two-factor authentication is already enabled for your account"
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -236,18 +235,14 @@ class TOTPViewSet(EMRBaseViewSet):
 
         if not request.user.check_password(password):
             return Response(
-                {"error": "Invalid Password"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         user = request.user
         mfa_settings = user.mfa_settings or {}
-        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
 
-        if not totp_enabled:
-            return Response(
-                {"error": "Two-factor authentication is not enabled for your account"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if error_response := self._check_totp_enabled(mfa_settings):
+            return error_response
 
         mfa_settings["totp"] = {
             "enabled": False,
@@ -262,3 +257,48 @@ class TOTPViewSet(EMRBaseViewSet):
             message="Two-factor authentication has been disabled successfully"
         )
         return Response(response_data.model_dump())
+
+    @extend_schema(
+        description="Regenerate TOTP backup codes",
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "backup_codes": {"type": "array", "items": {"type": "string"}}
+                },
+            },
+            400: {"type": "object", "properties": {"error": {"type": "string"}}},
+        },
+    )
+    @action(detail=False, methods=["POST"])
+    def regenerate_backup_codes(self, request):
+        user = request.user
+        mfa_settings = user.mfa_settings or {}
+
+        if error_response := self._check_totp_enabled(mfa_settings):
+            return error_response
+
+        backup_codes = self._generate_backup_codes()
+        mfa_settings["totp"]["backup_codes"] = [
+            {
+                "code": make_password(code),
+                "used": False,
+                "created_at": timezone.now().isoformat(),
+            }
+            for code in backup_codes
+        ]
+        user.mfa_settings = mfa_settings
+        user.save(update_fields=["mfa_settings"])
+
+        return Response({"backup_codes": backup_codes})
+
+    @staticmethod
+    def _check_totp_enabled(mfa_settings: dict):
+        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+
+        if not totp_enabled:
+            return Response(
+                {"error": "Two-factor authentication is not enabled for your account"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return None
