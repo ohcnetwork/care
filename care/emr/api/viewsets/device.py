@@ -366,7 +366,7 @@ class DeviceServiceHistoryViewSet(
         self.authorize_create(model_instance)
 
     def perform_update(self, instance):
-        if instance.edit_history and len(instance.edit_history) >= 50:
+        if instance.edit_history and len(instance.edit_history) >= 50:  # noqa PLR2004
             raise ValidationError("Cannot Edit instance anymore")
         if not instance.edit_history:
             instance.edit_history = []

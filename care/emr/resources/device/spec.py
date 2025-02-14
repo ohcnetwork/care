@@ -84,7 +84,7 @@ class DeviceRetrieveSpec(DeviceListSpec):
 
     created_by: dict | None = None
     updated_by: dict | None = None
-    managing_organization : dict | None = None
+    managing_organization: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -105,7 +105,10 @@ class DeviceRetrieveSpec(DeviceListSpec):
             mapping["care_metadata"] = care_device_class().retrieve(obj)
 
         if obj.managing_organization:
-            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(obj.managing_organization).to_json()
+            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(
+                obj.managing_organization
+            ).to_json()
+
 
 class DeviceLocationHistoryListSpec(EMRResource):
     __model__ = DeviceLocationHistory
