@@ -667,7 +667,6 @@ class TestDeviceEncounterHistoryViewSet(DeviceBaseTest):
         self.add_permissions(
             [
                 DevicePermissions.can_list_devices.name,
-                FacilityLocationPermissions.can_list_facility_locations.name,
             ]
         )
         response = self.client.get(url)
