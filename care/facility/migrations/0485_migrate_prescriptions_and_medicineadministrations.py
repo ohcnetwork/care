@@ -5,10 +5,19 @@ from datetime import UTC
 
 from django.core.paginator import Paginator
 from django.db import migrations
+from django.db.models import F, Value, Func
+from django.db.models.fields.json import JSONField
+
+from care.emr.models.medication_request import MedicationRequest
+from care.emr.models.medication_administration import MedicationAdministration
+from care.facility.utils import disable_auto_time
+
+
+disable_auto_time([MedicationRequest, MedicationAdministration])
 
 logger = logging.getLogger(__name__)
 
-MIGRATION_ID = 160601
+MIGRATION_ID = 158445695209
 
 ROUTE_MAP = {
     "ORAL": {
@@ -422,10 +431,8 @@ def _get_administration_objects(
 def migrate_prescriptions_and_administrations(apps, schema_editor):
     logger.debug("Migrating Prescriptions")
     Prescription = apps.get_model("facility", "Prescription")
-    MedicationRequest = apps.get_model("emr", "MedicationRequest")
-    MedicationAdministration = apps.get_model("emr", "MedicationAdministration")
     paginator = Paginator(
-        Prescription.objects.all()
+        Prescription.objects.filter(meta__migration_id__isnull=True)
         .select_related(
             "consultation", "consultation__patient", "medicine", "prescribed_by"
         )
@@ -447,26 +454,34 @@ def migrate_prescriptions_and_administrations(apps, schema_editor):
                 f"Migrated Prescription {prescription.id} -> {medication_request.id}"
             )
         MedicationAdministration.objects.bulk_create(administrations)
+    # add migration_id to the exting meta of prescriptions
+
+    Prescription.objects.update(
+        meta=Func(
+            F("meta"),
+            Value('{"migration_id"}'),
+            Value(MIGRATION_ID, output_field=JSONField()),
+            Value(True),
+            function="jsonb_set",
+        )
+    )
     logger.debug("Migrating Prescriptions and Medicine Administrations Done")
 
 
 def reverse_migrate_prescriptions_and_administrations(apps, schema_editor):
     logger.debug("Reversing Migration of Prescriptions")
-    schema_editor.execute(
-        "DELETE FROM emr_medicationrequest WHERE meta->>'migration_id' = %s",
-        [str(MIGRATION_ID)],
-    )
-    logger.debug("Reversing Migration of Medicine Administrations")
-    schema_editor.execute(
-        "DELETE FROM emr_medicationadministration WHERE meta->>'migration_id' = %s",
-        [str(MIGRATION_ID)],
+    MedicationRequest = apps.get_model("emr", "MedicationRequest")
+    MedicationRequest.objects.filter(meta__migration_id=MIGRATION_ID).delete()
+    Prescription = apps.get_model("facility", "Prescription")
+    Prescription.objects.filter(meta__migration_id=MIGRATION_ID).update(
+        meta__migration_id=None
     )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0484_migrate_symptoms"),
+        ("facility", "0484_migrate_patient_notes"),
     ]
 
     operations = [

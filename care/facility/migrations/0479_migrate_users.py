@@ -5,7 +5,7 @@ from django.core.management import call_command
 
 logger = logging.getLogger(__name__)
 
-MIGRARION_ID = 413370
+MIGRATION_ID = 158445695202
 
 
 def _get_org(Organization, obj):
@@ -70,7 +70,7 @@ def migrate_users(apps, schema_editor):
 
 def reverse_migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
-    User.objects.filter(geo_organization__meta__migration_id=MIGRARION_ID).update(
+    User.objects.filter(geo_organization__meta__migration_id=MIGRATION_ID).update(
         geo_organization=None
     )
 

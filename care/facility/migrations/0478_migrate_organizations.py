@@ -5,12 +5,13 @@ from django.db import migrations
 
 logger = logging.getLogger(__name__)
 
-MIGRARION_ID = 413370
+MIGRATION_ID = 158445695201
 COUNTRY = "India"
 
 
 def migrate_organizations(apps, schema_editor):
     from care.emr.models import Organization
+
     State = apps.get_model("users", "State")
     District = apps.get_model("users", "District")
     LocalBody = apps.get_model("users", "LocalBody")
@@ -44,7 +45,7 @@ def migrate_organizations(apps, schema_editor):
                 "org_type": "govt",
                 "system_generated": True,
                 "metadata": state_metadata,
-                "meta": {"migration_id": MIGRARION_ID},
+                "meta": {"migration_id": MIGRATION_ID},
             }
         )
         logger.debug(f"Created State: {state_org.name=}")
@@ -68,7 +69,7 @@ def migrate_organizations(apps, schema_editor):
                     "parent": state_org,
                     "system_generated": True,
                     "metadata": district_metadata,
-                    "meta": {"migration_id": MIGRARION_ID},
+                    "meta": {"migration_id": MIGRATION_ID},
                 },
             )
             logger.debug(f"Created District: {state_org.name=}, {district_org.name=}")
@@ -99,7 +100,7 @@ def migrate_organizations(apps, schema_editor):
                             "govt_org_local_body_type": lb_type,
                             **local_body_metadata,
                         },
-                        "meta": {"migration_id": MIGRARION_ID},
+                        "meta": {"migration_id": MIGRATION_ID},
                     },
                 )
                 logger.debug(
@@ -131,7 +132,7 @@ def migrate_organizations(apps, schema_editor):
                                 "govt_org_ward_number": ward_obj.number,
                                 **ward_metadata,
                             },
-                            "meta": {"migration_id": MIGRARION_ID},
+                            "meta": {"migration_id": MIGRATION_ID},
                         },
                     )
                     logger.debug(
@@ -145,7 +146,7 @@ def reverse_migrate_organizations(apps, schema_editor):
     logger.debug("Reversing Migration Organization")
     schema_editor.execute(
         "DELETE FROM emr_organization WHERE meta->>'migration_id' = %s",
-        [str(MIGRARION_ID)],
+        [str(MIGRATION_ID)],
     )
 
 

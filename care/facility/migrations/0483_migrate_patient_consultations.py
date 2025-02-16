@@ -2,11 +2,38 @@
 from datetime import UTC
 import logging
 from django.db import migrations
+from django.db.models import Q
 from django.core.paginator import Paginator
+from care.emr.models import (
+    Encounter,
+    QuestionnaireOrganization,
+    FacilityLocation,
+    FacilityLocationEncounter,
+    QuestionnaireTag,
+    Questionnaire,
+    QuestionnaireResponse,
+    Observation,
+    Organization,
+)
+from care.facility.utils import disable_auto_time
+
+disable_auto_time(
+    [
+        Encounter,
+        QuestionnaireOrganization,
+        FacilityLocation,
+        FacilityLocationEncounter,
+        QuestionnaireTag,
+        Questionnaire,
+        QuestionnaireResponse,
+        Observation,
+    ]
+)
+
 
 logger = logging.getLogger(__name__)
 
-MIGRATION_ID = 413370
+MIGRATION_ID = 158445695206
 
 
 category_to_priority_map = {
@@ -71,19 +98,26 @@ def investigation_to_text(investigation):
 
 
 def migrate_consultations(apps, schema_editor):
-    from care.emr.models import Encounter, QuestionnaireOrganization
+
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    PatientRegistration = apps.get_model("facility", "PatientRegistration")
 
-    Questionnaire = apps.get_model("emr", "Questionnaire")
-    QuestionnaireResponse = apps.get_model("emr", "QuestionnaireResponse")
-    Observation = apps.get_model("emr", "Observation")
-    Organization = apps.get_model("emr", "Organization")
-
+    # TODO: create questionnaire tags and link to these
+    # I dont know why these are hardcoded in frontend, but it doesn't work without it so we will also hardcode it here
+    encounter_actions_tag, _ = QuestionnaireTag.objects.get_or_create(
+        slug="encounter_actions",
+        defaults={
+            "name": "Encounter Actions",
+        },
+    )
     consultation_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="consultation_876e89eb",
         defaults={
             "title": "Consultation",
             "description": "Consultation",
+            "subject_type": "encounter",
+            "status": "retired",
+            "tags": [encounter_actions_tag.id],
             "meta": {
                 "migration_id": MIGRATION_ID,
             },
@@ -91,70 +125,70 @@ def migrate_consultations(apps, schema_editor):
                 {
                     "id": "53c8a423-9d2a-4c2e-8f23-7e8908be734c",
                     "link_id": "1",
-                    "question": "Consultation Examination",
+                    "text": "Consultation Examination",
                     "type": "group",
                     "required": False,
                     "questions": [
                         {
                             "id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
                             "link_id": "1.1",
-                            "question": "Examination Details",
+                            "text": "Examination Details",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "0b07a08f-50a8-430c-915a-74169affb42d",
                             "link_id": "1.2",
-                            "question": "History of Present Illness",
+                            "text": "History of Present Illness",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "b14bfb28-306a-4061-b8f0-282b3ae61613",
                             "link_id": "1.3",
-                            "question": "Treatment Plan",
+                            "text": "Treatment Plan",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "f069fce2-cdba-4004-830e-a24aa2b3be20",
                             "link_id": "1.4",
-                            "question": "Consultation Notes",
+                            "text": "Consultation Notes",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "baff36ec-a102-4981-9988-5bac39858d8b",
                             "link_id": "1.5",
-                            "question": "Transferred From Location",
+                            "text": "Transferred From Location",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "61a42107-7532-408c-8761-b54b37aea631",
                             "link_id": "1.6",
-                            "question": "Referred From Facility",
+                            "text": "Referred From Facility",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "f848a229-0406-461e-8f2d-4123286904bc",
                             "link_id": "1.7",
-                            "question": "Referred By",
+                            "text": "Referred By",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "8f0b2c23-f026-427c-9529-d1320b39ee71",
                             "link_id": "1.8",
-                            "question": "Special Instruction",
+                            "text": "Special Instruction",
                             "type": "text",
                             "required": False,
                         },
                         {
                             "id": "fe4b1c2b-2f06-47b1-8b23-20ba06803e9e",
                             "link_id": "1.9",
-                            "question": "Consultation Category",
+                            "text": "Consultation Category",
                             "type": "choice",
                             "required": False,
                             "answer_options": [
@@ -168,7 +202,7 @@ def migrate_consultations(apps, schema_editor):
                         {
                             "id": "104a588f-2868-4b8a-97e4-a459587b0883",
                             "link_id": "1.10",
-                            "question": "Investigations",
+                            "text": "Investigations",
                             "type": "text",
                             "required": False,
                             "repeats": True,
@@ -176,7 +210,7 @@ def migrate_consultations(apps, schema_editor):
                         {
                             "id": "167e952f-6f29-4196-9362-49c2c12a1a91",
                             "link_id": "1.11",
-                            "question": "Procedures",
+                            "text": "Procedures",
                             "type": "text",
                             "required": False,
                             "repeats": True,
@@ -186,60 +220,60 @@ def migrate_consultations(apps, schema_editor):
                 {
                     "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
                     "link_id": "2",
-                    "question": "Death Report",
+                    "text": "Death Report",
                     "type": "group",
                     "required": False,
                     "questions": [
                         {
                             "id": "cc629f7a-5607-4d26-b840-0c024c4ee957",
                             "link_id": "2.1",
-                            "question": "Death Date and Time",
+                            "text": "Death Date and Time",
                             "type": "datetime",
                             "required": True,
                         },
                         {
                             "id": "6b0ae91d-06ae-4408-8843-73e1b1733f09",
                             "link_id": "2.2",
-                            "question": "Death Confirmed By Doctor",
+                            "text": "Death Confirmed By Doctor",
                             "type": "text",
                             "required": True,
                         },
                         {
                             "id": "f763249d-f6f9-4142-84d0-b86a8e93536d",
                             "link_id": "2.3",
-                            "question": "Cause of Death",
+                            "text": "Cause of Death",
                             "type": "text",
                             "required": True,
                         },
                     ],
                 },
                 {
-                    "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
+                    "id": "bf86da5d-203c-4da0-83e0-677b251afb3f",
                     "link_id": "3",
-                    "question": "Discharge Notes",
+                    "text": "Discharge Notes",
                     "type": "group",
                     "required": False,
                     "questions": [
                         {
                             "id": "3b3816b1-09f5-4c41-af99-5d3b66de5b75",
                             "link_id": "3.1",
-                            "question": "Discharge Notes",
+                            "text": "Discharge Notes",
                             "type": "text",
                             "required": False,
                         },
                     ],
                 },
                 {
-                    "id": "69c8167f-9e22-4103-8422-d4fce0912de7",
+                    "id": "90f265cf-e3d0-4754-8dcb-9157e128d102",
                     "link_id": "4",
-                    "question": "Physical Measurements",
+                    "text": "Physical Measurements",
                     "type": "group",
                     "required": False,
                     "questions": [
                         {
-                            "id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                            "id": "8aaf5e6f-be9c-4fe6-b588-55ab2541875e",
                             "link_id": "4.1",
-                            "question": "Height",
+                            "text": "Height",
                             "type": "decimal",
                             "required": False,
                             "code": {
@@ -255,9 +289,9 @@ def migrate_consultations(apps, schema_editor):
                             "is_observation": True,
                         },
                         {
-                            "id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                            "id": "d73546a5-98bb-450d-9923-69fff9b73ddd",
                             "link_id": "4.2",
-                            "question": "Weight",
+                            "text": "Weight",
                             "type": "decimal",
                             "required": False,
                             "code": {
@@ -289,6 +323,7 @@ def migrate_consultations(apps, schema_editor):
     paginator = Paginator(
         PatientConsultation.objects.filter(migrated_emr_encounter_id__isnull=True)
         .select_related("patient", "referred_from_facility")
+        .prefetch_related("consultationbed_set", "consultationbed_set__bed")
         .exclude(deleted=True, patient__deleted=True)
         .order_by("id"),
         2000,
@@ -332,8 +367,8 @@ def migrate_consultations(apps, schema_editor):
                 period=period,
                 hospitalization=hospitalization,
                 facility_id=consultation.facility_id,
-                status_history={"history":[]},
-                encounter_class_history={"history":[]},
+                status_history={"history": []},
+                encounter_class_history={"history": []},
                 meta={
                     "migration_id": MIGRATION_ID,
                 },
@@ -345,6 +380,24 @@ def migrate_consultations(apps, schema_editor):
                 created_date=consultation.created_date,
                 modified_date=consultation.modified_date,
             )
+
+            for cbed in consultation.consultationbed_set.all():
+                location = FacilityLocation._base_manager.get(
+                    id=cbed.bed.migrated_emr_bed_id
+                )
+                FacilityLocationEncounter.objects.create(
+                    status="active" if not cbed.end_date else "completed",
+                    location_id=location.id,
+                    encounter_id=encounter.id,
+                    start_datetime=cbed.start_date,
+                    end_datetime=cbed.end_date,
+                )
+                if cbed.end_date and location.operational_status == "O":
+                    location.operational_status = "U"
+                    location.save(update_fields=["operational_status"])
+                elif not cbed.end_date and location.operational_status == "U":
+                    location.operational_status = "O"
+                    location.save(update_fields=["operational_status"])
 
             consultation_questionnaire_responses = []
             if consultation.consultation_notes:
@@ -392,16 +445,19 @@ def migrate_consultations(apps, schema_editor):
                     }
                 )
             if consultation.transferred_from_location:
+                location = FacilityLocation._base_manager.get(
+                    id=consultation.transferred_from_location.migrated_emr_location_id
+                )
                 consultation_questionnaire_responses.append(
                     {
                         "question_id": "baff36ec-a102-4981-9988-5bac39858d8b",
                         "values": [
                             {
-                                "value": consultation.transferred_from_location,
+                                "value": consultation.transferred_from_location.name,
                             }
                         ],
                         "meta": {
-                            # "location_id": consultation.transferred_from_location, #TODO: add the new location id
+                            "location_id": str(location.external_id),
                         },
                     }
                 )
@@ -424,11 +480,13 @@ def migrate_consultations(apps, schema_editor):
                         "question_id": "61a42107-7532-408c-8761-b54b37aea631",
                         "values": [
                             {
-                                "value": f"{consultation.referred_from_facility.name} ({consultation.referred_from_facility.external_id})",
+                                "value": f"{consultation.referred_from_facility.name}",
                             }
                         ],
                         "meta": {
-                            "facility_id": consultation.referred_from_facility.external_id,
+                            "facility_id": str(
+                                consultation.referred_from_facility.external_id
+                            ),
                         },
                     }
                 )
@@ -558,7 +616,7 @@ def migrate_consultations(apps, schema_editor):
                 }
                 consultation_questionnaire_responses.append(
                     {
-                        "question_id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
+                        "question_id": "8aaf5e6f-be9c-4fe6-b588-55ab2541875e",
                         "values": [{"value": value}],
                     }
                 )
@@ -584,7 +642,7 @@ def migrate_consultations(apps, schema_editor):
                 }
                 consultation_questionnaire_responses.append(
                     {
-                        "question_id": "0b07a08f-50a8-430c-915a-74169affb42d",
+                        "question_id": "d73546a5-98bb-450d-9923-69fff9b73ddd",
                         "values": [{"value": value}],
                     }
                 )
@@ -604,12 +662,16 @@ def migrate_consultations(apps, schema_editor):
                 questionnaire_response = QuestionnaireResponse.objects.create(
                     patient_id=consultation.patient.migrated_emr_patient_id,
                     questionnaire_id=consultation_questionnaire.id,
-                    subject_id=encounter.patient_id,
+                    subject_id=encounter.external_id,
                     encounter_id=encounter.id,
-                    created_by=consultation.created_by,
-                    updated_by=consultation.last_edited_by,
+                    created_by_id=consultation.created_by_id,
+                    updated_by_id=consultation.last_edited_by_id,
                     created_date=consultation.created_date,
                     modified_date=consultation.modified_date,
+                    responses=[{"values": consultation_questionnaire_responses}],
+                    meta={
+                        "migration_id": MIGRATION_ID,
+                    },
                 )
 
             if consultation_questionnaire_responses_observations:
@@ -623,10 +685,13 @@ def migrate_consultations(apps, schema_editor):
                             patient_id=encounter.patient_id,
                             encounter_id=encounter.id,
                             effective_datetime=consultation.encounter_date,
-                            data_entered_by_id=consultation.created_by_id or 1,
+                            data_entered_by_id=consultation.created_by_id
+                            or 1,  # NOTE: this a very rare edge case with bad data in dev
                             questionnaire_response_id=questionnaire_response.id,
                             created_by_id=consultation.created_by_id or 1,
-                            updated_by=consultation.last_edited_by,
+                            updated_by_id=consultation.last_edited_by_id
+                            or consultation.created_by_id
+                            or 1,
                             created_date=consultation.created_date,
                             modified_date=consultation.modified_date,
                             meta={
@@ -647,10 +712,13 @@ def migrate_consultations(apps, schema_editor):
         ["migrated_emr_encounter_id"],
     )
 
-    PatientRegistration = apps.get_model("facility", "PatientRegistration")
     paginator = Paginator(
         PatientRegistration.objects.filter(
-            migrated_emr_patient_id__isnull=False, last_consultation__isnull=False
+            Q(is_antenatal=True)
+            | Q(last_menstruation_start_date__isnull=False)
+            | Q(date_of_delivery__isnull=False),
+            migrated_emr_patient_id__isnull=False,
+            last_consultation__isnull=False,
         ).order_by("id"),
         2000,
     )
@@ -716,8 +784,8 @@ def migrate_consultations(apps, schema_editor):
                             ),  # we are reusing the external_id of the patient registration
                             encounter_id=patient_registration.last_consultation.migrated_emr_encounter_id,
                             effective_datetime=patient_registration.created_date,
-                            data_entered_by=patient_registration.created_by,
-                            created_by=patient_registration.created_by,
+                            data_entered_by_id=patient_registration.created_by_id,
+                            created_by_id=patient_registration.created_by_id,
                             created_date=patient_registration.created_date,
                             modified_date=patient_registration.modified_date,
                             alternate_coding={},
@@ -732,14 +800,18 @@ def migrate_consultations(apps, schema_editor):
 def reverse_migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     Encounter = apps.get_model("emr", "Encounter")
+    Questionnaire = apps.get_model("emr", "Questionnaire")
+    Observations = apps.get_model("emr", "Observation")
     PatientConsultation.objects.update(migrated_emr_encounter_id=None)
     Encounter.objects.filter(meta__migration_id=MIGRATION_ID).delete()
+    Questionnaire.objects.filter(meta__migration_id=MIGRATION_ID).delete()
+    Observations.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("facility", "0481_migrate_patient_reg"),
+        ("facility", "0482_migrate_patient_registrations"),
     ]
 
     operations = [

@@ -54,6 +54,10 @@ class AssetLocation(BaseModel, FacilityRelatedPermissionMixin):
         null=True, blank=True, default=None, max_length=200
     )
 
+    migrated_emr_location_id = models.BigIntegerField(
+        null=True, blank=True, default=None
+    )
+
 
 class AssetType(enum.Enum):
     INTERNAL = 50
@@ -183,9 +187,8 @@ class Asset(BaseModel):
     def has_write_permission(request):
         if request.user.asset or request.user.user_type in User.READ_ONLY_TYPES:
             return False
-        return (
-            request.user.is_superuser
-            or request.user.verified
+        return request.user.is_superuser or (
+            request.user.verified
             and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
         )
 

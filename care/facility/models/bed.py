@@ -31,6 +31,8 @@ class Bed(BaseModel):
         AssetLocation, on_delete=models.PROTECT, null=False, blank=False
     )
 
+    migrated_emr_bed_id = models.BigIntegerField(null=True, blank=True, default=None)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

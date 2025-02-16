@@ -2,18 +2,28 @@
 
 from datetime import UTC
 from django.db import migrations
-from care.emr.resources.condition.spec import ClinicalStatusChoices, VerificationStatusChoices
-from care.facility.models.encounter_symptom import ClinicalImpressionStatus, Symptom as SymptomChoices
 import logging
 from django.core.paginator import Paginator
+from care.emr.models import Condition
+from care.facility.utils import disable_auto_time
+from care.emr.resources.condition.spec import (
+    ClinicalStatusChoices,
+    VerificationStatusChoices,
+)
+from care.facility.models.encounter_symptom import (
+    ClinicalImpressionStatus,
+    Symptom as SymptomChoices,
+)
+
+disable_auto_time([Condition])
 
 logger = logging.getLogger(__name__)
 
-MIGRATION_ID = 413380
+MIGRATION_ID = 158445695210
+
 
 def migrate_symptoms(apps, schema_editor):
     Symptom = apps.get_model("facility", "EncounterSymptom")
-    Condition  = apps.get_model("emr", "Condition")
 
     symptom_sct_map = {
         SymptomChoices.FEVER: ("386661006", "Fever"),
@@ -66,10 +76,14 @@ def migrate_symptoms(apps, schema_editor):
     }
 
     logger.debug("Migrating Patient Registrations")
-    symptoms = Symptom.objects.filter(
-        # consultation__migrated_emr_encounter_id__isnull=False,
-    ).order_by("id").select_related("consultation__patient", "consultation")
-    paginator = Paginator(symptoms, 2000)
+    symptoms = (
+        Symptom.objects.filter(
+            consultation__migrated_emr_encounter_id__isnull=False,
+        )
+        .order_by("id")
+        .select_related("consultation__patient", "consultation")
+    )
+    paginator = Paginator(symptoms, 3000)
 
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
@@ -83,32 +97,50 @@ def migrate_symptoms(apps, schema_editor):
                 continue
             condition = Condition(
                 **clinical_status_map.get(symptom.clinical_impression_status, {}),
+                external_id=symptom.external_id,
                 category="problem_list_item",
                 code={
                     "system": "http://snomed.info/sct",
-                    "code": symptom_sct_map.get(symptom.symptom, symptom_sct_map[SymptomChoices.OTHERS])[0],
-                    "display": symptom_sct_map.get(symptom.symptom, symptom_sct_map[SymptomChoices.OTHERS])[1]
+                    "code": symptom_sct_map.get(
+                        symptom.symptom, symptom_sct_map[SymptomChoices.OTHERS]
+                    )[0],
+                    "display": symptom_sct_map.get(
+                        symptom.symptom, symptom_sct_map[SymptomChoices.OTHERS]
+                    )[1],
                 },
                 note=symptom.other_symptom,
                 onset={
-                    "onset_datetime": symptom.onset_date.replace(tzinfo=UTC).isoformat() if symptom.onset_date else None,
+                    "onset_datetime": (
+                        symptom.onset_date.replace(tzinfo=UTC).isoformat()
+                        if symptom.onset_date
+                        else None
+                    ),
                     "onset_age": None,
                     "onset_string": None,
                     "note": None,
                 },
+                abatement={
+                    "abatement_datetime": (
+                        symptom.cure_date.replace(tzinfo=UTC).isoformat()
+                        if symptom.cure_date
+                        else None
+                    ),
+                    "abatement_age": None,
+                    "abatement_string": None,
+                    "note": None,
+                },
                 severity=None,
                 body_site={},
-                recorded_date=None,
+                recorded_date=symptom.created_date,
                 patient_id=symptom.consultation.patient.migrated_emr_patient_id,
                 encounter_id=symptom.consultation.migrated_emr_encounter_id,
-                created_by=symptom.created_by,
-                updated_by=symptom.updated_by,
+                created_by_id=symptom.created_by_id,
+                updated_by_id=symptom.updated_by_id or symptom.created_by_id,
                 created_date=symptom.created_date,
                 modified_date=symptom.modified_date,
                 meta={
                     "migration_id": MIGRATION_ID,
-                    "cured_date": symptom.cure_date.replace(tzinfo=UTC).isoformat() if symptom.cure_date else None,
-                }
+                },
             )
             if symptom.cure_date:
                 condition.clinical_status = ClinicalStatusChoices.resolved
@@ -118,6 +150,7 @@ def migrate_symptoms(apps, schema_editor):
 
         Condition.objects.bulk_create(bulk)
 
+
 def reverse_migrate_symptoms(apps, schema_editor):
     Condition = apps.get_model("emr", "Condition")
     Condition.objects.filter(meta__migration_id=MIGRATION_ID).delete()
@@ -126,7 +159,7 @@ def reverse_migrate_symptoms(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0483_migrate_patientnotes'),
+        ("facility", "0485_migrate_prescriptions_and_medicineadministrations"),
     ]
 
     operations = [

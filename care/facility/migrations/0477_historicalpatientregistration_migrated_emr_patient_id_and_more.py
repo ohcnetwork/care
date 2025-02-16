@@ -3,38 +3,71 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('facility', '0476_facility_default_internal_organization_and_more'),
-        ('users', '0021_rename_gender_user_old_gender_user_geo_organization_and_more'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("facility", "0476_facility_default_internal_organization_and_more"),
+        ("users", "0021_rename_gender_user_old_gender_user_geo_organization_and_more"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='HistoricalPatientRegistration',
+            name="HistoricalPatientRegistration",
         ),
         migrations.AddField(
-            model_name='patientconsultation',
-            name='migrated_emr_encounter_id',
+            model_name="patientconsultation",
+            name="migrated_emr_encounter_id",
             field=models.BigIntegerField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='patientregistration',
-            name='migrated_emr_patient_id',
+            model_name="patientregistration",
+            name="migrated_emr_patient_id",
             field=models.BigIntegerField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name="assetlocation",
+            name="migrated_emr_location_id",
+            field=models.BigIntegerField(blank=True, default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="bed",
+            name="migrated_emr_bed_id",
+            field=models.BigIntegerField(blank=True, default=None, null=True),
         ),
         migrations.CreateModel(
-            name='MigrationTracking',
+            name="MigrationTracking",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('old_model_obj_id', models.BigIntegerField()),
-                ('new_model_obj_id', models.BigIntegerField()),
-                ('field', models.CharField(max_length=255)),
-                ('data', models.TimeField()),
-                ('new_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='new_model', to='contenttypes.contenttype')),
-                ('old_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='old_model', to='contenttypes.contenttype')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("old_model_obj_id", models.BigIntegerField()),
+                ("new_model_obj_id", models.BigIntegerField()),
+                ("field", models.CharField(max_length=255)),
+                ("data", models.TimeField()),
+                (
+                    "new_model",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="new_model",
+                        to="contenttypes.contenttype",
+                    ),
+                ),
+                (
+                    "old_model",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="old_model",
+                        to="contenttypes.contenttype",
+                    ),
+                ),
             ],
         ),
     ]
