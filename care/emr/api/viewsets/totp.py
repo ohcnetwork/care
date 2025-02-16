@@ -1,11 +1,7 @@
 from secrets import choice
 from string import digits
 
-from celery import shared_task
-from django.conf import settings
-from django.contrib.auth.hashers import make_password
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
+from django.contrib.auth.hashers import check_password, make_password
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
@@ -17,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.emr.tasks.totp import send_totp_enabled_email
 from care.users.models import User
 from care.utils.encryption import decrypt_string, encrypt_string
 
@@ -41,8 +38,8 @@ class TOTPLoginRequest(BaseModel):
 
 
 class TOTPLoginResponse(BaseModel):
-    message: str
-    status: str
+    access: str
+    refresh: str
 
 
 class TOTPDisableRequest(BaseModel):
@@ -51,31 +48,6 @@ class TOTPDisableRequest(BaseModel):
 
 class TOTPDisableResponse(BaseModel):
     message: str
-
-
-@shared_task(
-    autoretry_for=(Exception,),
-    retry_kwargs={"max_retries": 3},
-    expires=10 * 60,
-)
-def send_totp_enabled_email(user_email: str, user_name: str):
-    """Send email notification when TOTP is enabled"""
-    context = {
-        "username": user_name,
-        "email": user_email,
-        "enabled_at": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
-    }
-
-    email_html_message = render_to_string("email/totp_enabled.html", context)
-
-    msg = EmailMessage(
-        "Two-Factor Authentication Enabled",
-        email_html_message,
-        settings.DEFAULT_FROM_EMAIL,
-        (user_email,),
-    )
-    msg.content_subtype = "html"
-    msg.send()
 
 
 class TOTPViewSet(EMRBaseViewSet):
@@ -150,7 +122,7 @@ class TOTPViewSet(EMRBaseViewSet):
             mfa_settings = user.mfa_settings or {}
             mfa_settings["totp"] = {
                 "enabled": True,
-                "totp_enabled_at": timezone.now().isoformat(),
+                "enabled_at": timezone.now().isoformat(),
                 "backup_codes": [
                     {
                         "code": make_password(code),
@@ -190,36 +162,31 @@ class TOTPViewSet(EMRBaseViewSet):
     def login(self, request):
         request_data = TOTPLoginRequest(**request.data)
 
-        try:
-            token = RefreshToken(request_data.temp_token)
-            if not token.get("temp_token"):
-                return Response(
-                    {"error": "Invalid token type"}, status=status.HTTP_400_BAD_REQUEST
-                )
+        token = RefreshToken(request_data.temp_token)
+        if not token.get("temp_token"):
+            return Response(
+                {"error": "Invalid token type"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-            user = User.objects.get(external_id=token["user_id"])
-            totp = TOTP(decrypt_string(user.totp_secret))
+        user = User.objects.get(external_id=token["user_id"])
+        totp = TOTP(decrypt_string(user.totp_secret))
 
-            if totp.verify(request_data.code):
-                refresh = RefreshToken.for_user(user)
+        if totp.verify(request_data.code):
+            refresh = RefreshToken.for_user(user)
 
-                try:
-                    token.blacklist()
-                except AttributeError:
-                    pass
-
-                return Response(
-                    {
-                        "access": str(refresh.access_token),
-                        "refresh": str(refresh),
-                    }
-                )
+            try:
+                token.blacklist()
+            except AttributeError:
+                pass
 
             return Response(
-                {"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST
+                {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                }
             )
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
         description="Disable TOTP-based two-factor authentication",
@@ -302,3 +269,65 @@ class TOTPViewSet(EMRBaseViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return None
+
+    @extend_schema(
+        description="Login using a backup code",
+        request=TOTPLoginRequest,
+        responses={
+            200: TOTPLoginResponse,
+            400: {"type": "object", "properties": {"error": {"type": "string"}}},
+        },
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[],
+        authentication_classes=[],
+    )
+    def backup_login(self, request):
+        request_data = TOTPLoginRequest(**request.data)
+        token = RefreshToken(request_data.temp_token)
+
+        if not token.get("temp_token"):
+            return Response(
+                {"error": "Invalid token type"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.get(external_id=token["user_id"])
+        mfa_settings = user.mfa_settings or {}
+        backup_codes = mfa_settings.get("totp", {}).get("backup_codes", [])
+
+        matching_code = next(
+            (
+                code
+                for code in backup_codes
+                if not code["used"]
+                and check_password(request_data.backup_code, code["code"])
+            ),
+            None,
+        )
+
+        if not matching_code:
+            return Response(
+                {"error": "Invalid or already used backup code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        matching_code.update({"used": True, "used_at": timezone.now().isoformat()})
+        user.mfa_settings = mfa_settings
+        user.save(update_fields=["mfa_settings"])
+
+        refresh = RefreshToken.for_user(user)
+
+        try:
+            token.blacklist()
+        except AttributeError:
+            pass
+
+        return Response(
+            {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
+        )
