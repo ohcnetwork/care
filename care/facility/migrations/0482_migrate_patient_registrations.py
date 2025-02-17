@@ -8,6 +8,7 @@ from care.emr.models import (
     QuestionnaireResponse,
     Condition,
 )
+from care.emr.models import Patient, QuestionnaireOrganization
 from care.emr.models.notes import NoteThread, NoteMessage
 from care.facility.utils import disable_auto_time
 
@@ -19,6 +20,8 @@ disable_auto_time(
         Questionnaire,
         QuestionnaireResponse,
         Organization,
+        Patient,
+        QuestionnaireOrganization,
     ]
 )
 
@@ -144,7 +147,6 @@ def _get_org(Organization, obj):
 
 
 def migrate_patient_registrations(apps, schema_editor):
-    from care.emr.models import Patient, QuestionnaireOrganization
 
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
 

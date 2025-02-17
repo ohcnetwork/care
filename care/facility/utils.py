@@ -1,8 +1,9 @@
 # ruff: noqa: SLF001
+from django.db.models import Model
 from django.utils import timezone
 
 
-def disable_auto_time(models):
+def disable_auto_time(models: list[Model]):
     for model in models:
         # disable auto_now_add and auto_now
         model._meta.get_field("created_date").auto_now_add = False

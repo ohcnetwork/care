@@ -1816,6 +1816,10 @@ def migrate_daily_rounds(apps, schema_editor):
                 encounter.priority = patient_category
                 encounter.save()
 
+            # these fields are calculated fields, by default they are 0 so we can safely set them to None
+            daily_round.total_intake_calculated = daily_round.total_intake_calculated or None
+            daily_round.total_output_calculated = daily_round.total_output_calculated or None
+
             questionnaire_responses = {}
             # fmt: off
             simple_fields = [
@@ -1853,8 +1857,6 @@ def migrate_daily_rounds(apps, schema_editor):
                 ("sodium", sodium),
                 ("potassium", potassium),
                 ("blood_sugar_level", blood_sugar_level),
-                ("total_intake_calculated", total_intake_calculated),
-                ("total_output_calculated", total_output_calculated),
                 ("dialysis_fluid_balance", dialysis_fluid_balance),
                 ("dialysis_net_balance", dialysis_net_balance),
             ]

@@ -2,13 +2,42 @@
 import logging
 from django.db import migrations
 from django.core.management import call_command
+from django.utils import timezone
 
+from care.emr.models.organization import Organization, OrganizationUser
+from care.security.models import RoleModel
 logger = logging.getLogger(__name__)
 
 MIGRATION_ID = 158445695202
 
+USER_TYPE_TO_ROLE = {
+    2: "Staff",  # Transportation
+    3: "Staff",  # Pharmacist
+    5: "Staff",  # Volunteer
+    9: "Staff Read Only",  # StaffReadOnly
+    10: "Staff",  # Staff
+    13: "Nurse Read Only",  # NurseReadOnly
+    14: "Nurse",  # Nurse
+    15: "Doctor",  # Doctor
+    20: "Doctor",  # Reserved
+    21: "Geo Admin",  # WardAdmin
+    23: "Geo Admin",  # LocalBodyAdmin
+    25: "Geo Admin",  # DistrictLabAdmin
+    29: "Geo Admin Read Only",  # DistrictReadOnlyAdmin
+    30: "Geo Admin",  # DistrictAdmin
+    35: "Geo Admin",  # StateLabAdmin
+    39: "Geo Admin Read Only",  # StateReadOnlyAdmin
+    40: "Geo Admin",  # StateAdmin
+}
 
-def _get_org(Organization, obj):
+
+def get_role_for_user_type(user_type):
+    if role_name := USER_TYPE_TO_ROLE.get(user_type):
+        if role := RoleModel.objects.filter(name=role_name).first():
+            return role.id
+
+
+def _get_org(obj):
     state = None
     district = None
     local_body = None
@@ -50,22 +79,129 @@ def _get_org(Organization, obj):
 
 def migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
-    Organization = apps.get_model("emr", "Organization")
     logger.debug("Migrating Users")
     call_command("sync_permissions_roles")
+
+    staff_role_org, _ = Organization.objects.get_or_create(
+        name="Staff Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    staff_read_only_role_org, _ = Organization.objects.get_or_create(
+        name="Staff Read Only Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    nurse_role_org, _ = Organization.objects.get_or_create(
+        name="Nurse Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    nurse_read_only_role_org, _ = Organization.objects.get_or_create(
+        name="Nurse Read Only Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    doctor_role_org, _ = Organization.objects.get_or_create(
+        name="Doctor Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    geo_admin_role_org, _ = Organization.objects.get_or_create(
+        name="Geo Admin Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    geo_admin_read_only_role_org, _ = Organization.objects.get_or_create(
+        name="Geo Admin Read Only Role",
+        org_type="role",
+        defaults={
+            "system_generated": True,
+            "meta": {"migration_id": MIGRATION_ID},
+        },
+    )
+
+    user_type_to_org = {
+        2: staff_role_org,
+        3: staff_role_org,
+        5: staff_role_org,
+        9: staff_read_only_role_org,
+        10: staff_role_org,
+        13: nurse_read_only_role_org,
+        14: nurse_role_org,
+        15: doctor_role_org,
+        20: doctor_role_org,
+        21: geo_admin_role_org,
+        23: geo_admin_role_org,
+        25: geo_admin_role_org,
+        29: geo_admin_read_only_role_org,
+        30: geo_admin_role_org,
+        35: geo_admin_role_org,
+        39: geo_admin_read_only_role_org,
+        40: geo_admin_role_org,
+    }
+
+    bulk_roles = []
     bulk_update = []
     for user in User.objects.filter(geo_organization__isnull=True).select_related(
         "state", "district", "local_body", "ward"
     ):
-        if user.geo_organization:
+        if not user.geo_organization:
+            if geo_org := _get_org(user):
+                user.geo_organization_id = geo_org.id
+                bulk_update.append(user)
+
+        role_id = get_role_for_user_type(user.old_user_type)
+        if not role_id:
             continue
-        geo_org = _get_org(Organization, user)
-        if not geo_org:
-            continue
-        user.geo_organization = geo_org
+
+        if user.geo_organization_id:
+            bulk_roles.append((user.geo_organization_id, user.id, role_id, user.created_by_id))
+
+        if role_org := user_type_to_org.get(user.old_user_type):
+            bulk_roles.append((role_org.id, user.id, role_id, user.created_by_id))
+
         logger.debug(f"User: {user.id=}, {geo_org.name=}")
-        bulk_update.append(user)
     User.objects.bulk_update(bulk_update, ["geo_organization"])
+
+    time_now = timezone.now()
+    OrganizationUser.objects.bulk_create(
+        [
+            OrganizationUser(
+                organization_id=role_org_id,
+                user_id=user_id,
+                role_id=role_id,
+                created_by_id=created_by_id,
+                created_date=time_now,
+                meta={"migration_id": MIGRATION_ID},
+            )
+            for role_org_id, user_id, role_id, created_by_id in bulk_roles
+        ]
+    )
 
 
 def reverse_migrate_users(apps, schema_editor):
@@ -73,6 +209,10 @@ def reverse_migrate_users(apps, schema_editor):
     User.objects.filter(geo_organization__meta__migration_id=MIGRATION_ID).update(
         geo_organization=None
     )
+    Organization = apps.get_model("emr", "Organization")
+    OrganizationUser = apps.get_model("emr", "OrganizationUser")
+    Organization.objects.filter(meta__migration_id=MIGRATION_ID).delete()
+    OrganizationUser.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):
