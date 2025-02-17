@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
-from care.emr.tasks.totp import send_totp_enabled_email
+from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
 from care.users.models import User
 from care.utils.encryption import decrypt_string, encrypt_string
 
@@ -220,6 +220,8 @@ class TOTPViewSet(EMRBaseViewSet):
         user.totp_secret = None
         user.save(update_fields=["mfa_settings", "totp_secret"])
 
+        send_totp_disabled_email.delay(user.email, user.username)
+
         response_data = TOTPDisableResponse(
             message="Two-factor authentication has been disabled successfully"
         )
@@ -302,8 +304,7 @@ class TOTPViewSet(EMRBaseViewSet):
             (
                 code
                 for code in backup_codes
-                if not code["used"]
-                and check_password(request_data.backup_code, code["code"])
+                if not code["used"] and check_password(request_data.code, code["code"])
             ),
             None,
         )

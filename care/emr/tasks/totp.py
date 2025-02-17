@@ -28,3 +28,28 @@ def send_totp_enabled_email(user_email: str, user_name: str):
     )
     msg.content_subtype = "html"
     msg.send()
+
+
+@shared_task(
+    autoretry_for=(Exception,),
+    retry_kwargs={"max_retries": 3},
+    expires=10 * 60,
+)
+def send_totp_disabled_email(user_email: str, user_name: str):
+    """Send email notification when TOTP is disabled"""
+    context = {
+        "username": user_name,
+        "email": user_email,
+        "disabled_at": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+    }
+
+    email_html_message = render_to_string("email/totp_disabled.html", context)
+
+    msg = EmailMessage(
+        "Two-Factor Authentication Disabled",
+        email_html_message,
+        settings.DEFAULT_FROM_EMAIL,
+        (user_email,),
+    )
+    msg.content_subtype = "html"
+    msg.send()
