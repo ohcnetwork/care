@@ -37,6 +37,10 @@ teardown:
 load-dummy-data:
 	docker compose exec backend bash -c "python manage.py load_dummy_data"
 
+load-seed-data:
+	docker compose exec backend bash -c "python manage.py load_govt_organization --state kerala --load-districts --load-local-bodies --load-wards"
+	docker compose exec backend bash -c "python manage.py sync_permissions_roles"
+
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
 
