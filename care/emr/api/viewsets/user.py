@@ -104,8 +104,7 @@ class UserViewSet(EMRModelViewSet):
     )
     def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.authorize_update({}, user):
-            raise PermissionDenied("Permission Denied")
+        self.authorize_update({}, user)
 
         if request.method == "POST":
             serializer = UserImageUploadSerializer(user, data=request.data)
