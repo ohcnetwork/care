@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 argon2-cffi = "==23.1.0"
 authlib = "==1.4.0"
-boto3 = "==1.36.12"
+boto3 = "==1.36.22"
 celery = "==5.4.0"
 django = "==5.1.4"
 django-environ = "==0.12.0"
