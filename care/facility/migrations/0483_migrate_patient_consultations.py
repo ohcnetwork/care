@@ -357,6 +357,10 @@ def migrate_consultations(apps, schema_editor):
                 elif consultation:
                     hospitalization["admit_source"] = "outp"
 
+            current_location = None
+            if consultation.current_bed_id:
+                current_location = consultation.current_bed.bed.migrated_emr_bed_id
+
             encounter = Encounter.objects.create(
                 external_id=consultation.external_id,
                 status="completed" if consultation.discharge_date else "in_progress",
@@ -378,6 +382,7 @@ def migrate_consultations(apps, schema_editor):
                 updated_by_id=consultation.last_edited_by_id,
                 created_date=consultation.created_date,
                 modified_date=consultation.modified_date,
+                current_location_id=current_location,
             )
 
             for cbed in consultation.consultationbed_set.all():
