@@ -66,8 +66,6 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     flags: list[str] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj, user=None):
+    def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if user:
-            cls.add_permissions(mapping, user, obj)
         mapping["flags"] = obj.get_facility_flags()

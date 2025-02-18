@@ -115,7 +115,7 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
     permissions: list[str] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj, user=None):
+    def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.organization.spec import OrganizationReadSpec
         from care.emr.resources.user.spec import UserSpec
 
@@ -128,5 +128,3 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
             mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
-        if user:
-            cls.add_permissions(mapping, user, obj)

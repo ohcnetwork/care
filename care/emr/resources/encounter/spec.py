@@ -129,7 +129,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     location_history: list[dict] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj, user=None):
+    def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
         if obj.appointment:
             mapping["appointment"] = TokenBookingReadSpec.serialize(
@@ -152,5 +152,3 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
             )
         ]
         cls.serialize_audit_users(mapping, obj)
-        if user:
-            cls.add_permissions(mapping, user, obj)

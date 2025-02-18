@@ -8,6 +8,12 @@ from care.security.models import RolePermission
 class PermissionsMixin(EMRResource):
     permissions: list[str] = []
 
+    @classmethod
+    def perform_extra_user_serialization(cls, mapping, obj, user=None):
+        super().perform_extra_user_serialization(mapping, obj, user)
+        if user:
+            cls.add_permissions(mapping, user, obj)
+
 
 class PatientPermissionsMixin(PermissionsMixin):
     @classmethod
