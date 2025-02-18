@@ -501,9 +501,13 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_organization_user(self.organization, self.user, role)
 
-        response = self.client.post(
-            self.base_url, self._create_questionnaire(), format="json"
-        )
+        questionnaire_data = self._create_questionnaire()
+        questionnaire_data["title"] = ""
+        response = self.client.post(self.base_url, questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+        questionnaire_data["title"] = self.fake.text(max_nb_chars=255)
+        response = self.client.post(self.base_url, questionnaire_data, format="json")
         self.assertEqual(response.status_code, 200)
 
     def test_questionnaire_retrieval_access_denied(self):
