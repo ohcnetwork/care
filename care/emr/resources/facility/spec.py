@@ -3,6 +3,7 @@ from pydantic import UUID4
 from care.emr.models import Organization
 from care.emr.resources.base import EMRResource
 from care.emr.resources.organization.spec import OrganizationReadSpec
+from care.emr.resources.permissions import FacilityPermissionsMixin
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import (
     REVERSE_FACILITY_TYPES,
@@ -61,10 +62,12 @@ class FacilityReadSpec(FacilityBaseSpec):
             ).to_json()
 
 
-class FacilityRetrieveSpec(FacilityReadSpec):
+class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     flags: list[str] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
+    def perform_extra_serialization(cls, mapping, obj, user=None):
         super().perform_extra_serialization(mapping, obj)
+        if user:
+            cls.add_permissions(mapping, user, obj)
         mapping["flags"] = obj.get_facility_flags()

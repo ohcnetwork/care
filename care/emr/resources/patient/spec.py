@@ -8,6 +8,7 @@ from pydantic import UUID4, Field, field_validator, model_validator
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
+from care.emr.resources.permissions import PatientPermissionsMixin
 
 
 class BloodGroupChoices(str, Enum):
@@ -106,7 +107,7 @@ class PatientPartialSpec(EMRResource):
         mapping["id"] = str(uuid.uuid4())
 
 
-class PatientRetrieveSpec(PatientListSpec):
+class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
     geo_organization: dict = {}
 
     created_by: dict | None = None
@@ -114,7 +115,7 @@ class PatientRetrieveSpec(PatientListSpec):
     permissions: list[str] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
+    def perform_extra_serialization(cls, mapping, obj, user=None):
         from care.emr.resources.organization.spec import OrganizationReadSpec
         from care.emr.resources.user.spec import UserSpec
 
@@ -127,3 +128,5 @@ class PatientRetrieveSpec(PatientListSpec):
             mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+        if user:
+            cls.add_permissions(mapping, user, obj)

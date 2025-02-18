@@ -27,6 +27,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationListSpec,
 )
 from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.facility.models import Facility
 
@@ -119,17 +120,16 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
 
 
-class EncounterRetrieveSpec(EncounterListSpec):
+class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}
     created_by: dict = {}
     updated_by: dict = {}
     organizations: list[dict] = []
     current_location: dict | None = None
     location_history: list[dict] = []
-    permissions: list[str] = []
 
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
+    def perform_extra_serialization(cls, mapping, obj, user=None):
         super().perform_extra_serialization(mapping, obj)
         if obj.appointment:
             mapping["appointment"] = TokenBookingReadSpec.serialize(
@@ -152,3 +152,5 @@ class EncounterRetrieveSpec(EncounterListSpec):
             )
         ]
         cls.serialize_audit_users(mapping, obj)
+        if user:
+            cls.add_permissions(mapping, user, obj)
