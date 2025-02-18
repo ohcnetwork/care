@@ -3,11 +3,14 @@ from string import digits
 
 from django.contrib.auth.hashers import check_password, make_password
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -66,13 +69,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         mfa_settings = user.mfa_settings or {}
 
-        if self._check_totp_enabled(mfa_settings) is None:
-            return Response(
-                {
-                    "error": "Two-factor authentication is already enabled for your account"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        self._validate_totp_state(mfa_settings, required_state=False)
 
         secret = random_base32()
         encrypted_secret = encrypt_string(secret)
@@ -109,9 +106,11 @@ class TOTPViewSet(EMRBaseViewSet):
         user = request.user
 
         if not user.totp_secret:
-            return Response(
-                {"error": "TOTP not configured"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            raise ValidationError("TOTP not configured for your account")
+
+        mfa_settings = user.mfa_settings or {}
+
+        self._validate_totp_state(mfa_settings, required_state=False)
 
         secret = decrypt_string(user.totp_secret)
         totp = TOTP(secret)
@@ -119,7 +118,6 @@ class TOTPViewSet(EMRBaseViewSet):
         if totp.verify(request_data.code):
             backup_codes = self._generate_backup_codes()
 
-            mfa_settings = user.mfa_settings or {}
             mfa_settings["totp"] = {
                 "enabled": True,
                 "enabled_at": timezone.now().isoformat(),
@@ -152,6 +150,20 @@ class TOTPViewSet(EMRBaseViewSet):
             200: TOTPLoginResponse,
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
+    )
+    # @method_decorator(
+    #     ratelimit(key="user", rate="1/m", method="POST", block=True), name="dispatch"
+    # )
+    @method_decorator(
+        ratelimit(
+            key=lambda g, r: r.POST.get("temp_token", "unknown")
+            if hasattr(r, "POST")
+            else "unknown",
+            rate="1/m",
+            method="POST",
+            block=True,
+        ),
+        name="dispatch",
     )
     @action(
         detail=False,
@@ -201,15 +213,12 @@ class TOTPViewSet(EMRBaseViewSet):
         password = TOTPDisableRequest(**request.data).password
 
         if not request.user.check_password(password):
-            return Response(
-                {"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            raise AuthenticationFailed
 
         user = request.user
         mfa_settings = user.mfa_settings or {}
 
-        if error_response := self._check_totp_enabled(mfa_settings):
-            return error_response
+        self._validate_totp_state(mfa_settings, required_state=True)
 
         mfa_settings["totp"] = {
             "enabled": False,
@@ -244,8 +253,7 @@ class TOTPViewSet(EMRBaseViewSet):
         user = request.user
         mfa_settings = user.mfa_settings or {}
 
-        if error_response := self._check_totp_enabled(mfa_settings):
-            return error_response
+        self._validate_totp_state(mfa_settings, required_state=True)
 
         backup_codes = self._generate_backup_codes()
         mfa_settings["totp"]["backup_codes"] = [
@@ -262,15 +270,18 @@ class TOTPViewSet(EMRBaseViewSet):
         return Response({"backup_codes": backup_codes})
 
     @staticmethod
-    def _check_totp_enabled(mfa_settings: dict):
-        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+    def _validate_totp_state(mfa_settings: dict, required_state: bool):
+        is_enabled = mfa_settings.get("totp", {}).get("enabled", False)
 
-        if not totp_enabled:
-            return Response(
-                {"error": "Two-factor authentication is not enabled for your account"},
-                status=status.HTTP_400_BAD_REQUEST,
+        if required_state and not is_enabled:
+            raise ValidationError(
+                "Two-factor authentication is not enabled for your account"
             )
-        return None
+
+        if not required_state and is_enabled:
+            raise ValidationError(
+                "Two-factor authentication is already enabled for your account"
+            )
 
     @extend_schema(
         description="Login using a backup code",
