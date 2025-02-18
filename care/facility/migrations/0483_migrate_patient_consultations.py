@@ -4,31 +4,6 @@ import logging
 from django.db import migrations
 from django.db.models import Q
 from django.core.paginator import Paginator
-from care.emr.models import (
-    Encounter,
-    QuestionnaireOrganization,
-    FacilityLocation,
-    FacilityLocationEncounter,
-    QuestionnaireTag,
-    Questionnaire,
-    QuestionnaireResponse,
-    Observation,
-    Organization,
-)
-from care.facility.utils import disable_auto_time
-
-disable_auto_time(
-    [
-        Encounter,
-        QuestionnaireOrganization,
-        FacilityLocation,
-        FacilityLocationEncounter,
-        QuestionnaireTag,
-        Questionnaire,
-        QuestionnaireResponse,
-        Observation,
-    ]
-)
 
 
 logger = logging.getLogger(__name__)
@@ -98,6 +73,30 @@ def investigation_to_text(investigation):
 
 
 def migrate_consultations(apps, schema_editor):
+    from care.facility.utils import disable_auto_time
+    from care.emr.models import (
+        Encounter,
+        FacilityLocation,
+        FacilityLocationEncounter,
+        Questionnaire,
+        QuestionnaireTag,
+        QuestionnaireResponse,
+        QuestionnaireOrganization,
+        Observation,
+        Organization,
+    )
+
+    enable_auto_time = disable_auto_time(
+        Encounter,
+        FacilityLocation,
+        FacilityLocationEncounter,
+        Questionnaire,
+        QuestionnaireTag,
+        QuestionnaireResponse,
+        QuestionnaireOrganization,
+        Observation,
+        Organization,
+    )
 
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
@@ -795,6 +794,8 @@ def migrate_consultations(apps, schema_editor):
                     ]
                 )
         Observation.objects.bulk_create(bulk)
+
+    enable_auto_time()
 
 
 def reverse_migrate_consultations(apps, schema_editor):

@@ -4,18 +4,7 @@ from datetime import UTC
 from django.db import migrations
 import logging
 from django.core.paginator import Paginator
-from care.emr.models import Condition
-from care.facility.utils import disable_auto_time
-from care.emr.resources.condition.spec import (
-    ClinicalStatusChoices,
-    VerificationStatusChoices,
-)
-from care.facility.models.encounter_symptom import (
-    ClinicalImpressionStatus,
-    Symptom as SymptomChoices,
-)
 
-disable_auto_time([Condition])
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +12,18 @@ MIGRATION_ID = 158445695210
 
 
 def migrate_symptoms(apps, schema_editor):
+    from care.emr.models import Condition
+    from care.facility.utils import disable_auto_time
+    from care.emr.resources.condition.spec import (
+        ClinicalStatusChoices,
+        VerificationStatusChoices,
+    )
+    from care.facility.models.encounter_symptom import (
+        ClinicalImpressionStatus,
+        Symptom as SymptomChoices,
+    )
+
+    enable_auto_time = disable_auto_time(Condition)
     Symptom = apps.get_model("facility", "EncounterSymptom")
 
     symptom_sct_map = {
@@ -149,6 +150,8 @@ def migrate_symptoms(apps, schema_editor):
             logger.debug(f"Created Condition: {condition.id}")
 
         Condition.objects.bulk_create(bulk)
+
+    enable_auto_time()
 
 
 def reverse_migrate_symptoms(apps, schema_editor):

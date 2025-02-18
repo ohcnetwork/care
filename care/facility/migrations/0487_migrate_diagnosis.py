@@ -5,13 +5,6 @@ from django.db import migrations
 import logging
 from django.core.paginator import Paginator
 
-from care.emr.resources.condition.spec import VerificationStatusChoices
-from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
-from care.emr.models import Condition
-from care.facility.utils import disable_auto_time
-
-
-disable_auto_time([Condition])
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +17,12 @@ def load_diagnosis_map():
 
 
 def migrate_diagnosis(apps, schema_editor):
+    from care.emr.resources.condition.spec import VerificationStatusChoices
+    from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
+    from care.emr.models import Condition
+    from care.facility.utils import disable_auto_time
+
+    enable_auto_time = disable_auto_time(Condition)
 
     ConsultationDiagnosis = apps.get_model("facility", "ConsultationDiagnosis")
 
@@ -99,6 +98,8 @@ def migrate_diagnosis(apps, schema_editor):
             bulk.append(condition)
             logger.debug(f"Created Condition: {condition.id}")
         Condition.objects.bulk_create(bulk)
+
+    enable_auto_time()
 
 
 def reverse_migrate_diagnosis(apps, schema_editor):

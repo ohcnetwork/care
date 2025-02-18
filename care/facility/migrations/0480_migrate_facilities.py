@@ -120,7 +120,9 @@ def migrate_facility_users(apps, schema_editor):
             },
         )
 
-        for facility_user_obj in FacilityUser.objects.filter(facility_id=facility.id).prefetch_related("user"):
+        for facility_user_obj in FacilityUser.objects.filter(
+            facility_id=facility.id
+        ).prefetch_related("user"):
             facility_user = facility_user_obj.user
             role_id = get_role_for_user_type(facility_user.old_user_type)
             if not role_id:

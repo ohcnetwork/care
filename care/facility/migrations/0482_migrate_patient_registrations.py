@@ -2,28 +2,7 @@
 import logging
 from django.db import migrations
 from django.core.paginator import Paginator
-from care.emr.models import (
-    Organization,
-    Questionnaire,
-    QuestionnaireResponse,
-    Condition,
-)
-from care.emr.models import Patient, QuestionnaireOrganization
-from care.emr.models.notes import NoteThread, NoteMessage
-from care.facility.utils import disable_auto_time
 
-disable_auto_time(
-    [
-        NoteThread,
-        NoteMessage,
-        Condition,
-        Questionnaire,
-        QuestionnaireResponse,
-        Organization,
-        Patient,
-        QuestionnaireOrganization,
-    ]
-)
 
 logger = logging.getLogger(__name__)
 
@@ -147,6 +126,27 @@ def _get_org(Organization, obj):
 
 
 def migrate_patient_registrations(apps, schema_editor):
+    from care.facility.utils import disable_auto_time
+    from care.emr.models import (
+        Organization,
+        Questionnaire,
+        QuestionnaireResponse,
+        QuestionnaireOrganization,
+        Condition,
+        Patient,
+    )
+    from care.emr.models.notes import NoteThread, NoteMessage
+
+    enable_auto_time = disable_auto_time(
+        NoteThread,
+        NoteMessage,
+        Condition,
+        Questionnaire,
+        QuestionnaireResponse,
+        Organization,
+        Patient,
+        QuestionnaireOrganization,
+    )
 
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
 
@@ -429,6 +429,8 @@ def migrate_patient_registrations(apps, schema_editor):
         ],
         ["migrated_emr_patient_id"],
     )
+
+    enable_auto_time()
 
 
 def reverse_migrate_patient_registrations(apps, schema_editor):

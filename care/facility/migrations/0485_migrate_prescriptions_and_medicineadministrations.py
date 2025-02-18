@@ -8,13 +8,6 @@ from django.db import migrations
 from django.db.models import F, Value, Func
 from django.db.models.fields.json import JSONField
 
-from care.emr.models.medication_request import MedicationRequest
-from care.emr.models.medication_administration import MedicationAdministration
-from care.facility.utils import disable_auto_time
-
-
-disable_auto_time([MedicationRequest, MedicationAdministration])
-
 logger = logging.getLogger(__name__)
 
 MIGRATION_ID = 158445695209
@@ -429,6 +422,12 @@ def _get_administration_objects(
 
 
 def migrate_prescriptions_and_administrations(apps, schema_editor):
+    from care.facility.utils import disable_auto_time
+    from care.emr.models.medication_request import MedicationRequest
+    from care.emr.models.medication_administration import MedicationAdministration
+
+    enable_auto_time = disable_auto_time(MedicationRequest, MedicationAdministration)
+
     logger.debug("Migrating Prescriptions")
     Prescription = apps.get_model("facility", "Prescription")
     paginator = Paginator(
@@ -466,6 +465,8 @@ def migrate_prescriptions_and_administrations(apps, schema_editor):
         )
     )
     logger.debug("Migrating Prescriptions and Medicine Administrations Done")
+
+    enable_auto_time()
 
 
 def reverse_migrate_prescriptions_and_administrations(apps, schema_editor):

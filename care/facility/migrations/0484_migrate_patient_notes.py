@@ -5,10 +5,6 @@ import logging
 from django.db import migrations, models
 from django.core.paginator import Paginator
 
-from care.emr.models.notes import NoteMessage, NoteThread
-from care.facility.utils import disable_auto_time
-
-disable_auto_time([NoteMessage, NoteThread])
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +12,11 @@ MIGRATION_ID = 158445695207
 
 
 def migrate_patient_notes(apps, schema_editor):
+    from care.facility.utils import disable_auto_time
+    from care.emr.models.notes import NoteMessage, NoteThread
+
+    enable_auto_time = disable_auto_time(NoteMessage, NoteThread)
+
     logger.debug("Migrating Patient Notes")
     PatientNotes = apps.get_model("facility", "PatientNotes")
     DOCTORS = 10
@@ -95,6 +96,8 @@ def migrate_patient_notes(apps, schema_editor):
             )
     query.update(meta={"migration_id": MIGRATION_ID})
     logger.debug("Migrating Patient Notes Done")
+
+    enable_auto_time()
 
 
 def reverse_migrate_patient_notes(apps, schema_editor):

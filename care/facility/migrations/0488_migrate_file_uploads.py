@@ -3,11 +3,7 @@ import uuid
 import re
 from django.db import migrations
 from django.core.paginator import Paginator
-from care.emr.models import FileUpload as NewFileUpload
-from care.facility.utils import disable_auto_time
 
-
-disable_auto_time([NewFileUpload])
 
 MIGRATION_ID = 158445695212
 
@@ -23,6 +19,11 @@ def filter_id(id):
 
 
 def migrate_file_uploads(apps, schema_editor):
+    from care.emr.models import FileUpload as NewFileUpload
+    from care.facility.utils import disable_auto_time
+
+    enable_auto_time = disable_auto_time(NewFileUpload)
+
     OldFileUpload = apps.get_model("facility", "FileUpload")
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
@@ -99,6 +100,8 @@ def migrate_file_uploads(apps, schema_editor):
             bulk_create_data,
             # ignore_conflicts=True, # uncomment this line if for some reason you want to run this migration again without reverse migration
         )
+
+    enable_auto_time()
 
 
 def reverse_migrate_file_uploads(apps, schema_editor):
