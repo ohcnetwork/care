@@ -37,6 +37,8 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.security.authorization.encounter import EncounterAccess
+from care.security.models import RolePermission
 
 
 class LiveFilter(filters.CharFilter):
@@ -251,6 +253,31 @@ class EncounterViewSet(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    def get_permissions_for_encounter(self, user, encounter):
+        encounter_access = EncounterAccess()
+        roles = encounter_access.find_roles_on_encounter(user, encounter)
+        permissions = RolePermission.objects.filter(
+            role_id__in=roles, permission__context__in=["ENCOUNTER", "PATIENT"]
+        ).values_list("permission__slug", flat=True)
+        return list(permissions)
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        instance = self.get_object()
+        response.data["permissions"] = self.get_permissions_for_encounter(
+            request.user, instance
+        )
+        return response
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        for item in response.data["results"]:
+            encounter = get_object_or_404(Encounter, external_id=item["id"])
+            item["permissions"] = self.get_permissions_for_encounter(
+                request.user, encounter
+            )
+        return response
 
 
 def dev_preview_discharge_summary(request, encounter_id):

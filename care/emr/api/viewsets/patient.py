@@ -20,7 +20,8 @@ from care.emr.resources.patient.spec import (
 )
 from care.emr.resources.user.spec import UserSpec
 from care.security.authorization import AuthorizationController
-from care.security.models import RoleModel
+from care.security.authorization.patient import PatientAccess
+from care.security.models import RoleModel, RolePermission
 from care.users.models import User
 
 
@@ -75,6 +76,22 @@ class PatientViewSet(EMRModelViewSet):
         return AuthorizationController.call(
             "get_filtered_patients", qs, self.request.user
         )
+
+    def get_permissions_for_patient(self, user, patient):
+        patient_access = PatientAccess()
+        roles = patient_access.find_roles_on_patient(user, patient)
+        permissions = RolePermission.objects.filter(
+            role_id__in=roles, permission__context__in=["PATIENT", "FACILITY"]
+        ).values_list("permission__slug", flat=True)
+        return list(permissions)
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        instance = self.get_object()
+        response.data["permissions"] = self.get_permissions_for_patient(
+            request.user, instance
+        )
+        return response
 
     class SearchRequestSpec(BaseModel):
         name: str = ""

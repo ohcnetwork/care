@@ -1,3 +1,4 @@
+from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
@@ -6,6 +7,15 @@ from care.security.permissions.facility import FacilityPermissions
 
 
 class FacilityAccess(AuthorizationHandler):
+    def find_roles_on_facility(self, user, facility):
+        facility_orgs = FacilityOrganization.objects.filter(
+            facility=facility,
+        ).values_list("id", flat=True)
+        roles = FacilityOrganizationUser.objects.filter(
+            organization_id__in=facility_orgs, user=user
+        ).values_list("role_id", flat=True)
+        return set(roles)
+
     def can_create_facility(self, user):
         return self.check_permission_in_organization(
             [FacilityPermissions.can_create_facility.name], user

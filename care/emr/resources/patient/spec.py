@@ -111,6 +111,7 @@ class PatientRetrieveSpec(PatientListSpec):
 
     created_by: dict | None = None
     updated_by: dict | None = None
+    permissions: list[str] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

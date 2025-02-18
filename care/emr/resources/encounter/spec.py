@@ -126,6 +126,7 @@ class EncounterRetrieveSpec(EncounterListSpec):
     organizations: list[dict] = []
     current_location: dict | None = None
     location_history: list[dict] = []
+    permissions: list[str] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

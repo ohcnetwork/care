@@ -22,6 +22,8 @@ from care.emr.resources.facility.spec import (
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.security.authorization.facility import FacilityAccess
+from care.security.models import RolePermission
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
 from care.utils.models.validators import (
@@ -96,6 +98,31 @@ class FacilityViewSet(EMRModelViewSet):
             )
             | Q(geo_organization_cache__overlap=organization_ids)
         )
+
+    def get_permissions_for_facility(self, user, facility):
+        facility_access = FacilityAccess()
+        roles = facility_access.find_roles_on_facility(user, facility)
+        permissions = RolePermission.objects.filter(
+            role_id__in=roles, permission__context__in=["FACILITY"]
+        ).values_list("permission__slug", flat=True)
+        return list(permissions)
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        facility = self.get_object()
+        response.data["permissions"] = self.get_permissions_for_facility(
+            request.user, facility
+        )
+        return response
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        for item in response.data["results"]:
+            facility = get_object_or_404(Facility, external_id=item["id"])
+            item["permissions"] = self.get_permissions_for_facility(
+                request.user, facility
+            )
+        return response
 
     def authorize_create(self, instance):
         if not AuthorizationController.call("can_create_facility", self.request.user):
