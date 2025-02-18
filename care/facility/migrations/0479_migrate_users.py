@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from care.emr.models.organization import Organization, OrganizationUser
 from care.security.models import RoleModel
+
 logger = logging.getLogger(__name__)
 
 MIGRATION_ID = 158445695202
@@ -82,67 +83,51 @@ def migrate_users(apps, schema_editor):
     logger.debug("Migrating Users")
     call_command("sync_permissions_roles")
 
+    defaults = {
+        "system_generated": True,
+        "meta": {"migration_id": MIGRATION_ID},
+    }
+
     staff_role_org, _ = Organization.objects.get_or_create(
         name="Staff Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     staff_read_only_role_org, _ = Organization.objects.get_or_create(
         name="Staff Read Only Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     nurse_role_org, _ = Organization.objects.get_or_create(
         name="Nurse Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     nurse_read_only_role_org, _ = Organization.objects.get_or_create(
         name="Nurse Read Only Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     doctor_role_org, _ = Organization.objects.get_or_create(
         name="Doctor Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     geo_admin_role_org, _ = Organization.objects.get_or_create(
         name="Geo Admin Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     geo_admin_read_only_role_org, _ = Organization.objects.get_or_create(
         name="Geo Admin Read Only Role",
         org_type="role",
-        defaults={
-            "system_generated": True,
-            "meta": {"migration_id": MIGRATION_ID},
-        },
+        defaults=defaults,
     )
 
     user_type_to_org = {
@@ -180,7 +165,9 @@ def migrate_users(apps, schema_editor):
             continue
 
         if user.geo_organization_id:
-            bulk_roles.append((user.geo_organization_id, user.id, role_id, user.created_by_id))
+            bulk_roles.append(
+                (user.geo_organization_id, user.id, role_id, user.created_by_id)
+            )
 
         if role_org := user_type_to_org.get(user.old_user_type):
             bulk_roles.append((role_org.id, user.id, role_id, user.created_by_id))
