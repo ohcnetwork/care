@@ -5,7 +5,7 @@ from types import UnionType
 from typing import Annotated, Union, get_origin
 
 import phonenumbers
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
 from care.emr.fhir.schema.base import Coding
@@ -163,3 +163,14 @@ PhoneNumber = Annotated[
         number_format="E164",
     ),
 ]
+
+
+class PeriodSpec(BaseModel):
+    start: datetime.datetime | None = None
+    end: datetime.datetime | None = None
+
+    @model_validator(mode="after")
+    def validate_period(self):
+        if (self.start and self.end) and (self.start > self.end):
+            raise ValueError("Start Date cannot be greater than End Date")
+        return self

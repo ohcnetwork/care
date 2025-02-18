@@ -11,6 +11,7 @@ from care.emr.resources.user.spec import UserSpec
 class FileTypeChoices(str, Enum):
     patient = "patient"
     encounter = "encounter"
+    consent = "consent"
 
 
 class FileCategoryChoices(str, Enum):
@@ -19,6 +20,7 @@ class FileCategoryChoices(str, Enum):
     identity_proof = "identity_proof"
     unspecified = "unspecified"
     discharge_summary = "discharge_summary"
+    consent_attachment = "consent_attachment"
 
 
 class FileUploadBaseSpec(EMRResource):

@@ -2,7 +2,7 @@
 import datetime
 
 from django.utils import timezone
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel
 
 from care.emr.models import (
     Encounter,
@@ -11,7 +11,7 @@ from care.emr.models import (
     TokenBooking,
 )
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
     ClassChoices,
@@ -29,17 +29,6 @@ from care.emr.resources.location.spec import (
 from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.facility.models import Facility
-
-
-class PeriodSpec(BaseModel):
-    start: datetime.datetime | None = None
-    end: datetime.datetime | None = None
-
-    @model_validator(mode="after")
-    def validate_period(self):
-        if (self.start and self.end) and (self.start > self.end):
-            raise ValueError("Start Date cannot be greater than End Date")
-        return self
 
 
 class HospitalizationSpec(BaseModel):
