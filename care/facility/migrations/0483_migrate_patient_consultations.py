@@ -667,7 +667,7 @@ def migrate_consultations(apps, schema_editor):
                     updated_by_id=consultation.last_edited_by_id,
                     created_date=consultation.created_date,
                     modified_date=consultation.modified_date,
-                    responses=[{"values": consultation_questionnaire_responses}],
+                    responses=consultation_questionnaire_responses,
                     meta={
                         "migration_id": MIGRATION_ID,
                     },

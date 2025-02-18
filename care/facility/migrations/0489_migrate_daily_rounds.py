@@ -1427,15 +1427,13 @@ def migrate_daily_rounds(apps, schema_editor):
     )
 
     enable_auto_time = disable_auto_time(
-        [
-            Questionnaire,
-            QuestionnaireResponse,
-            Observation,
-            Encounter,
-            QuestionnaireOrganization,
-            Organization,
-            QuestionnaireTag,
-        ]
+        Questionnaire,
+        QuestionnaireResponse,
+        Observation,
+        Encounter,
+        QuestionnaireOrganization,
+        Organization,
+        QuestionnaireTag,
     )
 
     DailyRound = apps.get_model("facility", "DailyRound")
@@ -2080,11 +2078,12 @@ def migrate_daily_rounds(apps, schema_editor):
             else:
                 selected_questionnaire = detailed_log_update_questionnaire
 
+            responses = list(questionnaire_responses.values())
             questionnaire_response = QuestionnaireResponse.objects.create(
                 questionnaire=selected_questionnaire,
                 encounter=encounter,
                 patient=encounter.patient,
-                responses=list(questionnaire_responses.values()),
+                responses=responses,
                 subject_id=encounter.external_id,
                 created_by_id=daily_round.created_by_id,
                 updated_by_id=daily_round.last_edited_by_id,

@@ -304,7 +304,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         questionnaire=meta_info_questionnaire,
                         patient_id=patient.id,
                         subject_id=str(patient.external_id),
-                        responses=[{"values": responses}],
+                        responses=responses,
                         created_by_id=patient_registration.created_by_id,
                         created_date=patient_registration.created_date,
                         modified_date=patient_registration.modified_date,
