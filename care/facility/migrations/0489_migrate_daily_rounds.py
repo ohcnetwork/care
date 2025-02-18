@@ -28,14 +28,12 @@ taken_at = {
     "link_id": "taken_at",
     "text": "Measured At",
     "type": "datetime",
-    "required": False,
 }
 temperature = {
     "id": "6dff0726-6e03-4353-ad8a-7f9563912c75",
     "link_id": "temperature",
     "text": "Temperature",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -53,14 +51,12 @@ physical_examination_info = {
     "link_id": "physical_examination_info",
     "text": "Physical Examination Info",
     "type": "text",
-    "required": False,
 }
 other_details = {
     "id": "85cdf90b-20ff-40b0-bba0-1948a21367de",
     "link_id": "other_details",
     "text": "Other Details",
     "type": "text",
-    "required": False,
 }
 bowel_issue_map = {
     0: "No Difficulty",
@@ -72,7 +68,6 @@ bowel_issue = {
     "link_id": "bowel_issue",
     "text": "Bowel Finding",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249562008",
@@ -94,7 +89,6 @@ bladder_drainage = {
     "link_id": "bladder_drainage",
     "text": "Drainage of urinary bladder (procedure)",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "274423009",
@@ -113,7 +107,6 @@ bladder_issue = {
     "link_id": "bladder_issue",
     "text": "Urinary bladder finding",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249585009",
@@ -126,7 +119,6 @@ is_experiencing_dysuria = {
     "link_id": "is_experiencing_dysuria",
     "text": "Dysuria (finding)",
     "type": "boolean",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "49650001",
@@ -143,7 +135,6 @@ urination_frequency = {
     "link_id": "urination_frequency",
     "text": "Frequency of urination",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "364198000",
@@ -162,7 +153,6 @@ sleep = {
     "link_id": "sleep",
     "text": "Sleep",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "247950007",
@@ -183,7 +173,6 @@ nutrition_route = {
     "link_id": "nutrition_route",
     "text": "Management of route of enteral nutrition (procedure)",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "441421000124104",
@@ -201,7 +190,6 @@ oral_issue = {
     "link_id": "oral_issue",
     "text": "Oral cavity problem (finding)",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "300255008",
@@ -221,7 +209,6 @@ appetite = {
     "link_id": "appetite",
     "text": "Food appetite (function)",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "33911006",
@@ -262,7 +249,6 @@ consciousness_level = {
     "link_id": "consciousness_level",
     "text": "Level of consciousness",
     "type": "string",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -275,7 +261,6 @@ in_prone_position = {
     "link_id": "in_prone_position",
     "text": "Prone body position (finding)",
     "type": "boolean",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "1240000",
@@ -287,7 +272,6 @@ left_pupil_size = {
     "link_id": "left_pupil_size",
     "text": "Left pupil size",
     "type": "integer",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://snomed.info/sct",
@@ -305,7 +289,6 @@ right_pupil_size = {
     "link_id": "right_pupil_size",
     "text": "Right pupil size",
     "type": "integer",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://snomed.info/sct",
@@ -330,7 +313,6 @@ left_pupil_light_reaction = {
     "link_id": "left_pupil_light_reaction",
     "text": "Left pupil light reaction",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "271733001",
@@ -343,7 +325,6 @@ right_pupil_light_reaction = {
     "link_id": "right_pupil_light_reaction",
     "text": "Right pupil light reaction",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "271733001",
@@ -356,7 +337,6 @@ glasgow_eye_open = {
     "link_id": "glasgow_eye_open",
     "text": "Glasgow Coma Eye Opening Response",
     "type": "integer",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "281395000",
@@ -368,7 +348,6 @@ glasgow_verbal_response = {
     "link_id": "glasgow_verbal_response",
     "text": "Glasgow Coma Verbal Response",
     "type": "integer",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "281397008",
@@ -380,7 +359,6 @@ glasgow_motor_response = {
     "link_id": "glasgow_motor_response",
     "text": "Glasgow Coma Score Motor Response",
     "type": "integer",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "281396004",
@@ -392,7 +370,6 @@ glasgow_total_calculated = {
     "link_id": "glasgow_total_calculated",
     "text": "Glasgow Coma Score",
     "type": "integer",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "248241002",
@@ -413,7 +390,6 @@ limb_response_upper_extremity_left = {
     "link_id": "limb_response_upper_extremity_left",
     "text": "Limb Response Upper Extremity Left",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249948009",
@@ -426,7 +402,6 @@ limb_response_upper_extremity_right = {
     "link_id": "limb_response_upper_extremity_right",
     "text": "Limb Response Upper Extremity Right",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249948009",
@@ -439,7 +414,6 @@ limb_response_lower_extremity_left = {
     "link_id": "limb_response_lower_extremity_left",
     "text": "Limb Response Lower Extremity Left",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249948009",
@@ -452,7 +426,6 @@ limb_response_lower_extremity_right = {
     "link_id": "limb_response_lower_extremity_right",
     "text": "Limb Response Lower Extremity Right",
     "type": "choice",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "249948009",
@@ -465,7 +438,6 @@ bp_systolic = {
     "link_id": "bp.systolic",
     "text": "Systolic",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://snomed.info/sct",
@@ -483,7 +455,6 @@ bp_diastolic = {
     "link_id": "bp.diastolic",
     "text": "Diastolic",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://snomed.info/sct",
@@ -501,7 +472,6 @@ bp = {
     "link_id": "bp",
     "text": "Blood Pressure",
     "type": "group",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -515,7 +485,6 @@ pulse = {
     "link_id": "pulse",
     "text": "Pulse",
     "type": "integer",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -533,7 +502,6 @@ resp = {
     "link_id": "resp",
     "text": "Respiratory Rate",
     "type": "integer",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -551,7 +519,6 @@ ventilator_spo2 = {
     "link_id": "ventilator_spo2",
     "text": "SpO2 (Measurement)",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://snomed.info/sct",
@@ -574,7 +541,6 @@ rhythm = {
     "link_id": "rhythm",
     "text": "Rhythm",
     "type": "choice",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -593,7 +559,6 @@ ventilator_interface = {
     "link_id": "ventilator_interface",
     "text": "Ventilator interface",
     "type": "choice",
-    "required": False,
     "answer_options": [{"value": v} for v in ventilator_interface_map.values()],
 }
 ventilator_mode_map = {
@@ -613,7 +578,6 @@ ventilator_mode = {
     "link_id": "ventilator_mode",
     "text": "Ventilator mode",
     "type": "choice",
-    "required": False,
     "answer_options": [{"value": v} for v in ventilator_mode_map.values()],
 }
 ventilator_peep = {
@@ -621,7 +585,6 @@ ventilator_peep = {
     "link_id": "ventilator_peep",
     "text": "Ventilator PEEP",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "250854009",
@@ -638,7 +601,6 @@ ventilator_pip = {
     "link_id": "ventilator_pip",
     "text": "Ventilator PIP",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "27913002",
@@ -655,7 +617,6 @@ ventilator_mean_airway_pressure = {
     "link_id": "ventilator_mean_airway_pressure",
     "text": "Ventilator Mean Airway Pressure",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "698821009",
@@ -672,7 +633,6 @@ ventilator_resp_rate = {
     "link_id": "ventilator_resp_rate",
     "text": "Ventilator Resp Rate",
     "type": "integer",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "250876000",
@@ -689,14 +649,12 @@ ventilator_pressure_support = {
     "link_id": "ventilator_pressure_support",
     "text": "Ventilator Pressure Support",
     "type": "integer",
-    "required": False,
 }
 ventilator_tidal_volume = {
     "id": "5011f08d-9a53-4b9b-95c1-ce015cf35ba3",
     "link_id": "ventilator_tidal_volume",
     "text": "Ventilator Tidal Volume",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "250874002",
@@ -720,7 +678,6 @@ ventilator_oxygen_modality = {
     "link_id": "ventilator_oxygen_modality",
     "text": "Oxygen Modality",
     "type": "choice",
-    "required": False,
     "answer_options": [{"value": v} for v in ventilator_oxygen_modality_map.values()],
 }
 ventilator_oxygen_modality_oxygen_rate = {
@@ -728,21 +685,18 @@ ventilator_oxygen_modality_oxygen_rate = {
     "link_id": "ventilator_oxygen_modality_oxygen_rate",
     "text": "Ventilator Oxygen Modality Oxygen Rate",
     "type": "integer",
-    "required": False,
 }
 ventilator_oxygen_modality_flow_rate = {
     "id": "9f8380ad-d97f-4ce4-a9e3-da96a8d626fa",
     "link_id": "ventilator_oxygen_modality_flow_rate",
     "text": "Ventilator Oxygen Modality Flow Rate",
     "type": "integer",
-    "required": False,
 }
 ventilator_fio2 = {
     "id": "82cabbbf-ed73-4eb5-8c0d-897c8e1759e7",
     "link_id": "ventilator_fio2",
     "text": "Ventilator FiO2",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "250774007",
@@ -759,7 +713,6 @@ etco2 = {
     "link_id": "etco2",
     "text": "End Tidal CO2",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "250790007",
@@ -776,7 +729,6 @@ bilateral_air_entry = {
     "link_id": "bilateral_air_entry",
     "text": "Bilateral Air Entry",
     "type": "boolean",
-    "required": False,
 }
 ph = {
     "id": "432269bb-079c-4b57-90e0-8a90026bd0f3",
@@ -784,7 +736,6 @@ ph = {
     "text": "pH",
     "type": "decimal",
     "is_observation": True,
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "27051004",
@@ -796,7 +747,6 @@ pco2 = {
     "link_id": "pco2",
     "text": "pCO2",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -814,7 +764,6 @@ po2 = {
     "link_id": "po2",
     "text": "pO2",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -832,7 +781,6 @@ hco3 = {
     "link_id": "hco3",
     "text": "HCO3",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -850,7 +798,6 @@ base_excess = {
     "link_id": "base_excess",
     "text": "Base Excess",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -868,7 +815,6 @@ lactate = {
     "link_id": "lactate",
     "text": "Lactate",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -886,7 +832,6 @@ sodium = {
     "link_id": "sodium",
     "text": "Sodium",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -904,7 +849,6 @@ potassium = {
     "link_id": "potassium",
     "text": "Potassium",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -922,7 +866,6 @@ blood_sugar_level = {
     "link_id": "blood_sugar_level",
     "text": "Blood Sugar Level",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -946,7 +889,6 @@ insulin_intake_dose = {
     "link_id": "insulin_intake_dose",
     "text": "Insulin Intake Dose",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -986,7 +928,6 @@ infusions = {
     "link_id": "infusions",
     "text": "Infusions",
     "type": "quantity",
-    "required": False,
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1022,7 +963,6 @@ iv_fluids = {
     "link_id": "iv_fluids",
     "text": "IV Fluids",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1053,7 +993,6 @@ feeds = {
     "link_id": "feeds",
     "text": "Feeds",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1072,7 +1011,6 @@ total_intake_calculated = {
     "link_id": "total_intake_calculated",
     "text": "Total Intake",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -1112,7 +1050,6 @@ output = {
     "link_id": "output",
     "text": "Output",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1131,7 +1068,6 @@ total_output_calculated = {
     "link_id": "total_output_calculated",
     "text": "Total Output",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -1149,7 +1085,6 @@ dialysis_fluid_balance = {
     "link_id": "dialysis_fluid_balance",
     "text": "Dialysis Fluid Balance",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "251856003",
@@ -1166,7 +1101,6 @@ dialysis_net_balance = {
     "link_id": "dialysis_net_balance",
     "text": "Dialysis Net Balance",
     "type": "decimal",
-    "required": False,
     "code": {
         "system": "http://snomed.info/sct",
         "code": "251856003",
@@ -1183,7 +1117,6 @@ total_output_calculated = {
     "link_id": "total_output_calculated",
     "text": "Total Output",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
@@ -1326,7 +1259,6 @@ pain_scale_enhanced = {
     "link_id": "pain_scale_enhanced",
     "text": "Pain Scale Enhanced",
     "type": "decimal",
-    "required": False,
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1335,12 +1267,35 @@ pain_scale_enhanced = {
         "display": "Pain severity",
     },
 }
+# TODO: add pressure sore and nursing
 # pressure_sore = {
 #     "id": "5b34b0d3-12a0-4fc4-9f86-d5bdd3d61bb8",
 # }
 # nursing = {
 #     "id": "ae7139f5-ce54-4819-a680-e612f410ec57",
 # }
+
+
+brief_update_questions = [
+    taken_at,
+    physical_examination_info,
+    other_details,
+    {
+        "id": "6e3d332e-f013-47bd-b80c-e7da636ddf16",
+        "link_id": "vitals",
+        "text": "Vitals",
+        "type": "group",
+        "questions": [
+            bp,
+            pulse,
+            ventilator_spo2,
+            temperature,
+            resp,
+            rhythm,
+            consciousness_level,
+        ],
+    },
+]
 
 
 def create_observation_spec(questionnaire, responses, parent_id=None):
@@ -1446,18 +1401,21 @@ def migrate_daily_rounds(apps, schema_editor):
             "name": "Encounter Actions",
         },
     )
+    questionnaire_defaults = {
+        "status": "retired",
+        "subject_type": "encounter",
+        "tags": [encounter_actions_tag.id],
+        "meta": {
+            "migration_id": MIGRATION_ID,
+        },
+    }
     bulk_questionnaire_root_link = []
-    automated_daily_round_questionnaire, created = Questionnaire.objects.get_or_create(
+    automated_log_update_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="automated_daily_round_53187a6bd",
         defaults={
-            "title": "Automated Daily Round",
-            "description": "Automated Daily Round",
-            "status": "retired",
-            "subject_type": "encounter",
-            "tags": [encounter_actions_tag.id],
-            "meta": {
-                "migration_id": MIGRATION_ID,
-            },
+            **questionnaire_defaults,
+            "title": "Automated Log Update",
+            "description": "Automated Log Update",
             "questions": [
                 taken_at,
                 {
@@ -1465,64 +1423,56 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "vitals",
                     "text": "Vitals",
                     "type": "group",
-                    "required": False,
                     "questions": [bp, pulse, ventilator_spo2, temperature, resp],
                 },
             ],
         },
     )
     if created:
-        bulk_questionnaire_root_link.append(automated_daily_round_questionnaire.id)
+        bulk_questionnaire_root_link.append(automated_log_update_questionnaire.id)
 
     brief_update_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="brief_update_d4d49188",
         defaults={
+            **questionnaire_defaults,
             "title": "Brief Update",
             "description": "Brief Update",
-            "status": "retired",
-            "subject_type": "encounter",
-            "tags": [encounter_actions_tag.id],
-            "meta": {
-                "migration_id": MIGRATION_ID,
-            },
-            "questions": [
-                taken_at,
-                physical_examination_info,
-                other_details,
-                {
-                    "id": "6e3d332e-f013-47bd-b80c-e7da636ddf16",
-                    "link_id": "vitals",
-                    "text": "Vitals",
-                    "type": "group",
-                    "required": False,
-                    "questions": [
-                        bp,
-                        pulse,
-                        ventilator_spo2,
-                        temperature,
-                        resp,
-                        rhythm,
-                        consciousness_level,
-                    ],
-                },
-            ],
+            "questions": brief_update_questions,
         },
     )
 
     if created:
         bulk_questionnaire_root_link.append(brief_update_questionnaire.id)
 
+    doctors_log_questionnaire, created = Questionnaire.objects.get_or_create(
+        slug="doctors_log_ca980364",
+        defaults={
+            **questionnaire_defaults,
+            "title": "Progress Note",
+            "description": "Progress Note",
+            "questions": brief_update_questions,
+        },
+    )
+
+    if created:
+        bulk_questionnaire_root_link.append(doctors_log_questionnaire.id)
+
+    telemedicine_questionnaire, created = Questionnaire.objects.get_or_create(
+        slug="telemedicine_6102db82",
+        defaults={
+            **questionnaire_defaults,
+            "title": "Tele-medicine Log",
+            "description": "Tele-medicine Log",
+            "questions": brief_update_questions,
+        },
+    )
+
     community_nurse_log_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="community_nurse_log_17984f92",
         defaults={
-            "title": "Community Nurse Log",
-            "description": "Community Nurse Log",
-            "status": "retired",
-            "tags": [encounter_actions_tag.id],
-            "subject_type": "encounter",
-            "meta": {
-                "migration_id": MIGRATION_ID,
-            },
+            **questionnaire_defaults,
+            "title": "Community Nurse's Log",
+            "description": "Community Nurse's Log",
             "questions": [
                 taken_at,
                 physical_examination_info,
@@ -1532,7 +1482,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "routine",
                     "text": "Routine",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         sleep,
                         bowel_issue,
@@ -1541,7 +1490,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "bladder",
                             "text": "Bladder",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 bladder_drainage,
                                 bladder_issue,
@@ -1554,7 +1502,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "nutrition",
                             "text": "Nutrition",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 nutrition_route,
                                 oral_issue,
@@ -1568,10 +1515,9 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "vitals",
                     "text": "Vitals",
                     "type": "group",
-                    "required": False,
                     "questions": [bp, pulse, ventilator_spo2, blood_sugar_level],
                 },
-                # nursing,
+                # nursing, #TODO: enable this
             ],
         },
     )
@@ -1579,17 +1525,12 @@ def migrate_daily_rounds(apps, schema_editor):
     if created:
         bulk_questionnaire_root_link.append(community_nurse_log_questionnaire.id)
 
-    detailed_log_update_questionnaire, created = Questionnaire.objects.get_or_create(
+    detailed_update_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="detailed_log_update_1dee545a",
         defaults={
-            "title": "Detailed Log Update",
-            "description": "Detailed Log Update",
-            "status": "retired",
-            "subject_type": "encounter",
-            "tags": [encounter_actions_tag.id],
-            "meta": {
-                "migration_id": MIGRATION_ID,
-            },
+            **questionnaire_defaults,
+            "title": "Detailed Update",
+            "description": "Detailed Update",
             "questions": [
                 taken_at,
                 {
@@ -1597,7 +1538,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "basic_details",
                     "text": "Basic Details",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         physical_examination_info,
                         other_details,
@@ -1608,7 +1548,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "vitals",
                     "text": "Vitals",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         bp,
                         pulse,
@@ -1624,7 +1563,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "neurological_monitoring",
                     "text": "Neurological Monitoring",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         in_prone_position,
                         consciousness_level,
@@ -1633,7 +1571,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "pupil",
                             "text": "Pupil",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 left_pupil_size,
                                 left_pupil_light_reaction,
@@ -1646,7 +1583,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "glasgow_coma_scale",
                             "text": "Glasgow Coma Scale",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 glasgow_eye_open,
                                 glasgow_verbal_response,
@@ -1659,7 +1595,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "limb_response",
                             "text": "Limb Response",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 limb_response_upper_extremity_left,
                                 limb_response_upper_extremity_right,
@@ -1674,7 +1609,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "respiratory_support",
                     "text": "Respiratory Support",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         bilateral_air_entry,
                         etco2,
@@ -1697,7 +1631,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "abg",
                     "text": "Arterial Blood Gas Analysis",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         po2,
                         pco2,
@@ -1714,7 +1647,6 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "blood_sugar",
                     "text": "Blood Sugar",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         blood_sugar_level,
                         insulin_intake_dose,
@@ -1725,14 +1657,12 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "io_balance",
                     "text": "I/O Balance",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         {
                             "id": "ba7c7cc2-2539-4b81-b1a0-de45a401c857",
                             "link_id": "intake",
                             "text": "Intake",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 infusions,
                                 iv_fluids,
@@ -1745,7 +1675,6 @@ def migrate_daily_rounds(apps, schema_editor):
                             "link_id": "output",
                             "text": "Output",
                             "type": "group",
-                            "required": False,
                             "questions": [
                                 output,
                                 total_output_calculated,
@@ -1758,20 +1687,19 @@ def migrate_daily_rounds(apps, schema_editor):
                     "link_id": "dialysis",
                     "text": "Dialysis",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         dialysis_fluid_balance,
                         dialysis_net_balance,
                     ],
                 },
-                # pressure_sore,
+                # pressure_sore, #TODO: enable this
                 # nursing,
             ],
         },
     )
 
     if created:
-        bulk_questionnaire_root_link.append(detailed_log_update_questionnaire.id)
+        bulk_questionnaire_root_link.append(detailed_update_questionnaire.id)
 
     if bulk_questionnaire_root_link:
         root_orgs = Organization.objects.filter(root_org__isnull=True).values_list(
@@ -2068,15 +1996,18 @@ def migrate_daily_rounds(apps, schema_editor):
             if not questionnaire_responses:
                 continue
 
-            selected_questionnaire = None
-            if daily_round.rounds_type == "AUTOMATED":
-                selected_questionnaire = automated_daily_round_questionnaire
-            elif daily_round.rounds_type == "COMMUNITY_NURSES_LOG":
-                selected_questionnaire = community_nurse_log_questionnaire
-            elif daily_round.rounds_type in ("NORMAL", "TELEMEDICINE"):
+            if daily_round.rounds_type == 0:  # NORMAL
                 selected_questionnaire = brief_update_questionnaire
-            else:
-                selected_questionnaire = detailed_log_update_questionnaire
+            elif daily_round.rounds_type == 30:  # COMMUNITY_NURSES_LOG
+                selected_questionnaire = community_nurse_log_questionnaire
+            elif daily_round.rounds_type == 50:  # DOCTORS_LOG
+                selected_questionnaire = doctors_log_questionnaire
+            elif daily_round.rounds_type == 300:  # AUTOMATED
+                selected_questionnaire = automated_log_update_questionnaire
+            elif daily_round.rounds_type == 400:  # TELEMEDICINE
+                selected_questionnaire = telemedicine_questionnaire
+            else:  # VENTILATOR, ICU
+                selected_questionnaire = detailed_update_questionnaire
 
             responses = list(questionnaire_responses.values())
             questionnaire_response = QuestionnaireResponse.objects.create(
