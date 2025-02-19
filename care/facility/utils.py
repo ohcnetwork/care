@@ -5,21 +5,21 @@ from django.utils import timezone
 
 def enable_auto_time(*models: Model):
     for model in models:
-        created_field = model._meta.get_field("created_date")
-        modified_field = model._meta.get_field("modified_date")
-        delattr(created_field, "default")
-        delattr(modified_field, "default")
-        created_field.auto_now_add = True
-        modified_field.auto_now = True
+        # enable auto_now_add and auto_now
+        model._meta.get_field("created_date").auto_now_add = True
+        model._meta.get_field("modified_date").auto_now = True
+        # remove default
+        del model._meta.get_field("created_date").default
+        del model._meta.get_field("modified_date").default
 
 
 def disable_auto_time(*models: Model):
     for model in models:
-        created_field = model._meta.get_field("created_date")
-        modified_field = model._meta.get_field("modified_date")
-        delattr(created_field, "auto_now_add")
-        delattr(modified_field, "auto_now")
-        created_field.default = timezone.now
-        modified_field.default = timezone.now
+        # disable auto_now_add and auto_now
+        model._meta.get_field("created_date").auto_now_add = False
+        model._meta.get_field("modified_date").auto_now = False
+        # set default to now
+        model._meta.get_field("created_date").default = timezone.now
+        model._meta.get_field("modified_date").default = timezone.now
 
     return lambda: enable_auto_time(*models)
