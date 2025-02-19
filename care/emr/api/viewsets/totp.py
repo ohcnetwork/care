@@ -3,22 +3,22 @@ from string import digits
 
 from django.contrib.auth.hashers import check_password, make_password
 from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django_ratelimit.decorators import ratelimit
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.exceptions import AuthenticationFailed, Throttled, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
 from care.users.models import User
 from care.utils.encryption import decrypt_string, encrypt_string
+from config.ratelimit import ratelimit
 
 
 class TOTPSetupResponse(BaseModel):
@@ -115,7 +115,7 @@ class TOTPViewSet(EMRBaseViewSet):
         secret = decrypt_string(user.totp_secret)
         totp = TOTP(secret)
 
-        if totp.verify(request_data.code):
+        if totp.verify(request_data.code, valid_window=1):
             backup_codes = self._generate_backup_codes()
 
             mfa_settings["totp"] = {
@@ -151,20 +151,6 @@ class TOTPViewSet(EMRBaseViewSet):
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
     )
-    # @method_decorator(
-    #     ratelimit(key="user", rate="1/m", method="POST", block=True), name="dispatch"
-    # )
-    @method_decorator(
-        ratelimit(
-            key=lambda g, r: r.POST.get("temp_token", "unknown")
-            if hasattr(r, "POST")
-            else "unknown",
-            rate="1/m",
-            method="POST",
-            block=True,
-        ),
-        name="dispatch",
-    )
     @action(
         detail=False,
         methods=["POST"],
@@ -174,22 +160,27 @@ class TOTPViewSet(EMRBaseViewSet):
     def login(self, request):
         request_data = TOTPLoginRequest(**request.data)
 
-        token = RefreshToken(request_data.temp_token)
+        try:
+            token = RefreshToken(request_data.temp_token)
+            user_id = str(token["user_id"])
+        except TokenError as e:
+            raise InvalidToken({"detail": "Temp token is invalid or expired"}) from e
+        except Exception:
+            user_id = "unknown"
+
+        if ratelimit(request, "totp-login", [user_id], "3/5m") or ratelimit(
+            request, "totp-login", ["ip"], "10/5m"
+        ):
+            raise Throttled(detail="Too Many Requests. Please try again later.")
+
         if not token.get("temp_token"):
-            return Response(
-                {"error": "Invalid token type"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            raise InvalidToken({"detail": "Invalid token type"})
 
         user = User.objects.get(external_id=token["user_id"])
         totp = TOTP(decrypt_string(user.totp_secret))
 
-        if totp.verify(request_data.code):
+        if totp.verify(request_data.code, valid_window=1):
             refresh = RefreshToken.for_user(user)
-
-            try:
-                token.blacklist()
-            except AttributeError:
-                pass
 
             return Response(
                 {
@@ -331,11 +322,6 @@ class TOTPViewSet(EMRBaseViewSet):
         user.save(update_fields=["mfa_settings"])
 
         refresh = RefreshToken.for_user(user)
-
-        try:
-            token.blacklist()
-        except AttributeError:
-            pass
 
         return Response(
             {

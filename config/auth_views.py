@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
@@ -140,6 +142,7 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         if totp_enabled:
             temp_token = RefreshToken.for_user(self.user)
             temp_token["temp_token"] = True
+            temp_token.set_exp(lifetime=timedelta(minutes=5))
 
             return {
                 "temp_token": str(temp_token),
