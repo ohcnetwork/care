@@ -200,7 +200,9 @@ class OrganizationViewSet(EMRModelViewSet):
 
 class OrganizationUserFilter(filters.FilterSet):
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
-    phone_number = filters.CharFilter(field_name="user__phone_number", lookup_expr="iexact")
+    phone_number = filters.CharFilter(
+        field_name="user__phone_number", lookup_expr="iexact"
+    )
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
