@@ -27,7 +27,7 @@ taken_at = {
     "id": "ea98c82c-d4d0-4939-9637-40905569abf7",
     "link_id": "taken_at",
     "text": "Measured At",
-    "type": "datetime",
+    "type": "dateTime",
 }
 temperature = {
     "id": "6dff0726-6e03-4353-ad8a-7f9563912c75",

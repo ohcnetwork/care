@@ -227,7 +227,7 @@ def migrate_consultations(apps, schema_editor):
                             "id": "cc629f7a-5607-4d26-b840-0c024c4ee957",
                             "link_id": "2.1",
                             "text": "Death Date and Time",
-                            "type": "datetime",
+                            "type": "dateTime",
                             "required": True,
                         },
                         {
@@ -793,6 +793,9 @@ def migrate_consultations(apps, schema_editor):
                             created_date=patient_registration.created_date,
                             modified_date=patient_registration.modified_date,
                             alternate_coding={},
+                            meta={
+                                "migration_id": MIGRATION_ID,
+                            },
                             **observation,
                         )
                         for observation in observations
