@@ -136,7 +136,6 @@ class TOTPViewSet(EMRBaseViewSet):
             send_totp_enabled_email.delay(user.email, user.username)
 
             response_data = TOTPVerifyResponse(
-                message="Two-factor authentication has been enabled successfully. Please save your backup codes in a secure location.",
                 backup_codes=backup_codes,
             )
             return Response(response_data.model_dump())
