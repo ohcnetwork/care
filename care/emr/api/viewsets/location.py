@@ -347,8 +347,8 @@ class FacilityLocationEncounterViewSet(
         This method will be called separately to maintain a lock when the validation is being performed
         """
         location = self.get_location_obj()
-        if location.mode == FacilityLocationModeChoices.instance.value:
-            raise ValidationError("Cannot assign encounters for Location instances")
+        if location.mode == FacilityLocationModeChoices.kind.value:
+            raise ValidationError("Cannot assign encounters to location kind")
 
         start_datetime = instance.start_datetime
         base_qs = FacilityLocationEncounter.objects.filter(location=location)
