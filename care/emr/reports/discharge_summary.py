@@ -143,23 +143,24 @@ def compile_typ(output_file, data):
         )
 
         data["logo_path"] = str(logo_path)
+        with tempfile.NamedTemporaryFile(suffix=".typ") as template:
+            template.write(
+                render_to_string(
+                    "reports/patient_discharge_summary_pdf_template.typ", context=data
+                ).encode("utf-8")
+            )
+            template.flush()
 
-        content = render_to_string(
-            "reports/patient_discharge_summary_pdf_template.typ", context=data
-        )
-
-        subprocess.run(  # noqa: S603
-            [  # noqa: S607
-                "typst",
-                "compile",
-                "-",
-                str(output_file),
-            ],
-            input=content.encode("utf-8"),
-            capture_output=True,
-            check=True,
-            cwd="/",
-        )
+            subprocess.run(  # noqa: S603
+                [
+                    settings.TYPST_BIN,
+                    str(template.name),
+                    str(output_file),
+                ],
+                capture_output=True,
+                check=True,
+                cwd="/",
+            )
 
         logging.info(
             "Successfully Compiled Summary pdf for %s", data["encounter"].external_id

@@ -21,5 +21,8 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "githubPullRequests.ignoredPullRequestBranches": ["develop", "staging"],
-  "python.languageServer": "Pylance"
+  "python.languageServer": "Pylance",
+  "cSpell.words": [
+    "Typst"
+  ]
 }

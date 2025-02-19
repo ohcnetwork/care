@@ -649,3 +649,6 @@ MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
 SNOWSTORM_DEPLOYMENT_URL = env(
     "SNOWSTORM_DEPLOYMENT_URL", default="http://165.22.211.144/fhir"
 )
+
+# Path to the typst binary, see scripts/install_typst.sh
+TYPST_BIN = env("TYPST_BIN", default="typst")
