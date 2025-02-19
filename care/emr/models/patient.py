@@ -1,3 +1,5 @@
+from datetime import date
+
 from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
@@ -43,7 +45,7 @@ class Patient(EMRBaseModel):
     users_cache = ArrayField(models.IntegerField(), default=list)
 
     def get_age(self) -> str:
-        start = self.date_of_birth or timezone.date(self.year_of_birth, 1, 1)
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.deceased_datetime or timezone.now()).date()
 
         delta = relativedelta(end, start)
