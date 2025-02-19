@@ -1,5 +1,5 @@
 # ruff: noqa: SLF001
-from django.db.models import Model
+from django.db.models import NOT_PROVIDED, Model
 from django.utils import timezone
 
 
@@ -9,8 +9,8 @@ def enable_auto_time(*models: Model):
         model._meta.get_field("created_date").auto_now_add = True
         model._meta.get_field("modified_date").auto_now = True
         # remove default
-        del model._meta.get_field("created_date").default
-        del model._meta.get_field("modified_date").default
+        model._meta.get_field("created_date").default = NOT_PROVIDED
+        model._meta.get_field("modified_date").default = NOT_PROVIDED
 
 
 def disable_auto_time(*models: Model):
