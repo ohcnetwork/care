@@ -133,7 +133,8 @@ class FacilityLocationOrganization(EMRBaseModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        handle_cascade.delay(self.location.id)
+        self.location.save()
+        self.location.cascade_changes()
 
 
 class FacilityLocationEncounter(EMRBaseModel):

@@ -342,24 +342,32 @@ class FacilityLocationEncounterViewSet(
         self.reset_encounter_location_association(instance.location)
         self.reset_location_availability_status(instance.location)
 
-    def _validate_data(self, instance, model_obj=None):
+    def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
         This method will be called separately to maintain a lock when the validation is being performed
         """
         location = self.get_location_obj()
-        if location.mode == FacilityLocationModeChoices.instance.value:
-            raise ValidationError("Cannot assign encounters for Location instances")
+        if location.mode == FacilityLocationModeChoices.kind.value:
+            raise ValidationError("Cannot assign encounters to location kind")
 
         start_datetime = instance.start_datetime
         base_qs = FacilityLocationEncounter.objects.filter(location=location)
         if model_obj:
             # Validate if the current dates are not in conflict with other dates
-            end_datetime = model_obj.end_datetime
             base_qs = base_qs.exclude(id=model_obj.id)
-            status = model_obj.status
-        else:
-            status = instance.status
+
+        status = instance.status or model_obj.status
+        if instance.end_datetime is not None:
             end_datetime = instance.end_datetime
+        elif model_obj:
+            end_datetime = model_obj.end_datetime
+        else:
+            end_datetime = None
+
+        # Active status should not have end_datetime
+        if status in (LocationEncounterAvailabilityStatusChoices.active.value):
+            end_datetime = None
+
         # Validate end time is greater than start time
         if end_datetime and start_datetime > end_datetime:
             raise ValidationError("End Datetime should be greater than Start Datetime")

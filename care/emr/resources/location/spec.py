@@ -87,14 +87,13 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
 
     @model_validator(mode="after")
     def validate_parent_organization(self):
-        if (
-            self.parent
-            and not FacilityLocation.objects.filter(
-                external_id=self.parent, mode=FacilityLocationModeChoices.kind.value
-            ).exists()
-        ):
-            err = "Parent not found"
-            raise ValueError(err)
+        if self.parent:
+            try:
+                parent_location = FacilityLocation.objects.get(external_id=self.parent)
+            except FacilityLocation.DoesNotExist as e:
+                raise ValueError("Parent not found") from e
+            if parent_location.mode == FacilityLocationModeChoices.instance.value:
+                raise ValueError("Instances cannot have children")
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
