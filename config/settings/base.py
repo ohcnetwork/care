@@ -652,6 +652,3 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
-
-
-TOTP_SECRET_ENCRYPTION_KEY = env("TOTP_SECRET_ENCRYPTION_KEY", default="")
