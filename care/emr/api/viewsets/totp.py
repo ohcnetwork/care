@@ -14,14 +14,6 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
-from care.emr.utils.mfa import (
-    check_mfa_ip_rate_limit,
-    check_mfa_user_rate_limit,
-    create_auth_response,
-    validate_temp_token,
-)
-from care.users.models import User
-from care.utils.encryption import decrypt_string, encrypt_string
 
 
 class TOTPSetupResponse(BaseModel):
@@ -34,7 +26,6 @@ class TOTPVerifyRequest(BaseModel):
 
 
 class TOTPVerifyResponse(BaseModel):
-    message: str
     backup_codes: list[str]
 
 
@@ -75,12 +66,11 @@ class TOTPViewSet(EMRBaseViewSet):
         self._validate_totp_state(mfa_settings, required_state=False)
 
         secret = random_base32()
-        encrypted_secret = encrypt_string(secret)
 
         totp = TOTP(secret)
         uri = totp.provisioning_uri(name=user.email, issuer_name="CARE")
 
-        user.totp_secret = encrypted_secret
+        user.totp_secret = secret
         user.save(update_fields=["totp_secret"])
 
         response_data = TOTPSetupResponse(uri=uri, secret_key=secret)
@@ -115,7 +105,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         self._validate_totp_state(mfa_settings, required_state=False)
 
-        secret = decrypt_string(user.totp_secret)
+        secret = user.totp_secret
         totp = TOTP(secret)
 
         if totp.verify(request_data.code, valid_window=1):
@@ -144,36 +134,6 @@ class TOTPViewSet(EMRBaseViewSet):
             return Response(response_data.model_dump())
 
         return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
-
-    @extend_schema(
-        description="Verify TOTP code during login",
-        request=MFALoginRequest,
-        responses={
-            200: MFALoginResponse,
-            400: {"type": "object", "properties": {"error": {"type": "string"}}},
-        },
-    )
-    @action(
-        detail=False,
-        methods=["POST"],
-        permission_classes=[],
-        authentication_classes=[],
-    )
-    def login(self, request):
-        check_mfa_ip_rate_limit(request)
-        request_data = MFALoginRequest(**request.data)
-
-        user_id = validate_temp_token(request_data.temp_token)
-
-        check_mfa_user_rate_limit(request, user_id)
-
-        user = User.objects.get(external_id=user_id)
-        totp = TOTP(decrypt_string(user.totp_secret))
-
-        if totp.verify(request_data.code, valid_window=1):
-            return create_auth_response(user)
-
-        raise ValidationError("Invalid code")
 
     @extend_schema(
         description="Disable TOTP-based two-factor authentication",
