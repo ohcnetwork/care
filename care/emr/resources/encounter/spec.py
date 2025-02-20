@@ -23,7 +23,7 @@ from care.emr.resources.encounter.constants import (
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
-    FacilityLocationEncounterListSpec,
+    FacilityLocationEncounterListSpecWithLocation,
     FacilityLocationListSpec,
 )
 from care.emr.resources.patient.spec import PatientListSpec
@@ -145,7 +145,7 @@ class EncounterRetrieveSpec(EncounterListSpec):
                 obj.current_location
             ).to_json()
         mapping["location_history"] = [
-            FacilityLocationEncounterListSpec.serialize(i)
+            FacilityLocationEncounterListSpecWithLocation.serialize(i)
             for i in FacilityLocationEncounter.objects.filter(encounter=obj).order_by(
                 "-created_date"
             )

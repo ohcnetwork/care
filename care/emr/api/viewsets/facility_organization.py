@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -155,6 +156,8 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     pydantic_model = FacilityOrganizationUserWriteSpec
     pydantic_read_model = FacilityOrganizationUserReadSpec
     pydantic_update_model = FacilityOrganizationUserUpdateSpec
+    filter_backends = [drf_filters.SearchFilter]
+    search_fields = ["user__first_name", "user__last_name", "user__username"]
 
     def get_organization_obj(self):
         return get_object_or_404(

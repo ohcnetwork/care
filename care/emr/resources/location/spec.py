@@ -17,11 +17,6 @@ class LocationEncounterAvailabilityStatusChoices(str, Enum):
     completed = "completed"
 
 
-class LocationAvailabilityStatusChoices(str, Enum):
-    available = "available"
-    unavailable = "unavailable"
-
-
 class StatusChoices(str, Enum):
     active = "active"
     inactive = "inactive"
@@ -62,7 +57,13 @@ class FacilityLocationFormChoices(str, Enum):
 
 class FacilityLocationBaseSpec(EMRResource):
     __model__ = FacilityLocation
-    __exclude__ = ["parent", "facility", "organizations", "root_location"]
+    __exclude__ = [
+        "parent",
+        "facility",
+        "organizations",
+        "root_location",
+        "current_encounter",
+    ]
 
     id: UUID4 | None = None
 
@@ -87,14 +88,13 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
 
     @model_validator(mode="after")
     def validate_parent_organization(self):
-        if (
-            self.parent
-            and not FacilityLocation.objects.filter(
-                external_id=self.parent, mode=FacilityLocationModeChoices.kind.value
-            ).exists()
-        ):
-            err = "Parent not found"
-            raise ValueError(err)
+        if self.parent:
+            try:
+                parent_location = FacilityLocation.objects.get(external_id=self.parent)
+            except FacilityLocation.DoesNotExist as e:
+                raise ValueError("Parent not found") from e
+            if parent_location.mode == FacilityLocationModeChoices.instance.value:
+                raise ValueError("Instances cannot have children")
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -102,7 +102,6 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
             obj.parent = FacilityLocation.objects.get(external_id=self.parent)
         else:
             obj.parent = None
-        obj.availability_status = LocationAvailabilityStatusChoices.available.value
 
 
 class FacilityLocationListSpec(FacilityLocationSpec):
@@ -110,11 +109,18 @@ class FacilityLocationListSpec(FacilityLocationSpec):
     mode: str
     has_children: bool
     availability_status: str
+    current_encounter: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterListSpec
+
         mapping["id"] = obj.external_id
         mapping["parent"] = obj.get_parent_json()
+        if obj.current_encounter:
+            mapping["current_encounter"] = EncounterListSpec.serialize(
+                obj.current_encounter
+            ).to_json()
 
 
 class FacilityLocationRetrieveSpec(FacilityLocationListSpec):
@@ -170,6 +176,15 @@ class FacilityLocationEncounterListSpec(FacilityLocationEncounterBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+
+
+class FacilityLocationEncounterListSpecWithLocation(FacilityLocationEncounterListSpec):
+    location: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
 
 
 class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):

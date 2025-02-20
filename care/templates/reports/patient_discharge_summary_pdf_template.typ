@@ -1,5 +1,4 @@
 {% load static %}
-{% load filters static %}
 {% load data_formatting_extras %}
 {% load discharge_summary_utils %}
 

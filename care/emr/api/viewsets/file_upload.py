@@ -54,8 +54,16 @@ def file_authorizer(user, file_type, associating_id, permission):
         raise PermissionDenied("Cannot View File")
 
 
+class FileCategoryFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(file_category__in=value.split(","))
+        return qs
+
+
 class FileUploadFilter(filters.FilterSet):
     is_archived = filters.BooleanFilter(field_name="is_archived")
+    file_category = FileCategoryFilter()
 
 
 class FileUploadViewSet(

@@ -1,12 +1,11 @@
 import tempfile
 
-from django.core.validators import validate_email as django_validate_email
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, field_validator
+from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -24,7 +23,6 @@ from care.emr.models import (
     Encounter,
     EncounterOrganization,
     FacilityOrganization,
-    FileUpload,
     Patient,
 )
 from care.emr.reports import discharge_summary
@@ -36,15 +34,7 @@ from care.emr.resources.encounter.spec import (
     EncounterUpdateSpec,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
-from care.emr.resources.file_upload.spec import (
-    FileCategoryChoices,
-    FileTypeChoices,
-    FileUploadRetrieveSpec,
-)
-from care.emr.tasks.discharge_summary import (
-    email_discharge_summary_task,
-    generate_discharge_summary_task,
-)
+from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 
@@ -230,30 +220,6 @@ class EncounterViewSet(
         ).delete()
         return Response({})
 
-    def _check_discharge_summary_access(self, encounter):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, encounter.patient
-        ):
-            raise PermissionDenied("Permission denied to user")
-
-    def _generate_discharge_summary(self, encounter_ext_id: str):
-        if current_progress := discharge_summary.get_progress(encounter_ext_id):
-            return Response(
-                {
-                    "detail": (
-                        "Discharge Summary is already being generated, "
-                        f"current progress {current_progress}%"
-                    )
-                },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
-            )
-        discharge_summary.set_lock(encounter_ext_id, 1)
-        generate_discharge_summary_task.delay(encounter_ext_id)
-        return Response(
-            {"detail": "Discharge Summary will be generated shortly"},
-            status=status.HTTP_202_ACCEPTED,
-        )
-
     @extend_schema(
         description="Generate a discharge summary",
         responses={
@@ -264,81 +230,25 @@ class EncounterViewSet(
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
         encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
-        return self._generate_discharge_summary(encounter.external_id)
-
-    @extend_schema(
-        description="Get the discharge summary",
-        responses={200: "Success"},
-        tags=["encounter"],
-    )
-    @action(detail=True, methods=["GET"])
-    def preview_discharge_summary(self, request, *args, **kwargs):
-        encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
-        summary_file = (
-            FileUpload.objects.filter(
-                file_type=FileTypeChoices.encounter.value,
-                file_category=FileCategoryChoices.discharge_summary.value,
-                associating_id=encounter.external_id,
-                upload_completed=True,
-            )
-            .order_by("id")
-            .last()
-        )
-        if summary_file:
-            return Response(FileUploadRetrieveSpec.serialize(summary_file).to_json())
-        return self._generate_discharge_summary(encounter.external_id)
-
-    class EmailDischargeSummarySpec(BaseModel):
-        email: str
-
-        @field_validator("email")
-        @classmethod
-        def validate_email(cls, value):
-            django_validate_email(value)
-            return value
-
-    @extend_schema(
-        request=EmailDischargeSummarySpec,
-    )
-    @action(detail=True, methods=["POST"])
-    def email_discharge_summary(self, request, *args, **kwargs):
-        encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
+        if not AuthorizationController.call(
+            "can_view_clinical_data", self.request.user, encounter.patient
+        ):
+            raise PermissionDenied("Permission denied to user")
         encounter_ext_id = encounter.external_id
-        if existing_progress := discharge_summary.get_progress(encounter_ext_id):
+        if current_progress := discharge_summary.get_progress(encounter_ext_id):
             return Response(
                 {
                     "detail": (
                         "Discharge Summary is already being generated, "
-                        f"current progress {existing_progress}%"
+                        f"current progress {current_progress}%"
                     )
                 },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_409_CONFLICT,
             )
-
-        request_data = self.EmailDischargeSummarySpec(**request.data)
-        email = request_data.email
-        summary_file = (
-            FileUpload.objects.filter(
-                file_type=FileTypeChoices.encounter.value,
-                file_category=FileCategoryChoices.discharge_summary.value,
-                associating_id=encounter_ext_id,
-                upload_completed=True,
-            )
-            .order_by("id")
-            .last()
-        )
-        if not summary_file:
-            (
-                generate_discharge_summary_task.s(encounter_ext_id)
-                | email_discharge_summary_task.s(emails=[email])
-            ).delay()
-        else:
-            email_discharge_summary_task.delay(summary_file.id, [email])
+        discharge_summary.set_lock(encounter_ext_id, 1)
+        generate_discharge_summary_task.delay(encounter_ext_id)
         return Response(
-            {"detail": "Discharge Summary will be emailed shortly"},
+            {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
 
