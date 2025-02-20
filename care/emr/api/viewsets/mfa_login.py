@@ -1,4 +1,3 @@
-# care/emr/api/viewsets/mfa_login.py
 from enum import Enum
 
 from django.contrib.auth.hashers import check_password
