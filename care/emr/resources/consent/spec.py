@@ -1,15 +1,12 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import UUID4, Field
+from pydantic import UUID4, BaseModel, Field
 
-from care.emr.models import FileUpload
+from care.emr.models import Encounter, FileUpload
 from care.emr.models.consent import Consent
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.file_upload.spec import (
-    FileCategoryChoices,
-    FileTypeChoices,
-    FileUploadCreateSpec,
     FileUploadListSpec,
     FileUploadRetrieveSpec,
 )
@@ -40,15 +37,16 @@ class CategoryChoice(str, Enum):
     treatment = "treatment"
 
 
-class ConsentVerificationSpec(EMRResource):
+class ConsentVerificationSpec(BaseModel):
     verified: bool
-    verified_by: UUID4
-    verification_date: datetime
+    verified_by: UUID4 | None
+    verification_date: datetime | None
     verification_type: VerificationType
 
 
 class ConsentBaseSpec(EMRResource):
     __model__ = Consent
+    __exclude__ = ["encounter"]
 
     id: UUID4 | None = Field(
         default=None, description="Unique identifier for the consent record"
@@ -63,21 +61,19 @@ class ConsentBaseSpec(EMRResource):
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
-    source_attachment: list[FileUploadCreateSpec] | None = []
-
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            for attachment in self.source_attachment:
-                attachment.file_type = FileTypeChoices.consent
-                attachment.file_category = FileCategoryChoices.consent_attachment
-            # obj.source_attachment = [attachment.id for attachment in self.source_attachment]
+        obj.encounter = Encounter.objects.get(external_id=self.encounter)
 
 
 class ConsentUpdateSpec(ConsentBaseSpec):
-    pass
+    def perform_extra_deserialization(self, is_update, obj):
+        self.verification_details = obj.verification_details  # Not updating this field
+        self.encounter = obj.encounter  # Not updating this field
 
 
 class ConsentListSpec(ConsentBaseSpec):
+    source_attachment: list[dict] = []
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
@@ -87,15 +83,26 @@ class ConsentListSpec(ConsentBaseSpec):
             ).to_json()
             for attachment in obj.source_attachment or []
         ]
-
-
-class ConsentRetrieveSpec(ConsentBaseSpec):
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        mapping["id"] = obj.external_id
+        mapping["encounter"] = obj.encounter.external_id
         mapping["source_attachment"] = [
             FileUploadRetrieveSpec.serialize(
                 FileUpload.objects.get(external_id=attachment)
             ).to_json()
             for attachment in obj.source_attachment or []
         ]
+
+
+class ConsentRetrieveSpec(ConsentBaseSpec):
+    source_attachment: list[dict] = []
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+
+        mapping["source_attachment"] = [
+            FileUploadRetrieveSpec.serialize(
+                FileUpload.objects.get(external_id=attachment)
+            ).to_json()
+            for attachment in obj.source_attachment or []
+        ]
+        mapping["encounter"] = obj.encounter.external_id

@@ -88,6 +88,7 @@ class EMRResource(BaseModel):
             elif field not in self.__exclude__ and self.__store_metadata__:
                 meta[field] = dump[field]
         obj.meta = meta
+
         self.perform_extra_deserialization(is_update, obj)
         return obj
 

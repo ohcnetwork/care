@@ -13,6 +13,7 @@ from care.emr.api.viewsets.condition import (
     DiagnosisViewSet,
     SymptomViewSet,
 )
+from care.emr.api.viewsets.consent import ConsentViewSet
 from care.emr.api.viewsets.device import (
     DeviceEncounterHistoryViewSet,
     DeviceLocationHistoryViewSet,
@@ -103,6 +104,8 @@ router.register(
 )
 
 router.register("role", RoleViewSet, basename="role")
+
+router.register("consent", ConsentViewSet, basename="consent")
 
 router.register("encounter", EncounterViewSet, basename="encounter")
 
