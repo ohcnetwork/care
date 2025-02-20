@@ -10,7 +10,6 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
-from care.emr.api.viewsets.totp import MFALoginResponse
 from care.emr.utils.mfa import (
     check_mfa_ip_rate_limit,
     check_mfa_user_rate_limit,
@@ -29,6 +28,11 @@ class MFALoginRequest(BaseModel):
     method: LoginMethod
     code: str
     temp_token: str
+
+
+class MFALoginResponse(BaseModel):
+    access: str
+    refresh: str
 
 
 class MFALoginViewSet(EMRBaseViewSet):
