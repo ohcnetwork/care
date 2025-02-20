@@ -2,7 +2,11 @@ import logging
 
 from rest_framework.exceptions import Throttled
 from rest_framework.response import Response
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.exceptions import (
+    AuthenticationFailed,
+    InvalidToken,
+    TokenError,
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.users.models import User
@@ -49,3 +53,9 @@ def create_auth_response(user: User) -> Response:
             "refresh": str(refresh),
         }
     )
+
+
+def verify_password(user: User, password: str):
+    """Verify user password"""
+    if not user.check_password(password):
+        raise AuthenticationFailed

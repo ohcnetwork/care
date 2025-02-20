@@ -8,12 +8,13 @@ from pydantic import BaseModel
 from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
+from care.emr.utils.mfa import verify_password
 
 
 class TOTPSetupResponse(BaseModel):
@@ -29,7 +30,7 @@ class TOTPVerifyResponse(BaseModel):
     backup_codes: list[str]
 
 
-class TOTPDisableRequest(BaseModel):
+class PasswordVerifyRequest(BaseModel):
     password: str
 
 
@@ -49,7 +50,10 @@ class TOTPViewSet(EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def setup(self, request):
+        password = PasswordVerifyRequest(**request.data).password
         user = request.user
+
+        verify_password(user, password)
 
         mfa_settings = user.mfa_settings or {}
 
@@ -127,7 +131,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
     @extend_schema(
         description="Disable TOTP-based two-factor authentication",
-        request=TOTPDisableRequest,
+        request=PasswordVerifyRequest,
         responses={
             200: TOTPDisableResponse,
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
@@ -135,10 +139,9 @@ class TOTPViewSet(EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def disable(self, request):
-        password = TOTPDisableRequest(**request.data).password
+        password = PasswordVerifyRequest(**request.data).password
 
-        if not request.user.check_password(password):
-            raise AuthenticationFailed
+        verify_password(request.user, password)
 
         user = request.user
         mfa_settings = user.mfa_settings or {}
@@ -163,6 +166,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
     @extend_schema(
         description="Regenerate TOTP backup codes",
+        request=PasswordVerifyRequest,
         responses={
             200: {
                 "type": "object",
@@ -175,7 +179,11 @@ class TOTPViewSet(EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def regenerate_backup_codes(self, request):
+        password = PasswordVerifyRequest(**request.data).password
         user = request.user
+
+        verify_password(user, password)
+
         mfa_settings = user.mfa_settings or {}
 
         self._validate_totp_state(mfa_settings, required_state=True)
