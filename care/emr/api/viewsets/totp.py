@@ -1,24 +1,27 @@
 from secrets import choice
 from string import digits
 
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import AuthenticationFailed, Throttled, ValidationError
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
+from care.emr.utils.mfa import (
+    check_mfa_ip_rate_limit,
+    check_mfa_user_rate_limit,
+    create_auth_response,
+    validate_temp_token,
+)
 from care.users.models import User
 from care.utils.encryption import decrypt_string, encrypt_string
-from config.ratelimit import ratelimit
 
 
 class TOTPSetupResponse(BaseModel):
@@ -35,12 +38,12 @@ class TOTPVerifyResponse(BaseModel):
     backup_codes: list[str]
 
 
-class TOTPLoginRequest(BaseModel):
+class MFALoginRequest(BaseModel):
     code: str
     temp_token: str
 
 
-class TOTPLoginResponse(BaseModel):
+class MFALoginResponse(BaseModel):
     access: str
     refresh: str
 
@@ -144,9 +147,9 @@ class TOTPViewSet(EMRBaseViewSet):
 
     @extend_schema(
         description="Verify TOTP code during login",
-        request=TOTPLoginRequest,
+        request=MFALoginRequest,
         responses={
-            200: TOTPLoginResponse,
+            200: MFALoginResponse,
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
     )
@@ -157,38 +160,20 @@ class TOTPViewSet(EMRBaseViewSet):
         authentication_classes=[],
     )
     def login(self, request):
-        request_data = TOTPLoginRequest(**request.data)
+        check_mfa_ip_rate_limit(request)
+        request_data = MFALoginRequest(**request.data)
 
-        try:
-            token = RefreshToken(request_data.temp_token)
-            user_id = str(token["user_id"])
-        except TokenError as e:
-            raise InvalidToken({"detail": "Temp token is invalid or expired"}) from e
-        except Exception:
-            user_id = "unknown"
+        user_id = validate_temp_token(request_data.temp_token)
 
-        if ratelimit(request, "totp-login", [user_id], "3/5m") or ratelimit(
-            request, "totp-login", ["ip"], "10/5m"
-        ):
-            raise Throttled(detail="Too Many Requests. Please try again later.")
+        check_mfa_user_rate_limit(request, user_id)
 
-        if not token.get("temp_token"):
-            raise InvalidToken({"detail": "Invalid token type"})
-
-        user = User.objects.get(external_id=token["user_id"])
+        user = User.objects.get(external_id=user_id)
         totp = TOTP(decrypt_string(user.totp_secret))
 
         if totp.verify(request_data.code, valid_window=1):
-            refresh = RefreshToken.for_user(user)
+            return create_auth_response(user)
 
-            return Response(
-                {
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                }
-            )
-
-        return Response({"error": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
+        raise ValidationError("Invalid code")
 
     @extend_schema(
         description="Disable TOTP-based two-factor authentication",
@@ -272,59 +257,3 @@ class TOTPViewSet(EMRBaseViewSet):
             raise ValidationError(
                 "Two-factor authentication is already enabled for your account"
             )
-
-    @extend_schema(
-        description="Login using a backup code",
-        request=TOTPLoginRequest,
-        responses={
-            200: TOTPLoginResponse,
-            400: {"type": "object", "properties": {"error": {"type": "string"}}},
-        },
-    )
-    @action(
-        detail=False,
-        methods=["POST"],
-        permission_classes=[],
-        authentication_classes=[],
-    )
-    def backup_login(self, request):
-        request_data = TOTPLoginRequest(**request.data)
-        token = RefreshToken(request_data.temp_token)
-
-        if not token.get("temp_token"):
-            return Response(
-                {"error": "Invalid token type"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        user = User.objects.get(external_id=token["user_id"])
-        mfa_settings = user.mfa_settings or {}
-        backup_codes = mfa_settings.get("totp", {}).get("backup_codes", [])
-
-        matching_code = next(
-            (
-                code
-                for code in backup_codes
-                if not code["used"] and check_password(request_data.code, code["code"])
-            ),
-            None,
-        )
-
-        if not matching_code:
-            return Response(
-                {"error": "Invalid or already used backup code."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        matching_code.update({"used": True, "used_at": timezone.now().isoformat()})
-        user.mfa_settings = mfa_settings
-        user.save(update_fields=["mfa_settings"])
-
-        refresh = RefreshToken.for_user(user)
-
-        return Response(
-            {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-            }
-        )

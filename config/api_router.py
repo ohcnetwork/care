@@ -7,6 +7,7 @@ from care.emr.api.otp_viewsets.login import OTPLoginView
 from care.emr.api.otp_viewsets.patient import PatientOTPView
 from care.emr.api.otp_viewsets.slot import OTPSlotViewSet
 from care.emr.api.viewsets.allergy_intolerance import AllergyIntoleranceViewSet
+from care.emr.api.viewsets.backup_login import BackupLoginViewSet
 from care.emr.api.viewsets.batch_request import BatchRequestView
 from care.emr.api.viewsets.condition import (
     ChronicConditionViewSet,
@@ -102,6 +103,8 @@ router.register("role", RoleViewSet, basename="role")
 router.register("encounter", EncounterViewSet, basename="encounter")
 
 router.register("mfa/totp", TOTPViewSet, basename="mfa-totp")
+
+router.register("mfa", BackupLoginViewSet, basename="mfa")
 
 organization_nested_router = NestedSimpleRouter(
     router, r"organization", lookup="organization"
