@@ -29,16 +29,6 @@ class TOTPVerifyResponse(BaseModel):
     backup_codes: list[str]
 
 
-class MFALoginRequest(BaseModel):
-    code: str
-    temp_token: str
-
-
-class MFALoginResponse(BaseModel):
-    access: str
-    refresh: str
-
-
 class TOTPDisableRequest(BaseModel):
     password: str
 
