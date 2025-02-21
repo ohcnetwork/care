@@ -22,8 +22,10 @@ class S3FilesManager(FileManger):
             "Bucket": bucket_name,
             "Key": f"{file_obj.file_type}/{file_obj.internal_name}",
         }
-        if mime_type:
-            params["ContentType"] = mime_type
+
+        _mime_type = file_obj.meta.get("mime_type") or mime_type
+        if _mime_type:
+            params["ContentType"] = _mime_type
         return s3.generate_presigned_url(
             "put_object",
             Params=params,

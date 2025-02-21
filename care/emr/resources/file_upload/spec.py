@@ -1,7 +1,8 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4
+from django.conf import settings
+from pydantic import UUID4, field_validator
 
 from care.emr.models import FileUpload
 from care.emr.resources.base import EMRResource
@@ -37,11 +38,21 @@ class FileUploadCreateSpec(FileUploadBaseSpec):
     file_type: FileTypeChoices
     file_category: FileCategoryChoices
     associating_id: str
+    mime_type: str
 
     def perform_extra_deserialization(self, is_update, obj):
         # Authz Performed in the request
         obj._just_created = True  # noqa SLF001
         obj.internal_name = self.original_name
+        obj.meta["mime_type"] = self.mime_type
+
+    @field_validator("mime_type")
+    @classmethod
+    def validate_mime_type(cls, mime_type: str):
+        if mime_type not in settings.ALLOWED_MIME_TYPES:
+            err = "Invalid mime type"
+            raise ValueError(err)
+        return mime_type
 
 
 class FileUploadListSpec(FileUploadBaseSpec):
@@ -56,11 +67,13 @@ class FileUploadListSpec(FileUploadBaseSpec):
     created_date: datetime.datetime
     extension: str
     uploaded_by: dict
+    mime_type: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["extension"] = obj.get_extension()
+        mapping["mime_type"] = obj.meta.get("mime_type")
         if obj.created_by:
             mapping["uploaded_by"] = UserSpec.serialize(obj.created_by)
 
