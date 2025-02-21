@@ -78,7 +78,7 @@ class FacilityLocationSpec(FacilityLocationBaseSpec):
 
 
 class FacilityLocationUpdateSpec(FacilityLocationSpec):
-    pass
+    mode: FacilityLocationModeChoices
 
 
 class FacilityLocationWriteSpec(FacilityLocationSpec):
