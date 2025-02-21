@@ -7,13 +7,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
-    EMRBaseViewSet,
-    EMRCreateMixin,
-    EMRDestroyMixin,
-    EMRListMixin,
     EMRModelViewSet,
-    EMRRetrieveMixin,
-    EMRUpdateMixin,
 )
 from care.emr.models import (
     Encounter,
@@ -244,14 +238,7 @@ class FacilityLocationEncounterFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
 
 
-class FacilityLocationEncounterViewSet(
-    EMRCreateMixin,
-    EMRRetrieveMixin,
-    EMRUpdateMixin,
-    EMRListMixin,
-    EMRDestroyMixin,
-    EMRBaseViewSet,
-):
+class FacilityLocationEncounterViewSet(EMRModelViewSet):
     database_model = FacilityLocationEncounter
     pydantic_model = FacilityLocationEncounterCreateSpec
     pydantic_read_model = FacilityLocationEncounterReadSpec
