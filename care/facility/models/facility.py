@@ -311,19 +311,18 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     class Meta:
         verbose_name_plural = "Facilities"
 
-    def read_cover_image_url(self):
-        if self.cover_image_url:
+    def _get_asset_url(self, asset_url):
+        if asset_url:
             if settings.FACILITY_CDN:
-                return f"{settings.FACILITY_CDN}/{self.cover_image_url}"
-            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
+                return f"{settings.FACILITY_CDN}/{asset_url}"
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{asset_url}"
         return None
 
+    def read_cover_image_url(self):
+        return self._get_asset_url(self.cover_image_url)
+
     def read_facility_avatar_url(self):
-        if self.facility_avatar_url:
-            if settings.FACILITY_CDN:
-                return f"{settings.FACILITY_CDN}/{self.facility_avatar_url}"
-            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.facility_avatar_url}"
-        return None
+        return self._get_asset_url(self.facility_avatar_url)
 
     def __str__(self):
         return f"{self.name}"

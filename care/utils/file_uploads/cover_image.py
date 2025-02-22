@@ -14,17 +14,17 @@ logger = logging.getLogger(__name__)
 type AssetType = Literal["cover_images", "facility_avatars", "avatars"]
 
 
-def delete_cover_image(image_key: str, folder: AssetType):
+def delete_public_image_asset(image_key: str, folder: AssetType):
     config, bucket_name = get_client_config(BucketType.FACILITY)
     s3 = boto3.client("s3", **config)
 
     try:
         s3.delete_object(Bucket=bucket_name, Key=image_key)
     except Exception:
-        logger.warning("Failed to delete cover image %s", image_key)
+        logger.warning("Failed to delete image %s", image_key)
 
 
-def upload_cover_image(
+def upload_public_image_asset(
     image: UploadedFile,
     object_external_id: str,
     folder: AssetType,
@@ -37,7 +37,7 @@ def upload_cover_image(
         try:
             s3.delete_object(Bucket=bucket_name, Key=old_key)
         except Exception:
-            logger.warning("Failed to delete old cover image %s", old_key)
+            logger.warning("Failed to delete old image %s", old_key)
 
     image_extension = image.name.rsplit(".", 1)[-1]
     image_key = (

@@ -15,7 +15,7 @@ from care.users.api.serializers.lsg import (
 )
 from care.users.api.serializers.skill import UserSkillSerializer
 from care.users.models import User
-from care.utils.file_uploads.cover_image import upload_cover_image
+from care.utils.file_uploads.cover_image import upload_public_image_asset
 from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
@@ -491,7 +491,7 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         user: User = self.instance
         image = self.validated_data["profile_picture"]
-        user.profile_picture_url = upload_cover_image(
+        user.profile_picture_url = upload_public_image_asset(
             image,
             str(user.external_id),
             "avatars",

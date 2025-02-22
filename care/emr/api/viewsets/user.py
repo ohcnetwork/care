@@ -22,7 +22,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
 from care.users.models import User
-from care.utils.file_uploads.cover_image import delete_cover_image
+from care.utils.file_uploads.cover_image import delete_public_image_asset
 
 
 class UserFilter(filters.FilterSet):
@@ -114,7 +114,7 @@ class UserViewSet(EMRModelViewSet):
         if request.method == "DELETE":
             if not user.profile_picture_url:
                 return Response({"detail": "No cover image to delete"}, status=404)
-            delete_cover_image(user.profile_picture_url, "avatars")
+            delete_public_image_asset(user.profile_picture_url, "avatars")
             user.profile_picture_url = None
             user.save()
             return Response(status=204)

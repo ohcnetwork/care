@@ -23,7 +23,10 @@ from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
+from care.utils.file_uploads.cover_image import (
+    delete_public_image_asset,
+    upload_public_image_asset,
+)
 from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
@@ -45,7 +48,7 @@ class FacilityCoverImageUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility: Facility = self.instance
         image = self.validated_data["cover_image"]
-        facility.cover_image_url = upload_cover_image(
+        facility.cover_image_url = upload_public_image_asset(
             image,
             str(facility.external_id),
             "cover_images",
@@ -70,7 +73,7 @@ class FacilityAvatarUploadSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         facility: Facility = self.instance
         image = self.validated_data["facility_avatar"]
-        facility.facility_avatar_url = upload_cover_image(
+        facility.facility_avatar_url = upload_public_image_asset(
             image,
             str(facility.external_id),
             "facility_avatars",
@@ -135,45 +138,45 @@ class FacilityViewSet(EMRModelViewSet):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Only Super Admins can delete Facilities")
 
-    @method_decorator(parser_classes([MultiPartParser]))
-    @action(methods=["POST", "DELETE"], detail=True)
-    def cover_image(self, request, external_id):
+    def _handle_image_action(self, request, field_name, folder, serializer_class):
         facility = self.get_object()
         self.authorize_update({}, facility)
-
         if request.method == "POST":
-            serializer = FacilityCoverImageUploadSerializer(facility, data=request.data)
+            serializer = serializer_class(facility, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
         if request.method == "DELETE":
-            if not facility.cover_image_url:
-                return Response({"detail": "No cover image to delete"}, status=404)
-            delete_cover_image(facility.cover_image_url, "cover_images")
-            facility.cover_image_url = None
+            if not getattr(facility, field_name):
+                return Response(
+                    {"detail": f"No {field_name.replace('_', ' ')} to delete"},
+                    status=404,
+                )
+            delete_public_image_asset(getattr(facility, field_name), folder)
+            setattr(facility, field_name, None)
             facility.save()
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
+
+    @method_decorator(parser_classes([MultiPartParser]))
+    @action(methods=["POST", "DELETE"], detail=True)
+    def cover_image(self, request, external_id):
+        return self._handle_image_action(
+            request,
+            "cover_image_url",
+            "cover_images",
+            FacilityCoverImageUploadSerializer,
+        )
 
     @method_decorator(parser_classes([MultiPartParser]))
     @action(methods=["POST", "DELETE"], detail=True)
     def facility_avatar(self, request, external_id):
-        facility = self.get_object()
-        self.authorize_update({}, facility)
-
-        if request.method == "POST":
-            serializer = FacilityAvatarUploadSerializer(facility, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
-        if request.method == "DELETE":
-            if not facility.facility_avatar_url:
-                return Response({"detail": "No facility avatar to delete"}, status=404)
-            delete_cover_image(facility.facility_avatar_url, "facility_avatars")
-            facility.facility_avatar_url = None
-            facility.save()
-            return Response(status=204)
-        return Response({"detail": "Method not allowed"}, status=405)
+        return self._handle_image_action(
+            request,
+            "facility_avatar_url",
+            "facility_avatars",
+            FacilityAvatarUploadSerializer,
+        )
 
 
 class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
