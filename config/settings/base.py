@@ -611,6 +611,74 @@ ALLOWED_MIME_TYPES = set(
     )
 )
 
+ALLOWED_FILE_EXTENSIONS = set(
+    env.list(
+        "ALLOWED_FILE_EXTENSIONS",
+        default=[
+            # Images
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "bmp",
+            "webp",
+            "svg",
+            # Videos
+            "mp4",
+            "mpeg",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "webm",
+            # Audio
+            "mp3",
+            "wav",
+            "aac",
+            "ogg",
+            "midi",
+            "mid",
+            "m4a",
+            # Documents
+            "txt",
+            "csv",
+            "rtf",
+            "doc",
+            "odt",
+            "pdf",
+            "xls",
+            "xlsx",
+            "ods",
+        ],
+    )
+)
+
+BLOCKED_FILE_EXTENSIONS = set(
+    env.list(
+        "BLOCKED_FILE_EXTENSIONS",
+        default=[
+            # Executable Files
+            "exe",
+            "dll",
+            "msi",
+            "msp",
+            "mst",
+            "com",
+            "scr",
+            "sys",
+            "pif",
+            # Registry Files
+            "reg",
+            # Script Files
+            "bat",
+            "cmd",
+            "wsf",
+            "sh",
+        ],
+    )
+)
+
+
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default=BUCKET_REGION)
 FACILITY_S3_KEY = env("FACILITY_S3_KEY", default=BUCKET_KEY)

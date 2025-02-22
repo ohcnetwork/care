@@ -2,11 +2,13 @@ import datetime
 from enum import Enum
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from pydantic import UUID4, field_validator
 
 from care.emr.models import FileUpload
 from care.emr.resources.base import EMRResource
 from care.emr.resources.user.spec import UserSpec
+from care.utils.models.validators import file_name_validator
 
 
 class FileTypeChoices(str, Enum):
@@ -53,6 +55,18 @@ class FileUploadCreateSpec(FileUploadBaseSpec):
             err = "Invalid mime type"
             raise ValueError(err)
         return mime_type
+
+    @field_validator("original_name")
+    @classmethod
+    def validate_original_name(cls, original_name: str):
+        if not original_name:
+            err = "File name cannot be empty"
+            raise ValueError(err)
+        try:
+            file_name_validator(original_name)
+        except ValidationError as e:
+            raise ValueError(e.message) from e
+        return original_name
 
 
 class FileUploadListSpec(FileUploadBaseSpec):
