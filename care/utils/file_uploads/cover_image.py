@@ -11,7 +11,10 @@ from care.utils.csp.config import BucketType, get_client_config
 logger = logging.getLogger(__name__)
 
 
-def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"]):
+type AssetType = Literal["cover_images", "facility_avatars", "avatars"]
+
+
+def delete_cover_image(image_key: str, folder: AssetType):
     config, bucket_name = get_client_config(BucketType.FACILITY)
     s3 = boto3.client("s3", **config)
 
@@ -24,7 +27,7 @@ def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"
 def upload_cover_image(
     image: UploadedFile,
     object_external_id: str,
-    folder: Literal["cover_images", "avatars"],
+    folder: AssetType,
     old_key: str | None = None,
 ) -> str:
     config, bucket_name = get_client_config(BucketType.FACILITY)

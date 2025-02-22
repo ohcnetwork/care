@@ -301,6 +301,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     cover_image_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )
+    facility_avatar_url = models.CharField(
+        blank=True, null=True, default=None, max_length=500
+    )
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
     is_public = models.BooleanField(default=False)
@@ -313,6 +316,13 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             if settings.FACILITY_CDN:
                 return f"{settings.FACILITY_CDN}/{self.cover_image_url}"
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
+        return None
+
+    def read_facility_avatar_url(self):
+        if self.facility_avatar_url:
+            if settings.FACILITY_CDN:
+                return f"{settings.FACILITY_CDN}/{self.facility_avatar_url}"
+            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.facility_avatar_url}"
         return None
 
     def __str__(self):

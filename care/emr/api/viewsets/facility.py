@@ -30,7 +30,7 @@ from care.utils.models.validators import (
 )
 
 
-class FacilityImageUploadSerializer(serializers.ModelSerializer):
+class FacilityCoverImageUploadSerializer(serializers.ModelSerializer):
     cover_image = serializers.ImageField(
         required=True,
         write_only=True,
@@ -40,7 +40,6 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Facility
-        # Check DRYpermissions before updating
         fields = ("cover_image", "read_cover_image_url")
 
     def save(self, **kwargs):
@@ -53,6 +52,31 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
             facility.cover_image_url,
         )
         facility.save(update_fields=["cover_image_url"])
+        return facility
+
+
+class FacilityAvatarUploadSerializer(serializers.ModelSerializer):
+    facility_avatar = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
+    read_facility_avatar_url = serializers.URLField(read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = ("facility_avatar", "read_facility_avatar_url")
+
+    def save(self, **kwargs):
+        facility: Facility = self.instance
+        image = self.validated_data["facility_avatar"]
+        facility.facility_avatar_url = upload_cover_image(
+            image,
+            str(facility.external_id),
+            "facility_avatars",
+            facility.facility_avatar_url,
+        )
+        facility.save(update_fields=["facility_avatar_url"])
         return facility
 
 
@@ -118,7 +142,7 @@ class FacilityViewSet(EMRModelViewSet):
         self.authorize_update({}, facility)
 
         if request.method == "POST":
-            serializer = FacilityImageUploadSerializer(facility, data=request.data)
+            serializer = FacilityCoverImageUploadSerializer(facility, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
@@ -127,6 +151,26 @@ class FacilityViewSet(EMRModelViewSet):
                 return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(facility.cover_image_url, "cover_images")
             facility.cover_image_url = None
+            facility.save()
+            return Response(status=204)
+        return Response({"detail": "Method not allowed"}, status=405)
+
+    @method_decorator(parser_classes([MultiPartParser]))
+    @action(methods=["POST", "DELETE"], detail=True)
+    def facility_avatar(self, request, external_id):
+        facility = self.get_object()
+        self.authorize_update({}, facility)
+
+        if request.method == "POST":
+            serializer = FacilityAvatarUploadSerializer(facility, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        if request.method == "DELETE":
+            if not facility.facility_avatar_url:
+                return Response({"detail": "No facility avatar to delete"}, status=404)
+            delete_cover_image(facility.facility_avatar_url, "facility_avatars")
+            facility.facility_avatar_url = None
             facility.save()
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
