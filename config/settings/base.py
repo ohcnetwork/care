@@ -569,45 +569,115 @@ FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     ),
 )
 
-ALLOWED_MIME_TYPES = env.list(
-    "ALLOWED_MIME_TYPES",
-    default=[
-        # Images
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/bmp",
-        "image/webp",
-        "image/svg+xml",
-        # Videos
-        "video/mp4",
-        "video/mpeg",
-        "video/x-msvideo",
-        "video/quicktime",
-        "video/x-ms-wmv",
-        "video/x-flv",
-        "video/webm",
-        # Audio
-        "audio/mpeg",
-        "audio/wav",
-        "audio/aac",
-        "audio/ogg",
-        "audio/midi",
-        "audio/x-midi",
-        "audio/webm",
-        "audio/mp4",
-        # Documents
-        "text/plain",
-        "text/csv",
-        "application/rtf",
-        "application/msword",
-        "application/vnd.oasis.opendocument.text",
-        "application/pdf",
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/vnd.oasis.opendocument.spreadsheet",
-    ],
+ALLOWED_MIME_TYPES = set(
+    env.list(
+        "ALLOWED_MIME_TYPES",
+        default=[
+            # Images
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            # Videos
+            "video/mp4",
+            "video/mpeg",
+            "video/x-msvideo",
+            "video/quicktime",
+            "video/x-ms-wmv",
+            "video/x-flv",
+            "video/webm",
+            # Audio
+            "audio/mpeg",
+            "audio/wav",
+            "audio/aac",
+            "audio/ogg",
+            "audio/midi",
+            "audio/x-midi",
+            "audio/webm",
+            "audio/mp4",
+            # Documents
+            "text/plain",
+            "text/csv",
+            "application/rtf",
+            "application/msword",
+            "application/vnd.oasis.opendocument.text",
+            "application/pdf",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.oasis.opendocument.spreadsheet",
+        ],
+    )
 )
+
+ALLOWED_FILE_EXTENSIONS = set(
+    env.list(
+        "ALLOWED_FILE_EXTENSIONS",
+        default=[
+            # Images
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "bmp",
+            "webp",
+            "svg",
+            # Videos
+            "mp4",
+            "mpeg",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "webm",
+            # Audio
+            "mp3",
+            "wav",
+            "aac",
+            "ogg",
+            "midi",
+            "mid",
+            "m4a",
+            # Documents
+            "txt",
+            "csv",
+            "rtf",
+            "doc",
+            "odt",
+            "pdf",
+            "xls",
+            "xlsx",
+            "ods",
+        ],
+    )
+)
+
+BLOCKED_FILE_EXTENSIONS = set(
+    env.list(
+        "BLOCKED_FILE_EXTENSIONS",
+        default=[
+            # Executable Files
+            "exe",
+            "dll",
+            "msi",
+            "msp",
+            "mst",
+            "com",
+            "scr",
+            "sys",
+            "pif",
+            # Registry Files
+            "reg",
+            # Script Files
+            "bat",
+            "cmd",
+            "wsf",
+            "sh",
+        ],
+    )
+)
+
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default=BUCKET_REGION)
