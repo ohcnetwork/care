@@ -105,7 +105,6 @@ router.register(
 
 router.register("role", RoleViewSet, basename="role")
 
-router.register("consent", ConsentViewSet, basename="consent")
 
 router.register("encounter", EncounterViewSet, basename="encounter")
 
@@ -222,6 +221,8 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+
+patient_nested_router.register(r"consent", ConsentViewSet, basename="consent")
 patient_nested_router.register(
     r"chronic_condition", ChronicConditionViewSet, basename="chronic-condition"
 )

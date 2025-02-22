@@ -8,7 +8,6 @@ from care.emr.models.consent import Consent
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.file_upload.spec import (
     FileUploadListSpec,
-    FileUploadRetrieveSpec,
 )
 
 
@@ -61,8 +60,11 @@ class ConsentBaseSpec(EMRResource):
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
+    patient: UUID4 | None = None
+
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = Encounter.objects.get(external_id=self.encounter)
+        self.patient = obj.encounter.patient.external_id
 
 
 class ConsentUpdateSpec(ConsentBaseSpec):
@@ -78,31 +80,11 @@ class ConsentListSpec(ConsentBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["source_attachment"] = [
-            FileUploadListSpec.serialize(
-                FileUpload.objects.get(external_id=attachment)
-            ).to_json()
-            for attachment in obj.source_attachment or []
+            FileUploadListSpec.serialize(attachment).to_json()
+            for attachment in FileUpload.objects.filter(associating_id=obj.external_id)
         ]
         mapping["encounter"] = obj.encounter.external_id
-        mapping["source_attachment"] = [
-            FileUploadRetrieveSpec.serialize(
-                FileUpload.objects.get(external_id=attachment)
-            ).to_json()
-            for attachment in obj.source_attachment or []
-        ]
 
 
-class ConsentRetrieveSpec(ConsentBaseSpec):
-    source_attachment: list[dict] = []
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        mapping["id"] = obj.external_id
-
-        mapping["source_attachment"] = [
-            FileUploadRetrieveSpec.serialize(
-                FileUpload.objects.get(external_id=attachment)
-            ).to_json()
-            for attachment in obj.source_attachment or []
-        ]
-        mapping["encounter"] = obj.encounter.external_id
+class ConsentRetrieveSpec(ConsentListSpec):
+    pass

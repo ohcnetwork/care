@@ -9,4 +9,3 @@ from .user import *  # noqa
 from .user_schedule import *  # noqa
 from .facility_location import *  # noqa
 from .device import *  # noqa
-from .consent import *  # noqa
