@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.condition import ValidateEncounterMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.consent import Consent
 from care.emr.resources.consent.spec import (
@@ -17,7 +18,9 @@ from care.emr.resources.consent.spec import (
 )
 
 
-class ConsentViewSet(EMRModelViewSet, EncounterBasedAuthorizationBase):
+class ConsentViewSet(
+    EMRModelViewSet, EncounterBasedAuthorizationBase, ValidateEncounterMixin
+):
     database_model = Consent
     pydantic_model = ConsentCreateSpec
     pydantic_read_model = ConsentListSpec
@@ -36,17 +39,21 @@ class ConsentViewSet(EMRModelViewSet, EncounterBasedAuthorizationBase):
     @action(detail=True, methods=["POST"])
     def add_verification(self, request, *args, **kwargs):
         instance = self.get_object()
+        self.authorize_update(None, instance)
         request_data = ConsentVerificationSpec(**request.data)
-        request_data.verification.verified_by = self.request.user.external_id
+
+        request_data.verified_by = str(self.request.user.external_id)
+        request_data.verification_date = now().isoformat()
 
         if request_data.verified_by in [
-            verification.verified_by for verification in instance.verification_details
+            verification.get("verified_by")
+            for verification in instance.verification_details
         ]:
             raise ValidationError("Consent is already verified by the user")
 
-        request_data.verification.verification_date = now()
-        instance.verification_details.append(request_data.verification)
+        instance.verification_details.append(request_data.model_dump())
         instance.save(update_fields=["verification_details"])
+
         serialized = ConsentRetrieveSpec.serialize(instance).to_json()
         return Response(serialized)
 
@@ -58,7 +65,9 @@ class ConsentViewSet(EMRModelViewSet, EncounterBasedAuthorizationBase):
     def remove_verification(self, request, *args, **kwargs):
         instance = self.get_object()
         request_data = self.VerificationRemovalSchema(**request.data)
-
+        self.authorize_update(None, instance)
+        if not request_data.verified_by:
+            request_data.verified_by = str(self.request.user.external_id)
         match = None
         for verification in instance.verification_details:
             if str(verification.get("verified_by")) == str(request_data.verified_by):

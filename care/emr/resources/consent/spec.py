@@ -38,14 +38,13 @@ class CategoryChoice(str, Enum):
 
 class ConsentVerificationSpec(BaseModel):
     verified: bool
-    verified_by: UUID4 | None
-    verification_date: datetime | None
+    verified_by: UUID4 | None = None
+    verification_date: datetime | None = None
     verification_type: VerificationType
 
 
 class ConsentBaseSpec(EMRResource):
     __model__ = Consent
-    __exclude__ = ["encounter"]
 
     id: UUID4 | None = Field(
         default=None, description="Unique identifier for the consent record"
@@ -56,34 +55,40 @@ class ConsentBaseSpec(EMRResource):
     period: PeriodSpec = dict
     encounter: UUID4
     decision: DecisionType
-    verification_details: list[ConsentVerificationSpec] | None = []
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
-    patient: UUID4 | None = None
-
     def perform_extra_deserialization(self, is_update, obj):
-        obj.encounter = Encounter.objects.get(external_id=self.encounter)
-        self.patient = obj.encounter.patient.external_id
+        if not is_update:
+            obj.encounter = Encounter.objects.get(external_id=self.encounter)
 
 
 class ConsentUpdateSpec(ConsentBaseSpec):
+    status: ConsentStatusChoices | None = None
+    category: CategoryChoice | None = None
+    date: datetime | None = None
+    period: PeriodSpec | None = None
+    encounter: UUID4 | None = None
+    decision: DecisionType | None = None
+
     def perform_extra_deserialization(self, is_update, obj):
-        self.verification_details = obj.verification_details  # Not updating this field
-        self.encounter = obj.encounter  # Not updating this field
+        if is_update:
+            self.encounter = obj.encounter
 
 
 class ConsentListSpec(ConsentBaseSpec):
-    source_attachment: list[dict] = []
+    source_attachments: list[dict] = []
+    verification_details: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["source_attachment"] = [
+        mapping["source_attachments"] = [
             FileUploadListSpec.serialize(attachment).to_json()
             for attachment in FileUpload.objects.filter(associating_id=obj.external_id)
         ]
         mapping["encounter"] = obj.encounter.external_id
+        mapping["verification_details"] = obj.verification_details
 
 
 class ConsentRetrieveSpec(ConsentListSpec):
