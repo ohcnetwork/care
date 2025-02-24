@@ -13,4 +13,4 @@ python manage.py sync_valueset
 
 watchmedo \
     auto-restart --directory=./ --pattern=*.py --recursive -- \
-    celery --workdir="/app" -A config.celery_app worker -B --loglevel=INFO
+    celery --workdir="$(pwd)" -A config.celery_app worker -B --loglevel=INFO
