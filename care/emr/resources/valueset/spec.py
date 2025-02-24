@@ -29,6 +29,13 @@ class ValueSetBaseSpec(EMRResource):
 
 
 class ValueSetSpec(ValueSetBaseSpec):
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, name: str, info):
+        if not name.strip():
+            raise ValueError("Name cannot be empty")
+        return name.strip()
+
     @field_validator("slug")
     @classmethod
     def validate_slug(cls, slug: str, info) -> str:

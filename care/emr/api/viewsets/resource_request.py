@@ -109,6 +109,8 @@ class ResourceRequestCommentViewSet(
 
     def get_queryset(self):
         resource_request_obj = self.get_resource_request_obj()
-        return ResourceRequestComment.objects.filter(
-            request=resource_request_obj
-        ).select_related("created_by")
+        return (
+            ResourceRequestComment.objects.filter(request=resource_request_obj)
+            .select_related("created_by")
+            .order_by("-created_date")
+        )

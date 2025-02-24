@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -199,10 +200,16 @@ class OrganizationViewSet(EMRModelViewSet):
 
 
 class OrganizationUserFilter(filters.FilterSet):
-    username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
+    username = filters.CharFilter(method="filter_name")
     phone_number = filters.CharFilter(
         field_name="user__phone_number", lookup_expr="iexact"
     )
+
+    def filter_name(self, queryset, name, value):
+        value = value.strip()
+        return queryset.annotate(
+            search=SearchVector("user__first_name", "user__last_name")
+        ).filter(search=SearchQuery(value))
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
