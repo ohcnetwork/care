@@ -200,10 +200,11 @@ class OrganizationViewSet(EMRModelViewSet):
 
 
 class OrganizationUserFilter(filters.FilterSet):
-    username = filters.CharFilter(method="filter_name")
+    name = filters.CharFilter(method="filter_name")
     phone_number = filters.CharFilter(
         field_name="user__phone_number", lookup_expr="iexact"
     )
+    username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
 
     def filter_name(self, queryset, name, value):
         value = value.strip()
