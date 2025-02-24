@@ -6,8 +6,19 @@ from django.test import ignore_warnings
 from django.urls import reverse
 from django.utils import timezone
 
-from care.emr.models import FacilityLocation, FacilityLocationOrganization
-from care.emr.resources.encounter.constants import COMPLETED_CHOICES
+from care.emr.models import (
+    FacilityLocation,
+    FacilityLocationEncounter,
+    FacilityLocationOrganization,
+)
+from care.emr.resources.encounter.constants import (
+    COMPLETED_CHOICES,
+    ClassChoices,
+    EncounterPriorityChoices,
+)
+from care.emr.resources.encounter.constants import (
+    StatusChoices as EncounterStatusChoices,
+)
 from care.emr.resources.location.spec import (
     FacilityLocationFormChoices,
     FacilityLocationModeChoices,
@@ -935,3 +946,69 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         error = response_data["errors"][0]
         self.assertEqual(error["type"], "validation_error")
         self.assertIn("Cannot change status after marking completed", error["msg"])
+
+    def test_completion_of_location_encounter_after_encounter_status_update_to_completed(
+        self,
+    ):
+        # Create Encounter
+        encounter = self.create_encounter(
+            self.patient,
+            self.facility,
+            self.facility.default_internal_organization,
+            status_history={"history": []},
+            encounter_class=ClassChoices.imp.value,
+        )
+
+        # Create Facility Location Encounter
+        facility_location_encounter = self.create_facility_location_encounter(encounter)
+        url = reverse(
+            "association-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "location_external_id": self.location["id"],
+                "external_id": facility_location_encounter["id"],
+            },
+        )
+
+        data = self.generate_facility_location_encounter_data(
+            encounter.external_id,
+            status=LocationEncounterAvailabilityStatusChoices.active.value,
+        )
+
+        self.client.force_authenticate(self.super_user)  # To avoid permissions error
+        # Update Facility Location Encounter
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Fetch updated object
+        encounter_location_obj = FacilityLocationEncounter.objects.get(
+            external_id=response.json()["id"]
+        )
+
+        # Verify status before encounter completion
+        self.assertEqual(
+            encounter_location_obj.status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+        )
+        self.assertIsNone(encounter_location_obj.end_datetime)
+
+        # Update Encounter to Completed
+        encounter_update_url = reverse(
+            "encounter-detail", kwargs={"external_id": encounter.external_id}
+        )
+        update_data = {
+            "status": EncounterStatusChoices.completed.value,
+            "priority": EncounterPriorityChoices.urgent.value,
+            "encounter_class": ClassChoices.imp.value,
+        }
+
+        self.client.force_authenticate(self.super_user)  # To avoid permissions error
+        self.client.put(encounter_update_url, data=update_data, format="json")
+
+        # Refresh and verify encounter location status
+        encounter_location_obj.refresh_from_db()
+        self.assertEqual(
+            encounter_location_obj.status,
+            LocationEncounterAvailabilityStatusChoices.completed.value,
+        )
+        self.assertIsNotNone(encounter_location_obj.end_datetime)
