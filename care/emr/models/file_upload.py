@@ -7,6 +7,7 @@ from care.emr.models import EMRBaseModel
 from care.emr.utils.file_manager import S3FilesManager
 from care.users.models import User
 from care.utils.csp.config import BucketType
+from care.utils.models.validators import parse_file_extension
 
 
 class FileUpload(EMRBaseModel):
@@ -32,9 +33,8 @@ class FileUpload(EMRBaseModel):
     files_manager = S3FilesManager(BucketType.PATIENT)
 
     def get_extension(self):
-        # TODO: improve this logic to handle files with multiple extensions
-        parts = self.internal_name.split(".")
-        return f".{parts[-1]}" if len(parts) > 1 else ""
+        extensions = parse_file_extension(self.internal_name)
+        return f".{".".join(extensions)}" if extensions else ""
 
     def save(self, *args, **kwargs):
         """

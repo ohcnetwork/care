@@ -156,7 +156,7 @@ class TokenBookingViewSet(
 
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):
-        facility = Facility.objects.get(external_id=self.kwargs["facility_external_id"])
+        facility = self.get_facility_obj()
         facility_users = FacilityOrganizationUser.objects.filter(
             organization__facility=facility,
             user_id__in=SchedulableUserResource.objects.filter(

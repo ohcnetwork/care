@@ -626,6 +626,12 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         # First request should pass
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            FacilityLocation.objects.get(
+                external_id=self.location["id"]
+            ).current_encounter.id,
+            self.encounter.id,
+        )
         # Second request with the same time should fail
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)

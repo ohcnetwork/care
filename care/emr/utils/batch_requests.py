@@ -3,6 +3,7 @@ import logging
 from django.db import transaction
 from django.test.client import RequestFactory
 from django.urls import Resolver404, resolve
+from rest_framework.exceptions import ParseError
 
 HEADERS_TO_INCLUDE = ["HTTP_USER_AGENT", "HTTP_AUTHORIZATION"]
 DEFAULT_CONTENT_TYPE = "application/json"
@@ -71,7 +72,11 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
     content_type = x_headers.get("CONTENT_TYPE", DEFAULT_CONTENT_TYPE)
 
     request_factory = RequestFactory()
-    request_provider = getattr(request_factory, method)
+    request_provider = getattr(request_factory, method, None)
+
+    if not request_provider:
+        msg = f"Malformed request: {method} is not a valid HTTP method"
+        raise ParseError(msg)
 
     secure = False
 
