@@ -1,5 +1,5 @@
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import Q
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -207,9 +207,16 @@ class OrganizationUserFilter(filters.FilterSet):
 
     def filter_name(self, queryset, name, value):
         value = value.strip()
-        return queryset.annotate(
-            search=SearchVector("user__first_name", "user__last_name")
-        ).filter(search=SearchQuery(value))
+
+        queryset = queryset.annotate(
+            full_name=Concat("user__first_name", Value(" "), "user__last_name")
+        )
+
+        return queryset.filter(
+            Q(full_name__icontains=value)
+            | Q(user__first_name__icontains=value)
+            | Q(user__last_name__icontains=value)
+        )
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
