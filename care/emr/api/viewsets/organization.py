@@ -1,5 +1,4 @@
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -200,24 +199,10 @@ class OrganizationViewSet(EMRModelViewSet):
 
 
 class OrganizationUserFilter(filters.FilterSet):
-    name = filters.CharFilter(method="filter_name")
     phone_number = filters.CharFilter(
         field_name="user__phone_number", lookup_expr="iexact"
     )
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
-
-    def filter_name(self, queryset, name, value):
-        value = value.strip()
-
-        queryset = queryset.annotate(
-            full_name=Concat("user__first_name", Value(" "), "user__last_name")
-        )
-
-        return queryset.filter(
-            Q(full_name__icontains=value)
-            | Q(user__first_name__icontains=value)
-            | Q(user__last_name__icontains=value)
-        )
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
