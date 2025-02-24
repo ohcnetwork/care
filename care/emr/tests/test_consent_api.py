@@ -255,6 +255,7 @@ class TestConsentViewSet(CareAPITestBase):
             "file_category": "consent_attachment",
             "original_name": "abcde.jpeg",
             "associating_id": consent.external_id,
+            "mime_type": "image/jpeg",
         }
         response = self.client.post(file_url, file_data, format="json")
         self.assertEqual(response.status_code, 403)
