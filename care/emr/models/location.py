@@ -34,6 +34,15 @@ class FacilityLocation(EMRBaseModel):
     )  # Populated from FacilityLocationEncounter
     cache_expiry_days = 15
 
+    def delete(self, *args, **kwargs):
+        parent = self.parent
+        super().delete(*args, **kwargs)
+        if parent:
+            parent.has_children = FacilityLocation.objects.filter(
+                parent=parent
+            ).exists()
+            parent.save(update_fields=["has_children"])
+
     def get_parent_json(self):
         from care.emr.resources.location.spec import FacilityLocationListSpec
 
