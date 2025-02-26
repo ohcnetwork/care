@@ -88,6 +88,33 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
             "location-list", kwargs={"facility_external_id": self.facility.external_id}
         )
 
+    def test_deleting_child_location_updates_parent(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityLocationPermissions.can_list_facility_locations.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+        parent_location = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child_location = self.create_facility_location(parent=parent_location["id"])
+        url = reverse(
+            "location-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": child_location["id"],
+            },
+        )
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 204)
+
+        parent_location_instance = FacilityLocation.objects.get(
+            external_id=parent_location["id"]
+        )
+        parent_location_instance.refresh_from_db()
+        self.assertFalse(parent_location_instance.has_children)
+
     # LIST TESTS
     def test_list_facility_locations(self):
         self.client.logout()
