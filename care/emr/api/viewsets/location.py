@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -68,18 +69,22 @@ class FacilityLocationViewSet(EMRModelViewSet):
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.has_children:
+    def validate_destroy(self, instance):
+        # Validate that there are no children if exists
+        if FacilityLocation.objects.filter(parent=instance).exists():
             raise ValidationError("Location has active children.")
+        # TODO Add validation to check if patient association exists
+
+    def perform_destroy(self, instance):
+        self.validate_destroy(instance)
         parent = instance.parent
-        response = super().destroy(request, *args, **kwargs)
-        if parent:
-            parent.has_children = FacilityLocation.objects.filter(
-                parent=parent
-            ).exists()
-            parent.save(update_fields=["has_children"])
-        return response
+        with transaction.atomic():
+            super().perform_destroy(instance)
+            if parent:
+                parent.has_children = FacilityLocation.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
