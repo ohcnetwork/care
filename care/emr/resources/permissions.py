@@ -33,9 +33,9 @@ class FacilityPermissionsMixin(PermissionsMixin):
         facility_access = FacilityAccess()
         roles = facility_access.find_roles_on_facility(user, facility)
         mapping["permissions"] = list(
-            RolePermission.objects.filter(
-                role_id__in=roles, permission__context__in=["FACILITY"]
-            ).values_list("permission__slug", flat=True)
+            RolePermission.objects.filter(role_id__in=roles).values_list(
+                "permission__slug", flat=True
+            )
         )
 
 
