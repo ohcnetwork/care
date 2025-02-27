@@ -7,13 +7,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
-    EMRBaseViewSet,
-    EMRCreateMixin,
-    EMRDestroyMixin,
-    EMRListMixin,
     EMRModelViewSet,
-    EMRRetrieveMixin,
-    EMRUpdateMixin,
 )
 from care.emr.models import (
     Encounter,
@@ -32,7 +26,6 @@ from care.emr.resources.location.spec import (
     FacilityLocationRetrieveSpec,
     FacilityLocationUpdateSpec,
     FacilityLocationWriteSpec,
-    LocationAvailabilityStatusChoices,
     LocationEncounterAvailabilityStatusChoices,
 )
 from care.facility.models import Facility
@@ -40,17 +33,25 @@ from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
 
 
+class AvailabilityFilter(filters.BooleanFilter):
+    def filter(self, qs, value):
+        if value is None:
+            return qs
+        if value:
+            return qs.filter(current_encounter__isnull=True)
+        return qs.filter(current_encounter__isnull=False)
+
+
 class FacilityLocationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     mode = filters.CharFilter(field_name="mode", lookup_expr="iexact")
-    availability_status = filters.CharFilter(
-        field_name="availability_status", lookup_expr="iexact"
-    )
+    form = filters.CharFilter(field_name="form", lookup_expr="iexact")
     operational_status = filters.CharFilter(
         field_name="operational_status", lookup_expr="iexact"
     )
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    available = AvailabilityFilter(field_name="available")
 
 
 class FacilityLocationViewSet(EMRModelViewSet):
@@ -237,14 +238,7 @@ class FacilityLocationEncounterFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
 
 
-class FacilityLocationEncounterViewSet(
-    EMRCreateMixin,
-    EMRRetrieveMixin,
-    EMRUpdateMixin,
-    EMRListMixin,
-    EMRDestroyMixin,
-    EMRBaseViewSet,
-):
+class FacilityLocationEncounterViewSet(EMRModelViewSet):
     database_model = FacilityLocationEncounter
     pydantic_model = FacilityLocationEncounterCreateSpec
     pydantic_read_model = FacilityLocationEncounterReadSpec
@@ -283,24 +277,11 @@ class FacilityLocationEncounterViewSet(
             all_encounters = all_encounters.exclude(
                 id=active_location_encounter.encounter_id
             )
-        all_encounters.update(current_location=None)
-
-    def reset_location_availability_status(self, location):
-        """
-        Reset location availability status to the right status.
-        """
-        if FacilityLocationEncounter.objects.filter(
-            location=location,
-            status=LocationEncounterAvailabilityStatusChoices.active.value,
-        ).exists():
-            location.availability_status = (
-                LocationAvailabilityStatusChoices.unavailable.value
-            )
+            location.current_encounter = active_location_encounter.encounter
         else:
-            location.availability_status = (
-                LocationAvailabilityStatusChoices.available.value
-            )
-        location.save(update_fields=["availability_status"])
+            location.current_encounter = None
+        all_encounters.update(current_location=None)
+        location.save(update_fields=["current_encounter"])
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
@@ -326,7 +307,6 @@ class FacilityLocationEncounterViewSet(
             self._validate_data(instance)
             super().perform_create(instance)
             self.reset_encounter_location_association(location)
-            self.reset_location_availability_status(location)
 
     def perform_update(self, instance):
         location = self.get_location_obj()
@@ -335,27 +315,30 @@ class FacilityLocationEncounterViewSet(
             self._validate_data(instance, self.get_object())
             super().perform_update(instance)
             self.reset_encounter_location_association(location)
-            self.reset_location_availability_status(location)
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
         self.reset_encounter_location_association(instance.location)
-        self.reset_location_availability_status(instance.location)
 
     def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
         This method will be called separately to maintain a lock when the validation is being performed
         """
         location = self.get_location_obj()
-        if location.mode == FacilityLocationModeChoices.instance.value:
-            raise ValidationError("Cannot assign encounters for Location instances")
+        if location.mode == FacilityLocationModeChoices.kind.value:
+            raise ValidationError("Cannot assign encounters to location kind")
 
         start_datetime = instance.start_datetime
-        base_qs = FacilityLocationEncounter.objects.filter(location=location)
+        base_qs = FacilityLocationEncounter.objects.all()
+        if model_obj:
+            encounter = model_obj.encounter
+        else:
+            encounter = instance.encounter
+            if not isinstance(instance.encounter, Encounter):
+                encounter = get_object_or_404(Encounter, external_id=encounter)
         if model_obj:
             # Validate if the current dates are not in conflict with other dates
             base_qs = base_qs.exclude(id=model_obj.id)
-
         status = instance.status or model_obj.status
         if instance.end_datetime is not None:
             end_datetime = instance.end_datetime
@@ -385,22 +368,41 @@ class FacilityLocationEncounterViewSet(
 
         # Ensure that there is no conflict in the schedule
         if end_datetime:
-            if base_qs.filter(
-                start_datetime__lte=end_datetime, end_datetime__gte=start_datetime
-            ).exists():
+            if (
+                base_qs.filter(location=location)
+                .filter(
+                    start_datetime__lte=end_datetime, end_datetime__gte=start_datetime
+                )
+                .exists()
+            ):
                 raise ValidationError("Conflict in schedule")
-        elif base_qs.filter(start_datetime__gte=start_datetime).exists():
+        elif (
+            base_qs.filter(location=location)
+            .filter(start_datetime__gte=start_datetime)
+            .exists()
+        ):
             raise ValidationError("Conflict in schedule")
 
         # Ensure that there is no other association at this point
         if (
             status == LocationEncounterAvailabilityStatusChoices.active.value
-            and base_qs.filter(
-                status=LocationEncounterAvailabilityStatusChoices.active.value
-            ).exists()
+            and base_qs.filter(location=location)
+            .filter(status=LocationEncounterAvailabilityStatusChoices.active.value)
+            .exists()
         ):
             raise ValidationError(
                 "Another active encounter already exists for this location"
+            )
+
+        # Ensure that there is no other active location on the encounter
+        if (
+            status == LocationEncounterAvailabilityStatusChoices.active.value
+            and base_qs.filter(encounter=encounter)
+            .filter(status=LocationEncounterAvailabilityStatusChoices.active.value)
+            .exists()
+        ):
+            raise ValidationError(
+                "Another active location already exists for this encounter"
             )
 
         # Don't allow changes to the status once the status has reached completed

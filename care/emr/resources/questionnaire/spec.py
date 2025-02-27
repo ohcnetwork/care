@@ -212,6 +212,13 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
             raise ValueError(err)
         return slug
 
+    @field_validator("title")
+    @classmethod
+    def validate_title(cls, title: str, info):
+        if not title.strip():
+            raise ValueError("Title cannot be empty")
+        return title.strip()
+
     def get_all_ids(self):
         ids = []
         for question in self.questions:

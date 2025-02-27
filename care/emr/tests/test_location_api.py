@@ -177,6 +177,7 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
             mode=FacilityLocationModeChoices.instance.value
         )
         data = self.generate_data_for_facility_location(parent=parent_location1["id"])
+        data["mode"] = FacilityLocationModeChoices.instance.value
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)
         response_data = response.json()
@@ -498,7 +499,7 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         self.patient = self.create_patient()
         self.client.force_authenticate(user=self.user)
         self.location = self.create_facility_location(
-            mode=FacilityLocationModeChoices.kind.value
+            mode=FacilityLocationModeChoices.instance.value
         )
         self.encounter = self.create_encounter(
             self.patient, self.facility, self.facility.default_internal_organization
@@ -625,6 +626,12 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         # First request should pass
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            FacilityLocation.objects.get(
+                external_id=self.location["id"]
+            ).current_encounter.id,
+            self.encounter.id,
+        )
         # Second request with the same time should fail
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)
@@ -715,7 +722,7 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
             ]
         )
         location_instance = self.create_facility_location(
-            mode=FacilityLocationModeChoices.instance.value
+            mode=FacilityLocationModeChoices.kind.value
         )
         data = self.generate_facility_location_encounter_data(
             self.encounter.external_id,
@@ -734,7 +741,7 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         self.assertIn("errors", response_data)
         error = response_data["errors"][0]
         self.assertEqual(error["type"], "validation_error")
-        self.assertIn("Cannot assign encounters for Location instances", error["msg"])
+        self.assertIn("Cannot assign encounters to location kind", error["msg"])
 
     def test_create_encounter_without_end_datetime_for_completed_status(self):
         """Test that a completed encounter requires an end datetime."""

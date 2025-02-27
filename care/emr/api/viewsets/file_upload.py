@@ -15,6 +15,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.models import Encounter, FileUpload, Patient
+from care.emr.models.consent import Consent
 from care.emr.resources.file_upload.spec import (
     FileTypeChoices,
     FileUploadCreateSpec,
@@ -37,8 +38,13 @@ def file_authorizer(user, file_type, associating_id, permission):
             allowed = AuthorizationController.call(
                 "can_write_patient_obj", user, patient_obj
             )
-    elif file_type == FileTypeChoices.encounter.value:
-        encounter_obj = get_object_or_404(Encounter, external_id=associating_id)
+    elif file_type in [FileTypeChoices.encounter.value, FileTypeChoices.consent.value]:
+        if file_type == FileTypeChoices.encounter.value:
+            encounter_obj = get_object_or_404(Encounter, external_id=associating_id)
+        else:
+            encounter_obj = get_object_or_404(
+                Consent, external_id=associating_id
+            ).encounter
         if permission == "read":
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", user, encounter_obj.patient

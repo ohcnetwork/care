@@ -38,13 +38,19 @@ class AuthorizationHandler:
     ):
         if user.is_superuser:
             return True
-        roles = self.get_role_from_permissions(permissions)
-        filters = {"role_id__in": roles, "user": user}
-        if orgs:
-            filters["organization_id__in"] = orgs
-        if facility:
-            filters["organization__facility"] = facility
-        return FacilityOrganizationUser.objects.filter(**filters).exists()
+
+        for perm in permissions:
+            roles = self.get_role_from_permissions([perm])
+            filters = {"role_id__in": roles, "user": user}
+            if orgs:
+                filters["organization_id__in"] = orgs
+            if facility:
+                filters["organization__facility"] = facility
+
+            if not FacilityOrganizationUser.objects.filter(**filters).exists():
+                return False
+
+        return True
 
     def get_role_from_permissions(self, permissions):
         # TODO Cache this endpoint

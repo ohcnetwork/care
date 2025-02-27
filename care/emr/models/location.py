@@ -12,9 +12,6 @@ class FacilityLocation(EMRBaseModel):
     status = models.CharField(max_length=255)
     operational_status = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    availability_status = models.CharField(
-        max_length=25
-    )  # Populated from FacilityLocationEncounter
     description = models.CharField(max_length=255)
     mode = models.CharField(max_length=255)
     location_type = models.JSONField(default=dict, null=True, blank=True)
@@ -32,6 +29,9 @@ class FacilityLocation(EMRBaseModel):
     root_location = models.ForeignKey(
         "self", on_delete=models.CASCADE, related_name="root", null=True, blank=True
     )
+    current_encounter = models.ForeignKey(
+        Encounter, on_delete=models.SET_NULL, null=True, blank=True, default=None
+    )  # Populated from FacilityLocationEncounter
     cache_expiry_days = 15
 
     def get_parent_json(self):
@@ -133,7 +133,8 @@ class FacilityLocationOrganization(EMRBaseModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        handle_cascade.delay(self.location.id)
+        self.location.save()
+        self.location.cascade_changes()
 
 
 class FacilityLocationEncounter(EMRBaseModel):

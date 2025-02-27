@@ -27,7 +27,7 @@ class PlugManager:
                 logger.error("ADDITIONAL_PLUGS is not a valid JSON")
 
     def install(self) -> None:
-        packages: list[str] = [f"{x.package_name}{x.version}" for x in self.plugs]
+        packages = {f"{x.package_name}{x.version}" for x in self.plugs}
         if packages:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *packages])  # noqa: S603
 
