@@ -68,11 +68,18 @@ class FacilityLocationViewSet(EMRModelViewSet):
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def validate_destroy(self, instance):
-        # Validate that there is no children if exists
-        if FacilityLocation.objects.filter(parent=instance).exists():
-            raise ValidationError("Location has active children")
-        # TODO Add validation to check if patient association exists
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.has_children:
+            raise ValidationError("Location has active children.")
+        parent = instance.parent
+        response = super().destroy(request, *args, **kwargs)
+        if parent:
+            parent.has_children = FacilityLocation.objects.filter(
+                parent=parent
+            ).exists()
+            parent.save(update_fields=["has_children"])
+        return response
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
