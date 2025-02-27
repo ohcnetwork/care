@@ -76,7 +76,6 @@ class FacilityLocationViewSet(EMRModelViewSet):
         # TODO Add validation to check if patient association exists
 
     def perform_destroy(self, instance):
-        self.validate_destroy(instance)
         parent = instance.parent
         with transaction.atomic():
             super().perform_destroy(instance)
