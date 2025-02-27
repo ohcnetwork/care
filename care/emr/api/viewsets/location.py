@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.utils.timezone import now
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -430,11 +429,10 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
 
 def close_related_location_from_encounter(instance):
     if instance.status in COMPLETED_CHOICES:
-        with transaction.atomic():
-            qs = FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
-                status=LocationEncounterAvailabilityStatusChoices.completed.value
-            )
-            qs.update(
-                end_datetime=now(),
-                status=LocationEncounterAvailabilityStatusChoices.completed.value,
-            )
+        qs = FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
+            status=LocationEncounterAvailabilityStatusChoices.completed.value
+        )
+        qs.update(
+            end_datetime=now(),
+            status=LocationEncounterAvailabilityStatusChoices.completed.value,
+        )
