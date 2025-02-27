@@ -70,9 +70,9 @@ class FacilityLocationViewSet(EMRModelViewSet):
         )
 
     def validate_destroy(self, instance):
-        # Validate that there are no children if exists
+        # Validate that there is no children if exists
         if FacilityLocation.objects.filter(parent=instance).exists():
-            raise ValidationError("Location has active children.")
+            raise ValidationError("Location has active children")
         # TODO Add validation to check if patient association exists
 
     def perform_destroy(self, instance):
