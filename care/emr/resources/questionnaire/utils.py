@@ -202,47 +202,47 @@ def validate_question_result(  # noqa : PLR0912
         # ( check if the code belongs to the valueset or options list)
 
 
-def create_observation_spec(questionnaire, responses, parent_id=None):
+def create_observation_spec(question, responses, parent_id=None):
     spec = {}
     spec["status"] = ObservationStatus.final.value
-    spec["value_type"] = questionnaire["type"]
-    if "category" in questionnaire:
-        spec["category"] = questionnaire["category"]
-    if "code" in questionnaire:
-        spec["main_code"] = questionnaire["code"]
-    if questionnaire["type"] == QuestionType.group.value:
+    spec["value_type"] = question["type"]
+    if "category" in question:
+        spec["category"] = question["category"]
+    if "code" in question:
+        spec["main_code"] = question["code"]
+    if question["type"] == QuestionType.group.value:
         spec["id"] = str(uuid.uuid4())
         spec["effective_datetime"] = timezone.now()
         spec["value"] = {}
+        spec["is_group"] = True
         return [spec]
     observations = []
     if (
         responses
-        and questionnaire["id"] in responses
-        and responses[questionnaire["id"]].values
-        and responses[questionnaire["id"]].values[0]
+        and question["id"] in responses
+        and responses[question["id"]].values
+        and responses[question["id"]].values[0]
     ):
-        for value in responses[questionnaire["id"]].values:
+        for value in responses[question["id"]].values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] == QuestionType.choice.value and value.code:
+            if question["type"] == QuestionType.choice.value and value.code:
                 observation["value"] = value.value_code.model_dump(
                     exclude_defaults=True
                 )
 
             elif (
-                questionnaire["type"] == QuestionType.quantity.value
-                and value.value_quantity
+                question["type"] == QuestionType.quantity.value and value.value_quantity
             ):
                 observation["value"] = value.value_quantity.model_dump(
                     exclude_defaults=True
                 )
             elif value:
                 observation["value"] = {"value": value.value}
-                if "unit" in questionnaire:
-                    observation["value"]["unit"] = questionnaire["unit"]
-            if responses[questionnaire["id"]].note:
-                observation["note"] = responses[questionnaire["id"]].note
+                if "unit" in question:
+                    observation["value"]["unit"] = question["unit"]
+            if responses[question["id"]].note:
+                observation["note"] = responses[question["id"]].note
         if parent_id:
             observation["parent"] = parent_id
         observation["effective_datetime"] = timezone.now()
@@ -256,13 +256,14 @@ def convert_to_observation_spec(
     constructed_observation_mapping = []
     for question in questionnaire_obj.get("questions", []):
         if question["type"] == QuestionType.group.value:
-            observation = create_observation_spec(question, responses, parent_id)
-            sub_mapping = convert_to_observation_spec(
-                question, responses, observation[0]["id"]
-            )
-            if sub_mapping:
-                constructed_observation_mapping.extend(observation)
-                constructed_observation_mapping.extend(sub_mapping)
+            pass
+            # observation = create_observation_spec(question, responses, parent_id)
+            # sub_mapping = convert_to_observation_spec(
+            #     question, responses, observation[0]["id"]
+            # )
+            # if sub_mapping:
+            #     constructed_observation_mapping.extend(observation)
+            #     constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)
