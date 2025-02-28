@@ -2,7 +2,7 @@
 from datetime import datetime
 from django.db import migrations
 from django.core.paginator import Paginator
-from django.utils.timezone import make_aware
+from django.db import models
 
 
 MIGRATION_ID = 158445695209
@@ -31,11 +31,14 @@ def migrate_assets(apps, schema_editor):
     ConsultationBedAsset = apps.get_model("facility", "ConsultationBedAsset")
 
     query = (
-        Asset.objects.filter()
+        Asset.objects.filter(
+            migrated_emr_device_id__isnull=True,
+        )
         .select_related("current_location", "current_location__facility")
         .order_by("id")
     )
     paginator = Paginator(query, 1000)
+    bulk_asset_device_reference = []
     for page in paginator.page_range:
         for asset in paginator.page(page):
             contact = []
@@ -87,14 +90,18 @@ def migrate_assets(apps, schema_editor):
                 current_location_id=asset.current_location.migrated_emr_location_id,
                 created_date=asset.created_date,
                 modified_date=asset.modified_date,
-                meta={
+                metadata={
                     "not_working_reason": asset.not_working_reason,
                     "warranty_details": asset.warranty_details,
                     "qr_code_id": asset.qr_code_id,
-                    "migration_id": MIGRATION_ID,
                     "connection_meta": asset.meta,
+                    "class": asset.asset_class,
+                },
+                meta={
+                    "migration_id": MIGRATION_ID,
                 },
             )
+            bulk_asset_device_reference.append((asset.id, device.id))
 
             bulk_device_history = []
             for consultation_bed_asset in ConsultationBedAsset.objects.filter(
@@ -199,6 +206,14 @@ def migrate_assets(apps, schema_editor):
 
             DeviceLocationHistory.objects.bulk_create(bulk_history_records)
 
+    Asset.objects.bulk_update(
+        [
+            Asset(id=id, migrated_emr_device_id=new_device_id)
+            for id, new_device_id in bulk_asset_device_reference
+        ],
+        ["migrated_emr_device_id"],
+    )
+
     enable_auto_time()
 
 
@@ -217,5 +232,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name="asset",
+            name="migrated_emr_device_id",
+            field=models.BigIntegerField(blank=True, default=None, null=True),
+        ),
         migrations.RunPython(migrate_assets, reverse_migrate_assets),
     ]

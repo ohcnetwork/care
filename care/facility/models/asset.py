@@ -119,6 +119,7 @@ class Asset(BaseModel):
         default=None,
         related_name="last_service",
     )
+    migrated_emr_device_id = models.BigIntegerField(null=True, blank=True, default=None)
 
     CSV_MAPPING = {
         "name": "Name",
