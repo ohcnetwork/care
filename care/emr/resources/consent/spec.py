@@ -32,7 +32,7 @@ class DecisionType(str, Enum):
 
 class CategoryChoice(str, Enum):
     research = "research"
-    privacy_consent = "privacy_consent"
+    patient_privacy = "patient_privacy"
     treatment = "treatment"
 
 
