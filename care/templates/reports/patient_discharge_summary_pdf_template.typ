@@ -3,7 +3,7 @@
 {% load discharge_summary_utils %}
 
 #set page("a4",margin: 40pt)
-#set text(font: "DejaVu Sans",size: 10pt,hyphenate: true)
+#set text(font: "DejaVu Sans",size: 10pt,hyphenate: true, fallback: true)
 #let mygray = luma(100)
 
 #let frame(stroke) = (x, y) => (

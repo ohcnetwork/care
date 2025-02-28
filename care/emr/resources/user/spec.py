@@ -52,7 +52,7 @@ class UserCreateSpec(UserUpdateSpec):
     @field_validator("username")
     @classmethod
     def validate_username(cls, username):
-        if User.objects.filter(username=username).exists():
+        if User.check_username_exists(username):
             raise ValueError("Username already exists")
         return username
 
