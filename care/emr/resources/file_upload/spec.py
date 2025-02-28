@@ -14,6 +14,7 @@ from care.utils.models.validators import file_name_validator
 class FileTypeChoices(str, Enum):
     patient = "patient"
     encounter = "encounter"
+    consent = "consent"
 
 
 class FileCategoryChoices(str, Enum):
@@ -22,6 +23,7 @@ class FileCategoryChoices(str, Enum):
     identity_proof = "identity_proof"
     unspecified = "unspecified"
     discharge_summary = "discharge_summary"
+    consent_attachment = "consent_attachment"
 
 
 class FileUploadBaseSpec(EMRResource):
@@ -108,3 +110,15 @@ class FileUploadRetrieveSpec(FileUploadListSpec):
 
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+
+
+class ConsentFileUploadCreateSpec(FileUploadBaseSpec):
+    original_name: str
+    associating_id: UUID4
+
+    def perform_extra_deserialization(self, is_update, obj):
+        # Authz Performed in the request
+        obj._just_created = True  # noqa SLF001
+        obj.internal_name = self.original_name
+        obj.file_type = FileTypeChoices.consent
+        obj.file_category = FileCategoryChoices.consent_attachment

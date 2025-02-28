@@ -19,6 +19,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.api.viewsets.device import disassociate_device_from_encounter
 from care.emr.models import (
     Encounter,
     EncounterOrganization,
@@ -95,6 +96,11 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            disassociate_device_from_encounter(instance)
+            super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(

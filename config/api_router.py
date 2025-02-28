@@ -13,6 +13,13 @@ from care.emr.api.viewsets.condition import (
     DiagnosisViewSet,
     SymptomViewSet,
 )
+from care.emr.api.viewsets.consent import ConsentViewSet
+from care.emr.api.viewsets.device import (
+    DeviceEncounterHistoryViewSet,
+    DeviceLocationHistoryViewSet,
+    DeviceServiceHistoryViewSet,
+    DeviceViewSet,
+)
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
@@ -98,6 +105,7 @@ router.register(
 
 router.register("role", RoleViewSet, basename="role")
 
+
 router.register("encounter", EncounterViewSet, basename="encounter")
 
 organization_nested_router = NestedSimpleRouter(
@@ -165,6 +173,35 @@ facility_nested_router.register(
     basename="location",
 )
 
+facility_nested_router.register(
+    r"device",
+    DeviceViewSet,
+    basename="device",
+)
+
+device_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"device", lookup="device"
+)
+
+device_nested_router.register(
+    r"location_history",
+    DeviceLocationHistoryViewSet,
+    basename="device_location_history",
+)
+
+
+device_nested_router.register(
+    r"encounter_history",
+    DeviceEncounterHistoryViewSet,
+    basename="device_encounter_history",
+)
+
+device_nested_router.register(
+    r"service_history",
+    DeviceServiceHistoryViewSet,
+    basename="device_service_history",
+)
+
 facility_location_nested_router = NestedSimpleRouter(
     facility_nested_router, r"location", lookup="location"
 )
@@ -184,6 +221,8 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+
+patient_nested_router.register(r"consent", ConsentViewSet, basename="consent")
 patient_nested_router.register(
     r"chronic_condition", ChronicConditionViewSet, basename="chronic-condition"
 )
@@ -243,4 +282,5 @@ urlpatterns = [
     path("", include(organization_nested_router.urls)),
     path("", include(facility_organization_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
+    path("", include(device_nested_router.urls)),
 ]
