@@ -399,9 +399,10 @@ def migrate_consultations(apps, schema_editor):
                 if cbed.end_date and location.operational_status == "O":
                     location.operational_status = "U"
                     location.save(update_fields=["operational_status"])
-                elif not cbed.end_date and location.operational_status == "U":
+                elif not cbed.end_date:
                     location.operational_status = "O"
-                    location.save(update_fields=["operational_status"])
+                    location.current_encounter_id = encounter.id
+                    location.save(update_fields=["operational_status", "current_encounter_id"])
 
             consultation_questionnaire_responses = []
             if consultation.consultation_notes:

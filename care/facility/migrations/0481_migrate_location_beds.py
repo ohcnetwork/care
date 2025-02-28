@@ -58,7 +58,6 @@ def migrate_location_beds(apps, schema_editor):
                 status="active",
                 # operational_status="U",
                 name=asset_location.name,
-                availability_status="available",
                 description=asset_location.description,
                 mode="kind",
                 form="wa",
@@ -89,7 +88,6 @@ def migrate_location_beds(apps, schema_editor):
                     status="active",
                     operational_status="U",
                     name=old_bed.name,
-                    availability_status="available",
                     description=old_bed.description,
                     mode="instance",
                     form="bd",
@@ -155,6 +153,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("facility", "0480_migrate_facilities"),
+        ("emr", "0017_remove_facilitylocation_availability_status_and_more"),
     ]
 
     operations = [
