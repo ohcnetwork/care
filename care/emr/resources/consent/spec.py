@@ -45,6 +45,7 @@ class ConsentVerificationSpec(BaseModel):
     verified_by: UUID4 | None = None
     verification_date: datetime | None = None
     verification_type: VerificationType
+    note: str | None = None
 
 
 class ConsentBaseSpec(EMRResource):
@@ -59,6 +60,7 @@ class ConsentBaseSpec(EMRResource):
     period: PeriodSpec = dict
     encounter: UUID4
     decision: DecisionType
+    note: str | None = None
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
@@ -74,6 +76,7 @@ class ConsentUpdateSpec(ConsentBaseSpec):
     period: PeriodSpec | None = None
     encounter: UUID4 | None = None
     decision: DecisionType | None = None
+    note: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
