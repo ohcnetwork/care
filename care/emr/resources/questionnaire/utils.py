@@ -215,6 +215,8 @@ def create_observation_spec(question, responses, parent_id=None):
         spec["effective_datetime"] = timezone.now()
         spec["value"] = {}
         spec["is_group"] = True
+
+        spec["component"] = create_observation_components_for_group(question, responses)
         return [spec]
     observations = []
     if (
@@ -250,20 +252,50 @@ def create_observation_spec(question, responses, parent_id=None):
     return observations
 
 
+def create_observation_components_for_group(question_group, responses):
+    components = []
+
+    for question in question_group.get("questions", []):
+        if question["type"] == QuestionType.group.value:
+            components.extend(
+                create_observation_components_for_group(question, responses)
+            )
+            continue
+
+        if (
+            responses
+            and question["id"] in responses
+            and responses[question["id"]].values
+        ):
+            for value in responses[question["id"]].values:
+                components.append(
+                    {
+                        "code": question.get("code"),
+                        "value": {
+                            "unit": question.get("unit"),
+                            "value": value.value,
+                            "code": value.code,
+                            "display": value.display,
+                            "system": value.system,
+                        },
+                        "dataAbsentReason": None,
+                        "connected_to": question["id"],
+                    }
+                )
+        else:
+            components.append({"code": question.get("code")})
+
+    return components
+
+
 def convert_to_observation_spec(
     questionnaire_obj: Questionnaire, responses, parent_id=None
 ):
     constructed_observation_mapping = []
     for question in questionnaire_obj.get("questions", []):
         if question["type"] == QuestionType.group.value:
-            pass
-            # observation = create_observation_spec(question, responses, parent_id)
-            # sub_mapping = convert_to_observation_spec(
-            #     question, responses, observation[0]["id"]
-            # )
-            # if sub_mapping:
-            #     constructed_observation_mapping.extend(observation)
-            #     constructed_observation_mapping.extend(sub_mapping)
+            observation = create_observation_spec(question, responses, parent_id)
+            constructed_observation_mapping.extend(observation)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)
@@ -317,6 +349,7 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
     observations = convert_to_observation_spec(
         {"questions": questionnaire_obj.questions}, responses
     )
+
     # Bulk create observations
     observations_objects = [
         ObservationSpec(

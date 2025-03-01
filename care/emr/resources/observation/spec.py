@@ -40,6 +40,33 @@ class ReferenceRange(BaseModel):
     text: str | None = None
 
 
+class DataAbsentReasonChoice(str, Enum):
+    unknown = "unknown"
+    asked_unknown = "asked-unknown"
+    temp_unknown = "temp-unknown"
+    not_asked = "not-asked"
+    asked_declined = "asked-declined"
+    masked = "masked"
+    not_applicable = "not-applicable"
+    unsupported = "unsupported"
+    as_text = "as-text"
+    error = "error"
+    not_a_number = "not-a-number"
+    negative_infinity = "negative-infinity"
+    positive_infinity = "positive-infinity"
+    not_performed = "not-performed"
+    not_permitted = "not-permitted"
+
+
+class Component(BaseModel):
+    connected_to: UUID4
+    value: QuestionnaireSubmitResultValue
+    data_absent_reason: DataAbsentReasonChoice | None = None
+    interpretation: str | None = None
+    reference_range: list[ReferenceRange] = []
+    code: Coding | None = None
+
+
 class BaseObservationSpec(EMRResource):
     __model__ = Observation
 
@@ -106,6 +133,8 @@ class BaseObservationSpec(EMRResource):
     parent: UUID4 | None = Field(None, description="ID reference to parent observation")
 
     questionnaire_response: UUID4 | None = None
+
+    component: list[Component] = []
 
 
 class ObservationSpec(BaseObservationSpec):
