@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+from django.contrib.auth import get_user_model
 from pydantic import UUID4, BaseModel, Field
 
 from care.emr.models import Encounter, FileUpload
@@ -9,6 +10,9 @@ from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.file_upload.spec import (
     FileUploadListSpec,
 )
+from care.emr.resources.user.spec import UserSpec
+
+User = get_user_model()
 
 
 class ConsentStatusChoices(str, Enum):
@@ -41,6 +45,7 @@ class ConsentVerificationSpec(BaseModel):
     verified_by: UUID4 | None = None
     verification_date: datetime | None = None
     verification_type: VerificationType
+    note: str | None = None
 
 
 class ConsentBaseSpec(EMRResource):
@@ -55,6 +60,7 @@ class ConsentBaseSpec(EMRResource):
     period: PeriodSpec = dict
     encounter: UUID4
     decision: DecisionType
+    note: str | None = None
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
@@ -70,6 +76,7 @@ class ConsentUpdateSpec(ConsentBaseSpec):
     period: PeriodSpec | None = None
     encounter: UUID4 | None = None
     decision: DecisionType | None = None
+    note: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
@@ -88,6 +95,12 @@ class ConsentListSpec(ConsentBaseSpec):
             for attachment in FileUpload.objects.filter(associating_id=obj.external_id)
         ]
         mapping["encounter"] = obj.encounter.external_id
+
+        for verification in obj.verification_details:
+            verification["verified_by"] = UserSpec.serialize(
+                User.objects.get(external_id=verification["verified_by"])
+            ).to_json()
+
         mapping["verification_details"] = obj.verification_details
 
 

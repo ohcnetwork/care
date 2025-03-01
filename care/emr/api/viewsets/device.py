@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from pydantic import UUID4, BaseModel
+from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -47,9 +48,6 @@ from care.security.authorization import AuthorizationController
 class DeviceFilters(filters.FilterSet):
     current_encounter = filters.UUIDFilter(field_name="current_encounter__external_id")
     current_location = filters.UUIDFilter(field_name="current_location__external_id")
-    registered_name = filters.CharFilter(
-        field_name="registered_name", lookup_expr="icontains"
-    )
 
 
 class DeviceViewSet(EMRModelViewSet):
@@ -59,7 +57,8 @@ class DeviceViewSet(EMRModelViewSet):
     pydantic_read_model = DeviceListSpec
     pydantic_retrieve_model = DeviceRetrieveSpec
     filterset_class = DeviceFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
+    search_fields = ["registered_name", "user_friendly_name"]
 
     def get_facility_obj(self):
         return get_object_or_404(

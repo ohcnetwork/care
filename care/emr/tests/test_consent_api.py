@@ -57,6 +57,7 @@ class TestConsentViewSet(CareAPITestBase):
             "date": self.fake.date_time_this_year().isoformat(),
             "decision": choice(list(DecisionType)).value,
             "period": {"start": start.isoformat(), "end": end.isoformat()},
+            "note": self.fake.text(),
         }
         data.update(**kwargs)
         return data
@@ -173,7 +174,11 @@ class TestConsentViewSet(CareAPITestBase):
         consent = self.create_consent(encounter=encounter)
 
         url = f"{self._get_consent_url(consent.external_id)}add_verification/"
-        data = {"verified": True, "verification_type": "validation"}
+        data = {
+            "verified": True,
+            "verification_type": "validation",
+            "note": "Test note",
+        }
 
         # First verification attempt
         self.assertEqual(self.client.post(url, data, format="json").status_code, 200)
