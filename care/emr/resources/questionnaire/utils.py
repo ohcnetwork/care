@@ -278,12 +278,10 @@ def create_observation_components_for_group(question_group, responses):
                             "display": value.display,
                             "system": value.system,
                         },
-                        "dataAbsentReason": None,
+                        "data_absent_reason": None,
                         "connected_to": question["id"],
                     }
                 )
-        else:
-            components.append({"code": question.get("code")})
 
     return components
 
