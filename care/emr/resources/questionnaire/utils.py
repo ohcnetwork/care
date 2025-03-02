@@ -11,7 +11,8 @@ from care.emr.models.observation import Observation
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
-from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
+from care.emr.resources.common import Coding
+from care.emr.resources.observation.spec import ObservationSpec
 from care.emr.resources.questionnaire.spec import QuestionType
 
 
@@ -147,7 +148,7 @@ def validate_question_result(  # noqa : PLR0912
             "answer_value_set"
         ):
             for value in values:
-                if not value.value_code:
+                if not value.code:
                     errors.append(
                         {
                             "type": "type_error",
@@ -160,7 +161,13 @@ def validate_question_result(  # noqa : PLR0912
                 if "answer_value_set" in questionnaire:
                     try:
                         validate_valueset(
-                            "unit", questionnaire["answer_value_set"], value.value_code
+                            "unit",
+                            questionnaire["answer_value_set"],
+                            Coding(
+                                code=value.code,
+                                display=value.display,
+                                system=value.system,
+                            ),
                         )
                     except ValueError:
                         errors.append(
@@ -173,7 +180,7 @@ def validate_question_result(  # noqa : PLR0912
         # TODO : Validate for options created by user as well
         if questionnaire["type"] == QuestionType.quantity.value:
             for value in values:
-                if not value.value_quantity:
+                if not value.unit:
                     errors.append(
                         {
                             "type": "type_error",
@@ -189,7 +196,7 @@ def validate_question_result(  # noqa : PLR0912
                         validate_valueset(
                             "unit",
                             questionnaire["answer_value_set"],
-                            value.value_quantity.code,
+                            value.code,
                         )
                     except ValueError:
                         errors.append(
@@ -203,103 +210,95 @@ def validate_question_result(  # noqa : PLR0912
 
 
 def create_observation_spec(question, responses, parent_id=None):
-    spec = {}
-    spec["status"] = ObservationStatus.final.value
-    spec["value_type"] = question["type"]
-    if "category" in question:
-        spec["category"] = question["category"]
+    # Initialize a base observation (applies to both group and non-group)
+    obs = {
+        "id": str(uuid.uuid4()),
+        "status": "final",
+        "value_type": question["type"],
+        "effective_datetime": timezone.now(),
+        "value": {},
+    }
     if "code" in question:
-        spec["main_code"] = question["code"]
-    if question["type"] == QuestionType.group.value:
-        spec["id"] = str(uuid.uuid4())
-        spec["effective_datetime"] = timezone.now()
-        spec["value"] = {}
-        spec["is_group"] = True
+        obs["main_code"] = question["code"]
+    if parent_id:
+        obs["parent"] = parent_id
 
-        spec["component"] = create_observation_components_for_group(question, responses)
-        return [spec]
     observations = []
-    if (
-        responses
-        and question["id"] in responses
-        and responses[question["id"]].values
-        and responses[question["id"]].values[0]
-    ):
-        for value in responses[question["id"]].values:
-            observation = spec.copy()
-            observation["id"] = str(uuid.uuid4())
-            if question["type"] == QuestionType.choice.value and value.code:
-                observation["value"] = value.value_code.model_dump(
-                    exclude_defaults=True
-                )
 
-            elif (
-                question["type"] == QuestionType.quantity.value and value.value_quantity
-            ):
-                observation["value"] = value.value_quantity.model_dump(
-                    exclude_defaults=True
+    # If group
+    if question["type"] == QuestionType.group.value:
+        # If group is a component, flatten all child questions
+        if question.get("is_component", False):
+            obs["component"] = flatten_all_descendants(question, responses)
+            observations.append(obs)
+            # For each nested group that is also a component, build a separate observation
+            for child in question.get("questions", []):
+                if child["type"] == QuestionType.group.value and child.get(
+                    "is_component", False
+                ):
+                    nested_obs = create_observation_spec(child, responses, obs["id"])
+                    observations.extend(nested_obs)
+        else:
+            # Standard group: single observation + recurse over children
+            observations.append(obs)
+            for child in question.get("questions", []):
+                observations.extend(
+                    create_observation_spec(child, responses, obs["id"])
                 )
-            elif value:
-                observation["value"] = {"value": value.value}
-                if "unit" in question:
-                    observation["value"]["unit"] = question["unit"]
-            if responses[question["id"]].note:
-                observation["note"] = responses[question["id"]].note
-        if parent_id:
-            observation["parent"] = parent_id
-        observation["effective_datetime"] = timezone.now()
-        observations.append(observation)
+        return observations
+
+    # If non-group and has responses, create observations for each value
+    if question["id"] in responses and responses[question["id"]].values:
+        for val in responses[question["id"]].values:
+            leaf_obs = obs.copy()
+            leaf_obs["id"] = str(uuid.uuid4())
+            leaf_obs["value"] = {
+                "unit": question.get("unit"),
+                "value": val.value,
+                "code": val.code,
+                "display": val.display,
+                "system": val.system,
+            }
+            leaf_obs["effective_datetime"] = timezone.now()
+            observations.append(leaf_obs)
+
     return observations
 
 
-def create_observation_components_for_group(question_group, responses):
+def flatten_all_descendants(question, responses):
+    # Flatten everything below 'question' into a single list of component dicts
     components = []
-
-    for question in question_group.get("questions", []):
-        if question["type"] == QuestionType.group.value:
-            components.extend(
-                create_observation_components_for_group(question, responses)
-            )
-            continue
-
-        if (
-            responses
-            and question["id"] in responses
-            and responses[question["id"]].values
-        ):
-            for value in responses[question["id"]].values:
-                components.append(
-                    {
-                        "code": question.get("code"),
-                        "value": {
-                            "unit": question.get("unit"),
-                            "value": value.value,
-                            "code": value.code,
-                            "display": value.display,
-                            "system": value.system,
-                        },
-                        "data_absent_reason": None,
-                        "connected_to": question["id"],
-                    }
-                )
-
+    for child in question.get("questions", []):
+        comp_value = {}
+        if child["id"] in responses and responses[child["id"]].values:
+            val = responses[child["id"]].values[0]
+            comp_value = {
+                "unit": child.get("unit"),
+                "value": val.value,
+                "code": val.code,
+                "display": val.display,
+                "system": val.system,
+            }
+        component = {
+            "connected_to": child["id"],
+            "value": comp_value,
+            "interpretation": None,
+            "reference_range": [],
+            "code": child.get("code"),
+        }
+        components.append(component)
+        # If child is also a group, recursively add its descendants
+        if child["type"] == QuestionType.group.value:
+            components.extend(flatten_all_descendants(child, responses))
     return components
 
 
-def convert_to_observation_spec(
-    questionnaire_obj: Questionnaire, responses, parent_id=None
-):
-    constructed_observation_mapping = []
-    for question in questionnaire_obj.get("questions", []):
-        if question["type"] == QuestionType.group.value:
-            observation = create_observation_spec(question, responses, parent_id)
-            constructed_observation_mapping.extend(observation)
-        elif question.get("code"):
-            constructed_observation_mapping.extend(
-                create_observation_spec(question, responses, parent_id)
-            )
-
-    return constructed_observation_mapping
+def convert_to_observation_spec(questionnaire_obj, responses):
+    # Build a flat list of all observations from the top-level questions
+    all_obs = []
+    for q in questionnaire_obj.get("questions", []):
+        all_obs.extend(create_observation_spec(q, responses, None))
+    return all_obs
 
 
 def handle_response(questionnaire_obj: Questionnaire, results, user):

@@ -139,6 +139,7 @@ class Question(QuestionnaireBaseSpec):
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
+    is_component: bool = False
 
     @field_validator("unit")
     @classmethod
