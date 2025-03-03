@@ -168,7 +168,7 @@ jobs:
             $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
       - name: Create Sentry release
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
