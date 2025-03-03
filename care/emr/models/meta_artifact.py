@@ -9,6 +9,7 @@ class MetaArtifact(EMRBaseModel):
     name = models.CharField(max_length=255)
     object_type = models.CharField(max_length=255)
     object_value = models.JSONField()
+    note = models.TextField(null=True)
 
     class Meta:
         indexes = [

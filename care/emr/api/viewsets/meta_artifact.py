@@ -98,7 +98,7 @@ class MetaArtifactViewSet(
         if self.action == "list":
             if (
                 "associating_type" not in self.request.GET
-                and "associating_id" not in self.request.GET
+                or "associating_id" not in self.request.GET
             ):
                 raise PermissionDenied(
                     "'associating_type' and 'associating_id' query params are required to list meta artifacts"

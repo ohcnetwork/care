@@ -36,7 +36,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
             "associating_type": "patient",
             "associating_id": self.patient.external_id,
             "name": "Test Meta Artifact",
-            "object_type": "excalidraw",
+            "object_type": "drawing",
             "object_value": self.excalidraw_object_value,
             **kwargs,
         }
@@ -57,7 +57,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
             "associating_type": associating_type,
             "associating_external_id": associating_id,
             "name": "Test Meta Artifact",
-            "object_type": "excalidraw",
+            "object_type": "drawing",
             "object_value": self.excalidraw_object_value,
         }
         data.update(kwargs)
@@ -129,6 +129,27 @@ class TestMetaArtifactViewSet(CareAPITestBase):
     def test_list_meta_artifacts_without_associating_information(self):
         """Users cannot list meta artifacts without associating information"""
         response = self.client.get(self.base_url)
+        self.assertContains(
+            response,
+            "'associating_type' and 'associating_id' query params are required to list meta artifacts",
+            status_code=status.HTTP_403_FORBIDDEN,
+        )
+
+    def test_list_meta_artifacts_without_associating_type(self):
+        """Users cannot list meta artifacts without associating type"""
+        response = self.client.get(
+            self.base_url, data={"associating_id": self.patient.external_id}
+        )
+
+        self.assertContains(
+            response,
+            "'associating_type' and 'associating_id' query params are required to list meta artifacts",
+            status_code=status.HTTP_403_FORBIDDEN,
+        )
+
+    def test_list_meta_artifacts_without_associating_id(self):
+        """Users cannot list meta artifacts without associating type"""
+        response = self.client.get(self.base_url, data={"associating_type": "patient"})
         self.assertContains(
             response,
             "'associating_type' and 'associating_id' query params are required to list meta artifacts",

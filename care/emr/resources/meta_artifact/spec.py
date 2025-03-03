@@ -14,7 +14,7 @@ class MetaArtifactAssociatingTypeChoices(str, Enum):
 
 
 class MetaArtifactObjectTypeChoices(str, Enum):
-    excalidraw = "excalidraw"
+    drawing = "drawing"
 
 
 class MetaArtifactBaseSpec(EMRResource):
