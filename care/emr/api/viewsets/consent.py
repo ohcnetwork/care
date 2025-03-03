@@ -19,7 +19,9 @@ from care.emr.resources.consent.spec import (
 
 
 class ConsentViewSet(
-    EMRModelViewSet, EncounterBasedAuthorizationBase, ValidateEncounterMixin
+    ValidateEncounterMixin,
+    EncounterBasedAuthorizationBase,
+    EMRModelViewSet,
 ):
     database_model = Consent
     pydantic_model = ConsentCreateSpec

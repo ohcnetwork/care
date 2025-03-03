@@ -8,6 +8,8 @@ from care.emr.models import Encounter, FileUpload
 from care.emr.models.consent import Consent
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.file_upload.spec import (
+    FileCategoryChoices,
+    FileTypeChoices,
     FileUploadListSpec,
 )
 from care.emr.resources.user.spec import UserSpec
@@ -50,6 +52,7 @@ class ConsentVerificationSpec(BaseModel):
 
 class ConsentBaseSpec(EMRResource):
     __model__ = Consent
+    __exclude__ = ["encounter"]
 
     id: UUID4 | None = Field(
         default=None, description="Unique identifier for the consent record"
@@ -92,7 +95,11 @@ class ConsentListSpec(ConsentBaseSpec):
         mapping["id"] = obj.external_id
         mapping["source_attachments"] = [
             FileUploadListSpec.serialize(attachment).to_json()
-            for attachment in FileUpload.objects.filter(associating_id=obj.external_id)
+            for attachment in FileUpload.objects.filter(
+                associating_id=obj.external_id,
+                file_category=FileCategoryChoices.consent_attachment,
+                file_type=FileTypeChoices.consent,
+            )
         ]
         mapping["encounter"] = obj.encounter.external_id
 
