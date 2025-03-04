@@ -41,11 +41,11 @@ class ReferenceRange(BaseModel):
 
 
 class Component(BaseModel):
-    connected_to: UUID4
     value: QuestionnaireSubmitResultValue
     interpretation: str | None = None
     reference_range: list[ReferenceRange] = []
     code: Coding | None = None
+    note: str = ""
 
 
 class BaseObservationSpec(EMRResource):
