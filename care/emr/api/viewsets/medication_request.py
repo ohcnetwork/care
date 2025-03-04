@@ -30,6 +30,7 @@ class StatusFilter(filters.CharFilter):
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = StatusFilter()
+    name = filters.CharFilter(field_name="medication__display", lookup_expr="icontains")
 
 
 class MedicationRequestViewSet(

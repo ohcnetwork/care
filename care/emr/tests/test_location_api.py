@@ -1023,7 +1023,6 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         # Update Facility Location Encounter
         response = self.client.put(url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
-
         # Fetch updated object
         encounter_location_obj = FacilityLocationEncounter.objects.get(
             external_id=response.json()["id"]
@@ -1056,3 +1055,9 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
             LocationEncounterAvailabilityStatusChoices.completed.value,
         )
         self.assertIsNotNone(encounter_location_obj.end_datetime)
+
+        self.assertIsNone(
+            FacilityLocation.objects.get(
+                external_id=self.location["id"]
+            ).current_encounter
+        )
