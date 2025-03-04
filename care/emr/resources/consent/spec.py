@@ -43,7 +43,7 @@ class CategoryChoice(str, Enum):
     admission = "admission"
     treatment = "treatment"
     procedure = "procedure"
-    high_risk = "high_risk_consent"
+    high_risk = "high_risk"
     # patient code status consents
     unknown_code_status = "unknown_code_status"
     dnh = "dnh"
