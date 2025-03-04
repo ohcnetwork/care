@@ -23,7 +23,6 @@ class ConsentStatusChoices(str, Enum):
     inactive = "inactive"
     not_done = "not_done"
     entered_in_error = "entered_in_error"
-    unknown = "unknown"
 
 
 class VerificationType(str, Enum):
@@ -37,19 +36,14 @@ class DecisionType(str, Enum):
 
 
 class CategoryChoice(str, Enum):
-    unknown = "unknown"
     research = "research"
     patient_privacy = "patient_privacy"
-    admission = "admission"
     treatment = "treatment"
-    procedure = "procedure"
-    high_risk = "high_risk"
-    # patient code status consents
-    unknown_code_status = "unknown_code_status"
-    dnh = "dnh"
     dnr = "dnr"
     comfort_care = "comfort_care"
-    active_treatment = "active_treatment"
+    acd = "acd"
+    adr = "adr"
+    # consent_document = "consent_document"  # From LOINC 59284-0 # Only used in migrations
 
 
 class ConsentVerificationSpec(BaseModel):
