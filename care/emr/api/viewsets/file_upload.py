@@ -1,10 +1,13 @@
+import magic
+from django.conf import settings
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -24,6 +27,13 @@ from care.emr.resources.file_upload.spec import (
     FileUploadUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+
+
+def get_mime_type(uploaded_file):
+    chunk = uploaded_file.read(2048)
+    detected_mime_type = magic.from_buffer(chunk, mime=True)
+    uploaded_file.seek(0)  # Reset pointer
+    return detected_mime_type
 
 
 def file_authorizer(user, file_type, associating_id, permission):
@@ -89,6 +99,7 @@ class FileUploadViewSet(
     pydantic_read_model = FileUploadListSpec
     filterset_class = FileUploadFilter
     filter_backends = [filters.DjangoFilterBackend]
+    parser_classes = [MultiPartParser, FormParser]
 
     def authorize_create(self, instance):
         file_authorizer(
@@ -166,3 +177,33 @@ class FileUploadViewSet(
             ]
         )
         return Response(FileUploadListSpec.serialize(obj).to_json())
+
+    @action(detail=False, methods=["POST"], url_path="upload-file")
+    def upload_file(self, request, *args, **kwargs):
+        file = request.FILES.get("file")
+
+        if not file:
+            raise ValidationError("File Not Found")
+        max_file_size = settings.MAX_FILE_UPLOAD_SIZE * 1024 * 1024
+        if file.size > max_file_size:
+            error = f"File size exceeds the limit of {max_file_size / (1024 * 1024)}MB"
+            raise ValidationError(error)
+
+        request_data = {
+            "original_name": file.name,
+            "name": request.data.get("name"),
+            "associating_id": request.data.get("associating_id"),
+            "file_type": request.data.get("file_type"),
+            "file_category": request.data.get("file_category"),
+            "mime_type": get_mime_type(file),
+        }
+        file_upload = FileUploadCreateSpec(**request_data).de_serialize()
+        file_upload._just_created = False  # noqa SLF001
+        self.authorize_create(file_upload)
+        file_upload.save()
+
+        file_upload.files_manager.put_object(file_upload, file)
+
+        file_upload.upload_completed = True
+        file_upload.save(skip_internal_name=True)
+        return Response(FileUploadRetrieveSpec.serialize(file_upload).to_json())

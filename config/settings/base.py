@@ -722,3 +722,6 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
+
+# Maximum file upload size in MB
+MAX_FILE_UPLOAD_SIZE = env.int("MAX_FILE_UPLOAD_SIZE", default=5)
