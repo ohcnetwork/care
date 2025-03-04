@@ -37,9 +37,19 @@ class DecisionType(str, Enum):
 
 
 class CategoryChoice(str, Enum):
+    unknown = "unknown"
     research = "research"
-    patient_privacy = "patient_privacy"
+    privacy_consent = "privacy_consent"
+    admission = "admission"
     treatment = "treatment"
+    procedure = "procedure"
+    high_risk = "high_risk_consent"
+    # patient code status consents
+    unknown_code_status = "unknown_code_status"
+    dnh = "dnh"
+    dnr = "dnr"
+    comfort_care = "comfort_care"
+    active_treatment = "active_treatment"
 
 
 class ConsentVerificationSpec(BaseModel):
