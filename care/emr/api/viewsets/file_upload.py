@@ -185,8 +185,18 @@ class FileUploadViewSet(
         if not file:
             raise ValidationError("File Not Found")
         max_file_size = settings.MAX_FILE_UPLOAD_SIZE * 1024 * 1024
+
         if file.size > max_file_size:
             error = f"File size exceeds the limit of {max_file_size / (1024 * 1024)}MB"
+            raise ValidationError(error)
+
+        try:
+            mime_type = get_mime_type(file)
+        except Exception as e:
+            error = "Error uploading file."
+            raise ValidationError(error) from e
+        if mime_type not in settings.ALLOWED_MIME_TYPES:
+            error = f"File type '{mime_type}' is not allowed"
             raise ValidationError(error)
 
         request_data = {
@@ -195,7 +205,7 @@ class FileUploadViewSet(
             "associating_id": request.data.get("associating_id"),
             "file_type": request.data.get("file_type"),
             "file_category": request.data.get("file_category"),
-            "mime_type": get_mime_type(file),
+            "mime_type": mime_type,
         }
         file_upload = FileUploadCreateSpec(**request_data).de_serialize()
         file_upload._just_created = False  # noqa SLF001
