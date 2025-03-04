@@ -1,14 +1,20 @@
 from datetime import datetime
 from enum import Enum
 
+from django.contrib.auth import get_user_model
 from pydantic import UUID4, BaseModel, Field
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.models.consent import Consent
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.file_upload.spec import (
+    FileCategoryChoices,
+    FileTypeChoices,
     FileUploadListSpec,
 )
+from care.emr.resources.user.spec import UserSpec
+
+User = get_user_model()
 
 
 class ConsentStatusChoices(str, Enum):
@@ -31,9 +37,19 @@ class DecisionType(str, Enum):
 
 
 class CategoryChoice(str, Enum):
+    unknown = "unknown"
     research = "research"
-    privacy_consent = "privacy_consent"
+    patient_privacy = "patient_privacy"
+    admission = "admission"
     treatment = "treatment"
+    procedure = "procedure"
+    high_risk = "high_risk"
+    # patient code status consents
+    unknown_code_status = "unknown_code_status"
+    dnh = "dnh"
+    dnr = "dnr"
+    comfort_care = "comfort_care"
+    active_treatment = "active_treatment"
 
 
 class ConsentVerificationSpec(BaseModel):
@@ -41,10 +57,12 @@ class ConsentVerificationSpec(BaseModel):
     verified_by: UUID4 | None = None
     verification_date: datetime | None = None
     verification_type: VerificationType
+    note: str | None = None
 
 
 class ConsentBaseSpec(EMRResource):
     __model__ = Consent
+    __exclude__ = ["encounter"]
 
     id: UUID4 | None = Field(
         default=None, description="Unique identifier for the consent record"
@@ -55,6 +73,7 @@ class ConsentBaseSpec(EMRResource):
     period: PeriodSpec = dict
     encounter: UUID4
     decision: DecisionType
+    note: str | None = None
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
@@ -70,6 +89,7 @@ class ConsentUpdateSpec(ConsentBaseSpec):
     period: PeriodSpec | None = None
     encounter: UUID4 | None = None
     decision: DecisionType | None = None
+    note: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
@@ -85,9 +105,19 @@ class ConsentListSpec(ConsentBaseSpec):
         mapping["id"] = obj.external_id
         mapping["source_attachments"] = [
             FileUploadListSpec.serialize(attachment).to_json()
-            for attachment in FileUpload.objects.filter(associating_id=obj.external_id)
+            for attachment in FileUpload.objects.filter(
+                associating_id=obj.external_id,
+                file_category=FileCategoryChoices.consent_attachment,
+                file_type=FileTypeChoices.consent,
+            )
         ]
         mapping["encounter"] = obj.encounter.external_id
+
+        for verification in obj.verification_details:
+            verification["verified_by"] = UserSpec.serialize(
+                User.objects.get(external_id=verification["verified_by"])
+            ).to_json()
+
         mapping["verification_details"] = obj.verification_details
 
 

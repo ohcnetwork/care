@@ -13,3 +13,4 @@ class Consent(EMRBaseModel):
     )
     decision = models.CharField(max_length=10)
     verification_details = models.JSONField(default=list)
+    note = models.TextField(null=True, blank=True)

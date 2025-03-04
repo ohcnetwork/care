@@ -35,7 +35,8 @@ from care.security.authorization import AuthorizationController
 class AllergyIntoleranceFilters(FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     clinical_status = CharFilter(field_name="clinical_status")
-
+    verification_status=CharFilter(field_name="verification_status")
+    name = CharFilter(field_name="code__display", lookup_expr="icontains")
 
 @extend_schema_view(
     create=extend_schema(request=AllergyIntoleranceWriteSpec),

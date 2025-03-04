@@ -1,3 +1,5 @@
+from django.db import transaction
+from django.utils.timezone import now
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -16,6 +18,7 @@ from care.emr.models import (
     FacilityLocationOrganization,
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
     FacilityLocationEncounterCreateSpec,
@@ -73,6 +76,16 @@ class FacilityLocationViewSet(EMRModelViewSet):
         if FacilityLocation.objects.filter(parent=instance).exists():
             raise ValidationError("Location has active children")
         # TODO Add validation to check if patient association exists
+
+    def perform_destroy(self, instance):
+        parent = instance.parent
+        with transaction.atomic():
+            super().perform_destroy(instance)
+            if parent:
+                parent.has_children = FacilityLocation.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
@@ -423,3 +436,17 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to given location")
         return FacilityLocationEncounter.objects.filter(location=location)
+
+
+def close_related_location_from_encounter(instance):
+    if instance.status in COMPLETED_CHOICES:
+        with transaction.atomic():
+            FacilityLocation.objects.filter(current_encounter=instance).update(
+                current_encounter=None
+            )
+            FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
+                status__in=COMPLETED_CHOICES
+            ).update(
+                end_datetime=now(),
+                status=LocationEncounterAvailabilityStatusChoices.completed.value,
+            )

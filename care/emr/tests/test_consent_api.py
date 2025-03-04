@@ -57,6 +57,7 @@ class TestConsentViewSet(CareAPITestBase):
             "date": self.fake.date_time_this_year().isoformat(),
             "decision": choice(list(DecisionType)).value,
             "period": {"start": start.isoformat(), "end": end.isoformat()},
+            "note": self.fake.text(),
         }
         data.update(**kwargs)
         return data
@@ -81,9 +82,32 @@ class TestConsentViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 403)
 
+    # CREATE TESTS
+    def test_create_consent_without_permissions(self):
+        encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+        data = self.generate_data_for_consent(encounter)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_consent_with_permissions(self):
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+        data = self.generate_data_for_consent(encounter)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
     # RETRIEVE TESTS
     def test_retrieve_consent_with_permissions(self):
-        permissions = [PatientPermissions.can_view_clinical_data.name]
+        permissions = [
+            PatientPermissions.can_view_clinical_data.name,
+            EncounterPermissions.can_write_encounter.name,
+        ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -108,7 +132,10 @@ class TestConsentViewSet(CareAPITestBase):
 
     # UPDATE TESTS
     def test_update_consent_with_permissions(self):
-        permissions = [PatientPermissions.can_view_clinical_data.name]
+        permissions = [
+            PatientPermissions.can_view_clinical_data.name,
+            EncounterPermissions.can_write_encounter.name,
+        ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -136,7 +163,10 @@ class TestConsentViewSet(CareAPITestBase):
 
     # DELETE TESTS
     def test_delete_consent_with_permissions(self):
-        permissions = [PatientPermissions.can_view_clinical_data.name]
+        permissions = [
+            PatientPermissions.can_view_clinical_data.name,
+            EncounterPermissions.can_write_encounter.name,
+        ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -173,7 +203,11 @@ class TestConsentViewSet(CareAPITestBase):
         consent = self.create_consent(encounter=encounter)
 
         url = f"{self._get_consent_url(consent.external_id)}add_verification/"
-        data = {"verified": True, "verification_type": "validation"}
+        data = {
+            "verified": True,
+            "verification_type": "validation",
+            "note": "Test note",
+        }
 
         # First verification attempt
         self.assertEqual(self.client.post(url, data, format="json").status_code, 200)
