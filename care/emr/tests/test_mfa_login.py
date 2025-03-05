@@ -1,4 +1,4 @@
-from datetime import timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from django.urls import reverse
 from pyotp import TOTP
@@ -38,7 +38,7 @@ class TestMFALoginViewSet(CareAPITestBase):
         if backup_codes is None:
             backup_codes = ["12345678"]
 
-        date = (timezone.now() - timedelta(days=1)).isoformat()
+        date = (datetime.now(UTC) - timedelta(days=1)).isoformat()
         self.user.mfa_settings = {
             "totp": {
                 "enabled": True,
@@ -109,3 +109,64 @@ class TestMFALoginViewSet(CareAPITestBase):
         self.user.refresh_from_db()
         backup_code_entry = self.user.mfa_settings["totp"]["backup_codes"][0]
         self.assertTrue(backup_code_entry["used"])
+
+    def test_mfa_login_with_invalid_totp(self):
+        """Test MFA login fails with invalid TOTP code"""
+        self._setup_user_with_password()
+        self._setup_totp_for_user()
+        self._enable_mfa_with_backup_codes()
+
+        temp_token = self._get_temp_token()
+
+        response = self._perform_mfa_login("totp", "000000", temp_token)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_mfa_login_with_invalid_backup_code(self):
+        """Test MFA login fails with invalid backup code"""
+        self._setup_user_with_password()
+        self._setup_totp_for_user()
+        self._enable_mfa_with_backup_codes(["12345678"])
+
+        temp_token = self._get_temp_token()
+
+        response = self._perform_mfa_login("backup", "87654321", temp_token)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_mfa_login_with_used_backup_code(self):
+        """Test MFA login fails with already used backup code"""
+        self._setup_user_with_password()
+        self._setup_totp_for_user()
+        backup_codes = self._enable_mfa_with_backup_codes(["12345678"])
+
+        self.user.mfa_settings["totp"]["backup_codes"][0]["used"] = True
+        self.user.save()
+
+        temp_token = self._get_temp_token()
+
+        response = self._perform_mfa_login("backup", backup_codes[0], temp_token)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_mfa_login_with_invalid_temp_token(self):
+        """Test MFA login fails with invalid temp token"""
+        self._setup_user_with_password()
+        self._setup_totp_for_user()
+        self._enable_mfa_with_backup_codes()
+
+        response = self._perform_mfa_login("totp", "123456", "invalid_token")
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_mfa_login_with_invalid_method(self):
+        """Test MFA login fails with invalid method"""
+        self._setup_user_with_password()
+        self._setup_totp_for_user()
+        self._enable_mfa_with_backup_codes()
+
+        temp_token = self._get_temp_token()
+
+        response = self._perform_mfa_login("invalid_method", "123456", temp_token)
+
+        self.assertEqual(response.status_code, 400)
