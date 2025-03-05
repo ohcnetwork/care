@@ -22,6 +22,7 @@ class MetaArtifactBaseSpec(EMRResource):
 
     id: UUID4 | None = None
     object_value: dict | list
+    note: str | None = None
 
 
 class MetaArtifactUpdateSpec(MetaArtifactBaseSpec):

@@ -38,6 +38,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
             "name": "Test Meta Artifact",
             "object_type": "drawing",
             "object_value": self.excalidraw_object_value,
+            "note": "Test Note",
             **kwargs,
         }
 
@@ -59,6 +60,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
             "name": "Test Meta Artifact",
             "object_type": "drawing",
             "object_value": self.excalidraw_object_value,
+            "note": "Test Note",
         }
         data.update(kwargs)
         return MetaArtifact.objects.create(**data)
@@ -131,7 +133,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertContains(
             response,
-            "'associating_type' and 'associating_id' query params are required to list meta artifacts",
+            "'associating_type' and 'associating_id' are required to retrieve meta artifacts",
             status_code=status.HTTP_403_FORBIDDEN,
         )
 
@@ -143,7 +145,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
 
         self.assertContains(
             response,
-            "'associating_type' and 'associating_id' query params are required to list meta artifacts",
+            "'associating_type' and 'associating_id' are required to retrieve meta artifacts",
             status_code=status.HTTP_403_FORBIDDEN,
         )
 
@@ -152,7 +154,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
         response = self.client.get(self.base_url, data={"associating_type": "patient"})
         self.assertContains(
             response,
-            "'associating_type' and 'associating_id' query params are required to list meta artifacts",
+            "'associating_type' and 'associating_id' are required to retrieve meta artifacts",
             status_code=status.HTTP_403_FORBIDDEN,
         )
 

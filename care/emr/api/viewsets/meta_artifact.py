@@ -96,33 +96,26 @@ class MetaArtifactViewSet(
 
     def get_queryset(self):
         if self.action == "list":
-            if (
-                "associating_type" not in self.request.GET
-                or "associating_id" not in self.request.GET
-            ):
-                raise PermissionDenied(
-                    "'associating_type' and 'associating_id' query params are required to list meta artifacts"
-                )
-            meta_artifact_authorizer(
-                self.request.user,
-                self.request.GET.get("associating_type"),
-                self.request.GET.get("associating_id"),
-                "read",
+            associating_type = self.request.GET.get("associating_type")
+            associating_id = self.request.GET.get("associating_id")
+        else:
+            obj = get_object_or_404(
+                MetaArtifact, external_id=self.kwargs["external_id"]
             )
-            return (
-                super()
-                .get_queryset()
-                .filter(
-                    associating_type=self.request.GET.get("associating_type"),
-                    associating_external_id=self.request.GET.get("associating_id"),
-                )
+            associating_type = obj.associating_type
+            associating_id = obj.associating_external_id
+        if not (associating_type and associating_id):
+            raise PermissionDenied(
+                "'associating_type' and 'associating_id' are required to retrieve meta artifacts"
             )
-
-        obj = get_object_or_404(MetaArtifact, external_id=self.kwargs["external_id"])
         meta_artifact_authorizer(
-            self.request.user,
-            obj.associating_type,
-            obj.associating_external_id,
-            "read",
+            self.request.user, associating_type, associating_id, "read"
         )
-        return super().get_queryset()
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                associating_type=associating_type,
+                associating_external_id=associating_id,
+            )
+        )
