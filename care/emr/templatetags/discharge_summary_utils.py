@@ -42,13 +42,11 @@ def discharge_disposition_display(value: str) -> str:
 
 @register.filter
 def observation_value_display(observation: Observation) -> str | None:
-    if observation.value.get("value_code", None):
-        return observation.value.value_code.get("display", None)
-    if observation.value.get("value_quantity", None):
-        unit: str = observation.value.value_quantity.get("unit", {}).get(
-            "display", None
-        )
-        value: float | None = observation.value.value_quantity.get("value", None)
+    if observation.value.get("display", None):
+        return observation.value.get("display", None)
+    if observation.value.get("unit", None):
+        unit: str = observation.value.get("unit", {}).get("display", None)
+        value: float | None = observation.value.get("value", None)
         value = int(value) if value and value.is_integer() else value
         return f"{value} {unit}" if unit else value
     return observation.value.get("value", None)

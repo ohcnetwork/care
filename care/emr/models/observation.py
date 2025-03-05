@@ -29,5 +29,6 @@ class Observation(EMRBaseModel):
     questionnaire_response = models.ForeignKey(
         "emr.QuestionnaireResponse", on_delete=models.CASCADE, null=True
     )
+    component = models.JSONField(default=list)
 
     # TODO Add index for patient -> encounter -> system -> code
