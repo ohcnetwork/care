@@ -41,6 +41,7 @@ from care.emr.api.viewsets.medication_administration import (
 )
 from care.emr.api.viewsets.medication_request import MedicationRequestViewSet
 from care.emr.api.viewsets.medication_statement import MedicationStatementViewSet
+from care.emr.api.viewsets.meta_artifact import MetaArtifactViewSet
 from care.emr.api.viewsets.notes import NoteMessageViewSet, NoteThreadViewSet
 from care.emr.api.viewsets.observation import ObservationViewSet
 from care.emr.api.viewsets.organization import (
@@ -78,6 +79,7 @@ router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
 router.register("files", FileUploadViewSet, basename="files")
+router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
 
