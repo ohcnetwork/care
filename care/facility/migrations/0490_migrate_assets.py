@@ -220,6 +220,8 @@ def migrate_assets(apps, schema_editor):
 def reverse_migrate_assets(apps, schema_editor):
     DeviceServiceHistory = apps.get_model("emr", "DeviceServiceHistory")
     Device = apps.get_model("emr", "Device")
+    Asset = apps.get_model("facility", "Asset")
+    Asset.objects.update(migrated_emr_device_id=None)
     DeviceServiceHistory.objects.filter(meta__migration_id=MIGRATION_ID).delete()
     Device.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 

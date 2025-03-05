@@ -35,7 +35,6 @@ def migrate_diagnosis(apps, schema_editor):
         ConditionVerificationStatus.ENTERED_IN_ERROR: VerificationStatusChoices.entered_in_error.value,
     }
 
-    # TODO: add the last missing one
     icd11_to_icd10_map_file = Path(__file__).parent / "icd11toicd10.json"
     with icd11_to_icd10_map_file.open() as f:
         icd11_to_icd10_map = json.load(f)
@@ -97,7 +96,7 @@ def migrate_diagnosis(apps, schema_editor):
             )
             bulk.append(condition)
             logger.debug(f"Created Condition: {condition.id}")
-        Condition.objects.bulk_create(bulk)
+        Condition.objects.bulk_create(bulk, ignore_conflicts=True)
 
     enable_auto_time()
 

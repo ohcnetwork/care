@@ -318,18 +318,17 @@ def migrate_medication_request(MedicationRequest, prescription):
         except (ValueError, TypeError):
             target_dosage = None
         low, high = base_dosage, target_dosage
-        # if the units are the same and the low value is greater than the high value, swap them
-        if (
-            low
-            and high
-            and low["unit"]["code"] == high["unit"]["code"]
-            and low["value"] > high["value"]
-        ):
-            low, high = high, low
-        dosage_instruction["dose_and_rate"]["dose_range"] = {
-            "low": low,
-            "high": high,
-        }
+        if low and high:
+            # if the units are the same and the low value is greater than the high value, swap them
+            if (
+                low["unit"]["code"] == high["unit"]["code"]
+                and low["value"] > high["value"]
+            ):
+                low, high = high, low
+            dosage_instruction["dose_and_rate"]["dose_range"] = {
+                "low": low,
+                "high": high,
+            }
     else:
         dosage_instruction["text"] = prescription.base_dosage
         dosage_instruction["dose_and_rate"]["dose_quantity"] = base_dosage

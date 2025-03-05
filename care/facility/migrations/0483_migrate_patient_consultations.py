@@ -101,8 +101,6 @@ def migrate_consultations(apps, schema_editor):
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
 
-    # TODO: create questionnaire tags and link to these
-    # I dont know why these are hardcoded in frontend, but it doesn't work without it so we will also hardcode it here
     encounter_actions_tag, _ = QuestionnaireTag.objects.get_or_create(
         slug="encounter_actions",
         defaults={

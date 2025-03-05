@@ -361,6 +361,13 @@ def migrate_patient_registrations(apps, schema_editor):
                     )
 
             messages = []
+            if patient_registration.nationality and patient_registration.nationality != "India":
+                messages.append(f"Country of citizenship: {patient_registration.nationality}")
+            if patient_registration.ration_card_category:
+                category = patient_registration.ration_card_category
+                if category == "NO_CARD":
+                    category = "No Card"
+                messages.append(f"Ration Card Category: {category}")
             if patient_registration.passport_no:
                 messages.append(f"Passport No: {patient_registration.passport_no}")
             if messages:
