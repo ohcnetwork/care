@@ -11,6 +11,7 @@ from care.emr.models.observation import Observation
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
+from care.emr.resources.common import Coding
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionType
 
@@ -147,7 +148,7 @@ def validate_question_result(  # noqa : PLR0912
             "answer_value_set"
         ):
             for value in values:
-                if not value.value_code:
+                if not value.code:
                     errors.append(
                         {
                             "type": "type_error",
@@ -160,7 +161,13 @@ def validate_question_result(  # noqa : PLR0912
                 if "answer_value_set" in questionnaire:
                     try:
                         validate_valueset(
-                            "unit", questionnaire["answer_value_set"], value.value_code
+                            "",
+                            questionnaire["answer_value_set"],
+                            Coding(
+                                code=value.code,
+                                display=value.display,
+                                system=value.system,
+                            ),
                         )
                     except ValueError:
                         errors.append(
@@ -173,7 +180,7 @@ def validate_question_result(  # noqa : PLR0912
         # TODO : Validate for options created by user as well
         if questionnaire["type"] == QuestionType.quantity.value:
             for value in values:
-                if not value.value_quantity:
+                if not value.unit:
                     errors.append(
                         {
                             "type": "type_error",
@@ -187,9 +194,9 @@ def validate_question_result(  # noqa : PLR0912
                 if "answer_value_set" in questionnaire:
                     try:
                         validate_valueset(
-                            "unit",
+                            "",
                             questionnaire["answer_value_set"],
-                            value.value_quantity.code,
+                            value.code,
                         )
                     except ValueError:
                         errors.append(
@@ -203,9 +210,10 @@ def validate_question_result(  # noqa : PLR0912
 
 
 def create_observation_spec(questionnaire, responses, parent_id=None):
-    spec = {}
-    spec["status"] = ObservationStatus.final.value
-    spec["value_type"] = questionnaire["type"]
+    spec = {
+        "status": ObservationStatus.final.value,
+        "value_type": questionnaire["type"],
+    }
     if "category" in questionnaire:
         spec["category"] = questionnaire["category"]
     if "code" in questionnaire:
@@ -222,6 +230,7 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         and responses[questionnaire["id"]].values
         and responses[questionnaire["id"]].values[0]
     ):
+        observation = {}
         for value in responses[questionnaire["id"]].values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
@@ -250,19 +259,42 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
     return observations
 
 
+def create_components(questionnaire, responses):
+    components = []
+    observations = convert_to_observation_spec(
+        questionnaire, responses, is_component=True
+    )
+    # Convert from observation spec into component spec
+    # Need to handle how body site and method works in these cases
+    # These values need to be ignored when is_component is selected in the FE and in the validations
+    for observation in observations:
+        if "main_code" not in observation or "value" not in observation:
+            continue
+        component = {"value": observation["value"], "code": observation["main_code"]}
+        if "note" in observation:
+            component["note"] = observation["note"]
+        components.append(component)
+    return components
+
+
 def convert_to_observation_spec(
-    questionnaire_obj: Questionnaire, responses, parent_id=None
+    questionnaire, responses, parent_id=None, is_component=False
 ):
     constructed_observation_mapping = []
-    for question in questionnaire_obj.get("questions", []):
+    for question in questionnaire.get("questions", []):
         if question["type"] == QuestionType.group.value:
             observation = create_observation_spec(question, responses, parent_id)
-            sub_mapping = convert_to_observation_spec(
-                question, responses, observation[0]["id"]
-            )
-            if sub_mapping:
+            if not is_component and question.get("is_component", False):
+                components = create_components(question, responses)
+                observation[0]["component"] = components
                 constructed_observation_mapping.extend(observation)
-                constructed_observation_mapping.extend(sub_mapping)
+            else:
+                sub_mapping = convert_to_observation_spec(
+                    question, responses, observation[0]["id"]
+                )
+                if sub_mapping:
+                    constructed_observation_mapping.extend(observation)
+                    constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)

@@ -38,13 +38,20 @@ def file_authorizer(user, file_type, associating_id, permission):
             allowed = AuthorizationController.call(
                 "can_write_patient_obj", user, patient_obj
             )
-    elif file_type in [FileTypeChoices.encounter.value, FileTypeChoices.consent.value]:
-        if file_type == FileTypeChoices.encounter.value:
-            encounter_obj = get_object_or_404(Encounter, external_id=associating_id)
-        else:
-            encounter_obj = get_object_or_404(
-                Consent, external_id=associating_id
-            ).encounter
+    elif file_type == FileTypeChoices.encounter.value:
+        encounter_obj = get_object_or_404(Encounter, external_id=associating_id)
+        if permission == "read":
+            allowed = AuthorizationController.call(
+                "can_view_clinical_data", user, encounter_obj.patient
+            ) or AuthorizationController.call(
+                "can_view_encounter_obj", user, encounter_obj
+            )
+        elif permission == "write":
+            allowed = AuthorizationController.call(
+                "can_update_encounter_obj", user, encounter_obj
+            )
+    elif file_type == FileTypeChoices.consent.value:
+        encounter_obj = get_object_or_404(Consent, external_id=associating_id).encounter
         if permission == "read":
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", user, encounter_obj.patient
