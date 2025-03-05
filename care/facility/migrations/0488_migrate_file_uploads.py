@@ -3,6 +3,8 @@ import uuid
 import re
 from django.db import migrations
 from django.core.paginator import Paginator
+import logging
+logger = logging.getLogger(__name__)
 
 
 MIGRATION_ID = 158445695212
@@ -16,6 +18,14 @@ def filter_id(id):
             return {"id": int(id)}
         except ValueError:
             return {}
+
+
+def is_valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+        return True
+    except ValueError:
+        return False
 
 
 def migrate_file_uploads(apps, schema_editor):
@@ -39,6 +49,8 @@ def migrate_file_uploads(apps, schema_editor):
         page = paginator.get_page(page_num)
         bulk_create_data = []
         for old_file_upload in page:
+            file_name: str = old_file_upload.name
+
             if old_file_upload.file_type == 1:  # patient
                 file_category = "unspecified"
                 file_type = "patient"
@@ -58,6 +70,8 @@ def migrate_file_uploads(apps, schema_editor):
                 except PatientConsultation.DoesNotExist:
                     continue
             elif old_file_upload.file_type == 5:  # discharge_summary
+                # remove the double pdf extension
+                file_name = file_name.removesuffix(".pdf")
                 file_category = "discharge_summary"
                 file_type = "encounter"
                 try:
@@ -67,14 +81,19 @@ def migrate_file_uploads(apps, schema_editor):
                 except PatientConsultation.DoesNotExist:
                     continue
             elif old_file_upload.file_type == 7:  # consent_record
-                # TODO: add migration for consents
-                continue
+                # the actual consent records will be migrated later
+                if not is_valid_uuid(old_file_upload.associating_id):
+                    # bad values with associating id in this format: consent-1717910XXXXXX
+                    logger.warning(
+                        f"Consent FileUpload {old_file_upload.id} has invalid associating_id {old_file_upload.associating_id}"
+                    )
+                    continue
+                file_category = "consent_attachment"
+                file_type = "encounter"
+                associating_id = old_file_upload.associating_id
             else:  # Nobody uses these: other, sample_management, claim, communication, abdm_health_information
                 continue
 
-            file_name: str = old_file_upload.name
-            # remove the double pdf extension
-            file_name = file_name.removesuffix(".pdf")
             # replace banned character on windows and unix using regex with _
             file_name = re.sub(r'[<>:"/\\|?*]', "_", file_name)
             bulk_create_data.append(
