@@ -47,7 +47,6 @@ class FacilityReadSpec(FacilityBaseSpec):
     cover_image_url: str
     read_cover_image_url: str
     geo_organization: dict = {}
-    permissions: list[str] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

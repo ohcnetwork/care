@@ -28,14 +28,28 @@ class PatientPermissionsMixin(PermissionsMixin):
 
 
 class FacilityPermissionsMixin(PermissionsMixin):
+    root_org_permissions: list[str] = []
+    child_org_permissions: list[str] = []
+
     @classmethod
     def add_permissions(cls, mapping, user, facility):
         facility_access = FacilityAccess()
-        roles = facility_access.find_roles_on_facility(user, facility)
-        mapping["permissions"] = list(
-            RolePermission.objects.filter(role_id__in=roles).values_list(
+        org_roles = facility_access.find_roles_on_facility_sub_orgs(user, facility)
+        root_roles = facility_access.find_roles_on_facility_root(user, facility)
+        root_org_permissions = list(
+            RolePermission.objects.filter(role_id__in=root_roles).values_list(
                 "permission__slug", flat=True
             )
+        )
+        child_org_permissions = list(
+            RolePermission.objects.filter(role_id__in=org_roles)
+            .exclude(permission__slug="can_update_facility")
+            .values_list("permission__slug", flat=True)
+        )
+        mapping["root_org_permissions"] = root_org_permissions
+        mapping["child_org_permissions"] = child_org_permissions
+        mapping["permissions"] = list(
+            set(root_org_permissions).union(set(child_org_permissions))
         )
 
 
