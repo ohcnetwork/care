@@ -12,8 +12,12 @@ from care.security.permissions.encounter import EncounterPermissions
 class EncounterAccess(AuthorizationHandler):
     def find_roles_on_encounter(self, user, encounter):
         # Through Facility Organization
+        org_cache = [*encounter.facility_organization_cache]
+        # Through Location
+        if encounter.current_location:
+            org_cache.extend(encounter.current_location.facility_organization_cache)
         roles = FacilityOrganizationUser.objects.filter(
-            organization_id__in=encounter.facility_organization_cache, user=user
+            organization_id__in=org_cache, user=user
         ).values_list("role_id", flat=True)
         return set(roles)
 
