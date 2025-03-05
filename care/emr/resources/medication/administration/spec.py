@@ -34,6 +34,7 @@ class MedicationAdministrationCategory(str, Enum):
     inpatient = "inpatient"
     outpatient = "outpatient"
     community = "community"
+    discharge = "discharge"
 
 
 class MedicationAdministrationPerformerFunction(str, Enum):
