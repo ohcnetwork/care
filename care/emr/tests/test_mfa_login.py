@@ -11,14 +11,8 @@ class TestMFALoginViewSet(CareAPITestBase):
         self.mfa_login_url = reverse("mfa-login")
         self.auth_url = "/api/v1/auth/login/"
 
-        self.user = self.create_user()
         self.password = "testpassword123"
-
-    def _setup_user_with_password(self):
-        """Set up user with password"""
-        self.user.set_password(self.password)
-        self.user.save()
-        return self.user
+        self.user = self.create_user_with_password(self.password)
 
     def _setup_totp_for_user(self, secret_key=None):
         """Set up TOTP for the user"""
@@ -77,7 +71,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_totp(self):
         """Test MFA login using TOTP"""
-        self._setup_user_with_password()
         secret_key = self._setup_totp_for_user()
         self._enable_mfa_with_backup_codes()
 
@@ -94,7 +87,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_backup_code(self):
         """Test MFA login using backup code"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         backup_codes = self._enable_mfa_with_backup_codes()
 
@@ -112,7 +104,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_invalid_totp(self):
         """Test MFA login fails with invalid TOTP code"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         self._enable_mfa_with_backup_codes()
 
@@ -124,7 +115,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_invalid_backup_code(self):
         """Test MFA login fails with invalid backup code"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         self._enable_mfa_with_backup_codes(["12345678"])
 
@@ -136,7 +126,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_used_backup_code(self):
         """Test MFA login fails with already used backup code"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         backup_codes = self._enable_mfa_with_backup_codes(["12345678"])
 
@@ -151,7 +140,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_invalid_temp_token(self):
         """Test MFA login fails with invalid temp token"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         self._enable_mfa_with_backup_codes()
 
@@ -161,7 +149,6 @@ class TestMFALoginViewSet(CareAPITestBase):
 
     def test_mfa_login_with_invalid_method(self):
         """Test MFA login fails with invalid method"""
-        self._setup_user_with_password()
         self._setup_totp_for_user()
         self._enable_mfa_with_backup_codes()
 
