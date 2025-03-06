@@ -106,17 +106,17 @@ class QuestionnaireViewSet(EMRModelViewSet):
                     questionnaire=instance, organization=organization_obj
                 )
 
-    def validate_data(self, instance, model_obj=None):
-        # If we're editing an existing questionnaire (model_obj is not None)
-        # and there are no responses linked to this questionnaire yet
-        if (
-            model_obj
-            and QuestionnaireResponse.objects.filter(questionnaire=model_obj).exists()
-        ):
-            # Prevent editing if the questionnaire has already been used (has responses)
-            # This ensures data integrity by not allowing changes to questionnaires
-            # that are actively being used
-            raise ValidationError("Cannot edit an active questionnaire")
+    # def validate_data(self, instance, model_obj=None):
+    #     # If we're editing an existing questionnaire (model_obj is not None)
+    #     # and there are no responses linked to this questionnaire yet
+    #     if (
+    #         model_obj
+    #         and QuestionnaireResponse.objects.filter(questionnaire=model_obj).exists()
+    #     ):
+    #         # Prevent editing if the questionnaire has already been used (has responses)
+    #         # This ensures data integrity by not allowing changes to questionnaires
+    #         # that are actively being used
+    #         raise ValidationError("Cannot edit an active questionnaire")
 
     def authorize_create(self, instance):
         for org in instance.organizations:

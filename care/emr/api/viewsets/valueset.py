@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.fhir.resources.code_concept import CodeConceptResource
-from care.emr.fhir.schema.base import Coding
 from care.emr.models.valueset import ValueSet
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
 
 

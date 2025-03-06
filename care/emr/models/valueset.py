@@ -1,8 +1,8 @@
 from django.db import models
 
 from care.emr.fhir.resources.valueset import ValueSetResource
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.models import EMRBaseModel
+from care.emr.resources.common.valueset import ValueSetCompose
 
 
 class ValueSet(EMRBaseModel):

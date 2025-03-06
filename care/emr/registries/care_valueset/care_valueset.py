@@ -1,9 +1,6 @@
 from care.emr.fhir.resources.valueset import ValueSetResource
-from care.emr.fhir.schema.valueset.valueset import (
-    ValueSet,
-    ValueSetCompose,
-)
 from care.emr.models.valueset import ValueSet as ValuesetDatabaseModel
+from care.emr.resources.common.valueset import ValueSet, ValueSetCompose
 
 
 class CareValueset:

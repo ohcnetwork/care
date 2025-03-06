@@ -1,5 +1,5 @@
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose, ValueSetInclude
 from care.emr.registries.care_valueset.care_valueset import CareValueset
+from care.emr.resources.common.valueset import ValueSetCompose, ValueSetInclude
 from care.emr.resources.valueset.spec import ValueSetStatusOptions
 
 CARE_ADDITIONAL_INSTRUCTION_VALUESET = CareValueset(

@@ -11,7 +11,6 @@ from care.emr.models.observation import Observation
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
-from care.emr.resources.common import Coding
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionType
 
@@ -148,7 +147,7 @@ def validate_question_result(  # noqa : PLR0912
             "answer_value_set"
         ):
             for value in values:
-                if not value.code:
+                if not value.coding:
                     errors.append(
                         {
                             "type": "type_error",
@@ -163,11 +162,7 @@ def validate_question_result(  # noqa : PLR0912
                         validate_valueset(
                             "",
                             questionnaire["answer_value_set"],
-                            Coding(
-                                code=value.code,
-                                display=value.display,
-                                system=value.system,
-                            ),
+                            value.coding,
                         )
                     except ValueError:
                         errors.append(
@@ -196,7 +191,7 @@ def validate_question_result(  # noqa : PLR0912
                         validate_valueset(
                             "",
                             questionnaire["answer_value_set"],
-                            value.code,
+                            value.coding,
                         )
                     except ValueError:
                         errors.append(
@@ -234,18 +229,17 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         for value in responses[questionnaire["id"]].values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] == QuestionType.choice.value and value.code:
-                observation["value"] = value.value_code.model_dump(
-                    exclude_defaults=True
-                )
+            if questionnaire["type"] == QuestionType.choice.value and value.coding:
+                observation["value"] = {
+                    "coding": value.coding.model_dump(exclude_defaults=True),
+                }
 
-            elif (
-                questionnaire["type"] == QuestionType.quantity.value
-                and value.value_quantity
-            ):
-                observation["value"] = value.value_quantity.model_dump(
-                    exclude_defaults=True
-                )
+            elif questionnaire["type"] == QuestionType.quantity.value and value.coding:
+                observation["value"] = {
+                    "unit": questionnaire.get("unit"),
+                    "value": value.value,
+                    "coding": value.coding.model_dump(exclude_defaults=True),
+                }
             elif value:
                 observation["value"] = {"value": value.value}
                 if "unit" in questionnaire:
