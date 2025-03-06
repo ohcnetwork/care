@@ -9,7 +9,6 @@ from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
@@ -35,8 +34,6 @@ class PasswordVerifyRequest(BaseModel):
 
 
 class TOTPViewSet(EMRBaseViewSet):
-    permission_classes = [IsAuthenticated]
-
     @extend_schema(
         description="Initialize TOTP setup for user",
         responses={
