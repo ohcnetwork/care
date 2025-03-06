@@ -136,8 +136,7 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        mfa_settings = self.user.mfa_settings or {}
-        totp_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+        totp_enabled = self.user.is_mfa_enabled()
 
         if totp_enabled:
             temp_token = RefreshToken.for_user(self.user)

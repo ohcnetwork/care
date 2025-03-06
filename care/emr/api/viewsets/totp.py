@@ -51,9 +51,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         verify_password(user, password)
 
-        mfa_settings = user.mfa_settings or {}
-
-        self._validate_totp_state(mfa_settings, required_state=False)
+        self._validate_totp_state(user, required_state=False)
 
         secret = random_base32()
 
@@ -93,7 +91,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         mfa_settings = user.mfa_settings or {}
 
-        self._validate_totp_state(mfa_settings, required_state=False)
+        self._validate_totp_state(user, required_state=False)
 
         secret = user.totp_secret
         totp = TOTP(secret)
@@ -142,7 +140,7 @@ class TOTPViewSet(EMRBaseViewSet):
         user = request.user
         mfa_settings = user.mfa_settings or {}
 
-        self._validate_totp_state(mfa_settings, required_state=True)
+        self._validate_totp_state(user, required_state=True)
 
         mfa_settings["totp"] = {
             "enabled": False,
@@ -179,7 +177,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         mfa_settings = user.mfa_settings or {}
 
-        self._validate_totp_state(mfa_settings, required_state=True)
+        self._validate_totp_state(user, required_state=True)
 
         backup_codes = self._generate_backup_codes()
         mfa_settings["totp"]["backup_codes"] = [
@@ -196,8 +194,8 @@ class TOTPViewSet(EMRBaseViewSet):
         return Response({"backup_codes": backup_codes})
 
     @staticmethod
-    def _validate_totp_state(mfa_settings: dict, required_state: bool):
-        is_enabled = mfa_settings.get("totp", {}).get("enabled", False)
+    def _validate_totp_state(user, required_state: bool):
+        is_enabled = user.is_mfa_enabled()
 
         if required_state and not is_enabled:
             raise ValidationError(

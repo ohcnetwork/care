@@ -95,9 +95,7 @@ class UserSpec(UserBaseSpec):
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
-        mapping["mfa_enabled"] = bool(
-            obj.mfa_settings.get("totp", {}).get("enabled", False)
-        )
+        mapping["mfa_enabled"] = obj.is_mfa_enabled()
 
 
 class UserRetrieveSpec(UserSpec):

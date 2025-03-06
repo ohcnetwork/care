@@ -54,7 +54,7 @@ class TestTOTPViewSet(CareAPITestBase):
 
         self.assertEqual(len(backup_codes), 10)
         self.user.refresh_from_db()
-        self.assertTrue(self.user.mfa_settings.get("totp", {}).get("enabled", False))
+        self.assertTrue(self.user.is_mfa_enabled())
 
     def test_totp_disable(self):
         """Test disabling TOTP-based 2FA"""
@@ -124,7 +124,7 @@ class TestTOTPViewSet(CareAPITestBase):
 
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
-        self.assertFalse(self.user.mfa_settings.get("totp", {}).get("enabled", False))
+        self.assertFalse(self.user.is_mfa_enabled())
 
     def test_totp_verify_without_setup(self):
         """Test TOTP verify fails when TOTP is not set up"""
@@ -144,7 +144,7 @@ class TestTOTPViewSet(CareAPITestBase):
 
         self.assertEqual(response.status_code, 403)
         self.user.refresh_from_db()
-        self.assertTrue(self.user.mfa_settings.get("totp", {}).get("enabled", False))
+        self.assertTrue(self.user.is_mfa_enabled())
 
     def test_totp_disable_when_not_enabled(self):
         """Test TOTP disable fails when not enabled"""
