@@ -93,7 +93,7 @@ class ValueSetViewSet(EMRModelViewSet):
                 )
                 .get()
             )
-        except KeyError:
+        except ValueError:
             return Response(
                 {"error": "No results found for the given system and code"}, status=404
             )
