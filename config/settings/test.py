@@ -8,6 +8,8 @@ from care.utils.jwks.generate_jwk import get_jwks_from_file
 from .base import *  # noqa
 from .base import BASE_DIR, TEMPLATES, env
 
+TESTING = True
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#test-runner

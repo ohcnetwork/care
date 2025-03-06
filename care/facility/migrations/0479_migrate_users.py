@@ -3,6 +3,7 @@ import logging
 from django.db import migrations
 from django.core.management import call_command
 from django.utils import timezone
+from django.conf import settings
 
 from care.emr.models.organization import Organization, OrganizationUser
 from care.security.models import RoleModel
@@ -81,7 +82,8 @@ def _get_org(obj):
 def migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
     logger.debug("Migrating Users")
-    call_command("sync_permissions_roles")
+    if not settings.TESTING:
+        call_command("sync_permissions_roles")
 
     defaults = {
         "system_generated": True,
