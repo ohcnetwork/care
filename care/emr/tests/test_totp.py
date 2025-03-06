@@ -91,3 +91,89 @@ class TestTOTPViewSet(CareAPITestBase):
 
         self.user.refresh_from_db()
         self.assertEqual(len(self.user.mfa_settings["totp"]["backup_codes"]), 10)
+
+    def test_totp_setup_with_invalid_password(self):
+        """Test TOTP setup fails with invalid password"""
+        response = self.client.post(
+            self.totp_setup_url, {"password": "wrong_password"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.totp_secret)
+
+    def test_totp_setup_when_already_enabled(self):
+        """Test TOTP setup fails when already enabled"""
+        self._setup_and_verify_totp()
+
+        response = self.client.post(
+            self.totp_setup_url, {"password": self.password}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_totp_verify_with_invalid_code(self):
+        """Test TOTP verify fails with invalid code"""
+        self.client.post(
+            self.totp_setup_url, {"password": self.password}, format="json"
+        )
+
+        response = self.client.post(
+            self.totp_verify_url, {"code": "000000"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.mfa_settings.get("totp", {}).get("enabled", False))
+
+    def test_totp_verify_without_setup(self):
+        """Test TOTP verify fails when TOTP is not set up"""
+        response = self.client.post(
+            self.totp_verify_url, {"code": "123456"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_totp_disable_with_invalid_password(self):
+        """Test TOTP disable fails with invalid password"""
+        self._setup_and_verify_totp()
+
+        response = self.client.post(
+            self.totp_disable_url, {"password": "wrong_password"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.mfa_settings.get("totp", {}).get("enabled", False))
+
+    def test_totp_disable_when_not_enabled(self):
+        """Test TOTP disable fails when not enabled"""
+        response = self.client.post(
+            self.totp_disable_url, {"password": self.password}, format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_regenerate_backup_codes_with_invalid_password(self):
+        """Test regenerate backup codes fails with invalid password"""
+        self._setup_and_verify_totp()
+
+        response = self.client.post(
+            self.totp_regenerate_backup_codes_url,
+            {"password": "wrong_password"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_totp_verify_with_already_enabled(self):
+        """Test TOTP verify fails when already enabled"""
+        self._setup_and_verify_totp()
+
+        secret_key = self.user.totp_secret
+        totp = TOTP(secret_key)
+        code = totp.now()
+
+        response = self.client.post(self.totp_verify_url, {"code": code}, format="json")
+
+        self.assertEqual(response.status_code, 400)
