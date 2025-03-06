@@ -7,14 +7,18 @@ from django.db import migrations
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
-from care.emr.resources.questionnaire.spec import QuestionType
+from care.emr.resources.observation.spec import ObservationSpec
 
 if TYPE_CHECKING:
     from care.facility.models.daily_round import DailyRound as DailyRoundModel
 
 
 MIGRATION_ID = 158445695208
+
+def deterministic_uuid(*components) -> str:
+    "i got tired of copying and pasting uuids"
+    return str(uuid.uuid5(uuid.NAMESPACE_OID, ".".join(components)))
+
 
 category_to_priority_map = {
     "Comfort": "as_needed",
@@ -37,8 +41,8 @@ temperature = {
     "is_observation": True,
     "code": {
         "system": "http://loinc.org",
-        "code": "8329-5",
-        "display": "Body temperature - Core",
+        "code": "8310-5",
+        "display": "Temperature",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -440,9 +444,9 @@ bp_systolic = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "271649006",
-        "display": "Systolic blood pressure",
+        "system": "http://loinc.org",
+        "code": "8480-6",
+        "display": "Systolic",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -457,9 +461,9 @@ bp_diastolic = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "271650006",
-        "display": "Diastolic blood pressure",
+        "system": "http://loinc.org",
+        "code": "8462-4",
+        "display": "Diastolic",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -489,7 +493,7 @@ pulse = {
     "code": {
         "system": "http://loinc.org",
         "code": "8867-4",
-        "display": "Heart rate",
+        "display": "Pulse",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -504,9 +508,9 @@ resp = {
     "type": "integer",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "9279-1",
-        "display": "Respiratory rate",
+        "system": "http://loinc.org",
+        "display": "Respiratory Rate",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -521,11 +525,15 @@ ventilator_spo2 = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "431314004",
-        "display": "SpO2 (Measurement)",
+        "code": "2708-6",
+        "system": "http://loinc.org",
+        "display": "SpO2",
     },
-    "unit": {"system": "http://unitsofmeasure.org", "code": "%", "display": "%"},
+    "unit": {
+        "system": "http://unitsofmeasure.org",
+        "code": "%",
+        "display": "%",
+    },
 }
 rhythm_map = {
     0: {"system": "http://snomed.info/sct", "code": "261665006", "display": "Unknown"},
@@ -586,9 +594,9 @@ ventilator_peep = {
     "text": "Ventilator PEEP",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "250854009",
-        "display": "Positive end expiratory pressure",
+        "code": "76248-4",
+        "system": "http://loinc.org",
+        "display": "PEEP",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -602,9 +610,9 @@ ventilator_pip = {
     "text": "Ventilator PIP",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "27913002",
-        "display": "Maximum inspiratory pressure",
+        "code": "20102-0",
+        "system": "http://loinc.org",
+        "display": "PIP",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -618,9 +626,9 @@ ventilator_mean_airway_pressure = {
     "text": "Ventilator Mean Airway Pressure",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "698821009",
-        "display": "Mean inspiratory airway pressure",
+        "code": "76530-5",
+        "system": "http://loinc.org",
+        "display": "Mean pressure Respiratory system airway --on ventilator",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -634,9 +642,9 @@ ventilator_resp_rate = {
     "text": "Ventilator Resp Rate",
     "type": "integer",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "250876000",
-        "display": "Ventilator rate",
+        "code": "19834-1",
+        "system": "http://loinc.org",
+        "display": "Resp Rate",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -649,6 +657,11 @@ ventilator_pressure_support = {
     "link_id": "ventilator_pressure_support",
     "text": "Ventilator Pressure Support",
     "type": "integer",
+    "code": {
+        "code": "20079-0",
+        "system": "http://loinc.org",
+        "display": "Pressure Support",
+    },
 }
 ventilator_tidal_volume = {
     "id": "5011f08d-9a53-4b9b-95c1-ce015cf35ba3",
@@ -656,9 +669,9 @@ ventilator_tidal_volume = {
     "text": "Ventilator Tidal Volume",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "250874002",
-        "display": "Ventilator delivered tidal volume",
+        "code": "76222-9",
+        "system": "http://loinc.org",
+        "display": "Tidal Volume",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -698,9 +711,9 @@ ventilator_fio2 = {
     "text": "Ventilator FiO2",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "250774007",
-        "display": "Inspired oxygen concentration",
+        "code": "3151-8",
+        "system": "http://loinc.org",
+        "display": "FiO2",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -737,9 +750,9 @@ ph = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "27051004",
-        "display": "pH (Measurement)",
+        "code": "24336-0",
+        "system": "http://loinc.org",
+        "display": "PH",
     },
 }
 pco2 = {
@@ -749,9 +762,9 @@ pco2 = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "2019-8",
-        "display": "Carbon dioxide [Partial pressure] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "PCO2",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -766,9 +779,9 @@ po2 = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "2703-7",
-        "display": "Oxygen [Partial pressure] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "PO2",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -783,9 +796,9 @@ hco3 = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "1960-4",
-        "display": "Bicarbonate [Moles/volume] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "HCO3",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -800,9 +813,9 @@ base_excess = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "1925-7",
-        "display": "Base excess in Arterial blood by calculation",
+        "system": "http://loinc.org",
+        "display": "Base Excess",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -817,9 +830,9 @@ lactate = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "30242-2",
-        "display": "Lactate [Mass/volume] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "Lactate",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -834,9 +847,9 @@ sodium = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "32717-1",
-        "display": "Sodium [Moles/volume] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "Sodium",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -851,9 +864,9 @@ potassium = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "32713-0",
-        "display": "Potassium [Moles/volume] in Arterial blood",
+        "system": "http://loinc.org",
+        "display": "Potassium",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -927,7 +940,7 @@ infusions = {
     "id": "117bb3c9-1bb0-48c0-9bed-a3a8cdd6d4d2",
     "link_id": "infusions",
     "text": "Infusions",
-    "type": "quantity",
+    "type": "decimal",
     "is_observation": True,
     "repeats": True,
     "code": {
@@ -1013,9 +1026,9 @@ total_intake_calculated = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "9103-3",
-        "display": "Fluid intake total Measured",
+        "system": "http://loinc.org",
+        "display": "Total Intake",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -1086,9 +1099,9 @@ dialysis_fluid_balance = {
     "text": "Dialysis Fluid Balance",
     "type": "decimal",
     "code": {
-        "system": "http://snomed.info/sct",
-        "code": "251856003",
-        "display": "Fluid balance status (observable entity)",
+        "code": "104103-7",
+        "system": "http://loinc.org",
+        "display": "Dialysis Fluid Balance",
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
@@ -1119,126 +1132,338 @@ total_output_calculated = {
     "type": "decimal",
     "is_observation": True,
     "code": {
-        "system": "http://loinc.org",
         "code": "9257-7",
-        "display": "Fluid output total Measured",
+        "system": "http://loinc.org",
+        "display": "Total Output",
     },
 }
-human_body_map = {  # TODO: complete the rest of the values
+nursing_map = {
+    "oral_care": {
+        "system": "http://snomed.info/sct",
+        "code": "717778001",
+        "display": "Mouth care (regime/therapy)",
+    },
+    "hair_care": {
+        "system": "http://snomed.info/sct",
+        "code": "21510004",
+        "display": "Care of hair (procedure)",
+    },
+    "bed_bath": {
+        "system": "http://snomed.info/sct",
+        "code": "58530006",
+        "display": "Bathing patient in bed (procedure)",
+    },
+    "eye_care": {
+        "system": "http://snomed.info/sct",
+        "code": "225363004",
+        "display": "Eye care (regime/therapy)",
+    },
+    "perineal_care": {
+        "system": "http://snomed.info/sct",
+        "code": "385958001",
+        "display": "Perineal care (regime/therapy)",
+    },
+    "skin_care": {
+        "system": "http://snomed.info/sct",
+        "code": "225360001",
+        "display": "Skin care (regime/therapy)",
+    },
+    "pre_enema": {
+        "system": "http://snomed.info/sct",
+        "code": "61919008",
+        "display": "Giving patient an enema (procedure)",
+    },
+    "wound_dressing": {
+        "system": "http://snomed.info/sct",
+        "code": "182531007",
+        "display": "Dressing of wound (procedure)",
+    },
+    "lymphedema_care": {
+        "system": "http://snomed.info/sct",
+        "code": "445710004",
+        "display": "Lymphedema care (regime/therapy)",
+    },
+    "ascitic_tapping": {
+        "system": "http://snomed.info/sct",
+        "code": "89305009",
+        "display": "Abdominal paracentesis (procedure)",
+    },
+    "colostomy_care": {
+        "system": "http://snomed.info/sct",
+        "code": "717252006",
+        "display": "Colostomy care (regime/therapy)",
+    },
+    "colostomy_change": {
+        "system": "http://snomed.info/sct",
+        "code": "183209007",
+        "display": "Colostomy bag changed (finding)",
+    },
+    "personal_hygiene": {
+        "system": "http://snomed.info/sct",
+        "code": "225964003",
+        "display": "Assisting with personal hygiene (procedure)",
+    },
+    "positioning": {
+        "system": "http://snomed.info/sct",
+        "code": "229824005",
+        "display": "Positioning patient (procedure)",
+    },
+    "suctioning": {
+        "system": "http://snomed.info/sct",
+        "code": "230040009",
+        "display": "Airway suction technique (procedure)",
+    },
+    "ryles_tube_care": {
+        "system": "http://snomed.info/sct",
+        "code": "52260009",
+        "display": "Nasogastric tube maintenance (procedure)",
+    },
+    "ryles_tube_change": {
+        "system": "http://snomed.info/sct",
+        "code": "112861000",
+        "display": "Replacement of nasogastric tube (procedure)",
+    },
+    "iv_sitecare": {
+        "system": "http://snomed.info/sct",
+        "code": "385756009",
+        "display": "Intravenous care management (procedure)",
+    },
+    "nubulisation": {
+        "system": "http://snomed.info/sct",
+        "code": "56251003",
+        "display": "Nebulizer therapy (procedure)",
+    },
+    "dressing": {
+        "system": "http://snomed.info/sct",
+        "code": "3895009",
+        "display": "Application of dressing (procedure)",
+    },
+    "dvt_pump_stocking": {
+        "system": "http://snomed.info/sct",
+        "code": "225420001",
+        "display": "Application of antithromboembolic stockings (procedure)",
+    },
+    "restrain": {
+        "system": "http://snomed.info/sct",
+        "code": "68894007",
+        "display": "Placing restraint (procedure)",
+    },
+    "chest_tube_care": {
+        "system": "http://snomed.info/sct",
+        "code": "55628002",
+        "display": "Maintenance of thoracic drain (procedure)",
+    },
+    "tracheostomy_care": {
+        "system": "http://snomed.info/sct",
+        "code": "385858000",
+        "display": "Tracheostomy care (regime/therapy)",
+    },
+    "tracheostomy_tube_change": {
+        "system": "http://snomed.info/sct",
+        "code": "2267008",
+        "display": "Changing tracheostomy tube (procedure)",
+    },
+    "stoma_care": {
+        "system": "http://snomed.info/sct",
+        "code": "225194008",
+        "display": "Stoma care procedure (regime/therapy)",
+    },
+    "catheter_care": {
+        "system": "http://snomed.info/sct",
+        "code": "737944006",
+        "display": "Care of urinary catheter (regime/therapy)",
+    },
+    "catheter_change": {
+        "system": "http://snomed.info/sct",
+        "code": "176192000",
+        "display": "Change of urethral catheter (procedure)",
+    },
+}
+nursing = {
+    "id": "ae7139f5-ce54-4819-a680-e612f410ec57",
+    "link_id": "nursing",
+    "text": "Nursing",
+    "type": "text",
+    "repeats": True,
+    "is_observation": True,
+    "code": {
+        "system": "http://loinc.org",
+        "code": "64295-9",
+        "display": "Nurse Plan of care note",
+    },
+}
+
+human_body_map = {
     "AnteriorHead": {
         "system": "http://snomed.info/sct",
-        "code": "69536005",
-        "display": "Head structure",
+        "code": "255549009+69536005",
+        "display": "Anterior Head structure",
     },
     "AnteriorNeck": {
         "system": "http://snomed.info/sct",
-        "code": "45048000",
-        "display": "Neck structure",
+        "code": "255549009+45048000",
+        "display": "Anterior Neck structure",
     },
     "AnteriorRightShoulder": {
         "system": "http://snomed.info/sct",
-        "code": "368106002",
-        "display": "Entire right shoulder region",
+        "code": "255549009+368106002",
+        "display": "Anterior Right Shoulder structure",
     },
     "AnteriorRightChest": {
         "system": "http://snomed.info/sct",
-        "code": "771319006",
-        "display": "Structure of right half of chest wall",
+        "code": "255549009+771319006",
+        "display": "Anterior Structure of right half of chest wall",
     },
     "AnteriorRightArm": {
         "system": "http://snomed.info/sct",
-        "code": "59126009",
-        "display": "Entire right upper arm",
+        "code": "255549009+59126009",
+        "display": "Anterior Entire right upper arm",
     },
     "AnteriorRightForearm": {
         "system": "http://snomed.info/sct",
-        "code": "368224007",
-        "display": "Entire right forearm",
+        "code": "255549009+368224007",
+        "display": "Anterior Entire right forearm",
     },
     "AnteriorRightHand": {
         "system": "http://snomed.info/sct",
-        "code": "78791008",
-        "display": "Structure of right hand",
+        "code": "255549009+78791008",
+        "display": "Anterior Structure of right hand",
     },
     "AnteriorLeftHand": {
         "system": "http://snomed.info/sct",
-        "code": "368456002",
-        "display": "Entire left hand",
+        "code": "255549009+368456002",
+        "display": "Anterior Entire left hand",
     },
     "AnteriorLeftChest": {
         "system": "http://snomed.info/sct",
-        "code": "771318003",
-        "display": "Structure of left half of chest wall",
+        "code": "255549009+771318003",
+        "display": "Anterior Structure of left half of chest wall",
     },
     "AnteriorLeftShoulder": {
         "system": "http://snomed.info/sct",
-        "code": "368107006",
-        "display": "Entire left shoulder region",
+        "code": "255549009+368107006",
+        "display": "Anterior Entire left shoulder region",
     },
     "AnteriorLeftArm": {
         "system": "http://snomed.info/sct",
-        "code": "72098002",
-        "display": "Entire left upper arm",
+        "code": "255549009+72098002",
+        "display": "Anterior Entire left upper arm",
     },
     "AnteriorLeftForearm": {
         "system": "http://snomed.info/sct",
-        "code": "368225008",
-        "display": "Entire left forearm",
+        "code": "255549009+368225008",
+        "display": "Anterior Entire left forearm",
     },
     "AnteriorRightFoot": {
         "system": "http://snomed.info/sct",
-        "code": "239830003",
-        "display": "Entire right foot",
+        "code": "255549009+239830003",
+        "display": "Anterior Entire right foot",
     },
     "AnteriorLeftFoot": {
         "system": "http://snomed.info/sct",
-        "code": "239919000",
-        "display": "Entire left foot",
+        "code": "255549009+239919000",
+        "display": "Anterior Entire left foot",
     },
     "AnteriorRightLeg": {
         "system": "http://snomed.info/sct",
-        "code": "213289002",
-        "display": "Entire right lower leg",
+        "code": "255549009+213289002",
+        "display": "Anterior Entire right lower leg",
     },
     "AnteriorLowerChest": {
         "system": "http://snomed.info/sct",
-        "code": "731489009",
-        "display": "Entire lower chest wall",
+        "code": "255549009+731489009",
+        "display": "Anterior Entire lower chest wall",
     },
     "AnteriorAbdomen": {
         "system": "http://snomed.info/sct",
-        "code": "302553009",
-        "display": "Entire abdomen",
+        "code": "255549009+302553009",
+        "display": "Anterior Entire abdomen",
     },
     "AnteriorLeftLeg": {
         "system": "http://snomed.info/sct",
-        "code": "213384005",
-        "display": "Entire left lower leg",
+        "code": "255549009+213384005",
+        "display": "Anterior Entire left lower leg",
     },
-    "AnteriorRightThigh": None,
+    "AnteriorRightThigh": {
+        "system": "http://snomed.info/sct",
+        "code": "255549009+209570001",
+        "display": "Anterior Entire right thigh",
+    },
     "AnteriorLeftThigh": {
         "system": "http://snomed.info/sct",
-        "code": "209672000",
-        "display": "Entire left thigh",
+        "code": "255549009+209672000",
+        "display": "Anterior Entire left thigh",
     },
     "AnteriorGroin": {
         "system": "http://snomed.info/sct",
-        "code": "26893007",
-        "display": "Inguinal region structure",
+        "code": "255549009+26893007",
+        "display": "Anterior Inguinal region structure",
     },
-    "PosteriorHead": None,
-    "PosteriorNeck": None,
-    "PosteriorLeftChest": None,
-    "PosteriorRightChest": None,
-    "PosteriorAbdomen": None,
-    "PosteriorLeftShoulder": None,
-    "PosteriorRightShoulder": None,
-    "PosteriorLeftArm": None,
-    "PosteriorLeftForearm": None,
-    "PosteriorLeftHand": None,
-    "PosteriorRightArm": None,
-    "PosteriorRightForearm": None,
-    "PosteriorRightHand": None,
+    "PosteriorHead": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+69536005",
+        "display": "Posterior Head structure",
+    },
+    "PosteriorNeck": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+45048000",
+        "display": "Posterior Neck structure",
+    },
+    "PosteriorLeftChest": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+771318003",
+        "display": "Posterior Structure of left half of chest wall",
+    },
+    "PosteriorRightChest": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+771319006",
+        "display": "Posterior Structure of right half of chest wall",
+    },
+    "PosteriorAbdomen": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+302553009",
+        "display": "Posterior Entire abdomen",
+    },
+    "PosteriorLeftShoulder": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+368107006",
+        "display": "Posterior Entire left shoulder region",
+    },
+    "PosteriorRightShoulder": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+368106002",
+        "display": "Posterior Right Shoulder structure",
+    },
+    "PosteriorLeftArm": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+72098002",
+        "display": "Posterior Entire left upper arm",
+    },
+    "PosteriorLeftForearm": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+368225008",
+        "display": "Posterior Entire left forearm",
+    },
+    "PosteriorLeftHand": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+368456002",
+        "display": "Posterior Entire left hand",
+    },
+    "PosteriorRightArm": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+59126009",
+        "display": "Posterior Entire right upper arm",
+    },
+    "PosteriorRightForearm": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+368224007",
+        "display": "Posterior Entire right forearm",
+    },
+    "PosteriorRightHand": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+78791008",
+        "display": "Posterior Structure of right hand",
+    },
     "PosteriorLeftThighAndButtock": {
         "system": "http://snomed.info/sct",
         "code": "209672000+723979003",
@@ -1249,31 +1474,175 @@ human_body_map = {  # TODO: complete the rest of the values
         "code": "209570001+723980000",
         "display": "Entire right thigh + Structure of right buttock",
     },
-    "PosteriorLeftLeg": None,
-    "PosteriorRightLeg": None,
-    "PosteriorLeftFoot": None,
-    "PosteriorRightFoot": None,
+    "PosteriorLeftLeg": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+213384005",
+        "display": "Posterior Entire left lower leg",
+    },
+    "PosteriorRightLeg": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+213289002",
+        "display": "Posterior Entire right lower leg",
+    },
+    "PosteriorLeftFoot": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+239919000",
+        "display": "Posterior Entire left foot",
+    },
+    "PosteriorRightFoot": {
+        "system": "http://snomed.info/sct",
+        "code": "255551008+239830003",
+        "display": "Posterior Entire right foot",
+    },
 }
+# some wizardry about to happen
+def questions_for_body_parts(parent_id, children):
+    questions = []
+    for part, part_code in human_body_map.items():
+        part_children = []
+        for _child in children:
+            child = _child.copy()
+            child["link_id"] = f"{parent_id}.{part}.{_child['link_id']}"
+            child["id"] = deterministic_uuid(parent_id, part, _child["link_id"])
+            part_children.append(child)
+        questions.append({
+            "id": deterministic_uuid(parent_id, part),
+            "link_id": f"{parent_id}.{part}",
+            "text": part_code["display"],
+            "type": "group",
+            "is_observation": True,
+            "code": part_code,
+            "questions": part_children,
+        })
+    return questions
+
+
+pain_scale_sub_questions=[
+    {
+        "link_id": "scale",
+        "type": "integer",
+        "is_observation": True,
+        "text": "Pain Scale",
+        "code": {
+            "system": "http://loinc.org",
+            "code": "38208-5",
+            "display": "Pain severity",
+        },
+    },
+    {
+        "link_id": "description",
+        "type": "string",
+        "is_observation": True,
+        "text": "Description",
+    }
+]
 pain_scale_enhanced = {
     "id": "486ae997-ff3e-4a6b-8d7d-2102bf8ec6b9",
     "link_id": "pain_scale_enhanced",
     "text": "Pain Scale Enhanced",
-    "type": "decimal",
+    "type": "group",
     "is_observation": True,
-    "repeats": True,
+    "is_component": True,
     "code": {
         "system": "http://loinc.org",
         "code": "38208-5",
         "display": "Pain severity",
     },
+    "questions": questions_for_body_parts("pain_scale_enhanced", pain_scale_sub_questions),
 }
-# TODO: add pressure sore and nursing
-# pressure_sore = {
-#     "id": "5b34b0d3-12a0-4fc4-9f86-d5bdd3d61bb8",
-# }
-# nursing = {
-#     "id": "ae7139f5-ce54-4819-a680-e612f410ec57",
-# }
+
+
+pressure_sore_sub_questions = [
+    {
+        "link_id": "length",
+        "type": "decimal",
+        "is_observation": True,
+        "text": "Length",
+        "code": {
+            "system": "http://loinc.org",
+            "code": "39126-8",
+            "display": "Length of wound",
+        },
+        "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "cm",
+            "display": "cm",
+        },
+    },
+    {
+        "link_id": "width",
+        "type": "decimal",
+        "is_observation": True,
+        "text": "Width",
+        "code": {
+            "system": "http://loinc.org",
+            "code": "39125-0",
+            "display": "Width of wound",
+        },
+        "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "cm",
+            "display": "cm",
+        },
+    },
+    {
+        "link_id": "exudate_amount",
+        "type": "choice",
+        "is_observation": True,
+        "text": "Exudate Amount",
+        "answers": [
+            {"value": "None"},
+            {"value": "Light"},
+            {"value": "Moderate"},
+            {"value": "Heavy"},
+        ],
+    },
+    {
+        "link_id": "tissue_type",
+        "type": "choice",
+        "is_observation": True,
+        "text": "Tissue Type",
+        "answers": [
+            {"value": "Closed"},
+            {"value": "Epithelial"},
+            {"value": "Granulation"},
+            {"value": "Slough"},
+            {"value": "Necrotic"},
+        ],
+    },
+    {
+        "link_id": "description",
+        "type": "string",
+        "is_observation": True,
+        "text": "Description",
+    },
+    {
+        "link_id": "push_score",
+        "type": "integer",
+        "is_observation": True,
+        "text": "Push Score",
+    },
+    {
+        "link_id": "scale",
+        "type": "integer",
+        "is_observation": True,
+        "text": "Scale",
+    },
+]
+pressure_sore = {
+    "id": "5b34b0d3-12a0-4fc4-9f86-d5bdd3d61bb8",
+    "link_id": "pressure_sore",
+    "text": "Pressure Sore",
+    "type": "group",
+    "is_observation": True,
+    "is_component": True,
+    "code": {
+        "system": "http://loinc.org",
+        "code": "46535-1",
+        "display": "Pressure injury [OASIS]",
+    },
+    "questions": questions_for_body_parts("pressure_sore", pressure_sore_sub_questions),
+}
 
 
 brief_update_questions = [
@@ -1297,48 +1666,46 @@ brief_update_questions = [
     },
 ]
 
-
 def create_observation_spec(questionnaire, responses, parent_id=None):
-    spec = {}
-    spec["status"] = ObservationStatus.final.value
-    spec["value_type"] = questionnaire["type"]
+    spec = {
+        "status": "final",
+        "value_type": questionnaire["type"],
+    }
     if "category" in questionnaire:
         spec["category"] = questionnaire["category"]
     if "code" in questionnaire:
         spec["main_code"] = questionnaire["code"]
-    if questionnaire["type"] == QuestionType.group.value:
+    if questionnaire["type"] == "group":
         spec["id"] = str(uuid.uuid4())
         spec["effective_datetime"] = timezone.now()
         spec["value"] = {}
         return [spec]
     observations = []
+    response = responses.get(questionnaire["id"])
     if (
-        responses
-        and questionnaire["id"] in responses
-        and responses[questionnaire["id"]].values
-        and responses[questionnaire["id"]].values[0]
+        response
+        and len(response.get("values", [])) > 0
     ):
-        for value in responses[questionnaire["id"]].values:
+        observation = {}
+        for value in response["values"]:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] == QuestionType.choice.value and value.code:
-                observation["value"] = value.value_code.model_dump(
-                    exclude_defaults=True
-                )
-
-            elif (
-                questionnaire["type"] == QuestionType.quantity.value
-                and value.value_quantity
-            ):
-                observation["value"] = value.value_quantity.model_dump(
-                    exclude_defaults=True
-                )
+            if questionnaire["type"] =="choice" and value.get("code"):
+                observation["value"] = {
+                    "code": value.get("code"),
+                    "system": value.get("system"),
+                    "display": value.get("display"),
+                }
             elif value:
-                observation["value"] = {"value": value.value}
+                observation["value"] = {"value": str(value.get("value"))}
                 if "unit" in questionnaire:
                     observation["value"]["unit"] = questionnaire["unit"]
-            if responses[questionnaire["id"]].note:
-                observation["note"] = responses[questionnaire["id"]].note
+                if value.get("code"):
+                    observation["value"]["code"] = value.get("code")
+                    observation["value"]["system"] = value.get("system")
+                    observation["value"]["display"] = value.get("display")
+            if response.get("note"):
+                observation["note"] = response.get("note")
         if parent_id:
             observation["parent"] = parent_id
         observation["effective_datetime"] = timezone.now()
@@ -1346,17 +1713,39 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
     return observations
 
 
-def convert_to_observation_spec(questionnaire_obj, responses, parent_id=None):
+def create_components(questionnaire, responses):
+    components = []
+    observations = convert_to_observation_spec(
+        questionnaire, responses, is_component=True
+    )
+    for observation in observations:
+        if "main_code" not in observation or "value" not in observation:
+            continue
+        component = {"value": observation["value"], "code": observation["main_code"]}
+        if "note" in observation:
+            component["note"] = observation["note"]
+        components.append(component)
+    return components
+
+
+def convert_to_observation_spec(
+    questionnaire, responses, parent_id=None, is_component=False
+):
     constructed_observation_mapping = []
-    for question in questionnaire_obj.get("questions", []):
-        if question["type"] == QuestionType.group.value:
+    for question in questionnaire.get("questions", []):
+        if question["type"] == "group":
             observation = create_observation_spec(question, responses, parent_id)
-            sub_mapping = convert_to_observation_spec(
-                question, responses, observation[0]["id"]
-            )
-            if sub_mapping:
+            if not is_component and question.get("is_component", False):
+                components = create_components(question, responses)
+                observation[0]["component"] = components
                 constructed_observation_mapping.extend(observation)
-                constructed_observation_mapping.extend(sub_mapping)
+            else:
+                sub_mapping = convert_to_observation_spec(
+                    question, responses, observation[0]["id"]
+                )
+                if sub_mapping:
+                    constructed_observation_mapping.extend(observation)
+                    constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)
@@ -1393,8 +1782,6 @@ def migrate_daily_rounds(apps, schema_editor):
 
     DailyRound = apps.get_model("facility", "DailyRound")
 
-    # TODO: create questionnaire tags and link to these
-    # I dont know why these are hardcoded in frontend, but it doesn't work without it so we will also hardcode it here
     encounter_actions_tag, _ = QuestionnaireTag.objects.get_or_create(
         slug="encounter_actions",
         defaults={
@@ -1517,7 +1904,7 @@ def migrate_daily_rounds(apps, schema_editor):
                     "type": "group",
                     "questions": [bp, pulse, ventilator_spo2, blood_sugar_level],
                 },
-                # nursing, #TODO: enable this
+                nursing,
             ],
         },
     )
@@ -1692,8 +2079,8 @@ def migrate_daily_rounds(apps, schema_editor):
                         dialysis_net_balance,
                     ],
                 },
-                # pressure_sore, #TODO: enable this
-                # nursing,
+                pressure_sore,
+                nursing,
             ],
         },
     )
@@ -1789,7 +2176,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 value = getattr(daily_round, attr)
                 if value is not None:
                     if isinstance(value, Decimal):
-                        value = float(value)
+                        value = str(value)
                     questionnaire_responses[question_obj["id"]] = {
                         "question_id": question_obj["id"],
                         "values": [{"value": value}],
@@ -1905,13 +2292,11 @@ def migrate_daily_rounds(apps, schema_editor):
                 }
 
             if daily_round.rhythm is not None or daily_round.rhythm_detail:
+                code = rhythm_map.get(daily_round.rhythm)
                 questionnaire_responses[rhythm["id"]] = {
                     "question_id": rhythm["id"],
-                    "values": [
-                        # TODO: update the key when the spec is updated
-                        {"value": {"value_code": rhythm_map.get(daily_round.rhythm)}}
-                    ],
                     "note": daily_round.rhythm_detail or None,
+                    "values": [{**code}] if code else [],
                 }
 
             if daily_round.bp:
@@ -1927,15 +2312,15 @@ def migrate_daily_rounds(apps, schema_editor):
                         "values": [{"value": bp_diastolic_value}],
                     }
 
-            # TODO: update the value keys when the spec is updated
             if daily_round.infusions:
                 values = []
                 for daily_round_infusion in daily_round.infusions:
                     if infusion := daily_round_infusion.get("infusion"):
+                        code = infusions_map[infusion]
                         values.append(
                             {
-                                "value_code": infusions_map[infusion],
-                                "value_quantity": daily_round_infusion.get("quantity"),
+                                **code,
+                                "value": daily_round_infusion.get("quantity"),
                             }
                         )
                 if values:
@@ -1947,13 +2332,13 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_iv_fluid in daily_round.iv_fluids:
                     if iv_fluid := daily_round_iv_fluid.get("iv_fluid"):
+                        code = iv_fluids_map[iv_fluid]
                         values.append(
                             {
-                                "value_code": iv_fluids_map[iv_fluid],
-                                "value_quantity": daily_round_iv_fluid.get("quantity"),
+                                **code,
+                                "value": daily_round_iv_fluid.get("quantity"),
                             }
                         )
-
                 if values:
                     questionnaire_responses[iv_fluids["id"]] = {
                         "question_id": iv_fluids["id"],
@@ -1963,10 +2348,11 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_feed in daily_round.feeds:
                     if feed := daily_round_feed.get("feed"):
+                        code = feeds_map[feed]
                         values.append(
                             {
-                                "value_code": feeds_map[feed],
-                                "value_quantity": daily_round_feed.get("quantity"),
+                                **code,
+                                "value": daily_round_feed.get("quantity"),
                             }
                         )
                 if values:
@@ -1978,10 +2364,11 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_output in daily_round.output:
                     if output_name := daily_round_output.get("name"):
+                        code = output_map[output_name]
                         values.append(
                             {
-                                "value_code": output_map[output_name],
-                                "value_quantity": daily_round_output.get("quantity"),
+                                **code,
+                                "value": daily_round_output.get("quantity"),
                             }
                         )
                 if values:
@@ -1989,9 +2376,108 @@ def migrate_daily_rounds(apps, schema_editor):
                         "question_id": output["id"],
                         "values": values,
                     }
-
-            # TODO: nursing, pressure_sore, pain_scale_enhanced
-            # TODO: review json fields like infusions, iv_fluids, feeds, output
+            if daily_round.nursing:
+                values = []
+                for daily_round_nursing in daily_round.nursing:
+                    if nursing_procedure := daily_round_nursing.get("procedure"):
+                        code = nursing_map[nursing_procedure]
+                        values.append(
+                            {
+                                **code,
+                                "value": daily_round_nursing.get("description"),
+                            }
+                        )
+                if values:
+                    questionnaire_responses[nursing["id"]] = {
+                        "question_id": nursing["id"],
+                        "values": values,
+                    }
+            if daily_round.pain_scale_enhanced:
+                for daily_round_pain_scale_enhanced in daily_round.pain_scale_enhanced:
+                    region = daily_round_pain_scale_enhanced.get("region")
+                    scale = daily_round_pain_scale_enhanced.get("scale")
+                    description = daily_round_pain_scale_enhanced.get("description")
+                    if human_body_map.get(region):
+                        scale_question_id = deterministic_uuid(
+                            pain_scale_enhanced["link_id"], region, "scale"
+                        )
+                        questionnaire_responses[scale_question_id] = {
+                            "question_id": scale_question_id,
+                            "values": [{"value": scale}],
+                        }
+                        if description:
+                            description_question_id = deterministic_uuid(
+                                pain_scale_enhanced["link_id"], region, "description"
+                            )
+                            questionnaire_responses[description_question_id] = {
+                                "question_id": description_question_id,
+                                "values": [{"value": description}],
+                            }
+            if daily_round.pressure_sore:
+                for daily_round_pressure_sore in daily_round.pressure_sore:
+                    region = daily_round_pressure_sore.get("region")
+                    length = daily_round_pressure_sore.get("length")
+                    width = daily_round_pressure_sore.get("width")
+                    exudate_amount = daily_round_pressure_sore.get("exudate_amount")
+                    tissue_type = daily_round_pressure_sore.get("tissue_type")
+                    description = daily_round_pressure_sore.get("description")
+                    push_score = daily_round_pressure_sore.get("push_score")
+                    scale = daily_round_pressure_sore.get("scale")
+                    if human_body_map.get(region):
+                        length_question_id = deterministic_uuid(
+                            pressure_sore["link_id"], region, "length"
+                        )
+                        questionnaire_responses[length_question_id] = {
+                            "question_id": length_question_id,
+                            "values": [{"value": length}],
+                        }
+                        width_question_id = deterministic_uuid(
+                            pressure_sore["link_id"], region, "width"
+                        )
+                        questionnaire_responses[width_question_id] = {
+                            "question_id": width_question_id,
+                            "values": [{"value": width}],
+                        }
+                        if exudate_amount:
+                            exudate_amount_question_id = deterministic_uuid(
+                                pressure_sore["link_id"], region, "exudate_amount"
+                            )
+                            questionnaire_responses[exudate_amount_question_id] = {
+                                "question_id": exudate_amount_question_id,
+                                "values": [{"value": exudate_amount}],
+                            }
+                        if tissue_type:
+                            tissue_type_question_id = deterministic_uuid(
+                                pressure_sore["link_id"], region, "tissue_type"
+                            )
+                            questionnaire_responses[tissue_type_question_id] = {
+                                "question_id": tissue_type_question_id,
+                                "values": [{"value": tissue_type}],
+                            }
+                        if description:
+                            description_question_id = deterministic_uuid(
+                                pressure_sore["link_id"], region, "description"
+                            )
+                            questionnaire_responses[description_question_id] = {
+                                "question_id": description_question_id,
+                                "values": [{"value": description}],
+                            }
+                        if push_score:
+                            push_score_question_id = deterministic_uuid(
+                                pressure_sore["link_id"], region, "push_score"
+                            )
+                            questionnaire_responses[push_score_question_id] = {
+                                "question_id": push_score_question_id,
+                                "values": [{"value": push_score}],
+                            }
+                        if scale:
+                            scale_question_id = deterministic_uuid(
+                                pressure_sore["link_id"], region, "scale"
+                            )
+                            questionnaire_responses[scale_question_id] = {
+                                "question_id": scale_question_id,
+                                "values": [{"value": scale}],
+                            }
 
             if not questionnaire_responses:
                 continue
@@ -2009,12 +2495,11 @@ def migrate_daily_rounds(apps, schema_editor):
             else:  # VENTILATOR, ICU
                 selected_questionnaire = detailed_update_questionnaire
 
-            responses = list(questionnaire_responses.values())
             questionnaire_response = QuestionnaireResponse.objects.create(
                 questionnaire=selected_questionnaire,
                 encounter=encounter,
                 patient=encounter.patient,
-                responses=responses,
+                responses=list(questionnaire_responses.values()),
                 subject_id=encounter.external_id,
                 created_by_id=daily_round.created_by_id,
                 updated_by_id=daily_round.last_edited_by_id,
@@ -2028,22 +2513,30 @@ def migrate_daily_rounds(apps, schema_editor):
             )
 
             observations = convert_to_observation_spec(
-                {"questions": selected_questionnaire.questions}, responses
+                {"questions": selected_questionnaire.questions}, questionnaire_responses
             )
             observations_objects = []
             for observation in observations:
-                pydantic_observation = ObservationSpec(
-                    **observation,
-                    subject_type=selected_questionnaire.subject_type,
-                    data_entered_by_id=daily_round.last_edited_by_id,
-                    created_by_id=daily_round.created_by_id,
-                    updated_by_id=daily_round.last_edited_by_id,
-                )
+                try:
+                    pydantic_observation = ObservationSpec(
+                        **observation,
+                        subject_type=selected_questionnaire.subject_type,
+                        data_entered_by_id=daily_round.last_edited_by_id,
+                        created_by_id=daily_round.created_by_id,
+                        updated_by_id=daily_round.last_edited_by_id,
+                    )
+                except Exception as e:
+                    print(e)
+                    print(observation)
+                    raise e
                 observations_obj = pydantic_observation.de_serialize()
+                observations_obj.effective_datetime = daily_round.taken_at
                 observations_obj.questionnaire_response = questionnaire_response
                 observations_obj.encounter_id = encounter.id
                 observations_obj.patient_id = encounter.patient_id
                 observations_obj.subject_id = encounter.external_id
+                observations_obj.created_date = daily_round.created_date
+                observations_obj.modified_date = daily_round.modified_date
                 observations_objects.append(observations_obj)
             Observation.objects.bulk_create(observations_objects)
 
