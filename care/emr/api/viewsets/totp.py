@@ -34,10 +34,6 @@ class PasswordVerifyRequest(BaseModel):
     password: str
 
 
-class TOTPDisableResponse(BaseModel):
-    message: str
-
-
 class TOTPViewSet(EMRBaseViewSet):
     permission_classes = [IsAuthenticated]
 
@@ -133,7 +129,7 @@ class TOTPViewSet(EMRBaseViewSet):
         description="Disable TOTP-based two-factor authentication",
         request=PasswordVerifyRequest,
         responses={
-            200: TOTPDisableResponse,
+            200: {},
             400: {"type": "object", "properties": {"error": {"type": "string"}}},
         },
     )
@@ -159,10 +155,7 @@ class TOTPViewSet(EMRBaseViewSet):
 
         send_totp_disabled_email.delay(user.email, user.username)
 
-        response_data = TOTPDisableResponse(
-            message="Two-factor authentication has been disabled successfully"
-        )
-        return Response(response_data.model_dump())
+        return Response(status=status.HTTP_200_OK)
 
     @extend_schema(
         description="Regenerate TOTP backup codes",
