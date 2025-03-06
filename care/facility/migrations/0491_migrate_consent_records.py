@@ -89,7 +89,8 @@ def migrate_consent_records(apps, schema_editor):
 
 
 def reverse_migrate_consent_records(apps, schema_editor):
-    pass
+    Consent = apps.get_model("emr", "Consent")
+    Consent.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):
