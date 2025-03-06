@@ -3,11 +3,12 @@ from enum import Enum
 
 from pydantic import UUID4, Field, field_validator
 
-from care.emr.fhir.schema.base import Coding, Period
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_statement import MedicationStatement
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.period import Period
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.user.spec import UserSpec
 

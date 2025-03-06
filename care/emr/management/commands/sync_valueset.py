@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "--overwrite",
-            default=True,
+            default=False,
             type=bool,
             help="Overwrite the valueset if already present",
         )

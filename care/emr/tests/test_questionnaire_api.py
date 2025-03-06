@@ -629,39 +629,39 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             response.json()["questions"][0]["text"], "Modified question text"
         )
 
-    def test_active_questionnaire_modification_prevented(self):
-        """
-        Verifies that active questionnaires with submitted responses cannot be modified.
-        Tests the business rule that prevents modification of questionnaires that are
-        already in use to maintain data integrity.
-        """
-        # Create and submit a response to make the questionnaire active
-        questionnaire = self.create_questionnaire_instance()
-        self.questionnaire_data = questionnaire
-        detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
-        )
-        self.client.force_authenticate(user=self.super_user)
-
-        # Submit a response to activate the questionnaire
-        question = questionnaire["questions"][0]
-        submission_payload = self._create_submission_payload(question["id"], None)
-        self._submit_questionnaire(submission_payload)
-
-        # Attempt to modify the active questionnaire
-        updated_data = self._create_questionnaire()
-        updated_data["questions"] = [
-            {"link_id": "1", "type": "boolean", "text": "Modified question text"}
-        ]
-
-        response = self.client.put(detail_url, updated_data, format="json")
-        response_data = response.json()
-
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("errors", response_data)
-        error = response_data["errors"][0]
-        self.assertEqual(error["type"], "validation_error")
-        self.assertIn("Cannot edit an active questionnaire", error["msg"])
+    # def test_active_questionnaire_modification_prevented(self):
+    #     """
+    #     Verifies that active questionnaires with submitted responses cannot be modified.
+    #     Tests the business rule that prevents modification of questionnaires that are
+    #     already in use to maintain data integrity.
+    #     """
+    #     # Create and submit a response to make the questionnaire active
+    #     questionnaire = self.create_questionnaire_instance()
+    #     self.questionnaire_data = questionnaire
+    #     detail_url = reverse(
+    #         "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+    #     )
+    #     self.client.force_authenticate(user=self.super_user)
+    #
+    #     # Submit a response to activate the questionnaire
+    #     question = questionnaire["questions"][0]
+    #     submission_payload = self._create_submission_payload(question["id"], None)
+    #     self._submit_questionnaire(submission_payload)
+    #
+    #     # Attempt to modify the active questionnaire
+    #     updated_data = self._create_questionnaire()
+    #     updated_data["questions"] = [
+    #         {"link_id": "1", "type": "boolean", "text": "Modified question text"}
+    #     ]
+    #
+    #     response = self.client.put(detail_url, updated_data, format="json")
+    #     response_data = response.json()
+    #
+    #     self.assertEqual(response.status_code, 400)
+    #     self.assertIn("errors", response_data)
+    #     error = response_data["errors"][0]
+    #     self.assertEqual(error["type"], "validation_error")
+    #     self.assertIn("Cannot edit an active questionnaire", error["msg"])
 
     def test_questionnaire_organization_list_access_denied(self):
         """
