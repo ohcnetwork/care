@@ -474,7 +474,13 @@ def reverse_migrate_prescriptions_and_administrations(apps, schema_editor):
     MedicationRequest.objects.filter(meta__migration_id=MIGRATION_ID).delete()
     Prescription = apps.get_model("facility", "Prescription")
     Prescription.objects.filter(meta__migration_id=MIGRATION_ID).update(
-        meta__migration_id=None
+        meta=Func(
+            F("meta"),
+            Value('{"migration_id"}'),
+            Value('null'),
+            Value(True),
+            function="jsonb_set"
+        )
     )
 
 

@@ -149,7 +149,7 @@ def migrate_symptoms(apps, schema_editor):
             bulk.append(condition)
             logger.debug(f"Created Condition: {condition.id}")
 
-        Condition.objects.bulk_create(bulk)
+        Condition.objects.bulk_create(bulk, ignore_conflicts=True)
 
     enable_auto_time()
 

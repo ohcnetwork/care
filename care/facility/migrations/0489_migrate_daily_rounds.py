@@ -381,7 +381,6 @@ glasgow_total_calculated = {
     },
 }
 limb_response_map = {
-    0: "Unknown",
     5: "Strong",
     10: "Moderate",
     15: "Weak",
@@ -2142,10 +2141,6 @@ def migrate_daily_rounds(apps, schema_editor):
                 ("glasgow_verbal_response", glasgow_verbal_response),
                 ("glasgow_motor_response", glasgow_motor_response),
                 ("glasgow_total_calculated", glasgow_total_calculated),
-                ("limb_response_upper_extremity_left", limb_response_upper_extremity_left),
-                ("limb_response_upper_extremity_right", limb_response_upper_extremity_right),
-                ("limb_response_lower_extremity_left", limb_response_lower_extremity_left),
-                ("limb_response_lower_extremity_right", limb_response_lower_extremity_right),
                 ("pulse", pulse),
                 ("resp", resp),
                 ("ventilator_peep", ventilator_peep),
@@ -2194,6 +2189,10 @@ def migrate_daily_rounds(apps, schema_editor):
                 ("ventilator_interface", ventilator_interface, ventilator_interface_map),
                 ("ventilator_mode", ventilator_mode, ventilator_mode_map),
                 ("ventilator_oxygen_modality", ventilator_oxygen_modality, ventilator_oxygen_modality_map),
+                ("limb_response_upper_extremity_left", limb_response_upper_extremity_left, limb_response_map),
+                ("limb_response_upper_extremity_right", limb_response_upper_extremity_right, limb_response_map),
+                ("limb_response_lower_extremity_left", limb_response_lower_extremity_left, limb_response_map),
+                ("limb_response_lower_extremity_right", limb_response_lower_extremity_right, limb_response_map),
             ]
             for attr, question_obj, map_obj in less_simple_fields:
                 value = getattr(daily_round, attr)
@@ -2393,6 +2392,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         "values": values,
                     }
             if daily_round.pain_scale_enhanced:
+                pain_scale_enhanced_responses = {}
                 for daily_round_pain_scale_enhanced in daily_round.pain_scale_enhanced:
                     region = daily_round_pain_scale_enhanced.get("region")
                     scale = daily_round_pain_scale_enhanced.get("scale")
@@ -2401,7 +2401,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         scale_question_id = deterministic_uuid(
                             pain_scale_enhanced["link_id"], region, "scale"
                         )
-                        questionnaire_responses[scale_question_id] = {
+                        pain_scale_enhanced_responses[scale_question_id] = {
                             "question_id": scale_question_id,
                             "values": [{"value": scale}],
                         }
@@ -2409,11 +2409,13 @@ def migrate_daily_rounds(apps, schema_editor):
                             description_question_id = deterministic_uuid(
                                 pain_scale_enhanced["link_id"], region, "description"
                             )
-                            questionnaire_responses[description_question_id] = {
+                            pain_scale_enhanced_responses[description_question_id] = {
                                 "question_id": description_question_id,
                                 "values": [{"value": description}],
                             }
+                questionnaire_responses.update(pain_scale_enhanced_responses)
             if daily_round.pressure_sore:
+                pressure_sore_responses = {}
                 for daily_round_pressure_sore in daily_round.pressure_sore:
                     region = daily_round_pressure_sore.get("region")
                     length = daily_round_pressure_sore.get("length")
@@ -2427,14 +2429,14 @@ def migrate_daily_rounds(apps, schema_editor):
                         length_question_id = deterministic_uuid(
                             pressure_sore["link_id"], region, "length"
                         )
-                        questionnaire_responses[length_question_id] = {
+                        pressure_sore_responses[length_question_id] = {
                             "question_id": length_question_id,
                             "values": [{"value": length}],
                         }
                         width_question_id = deterministic_uuid(
                             pressure_sore["link_id"], region, "width"
                         )
-                        questionnaire_responses[width_question_id] = {
+                        pressure_sore_responses[width_question_id] = {
                             "question_id": width_question_id,
                             "values": [{"value": width}],
                         }
@@ -2442,7 +2444,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             exudate_amount_question_id = deterministic_uuid(
                                 pressure_sore["link_id"], region, "exudate_amount"
                             )
-                            questionnaire_responses[exudate_amount_question_id] = {
+                            pressure_sore_responses[exudate_amount_question_id] = {
                                 "question_id": exudate_amount_question_id,
                                 "values": [{"value": exudate_amount}],
                             }
@@ -2450,7 +2452,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             tissue_type_question_id = deterministic_uuid(
                                 pressure_sore["link_id"], region, "tissue_type"
                             )
-                            questionnaire_responses[tissue_type_question_id] = {
+                            pressure_sore_responses[tissue_type_question_id] = {
                                 "question_id": tissue_type_question_id,
                                 "values": [{"value": tissue_type}],
                             }
@@ -2458,7 +2460,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             description_question_id = deterministic_uuid(
                                 pressure_sore["link_id"], region, "description"
                             )
-                            questionnaire_responses[description_question_id] = {
+                            pressure_sore_responses[description_question_id] = {
                                 "question_id": description_question_id,
                                 "values": [{"value": description}],
                             }
@@ -2466,7 +2468,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             push_score_question_id = deterministic_uuid(
                                 pressure_sore["link_id"], region, "push_score"
                             )
-                            questionnaire_responses[push_score_question_id] = {
+                            pressure_sore_responses[push_score_question_id] = {
                                 "question_id": push_score_question_id,
                                 "values": [{"value": push_score}],
                             }
@@ -2474,10 +2476,12 @@ def migrate_daily_rounds(apps, schema_editor):
                             scale_question_id = deterministic_uuid(
                                 pressure_sore["link_id"], region, "scale"
                             )
-                            questionnaire_responses[scale_question_id] = {
+                            pressure_sore_responses[scale_question_id] = {
                                 "question_id": scale_question_id,
                                 "values": [{"value": scale}],
                             }
+
+                questionnaire_responses.update(pressure_sore_responses)
 
             if not questionnaire_responses:
                 continue
