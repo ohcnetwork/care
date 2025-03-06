@@ -29,6 +29,13 @@ class ValueSetBaseSpec(EMRResource):
 
 
 class ValueSetSpec(ValueSetBaseSpec):
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, name: str, info):
+        if not name.strip():
+            raise ValueError("Name cannot be empty")
+        return name.strip()
+
     @field_validator("slug")
     @classmethod
     def validate_slug(cls, slug: str, info) -> str:
@@ -65,7 +72,7 @@ class ValueSetReadSpec(ValueSetBaseSpec):
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
         if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.created_by)
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
 
 
 ValueSetSpec.model_rebuild()

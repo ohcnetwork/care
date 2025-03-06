@@ -142,30 +142,34 @@ def compile_typ(output_file, data):
             / "black-logo.svg"
         )
 
-        data["logo_path"] = str(logo_path)
-        with tempfile.NamedTemporaryFile(suffix=".typ") as template:
-            template.write(
+        data["logo_path"] = "black-logo.svg"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            template = Path(tmpdir) / "template.typ"
+            template.write_text(
                 render_to_string(
                     "reports/patient_discharge_summary_pdf_template.typ", context=data
-                ).encode("utf-8")
+                )
             )
-            template.flush()
+
+            logo_dest = Path(tmpdir) / "black-logo.svg"
+            logo_dest.write_text(logo_path.read_text())
 
             subprocess.run(  # noqa: S603
                 [
                     settings.TYPST_BIN,
+                    "compile",
                     str(template.name),
                     str(output_file),
                 ],
                 capture_output=True,
                 check=True,
-                cwd="/",
+                shell=False,
+                cwd=tmpdir,
             )
 
         logging.info(
             "Successfully Compiled Summary pdf for %s", data["encounter"].external_id
         )
-        return True
 
     except subprocess.CalledProcessError as e:
         logging.error(
@@ -173,7 +177,7 @@ def compile_typ(output_file, data):
             data["encounter"].external_id,
             e.stderr.decode("utf-8"),
         )
-        return False
+        raise e
 
 
 def generate_discharge_summary_pdf(data, file):
@@ -194,9 +198,11 @@ def generate_and_upload_discharge_summary(encounter: Encounter):
     try:
         current_date = timezone.now()
         timestamp = int(current_date.timestamp() * 1000)
-        patient_name_slug: str = encounter.patient.name.lower().replace(" ", "_")
+        patient_name_slug: str = (
+            encounter.patient.name.lower().strip().replace(" ", "_")
+        )
         summary_file = FileUpload(
-            name=f"discharge_summary-{patient_name_slug}-{timestamp}.pdf",
+            name=f"discharge_summary-{patient_name_slug}-{int(timestamp)}",
             internal_name=f"{uuid4()}{int(time.time())}.pdf",
             file_type=FileTypeChoices.encounter.value,
             file_category=FileCategoryChoices.discharge_summary.value,

@@ -13,6 +13,13 @@ from care.emr.api.viewsets.condition import (
     DiagnosisViewSet,
     SymptomViewSet,
 )
+from care.emr.api.viewsets.consent import ConsentViewSet
+from care.emr.api.viewsets.device import (
+    DeviceEncounterHistoryViewSet,
+    DeviceLocationHistoryViewSet,
+    DeviceServiceHistoryViewSet,
+    DeviceViewSet,
+)
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
@@ -34,6 +41,7 @@ from care.emr.api.viewsets.medication_administration import (
 )
 from care.emr.api.viewsets.medication_request import MedicationRequestViewSet
 from care.emr.api.viewsets.medication_statement import MedicationStatementViewSet
+from care.emr.api.viewsets.meta_artifact import MetaArtifactViewSet
 from care.emr.api.viewsets.mfa_login import MFALoginViewSet
 from care.emr.api.viewsets.notes import NoteMessageViewSet, NoteThreadViewSet
 from care.emr.api.viewsets.observation import ObservationViewSet
@@ -73,6 +81,7 @@ router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
 router.register("files", FileUploadViewSet, basename="files")
+router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
 
@@ -99,6 +108,7 @@ router.register(
 )
 
 router.register("role", RoleViewSet, basename="role")
+
 
 router.register("encounter", EncounterViewSet, basename="encounter")
 
@@ -171,6 +181,35 @@ facility_nested_router.register(
     basename="location",
 )
 
+facility_nested_router.register(
+    r"device",
+    DeviceViewSet,
+    basename="device",
+)
+
+device_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"device", lookup="device"
+)
+
+device_nested_router.register(
+    r"location_history",
+    DeviceLocationHistoryViewSet,
+    basename="device_location_history",
+)
+
+
+device_nested_router.register(
+    r"encounter_history",
+    DeviceEncounterHistoryViewSet,
+    basename="device_encounter_history",
+)
+
+device_nested_router.register(
+    r"service_history",
+    DeviceServiceHistoryViewSet,
+    basename="device_service_history",
+)
+
 facility_location_nested_router = NestedSimpleRouter(
     facility_nested_router, r"location", lookup="location"
 )
@@ -190,6 +229,8 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+
+patient_nested_router.register(r"consent", ConsentViewSet, basename="consent")
 patient_nested_router.register(
     r"chronic_condition", ChronicConditionViewSet, basename="chronic-condition"
 )
@@ -249,4 +290,5 @@ urlpatterns = [
     path("", include(organization_nested_router.urls)),
     path("", include(facility_organization_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
+    path("", include(device_nested_router.urls)),
 ]

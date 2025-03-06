@@ -56,6 +56,7 @@ class ConditionFilters(FilterSet):
         field_name="verification_status", lookup_expr="iexact"
     )
     severity = CharFilter(field_name="severity", lookup_expr="iexact")
+    name = CharFilter(field_name="code__display", lookup_expr="icontains")
 
 
 class SymptomViewSet(

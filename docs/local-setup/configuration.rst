@@ -182,11 +182,6 @@ To copy static files (css, js, images) into the care/care/media directory so tha
 
 $ python manage.py collectstatic
 
-To load dummy data for testing run::
-
-    $ python manage.py load_dummy_data
-
-
 Type checks
 ~~~~~~~~~~~
 

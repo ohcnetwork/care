@@ -1,3 +1,5 @@
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.decorators import action
@@ -16,10 +18,17 @@ class ExpandRequest(BaseModel):
     display_language: str = "en-gb"
 
 
+class ValueSetFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+
+
 class ValueSetViewSet(EMRModelViewSet):
     database_model = ValueSet
     pydantic_model = ValueSetSpec
     pydantic_read_model = ValueSetReadSpec
+    filterset_class = ValueSetFilter
+    filter_backends = [DjangoFilterBackend]
     lookup_field = "slug"
 
     def permissions_controller(self, request):

@@ -40,6 +40,14 @@ class ReferenceRange(BaseModel):
     text: str | None = None
 
 
+class Component(BaseModel):
+    value: QuestionnaireSubmitResultValue
+    interpretation: str | None = None
+    reference_range: list[ReferenceRange] = []
+    code: Coding | None = None
+    note: str = ""
+
+
 class BaseObservationSpec(EMRResource):
     __model__ = Observation
 
@@ -106,6 +114,8 @@ class BaseObservationSpec(EMRResource):
     parent: UUID4 | None = Field(None, description="ID reference to parent observation")
 
     questionnaire_response: UUID4 | None = None
+
+    component: list[Component] = []
 
 
 class ObservationSpec(BaseObservationSpec):
