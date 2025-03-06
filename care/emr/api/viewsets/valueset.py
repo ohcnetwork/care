@@ -111,8 +111,9 @@ class ValueSetViewSet(EMRModelViewSet):
     def mark_favorite(self, request, *args, **kwargs):
         valueset = self.get_object()
         preferences = self._get_or_create_user_preferences(request.user)
-        if len(preferences.get_favorites()) > preferences.MAX_FAVORITES:
+        if len(preferences.get_favorites()) >= preferences.MAX_FAVORITES:
             raise ValidationError("Maximum number of favorites reached (50)")
+
         preferences.add_favorite(valueset.external_id)
         return Response({"message": "Marked favorite"})
 
@@ -123,31 +124,44 @@ class ValueSetViewSet(EMRModelViewSet):
         preferences.remove_favorite(valueset.external_id)
         return Response({"message": "Removed from favorite"})
 
+    @action(detail=False, methods=["POST"])
+    def clear_favorites(self, request):
+        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
+        if preferences:
+            preferences.clear_favorites()
+        return Response({"message": "Cleared favorites"})
+
     @action(detail=False, methods=["GET"])
     def favorites(self, request):
-        preferences = self._get_or_create_user_preferences(request.user)
-        favorite_ids = preferences.get_favorites()
+        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
+        favorite_ids = preferences.get_favorites() if preferences else []
 
         favorites = ValueSet.objects.filter(external_id__in=favorite_ids)
 
-        results = []
-        for favorite in favorites:
-            results.append(ValueSetReadSpec.serialize(favorite).to_json())
-
+        results = [
+            ValueSetReadSpec.serialize(favorite).to_json() for favorite in favorites
+        ]
         return Response({"results": results})
 
     @action(detail=False, methods=["GET"])
     def recent_views(self, request):
-        preferences = self._get_or_create_user_preferences(request.user)
-        recent_view_ids = preferences.get_recent_views()
+        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
+        recent_view_ids = preferences.get_recent_views() if preferences else []
 
         recent_views = ValueSet.objects.filter(external_id__in=recent_view_ids)
 
-        results = []
-        for recent_view in recent_views:
-            results.append(ValueSetReadSpec.serialize(recent_view).to_json())
-
+        results = [
+            ValueSetReadSpec.serialize(recent_view).to_json()
+            for recent_view in recent_views
+        ]
         return Response({"results": results})
+
+    @action(detail=False, methods=["POST"])
+    def clear_recent_views(self, request):
+        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
+        if preferences:
+            preferences.clear_recent_views()
+        return Response({"message": "Cleared recent views"})
 
     def retrieve(self, request, *args, **kwargs):
         valueset = self.get_object()

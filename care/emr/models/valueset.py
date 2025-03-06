@@ -56,13 +56,13 @@ class UserValueSetPreference(EMRBaseModel):
     favorites = models.JSONField(default=list, blank=True)
     recent_views = models.JSONField(default=list, blank=True)
 
-    CACHE_KEY_PREFIX = "user_valueset_prefs_"
+    CACHE_KEY_PREFIX = "user_valueset_prefs:"
     MAX_RECENT_VIEW = 20
     MAX_FAVORITES = 50
     CACHE_TIMEOUT = 86400  # 24 hours
 
     def _get_cache_key(self, field_name):
-        return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}_{field_name}"
+        return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{field_name}"
 
     def _get_cached_data(self, field_name):
         cache_key = self._get_cache_key(field_name)
@@ -111,3 +111,9 @@ class UserValueSetPreference(EMRBaseModel):
 
     def get_recent_views(self):
         return self._get_cached_data("recent_views")
+
+    def clear_recent_views(self):
+        self._save_to_cache("recent_views", [])
+
+    def clear_favorites(self):
+        self._save_to_cache("favorites", [])
