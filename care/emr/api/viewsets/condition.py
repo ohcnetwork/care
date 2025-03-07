@@ -48,13 +48,6 @@ class ValidateEncounterMixin:
                 "Patient external ID mismatch with encounter's patient"
             )
 
-        if (
-            not model_obj
-            and self.database_model.objects.filter(code=instance.code).exists()
-        ):
-            error = f"Duplicate value for code {instance.code.code}"
-            raise ValidationError(error)
-
 
 class ConditionFilters(FilterSet):
     encounter = UUIDFilter(field_name="encounter__external_id")
