@@ -808,6 +808,13 @@ class PatientNotes(FacilityBaseModel, ConsultationRelatedPermissionMixin):
         # This is a temporary hack! this model does not have `assigned_to` field
         # and hence the permission mixin will fail if edit/object_read permissions are checked (although not used as of now)
         # Remove once patient notes is made consultation specific.
+        """
+        Returns self as a placeholder for the related consultation.
+        
+        This temporary workaround mitigates permission issues that arise from the absence
+        of the 'assigned_to' field. Remove this method once patient notes are made 
+        consultation specific.
+        """
         return self
 
 

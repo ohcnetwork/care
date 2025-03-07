@@ -22,6 +22,17 @@ bed_type_map = {
 
 
 def migrate_location_beds(apps, schema_editor):
+    """
+    Migrate AssetLocation records and their associated Bed entries to FacilityLocation.
+    
+    This function transfers location and bed data from the legacy AssetLocation model to the
+    FacilityLocation model. It processes only those AssetLocation instances that have not yet
+    been migrated, creating new FacilityLocation entries for each location and for each of its
+    unmigrated beds. The migration includes mapping metadata—such as location type and bed type—
+    and linking each new entry to the root administration organization. Bulk updates are applied
+    to update the migration references in the original AssetLocation and Bed records. Automatic
+    timestamp updates are temporarily disabled during the migration and re-enabled once complete.
+    """
     from care.facility.utils import disable_auto_time
     from care.emr.models import (
         FacilityLocation,
@@ -136,6 +147,12 @@ def migrate_location_beds(apps, schema_editor):
 
 
 def reverse_migrate_location_beds(apps, schema_editor):
+    """
+    Reverse the migration of location and bed data.
+    
+    Deletes facility location records created by the migration and clears the
+    migration tracking identifiers in asset location and bed models.
+    """
     FacilityLocation = apps.get_model("emr", "FacilityLocation")
     FacilityLocation.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 

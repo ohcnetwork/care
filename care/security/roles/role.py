@@ -76,6 +76,21 @@ class RoleController:
 
     @classmethod
     def map_old_role_to_new(cls, old_role):
+        """
+        Maps a legacy role identifier to the corresponding new Role instance.
+        
+        Converts an old role name into its updated Role constant using a predefined mapping.
+        Raises a KeyError if the provided identifier does not exist in the mapping.
+        
+        Args:
+            old_role: The legacy role identifier as a string.
+        
+        Returns:
+            The Role constant corresponding to the legacy role name.
+        
+        Raises:
+            KeyError: If no mapping exists for the given legacy role.
+        """
         mapping = {
             "Transportation": STAFF_ROLE,
             "Pharmacist": STAFF_ROLE,

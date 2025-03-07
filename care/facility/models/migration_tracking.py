@@ -19,4 +19,10 @@ class MigrationTracking(models.Model):
     data = models.TimeField()
 
     def __str__(self):
+        """
+        Return a string representation of the migration tracking instance.
+        
+        This method returns a formatted string that shows the old model and its ID, the new model,
+        and the specific field that was migrated.
+        """
         return f"{self.old_model}({self.old_model_obj_id}) -> {self.new_model} : {self.field}"

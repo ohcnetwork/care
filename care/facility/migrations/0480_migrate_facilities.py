@@ -29,12 +29,36 @@ USER_TYPE_TO_ROLE = {
 
 
 def get_role_for_user_type(user_type):
+    """
+    Retrieves the role ID for a given user type.
+    
+    Uses a predefined mapping to obtain the role name for the user type and queries the RoleModel
+    to retrieve the corresponding role. Returns the role's ID if found; otherwise, returns None.
+    """
     if role_name := USER_TYPE_TO_ROLE.get(user_type):
         if role := RoleModel.objects.filter(name=role_name).first():
             return role.id
 
 
 def _get_org(Organization, obj):
+    """
+    Determines the most specific organization from an object's geographic data.
+    
+    This helper function queries the given Organization model based on the object's
+    geographical attributes. It first attempts to locate a state-level organization,
+    then refines the search through district, local body, and ward—each level requiring
+    the presence of its parent organization. The function returns the most specific
+    matching organization (with ward prioritized over local body, then district, then state)
+    or None if no corresponding organization is found.
+    
+    Args:
+        Organization: The Django model used for organization queries.
+        obj: An object with optional attributes 'state', 'district', 'local_body', and 'ward';
+             each should have a 'name' property used to match against organization records.
+    
+    Returns:
+        The most specific Organization instance matching the object's location, or None.
+    """
     state = None
     district = None
     local_body = None
@@ -75,6 +99,13 @@ def _get_org(Organization, obj):
 
 
 def migrate_facilities(apps, schema_editor):
+    """
+    Migrate facilities missing a geographic organization.
+    
+    Retrieves the Facility and Organization models and identifies all facilities with a null geo_organization.
+    For each such facility, the appropriate organization is determined using _get_org based on state,
+    district, local body, or ward data. Facilities linked to a valid organization are then updated in bulk.
+    """
     Facility = apps.get_model("facility", "Facility")
     Organization = apps.get_model("emr", "Organization")
     bulk_update = []
@@ -92,6 +123,12 @@ def migrate_facilities(apps, schema_editor):
 
 
 def reverse_migrate_facilities(apps, schema_editor):
+    """
+    Reverts facility migration by clearing geographic organization assignments.
+    
+    Resets the geo_organization field to None for all Facility records that were updated during
+    the migration, as identified by the migration identifier.
+    """
     Facility = apps.get_model("facility", "Facility")
     Facility.objects.filter(geo_organization__meta__migration_id=MIGRATION_ID).update(
         geo_organization=None
@@ -99,6 +136,14 @@ def reverse_migrate_facilities(apps, schema_editor):
 
 
 def migrate_facility_users(apps, schema_editor):
+    """
+    Migrates facility users to the new organization-based role structure.
+    
+    For each facility, ensures a root "Administration" organization exists and then assigns
+    each facility user a role based on their legacy user type. If no corresponding role is
+    found, a warning is logged and the user is skipped. The facility's default internal
+    organization is updated to the root organization if not already set.
+    """
     from care.emr.models.organization import FacilityOrganization
     from care.emr.models.organization import FacilityOrganizationUser
 
@@ -149,6 +194,12 @@ def migrate_facility_users(apps, schema_editor):
 
 
 def reverse_migrate_facility_users(apps, schema_editor):
+    """
+    Reverses the facility user migration by deleting associated facility organization records.
+    
+    Deletes all FacilityOrganization entries created during the migration, identified
+    by the migration's unique identifier.
+    """
     FacilityOrganization = apps.get_model("emr", "FacilityOrganization")
     FacilityOrganization.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 

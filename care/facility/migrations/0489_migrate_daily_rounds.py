@@ -16,7 +16,19 @@ if TYPE_CHECKING:
 MIGRATION_ID = 158445695208
 
 def deterministic_uuid(*components) -> str:
-    "i got tired of copying and pasting uuids"
+    """
+    Generates a deterministic UUID from given components.
+    
+    Concatenates all provided components using a period as a separator and returns a UUID
+    generated using UUID version 5 with the OID namespace. The same input components will
+    always produce the same UUID.
+    
+    Args:
+        *components: One or more strings used as the seed for UUID generation.
+    
+    Returns:
+        A deterministic UUID as a string.
+    """
     return str(uuid.uuid5(uuid.NAMESPACE_OID, ".".join(components)))
 
 
@@ -1496,6 +1508,25 @@ human_body_map = {
 }
 # some wizardry about to happen
 def questions_for_body_parts(parent_id, children):
+    """
+    Generate questionnaire groups for each human body part.
+    
+    This function iterates over a mapping of human body parts and creates a group
+    question for each one. For every body part, it clones the provided child question
+    templates, updating each template’s "link_id" and "id" based on the parent_id, the
+    body part identifier, and the child's original "link_id" using a deterministic UUID
+    generator.
+    
+    Args:
+        parent_id: A base identifier used to generate unique IDs and link IDs.
+        children: A list of dictionaries representing child question templates to be
+                  nested within each body part group.
+    
+    Returns:
+        A list of dictionaries, each representing a questionnaire group for a specific
+        human body part, complete with uniquely generated identifiers and nested child
+        questions.
+    """
     questions = []
     for part, part_code in human_body_map.items():
         part_children = []
@@ -1666,6 +1697,28 @@ brief_update_questions = [
 ]
 
 def create_observation_spec(questionnaire, responses, parent_id=None):
+    """
+    Builds an observation specification from questionnaire data and responses.
+    
+    This function creates a dictionary representing an observation based on the provided
+    questionnaire and its corresponding responses. For questionnaires of type "group",
+    it returns a group-level specification with an empty value immediately. For other
+    types, the function extracts available response values and builds an observation
+    specification that includes a unique identifier, effective datetime, and any applicable
+    attributes such as category, main code, unit, and note. If a parent ID is provided, it is
+    included in the observation. Returns an empty list if there are no valid response values.
+      
+    Args:
+        questionnaire: A dictionary containing the questionnaire details (e.g., "id", "type",
+            and optionally "category", "code", and "unit").
+        responses: A mapping from questionnaire IDs to response dictionaries, where each
+            response may include a "values" list and an optional "note".
+        parent_id: Optional; if provided, the observation will include a reference to the parent.
+    
+    Returns:
+        A list containing the constructed observation specification dictionary, or an empty
+        list if no valid responses exist.
+    """
     spec = {
         "status": "final",
         "value_type": questionnaire["type"],
@@ -1713,6 +1766,22 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
 
 
 def create_components(questionnaire, responses):
+    """
+    Extracts observation components from a questionnaire based on provided responses.
+    
+    This function converts the questionnaire responses into an observation specification and
+    iterates over the resulting observations. For each observation that includes both a main
+    code and a value, a dictionary component is created containing these keys. If a note is
+    present in the observation, it is also added to the component.
+    
+    Args:
+        questionnaire: The data structure defining the questionnaire format.
+        responses: The corresponding responses used to populate the observation specification.
+    
+    Returns:
+        A list of dictionaries, each representing a valid observation component with keys
+        "code", "value", and optionally "note".
+    """
     components = []
     observations = convert_to_observation_spec(
         questionnaire, responses, is_component=True
@@ -1730,6 +1799,20 @@ def create_components(questionnaire, responses):
 def convert_to_observation_spec(
     questionnaire, responses, parent_id=None, is_component=False
 ):
+    """
+    Recursively converts a questionnaire and its responses into an observation specification.
+    
+    This function iterates through the questionnaire's questions and constructs a flat list of observation mappings. For questions of type "group", it creates an observation using create_observation_spec and, if the question is flagged as a component (and not already in a component context), it attaches component details from create_components. For nested groups, the function recursively processes sub-questions using the generated observation ID as a parent identifier.
+    
+    Args:
+        questionnaire: A dictionary representing the questionnaire structure with a "questions" key.
+        responses: A mapping of responses corresponding to the questionnaire items.
+        parent_id: Optional identifier for the parent observation to link nested questions. Defaults to None.
+        is_component: Boolean flag indicating if the current context is processing component questions. Defaults to False.
+    
+    Returns:
+        A list of dictionaries representing parts of the constructed observation specification.
+    """
     constructed_observation_mapping = []
     for question in questionnaire.get("questions", []):
         if question["type"] == "group":
@@ -1754,10 +1837,28 @@ def convert_to_observation_spec(
 
 
 def null_or_empty(value):
+    """
+    Checks if the given value is None or an empty string.
+    
+    Returns True if the value is either None or an empty string, and False otherwise.
+    """
     return value is None or value == ""
 
 
 def migrate_daily_rounds(apps, schema_editor):
+    """
+    Migrates daily rounds into structured questionnaire responses and observations.
+    
+    This function processes daily round records by first temporarily disabling
+    automatic timestamp updates on key models and ensuring that all required
+    questionnaire templates exist. It associates newly created questionnaires with
+    root organizations and iterates over daily rounds in paginated batches. For
+    each record, it updates encounter priorities based on patient category, compiles
+    responses by mapping various daily round fields to questionnaire items, and then
+    converts these responses into observation specifications. Finally, the function
+    bulk-creates the observation records and re-enables automatic timestamp updates.
+    Exceptions encountered during observation creation are logged and propagated.
+    """
     from care.facility.utils import disable_auto_time
     from care.emr.models import (
         Questionnaire,
@@ -2548,6 +2649,13 @@ def migrate_daily_rounds(apps, schema_editor):
 
 
 def reverse_migrate_daily_rounds(apps, schema_editor):
+    """
+    Reverse daily rounds migration by deleting questionnaires & observations.
+    
+    Deletes entries in the Questionnaire and Observation models that have a
+    migration identifier matching the current migration, reverting the changes
+    applied during the migration.
+    """
     Questionnaire = apps.get_model("emr", "Questionnaire")
     Observation = apps.get_model("emr", "Observation")
     Questionnaire.objects.filter(meta__migration_id=MIGRATION_ID).delete()

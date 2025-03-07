@@ -226,6 +226,12 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
     migrated_emr_encounter_id = models.BigIntegerField(null=True, blank=True)
 
     def get_related_consultation(self):
+        """
+        Return the consultation instance.
+        
+        This method returns the current instance, providing a uniform interface to obtain
+        the related consultation.
+        """
         return self
 
     CSV_MAPPING = {

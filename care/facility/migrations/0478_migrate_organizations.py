@@ -10,6 +10,15 @@ COUNTRY = "India"
 
 
 def migrate_organizations(apps, schema_editor):
+    """
+    Migrate hierarchical government organization data into the Organization model.
+    
+    Retrieves the State, District, LocalBody, and Ward models from the app registry and
+    creates corresponding organization records for government entities. For each state,
+    a state-level organization is created, under which district, local body (with type
+    classification), and ward organizations (with ward number metadata) are established.
+    Duplicate entries are avoided using get_or_create.
+    """
     from care.emr.models import Organization
 
     State = apps.get_model("users", "State")
@@ -143,6 +152,17 @@ def migrate_organizations(apps, schema_editor):
 
 
 def reverse_migrate_organizations(apps, schema_editor):
+    """
+    Reverse organization migration by deleting created entries.
+    
+    Executes a SQL DELETE on the 'emr_organization' table to remove all records
+    whose metadata's migration_id matches the specific migration identifier.
+    This operation effectively reverses the data changes applied during the
+    migration.
+    
+    Note:
+        The `apps` parameter is required by Django migrations but is unused here.
+    """
     logger.debug("Reversing Migration Organization")
     schema_editor.execute(
         "DELETE FROM emr_organization WHERE meta->>'migration_id' = %s",

@@ -12,6 +12,15 @@ MIGRATION_ID = 158445695210
 
 
 def migrate_symptoms(apps, schema_editor):
+    """
+    Migrate symptom data to Condition records.
+    
+    Retrieves EncounterSymptom records with valid migrated encounter IDs and maps each to a
+    Condition record by translating symptom types to SNOMED codes and clinical impression statuses
+    to corresponding clinical and verification statuses. Processes records in batches of 3000, skipping
+    entries linked to deleted consultations or patients, and temporarily disables automatic timestamping
+    for the Condition model during migration.
+    """
     from care.emr.models import Condition
     from care.facility.utils import disable_auto_time
     from care.emr.resources.condition.spec import (
@@ -155,6 +164,12 @@ def migrate_symptoms(apps, schema_editor):
 
 
 def reverse_migrate_symptoms(apps, schema_editor):
+    """
+    Reverses the symptom migration by deleting Condition records created during the migration.
+    
+    This function retrieves the Condition model using the Django apps registry and deletes all
+    records whose metadata indicates they were generated during the forward migration.
+    """
     Condition = apps.get_model("emr", "Condition")
     Condition.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 

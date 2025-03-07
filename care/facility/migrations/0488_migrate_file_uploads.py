@@ -11,6 +11,19 @@ MIGRATION_ID = 158445695212
 
 
 def filter_id(id):
+    """
+    Convert an identifier to a dictionary with a UUID or integer value.
+    
+    This function first attempts to convert the provided id to a UUID and returns it under the
+    'external_id' key. If that conversion fails, it then attempts to convert the id to an integer,
+    returning it under the 'id' key. If both conversions fail, an empty dictionary is returned.
+    
+    Parameters:
+        id: The identifier to convert, typically a string representing a UUID or a numeric value.
+        
+    Returns:
+        A dictionary containing the converted identifier, or an empty dictionary if conversion fails.
+    """
     try:
         return {"external_id": uuid.UUID(id)}
     except ValueError:
@@ -21,6 +34,13 @@ def filter_id(id):
 
 
 def is_valid_uuid(val):
+    """
+    Checks if the given value is a valid UUID.
+    
+    This function converts the input to a string and attempts to create a UUID object
+    from it. It returns True if the conversion is successful, and False if a ValueError
+    is raised during the conversion.
+    """
     try:
         uuid.UUID(str(val))
         return True
@@ -29,6 +49,17 @@ def is_valid_uuid(val):
 
 
 def migrate_file_uploads(apps, schema_editor):
+    """
+    Migrates legacy file uploads to the new FileUpload model.
+    
+    Processes legacy file uploads in batches by retrieving records from the old model,
+    determining each file's category and type based on its file_type, and associating it
+    with the corresponding patient or consultation record. File names are sanitized by
+    replacing banned characters before new records are bulk-created in the new model.
+    Auto timestamping is temporarily disabled during this migration to preserve
+    original timestamps, and records lacking valid associations or containing invalid
+    identifiers are skipped.
+    """
     from care.emr.models import FileUpload as NewFileUpload
     from care.facility.utils import disable_auto_time
 
@@ -124,6 +155,12 @@ def migrate_file_uploads(apps, schema_editor):
 
 
 def reverse_migrate_file_uploads(apps, schema_editor):
+    """
+    Reverses file uploads migration.
+    
+    Deletes FileUpload records created during the migration by filtering for entries 
+    with a metadata field containing the migration ID.
+    """
     NewFileUpload = apps.get_model("emr", "FileUpload")
     NewFileUpload.objects.filter(meta__contains={"migration_id": MIGRATION_ID}).delete()
 

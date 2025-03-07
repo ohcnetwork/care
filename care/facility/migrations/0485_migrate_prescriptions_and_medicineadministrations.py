@@ -227,6 +227,18 @@ FREQUENCY_MAP = {
 
 def parse_dosage_str(dosage_str):
     # Match patterns like "1mg", "2.2mg", "1 mg"
+    """
+    Parse a dosage string into a structured dictionary.
+    
+    The input should contain a numeric value immediately followed by a dosage unit 
+    (e.g., "1mg", "2.2 mg"). The function extracts the numeric value and normalizes the
+    unit to lowercase. If the string does not match the expected format or the unit is 
+    not supported (as defined in DOSAGE_UNITS_MAP), a ValueError is raised.
+    
+    Returns:
+        dict: A dictionary with "value" (float) for the dosage amount and "unit" for the 
+        corresponding unit mapping from DOSAGE_UNITS_MAP.
+    """
     pattern = r"^(\d+(?:\.\d+)?)\s*([a-zA-Z\(\)]+)$"
     match = re.match(pattern, dosage_str)
 
@@ -246,6 +258,14 @@ def parse_dosage_str(dosage_str):
 
 
 def get_medication_request_medication(prescription):
+    """
+    Retrieves medication details from a prescription.
+    
+    Determines the medication name by checking if the prescription has a current
+    medicine attribute. If available, its name is used; otherwise, a legacy field is
+    used. Returns a dictionary containing the system URL and the medication name for
+    both the code and display.
+    """
     medicine = (
         prescription.medicine.name
         if prescription.medicine
@@ -259,6 +279,17 @@ def get_medication_request_medication(prescription):
 
 
 def get_medication_request_category(prescription):
+    """
+    Determine the medication request category based on the prescription details.
+    
+    Returns "discharge" if the prescription type is "DISCHARGE". If not,
+    returns "inpatient" when the consultation suggestion is "A" or "outpatient"
+    when the suggestion is "OP". If none of these conditions are met, returns None.
+    
+    Args:
+        prescription: An object with a 'prescription_type' attribute and a nested
+                      'consultation' attribute that includes a 'suggestion' field.
+    """
     if prescription.prescription_type == "DISCHARGE":
         return "discharge"
     if prescription.consultation.suggestion == "A":
@@ -268,6 +299,21 @@ def get_medication_request_category(prescription):
 
 
 def get_dosage_instruction_timing(prescription):
+    """
+    Returns timing instructions for a prescription's dosage.
+    
+    If the prescription's dosage type is "PRN", no timing instructions apply and None is returned.
+    When the prescription's frequency is present in the FREQUENCY_MAP, its corresponding timing
+    template is used. If the prescription specifies a duration in days, the timing's repeat section
+    is updated with a bounds_duration reflecting that period.
+    
+    Args:
+        prescription: An object representing a prescription with attributes 'dosage_type',
+                      'frequency', and optionally 'days'.
+    
+    Returns:
+        A dictionary of timing instructions or None if no timing is applicable.
+    """
     if prescription.dosage_type == "PRN":
         return None
     if prescription.frequency in FREQUENCY_MAP:
@@ -281,6 +327,22 @@ def get_dosage_instruction_timing(prescription):
 
 
 def migrate_medication_request(MedicationRequest, prescription):
+    """
+    Migrates a prescription into a MedicationRequest record.
+    
+    Converts a prescription into a standardized MedicationRequest by mapping its
+    medication, dosage instructions, route, priority, and status, while incorporating
+    migration metadata. For titrated prescriptions, a dose range is computed; for PRN
+    prescriptions, as-needed instructions and limits are set; and discontinued
+    prescriptions have their status and metadata updated accordingly.
+    
+    Parameters:
+        MedicationRequest: The model used to create and store the MedicationRequest.
+        prescription: The source prescription object containing data to be migrated.
+    
+    Returns:
+        The newly created MedicationRequest instance.
+    """
     meta = {
         **prescription.meta,
         "migration_id": MIGRATION_ID,
@@ -379,6 +441,22 @@ def migrate_medication_request(MedicationRequest, prescription):
 def _get_administration_objects(
     MedicationAdministration, prescription, medication_request
 ):
+    """
+    Generates a list of medication administration objects from a prescription.
+    
+    Iterates over all administration records in the prescription, creating MedicationAdministration
+    objects using the provided dosage instructions from the medication_request. Each administration's
+    dosage is parsed with parse_dosage_str, falling back to the raw dosage text on failure. If an
+    administration is archived, its status is set to "entered-in-error" and archival metadata is added.
+    
+    Parameters:
+        MedicationAdministration: The class used to instantiate medication administration objects.
+        prescription: An object containing administration records.
+        medication_request: An object providing dosage instructions and associated metadata.
+    
+    Returns:
+        List of MedicationAdministration objects.
+    """
     objects = []
     for administration in prescription.administrations.all():
         status = "completed"
@@ -421,6 +499,16 @@ def _get_administration_objects(
 
 
 def migrate_prescriptions_and_administrations(apps, schema_editor):
+    """
+    Migrates prescriptions and associated medication administrations.
+    
+    This function processes prescriptions in batches of 1000, targeting those that
+    have not yet been migrated (i.e. without a migration ID in their metadata). For
+    each prescription, it creates a corresponding medication request and generates
+    associated administration records in bulk. Finally, it updates each processed
+    prescription’s metadata with a unique migration ID. Automatic timestamp
+    updates are disabled during the migration to prevent unintended modifications.
+    """
     from care.facility.utils import disable_auto_time
     from care.emr.models.medication_request import MedicationRequest
     from care.emr.models.medication_administration import MedicationAdministration
@@ -469,6 +557,12 @@ def migrate_prescriptions_and_administrations(apps, schema_editor):
 
 
 def reverse_migrate_prescriptions_and_administrations(apps, schema_editor):
+    """
+    Reverse the migration of prescriptions and medication administrations.
+    
+    Deletes MedicationRequest records associated with the migration ID and clears the migration metadata in
+    Prescription records by resetting the migration identifier via a JSON update.
+    """
     logger.debug("Reversing Migration of Prescriptions")
     MedicationRequest = apps.get_model("emr", "MedicationRequest")
     MedicationRequest.objects.filter(meta__migration_id=MIGRATION_ID).delete()

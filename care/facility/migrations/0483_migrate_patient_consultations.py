@@ -47,6 +47,25 @@ suggestion_to_class_map = {
 
 
 def procedure_to_text(procedure):
+    """
+    Converts a procedure dictionary into a formatted text string.
+    
+    This function extracts the main procedure description from the input dictionary and
+    appends additional details such as repetition frequency, scheduled time, and any notes.
+    If the dictionary lacks a "procedure" key, the function returns None.
+    
+    Args:
+        procedure (dict): A dictionary containing procedure details. Expected keys include:
+            "procedure" (str): The primary procedure description.
+            "repetitive" (bool, optional): Indicates if the procedure is repeated.
+            "frequency" (str, optional): The frequency to append if the procedure is repetitive.
+            "time" (str, optional): The time of the procedure, where "T" is replaced by a space.
+            "notes" (str, optional): Additional notes about the procedure.
+    
+    Returns:
+        str or None: A formatted string combining procedure information, or None if no
+        procedure description is provided.
+    """
     if not procedure.get("procedure"):
         return None
     text = procedure["procedure"]
@@ -60,6 +79,14 @@ def procedure_to_text(procedure):
 
 
 def investigation_to_text(investigation):
+    """
+    Converts investigation data to a formatted text string.
+    
+    Formats an investigation record by joining its 'type' values with commas and, if applicable,
+    appending frequency information (when the investigation is repetitive and a 'frequency' is provided),
+    the time (with any 'T' replaced by a space), and additional notes on a new line.
+    Returns None if the investigation lacks a 'type' key.
+    """
     if not investigation.get("type"):
         return None
     text = ", ".join(investigation["type"])
@@ -73,6 +100,19 @@ def investigation_to_text(investigation):
 
 
 def migrate_consultations(apps, schema_editor):
+    """
+    Migrate patient consultations to the new EMR schema.
+    
+    Processes unmigrated PatientConsultation records by creating corresponding Encounter,
+    QuestionnaireResponse, and Observation entries based on consultation details. This
+    function builds a dedicated consultation questionnaire (with associated tags and
+    organization links), updates facility location statuses based on bed occupancy, and
+    handles related PatientRegistration records for antenatal observations. Records are
+    processed in batches using pagination to efficiently migrate large datasets.
+    
+    Note:
+        Intended for use within Django's migration framework.
+    """
     from care.facility.utils import disable_auto_time
     from care.emr.models import (
         Encounter,
@@ -806,6 +846,12 @@ def migrate_consultations(apps, schema_editor):
 
 
 def reverse_migrate_consultations(apps, schema_editor):
+    """
+    Reverses the patient consultations migration.
+    
+    Clears the migrated EMR encounter ID on all patient consultation records and deletes any
+    encounter, questionnaire, and observation records associated with the migration.
+    """
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     Encounter = apps.get_model("emr", "Encounter")
     Questionnaire = apps.get_model("emr", "Questionnaire")

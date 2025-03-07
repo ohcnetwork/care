@@ -9,6 +9,19 @@ MIGRATION_ID = 158445695209
 
 
 def migrate_assets(apps, schema_editor):
+    """
+    Migrates asset records to new EMR device entries along with related history logs.
+    
+    This function retrieves Asset objects that have not yet been migrated and processes them in batches.
+    For each asset, it creates a corresponding Device record populated with asset details including vendor,
+    support, and manufacturing information. It also builds associated history logs:
+    - Encounter history from related consultation bed assets.
+    - Service history, including edit details.
+    - Location history based on asset transactions.
+    
+    Finally, it updates each asset with the new device identifier, ensuring that automatic timestamp
+    updates are temporarily disabled during the migration.
+    """
     from care.emr.models import (
         Device,
         DeviceEncounterHistory,
@@ -218,6 +231,13 @@ def migrate_assets(apps, schema_editor):
 
 
 def reverse_migrate_assets(apps, schema_editor):
+    """
+    Reverse asset migration by clearing migration identifiers and deleting created device records.
+    
+    This function rolls back the asset-to-device migration by resetting the migrated device
+    reference for all Asset records and removing associated DeviceServiceHistory and Device
+    entries that were tagged with the migration ID.
+    """
     DeviceServiceHistory = apps.get_model("emr", "DeviceServiceHistory")
     Device = apps.get_model("emr", "Device")
     Asset = apps.get_model("facility", "Asset")

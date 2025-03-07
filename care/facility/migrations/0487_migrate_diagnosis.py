@@ -13,10 +13,28 @@ MIGRATION_ID = 158445695211
 
 
 def load_diagnosis_map():
+    """
+    Loads the diagnosis mapping.
+    
+    This placeholder function is intended for future implementation to load and process a
+    mapping of diagnosis codes (e.g., converting ICD-11 codes to ICD-10) for the migration
+    process.
+    """
     pass
 
 
 def migrate_diagnosis(apps, schema_editor):
+    """
+    Migrate consultation diagnosis records to new Condition objects.
+    
+    This function migrates diagnosis data from ConsultationDiagnosis records into the Condition model.
+    It loads an ICD-11 to ICD-10 mapping from a JSON file and translates old verification statuses to
+    their new values. Records linked to migrated encounters are processed in batches via a paginator;
+    records with deleted consultations or patients are skipped. For each valid diagnosis, a new
+    Condition object is created with updated diagnosis code details, status mappings, and migration
+    metadata, and then bulk saved. Automatic timestamp management is temporarily disabled during the
+    migration.
+    """
     from care.emr.resources.condition.spec import VerificationStatusChoices
     from care.facility.models.icd11_diagnosis import ConditionVerificationStatus
     from care.emr.models import Condition
@@ -102,6 +120,13 @@ def migrate_diagnosis(apps, schema_editor):
 
 
 def reverse_migrate_diagnosis(apps, schema_editor):
+    """
+    Reverses the diagnosis migration by deleting all Condition records created during it.
+    
+    This function removes Condition objects from the database by filtering on the
+    migration identifier stored in their meta field. It is used during rollback
+    operations to undo the changes made in the diagnosis migration.
+    """
     Condition = apps.get_model("emr", "Condition")
     Condition.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 

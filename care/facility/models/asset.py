@@ -186,6 +186,20 @@ class Asset(BaseModel):
 
     @staticmethod
     def has_write_permission(request):
+        """
+        Checks if the user associated with the request has write access.
+        
+        Evaluates user attributes to determine write permission. The function returns False if the user
+        is linked to an asset or if the user type is one of the read-only types. Otherwise, it grants
+        write permission if the user is a superuser or if the user is verified and meets a minimum
+        staff-level user type.
+            
+        Args:
+            request: The HTTP request object containing the user attribute.
+            
+        Returns:
+            bool: True if the user is allowed write operations, False otherwise.
+        """
         if request.user.asset or request.user.user_type in User.READ_ONLY_TYPES:
             return False
         return request.user.is_superuser or (
@@ -194,6 +208,17 @@ class Asset(BaseModel):
         )
 
     def has_object_write_permission(self, request):
+        """
+        Checks if the user has write permission for this object.
+        
+        Delegates to the general write permission method.
+        
+        Args:
+            request: The HTTP request object containing the user's credentials.
+        
+        Returns:
+            bool: True if write permission is granted, otherwise False.
+        """
         return self.has_write_permission(request)
 
     @staticmethod

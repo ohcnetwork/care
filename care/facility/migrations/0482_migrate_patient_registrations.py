@@ -86,6 +86,23 @@ disease_to_condition_map = {
 
 
 def _get_org(Organization, obj):
+    """
+    Retrieves the most specific organization for the given location data.
+    
+    This function queries the Organization model using hierarchical location details provided by
+    an object with optional attributes (state, district, local_body, and ward). It applies filters
+    based on each attribute's name and associated level criteria—selecting a state-level record first,
+    then refining with district, local body, and finally ward details. The function returns the
+    first matching record found in the order: ward > local body > district > state, or None if no match exists.
+    
+    Args:
+        Organization: The model class representing the organizational hierarchy.
+        obj: An object with optional geographical attributes (state, district, local_body, ward),
+             where each attribute is expected to have a 'name' property.
+    
+    Returns:
+        The Organization instance corresponding to the most specific matching location, or None.
+    """
     state = None
     district = None
     local_body = None
@@ -126,6 +143,17 @@ def _get_org(Organization, obj):
 
 
 def migrate_patient_registrations(apps, schema_editor):
+    """
+    Migrates patient registrations to the new Patient model.
+    
+    Disables automatic timestamp updates for multiple models to ensure data consistency
+    during migration. Processes unmigrated PatientRegistration records in batches to
+    create corresponding Patient entries with mapped fields (e.g., name, gender, blood
+    group, and organization). Also sets up a meta information Questionnaire (and associates
+    it with root organizations if newly created), records meta responses, creates note threads
+    for health information and patient identifiers, and bulk-creates chronic condition entries.
+    Finally, updates the original PatientRegistration records with the new patient IDs.
+    """
     from care.facility.utils import disable_auto_time
     from care.emr.models import (
         Organization,
@@ -441,6 +469,13 @@ def migrate_patient_registrations(apps, schema_editor):
 
 
 def reverse_migrate_patient_registrations(apps, schema_editor):
+    """
+    Reverses the patient registration migration.
+    
+    Resets the migrated EMR patient IDs on all PatientRegistration records and deletes
+    any Questionnaire and Patient records associated with the migration, identified by
+    the migration ID.
+    """
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
     Patient = apps.get_model("emr", "Patient")
     Questionnaire = apps.get_model("emr", "Questionnaire")

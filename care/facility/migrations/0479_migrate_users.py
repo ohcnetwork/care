@@ -34,12 +34,33 @@ USER_TYPE_TO_ROLE = {
 
 
 def get_role_for_user_type(user_type):
+    """
+    Retrieves the role ID for a given user type.
+    
+    This function uses a predefined mapping to translate the provided user type into a role
+    name and then queries the RoleModel to find a matching role. It returns the role's ID if found;
+    otherwise, it returns None.
+    
+    Args:
+        user_type: An identifier representing the type of user.
+        
+    Returns:
+        The role ID corresponding to the given user type, or None if no matching role exists.
+    """
     if role_name := USER_TYPE_TO_ROLE.get(user_type):
         if role := RoleModel.objects.filter(name=role_name).first():
             return role.id
 
 
 def _get_org(obj):
+    """
+    Retrieve the most specific organization from the object's location attributes.
+    
+    This function checks the object's state, district, local body, and ward in order to query the Organization model. It returns the organization corresponding to the ward if available; if not, it falls back to the local body, then district, and finally state. If no matching organization is found, it returns None.
+    
+    Args:
+        obj: An object that may have 'state', 'district', 'local_body', and 'ward' attributes with a 'name' property.
+    """
     state = None
     district = None
     local_body = None
@@ -80,6 +101,20 @@ def _get_org(obj):
 
 
 def migrate_users(apps, schema_editor):
+    """
+    Migrate users by updating geo organization associations and role assignments.
+    
+    This function updates user records by determining their geographic organization using
+    location attributes (via the _get_org utility) and assigns role mappings based on the
+    users' legacy user type. In non-testing environments, it first synchronizes permissions
+    and roles. It then creates or retrieves role-based organizations as needed, updates
+    users with their geographic organization, and performs bulk creation of OrganizationUser
+    records to register role assignments.
+     
+    Args:
+        apps: Django applications registry for retrieving models.
+        schema_editor: Database schema editor used during migrations.
+    """
     User = apps.get_model("users", "User")
     logger.debug("Migrating Users")
     if not settings.TESTING:
@@ -194,6 +229,13 @@ def migrate_users(apps, schema_editor):
 
 
 def reverse_migrate_users(apps, schema_editor):
+    """
+    Reverses the user migration.
+    
+    Clears the geo_organization field for affected users and removes organizations and
+    organization-user mappings created under the migration. This rollback restores the
+    state prior to the migration.
+    """
     User = apps.get_model("users", "User")
     User.objects.filter(geo_organization__meta__migration_id=MIGRATION_ID).update(
         geo_organization=None

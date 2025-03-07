@@ -40,6 +40,21 @@ code_status_map = {
 
 
 def get_consent_category(patient_consent):
+    """
+    Return the consent category for a patient consent record.
+    
+    If the consent type indicates a patient code status (i.e. type equals 2), the
+    function returns a category based on the patient code status, defaulting to
+    "unknown_code_status" if no mapping exists. For other consent types, it retrieves
+    the category from a different mapping, defaulting to "unknown".
+      
+    Args:
+        patient_consent: An object with 'type' and 'patient_code_status' attributes used
+            to determine the appropriate consent category.
+      
+    Returns:
+        A string representing the consent category.
+    """
     if patient_consent.type == 2:
         return code_status_map.get(
             patient_consent.patient_code_status, "unknown_code_status"
@@ -48,6 +63,11 @@ def get_consent_category(patient_consent):
 
 
 def format_note(patient_consent):
+    """
+    Generate a formatted note detailing archival information for a patient consent.
+    
+    This function constructs a note string that includes the username of the person who archived the consent record. If an archival date is present, it appends the date formatted as 'dd/mm/YYYY HH:MM'.
+    """
     note = f"Archived by: {patient_consent.archived_by.username}\n"
     if patient_consent.archived_date:
         note += f"Archived on: {patient_consent.archived_date.strftime('%d/%m/%Y %H:%M')}\n"
@@ -55,6 +75,14 @@ def format_note(patient_consent):
 
 
 def migrate_consent_records(apps, schema_editor):
+    """
+    Migrates PatientConsent records to the Consent model.
+    
+    Processes PatientConsent entries in batches and creates corresponding Consent
+    records with mapped fields such as encounter ID, status, category, date, creator, and
+    associated metadata. Automatic timestamping is disabled on the Consent model during
+    the migration to optimize bulk creation and re-enabled once processing is complete.
+    """
     from care.emr.models.consent import Consent
     from care.facility.utils import disable_auto_time
 
@@ -89,6 +117,13 @@ def migrate_consent_records(apps, schema_editor):
 
 
 def reverse_migrate_consent_records(apps, schema_editor):
+    """
+    Reverses the consent records migration.
+    
+    Deletes Consent records created during the migration process by filtering on the
+    migration identifier (MIGRATION_ID). This rollback operation removes only those
+    entries that were added during the forward migration.
+    """
     Consent = apps.get_model("emr", "Consent")
     Consent.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
