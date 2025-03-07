@@ -93,6 +93,7 @@ class FileUploadViewSet(
     pydantic_update_model = FileUploadUpdateSpec
     pydantic_read_model = FileUploadListSpec
     filterset_class = FileUploadFilter
+    filter_backends = [filters.DjangoFilterBackend]
 
     def authorize_create(self, instance):
         file_authorizer(
