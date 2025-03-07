@@ -4,10 +4,10 @@ from typing import Any
 
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
 
-from care.emr.fhir.schema.base import Coding
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,

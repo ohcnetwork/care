@@ -8,7 +8,7 @@ import phonenumbers
 from pydantic import BaseModel, model_validator
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
-from care.emr.fhir.schema.base import Coding
+from care.emr.resources.common.coding import Coding
 
 
 class EMRResource(BaseModel):

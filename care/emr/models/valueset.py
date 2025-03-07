@@ -2,8 +2,8 @@ from django.core.cache import cache
 from django.db import models, transaction
 
 from care.emr.fhir.resources.valueset import ValueSetResource
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.models import EMRBaseModel
+from care.emr.resources.common.valueset import ValueSetCompose
 
 
 class ValueSet(EMRBaseModel):
@@ -20,12 +20,12 @@ class ValueSet(EMRBaseModel):
         if type(self.compose) is dict:
             compose = ValueSetCompose(**self.compose)
         for include in compose.include:
-            system = include.system.root
+            system = include.system
             if system not in systems:
                 systems[system] = {"include": []}
             systems[system]["include"].append(include.model_dump(exclude_defaults=True))
         for exclude in compose.exclude:
-            system = exclude.system.root
+            system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
@@ -53,16 +53,20 @@ class ValueSet(EMRBaseModel):
 
 class UserValueSetPreference(EMRBaseModel):
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
-    favorites = models.JSONField(default=list, blank=True)
-    recent_views = models.JSONField(default=list, blank=True)
+    valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
+    favorite_codes = models.JSONField(default=list)
+    recent_codes = models.JSONField(default=list)
 
-    CACHE_KEY_PREFIX = "user_valueset_prefs:"
+    class Meta:
+        unique_together = ("user", "valueset")
+
+    CACHE_KEY_PREFIX = "user_valueset_code_prefs:"
     MAX_RECENT_VIEW = 20
     MAX_FAVORITES = 50
     CACHE_TIMEOUT = 86400  # 24 hours
 
     def _get_cache_key(self, field_name):
-        return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{field_name}"
+        return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{self.valueset.external_id}:{field_name}"
 
     def _get_cached_data(self, field_name):
         cache_key = self._get_cache_key(field_name)
@@ -76,44 +80,37 @@ class UserValueSetPreference(EMRBaseModel):
             self.save(update_fields=[field_name])
             cache.set(self._get_cache_key(field_name), data, self.CACHE_TIMEOUT)
 
-    def add_favorite(self, valueset_id):
-        valueset_id = str(valueset_id)
-        favorites = self._get_cached_data("favorites")
+    def add_favorite(self, code_obj):
+        favorites = self._get_cached_data("favorite_codes")
 
-        if valueset_id in favorites:
-            return
+        if code_obj not in favorites:
+            favorites.insert(0, code_obj)
+            self._save_to_cache("favorite_codes", favorites)
 
-        favorites.insert(0, valueset_id)
-        self._save_to_cache("favorites", favorites)
-
-    def remove_favorite(self, valueset_id):
-        valueset_id = str(valueset_id)
-
-        favorites = self._get_cached_data("favorites")
-
-        if valueset_id in favorites:
-            favorites.remove(valueset_id)
-            self._save_to_cache("favorites", favorites)
-
-    def add_recent_view(self, valueset_id):
-        valueset_id = str(valueset_id)
-
-        recent_views = self._get_cached_data("recent_views")
-
-        if valueset_id in recent_views:
-            recent_views.remove(valueset_id)
-
-        recent_views.insert(0, valueset_id)
-        self._save_to_cache("recent_views", recent_views[: self.MAX_RECENT_VIEW])
+    def remove_favorite(self, code_value):
+        favorites = self._get_cached_data("favorite_codes")
+        favorites = [
+            c for c in favorites if c["code"] != code_value
+        ]  # Remove matching code
+        self._save_to_cache("favorite_codes", favorites)
 
     def get_favorites(self):
-        return self._get_cached_data("favorites")
-
-    def get_recent_views(self):
-        return self._get_cached_data("recent_views")
-
-    def clear_recent_views(self):
-        self._save_to_cache("recent_views", [])
+        return self._get_cached_data("favorite_codes")
 
     def clear_favorites(self):
-        self._save_to_cache("favorites", [])
+        self._save_to_cache("favorite_codes", [])
+
+    def add_recent_view(self, code_obj):
+        recent_views = self._get_cached_data("recent_codes")
+
+        recent_views = [c for c in recent_views if c["code"] != code_obj["code"]]
+        recent_views.insert(0, code_obj)  # Add to the front
+        recent_views = recent_views[: self.MAX_RECENT_VIEW]  # Keep last N
+
+        self._save_to_cache("recent_codes", recent_views)
+
+    def get_recent_views(self):
+        return self._get_cached_data("recent_codes")
+
+    def clear_recent_views(self):
+        self._save_to_cache("recent_codes", [])

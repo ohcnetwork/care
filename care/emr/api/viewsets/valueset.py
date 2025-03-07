@@ -1,4 +1,3 @@
-from django.db import transaction
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -8,9 +7,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.fhir.resources.code_concept import CodeConceptResource
-from care.emr.fhir.schema.base import Coding
+from care.emr.fhir.resources.code_concept import CodeConceptResource, MinimalCodeConcept
 from care.emr.models.valueset import UserValueSetPreference, ValueSet
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
 
 
@@ -98,73 +97,77 @@ class ValueSetViewSet(EMRModelViewSet):
         )
         return Response(result)
 
-    def _get_or_create_user_preferences(self, user) -> UserValueSetPreference:
-        try:
-            return UserValueSetPreference.objects.get(user=user)
-        except UserValueSetPreference.DoesNotExist:
-            with transaction.atomic():
-                return UserValueSetPreference.objects.get_or_create(
-                    user=user, defaults={"favorites": [], "recent_views": []}
-                )[0]
+    def _get_or_create_user_preferences(self, user, valueset) -> UserValueSetPreference:
+        return UserValueSetPreference.objects.get_or_create(
+            user=user,
+            valueset=valueset,
+            defaults={"favorite_codes": [], "recent_codes": []},
+        )[0]
 
+    @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def mark_favorite(self, request, *args, **kwargs):
         valueset = self.get_object()
-        preferences = self._get_or_create_user_preferences(request.user)
+        code_obj = MinimalCodeConcept(**request.data)
+
+        preferences = self._get_or_create_user_preferences(request.user, valueset)
+
         if len(preferences.get_favorites()) >= preferences.MAX_FAVORITES:
             raise ValidationError("Maximum number of favorites reached (50)")
 
-        preferences.add_favorite(valueset.external_id)
-        return Response({"message": "Marked favorite"})
+        preferences.add_favorite(code_obj.model_dump())
+        return Response({"message": f"Code {code_obj.code} marked as favorite"})
 
     @action(detail=True, methods=["POST"])
     def remove_favorite(self, request, *args, **kwargs):
         valueset = self.get_object()
-        preferences = self._get_or_create_user_preferences(request.user)
-        preferences.remove_favorite(valueset.external_id)
-        return Response({"message": "Removed from favorite"})
+        code_obj = MinimalCodeConcept(**request.data)
 
-    @action(detail=False, methods=["POST"])
-    def clear_favorites(self, request):
-        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
-        if preferences:
-            preferences.clear_favorites()
-        return Response({"message": "Cleared favorites"})
+        preferences = self._get_or_create_user_preferences(request.user, valueset)
+        preferences.remove_favorite(code_obj.code)
+        return Response({"message": f"Code {code_obj.code} removed from favorites"})
 
-    @action(detail=False, methods=["GET"])
-    def favorites(self, request):
-        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
-        favorite_ids = preferences.get_favorites() if preferences else []
-
-        favorites = ValueSet.objects.filter(external_id__in=favorite_ids)
-
-        results = [
-            ValueSetReadSpec.serialize(favorite).to_json() for favorite in favorites
-        ]
-        return Response({"results": results})
-
-    @action(detail=False, methods=["GET"])
-    def recent_views(self, request):
-        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
-        recent_view_ids = preferences.get_recent_views() if preferences else []
-
-        recent_views = ValueSet.objects.filter(external_id__in=recent_view_ids)
-
-        results = [
-            ValueSetReadSpec.serialize(recent_view).to_json()
-            for recent_view in recent_views
-        ]
-        return Response({"results": results})
-
-    @action(detail=False, methods=["POST"])
-    def clear_recent_views(self, request):
-        preferences = UserValueSetPreference.objects.filter(user=request.user).first()
-        if preferences:
-            preferences.clear_recent_views()
-        return Response({"message": "Cleared recent views"})
-
-    def retrieve(self, request, *args, **kwargs):
+    @action(detail=True, methods=["POST"])
+    def clear_favorites(self, request, *args, **kwargs):
         valueset = self.get_object()
-        preferences = self._get_or_create_user_preferences(request.user)
-        preferences.add_recent_view(valueset.external_id)
-        return super().retrieve(request, *args, **kwargs)
+        preference = UserValueSetPreference.objects.filter(
+            user=request.user, valueset=valueset
+        ).first()
+        if preference:
+            preference.clear_favorites()
+        return Response({"message": "All favorite codes cleared"})
+
+    @action(detail=True, methods=["GET"])
+    def favorites(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        preferences = UserValueSetPreference.objects.filter(
+            user=request.user, valueset=valueset
+        ).first()
+        return Response(preferences.get_favorites() if preferences else [])
+
+    @action(detail=True, methods=["POST"])
+    def add_recent_view(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        code_obj = MinimalCodeConcept(**request.data)
+
+        preferences = self._get_or_create_user_preferences(request.user, valueset)
+        preferences.add_recent_view(code_obj.model_dump())
+        return Response({"message": f"Code {code_obj.code} added to recent views"})
+
+    @action(detail=True, methods=["GET"])
+    def recent_views(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        preferences = UserValueSetPreference.objects.filter(
+            user=request.user, valueset=valueset
+        ).first()
+        return Response(preferences.get_recent_views() if preferences else [])
+
+    @action(detail=True, methods=["POST"])
+    def clear_recent_views(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        preference = UserValueSetPreference.objects.filter(
+            user=request.user, valueset=valueset
+        ).first()
+        if preference:
+            preference.clear_recent_views()
+        return Response({"message": "All recent views cleared"})

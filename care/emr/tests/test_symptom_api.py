@@ -22,6 +22,7 @@ from care.utils.tests.base import CareAPITestBase
 class TestSymptomViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        self.super_user = self.create_super_user()
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
@@ -692,3 +693,26 @@ class TestSymptomViewSet(CareAPITestBase):
         url = self._get_symptom_url(symptom.external_id)
         delete_response = self.client.delete(url, {}, format="json")
         self.assertEqual(delete_response.status_code, 403)
+
+    # def test_upsert(self):
+    #     self.client.force_authenticate(self.super_user)
+    #
+    #     encounter = self.create_encounter(
+    #         patient=self.patient,
+    #         facility=self.facility,
+    #         organization=self.organization,
+    #     )
+    #     symptom_data_dict = self.generate_data_for_symptom(encounter)
+    #
+    #     payload = {"datapoints": [symptom_data_dict, symptom_data_dict]}
+    #
+    #     response = self.client.post(
+    #         reverse(
+    #             "symptom-upsert",
+    #             kwargs={"patient_external_id": self.patient.external_id},
+    #         ),
+    #         payload,
+    #         format="json",
+    #     )
+
+    # print(response.json())
