@@ -87,7 +87,7 @@ def migrate_facilities(apps, schema_editor):
         if not geo_org:
             continue
         facility.geo_organization = geo_org
-        facility.geo_organization_cache = [geo_org.parent_cache, geo_org.id]
+        facility.geo_organization_cache = [*geo_org.parent_cache, geo_org.id]
         bulk_update.append(facility)
     Facility.objects.bulk_update(bulk_update, ["geo_organization", "geo_organization_cache"])
 
