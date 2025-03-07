@@ -112,6 +112,10 @@ class ValueSetViewSet(EMRModelViewSet):
         valueset = self.get_object()
         code_obj = MinimalCodeConcept(**request.data)
 
+        # validate the code
+        if not valueset.lookup(code_obj):
+            raise ValidationError("Invalid value")
+
         preferences = self._get_or_create_user_preferences(request.user, valueset)
 
         if len(preferences.get_favorites()) >= preferences.MAX_FAVORITES:
@@ -150,10 +154,15 @@ class ValueSetViewSet(EMRModelViewSet):
         ).first()
         return Response(preferences.get_favorites() if preferences else [])
 
+    @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def add_recent_view(self, request, *args, **kwargs):
         valueset = self.get_object()
         code_obj = MinimalCodeConcept(**request.data)
+
+        # validate the code
+        if not valueset.lookup(code_obj):
+            raise ValidationError("Invalid value")
 
         preferences = self._get_or_create_user_preferences(request.user, valueset)
         preferences.add_recent_view(code_obj.model_dump())
