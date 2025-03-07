@@ -105,7 +105,7 @@ class UserValueSetPreference(EMRBaseModel):
 
         recent_views = [c for c in recent_views if c["code"] != code_obj["code"]]
         recent_views.insert(0, code_obj)  # Add to the front
-        recent_views = recent_views[: self.MAX_RECENT_VIEW]  # Keep last N
+        recent_views = recent_views[: self.MAX_RECENT_VIEW]
 
         self._save_to_cache("recent_codes", recent_views)
 

@@ -44,6 +44,8 @@ class ValueSetViewSet(EMRModelViewSet):
             "remove_favorite",
             "favorites",
             "recent_views",
+            "add_recent_view",
+            "clear_recent_views",
         ]:
             return True
         # Only superusers have write permission over valuesets
@@ -116,6 +118,9 @@ class ValueSetViewSet(EMRModelViewSet):
             raise ValidationError("Maximum number of favorites reached (50)")
 
         preferences.add_favorite(code_obj.model_dump())
+        preferences.add_recent_view(
+            code_obj.model_dump()
+        )  # Add to recent views as well
         return Response({"message": f"Code {code_obj.code} marked as favorite"})
 
     @action(detail=True, methods=["POST"])
