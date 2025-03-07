@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
 
@@ -61,9 +62,9 @@ class UserValueSetPreference(EMRBaseModel):
         unique_together = ("user", "valueset")
 
     CACHE_KEY_PREFIX = "user_valueset_code_prefs:"
-    MAX_RECENT_VIEW = 20
-    MAX_FAVORITES = 50
-    CACHE_TIMEOUT = 86400  # 24 hours
+    MAX_RECENT_VIEW = settings.VALUESET_MAX_RECENT_VIEWS
+    MAX_FAVORITES = settings.VALUESET_MAX_FAVORITES
+    CACHE_TIMEOUT = settings.VALUESET_PREFERENCE_CACHE_TIMEOUT
 
     def _get_cache_key(self, field_name):
         return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{self.valueset.external_id}:{field_name}"

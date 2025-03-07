@@ -722,3 +722,9 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
+
+VALUESET_MAX_RECENT_VIEWS = env.int("VALUESET_MAX_RECENT_VIEWS", 20)
+VALUESET_MAX_FAVORITES = env.int("VALUESET_MAX_FAVORITES", 50)
+VALUESET_PREFERENCE_CACHE_TIMEOUT = env.int(
+    "VALUESET_PREFERENCE_CACHE_TIMEOUT", 84600
+)  # 24 hours
