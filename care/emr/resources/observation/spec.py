@@ -3,10 +3,10 @@ from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field
 
-from care.emr.fhir.schema.base import CodeableConcept
 from care.emr.models.observation import Observation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.resources.common.codable_concept import CodeableConcept
 from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,

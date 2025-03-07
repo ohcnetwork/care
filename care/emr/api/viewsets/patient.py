@@ -10,7 +10,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.models import Organization, PatientUser
+from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient
 from care.emr.resources.patient.spec import (
     PatientCreateSpec,
@@ -18,6 +18,7 @@ from care.emr.resources.patient.spec import (
     PatientPartialSpec,
     PatientRetrieveSpec,
 )
+from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
@@ -160,3 +161,15 @@ class PatientViewSet(EMRModelViewSet):
             raise ValidationError("User does not exist")
         PatientUser.objects.filter(user=user, patient=patient).delete()
         return Response({})
+
+    @action(detail=True, methods=["GET"])
+    def get_appointments(self, request, *args, **kwargs):
+        appointments = TokenBooking.objects.filter(patient=self.get_object())
+        return Response(
+            {
+                "results": [
+                    TokenBookingReadSpec.serialize(obj).to_json()
+                    for obj in appointments
+                ]
+            }
+        )

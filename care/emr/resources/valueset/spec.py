@@ -3,9 +3,9 @@ from enum import Enum
 from django.core.validators import slug_re
 from pydantic import UUID4, Field, field_validator, model_validator
 
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.models.valueset import ValueSet as ValuesetDatabaseModel
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.valueset import ValueSetCompose
 from care.emr.resources.user.spec import UserSpec
 
 

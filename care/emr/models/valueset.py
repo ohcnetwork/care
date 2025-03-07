@@ -1,8 +1,8 @@
 from django.db import models
 
 from care.emr.fhir.resources.valueset import ValueSetResource
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.models import EMRBaseModel
+from care.emr.resources.common.valueset import ValueSetCompose
 
 
 class ValueSet(EMRBaseModel):
@@ -19,12 +19,12 @@ class ValueSet(EMRBaseModel):
         if type(self.compose) is dict:
             compose = ValueSetCompose(**self.compose)
         for include in compose.include:
-            system = include.system.root
+            system = include.system
             if system not in systems:
                 systems[system] = {"include": []}
             systems[system]["include"].append(include.model_dump(exclude_defaults=True))
         for exclude in compose.exclude:
-            system = exclude.system.root
+            system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
