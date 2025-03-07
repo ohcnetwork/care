@@ -1,6 +1,9 @@
+from contextlib import contextmanager
+
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
+from django_redis import get_redis_connection
 
 from care.emr.fhir.resources.valueset import ValueSetResource
 from care.emr.models import EMRBaseModel
@@ -53,7 +56,7 @@ class ValueSet(EMRBaseModel):
 
 
 class UserValueSetPreference(EMRBaseModel):
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
     valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
     favorite_codes = models.JSONField(default=list)
     recent_codes = models.JSONField(default=list)
@@ -81,37 +84,54 @@ class UserValueSetPreference(EMRBaseModel):
             self.save(update_fields=[field_name])
             cache.set(self._get_cache_key(field_name), data, self.CACHE_TIMEOUT)
 
-    def add_favorite(self, code_obj):
-        favorites = self._get_cached_data("favorite_codes")
+    @contextmanager
+    def locked_field(self, field_name):
+        redis_conn = get_redis_connection("default")
+        lock_key = f"{self._get_cache_key(field_name)}:lock"
+        lock = redis_conn.lock(lock_key, timeout=10)
+        lock.acquire()
+        try:
+            yield
+        finally:
+            lock.release()  # This may raise exception if yield takes more time than timeout
 
-        if code_obj not in favorites:
-            favorites.insert(0, code_obj)
-            self._save_to_cache("favorite_codes", favorites)
+    def add_favorite(self, code_obj):
+        with self.locked_field("favorite_codes"):
+            favorites = self._get_cached_data("favorite_codes")
+            if code_obj not in favorites:
+                favorites.insert(0, code_obj)
+                self._save_to_cache("favorite_codes", favorites)
 
     def remove_favorite(self, code_value):
-        favorites = self._get_cached_data("favorite_codes")
-        favorites = [
-            c for c in favorites if c["code"] != code_value
-        ]  # Remove matching code
-        self._save_to_cache("favorite_codes", favorites)
+        with self.locked_field("favorite_codes"):
+            favorites = self._get_cached_data("favorite_codes")
+            favorites = [c for c in favorites if c["code"] != code_value]
+            self._save_to_cache("favorite_codes", favorites)
 
     def get_favorites(self):
         return self._get_cached_data("favorite_codes")
 
     def clear_favorites(self):
-        self._save_to_cache("favorite_codes", [])
+        with self.locked_field("favorite_codes"):
+            self._save_to_cache("favorite_codes", [])
 
     def add_recent_view(self, code_obj):
-        recent_views = self._get_cached_data("recent_codes")
+        with self.locked_field("recent_codes"):
+            recent_views = self._get_cached_data("recent_codes")
+            recent_views = [c for c in recent_views if c["code"] != code_obj["code"]]
+            recent_views.insert(0, code_obj)  # Add to the front
+            recent_views = recent_views[: self.MAX_RECENT_VIEW]
+            self._save_to_cache("recent_codes", recent_views)
 
-        recent_views = [c for c in recent_views if c["code"] != code_obj["code"]]
-        recent_views.insert(0, code_obj)  # Add to the front
-        recent_views = recent_views[: self.MAX_RECENT_VIEW]
-
-        self._save_to_cache("recent_codes", recent_views)
+    def remove_recent_view(self, code_value):
+        with self.locked_field("recent_codes"):
+            recent_views = self._get_cached_data("recent_codes")
+            recent_views = [c for c in recent_views if c["code"] != code_value]
+            self._save_to_cache("recent_codes", recent_views)
 
     def get_recent_views(self):
         return self._get_cached_data("recent_codes")
 
     def clear_recent_views(self):
-        self._save_to_cache("recent_codes", [])
+        with self.locked_field("recent_codes"):
+            self._save_to_cache("recent_codes", [])

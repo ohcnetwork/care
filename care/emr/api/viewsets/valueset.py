@@ -168,6 +168,16 @@ class ValueSetViewSet(EMRModelViewSet):
         preferences.add_recent_view(code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} added to recent views"})
 
+    @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
+    @action(detail=True, methods=["POST"])
+    def remove_recent_view(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        code_obj = MinimalCodeConcept(**request.data)
+
+        preferences = self._get_or_create_user_preferences(request.user, valueset)
+        preferences.remove_recent_view(code_obj.code)
+        return Response({"message": f"Code {code_obj.code} removed from recent views"})
+
     @action(detail=True, methods=["GET"])
     def recent_views(self, request, *args, **kwargs):
         valueset = self.get_object()
