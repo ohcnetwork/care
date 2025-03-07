@@ -87,8 +87,9 @@ def migrate_facilities(apps, schema_editor):
         if not geo_org:
             continue
         facility.geo_organization = geo_org
+        facility.geo_organization_cache = [geo_org.parent_cache, geo_org.id]
         bulk_update.append(facility)
-    Facility.objects.bulk_update(bulk_update, ["geo_organization"])
+    Facility.objects.bulk_update(bulk_update, ["geo_organization", "geo_organization_cache"])
 
 
 def reverse_migrate_facilities(apps, schema_editor):
@@ -145,7 +146,8 @@ def migrate_facility_users(apps, schema_editor):
 
         if not facility.default_internal_organization:
             facility.default_internal_organization_id = root_org.id
-            facility.save(update_fields=["default_internal_organization_id"])
+            facility.internal_organization_cache = [root_org.id]
+            facility.save(update_fields=["default_internal_organization_id", "internal_organization_cache"])
 
 
 def reverse_migrate_facility_users(apps, schema_editor):
