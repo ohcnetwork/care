@@ -1,5 +1,6 @@
+import datetime
+
 from django.db import transaction
-from django.utils.timezone import now
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -447,6 +448,6 @@ def close_related_location_from_encounter(instance):
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
                 status__in=COMPLETED_CHOICES
             ).update(
-                end_datetime=now(),
+                end_datetime=datetime.datetime.now(tz=datetime.UTC),
                 status=LocationEncounterAvailabilityStatusChoices.completed.value,
             )

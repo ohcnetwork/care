@@ -1,4 +1,5 @@
-from django.utils.timezone import now
+import datetime
+
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -45,7 +46,9 @@ class ConsentViewSet(
         request_data = ConsentVerificationSpec(**request.data)
 
         request_data.verified_by = str(self.request.user.external_id)
-        request_data.verification_date = now().isoformat()
+        request_data.verification_date = datetime.datetime.now(
+            tz=datetime.UTC
+        ).isoformat()
 
         if request_data.verified_by in [
             verification.get("verified_by")

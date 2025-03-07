@@ -1,9 +1,9 @@
+import datetime
 import uuid
 from secrets import choice
 from uuid import uuid4
 
 from django.urls import reverse
-from django.utils.timezone import now
 
 from care.emr.models import Device
 from care.emr.resources.device.spec import (
@@ -688,7 +688,7 @@ class TestDeviceServiceHistoryViewSet(DeviceBaseTest):
 
     def generate_data_for_device_service_history(self, **kwargs):
         data = {
-            "serviced_on": now(),
+            "serviced_on": datetime.datetime.now(tz=datetime.UTC),
             "note": self.fake.text(),
         }
         data.update(**kwargs)
