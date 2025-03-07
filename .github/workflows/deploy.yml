@@ -14,17 +14,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  AWS_DEFAULT_REGION: ap-south-1
-  AWS_DEFAULT_OUTPUT: json
-  ECS_SERVICE_BACKEND: "care-backend"
-  ECS_SERVICE_CELERY: "care-celery"
-  ECS_TASK_BACKEND: "care"
-  ECS_TASK_CELERY: "care-celery"
-  ECS_CLUSTER: "egov"
-  CONTAINER_NAME_BACKEND: "care-backend"
-  CONTAINER_NAME_WORKER: "care-celery-worker"
-  CONTAINER_NAME_CRON: "care-celery-beat"
+# env:
+#   AWS_DEFAULT_REGION: ap-south-1
+#   AWS_DEFAULT_OUTPUT: json
+#   ECS_SERVICE_BACKEND: "care-backend"
+#   ECS_SERVICE_CELERY: "care-celery"
+#   ECS_TASK_BACKEND: "care"
+#   ECS_TASK_CELERY: "care-celery"
+#   ECS_CLUSTER: "egov"
+#   CONTAINER_NAME_BACKEND: "care-backend"
+#   CONTAINER_NAME_WORKER: "care-celery-worker"
+#   CONTAINER_NAME_CRON: "care-celery-beat"
 
 jobs:
   test:
@@ -119,7 +119,6 @@ jobs:
           rm -rf ${{ runner.temp }}/.buildx-cache
           mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
 
-
   merge-manifests:
     needs: build
     name: Merge & Push Manifests
@@ -186,83 +185,84 @@ jobs:
         run: |
           echo "Release ${{ github.sha }} is ready to be deployed to production"
 
-  deploy-staging-egov:
-    needs: merge-manifests
-    if: github.ref == 'refs/heads/develop'
-    name: Deploy to ECS API Egov
-    runs-on: ubuntu-24.04-arm
-    environment:
-      name: Staging-egov
-      url: https://careapi.ohc.network
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-
-      - name: IMAGE Tagging
-        env:
-          ECR_REGISTRY: ghcr.io/${{ github.repository }}
-          IMAGE_TAG: latest-${{ github.run_number }}
-        run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
-
-      - name: Download task definition for Celery Service
-        run: |
-          set -e
-          if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_CELERY }} --query taskDefinition > celery-task-definition.json; then
-            echo "Successfully downloaded Celery task definition."
-          else
-            echo "Failed to download Celery task definition." >&2
-            exit 1
-          fi
-
-      - name: Fill in the new image ID for the worker container
-        id: render-worker
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: celery-task-definition.json
-          container-name: ${{ env.CONTAINER_NAME_WORKER }}
-          image: ${{ env.IMAGE_VALUE }}
-
-      - name: Fill in the new image ID for the cron container
-        id: render-cron
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.render-worker.outputs.task-definition }}
-          container-name: ${{ env.CONTAINER_NAME_CRON }}
-          image: ${{ env.IMAGE_VALUE }}
-
-      - name: Deploy Celery task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.render-cron.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_CELERY }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
-
-      - name: Download task definition for Backend Service
-        run: |
-          set -e
-          if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_BACKEND }} --query taskDefinition > backend-task-definition.json; then
-            echo "Successfully downloaded Backend task definition."
-          else
-            echo "Failed to download Backend task definition." >&2
-            exit 1
-          fi
-      - name: Fill in the new image ID in the Backend task definition
-        id: backend-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: backend-task-definition.json
-          container-name: ${{ env.CONTAINER_NAME_BACKEND }}
-          image: ${{ env.IMAGE_VALUE }}
-
-      - name: Deploy Backend task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_BACKEND }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+#   deploy-staging-egov:
+#     needs: merge-manifests
+#     if: github.ref == 'refs/heads/develop'
+#     name: Deploy to ECS API Egov
+#     runs-on: ubuntu-24.04-arm
+#     environment:
+#       name: Staging-egov
+#       url: https://careapi.ohc.network
+#     steps:
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ env.AWS_DEFAULT_REGION }}
+#
+#       - name: IMAGE Tagging
+#         env:
+#           ECR_REGISTRY: ghcr.io/${{ github.repository }}
+#           IMAGE_TAG: latest-${{ github.run_number }}
+#         run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
+#
+#       - name: Download task definition for Celery Service
+#         run: |
+#           set -e
+#           if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_CELERY }} --query taskDefinition > celery-task-definition.json; then
+#             echo "Successfully downloaded Celery task definition."
+#           else
+#             echo "Failed to download Celery task definition." >&2
+#             exit 1
+#           fi
+#
+#       - name: Fill in the new image ID for the worker container
+#         id: render-worker
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: celery-task-definition.json
+#           container-name: ${{ env.CONTAINER_NAME_WORKER }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Fill in the new image ID for the cron container
+#         id: render-cron
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: ${{ steps.render-worker.outputs.task-definition }}
+#           container-name: ${{ env.CONTAINER_NAME_CRON }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Deploy Celery task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: ${{ steps.render-cron.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE_CELERY }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
+#
+#       - name: Download task definition for Backend Service
+#         run: |
+#           set -e
+#           if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_BACKEND }} --query taskDefinition > backend-task-definition.json; then
+#             echo "Successfully downloaded Backend task definition."
+#           else
+#             echo "Failed to download Backend task definition." >&2
+#             exit 1
+#           fi
+#       - name: Fill in the new image ID in the Backend task definition
+#         id: backend-task-def
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: backend-task-definition.json
+#           container-name: ${{ env.CONTAINER_NAME_BACKEND }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Deploy Backend task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE_BACKEND }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
+#
