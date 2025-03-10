@@ -18,6 +18,7 @@ from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
+from care.utils.time_util import care_now
 
 
 class TestDiagnosisViewSet(CareAPITestBase):
@@ -319,8 +320,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         diagnosis_data_dict = self.generate_data_for_diagnosis(
             encounter,
             onset={
-                "onset_datetime": datetime.datetime.now(tz=datetime.UTC)
-                + datetime.timedelta(seconds=20),
+                "onset_datetime": care_now() + datetime.timedelta(seconds=20),
             },
         )
         response = self.client.post(self.base_url, diagnosis_data_dict, format="json")

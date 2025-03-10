@@ -1,5 +1,3 @@
-import datetime
-
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -17,6 +15,7 @@ from care.emr.resources.consent.spec import (
     ConsentUpdateSpec,
     ConsentVerificationSpec,
 )
+from care.utils.time_util import care_now
 
 
 class ConsentViewSet(
@@ -46,9 +45,7 @@ class ConsentViewSet(
         request_data = ConsentVerificationSpec(**request.data)
 
         request_data.verified_by = str(self.request.user.external_id)
-        request_data.verification_date = datetime.datetime.now(
-            tz=datetime.UTC
-        ).isoformat()
+        request_data.verification_date = care_now().isoformat()
 
         if request_data.verified_by in [
             verification.get("verified_by")

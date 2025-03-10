@@ -25,6 +25,7 @@ from care.emr.resources.scheduling.slot.spec import (
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.lock import Lock
+from care.utils.time_util import care_now
 
 
 class SlotsForDayRequestSpec(BaseModel):
@@ -227,7 +228,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         if (
             TokenBooking.objects.filter(
                 patient=patient,
-                token_slot__start_datetime__gte=datetime.datetime.now(datetime.UTC),
+                token_slot__start_datetime__gte=care_now(),
             )
             .exclude(status__in=CANCELLED_STATUS_CHOICES)
             .count()

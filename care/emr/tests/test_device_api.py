@@ -1,4 +1,3 @@
-import datetime
 import uuid
 from secrets import choice
 from uuid import uuid4
@@ -23,6 +22,7 @@ from care.security.permissions.facility_organization import (
 )
 from care.security.permissions.location import FacilityLocationPermissions
 from care.utils.tests.base import CareAPITestBase
+from care.utils.time_util import care_now
 
 
 class DeviceBaseTest(CareAPITestBase, FacilityLocationMixin):
@@ -688,7 +688,7 @@ class TestDeviceServiceHistoryViewSet(DeviceBaseTest):
 
     def generate_data_for_device_service_history(self, **kwargs):
         data = {
-            "serviced_on": datetime.datetime.now(tz=datetime.UTC),
+            "serviced_on": care_now(),
             "note": self.fake.text(),
         }
         data.update(**kwargs)
