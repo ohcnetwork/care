@@ -39,6 +39,8 @@ class UserScheduleAccess(AuthorizationHandler):
         """
         Check if the user has permission to write schedules in the facility
         """
+        if user == schedule_user:
+            return True
         facility_orgs = FacilityOrganizationUser.objects.filter(
             user=schedule_user, organization__facility=facility
         ).values_list("organization__parent_cache", flat=True)
@@ -54,6 +56,8 @@ class UserScheduleAccess(AuthorizationHandler):
         """
         Check if the user has permission to write schedules in the facility
         """
+        if user == schedule_user:
+            return True
         facility_orgs = FacilityOrganizationUser.objects.filter(
             user=schedule_user, organization__facility=facility
         ).values_list("organization__parent_cache", flat=True)

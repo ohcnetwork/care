@@ -3,7 +3,7 @@ from care.emr.resources.common.valueset import ValueSetCompose, ValueSetInclude
 from care.emr.resources.valueset.spec import ValueSetStatusOptions
 
 CARE_BODY_SITE_VALUESET = CareValueset(
-    "Disease", "system-body-site", ValueSetStatusOptions.active.value
+    "Body Site", "system-body-site", ValueSetStatusOptions.active.value
 )
 
 CARE_BODY_SITE_VALUESET.register_valueset(

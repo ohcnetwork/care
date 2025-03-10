@@ -11,6 +11,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.utils.time_util import care_now
 
 
 class ClinicalStatusChoices(str, Enum):
@@ -49,6 +50,13 @@ class ConditionOnSetSpec(EMRResource):
     onset_age: int | None = None
     onset_string: str | None = None
     note: str | None = None
+
+    @field_validator("onset_datetime")
+    @classmethod
+    def validate_onset_datetime(cls, onset_datetime: datetime.datetime, info):
+        if onset_datetime and onset_datetime > care_now():
+            raise ValueError("Onset date cannot be in the future")
+        return onset_datetime
 
 
 class ConditionAbatementSpec(EMRResource):
