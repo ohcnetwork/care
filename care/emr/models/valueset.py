@@ -57,7 +57,7 @@ class ValueSet(EMRBaseModel):
 
 
 class UserValueSetPreference(EMRBaseModel):
-    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
     favorite_codes = models.JSONField(default=list)
     recent_codes = models.JSONField(default=list)
