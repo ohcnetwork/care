@@ -307,6 +307,9 @@ class User(AbstractUser):
         null=True,
     )
 
+    prefix = models.CharField(max_length=10, blank=True, null=True)
+    suffix = models.CharField(max_length=50, blank=True, null=True)
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
