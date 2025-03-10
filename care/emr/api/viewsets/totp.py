@@ -4,7 +4,6 @@ from string import digits
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel
 from pyotp import TOTP, random_base32
 from rest_framework import status
 from rest_framework.decorators import action
@@ -12,25 +11,14 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.emr.resources.mfa.spec import (
+    PasswordVerifyRequest,
+    TOTPSetupResponse,
+    TOTPVerifyRequest,
+    TOTPVerifyResponse,
+)
 from care.emr.tasks.totp import send_totp_disabled_email, send_totp_enabled_email
 from care.emr.utils.mfa import verify_password
-
-
-class TOTPSetupResponse(BaseModel):
-    uri: str
-    secret_key: str
-
-
-class TOTPVerifyRequest(BaseModel):
-    code: str
-
-
-class TOTPVerifyResponse(BaseModel):
-    backup_codes: list[str]
-
-
-class PasswordVerifyRequest(BaseModel):
-    password: str
 
 
 class TOTPViewSet(EMRBaseViewSet):

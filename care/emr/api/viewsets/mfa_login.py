@@ -1,14 +1,12 @@
-from enum import Enum
-
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel
 from pyotp import TOTP
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.emr.resources.mfa.spec import LoginMethod, MFALoginRequest, MFALoginResponse
 from care.emr.utils.mfa import (
     check_mfa_ip_rate_limit,
     check_mfa_user_rate_limit,
@@ -16,22 +14,6 @@ from care.emr.utils.mfa import (
     validate_temp_token,
 )
 from care.users.models import User
-
-
-class LoginMethod(str, Enum):
-    totp = "totp"
-    backup = "backup"
-
-
-class MFALoginRequest(BaseModel):
-    method: LoginMethod
-    code: str
-    temp_token: str
-
-
-class MFALoginResponse(BaseModel):
-    access: str
-    refresh: str
 
 
 class MFALoginViewSet(EMRBaseViewSet):
