@@ -69,6 +69,10 @@ class UserValueSetPreference(EMRBaseModel):
     MAX_RECENT_VIEW = settings.VALUESET_MAX_RECENT_VIEWS
     MAX_FAVORITES = settings.VALUESET_MAX_FAVORITES
     CACHE_TIMEOUT = settings.VALUESET_PREFERENCE_CACHE_TIMEOUT
+    REDIS_LOCK_TIMEOUT = getattr(settings, "VALUESET_PREFERENCE_REDIS_LOCK_TIMEOUT", 5)
+    REDIS_ACQUIRE_TIMEOUT = getattr(
+        settings, "VALUESET_PREFERENCE_REDIS_ACQUIRE_TIMEOUT", 7
+    )
 
     def _get_cache_key(self, field_name):
         return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{self.valueset.external_id}:{field_name}"
@@ -89,8 +93,15 @@ class UserValueSetPreference(EMRBaseModel):
     def locked_field(self, field_name):
         redis_conn = get_redis_connection("default")
         lock_key = f"{self._get_cache_key(field_name)}:lock"
-        lock = redis_conn.lock(lock_key, timeout=10)
-        lock.acquire()
+        lock = redis_conn.lock(lock_key, timeout=self.REDIS_LOCK_TIMEOUT)
+        acquired = lock.acquire(
+            blocking=True, blocking_timeout=self.REDIS_ACQUIRE_TIMEOUT
+        )
+
+        if not acquired:
+            error = f"Error acquiring lock for {lock_key}"
+            raise ValueError(error)
+
         try:
             yield
         finally:
@@ -122,7 +133,6 @@ class UserValueSetPreference(EMRBaseModel):
 
     def remove_favorite(self, code_value):
         with self.locked_field("favorite_codes"):
-            # Refresh the model from database inside the lock
             refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
                 pk=self.pk
             )
@@ -132,7 +142,6 @@ class UserValueSetPreference(EMRBaseModel):
 
             refreshed_instance.favorite_codes = favorites
             refreshed_instance.save(update_fields=["favorite_codes"])
-            # Update the instance and cache
             self.favorite_codes = favorites
             cache.set(
                 self._get_cache_key("favorite_codes"), favorites, self.CACHE_TIMEOUT
@@ -143,19 +152,16 @@ class UserValueSetPreference(EMRBaseModel):
 
     def clear_favorites(self):
         with self.locked_field("favorite_codes"):
-            # Refresh the model from database inside the lock
             refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
                 pk=self.pk
             )
             refreshed_instance.favorite_codes = []
             refreshed_instance.save(update_fields=["favorite_codes"])
-            # Update the instance and cache
             self.favorite_codes = []
             cache.set(self._get_cache_key("favorite_codes"), [], self.CACHE_TIMEOUT)
 
     def add_recent_view(self, code_obj):
         with self.locked_field("recent_codes"):
-            # Refresh the model from database inside the lock
             refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
                 pk=self.pk
             )
@@ -167,7 +173,6 @@ class UserValueSetPreference(EMRBaseModel):
 
             refreshed_instance.recent_codes = recent_views
             refreshed_instance.save(update_fields=["recent_codes"])
-            # Update the instance and cache
             self.recent_codes = recent_views
             cache.set(
                 self._get_cache_key("recent_codes"), recent_views, self.CACHE_TIMEOUT
@@ -175,7 +180,6 @@ class UserValueSetPreference(EMRBaseModel):
 
     def remove_recent_view(self, code_value):
         with self.locked_field("recent_codes"):
-            # Refresh the model from database inside the lock
             refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
                 pk=self.pk
             )
@@ -185,7 +189,6 @@ class UserValueSetPreference(EMRBaseModel):
 
             refreshed_instance.recent_codes = recent_views
             refreshed_instance.save(update_fields=["recent_codes"])
-            # Update the instance and cache
             self.recent_codes = recent_views
             cache.set(
                 self._get_cache_key("recent_codes"), recent_views, self.CACHE_TIMEOUT
@@ -196,12 +199,10 @@ class UserValueSetPreference(EMRBaseModel):
 
     def clear_recent_views(self):
         with self.locked_field("recent_codes"):
-            # Refresh the model from database inside the lock
             refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
                 pk=self.pk
             )
             refreshed_instance.recent_codes = []
             refreshed_instance.save(update_fields=["recent_codes"])
-            # Update the instance and cache
             self.recent_codes = []
             cache.set(self._get_cache_key("recent_codes"), [], self.CACHE_TIMEOUT)
