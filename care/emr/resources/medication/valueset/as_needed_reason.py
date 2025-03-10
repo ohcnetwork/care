@@ -3,7 +3,7 @@ from care.emr.resources.common.valueset import ValueSetCompose, ValueSetInclude
 from care.emr.resources.valueset.spec import ValueSetStatusOptions
 
 CARE_AS_NEEDED_REASON_VALUESET = CareValueset(
-    "Disease", "system-as-needed-reason", ValueSetStatusOptions.active.value
+    "As Needed", "system-as-needed-reason", ValueSetStatusOptions.active.value
 )
 
 CARE_AS_NEEDED_REASON_VALUESET.register_valueset(

@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.utils.timezone import now
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -34,6 +33,7 @@ from care.emr.resources.location.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
+from care.utils.time_util import care_now
 
 
 class AvailabilityFilter(filters.BooleanFilter):
@@ -447,6 +447,6 @@ def close_related_location_from_encounter(instance):
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
                 status__in=COMPLETED_CHOICES
             ).update(
-                end_datetime=now(),
+                end_datetime=care_now(),
                 status=LocationEncounterAvailabilityStatusChoices.completed.value,
             )

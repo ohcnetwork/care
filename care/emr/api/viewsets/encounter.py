@@ -1,5 +1,6 @@
 import tempfile
 
+from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -81,6 +82,25 @@ class EncounterViewSet(
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
     filter_backends = [filters.DjangoFilterBackend]
+
+    def validate_data(self, instance, model_obj=None):
+        if model_obj is None:
+            if (
+                self.database_model.objects.filter(
+                    patient__external_id=instance.patient
+                )
+                .exclude(status__in=COMPLETED_CHOICES)
+                .count()
+                >= settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT
+            ):
+                error = f"Patient already has maximum number of active encounters ({settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT})"
+                raise ValidationError(error)
+
+            if not Patient.objects.filter(external_id=instance.patient).exists():
+                raise ValidationError("Patient does not exist")
+
+            if not Facility.objects.filter(external_id=instance.facility).exists():
+                raise ValidationError("Facility does not exist")
 
     def perform_create(self, instance):
         with transaction.atomic():

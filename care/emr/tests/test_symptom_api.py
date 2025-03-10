@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from secrets import choice
 from unittest.mock import patch
@@ -17,6 +18,7 @@ from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
+from care.utils.time_util import care_now
 
 
 class TestSymptomViewSet(CareAPITestBase):
@@ -303,6 +305,31 @@ class TestSymptomViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["severity"], symptom_data_dict["severity"])
         self.assertEqual(response.json()["code"], symptom_data_dict["code"])
+
+    def test_create_symptom_with_onset_date_of_future(self):
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=None,
+        )
+        symptom_data_dict = self.generate_data_for_symptom(
+            encounter,
+            onset={
+                "onset_datetime": care_now() + datetime.timedelta(seconds=20),
+            },
+        )
+
+        response = self.client.post(self.base_url, symptom_data_dict, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errors", response.json())
+        error = response.json()["errors"][0]
+        self.assertEqual(error["type"], "value_error")
+        self.assertIn("Onset date cannot be in the future", error["msg"])
 
     def test_create_symptom_with_permissions_and_encounter_status_completed(self):
         """

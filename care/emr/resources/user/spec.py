@@ -89,11 +89,13 @@ class UserSpec(UserBaseSpec):
     user_type: str
     gender: str
     username: str
+    mfa_enabled: bool = False
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
+        mapping["mfa_enabled"] = obj.is_mfa_enabled()
 
 
 class UserRetrieveSpec(UserSpec):

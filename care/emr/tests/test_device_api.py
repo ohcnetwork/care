@@ -3,7 +3,6 @@ from secrets import choice
 from uuid import uuid4
 
 from django.urls import reverse
-from django.utils.timezone import now
 
 from care.emr.models import Device
 from care.emr.resources.device.spec import (
@@ -23,6 +22,7 @@ from care.security.permissions.facility_organization import (
 )
 from care.security.permissions.location import FacilityLocationPermissions
 from care.utils.tests.base import CareAPITestBase
+from care.utils.time_util import care_now
 
 
 class DeviceBaseTest(CareAPITestBase, FacilityLocationMixin):
@@ -688,7 +688,7 @@ class TestDeviceServiceHistoryViewSet(DeviceBaseTest):
 
     def generate_data_for_device_service_history(self, **kwargs):
         data = {
-            "serviced_on": now(),
+            "serviced_on": care_now(),
             "note": self.fake.text(),
         }
         data.update(**kwargs)

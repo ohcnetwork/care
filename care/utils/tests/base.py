@@ -13,6 +13,12 @@ class CareAPITestBase(APITestCase):
 
         return baker.make(User, **kwargs)
 
+    def create_user_with_password(self, password, **kwargs):
+        user = self.create_user(**kwargs)
+        user.set_password(password)
+        user.save(update_fields=["password"])
+        return user
+
     def create_super_user(self, **kwargs):
         from care.users.models import User
 

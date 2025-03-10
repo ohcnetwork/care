@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-from django.test.utils import ignore_warnings
+from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
 
 from care.emr.models import (
@@ -489,6 +489,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         data.update(kwargs)
         return data
 
+    @override_settings(MAX_APPOINTMENTS_PER_PATIENT=1)
     def test_create_appointment_with_permission(self):
         """Users with can_create_appointment permission can create appointments."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]
@@ -497,9 +498,23 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
         data = self.get_appointment_data()
         response = self.client.post(
-            self._get_create_appointment_url(self.slot.external_id), data, format="json"
+            self._get_create_appointment_url(self.create_slot().external_id),
+            data,
+            format="json",
         )
         self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            self._get_create_appointment_url(self.create_slot().external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        error = response.json()["errors"][0]
+        self.assertEqual(error["type"], "validation_error")
+        self.assertIn(
+            "Patient already has maximum number of appointments (1)", error["msg"]
+        )
 
     def test_create_appointment_without_permission(self):
         """Users without can_create_appointment permission cannot create appointments."""
