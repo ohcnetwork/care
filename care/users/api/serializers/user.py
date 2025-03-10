@@ -44,6 +44,8 @@ class SignUpSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "prefix",
+            "suffix",
             "email",
             "password",
             "user_type",
