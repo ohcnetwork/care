@@ -1,4 +1,3 @@
-import datetime
 import uuid
 from secrets import choice
 from unittest.mock import patch
@@ -18,7 +17,6 @@ from care.emr.resources.resource_request.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
-from care.utils.time_util import care_now
 
 
 class TestSymptomViewSet(CareAPITestBase):
@@ -321,7 +319,7 @@ class TestSymptomViewSet(CareAPITestBase):
         symptom_data_dict = self.generate_data_for_symptom(
             encounter,
             onset={
-                "onset_datetime": care_now() + datetime.timedelta(seconds=20),
+                "onset_datetime": "2025-03-12",
             },
         )
 
