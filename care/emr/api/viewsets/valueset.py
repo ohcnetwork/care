@@ -110,12 +110,12 @@ class ValueSetViewSet(EMRModelViewSet):
         return UserValueSetPreference.objects.get_or_create(
             user=user,
             valueset=valueset,
-            defaults={"favorite_codes": [], "recent_codes": []},
+            defaults={"favorite_codes": []},
         )[0]
 
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
-    def mark_favorite(self, request, *args, **kwargs):
+    def add_favourite(self, request, *args, **kwargs):
         valueset = self.get_object()
         code_obj = MinimalCodeConcept(**request.data)
 
@@ -125,41 +125,41 @@ class ValueSetViewSet(EMRModelViewSet):
 
         preferences = self._get_or_create_user_preferences(request.user, valueset)
 
-        if len(preferences.get_favorites()) >= preferences.MAX_FAVORITES:
+        if len(preferences.get_favourites()) >= preferences.MAX_FAVORITES:
             raise ValidationError("Maximum number of favorites reached (50)")
 
-        preferences.add_favorite(code_obj.model_dump())
+        preferences.add_favourite(code_obj.model_dump())
         preferences.add_recent_view(
             code_obj.model_dump()
         )  # Add to recent views as well
         return Response({"message": f"Code {code_obj.code} marked as favorite"})
 
     @action(detail=True, methods=["POST"])
-    def remove_favorite(self, request, *args, **kwargs):
+    def remove_favourite(self, request, *args, **kwargs):
         valueset = self.get_object()
         code_obj = MinimalCodeConcept(**request.data)
 
         preferences = self._get_or_create_user_preferences(request.user, valueset)
-        preferences.remove_favorite(code_obj.code)
+        preferences.remove_favourite(code_obj.code)
         return Response({"message": f"Code {code_obj.code} removed from favorites"})
 
     @action(detail=True, methods=["POST"])
-    def clear_favorites(self, request, *args, **kwargs):
+    def clear_favourites(self, request, *args, **kwargs):
         valueset = self.get_object()
         preference = UserValueSetPreference.objects.filter(
             user=request.user, valueset=valueset
         ).first()
         if preference:
-            preference.clear_favorites()
+            preference.clear_favourites()
         return Response({"message": "All favorite codes cleared"})
 
     @action(detail=True, methods=["GET"])
-    def favorites(self, request, *args, **kwargs):
+    def favourites(self, request, *args, **kwargs):
         valueset = self.get_object()
         preferences = UserValueSetPreference.objects.filter(
             user=request.user, valueset=valueset
         ).first()
-        return Response(preferences.get_favorites() if preferences else [])
+        return Response(preferences.get_favourites() if preferences else [])
 
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])

@@ -1,14 +1,11 @@
-from contextlib import contextmanager
-
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
-from django_redis import get_redis_connection
-from redis.exceptions import LockError
 
 from care.emr.fhir.resources.valueset import ValueSetResource
 from care.emr.models import EMRBaseModel
 from care.emr.resources.common.valueset import ValueSetCompose
+from care.utils.lock import Lock
 
 
 class ValueSet(EMRBaseModel):
@@ -60,149 +57,90 @@ class UserValueSetPreference(EMRBaseModel):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
     favorite_codes = models.JSONField(default=list)
-    recent_codes = models.JSONField(default=list)
 
     class Meta:
         unique_together = ("user", "valueset")
 
     CACHE_KEY_PREFIX = "user_valueset_code_prefs:"
-    MAX_RECENT_VIEW = settings.VALUESET_MAX_RECENT_VIEWS
-    MAX_FAVORITES = settings.VALUESET_MAX_FAVORITES
-    CACHE_TIMEOUT = settings.VALUESET_PREFERENCE_CACHE_TIMEOUT
-    REDIS_LOCK_TIMEOUT = getattr(settings, "VALUESET_PREFERENCE_REDIS_LOCK_TIMEOUT", 5)
-    REDIS_ACQUIRE_TIMEOUT = getattr(
-        settings, "VALUESET_PREFERENCE_REDIS_ACQUIRE_TIMEOUT", 7
-    )
+    MAX_RECENT_VIEW = getattr(settings, "MAX_RECENT_VIEW_FOR_VALUESET", 20)
+    MAX_FAVORITES = getattr(settings, "MAX_FAVORITES_FOR_VALUESET", 50)
 
     def _get_cache_key(self, field_name):
         return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{self.valueset.external_id}:{field_name}"
 
-    def _get_cached_data(self, field_name):
-        cache_key = self._get_cache_key(field_name)
-        return cache.get_or_set(
-            cache_key, lambda: getattr(self, field_name), self.CACHE_TIMEOUT
+    def _get_or_set_favourites(self):
+        cache_key = self._get_cache_key("favourites")
+        with Lock(cache_key):
+            favourites = cache.get(cache_key)
+            if not favourites:
+                favourites = self.favorite_codes
+                cache.set(cache_key, favourites)
+            return favourites
+
+    def _saved_favourite_and_update_cache(self, favourites):
+        self.favorite_codes = favourites
+        with transaction.atomic(), Lock(self._get_cache_key("favourites")):
+            cache.set(self._get_cache_key("favourites"), favourites)
+            self.save(update_fields=["favorite_codes"])
+
+    def get_favourites(self):
+        return self._get_or_set_favourites()
+
+    def add_favourite(self, code_obj):
+        refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
+            pk=self.pk
         )
+        favourites = refreshed_instance.favorite_codes
 
-    def _save_to_cache(self, field_name, data):
-        setattr(self, field_name, data)
-        with transaction.atomic():
-            self.save(update_fields=[field_name])
-            cache.set(self._get_cache_key(field_name), data, self.CACHE_TIMEOUT)
+        if code_obj not in favourites:
+            favourites.append(code_obj)
+            self._saved_favourite_and_update_cache(favourites)
 
-    @contextmanager
-    def locked_field(self, field_name):
-        redis_conn = get_redis_connection("default")
-        lock_key = f"{self._get_cache_key(field_name)}:lock"
-        lock = redis_conn.lock(lock_key, timeout=self.REDIS_LOCK_TIMEOUT)
-        acquired = lock.acquire(
-            blocking=True, blocking_timeout=self.REDIS_ACQUIRE_TIMEOUT
+    def remove_favourite(self, code_value):
+        refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
+            pk=self.pk
         )
+        favourites = refreshed_instance.favorite_codes
 
-        if not acquired:
-            error = f"Error acquiring lock for {lock_key}"
-            raise ValueError(error)
+        new_favourites = [c for c in favourites if c["code"] != code_value]
 
-        try:
-            yield
-        finally:
-            try:
-                lock.release()  # This may raise exception if yield takes more time than timeout
-            except LockError:
-                pass
+        if new_favourites != favourites:
+            self._saved_favourite_and_update_cache(new_favourites)
 
-    def add_favorite(self, code_obj):
-        with self.locked_field("favorite_codes"):
-            # Refresh the model from database inside the lock
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            favorites = refreshed_instance.favorite_codes
-
-            if code_obj not in favorites:
-                favorites.insert(0, code_obj)
-                if len(favorites) > self.MAX_FAVORITES:
-                    favorites = favorites[: self.MAX_FAVORITES]
-
-                refreshed_instance.favorite_codes = favorites
-                refreshed_instance.save(update_fields=["favorite_codes"])
-                # Update the instance and cache
-                self.favorite_codes = favorites
-                cache.set(
-                    self._get_cache_key("favorite_codes"), favorites, self.CACHE_TIMEOUT
-                )
-
-    def remove_favorite(self, code_value):
-        with self.locked_field("favorite_codes"):
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            favorites = refreshed_instance.favorite_codes
-
-            favorites = [c for c in favorites if c["code"] != code_value]
-
-            refreshed_instance.favorite_codes = favorites
-            refreshed_instance.save(update_fields=["favorite_codes"])
-            self.favorite_codes = favorites
-            cache.set(
-                self._get_cache_key("favorite_codes"), favorites, self.CACHE_TIMEOUT
-            )
-
-    def get_favorites(self):
-        return self._get_cached_data("favorite_codes")
-
-    def clear_favorites(self):
-        with self.locked_field("favorite_codes"):
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            refreshed_instance.favorite_codes = []
-            refreshed_instance.save(update_fields=["favorite_codes"])
-            self.favorite_codes = []
-            cache.set(self._get_cache_key("favorite_codes"), [], self.CACHE_TIMEOUT)
-
-    def add_recent_view(self, code_obj):
-        with self.locked_field("recent_codes"):
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            recent_views = refreshed_instance.recent_codes
-
-            recent_views = [c for c in recent_views if c["code"] != code_obj["code"]]
-            recent_views.insert(0, code_obj)  # Add to the front
-            recent_views = recent_views[: self.MAX_RECENT_VIEW]
-
-            refreshed_instance.recent_codes = recent_views
-            refreshed_instance.save(update_fields=["recent_codes"])
-            self.recent_codes = recent_views
-            cache.set(
-                self._get_cache_key("recent_codes"), recent_views, self.CACHE_TIMEOUT
-            )
-
-    def remove_recent_view(self, code_value):
-        with self.locked_field("recent_codes"):
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            recent_views = refreshed_instance.recent_codes
-
-            recent_views = [c for c in recent_views if c["code"] != code_value]
-
-            refreshed_instance.recent_codes = recent_views
-            refreshed_instance.save(update_fields=["recent_codes"])
-            self.recent_codes = recent_views
-            cache.set(
-                self._get_cache_key("recent_codes"), recent_views, self.CACHE_TIMEOUT
-            )
+    def clear_favourites(self):
+        self._saved_favourite_and_update_cache([])
 
     def get_recent_views(self):
-        return self._get_cached_data("recent_codes")
+        cache_key = self._get_cache_key("recent_views")
+        with Lock(cache_key):
+            recent_views = cache.get(cache_key)
+            if not recent_views:
+                recent_views = []
+                cache.set(cache_key, recent_views)
+            return recent_views
+
+    def add_recent_view(self, code_obj):
+        cache_key = self._get_cache_key("recent_views")
+        with Lock(cache_key):
+            recent_views = cache.get(cache_key)
+            if not recent_views:
+                recent_views = []
+            if code_obj not in recent_views:
+                recent_views.insert(0, code_obj)
+                recent_views = recent_views[: self.MAX_RECENT_VIEW]
+                cache.set(cache_key, recent_views)
+
+    def remove_recent_view(self, code_value):
+        cache_key = self._get_cache_key("recent_views")
+        with Lock(cache_key):
+            recent_views = cache.get(cache_key)
+            if not recent_views:
+                recent_views = []
+            new_recent_views = [c for c in recent_views if c["code"] != code_value]
+            if new_recent_views != recent_views:
+                cache.set(cache_key, new_recent_views)
 
     def clear_recent_views(self):
-        with self.locked_field("recent_codes"):
-            refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-                pk=self.pk
-            )
-            refreshed_instance.recent_codes = []
-            refreshed_instance.save(update_fields=["recent_codes"])
-            self.recent_codes = []
-            cache.set(self._get_cache_key("recent_codes"), [], self.CACHE_TIMEOUT)
+        cache_key = self._get_cache_key("recent_views")
+        with Lock(cache_key):
+            cache.delete(cache_key)
