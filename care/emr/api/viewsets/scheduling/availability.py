@@ -1,6 +1,7 @@
 import datetime
 from datetime import time, timedelta
 
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
@@ -24,6 +25,7 @@ from care.emr.resources.scheduling.slot.spec import (
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.lock import Lock
+from care.utils.time_util import care_now
 
 
 class SlotsForDayRequestSpec(BaseModel):
@@ -222,6 +224,19 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment_handler(cls, obj, request_data, user):
         request_data = AppointmentBookingSpec(**request_data)
         patient = Patient.objects.filter(external_id=request_data.patient).first()
+
+        if (
+            TokenBooking.objects.filter(
+                patient=patient,
+                token_slot__start_datetime__gte=care_now(),
+            )
+            .exclude(status__in=CANCELLED_STATUS_CHOICES)
+            .count()
+            >= settings.MAX_APPOINTMENTS_PER_PATIENT
+        ):
+            error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
+            raise ValidationError(error)
+
         if not patient:
             raise ValidationError("Patient not found")
         appointment = lock_create_appointment(

@@ -8,6 +8,7 @@ from pydantic import UUID4, Field, field_validator, model_validator
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
+from care.emr.resources.permissions import PatientPermissionsMixin
 
 
 class BloodGroupChoices(str, Enum):
@@ -106,7 +107,7 @@ class PatientPartialSpec(EMRResource):
         mapping["id"] = str(uuid.uuid4())
 
 
-class PatientRetrieveSpec(PatientListSpec):
+class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
     geo_organization: dict = {}
 
     created_by: dict | None = None
