@@ -3,7 +3,7 @@ from enum import Enum
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from pydantic import UUID4, Field, field_validator
+from pydantic import UUID4, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
@@ -35,7 +35,6 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
-    phone_number: str = Field(max_length=14)
 
 
 class UserUpdateSpec(UserBaseSpec):
@@ -116,3 +115,21 @@ class UserRetrieveSpec(UserSpec):
                 obj.geo_organization
             ).to_json()
         mapping["flags"] = obj.get_all_flags()
+
+
+class PublicUserReadSpec(EMRResource):
+    _model_ = User
+    _exclude_ = ["geo_organization"]
+
+    id: UUID4 | None = None
+    first_name: str
+    last_name: str
+    username: str
+    profile_picture_url: str
+    user_type: str
+    gender: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj: User):
+        mapping["id"] = str(obj.external_id)
+        mapping["profile_picture_url"] = obj.read_profile_picture_url()
