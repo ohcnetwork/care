@@ -2220,7 +2220,7 @@ def migrate_daily_rounds(apps, schema_editor):
                     "question_id": consciousness_level["id"],
                     "values": [
                         {
-                            "value": consciousness_level_map.get(
+                            "coding": consciousness_level_map.get(
                                 daily_round.consciousness_level
                             )
                         }
@@ -2425,7 +2425,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             }
                         )
 
-                    values.append(pain_scale_to_text(region, scale, description))
+                    values.append({"value": pain_scale_to_text(region, scale, description)})
                     extra_observations.append(pain_observation)
 
                 questionnaire_responses[pain_scale_enhanced["id"]] = {
@@ -2518,7 +2518,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         )
 
                     values.append(
-                        pressure_sore_to_text(
+                        {"value": pressure_sore_to_text(
                             region,
                             length,
                             width,
@@ -2526,7 +2526,7 @@ def migrate_daily_rounds(apps, schema_editor):
                             tissue_type,
                             push_score,
                             description,
-                        )
+                        )}
                     )
                     extra_observations.append(pressure_sore_observation)
 
