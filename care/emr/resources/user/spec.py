@@ -118,8 +118,8 @@ class UserRetrieveSpec(UserSpec):
 
 
 class PublicUserReadSpec(EMRResource):
-    _model_ = User
-    _exclude_ = ["geo_organization"]
+    __model__ = User
+    __exclude__ = ["geo_organization"]
 
     id: UUID4 | None = None
     first_name: str
