@@ -40,11 +40,13 @@ class ValueSetViewSet(EMRModelViewSet):
             "expand",
             "validate_code",
             "preview_search",
-            "mark_favorite",
-            "remove_favorite",
-            "favorites",
+            "favourites",
+            "add_favourite",
+            "remove_favourite",
+            "clear_favourites",
             "recent_views",
             "add_recent_view",
+            "remove_recent_view",
             "clear_recent_views",
         ]:
             return True
