@@ -1068,7 +1068,7 @@ output_map = {
 }
 output = {
     "id": "49c3ee39-0bcb-44e8-88ec-2286f88164e1",
-    "link_id": "output",
+    "link_id": "output_fluids",
     "text": "Output",
     "type": "decimal",
     "is_observation": True,
@@ -1896,7 +1896,7 @@ def migrate_daily_rounds(apps, schema_editor):
         bulk_questionnaire_root_link.append(community_nurse_log_questionnaire.id)
 
     detailed_update_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="detailed_log_update_1dee545a",
+        slug="detailed_log_update_1de5a",
         defaults={
             **questionnaire_defaults,
             "title": "Detailed Update",
