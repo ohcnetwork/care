@@ -124,71 +124,61 @@ def migrate_consultations(apps, schema_editor):
                     "link_id": "1",
                     "text": "Consultation Examination",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         {
                             "id": "c13f4e47-8b31-4db6-96fb-f5d56f103f72",
                             "link_id": "1.1",
                             "text": "Examination Details",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "0b07a08f-50a8-430c-915a-74169affb42d",
                             "link_id": "1.2",
                             "text": "History of Present Illness",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "b14bfb28-306a-4061-b8f0-282b3ae61613",
                             "link_id": "1.3",
                             "text": "Treatment Plan",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "f069fce2-cdba-4004-830e-a24aa2b3be20",
                             "link_id": "1.4",
                             "text": "Consultation Notes",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "baff36ec-a102-4981-9988-5bac39858d8b",
                             "link_id": "1.5",
                             "text": "Transferred From Location",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "61a42107-7532-408c-8761-b54b37aea631",
                             "link_id": "1.6",
                             "text": "Referred From Facility",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "f848a229-0406-461e-8f2d-4123286904bc",
                             "link_id": "1.7",
                             "text": "Referred By",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "8f0b2c23-f026-427c-9529-d1320b39ee71",
                             "link_id": "1.8",
                             "text": "Special Instruction",
                             "type": "text",
-                            "required": False,
                         },
                         {
                             "id": "fe4b1c2b-2f06-47b1-8b23-20ba06803e9e",
                             "link_id": "1.9",
                             "text": "Consultation Category",
                             "type": "choice",
-                            "required": False,
-                            "answer_options": [
+                            "answer_option": [
                                 {"value": "Comfort Care"},
                                 {"value": "Mild"},
                                 {"value": "Moderate"},
@@ -201,7 +191,6 @@ def migrate_consultations(apps, schema_editor):
                             "link_id": "1.10",
                             "text": "Investigations",
                             "type": "text",
-                            "required": False,
                             "repeats": True,
                         },
                         {
@@ -209,7 +198,6 @@ def migrate_consultations(apps, schema_editor):
                             "link_id": "1.11",
                             "text": "Procedures",
                             "type": "text",
-                            "required": False,
                             "repeats": True,
                         },
                     ],
@@ -219,7 +207,6 @@ def migrate_consultations(apps, schema_editor):
                     "link_id": "2",
                     "text": "Death Report",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         {
                             "id": "cc629f7a-5607-4d26-b840-0c024c4ee957",
@@ -249,14 +236,12 @@ def migrate_consultations(apps, schema_editor):
                     "link_id": "3",
                     "text": "Discharge Notes",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         {
                             "id": "3b3816b1-09f5-4c41-af99-5d3b66de5b75",
                             "link_id": "3.1",
                             "text": "Discharge Notes",
                             "type": "text",
-                            "required": False,
                         },
                     ],
                 },
@@ -265,14 +250,12 @@ def migrate_consultations(apps, schema_editor):
                     "link_id": "4",
                     "text": "Physical Measurements",
                     "type": "group",
-                    "required": False,
                     "questions": [
                         {
                             "id": "8aaf5e6f-be9c-4fe6-b588-55ab2541875e",
                             "link_id": "4.1",
                             "text": "Height",
                             "type": "decimal",
-                            "required": False,
                             "code": {
                                 "system": "http://loinc.org",
                                 "code": "8302-2",
@@ -290,7 +273,6 @@ def migrate_consultations(apps, schema_editor):
                             "link_id": "4.2",
                             "text": "Weight",
                             "type": "decimal",
-                            "required": False,
                             "code": {
                                 "system": "http://loinc.org",
                                 "code": "29463-7",
@@ -610,7 +592,7 @@ def migrate_consultations(apps, schema_editor):
             consultation_questionnaire_responses_observations = []
             if consultation.height:
                 value = {
-                    "value": consultation.height,
+                    "value": str(consultation.height),
                     "unit": {
                         "system": "http://unitsofmeasure.org",
                         "code": "cm",
@@ -620,7 +602,7 @@ def migrate_consultations(apps, schema_editor):
                 consultation_questionnaire_responses.append(
                     {
                         "question_id": "8aaf5e6f-be9c-4fe6-b588-55ab2541875e",
-                        "values": [{"value": value}],
+                        "values": [value],
                     }
                 )
                 consultation_questionnaire_responses_observations.append(
@@ -636,7 +618,7 @@ def migrate_consultations(apps, schema_editor):
                 )
             if consultation.weight:
                 value = {
-                    "value": consultation.weight,
+                    "value": str(consultation.weight),
                     "unit": {
                         "system": "http://unitsofmeasure.org",
                         "code": "kg",
@@ -646,7 +628,7 @@ def migrate_consultations(apps, schema_editor):
                 consultation_questionnaire_responses.append(
                     {
                         "question_id": "d73546a5-98bb-450d-9923-69fff9b73ddd",
-                        "values": [{"value": value}],
+                        "values": [value],
                     }
                 )
                 consultation_questionnaire_responses_observations.append(

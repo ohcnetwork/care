@@ -151,7 +151,7 @@ def migrate_patient_registrations(apps, schema_editor):
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
 
     meta_info_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="patient_meta_information_internal_a2e6ef7e",
+        slug="patient_meta_info_a2e6f",
         defaults={
             "title": "Patient Meta Information",
             "description": "Patient Meta Information",
@@ -166,9 +166,8 @@ def migrate_patient_registrations(apps, schema_editor):
                     "link_id": "1.1",
                     "text": "Occupation",
                     "type": "choice",
-                    "required": False,
-                    "answer_options": [
-                        {"initial_selected": False, "value": v}
+                    "answer_option": [
+                        {"value": v}
                         for v in occupation_map.values()
                     ],
                 },
@@ -177,9 +176,8 @@ def migrate_patient_registrations(apps, schema_editor):
                     "link_id": "1.2",
                     "text": "Socioeconomic Status",
                     "type": "choice",
-                    "required": False,
-                    "answer_options": [
-                        {"initial_selected": False, "value": v}
+                    "answer_option": [
+                        {"value": v}
                         for v in socioeconomic_status_map.values()
                     ],
                 },
@@ -188,9 +186,8 @@ def migrate_patient_registrations(apps, schema_editor):
                     "link_id": "1.3",
                     "text": "Domestic Healthcare Support",
                     "type": "choice",
-                    "required": False,
-                    "answer_options": [
-                        {"initial_selected": False, "value": v}
+                    "answer_option": [
+                        {"value": v}
                         for v in domestic_healthcare_support_map.values()
                     ],
                 },
@@ -199,7 +196,6 @@ def migrate_patient_registrations(apps, schema_editor):
                     "link_id": "1.4",
                     "text": "Head of Household",
                     "type": "boolean",
-                    "required": False,
                 },
             ],
         },

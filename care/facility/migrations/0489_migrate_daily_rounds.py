@@ -15,10 +15,18 @@ if TYPE_CHECKING:
 
 MIGRATION_ID = 158445695208
 
-def deterministic_uuid(*components) -> str:
-    "i got tired of copying and pasting uuids"
-    return str(uuid.uuid5(uuid.NAMESPACE_OID, ".".join(components)))
 
+def snake_to_pascal(text: str) -> str:
+    if "_" not in text:
+        return text
+    return "".join(word.capitalize() for word in text.split("_"))
+
+
+cm_code = {
+    "system": "http://unitsofmeasure.org",
+    "code": "cm",
+    "display": "cm",
+}
 
 category_to_priority_map = {
     "Comfort": "as_needed",
@@ -46,8 +54,8 @@ temperature = {
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
-        "code": "degF",
-        "display": "Degrees Fahrenheit",
+        "code": "[degF]",
+        "display": "degree Fahrenheit",
     },
 }
 physical_examination_info = {
@@ -77,7 +85,7 @@ bowel_issue = {
         "code": "249562008",
         "display": "Bowel finding",
     },
-    "answer_options": [{"value": v} for v in bowel_issue_map.values()],
+    "answer_option": [{"value": v} for v in bowel_issue_map.values()],
 }
 bladder_drainage_map = {
     1: "Normal",
@@ -98,7 +106,7 @@ bladder_drainage = {
         "code": "274423009",
         "display": "Drainage of urinary bladder (procedure)",
     },
-    "answer_options": [{"value": v} for v in bladder_drainage_map.values()],
+    "answer_option": [{"value": v} for v in bladder_drainage_map.values()],
 }
 bladder_issue_map = {
     0: "No Issues",
@@ -116,7 +124,7 @@ bladder_issue = {
         "code": "249585009",
         "display": "Urinary bladder finding",
     },
-    "answer_options": [{"value": v} for v in bladder_issue_map.values()],
+    "answer_option": [{"value": v} for v in bladder_issue_map.values()],
 }
 is_experiencing_dysuria = {
     "id": "9ae65acc-b85a-4704-a75a-5de5e4da3c19",
@@ -144,7 +152,7 @@ urination_frequency = {
         "code": "364198000",
         "display": "Frequency of urination",
     },
-    "answer_options": [{"value": v} for v in urination_frequency_map.values()],
+    "answer_option": [{"value": v} for v in urination_frequency_map.values()],
 }
 sleep_map = {
     1: "Excessive",
@@ -162,7 +170,7 @@ sleep = {
         "code": "247950007",
         "display": "Sleep behavior finding (finding)",
     },
-    "answer_options": [{"value": v} for v in sleep_map.values()],
+    "answer_option": [{"value": v} for v in sleep_map.values()],
 }
 nutrition_route_map = {
     1: "Oral",
@@ -182,7 +190,7 @@ nutrition_route = {
         "code": "441421000124104",
         "display": "Management of route of enteral nutrition (procedure)",
     },
-    "answer_options": [{"value": v} for v in nutrition_route_map.values()],
+    "answer_option": [{"value": v} for v in nutrition_route_map.values()],
 }
 oral_issue_map = {
     0: "No Issue",
@@ -199,7 +207,7 @@ oral_issue = {
         "code": "300255008",
         "display": "Oral cavity problem (finding)",
     },
-    "answer_options": [{"value": v} for v in oral_issue_map.values()],
+    "answer_option": [{"value": v} for v in oral_issue_map.values()],
 }
 appetite_map = {
     1: "Increased",
@@ -218,7 +226,7 @@ appetite = {
         "code": "33911006",
         "display": "Food appetite (function)",
     },
-    "answer_options": [{"value": v} for v in appetite_map.values()],
+    "answer_option": [{"value": v} for v in appetite_map.values()],
 }
 consciousness_level_map = {
     5: {"system": "http://snomed.info/sct", "code": "248234008", "display": "Alert"},
@@ -322,7 +330,7 @@ left_pupil_light_reaction = {
         "code": "271733001",
         "display": "Pupil reaction",
     },
-    "answer_options": [{"value": v} for v in pupil_reaction_map.values()],
+    "answer_option": [{"value": v} for v in pupil_reaction_map.values()],
 }
 right_pupil_light_reaction = {
     "id": "dba96650-ceb1-4f33-b6d9-7de9713ff85f",
@@ -334,7 +342,7 @@ right_pupil_light_reaction = {
         "code": "271733001",
         "display": "Pupil reaction",
     },
-    "answer_options": [{"value": v} for v in pupil_reaction_map.values()],
+    "answer_option": [{"value": v} for v in pupil_reaction_map.values()],
 }
 glasgow_eye_open = {
     "id": "0c9f829a-d53f-4063-abb4-da36dc67a85f",
@@ -398,7 +406,7 @@ limb_response_upper_extremity_left = {
         "code": "249948009",
         "display": " Grade of muscle power",
     },
-    "answer_options": [{"value": v} for v in limb_response_map.values()],
+    "answer_option": [{"value": v} for v in limb_response_map.values()],
 }
 limb_response_upper_extremity_right = {
     "id": "00ad1c4e-cb86-4862-b984-f8f2062f47cd",
@@ -410,7 +418,7 @@ limb_response_upper_extremity_right = {
         "code": "249948009",
         "display": " Grade of muscle power",
     },
-    "answer_options": [{"value": v} for v in limb_response_map.values()],
+    "answer_option": [{"value": v} for v in limb_response_map.values()],
 }
 limb_response_lower_extremity_left = {
     "id": "b0958d7f-4033-44c0-98bf-b6d49a060667",
@@ -422,7 +430,7 @@ limb_response_lower_extremity_left = {
         "code": "249948009",
         "display": " Grade of muscle power",
     },
-    "answer_options": [{"value": v} for v in limb_response_map.values()],
+    "answer_option": [{"value": v} for v in limb_response_map.values()],
 }
 limb_response_lower_extremity_right = {
     "id": "da6c8868-48bc-403c-bb6c-9fefdf21e542",
@@ -434,10 +442,10 @@ limb_response_lower_extremity_right = {
         "code": "249948009",
         "display": " Grade of muscle power",
     },
-    "answer_options": [{"value": v} for v in limb_response_map.values()],
+    "answer_option": [{"value": v} for v in limb_response_map.values()],
 }
 bp_systolic = {
-    "id": "479b1a64-6397-4f10-80b2-5541e831ee1",
+    "id": "b5e2cf01-8bb6-4fcd-ad88-0efb611195da",
     "link_id": "bp.systolic",
     "text": "Systolic",
     "type": "decimal",
@@ -513,7 +521,7 @@ resp = {
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
-        "code": "{breaths}/min",
+        "code": "{Breaths}/min",
         "display": "Breaths / minute",
     },
 }
@@ -549,6 +557,7 @@ rhythm = {
     "text": "Rhythm",
     "type": "choice",
     "is_observation": True,
+    "answer_value_set": "system-observation",
     "code": {
         "system": "http://loinc.org",
         "code": "67519-9",
@@ -566,7 +575,7 @@ ventilator_interface = {
     "link_id": "ventilator_interface",
     "text": "Ventilator interface",
     "type": "choice",
-    "answer_options": [{"value": v} for v in ventilator_interface_map.values()],
+    "answer_option": [{"value": v} for v in ventilator_interface_map.values()],
 }
 ventilator_mode_map = {
     0: "Unknown",
@@ -585,7 +594,7 @@ ventilator_mode = {
     "link_id": "ventilator_mode",
     "text": "Ventilator mode",
     "type": "choice",
-    "answer_options": [{"value": v} for v in ventilator_mode_map.values()],
+    "answer_option": [{"value": v} for v in ventilator_mode_map.values()],
 }
 ventilator_peep = {
     "id": "3637b296-6e8b-4d9f-a4c4-4aa962c49c96",
@@ -647,7 +656,7 @@ ventilator_resp_rate = {
     },
     "unit": {
         "system": "http://unitsofmeasure.org",
-        "code": "{breaths}/min",
+        "code": "{Breaths}/min",
         "display": "Breaths / minute",
     },
 }
@@ -690,7 +699,7 @@ ventilator_oxygen_modality = {
     "link_id": "ventilator_oxygen_modality",
     "text": "Oxygen Modality",
     "type": "choice",
-    "answer_options": [{"value": v} for v in ventilator_oxygen_modality_map.values()],
+    "answer_option": [{"value": v} for v in ventilator_oxygen_modality_map.values()],
 }
 ventilator_oxygen_modality_oxygen_rate = {
     "id": "199a0af3-3662-4d41-8c3b-03e28f02ecb3",
@@ -1294,354 +1303,355 @@ nursing = {
 
 human_body_map = {
     "AnteriorHead": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+69536005",
-        "display": "Anterior Head structure",
+        "system": "http://loinc.org",
+        "code": "LA4331-0",
+        "display": "Skull",
     },
     "AnteriorNeck": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+45048000",
-        "display": "Anterior Neck structure",
+        "system": "http://loinc.org",
+        "code": "LA18116-6",
+        "display": "Head",
     },
     "AnteriorRightShoulder": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+368106002",
-        "display": "Anterior Right Shoulder structure",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "AnteriorRightChest": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+771319006",
-        "display": "Anterior Structure of right half of chest wall",
+        "system": "http://loinc.org",
+        "code": "LA18111-7",
+        "display": "Chest",
     },
     "AnteriorRightArm": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+59126009",
-        "display": "Anterior Entire right upper arm",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "AnteriorRightForearm": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+368224007",
-        "display": "Anterior Entire right forearm",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "AnteriorRightHand": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+78791008",
-        "display": "Anterior Structure of right hand",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "AnteriorLeftHand": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+368456002",
-        "display": "Anterior Entire left hand",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "AnteriorLeftChest": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+771318003",
-        "display": "Anterior Structure of left half of chest wall",
+        "system": "http://loinc.org",
+        "code": "LA18111-7",
+        "display": "Chest",
     },
     "AnteriorLeftShoulder": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+368107006",
-        "display": "Anterior Entire left shoulder region",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "AnteriorLeftArm": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+72098002",
-        "display": "Anterior Entire left upper arm",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "AnteriorLeftForearm": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+368225008",
-        "display": "Anterior Entire left forearm",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "AnteriorRightFoot": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+239830003",
-        "display": "Anterior Entire right foot",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
     "AnteriorLeftFoot": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+239919000",
-        "display": "Anterior Entire left foot",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "AnteriorRightLeg": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+213289002",
-        "display": "Anterior Entire right lower leg",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
     "AnteriorLowerChest": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+731489009",
-        "display": "Anterior Entire lower chest wall",
+        "system": "http://loinc.org",
+        "code": "LA18111-7",
+        "display": "Chest",
     },
     "AnteriorAbdomen": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+302553009",
-        "display": "Anterior Entire abdomen",
+        "system": "http://loinc.org",
+        "code": "LA12706-0",
+        "display": "Abdomen",
     },
     "AnteriorLeftLeg": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+213384005",
-        "display": "Anterior Entire left lower leg",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "AnteriorRightThigh": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+209570001",
-        "display": "Anterior Entire right thigh",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
     "AnteriorLeftThigh": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+209672000",
-        "display": "Anterior Entire left thigh",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "AnteriorGroin": {
-        "system": "http://snomed.info/sct",
-        "code": "255549009+26893007",
-        "display": "Anterior Inguinal region structure",
+        "system": "http://loinc.org",
+        "code": "LA16744-7",
+        "display": "Pelvis",
     },
     "PosteriorHead": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+69536005",
-        "display": "Posterior Head structure",
+        "system": "http://loinc.org",
+        "code": "LA18116-6",
+        "display": "Head",
     },
     "PosteriorNeck": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+45048000",
-        "display": "Posterior Neck structure",
+        "system": "http://loinc.org",
+        "code": "LA18116-6",
+        "display": "Head",
     },
     "PosteriorLeftChest": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+771318003",
-        "display": "Posterior Structure of left half of chest wall",
+        "system": "http://loinc.org",
+        "code": "LA18111-7",
+        "display": "Chest",
     },
     "PosteriorRightChest": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+771319006",
-        "display": "Posterior Structure of right half of chest wall",
+        "system": "http://loinc.org",
+        "code": "LA18111-7",
+        "display": "Chest",
     },
     "PosteriorAbdomen": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+302553009",
-        "display": "Posterior Entire abdomen",
+        "system": "http://loinc.org",
+        "code": "LA12706-0",
+        "display": "Abdomen",
     },
     "PosteriorLeftShoulder": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+368107006",
-        "display": "Posterior Entire left shoulder region",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "PosteriorRightShoulder": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+368106002",
-        "display": "Posterior Right Shoulder structure",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "PosteriorLeftArm": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+72098002",
-        "display": "Posterior Entire left upper arm",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "PosteriorLeftForearm": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+368225008",
-        "display": "Posterior Entire left forearm",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "PosteriorLeftHand": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+368456002",
-        "display": "Posterior Entire left hand",
+        "system": "http://loinc.org",
+        "code": "LA29192-4",
+        "display": "Upper Extremity-Left",
     },
     "PosteriorRightArm": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+59126009",
-        "display": "Posterior Entire right upper arm",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "PosteriorRightForearm": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+368224007",
-        "display": "Posterior Entire right forearm",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "PosteriorRightHand": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+78791008",
-        "display": "Posterior Structure of right hand",
+        "system": "http://loinc.org",
+        "code": "LA29191-6",
+        "display": "Upper Extremity-Right",
     },
     "PosteriorLeftThighAndButtock": {
-        "system": "http://snomed.info/sct",
-        "code": "209672000+723979003",
-        "display": "Entire left thigh + Structure of left buttock",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "PosteriorRightThighAndButtock": {
-        "system": "http://snomed.info/sct",
-        "code": "209570001+723980000",
-        "display": "Entire right thigh + Structure of right buttock",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
     "PosteriorLeftLeg": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+213384005",
-        "display": "Posterior Entire left lower leg",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "PosteriorRightLeg": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+213289002",
-        "display": "Posterior Entire right lower leg",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
     "PosteriorLeftFoot": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+239919000",
-        "display": "Posterior Entire left foot",
+        "system": "http://loinc.org",
+        "code": "LA24413-9",
+        "display": "Lower Extremity-Left",
     },
     "PosteriorRightFoot": {
-        "system": "http://snomed.info/sct",
-        "code": "255551008+239830003",
-        "display": "Posterior Entire right foot",
+        "system": "http://loinc.org",
+        "code": "LA24414-7",
+        "display": "Lower Extremity-Right",
     },
 }
-# some wizardry about to happen
-def questions_for_body_parts(parent_id, children):
-    questions = []
-    for part, part_code in human_body_map.items():
-        part_children = []
-        for _child in children:
-            child = _child.copy()
-            child["link_id"] = f"{parent_id}.{part}.{_child['link_id']}"
-            child["id"] = deterministic_uuid(parent_id, part, _child["link_id"])
-            part_children.append(child)
-        questions.append({
-            "id": deterministic_uuid(parent_id, part),
-            "link_id": f"{parent_id}.{part}",
-            "text": part_code["display"],
-            "type": "group",
-            "is_observation": True,
-            "code": part_code,
-            "questions": part_children,
-        })
-    return questions
+body_site_code = {
+    "system": "http://loinc.org",
+    "code": "39111-0",
+    "display": "Body site",
+}
+description_code = {
+    "system": "http://loinc.org",
+    "code": "107132-3",
+    "display": "Description",
+}
 
-
-pain_scale_sub_questions=[
-    {
-        "link_id": "scale",
-        "type": "integer",
-        "is_observation": True,
-        "text": "Pain Scale",
-        "code": {
-            "system": "http://loinc.org",
-            "code": "38208-5",
-            "display": "Pain severity",
-        },
-    },
-    {
-        "link_id": "description",
-        "type": "string",
-        "is_observation": True,
-        "text": "Description",
-    }
-]
 pain_scale_enhanced = {
     "id": "486ae997-ff3e-4a6b-8d7d-2102bf8ec6b9",
     "link_id": "pain_scale_enhanced",
     "text": "Pain Scale Enhanced",
-    "type": "group",
-    "is_observation": True,
-    "is_component": True,
+    "type": "text",
+    "repeats": True,
     "code": {
         "system": "http://loinc.org",
         "code": "38208-5",
         "display": "Pain severity",
     },
-    "questions": questions_for_body_parts("pain_scale_enhanced", pain_scale_sub_questions),
+}
+pain_scale_enhanced__scale_code = {
+    "system": "http://loinc.org",
+    "code": "38208-5",
+    "display": "Pain severity",
 }
 
 
-pressure_sore_sub_questions = [
-    {
-        "link_id": "length",
-        "type": "decimal",
-        "is_observation": True,
-        "text": "Length",
-        "code": {
-            "system": "http://loinc.org",
-            "code": "39126-8",
-            "display": "Length of wound",
-        },
-        "unit": {
-            "system": "http://unitsofmeasure.org",
-            "code": "cm",
-            "display": "cm",
-        },
-    },
-    {
-        "link_id": "width",
-        "type": "decimal",
-        "is_observation": True,
-        "text": "Width",
-        "code": {
-            "system": "http://loinc.org",
-            "code": "39125-0",
-            "display": "Width of wound",
-        },
-        "unit": {
-            "system": "http://unitsofmeasure.org",
-            "code": "cm",
-            "display": "cm",
-        },
-    },
-    {
-        "link_id": "exudate_amount",
-        "type": "choice",
-        "is_observation": True,
-        "text": "Exudate Amount",
-        "answers": [
-            {"value": "None"},
-            {"value": "Light"},
-            {"value": "Moderate"},
-            {"value": "Heavy"},
-        ],
-    },
-    {
-        "link_id": "tissue_type",
-        "type": "choice",
-        "is_observation": True,
-        "text": "Tissue Type",
-        "answers": [
-            {"value": "Closed"},
-            {"value": "Epithelial"},
-            {"value": "Granulation"},
-            {"value": "Slough"},
-            {"value": "Necrotic"},
-        ],
-    },
-    {
-        "link_id": "description",
-        "type": "string",
-        "is_observation": True,
-        "text": "Description",
-    },
-    {
-        "link_id": "push_score",
-        "type": "integer",
-        "is_observation": True,
-        "text": "Push Score",
-    },
-    {
-        "link_id": "scale",
-        "type": "integer",
-        "is_observation": True,
-        "text": "Scale",
-    },
-]
+def pain_scale_to_text(region, scale, description):
+    text = ""
+    if region:
+        text += f"Region: {region}\n"
+    if scale:
+        text += f"Scale: {scale}\n"
+    if description:
+        text += f"Description: {description.replace('\n', '. ').replace(':', ";")}\n"
+    return text
+
+
 pressure_sore = {
     "id": "5b34b0d3-12a0-4fc4-9f86-d5bdd3d61bb8",
     "link_id": "pressure_sore",
     "text": "Pressure Sore",
-    "type": "group",
-    "is_observation": True,
-    "is_component": True,
+    "type": "text",
+    "repeats": True,
     "code": {
         "system": "http://loinc.org",
-        "code": "46535-1",
-        "display": "Pressure injury [OASIS]",
+        "code": "90982-0",
+        "display": "Pressure Injury Scale for Healing Tool 3.0 [PUSH]",
     },
-    "questions": questions_for_body_parts("pressure_sore", pressure_sore_sub_questions),
 }
+pressure_sore__length_code = {
+    "system": "http://loinc.org",
+    "code": "39126-8",
+    "display": "Length of wound",
+}
+pressure_sore__width_code = {
+    "system": "http://loinc.org",
+    "code": "39125-0",
+    "display": "Width of wound",
+}
+pressure_sore__exudate_amount_code = {
+    "system": "http://loinc.org",
+    "code": "39116-9",
+    "display": "Drainage amount of Wound",
+}
+pressure_sore__exudate_amount_map = {
+    "None": {
+        "system": "http://loinc.org",
+        "code": "LA137-2",
+        "display": "None",
+    },
+    "Light": {
+        "system": "http://loinc.org",
+        "code": "LA15831-3",
+        "display": "Light",
+    },
+    "Moderate": {
+        "system": "http://loinc.org",
+        "code": "LA6751-7",
+        "display": "Moderate",
+    },
+    "Heavy": {
+        "system": "http://loinc.org",
+        "code": "LA29665-9",
+        "display": "Heavy",
+    },
+}
+pressure_sore__tissue_type_code = {
+    "system": "http://loinc.org",
+    "code": "72371-8",
+    "display": "Appearance of Wound base",
+}
+pressure_sore__tissue_type_map = {
+    "Necrotic": {
+        "system": "http://loinc.org",
+        "code": "LA29660-0",
+        "display": "Necrotic Tissue (Eschar)",
+    },
+    "Epithelial": {
+        "system": "http://loinc.org",
+        "code": "LA29663-4",
+        "display": "Epithelial tissue",
+    },
+    "Granulation": {
+        "system": "http://loinc.org",
+        "code": "LA29662-6",
+        "display": "Granulation tissue",
+    },
+    "Slough": {
+        "system": "http://loinc.org",
+        "code": "LA29661-8",
+        "display": "Slough",
+    },
+    "Closed": {
+        "system": "http://loinc.org",
+        "code": "LA29664-2",
+        "display": "Closed/Resurfaced",
+    },
+}
+pressure_sore__push_score_code = {
+    "system": "http://loinc.org",
+    "code": "90981-2",
+    "display": "Pressure Injury Scale for Healing Tool 3.0 total score [PUSH]",
+}
+
+
+def pressure_sore_to_text(
+    region, length, width, exudate_amount, tissue_type, push_score, description
+):
+    text = ""
+    if region:
+        text += f"Region: {region}\n"
+    if length:
+        text += f"Length: {length}\n"
+    if width:
+        text += f"Width: {width}\n"
+    if exudate_amount:
+        text += f"Exudate Amount: {exudate_amount}\n"
+    if tissue_type:
+        text += f"Tissue Type: {tissue_type}\n"
+    if push_score:
+        text += f"PUSH Score: {push_score}\n"
+    if description:
+        text += f"Description: {description.replace('\n', '. ').replace(':', ";")}\n"
+
+    return text
 
 
 brief_update_questions = [
@@ -1665,6 +1675,7 @@ brief_update_questions = [
     },
 ]
 
+
 def create_observation_spec(questionnaire, responses, parent_id=None):
     spec = {
         "status": "final",
@@ -1681,28 +1692,22 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         return [spec]
     observations = []
     response = responses.get(questionnaire["id"])
-    if (
-        response
-        and len(response.get("values", [])) > 0
-    ):
+    if response and len(response.get("values", [])) > 0:
         observation = {}
         for value in response["values"]:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] =="choice" and value.get("code"):
+            if questionnaire["type"] == "choice" and value.get("code"):
                 observation["value"] = {
-                    "code": value.get("code"),
-                    "system": value.get("system"),
-                    "display": value.get("display"),
+                    "coding": value.get("coding"),
                 }
             elif value:
-                observation["value"] = {"value": str(value.get("value"))}
-                if "unit" in questionnaire:
-                    observation["value"]["unit"] = questionnaire["unit"]
-                if value.get("code"):
-                    observation["value"]["code"] = value.get("code")
-                    observation["value"]["system"] = value.get("system")
-                    observation["value"]["display"] = value.get("display")
+                observation["value"] = {
+                        "value": str(value.get("value")),
+                        "unit": questionnaire.get("unit"),
+                        "coding": value.get("coding"),
+                    }
+
             if response.get("note"):
                 observation["note"] = response.get("note")
         if parent_id:
@@ -1711,22 +1716,6 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         observations.append(observation)
     return observations
 
-
-def create_components(questionnaire, responses):
-    components = []
-    observations = convert_to_observation_spec(
-        questionnaire, responses, is_component=True
-    )
-    for observation in observations:
-        if "main_code" not in observation or "value" not in observation:
-            continue
-        component = {"value": observation["value"], "code": observation["main_code"]}
-        if "note" in observation:
-            component["note"] = observation["note"]
-        components.append(component)
-    return components
-
-
 def convert_to_observation_spec(
     questionnaire, responses, parent_id=None, is_component=False
 ):
@@ -1734,17 +1723,12 @@ def convert_to_observation_spec(
     for question in questionnaire.get("questions", []):
         if question["type"] == "group":
             observation = create_observation_spec(question, responses, parent_id)
-            if not is_component and question.get("is_component", False):
-                components = create_components(question, responses)
-                observation[0]["component"] = components
+            sub_mapping = convert_to_observation_spec(
+                question, responses, observation[0]["id"]
+            )
+            if sub_mapping:
                 constructed_observation_mapping.extend(observation)
-            else:
-                sub_mapping = convert_to_observation_spec(
-                    question, responses, observation[0]["id"]
-                )
-                if sub_mapping:
-                    constructed_observation_mapping.extend(observation)
-                    constructed_observation_mapping.extend(sub_mapping)
+                constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)
@@ -1797,7 +1781,7 @@ def migrate_daily_rounds(apps, schema_editor):
     }
     bulk_questionnaire_root_link = []
     automated_log_update_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="automated_daily_round_53187a6bd",
+        slug="automated_round_a6bd",
         defaults={
             **questionnaire_defaults,
             "title": "Automated Log Update",
@@ -1854,7 +1838,7 @@ def migrate_daily_rounds(apps, schema_editor):
     )
 
     community_nurse_log_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="community_nurse_log_17984f92",
+        slug="community_nurse_log_84f92",
         defaults={
             **questionnaire_defaults,
             "title": "Community Nurse's Log",
@@ -2130,7 +2114,11 @@ def migrate_daily_rounds(apps, schema_editor):
             daily_round.total_output_calculated = (
                 daily_round.total_output_calculated or None
             )
+            daily_round.glasgow_total_calculated = (
+                daily_round.glasgow_total_calculated or None
+            )
 
+            extra_observations = []
             questionnaire_responses = {}
             # fmt: off
             simple_fields = [
@@ -2166,6 +2154,8 @@ def migrate_daily_rounds(apps, schema_editor):
                 ("blood_sugar_level", blood_sugar_level),
                 ("dialysis_fluid_balance", dialysis_fluid_balance),
                 ("dialysis_net_balance", dialysis_net_balance),
+                ("total_intake_calculated", total_intake_calculated),
+                ("total_output_calculated", total_output_calculated),
             ]
             for attr, question_obj in simple_fields:
                 value = getattr(daily_round, attr)
@@ -2294,8 +2284,8 @@ def migrate_daily_rounds(apps, schema_editor):
                 code = rhythm_map.get(daily_round.rhythm)
                 questionnaire_responses[rhythm["id"]] = {
                     "question_id": rhythm["id"],
-                    "note": daily_round.rhythm_detail or None,
-                    "values": [{**code}] if code else [],
+                    "note": daily_round.rhythm_detail,
+                    "values": [{"coding": code}] if code else [],
                 }
 
             if daily_round.bp:
@@ -2318,7 +2308,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         code = infusions_map[infusion]
                         values.append(
                             {
-                                **code,
+                                "coding": code,
                                 "value": daily_round_infusion.get("quantity"),
                             }
                         )
@@ -2334,7 +2324,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         code = iv_fluids_map[iv_fluid]
                         values.append(
                             {
-                                **code,
+                                "coding": code,
                                 "value": daily_round_iv_fluid.get("quantity"),
                             }
                         )
@@ -2350,7 +2340,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         code = feeds_map[feed]
                         values.append(
                             {
-                                **code,
+                                "coding": code,
                                 "value": daily_round_feed.get("quantity"),
                             }
                         )
@@ -2366,7 +2356,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         code = output_map[output_name]
                         values.append(
                             {
-                                **code,
+                                "coding": code,
                                 "value": daily_round_output.get("quantity"),
                             }
                         )
@@ -2382,7 +2372,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         code = nursing_map[nursing_procedure]
                         values.append(
                             {
-                                **code,
+                                "coding": code,
                                 "value": daily_round_nursing.get("description"),
                             }
                         )
@@ -2391,97 +2381,159 @@ def migrate_daily_rounds(apps, schema_editor):
                         "question_id": nursing["id"],
                         "values": values,
                     }
+
             if daily_round.pain_scale_enhanced:
-                pain_scale_enhanced_responses = {}
+                values = []
                 for daily_round_pain_scale_enhanced in daily_round.pain_scale_enhanced:
-                    region = daily_round_pain_scale_enhanced.get("region")
-                    scale = daily_round_pain_scale_enhanced.get("scale")
-                    description = daily_round_pain_scale_enhanced.get("description")
-                    if human_body_map.get(region):
-                        scale_question_id = deterministic_uuid(
-                            pain_scale_enhanced["link_id"], region, "scale"
-                        )
-                        pain_scale_enhanced_responses[scale_question_id] = {
-                            "question_id": scale_question_id,
-                            "values": [{"value": scale}],
+                    region = snake_to_pascal(
+                        daily_round_pain_scale_enhanced.get("region", "")
+                    )
+                    if region not in human_body_map:
+                        continue
+                    scale = daily_round_pain_scale_enhanced.get("scale", 0)
+                    description = daily_round_pain_scale_enhanced.get(
+                        "description", ""
+                    ).strip()
+
+                    pain_observation = {
+                        "id": str(uuid.uuid4()),
+                        "status": "final",
+                        "value_type": "group",
+                        "value": {},
+                        "main_code": pain_scale_enhanced["code"],
+                        "component": [],
+                    }
+                    pain_observation["component"].append(
+                        {
+                            "code": body_site_code,
+                            "value": {"coding": human_body_map.get(region)},
+                            "note": region,
                         }
-                        if description:
-                            description_question_id = deterministic_uuid(
-                                pain_scale_enhanced["link_id"], region, "description"
-                            )
-                            pain_scale_enhanced_responses[description_question_id] = {
-                                "question_id": description_question_id,
-                                "values": [{"value": description}],
+                    )
+                    if scale:
+                        pain_observation["component"].append(
+                            {
+                                "code": pain_scale_enhanced__scale_code,
+                                "value": {"value": str(scale)},
                             }
-                questionnaire_responses.update(pain_scale_enhanced_responses)
+                        )
+                    if description:
+                        pain_observation["component"].append(
+                            {
+                                "code": description_code,
+                                "value": {"value": description},
+                            }
+                        )
+
+                    values.append(pain_scale_to_text(region, scale, description))
+                    extra_observations.append(pain_observation)
+
+                questionnaire_responses[pain_scale_enhanced["id"]] = {
+                    "question_id": pain_scale_enhanced["id"],
+                    "values": values,
+                }
+
             if daily_round.pressure_sore:
-                pressure_sore_responses = {}
+                values = []
                 for daily_round_pressure_sore in daily_round.pressure_sore:
-                    region = daily_round_pressure_sore.get("region")
+                    region = snake_to_pascal(
+                        daily_round_pressure_sore.get("region", "")
+                    )
                     length = daily_round_pressure_sore.get("length")
                     width = daily_round_pressure_sore.get("width")
+                    if region not in human_body_map or not (length or width):
+                        continue
                     exudate_amount = daily_round_pressure_sore.get("exudate_amount")
                     tissue_type = daily_round_pressure_sore.get("tissue_type")
-                    description = daily_round_pressure_sore.get("description")
                     push_score = daily_round_pressure_sore.get("push_score")
-                    scale = daily_round_pressure_sore.get("scale")
-                    if human_body_map.get(region):
-                        length_question_id = deterministic_uuid(
-                            pressure_sore["link_id"], region, "length"
-                        )
-                        pressure_sore_responses[length_question_id] = {
-                            "question_id": length_question_id,
-                            "values": [{"value": length}],
-                        }
-                        width_question_id = deterministic_uuid(
-                            pressure_sore["link_id"], region, "width"
-                        )
-                        pressure_sore_responses[width_question_id] = {
-                            "question_id": width_question_id,
-                            "values": [{"value": width}],
-                        }
-                        if exudate_amount:
-                            exudate_amount_question_id = deterministic_uuid(
-                                pressure_sore["link_id"], region, "exudate_amount"
-                            )
-                            pressure_sore_responses[exudate_amount_question_id] = {
-                                "question_id": exudate_amount_question_id,
-                                "values": [{"value": exudate_amount}],
-                            }
-                        if tissue_type:
-                            tissue_type_question_id = deterministic_uuid(
-                                pressure_sore["link_id"], region, "tissue_type"
-                            )
-                            pressure_sore_responses[tissue_type_question_id] = {
-                                "question_id": tissue_type_question_id,
-                                "values": [{"value": tissue_type}],
-                            }
-                        if description:
-                            description_question_id = deterministic_uuid(
-                                pressure_sore["link_id"], region, "description"
-                            )
-                            pressure_sore_responses[description_question_id] = {
-                                "question_id": description_question_id,
-                                "values": [{"value": description}],
-                            }
-                        if push_score:
-                            push_score_question_id = deterministic_uuid(
-                                pressure_sore["link_id"], region, "push_score"
-                            )
-                            pressure_sore_responses[push_score_question_id] = {
-                                "question_id": push_score_question_id,
-                                "values": [{"value": push_score}],
-                            }
-                        if scale:
-                            scale_question_id = deterministic_uuid(
-                                pressure_sore["link_id"], region, "scale"
-                            )
-                            pressure_sore_responses[scale_question_id] = {
-                                "question_id": scale_question_id,
-                                "values": [{"value": scale}],
-                            }
+                    description = daily_round_pressure_sore.get("description")
 
-                questionnaire_responses.update(pressure_sore_responses)
+                    pressure_sore_observation = {
+                        "id": str(uuid.uuid4()),
+                        "status": "final",
+                        "value_type": "group",
+                        "value": {},
+                        "main_code": pressure_sore["code"],
+                        "component": [],
+                    }
+
+                    pressure_sore_observation["component"].append(
+                        {
+                            "code": body_site_code,
+                            "value": {"coding": human_body_map.get(region)},
+                            "note": region,
+                        }
+                    )
+                    if length:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": pressure_sore__length_code,
+                                "value": {"value": str(length), "unit": cm_code},
+                            }
+                        )
+                    if width:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": pressure_sore__width_code,
+                                "value": {"value": str(width), "unit": cm_code},
+                            }
+                        )
+                    if exudate_amount:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": pressure_sore__exudate_amount_code,
+                                "value": {
+                                    "coding": pressure_sore__exudate_amount_map.get(
+                                        exudate_amount
+                                    )
+                                },
+                                "note": exudate_amount,
+                            }
+                        )
+                    if tissue_type:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": pressure_sore__tissue_type_code,
+                                "value": {
+                                    "coding": pressure_sore__tissue_type_map.get(
+                                        tissue_type
+                                    )
+                                },
+                                "note": tissue_type,
+                            }
+                        )
+                    if push_score:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": pressure_sore__push_score_code,
+                                "value": {"value": str(push_score)},
+                            }
+                        )
+                    if description:
+                        pressure_sore_observation["component"].append(
+                            {
+                                "code": description_code,
+                                "value": {"value": description},
+                            }
+                        )
+
+                    values.append(
+                        pressure_sore_to_text(
+                            region,
+                            length,
+                            width,
+                            exudate_amount,
+                            tissue_type,
+                            push_score,
+                            description,
+                        )
+                    )
+                    extra_observations.append(pressure_sore_observation)
+
+                questionnaire_responses[pressure_sore["id"]] = {
+                    "question_id": pressure_sore["id"],
+                    "values": values,
+                }
 
             if not questionnaire_responses:
                 continue
@@ -2516,8 +2568,17 @@ def migrate_daily_rounds(apps, schema_editor):
                 },
             )
 
+            questionnaire_responses.pop(pain_scale_enhanced["id"], None)
+            questionnaire_responses.pop(pressure_sore["id"], None)
+
             observations = convert_to_observation_spec(
                 {"questions": selected_questionnaire.questions}, questionnaire_responses
+            )
+            observations.extend(
+                [
+                    {**o, "effective_datetime": daily_round.taken_at}
+                    for o in extra_observations
+                ]
             )
             observations_objects = []
             for observation in observations:
@@ -2530,8 +2591,7 @@ def migrate_daily_rounds(apps, schema_editor):
                         updated_by_id=daily_round.last_edited_by_id,
                     )
                 except Exception as e:
-                    print(e)
-                    print(observation)
+                    print(e, observation)
                     raise e
                 observations_obj = pydantic_observation.de_serialize()
                 observations_obj.effective_datetime = daily_round.taken_at
@@ -2541,6 +2601,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 observations_obj.subject_id = encounter.external_id
                 observations_obj.created_date = daily_round.created_date
                 observations_obj.modified_date = daily_round.modified_date
+                observations_obj.meta = {"migration_id": MIGRATION_ID}
                 observations_objects.append(observations_obj)
             Observation.objects.bulk_create(observations_objects)
 
