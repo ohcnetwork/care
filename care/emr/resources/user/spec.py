@@ -36,6 +36,9 @@ class UserBaseSpec(EMRResource):
     first_name: str
     last_name: str
 
+    prefix: str | None = None
+    suffix: str | None = None
+
 
 class UserUpdateSpec(UserBaseSpec):
     user_type: UserTypeOptions
