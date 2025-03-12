@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a0bdf33b834f4ce61c7b893d2b631d89ed8554d9ef2bf7b4874ebf426a56d056"
+            "sha256": "275d7de966e81cfc641ecb4a57b8c212ae879489d6aa43f64d32edddbd79a3ca"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,7 @@
             },
             {
                 "name": "python-magic-bin",
-                "url": "https://github.com/ddelange/python-magic/releases/expanded_assets/0.4.28.post8",
+                "url": "https://github.com/ohcnetwork/python-magic-bin/releases/expanded_assets/v0.1",
                 "verify_ssl": true
             }
         ]
@@ -1464,20 +1464,16 @@
         },
         "python-magic": {
             "hashes": [
-                "sha256:04439844724e4f1502389e6039b2124aa2faea980ffaa998d9c498d4158d86c5",
-                "sha256:0601b71e76f46e6f8de1e4a6497eb951f6d725220e6bb46c42b821efcfe4c85f",
-                "sha256:115e33d64cdf017593205a08cb37c03ec658a48096d7983dd726fe082bd16b9c",
-                "sha256:346970cc346de1cb38227cf215206dd3d2219159d871dcc789a141b5f41663fa",
-                "sha256:5c5ee223f2f517a2ff38988991d1c9e8aa71e4903186b29fdf4633e2b2db1505",
-                "sha256:5d3e16e32a09bcdbe16305151171de9a9b7fd4bf9c9181b259fd6fa7028f2420",
-                "sha256:9b9a3b5dd0875ff027f7bf6147da38f86ebd54d06942b4d817e57e4746e382bc",
-                "sha256:a9581eaf1d6c66d1fca89d01b2a96fbd14a23e46441e251103dcc0fae3210bd2",
-                "sha256:e5dd758b19db6344ae2131e93a9040466d29eb43127b20dac0035f1299ca0727",
-                "sha256:e6b26fbcdcb69e485dc6aa6ebca38138b303709c814d9ab0e5dcfa36c4ff0e0f",
-                "sha256:f0e29d5054b1ff9b52a27fde5360d8431b8041f93110cb43a96f13f1edd6b93b",
-                "sha256:f22507ac58c717973e1c913ac784ba37336b5f9ababe77776778fe2c4df4bfc4",
-                "sha256:fe227975a36d40212abda7cf0a935a9ab552e1f349b193e2a5f9737f99e30b07",
-                "sha256:ff4c2dc3c73ff123817dbf5660480a75551a985a283f62cce1a7347b0741163f"
+                "sha256:15014af73a01ee7a411dd446f558963bc9fe0f78f6e4d6fb4d905e4567040309",
+                "sha256:20142991b4aea876f6bf2ddd88fb4cd7d1017e12467d22f6bda1c21d4e99e32a",
+                "sha256:3add737d417f49114d9c661c2cfdd5504cfe7dcdf6cbf45a43904bfad0a4cc28",
+                "sha256:4c7d6caf3bedcd54b4de328c9c554e33fc9a3a53dd301c8cde8ae737c2fc851a",
+                "sha256:638eac2127e73300711e2c2870f629d8956d085f847cc3804c02befea122bfaa",
+                "sha256:79aa6d26bc9911aae623e607824bbad8fa6ace6e4748ccb2e86b9db681386b2a",
+                "sha256:9591c37f7e1f404bc51b4698a57d848423058b7db132af7c6f416ec6b3ac88cd",
+                "sha256:b2ac43adae6a266210bacdb6af9e05137e28a27b3e21442a9da5e5fb07246084",
+                "sha256:d8c12c5e358f37eb959107a7cddceb42323f3e783d79fce74b98216da369c294",
+                "sha256:f435be713a6432cc1896aabc6e2f7330605644868d17e37d47682ee9fc9ad26c"
             ],
             "index": "python-magic-bin",
             "version": "==0.4.28"

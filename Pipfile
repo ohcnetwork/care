@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [[source]]
-url = "https://github.com/ddelange/python-magic/releases/expanded_assets/0.4.28.post8"
+url = "https://github.com/ohcnetwork/python-magic-bin/releases/expanded_assets/v0.1"
 verify_ssl = true
 name = "python-magic-bin"
 
