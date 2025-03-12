@@ -48,6 +48,7 @@ from care.security.authorization import AuthorizationController
 class DeviceFilters(filters.FilterSet):
     current_encounter = filters.UUIDFilter(field_name="current_encounter__external_id")
     current_location = filters.UUIDFilter(field_name="current_location__external_id")
+    care_type = filters.CharFilter(field_name="care_type")
 
 
 class DeviceViewSet(EMRModelViewSet):
