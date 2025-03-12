@@ -10,12 +10,12 @@ name = "python-magic-bin"
 
 [packages]
 argon2-cffi = "==23.1.0"
-authlib = "==1.5.1"
-boto3 = "==1.37.5"
+authlib = "==1.4.0"
+boto3 = "==1.36.12"
 celery = "==5.4.0"
 django = "==5.1.4"
 django-environ = "==0.12.0"
-django-cors-headers = "==4.7.0"
+django-cors-headers = "==4.6.0"
 django-filter = "==24.3"
 django-maintenance-mode = "==0.21.1"
 django-queryset-csv = "==1.1.0"
@@ -46,7 +46,7 @@ redis-om = "==0.3.3"
 requests = "==2.32.3"
 simplejson = "==3.19.3"
 sentry-sdk = "==2.18.0"
-whitenoise = "==6.9.0"
+whitenoise = "==6.8.2"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
 pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
@@ -54,7 +54,7 @@ python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
-coverage = "==7.6.12"
+coverage = "==7.6.10"
 debugpy = "==1.8.12"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
