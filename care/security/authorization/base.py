@@ -42,9 +42,9 @@ class AuthorizationHandler:
         for perm in permissions:
             roles = self.get_role_from_permissions([perm])
             filters = {"role_id__in": roles, "user": user}
-            if orgs:
+            if orgs is not None:
                 filters["organization_id__in"] = orgs
-            if facility:
+            if facility is not None:
                 filters["organization__facility"] = facility
 
             if not FacilityOrganizationUser.objects.filter(**filters).exists():

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
@@ -91,6 +93,9 @@ class TokenRefreshSerializer(serializers.Serializer):
     def validate(self, attrs):
         refresh = RefreshToken(attrs["refresh"])
 
+        if refresh.get("temp_token"):
+            raise PermissionDenied("Temporary tokens cannot be used to refresh")
+
         if cache.get(REFRESH_TOKEN_INVALIDATION_PREFIX + attrs["refresh"]):
             raise PermissionDenied("Invalid Token")
 
@@ -122,6 +127,7 @@ class TokenRefreshSerializer(serializers.Serializer):
 class TokenObtainPairSerializer(TokenObtainSerializer):
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
+    temp_token = serializers.CharField(read_only=True)
 
     @classmethod
     def get_token(cls, user):
@@ -130,12 +136,22 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        totp_enabled = self.user.is_mfa_enabled()
+
+        if totp_enabled:
+            temp_token = RefreshToken.for_user(self.user)
+            temp_token["temp_token"] = True
+            temp_token.set_exp(lifetime=timedelta(minutes=5))
+
+            return {
+                "temp_token": str(temp_token),
+            }
         refresh = self.get_token(self.user)
+
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
 
         User.objects.filter(id=self.user.id).update(last_login=localtime(now()))
-
         return data
 
 

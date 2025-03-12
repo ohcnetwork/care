@@ -16,6 +16,8 @@ class CodeConceptResource(ResourceManger):
             err = "Both system and code are required"
             raise ValueError(err)
         full_result = self.query("GET", "CodeSystem/$lookup", self._filters)
+        if "parameter" not in full_result:
+            raise ValueError("No results found for the given system and code")
         return self.serialize_lookup(full_result["parameter"])
 
 

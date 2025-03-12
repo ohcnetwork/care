@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -14,7 +14,6 @@ from care.emr.models import (
     Patient,
     Questionnaire,
     QuestionnaireOrganization,
-    QuestionnaireResponse,
     QuestionnaireTag,
 )
 from care.emr.resources.organization.spec import OrganizationReadSpec

@@ -3,7 +3,9 @@ from care.emr.resources.common.valueset import ValueSetCompose, ValueSetInclude
 from care.emr.resources.valueset.spec import ValueSetStatusOptions
 
 CARE_MEDICATION_NOT_GIVEN_REASON_VALUESET = CareValueset(
-    "Disease", "system-medication-not-given", ValueSetStatusOptions.active.value
+    "Medication Not Given Reason",
+    "system-medication-not-given",
+    ValueSetStatusOptions.active.value,
 )
 
 CARE_MEDICATION_NOT_GIVEN_REASON_VALUESET.register_valueset(

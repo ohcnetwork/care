@@ -27,6 +27,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationListSpec,
 )
 from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.facility.models import Facility
 
@@ -108,7 +109,7 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
 
 
-class EncounterRetrieveSpec(EncounterListSpec):
+class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}
     created_by: dict = {}
     updated_by: dict = {}

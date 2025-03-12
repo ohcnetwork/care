@@ -48,12 +48,12 @@ class CareValueset:
     def create_composition(self):
         systems = {}
         for include in self.composition.include:
-            system = include.system.root
+            system = include.system
             if system not in systems:
                 systems[system] = {"include": []}
             systems[system]["include"].append(include.model_dump(exclude_defaults=True))
         for exclude in self.composition.exclude:
-            system = exclude.system.root
+            system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))

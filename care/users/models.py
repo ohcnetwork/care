@@ -307,6 +307,9 @@ class User(AbstractUser):
         null=True,
     )
 
+    prefix = models.CharField(max_length=10, blank=True, null=True)
+    suffix = models.CharField(max_length=50, blank=True, null=True)
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -314,6 +317,8 @@ class User(AbstractUser):
     pf_endpoint = models.TextField(default=None, null=True)
     pf_p256dh = models.TextField(default=None, null=True)
     pf_auth = models.TextField(default=None, null=True)
+    totp_secret = models.TextField(blank=True, null=True)
+    mfa_settings = models.JSONField(default=dict, blank=True)
 
     # Asset Fields
 
@@ -354,9 +359,18 @@ class User(AbstractUser):
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
         return None
 
+    def is_mfa_enabled(self):
+        return bool(self.mfa_settings.get("totp", {}).get("enabled", False))
+
     @property
     def full_name(self):
-        return self.get_full_name()
+        name_parts = []
+        if self.prefix:
+            name_parts.append(self.prefix)
+        name_parts.append(self.get_full_name())
+        if self.suffix:
+            name_parts.append(self.suffix)
+        return " ".join(name_parts)
 
     @staticmethod
     def has_read_permission(request):

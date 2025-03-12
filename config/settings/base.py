@@ -723,5 +723,11 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
 
+MAX_APPOINTMENTS_PER_PATIENT = env.int("MAX_APPOINTMENTS_PER_PATIENT", default=10)
+
+MAX_ACTIVE_ENCOUNTERS_PER_PATIENT = env.int(
+    "MAX_ACTIVE_ENCOUNTERS_PER_PATIENT", default=5
+)
+
 # Maximum file upload size in MB
 MAX_FILE_UPLOAD_SIZE = env.int("MAX_FILE_UPLOAD_SIZE", default=5)
