@@ -459,29 +459,6 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
 
-    def test_list_booking_multiple_statuses(self):
-        """Users can list bookings with multiple statuses."""
-        permissions = [
-            UserSchedulePermissions.can_list_user_booking.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        self.create_booking(status=BookingStatusChoices.checked_in.value)
-        self.create_booking(status=BookingStatusChoices.cancelled.value)
-
-        response = self.client.get(
-            self.base_url,
-            {
-                "status": [
-                    BookingStatusChoices.checked_in.value,
-                    BookingStatusChoices.cancelled.value,
-                ]
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 2)
-
 
 @ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestSlotViewSetAppointmentApi(CareAPITestBase):

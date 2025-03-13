@@ -2,9 +2,9 @@ from typing import Literal
 
 from django.db import transaction
 from django_filters import (
+    CharFilter,
     DateFromToRangeFilter,
     FilterSet,
-    MultipleChoiceFilter,
     UUIDFilter,
 )
 from django_filters.rest_framework import DjangoFilterBackend
@@ -47,10 +47,7 @@ class RescheduleBookingSpec(BaseModel):
 
 
 class TokenBookingFilters(FilterSet):
-    status = MultipleChoiceFilter(
-        field_name="status",
-        choices=[(status.value, status.value) for status in BookingStatusChoices],
-    )
+    status = CharFilter(field_name="status")
     date = DateFromToRangeFilter(field_name="token_slot__start_datetime__date")
     slot = UUIDFilter(field_name="token_slot__external_id")
     user = UUIDFilter(method="filter_by_user")
