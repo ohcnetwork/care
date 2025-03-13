@@ -319,9 +319,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         )
         diagnosis_data_dict = self.generate_data_for_diagnosis(
             encounter,
-            onset={
-                "onset_datetime": care_now() + datetime.timedelta(seconds=20),
-            },
+            onset={"onset_datetime": care_now() + datetime.timedelta(days=1)},
         )
         response = self.client.post(self.base_url, diagnosis_data_dict, format="json")
         self.assertEqual(response.status_code, 400)
