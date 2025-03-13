@@ -1503,11 +1503,6 @@ human_body_map = {
         "display": "Lower Extremity-Right",
     },
 }
-body_site_code = {
-    "system": "http://loinc.org",
-    "code": "39111-0",
-    "display": "Body site",
-}
 description_code = {
     "system": "http://loinc.org",
     "code": "107132-3",
@@ -2388,12 +2383,13 @@ def migrate_daily_rounds(apps, schema_editor):
                     region = snake_to_pascal(
                         daily_round_pain_scale_enhanced.get("region", "")
                     )
-                    if region not in human_body_map:
-                        continue
                     scale = daily_round_pain_scale_enhanced.get("scale", 0)
                     description = daily_round_pain_scale_enhanced.get(
                         "description", ""
                     ).strip()
+
+                    if region not in human_body_map or not (scale or description):
+                        continue
 
                     pain_observation = {
                         "id": str(uuid.uuid4()),
@@ -2401,15 +2397,10 @@ def migrate_daily_rounds(apps, schema_editor):
                         "value_type": "group",
                         "value": {},
                         "main_code": pain_scale_enhanced["code"],
+                        "body_site": human_body_map.get(region),
+                        "note": region,
                         "component": [],
                     }
-                    pain_observation["component"].append(
-                        {
-                            "code": body_site_code,
-                            "value": {"coding": human_body_map.get(region)},
-                            "note": region,
-                        }
-                    )
                     if scale:
                         pain_observation["component"].append(
                             {
@@ -2454,16 +2445,11 @@ def migrate_daily_rounds(apps, schema_editor):
                         "value_type": "group",
                         "value": {},
                         "main_code": pressure_sore["code"],
+                        "body_site": human_body_map.get(region),
+                        "note": region,
                         "component": [],
                     }
 
-                    pressure_sore_observation["component"].append(
-                        {
-                            "code": body_site_code,
-                            "value": {"coding": human_body_map.get(region)},
-                            "note": region,
-                        }
-                    )
                     if length:
                         pressure_sore_observation["component"].append(
                             {
