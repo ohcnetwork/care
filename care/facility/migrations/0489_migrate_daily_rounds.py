@@ -1832,6 +1832,9 @@ def migrate_daily_rounds(apps, schema_editor):
         },
     )
 
+    if created:
+        bulk_questionnaire_root_link.append(telemedicine_questionnaire.id)
+
     community_nurse_log_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="community_nurse_log_84f92",
         defaults={
