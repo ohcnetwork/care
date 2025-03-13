@@ -106,12 +106,11 @@ DOSAGE_UNITS_MAP = {
         "display": "Ampule",
         "system": "http://care.ohc.network",
     },
-    # TOOD: confirm this
-    # "unit(s)": {
-    #     "code": "U",
-    #     "display": "Unit",
-    #     "system": "http://care.ohc.network"
-    # },
+    "unit(s)": {
+        "code": "Unit",
+        "display": "Unit",
+        "system": "http://care.ohc.network"
+    },
 }
 
 FREQUENCY_MAP = {
