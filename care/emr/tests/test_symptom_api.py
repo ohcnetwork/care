@@ -319,9 +319,7 @@ class TestSymptomViewSet(CareAPITestBase):
         )
         symptom_data_dict = self.generate_data_for_symptom(
             encounter,
-            onset={
-                "onset_datetime": care_now() + datetime.timedelta(seconds=20),
-            },
+            onset={"onset_datetime": care_now() + datetime.timedelta(days=1)},
         )
 
         response = self.client.post(self.base_url, symptom_data_dict, format="json")
