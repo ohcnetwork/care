@@ -184,7 +184,7 @@ class ValueSetViewSet(EMRModelViewSet):
         code_obj = MinimalCodeConcept(**request.data)
 
         preferences = self._get_or_create_user_preferences(request.user, valueset)
-        preferences.remove_recent_view(code_obj.code)
+        preferences.remove_recent_view(code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} removed from recent views"})
 
     @action(detail=True, methods=["GET"])

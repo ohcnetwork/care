@@ -1,6 +1,9 @@
+import json
+
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
+from django_redis import get_redis_connection
 
 from care.emr.fhir.resources.valueset import ValueSetResource
 from care.emr.models import EMRBaseModel
@@ -66,7 +69,10 @@ class UserValueSetPreference(EMRBaseModel):
     MAX_FAVORITES = getattr(settings, "MAX_FAVORITES_FOR_VALUESET", 50)
 
     def _get_cache_key(self, field_name):
-        return f"{self.CACHE_KEY_PREFIX}{self.user.external_id}:{self.valueset.external_id}:{field_name}"
+        return f"{self.CACHE_KEY_PREFIX}{self.external_id}:{field_name}"
+
+    def _get_redis_client(self):
+        return get_redis_connection("default")
 
     def _get_or_set_favourites(self):
         cache_key = self._get_cache_key("favourites")
@@ -112,35 +118,25 @@ class UserValueSetPreference(EMRBaseModel):
 
     def get_recent_views(self):
         cache_key = self._get_cache_key("recent_views")
-        with Lock(cache_key):
-            recent_views = cache.get(cache_key)
-            if not recent_views:
-                recent_views = []
-                cache.set(cache_key, recent_views)
-            return recent_views
+        r = self._get_redis_client()
+        items = r.lrange(cache_key, 0, -1)
+        return [json.loads(item.decode("utf-8")) for item in items]
 
     def add_recent_view(self, code_obj):
         cache_key = self._get_cache_key("recent_views")
-        with Lock(cache_key):
-            recent_views = cache.get(cache_key)
-            if not recent_views:
-                recent_views = []
-            if code_obj not in recent_views:
-                recent_views.insert(0, code_obj)
-                recent_views = recent_views[: self.MAX_RECENT_VIEW]
-                cache.set(cache_key, recent_views)
+        r = self._get_redis_client()
+        code_json = json.dumps(code_obj)
+        r.lrem(cache_key, 0, code_json)
+        r.lpush(cache_key, code_json)
+        r.ltrim(cache_key, 0, self.MAX_RECENT_VIEW - 1)
 
-    def remove_recent_view(self, code_value):
+    def remove_recent_view(self, code_obj):
         cache_key = self._get_cache_key("recent_views")
-        with Lock(cache_key):
-            recent_views = cache.get(cache_key)
-            if not recent_views:
-                recent_views = []
-            new_recent_views = [c for c in recent_views if c["code"] != code_value]
-            if new_recent_views != recent_views:
-                cache.set(cache_key, new_recent_views)
+        r = self._get_redis_client()
+        code_json = json.dumps(code_obj)
+        r.lrem(cache_key, 0, code_json)
 
     def clear_recent_views(self):
         cache_key = self._get_cache_key("recent_views")
-        with Lock(cache_key):
-            cache.delete(cache_key)
+        r = self._get_redis_client()
+        r.delete(cache_key)
