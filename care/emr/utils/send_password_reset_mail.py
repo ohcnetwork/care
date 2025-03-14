@@ -7,7 +7,7 @@ from django_rest_passwordreset.models import ResetPasswordToken
 User = get_user_model()
 
 
-def send_password_reset_email(instance: User, fail_silently=False):
+def send_password_creation_email(instance: User, fail_silently=False):
     if instance.password_reset_tokens.all().count() > 0:
         # yes, already has a token, re-use this token
         reset_password_token = instance.password_reset_tokens.all()[0]
