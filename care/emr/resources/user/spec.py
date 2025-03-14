@@ -47,7 +47,7 @@ class UserUpdateSpec(UserBaseSpec):
 
 class UserCreateSpec(UserUpdateSpec):
     geo_organization: UUID4
-    password: str
+    password: str | None = None
     username: str
     email: str
 
