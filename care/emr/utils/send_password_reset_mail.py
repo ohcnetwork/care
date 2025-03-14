@@ -20,11 +20,13 @@ def send_password_creation_email(instance: User, fail_silently=False):
         "current_user": reset_password_token.user,
         "username": reset_password_token.user.username,
         "email": reset_password_token.user.email,
-        "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
+        "create_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
     }
-    email_html_message = render_to_string("email/user_reset_password.html", context)
+    email_html_message = render_to_string(
+        "email/user_password_creation_email.html", context
+    )
     msg = EmailMessage(
-        "Password Reset for Care",
+        "Set Up Your Password for Care",
         email_html_message,
         settings.DEFAULT_FROM_EMAIL,
         (reset_password_token.user.email,),

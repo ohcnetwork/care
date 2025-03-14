@@ -79,6 +79,8 @@ class UserCreateSpec(UserUpdateSpec):
     @field_validator("password")
     @classmethod
     def validate_password(cls, password):
+        if password is None:
+            return None
         try:
             validate_password(password)
         except Exception as e:
