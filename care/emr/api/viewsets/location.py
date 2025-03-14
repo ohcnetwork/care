@@ -64,7 +64,8 @@ class FacilityLocationViewSet(EMRModelViewSet):
     pydantic_retrieve_model = FacilityLocationRetrieveSpec
     pydantic_update_model = FacilityLocationUpdateSpec
     filterset_class = FacilityLocationFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = ["sort_index"]
 
     def get_facility_obj(self):
         return get_object_or_404(

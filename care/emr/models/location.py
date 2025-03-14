@@ -32,6 +32,8 @@ class FacilityLocation(EMRBaseModel):
     current_encounter = models.ForeignKey(
         Encounter, on_delete=models.SET_NULL, null=True, blank=True, default=None
     )  # Populated from FacilityLocationEncounter
+    sort_index = models.IntegerField(default=0)
+
     cache_expiry_days = 15
 
     def get_parent_json(self):

@@ -1,7 +1,7 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models import Encounter, FacilityLocationEncounter
 from care.emr.models.location import FacilityLocation
@@ -68,6 +68,10 @@ class FacilityLocationBaseSpec(EMRResource):
     id: UUID4 | None = None
 
 
+MIN_SORT_INDEX = 0
+MAX_SORT_INDEX = 999
+
+
 class FacilityLocationSpec(FacilityLocationBaseSpec):
     status: StatusChoices
     operational_status: FacilityLocationOperationalStatusChoices
@@ -75,6 +79,18 @@ class FacilityLocationSpec(FacilityLocationBaseSpec):
     description: str
     location_type: Coding | None = None
     form: FacilityLocationFormChoices
+    sort_index: int | None = None
+
+    @field_validator("sort_index")
+    @classmethod
+    def validate_sort_index(cls, sort_index: int, info):
+        if sort_index is None:
+            return None
+        if sort_index < MAX_SORT_INDEX:
+            raise ValueError("Sort Index cannot be negative")
+        if sort_index > MAX_SORT_INDEX:
+            raise ValueError("Sort Index cannot exceed 999")
+        return sort_index
 
 
 class FacilityLocationUpdateSpec(FacilityLocationSpec):
