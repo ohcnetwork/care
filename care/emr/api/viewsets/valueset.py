@@ -59,6 +59,9 @@ class ValueSetViewSet(EMRModelViewSet):
     def get_serializer_class(self):
         return ValueSetSpec
 
+    def get_cache_key(self, valueset_id, user_id):
+        return f"user_valueset_code_prefs:{valueset_id}:{user_id}:recent_views"
+
     @extend_schema(request=ExpandRequest, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def expand(self, request, *args, **kwargs):
@@ -131,9 +134,11 @@ class ValueSetViewSet(EMRModelViewSet):
             raise ValidationError("Maximum number of favorites reached (50)")
 
         preferences.add_favourite(code_obj.model_dump())
-        preferences.add_recent_view(
-            code_obj.model_dump()
-        )  # Add to recent views as well
+        valueset_id = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_cache_key(valueset_id, user_id)
+        # Add to recent views as well
+        UserValueSetPreference.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} marked as favorite"})
 
     @action(detail=True, methods=["POST"])
@@ -166,41 +171,34 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def add_recent_view(self, request, *args, **kwargs):
-        valueset = self.get_object()
+        valueset_id = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_cache_key(valueset_id, user_id)
         code_obj = MinimalCodeConcept(**request.data)
-
-        # validate the code
-        if not valueset.lookup(code_obj):
-            raise ValidationError("Invalid value")
-
-        preferences = self._get_or_create_user_preferences(request.user, valueset)
-        preferences.add_recent_view(code_obj.model_dump())
+        UserValueSetPreference.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} added to recent views"})
 
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def remove_recent_view(self, request, *args, **kwargs):
-        valueset = self.get_object()
+        valueset_id = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_cache_key(valueset_id, user_id)
         code_obj = MinimalCodeConcept(**request.data)
-
-        preferences = self._get_or_create_user_preferences(request.user, valueset)
-        preferences.remove_recent_view(code_obj.model_dump())
+        UserValueSetPreference.remove_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} removed from recent views"})
 
     @action(detail=True, methods=["GET"])
     def recent_views(self, request, *args, **kwargs):
-        valueset = self.get_object()
-        preferences = UserValueSetPreference.objects.filter(
-            user=request.user, valueset=valueset
-        ).first()
-        return Response(preferences.get_recent_views() if preferences else [])
+        valueset_id = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_cache_key(valueset_id, user_id)
+        return Response(UserValueSetPreference.get_recent_views(cache_key))
 
     @action(detail=True, methods=["POST"])
     def clear_recent_views(self, request, *args, **kwargs):
-        valueset = self.get_object()
-        preference = UserValueSetPreference.objects.filter(
-            user=request.user, valueset=valueset
-        ).first()
-        if preference:
-            preference.clear_recent_views()
+        valueset_id = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_cache_key(valueset_id, user_id)
+        UserValueSetPreference.clear_recent_views(cache_key)
         return Response({"message": "All recent views cleared"})

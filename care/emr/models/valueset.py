@@ -68,11 +68,10 @@ class UserValueSetPreference(EMRBaseModel):
     MAX_RECENT_VIEW = getattr(settings, "MAX_RECENT_VIEW_FOR_VALUESET", 20)
     MAX_FAVORITES = getattr(settings, "MAX_FAVORITES_FOR_VALUESET", 50)
 
+    redis_client = get_redis_connection("default")
+
     def _get_cache_key(self, field_name):
         return f"{self.CACHE_KEY_PREFIX}{self.external_id}:{field_name}"
-
-    def _get_redis_client(self):
-        return get_redis_connection("default")
 
     def _get_or_set_favourites(self):
         cache_key = self._get_cache_key("favourites")
@@ -116,27 +115,28 @@ class UserValueSetPreference(EMRBaseModel):
     def clear_favourites(self):
         self._saved_favourite_and_update_cache([])
 
-    def get_recent_views(self):
-        cache_key = self._get_cache_key("recent_views")
-        r = self._get_redis_client()
-        items = r.lrange(cache_key, 0, -1)
+    @staticmethod
+    def get_recent_views(cache_key):
+        """Fetches recent views from Redis."""
+        items = UserValueSetPreference.redis_client.lrange(cache_key, 0, -1)
         return [json.loads(item.decode("utf-8")) for item in items]
 
-    def add_recent_view(self, code_obj):
-        cache_key = self._get_cache_key("recent_views")
-        r = self._get_redis_client()
+    @staticmethod
+    def add_recent_view(cache_key, code_obj):
+        """Adds a recent view entry in Redis."""
         code_json = json.dumps(code_obj)
-        r.lrem(cache_key, 0, code_json)
-        r.lpush(cache_key, code_json)
-        r.ltrim(cache_key, 0, self.MAX_RECENT_VIEW - 1)
+        r = UserValueSetPreference.redis_client  # Use the class-level client
+        r.lrem(cache_key, 0, code_json)  # Remove if already exists
+        r.lpush(cache_key, code_json)  # Add to front
+        r.ltrim(cache_key, 0, UserValueSetPreference.MAX_RECENT_VIEW - 1)  # Trim to max
 
-    def remove_recent_view(self, code_obj):
-        cache_key = self._get_cache_key("recent_views")
-        r = self._get_redis_client()
+    @staticmethod
+    def remove_recent_view(cache_key, code_obj):
+        """Removes a specific recent view from Redis."""
         code_json = json.dumps(code_obj)
-        r.lrem(cache_key, 0, code_json)
+        UserValueSetPreference.redis_client.lrem(cache_key, 0, code_json)
 
-    def clear_recent_views(self):
-        cache_key = self._get_cache_key("recent_views")
-        r = self._get_redis_client()
-        r.delete(cache_key)
+    @staticmethod
+    def clear_recent_views(cache_key):
+        """Clears all recent views from Redis."""
+        UserValueSetPreference.redis_client.delete(cache_key)
