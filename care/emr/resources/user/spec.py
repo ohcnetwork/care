@@ -35,6 +35,7 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
+    phone_number: str = Field(max_length=14)
 
     prefix: str | None = None
     suffix: str | None = None
