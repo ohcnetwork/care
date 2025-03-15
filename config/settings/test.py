@@ -42,9 +42,15 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 # test in peace
 CACHES = {
     "default": {
-        "BACKEND": "config.caches.DummyCache",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "REDIS_CLIENT_CLASS": "fakeredis.FakeStrictRedis",
+        },
     }
 }
+
 # for testing retelimit use override_settings decorator
 SILENCED_SYSTEM_CHECKS = ["django_ratelimit.E003", "django_ratelimit.W001"]
 

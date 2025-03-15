@@ -1,4 +1,5 @@
 import json
+from functools import lru_cache
 
 from django.conf import settings
 from django.core.cache import cache
@@ -56,6 +57,11 @@ class ValueSet(EMRBaseModel):
         return any(results)
 
 
+@lru_cache(maxsize=1)
+def get_cached_redis_client():
+    return get_redis_connection("default")
+
+
 class UserValueSetPreference(EMRBaseModel):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
@@ -68,7 +74,7 @@ class UserValueSetPreference(EMRBaseModel):
     MAX_RECENT_VIEW = getattr(settings, "MAX_RECENT_VIEW_FOR_VALUESET", 20)
     MAX_FAVORITES = getattr(settings, "MAX_FAVORITES_FOR_VALUESET", 50)
 
-    redis_client = get_redis_connection("default")
+    redis_client = get_cached_redis_client()
 
     def _get_cache_key(self, field_name):
         return f"{self.CACHE_KEY_PREFIX}{self.external_id}:{field_name}"
