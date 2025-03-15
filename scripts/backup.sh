@@ -62,11 +62,12 @@ elif [[ $(echo "${container_name}" | wc -l) -gt 1 ]]; then
     send_notification "$error_msg"
     exit 1
 fi
+
 log "Found PostgreSQL container: ${container_name}"
 
 # Generate backup file name
-date=$(date +%Y%m%d%H%M%S)
-backup_file="${POSTGRES_DB}_backup_${date}.dump"
+backup_date=$(date +%Y%m%d%H%M%S)
+backup_file="${POSTGRES_DB}_backup_${backup_date}.dump"
 log "Backup file: ${backup_file}"
 
 # Remove old backups
