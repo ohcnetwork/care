@@ -8,7 +8,11 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.fhir.resources.code_concept import CodeConceptResource, MinimalCodeConcept
-from care.emr.models.valueset import UserValueSetPreference, ValueSet
+from care.emr.models.valueset import (
+    RecentViewsManager,
+    UserValueSetPreference,
+    ValueSet,
+)
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
 
@@ -138,7 +142,7 @@ class ValueSetViewSet(EMRModelViewSet):
         user_id = request.user.external_id
         cache_key = self.get_cache_key(valueset_id, user_id)
         # Add to recent views as well
-        UserValueSetPreference.add_recent_view(cache_key, code_obj.model_dump())
+        RecentViewsManager.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} marked as favorite"})
 
     @action(detail=True, methods=["POST"])
@@ -175,7 +179,7 @@ class ValueSetViewSet(EMRModelViewSet):
         user_id = request.user.external_id
         cache_key = self.get_cache_key(valueset_id, user_id)
         code_obj = MinimalCodeConcept(**request.data)
-        UserValueSetPreference.add_recent_view(cache_key, code_obj.model_dump())
+        RecentViewsManager.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} added to recent views"})
 
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
@@ -185,7 +189,7 @@ class ValueSetViewSet(EMRModelViewSet):
         user_id = request.user.external_id
         cache_key = self.get_cache_key(valueset_id, user_id)
         code_obj = MinimalCodeConcept(**request.data)
-        UserValueSetPreference.remove_recent_view(cache_key, code_obj.model_dump())
+        RecentViewsManager.remove_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} removed from recent views"})
 
     @action(detail=True, methods=["GET"])
@@ -193,12 +197,12 @@ class ValueSetViewSet(EMRModelViewSet):
         valueset_id = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
         cache_key = self.get_cache_key(valueset_id, user_id)
-        return Response(UserValueSetPreference.get_recent_views(cache_key))
+        return Response(RecentViewsManager.get_recent_views(cache_key))
 
     @action(detail=True, methods=["POST"])
     def clear_recent_views(self, request, *args, **kwargs):
         valueset_id = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
         cache_key = self.get_cache_key(valueset_id, user_id)
-        UserValueSetPreference.clear_recent_views(cache_key)
+        RecentViewsManager.clear_recent_views(cache_key)
         return Response({"message": "All recent views cleared"})
