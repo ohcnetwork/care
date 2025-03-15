@@ -114,10 +114,7 @@ class UserValueSetPreference(EMRBaseModel):
 
 
 def get_cached_redis_client():
-    if hasattr(get_cached_redis_client, "client"):
-        return get_cached_redis_client.client
-    get_cached_redis_client.client = get_redis_connection("default")
-    return get_cached_redis_client.client
+    return get_redis_connection("default")
 
 
 class RecentViewsManager:
