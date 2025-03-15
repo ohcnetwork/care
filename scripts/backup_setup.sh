@@ -26,12 +26,6 @@ case "$OS" in
         sudo dnf install -y libnotify cronie msmtp mailx
         sudo systemctl enable --now crond
         ;;
-    alpine)
-        echo "Detected Alpine Linux. Installing packages..."
-        sudo apk add --no-cache libnotify cron msmtp
-        sudo rc-update add crond
-        sudo service crond start
-        ;;
     *)
         echo "Unsupported Linux distribution: $OS"
         exit 1
