@@ -76,7 +76,7 @@ docker exec -t ${container_name} find "/backups" -name "${POSTGRES_DB}_backup_*.
 # Backup the database
 log "Starting database backup..."
 if docker exec -t ${container_name} pg_dump -U ${POSTGRES_USER} -Fc -f /backups/${backup_file} ${POSTGRES_DB}; then
-    success_msg="Backup of database '${POSTGRES_DB}' completed and saved as /backups/${backup_file}"
+    success_msg="Backup of database '${POSTGRES_DB}' completed and saved as ${backup_file}"
     log "$success_msg"
     send_notification "$success_msg"
 else
