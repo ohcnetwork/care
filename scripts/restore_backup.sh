@@ -72,11 +72,5 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Restart other containers
-log_message "Restarting other containers..."
-docker start $(docker ps -a --format '{{.Names}}' | grep -v "$DB_CONTAINER") >> "$LOG_FILE" 2>&1
-if [ $? -ne 0 ]; then
-    log_message "WARNING: Failed to restart some containers. Check Docker logs."
-fi
 
 log_message "Database restore completed successfully."
