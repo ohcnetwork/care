@@ -43,12 +43,15 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": REDIS_URL,  # noqa F405
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "REDIS_CLIENT_CLASS": "fakeredis.FakeStrictRedis",
+            # Mimicing memcache behavior.
+            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+            "IGNORE_EXCEPTIONS": True,
+            "KEY_PREFIX": "test_",
         },
-    }
+    },
 }
 
 # for testing retelimit use override_settings decorator

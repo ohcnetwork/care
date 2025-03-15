@@ -1,4 +1,5 @@
 import json
+from functools import lru_cache
 
 from django.conf import settings
 from django.core.cache import cache
@@ -113,6 +114,7 @@ class UserValueSetPreference(EMRBaseModel):
         self._saved_favourite_and_update_cache([])
 
 
+@lru_cache(maxsize=1)
 def get_cached_redis_client():
     return get_redis_connection("default")
 
