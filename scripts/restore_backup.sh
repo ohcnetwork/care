@@ -16,14 +16,6 @@ if [ -z "$DB_CONTAINER" ]; then
     exit 1
 fi
 
-# Stop all containers except the database
-log_message "Stopping all containers except the database..."
-docker ps --format '{{.Names}}' | grep -v "$DB_CONTAINER" | xargs -r docker stop >> "$LOG_FILE" 2>&1
-if [ $? -ne 0 ]; then
-    log_message "ERROR: Failed to stop containers. Check Docker logs."
-    exit 1
-fi
-
 # Drop the existing database
 log_message "Dropping existing 'care' database..."
 docker exec -it "$DB_CONTAINER" psql -U postgres -c "DROP DATABASE IF EXISTS care;" >> "$LOG_FILE" 2>&1
