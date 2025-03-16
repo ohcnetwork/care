@@ -14,7 +14,7 @@ Backup files older than `$DB_BACKUP_RETENTION_PERIOD <../../.env.example>`_ days
 
 Backup files are named using the following format:
 
-``care_backup_%Y%m%d%H%M%S.sql``
+``care_backup_%Y%m%d%H%M%S.dump``
 
 Install Packages and Automate the Cron Job
 ------------------------------------------
@@ -108,6 +108,18 @@ Configuration for Fedora SMTP:
    # Set default account
    account default : gmail
 
+----------------------------------------
+
+    Check ``~/.msmtp.log`` for troubleshooting
+
+Save the file and set correct permissions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    chmod 600 ~/.msmtprc
+
+
 For Debian-based systems:
 -------------------------
 
@@ -136,6 +148,18 @@ Configuration for Debian SMTP:
    password       your_app_password
    # Set default account
    account default : gmail
+
+--------------------------------------------------------
+
+    Check ``~/.msmtp.log`` for troubleshooting
+
+Save the file and set correct permissions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    chmod 600 ~/.msmtprc
+
 ------------------------------------------
 
     Note: Ensure your email address is also added to the environment variables (`env <../../.env.example>`_).
