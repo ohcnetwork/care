@@ -226,7 +226,7 @@ class FileUploadViewSet(
                 file_upload.upload_completed = True
                 file_upload.save(skip_internal_name=True)
             except Exception as e:
-                error_msg = f"Failed to upload file to storage: {e!s}"
+                error_msg = "Failed to upload file to storage"
                 raise ValidationError(error_msg) from e
 
         return Response(FileUploadRetrieveSpec.serialize(file_upload).to_json())
