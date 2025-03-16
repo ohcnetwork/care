@@ -35,14 +35,16 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
+    phone_number: str = Field(max_length=14)
+
     prefix: str | None = None
     suffix: str | None = None
-    phone_number: str = Field(max_length=14)
 
 
 class UserUpdateSpec(UserBaseSpec):
     user_type: UserTypeOptions
     gender: GenderChoices
+    phone_number: str = Field(max_length=14)
 
 
 class UserCreateSpec(UserUpdateSpec):
@@ -57,6 +59,13 @@ class UserCreateSpec(UserUpdateSpec):
         if User.check_username_exists(username):
             raise ValueError("Username already exists")
         return username
+
+    @field_validator("phone_number")
+    @classmethod
+    def validate_phone_number(cls, phone_number):
+        if User.objects.filter(phone_number=phone_number).exists():
+            raise ValueError("Phone Number already exists")
+        return phone_number
 
     @field_validator("email")
     @classmethod
@@ -92,6 +101,7 @@ class UserSpec(UserBaseSpec):
     gender: str
     username: str
     mfa_enabled: bool = False
+    phone_number: str = Field(max_length=14)
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
@@ -118,3 +128,16 @@ class UserRetrieveSpec(UserSpec):
                 obj.geo_organization
             ).to_json()
         mapping["flags"] = obj.get_all_flags()
+
+
+class PublicUserReadSpec(UserBaseSpec):
+    last_login: str
+    profile_picture_url: str
+    user_type: str
+    gender: str
+    username: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj: User):
+        mapping["id"] = str(obj.external_id)
+        mapping["profile_picture_url"] = obj.read_profile_picture_url()
