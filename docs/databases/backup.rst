@@ -1,121 +1,156 @@
-Docker database backup
+Docker Database Backup
 ======================
 
-This page explains how to automate the backup process of a Docker database on a daily basis and restore the backup snapshot created by the `backup script <../../scripts/backup.sh>`_.
+This page explains how to automate the backup process of a Docker-based PostgreSQL database on a daily basis and restore the backup snapshot created by the `backup.sh <../../scripts/backup.sh>`_ script.
 
-   Note: This documentation assumes that you are using a Linux-based system.
--------------------------------------------------------------------------------
+    Note: This documentation assumes you are using a Linux-based system.
 
-Here's how the script works
----------------------------
+How the Script Works
+--------------------
 
-The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file(``.dump``) using the pg_dump utility in PostgreSQL and stores these files in the path configured in  ``$BACKUP_DIR`` environment variable which is binded to ``/backups`` in the docker container. Backup files older than ``$DB_BACKUP_RETENTION_PERIOD`` days are deleted when the script is executed by default it is set to 7 days. The backup file is saved with the name ``care_backup_%Y%m%d%H%M%S.sql``.
+The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file (``.dump``) using the ``pg_dump`` utility in PostgreSQL and stores these files in the directory specified by the ``$BACKUP_DIR`` environment variable, which is mounted to ``/backups`` inside the Docker container.
 
-Set up a cronjob
-----------------
+Backup files older than `$DB_BACKUP_RETENTION_PERIOD <../../.env.example>`_ days are automatically deleted when the script runs. By default, this retention period is set to **7 days**.
 
-Backup your database running on docker automatically everyday by initiating a cronjob.
+Backup files are named using the following format:
 
-Install the package
-~~~~~~~~~~~~~~~~~~~
+``care_backup_%Y%m%d%H%M%S.sql``
 
-For a fedora based system:
+Install Packages and Automate the Cron Job
+------------------------------------------
 
-.. code:: bash
+This script installs required packagesf or backups based on the OS (Debian or Fedora-based) and sets up a cron job to run /scripts/backup.sh daily at midnight.
 
- sudo dnf install crond
+    Note: This script is compatible with **Fedora** and **Debian-based** systems only, and make sure you are inside the care directory when you are setting this up.
 
-For a debian based system:
+Make the Script Executable and Run It
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
- sudo apt install cron
+   chmod +x /scripts/backup_setup.sh
+   ./scripts/backup_setup.sh
 
-Automate the cronjob
-~~~~~~~~~~~~~~~~~~~~
-   Note: Make sure you are inside the care directory at the time of executing the following.
--------------------------------------------------------------------------------
-
-Open up a crontab:
-
-.. code:: bash
-
- crontab -e
-
-Add the cronjob:
-
-.. code:: bash
-
- 0 0 * * * "/scripts/backup.sh"
-
-List the cron jobs
+List the Cron Jobs
 ~~~~~~~~~~~~~~~~~~
 
-.. code:: bash
+.. code-block:: bash
 
- crontab -l
+   crontab -l
 
-Check the status of cron
+Check the Status of Cron
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For a fedora based os:
+For Fedora-based systems:
 
-.. code:: bash
+.. code-block:: bash
 
- sudo systemctl status crond
+   sudo systemctl status crond
 
-For a debian based os:
+For Debian-based systems:
 
-.. code:: bash
+.. code-block:: bash
 
- sudo systemctl status cron
+   sudo systemctl status cron
 
-Verify the cron job
-~~~~~~~~~~~~~~~~~
-To verify the cron job is working:
+Verify the Cron Job
+~~~~~~~~~~~~~~~~~~~
 
-1. Check the system logs for cron activity, which is usually somewhere in
+To confirm the cron job is running:
 
-   .. code:: bash
+1. Check system logs for cron activity:
 
-    /var/log/
+   .. code-block:: bash
 
-2. Monitor the backup directory for new files after the scheduled time
+      ls /var/log/
 
-Restoration of the Database
-===========================
+2. Monitor the backup directory for new files after the scheduled backup time.
 
-We are basically deleting the container's existing database and creating a new database with the same name. Then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
+Configure the SMTP Config File
+==============================
 
-   Make sure you have stopped all the containers except the db before proceeding. And be inside the care directory at the time of executing the following.
-------------------------------------------------------------------------------
+To receive an email notification when a backup fails, configure your SMTP settings:
 
-Delete the existing database:
+-----------------------------------
+    
+    Note: You need to set up an `App Password <https://myaccount.google.com/apppasswords>`_ for Gmail authentication.
 
-.. code:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "DROP DATABASE IF EXISTS care;"
+For Fedora-based systems:
+--------------------------
 
-Create the new database:
+.. code-block:: bash
 
-.. code:: bash
+   nano ~/.msmtprc
 
-   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') psql -U postgres -c "CREATE DATABASE care;"
+Configuration for Fedora SMTP:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Execute and copy the name of the file you want to restore the database with:
+.. code-block:: ini
 
-.. code:: bash
+   # ~/.msmtprc
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
 
-   sudo ls ./care-backups
+   # Account details
+   account        gmail
+   host           smtp.gmail.com
+   port           587
+   from           your_email@gmail.com
+   user           your_email@gmail.com
+   password       your_app_password
 
-Restore the database:
+   # Set default account
+   account default : gmail
 
-    Replace <file name> with your file name which looks like this ``care_backup_%Y%m%d%H%M%S.sql``
+For Debian-based systems:
+-------------------------
 
-.. code:: bash
+.. code-block:: bash
 
-   docker exec -it $(docker ps --format '{{.Names}}' | grep 'care-db') pg_restore -U postgres -d care /backups/<file name>.dump
+   nano ~/.msmtprc
 
-------------------------------------------------------------------------------------------------------------------
+Configuration for Debian SMTP:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  There are way easier ways to do this. If anyone has any particular idea, feel free to make a PR :)
+.. code-block:: ini
+
+   # ~/.msmtprc
+   defaults
+   auth           on
+   tls            on
+   tls_trust_file /etc/ssl/certs/ca-certificates.crt
+   logfile        ~/.msmtp.log
+
+   # Account details
+   account        gmail
+   host           smtp.gmail.com
+   port           587
+   from           your_email@gmail.com
+   user           your_email@gmail.com
+   password       your_app_password
+   # Set default account
+   account default : gmail
+------------------------------------------
+
+    Note: Ensure your email address is also added to the environment variables (`env <../../.env.example>`_).
+
+Restoring the Database
+======================
+    
+    Make sure you have stopped all the containers that are dependant on the ``care-db`` except the ``care-db`` before proceeding. And be inside the care directory at the time of executing the following.
+
+This script restores a PostgreSQL database (care) from a backup file. Restoring the database involves deleting the existing database, creating a new one, and using ``pg_restore`` to restore the backup. The script identifies the database container, stops all other containers, lists available backups for user selection, and restores the chosen backup. All actions and errors are logged in ``./restore_db.log`` for tracking and troubleshooting.
+
+Make the script executable and run
+
+.. code-block:: bash
+
+    chmod +x /scripts/restore_backup.sh
+    ./scripts/restore_backup.sh
+---------------------------------------------
+    
+    After successfull restoration restart the containers
