@@ -8,7 +8,8 @@ This page explains how to automate the backup process of a Docker-based PostgreS
 How the Script Works
 --------------------
 
-The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file (``.dump``) using the ``pg_dump`` utility in PostgreSQL and stores these files in the directory specified by the ``$BACKUP_DIR`` environment variable, which is mounted to ``/backups`` inside the Docker container.
+The script automates the process of creating PostgreSQL database backups from a Docker container. It generates a backup file (``.dump``) using the pg_dump utility in PostgreSQL and stores these files in the directory specified by the ``$BACKUP_DIR`` environment variable, which is mounted to ``/backups`` inside the Docker container. In case of a backup failure, the script will send a system notification and an email if configured. For troubleshooting, logs can be found at ``./backup_db.log``.
+
 
 Backup files older than `$DB_BACKUP_RETENTION_PERIOD <../../.env.example>`_ days are automatically deleted when the script runs. By default, this retention period is set to **7 days**.
 
