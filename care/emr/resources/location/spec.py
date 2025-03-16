@@ -86,7 +86,7 @@ class FacilityLocationSpec(FacilityLocationBaseSpec):
     def validate_sort_index(cls, sort_index: int, info):
         if sort_index is None:
             return None
-        if sort_index < MAX_SORT_INDEX:
+        if sort_index < MIN_SORT_INDEX:
             raise ValueError("Sort Index cannot be negative")
         if sort_index > MAX_SORT_INDEX:
             raise ValueError("Sort Index cannot exceed 999")
