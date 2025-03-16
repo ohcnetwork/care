@@ -224,6 +224,18 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         if queryset.exists():
             raise ValidationError("User association already exists")
 
+    def validate_destroy(self, instance):
+        if (
+            instance.organization.org_type == "root"
+            and FacilityOrganizationUser.objects.filter(
+                organization=self.get_organization_obj()
+            ).count()
+            <= 1
+        ):
+            raise ValidationError(
+                "Cannot delete the last user from the root organization"
+            )
+
     def authorize_destroy(self, instance):
         organization = self.get_organization_obj()
         if not AuthorizationController.call(
