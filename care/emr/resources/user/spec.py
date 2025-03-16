@@ -58,6 +58,13 @@ class UserCreateSpec(UserUpdateSpec):
             raise ValueError("Username already exists")
         return username
 
+    @field_validator("phone_number")
+    @classmethod
+    def validate_phone_number(cls, phone_number):
+        if User.objects.filter(phone_number=phone_number).exists():
+            raise ValueError("Phone Number already exists")
+        return phone_number
+
     @field_validator("email")
     @classmethod
     def validate_user_email(cls, email):
