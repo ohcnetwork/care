@@ -1,5 +1,3 @@
-import logging
-
 from django.conf import settings
 from django.db.models import Q
 from django_filters import rest_framework as filters
@@ -32,9 +30,6 @@ class FacilityOrganizationFilter(filters.FilterSet):
     org_type = filters.CharFilter(field_name="org_type", lookup_expr="iexact")
 
 
-logger = logging.getLogger(__name__)
-
-
 class FacilityOrganizationViewSet(EMRModelViewSet):
     database_model = FacilityOrganization
     pydantic_model = FacilityOrganizationWriteSpec
@@ -54,11 +49,6 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         )
 
     def validate_data(self, instance, model_obj=None):
-        logger.warning("\n" * 5)
-        logger.warning("Validation Data")
-        logger.warning(instance.parent)
-
-        logger.warning("\n" * 5)
         if instance.org_type == "root":
             raise PermissionDenied("Cannot create root organization")
         if instance.parent:
@@ -79,16 +69,17 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
                         error = f"Max depth reached ({settings.FACILITY_ORGANIZATION_MAX_DEPTH})"
                         raise ValidationError(error)
 
-        # validate max number in facility
-        facility_external_id = self.kwargs["facility_external_id"]
-        if (
-            FacilityOrganization.objects.filter(
-                facility__external_id=facility_external_id
-            ).count()
-            >= settings.MAX_ORGANIZATION_IN_FACILITY
-        ):
-            error = f"Max location reached for facility ({settings.MAX_ORGANIZATION_IN_FACILITY})"
-            raise ValidationError(error)
+        if model_obj is None:
+            # validate max number in facility
+            facility_external_id = self.kwargs["facility_external_id"]
+            if (
+                FacilityOrganization.objects.filter(
+                    facility__external_id=facility_external_id
+                ).count()
+                >= settings.MAX_ORGANIZATION_IN_FACILITY
+            ):
+                error = f"Max location reached for facility ({settings.MAX_ORGANIZATION_IN_FACILITY})"
+                raise ValidationError(error)
 
         # Validate Uniqueness
         if FacilityOrganization.validate_uniqueness(

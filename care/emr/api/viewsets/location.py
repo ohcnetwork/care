@@ -111,16 +111,17 @@ class FacilityLocationViewSet(EMRModelViewSet):
                     error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
                     raise ValidationError(error)
 
-        # validate number of locations in facility
-        facility_external_id = self.kwargs["facility_external_id"]
-        if (
-            FacilityLocation.objects.filter(
-                facility__external_id=facility_external_id
-            ).count()
-            >= settings.MAX_LOCATION_IN_FACILITY
-        ):
-            error = f"Max location reached for facility ({settings.MAX_LOCATION_IN_FACILITY})"
-            raise ValidationError(error)
+        if model_obj is None:
+            # validate number of locations in facility
+            facility_external_id = self.kwargs["facility_external_id"]
+            if (
+                FacilityLocation.objects.filter(
+                    facility__external_id=facility_external_id
+                ).count()
+                >= settings.MAX_LOCATION_IN_FACILITY
+            ):
+                error = f"Max location reached for facility ({settings.MAX_LOCATION_IN_FACILITY})"
+                raise ValidationError(error)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
