@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
@@ -11,6 +12,8 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
 from care.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class UserTypeOptions(str, Enum):
@@ -48,7 +51,7 @@ class UserUpdateSpec(UserBaseSpec):
 
 
 class UserCreateSpec(UserUpdateSpec):
-    geo_organization: UUID4
+    geo_organization: UUID4 | None = None
     password: str
     username: str
     email: str
@@ -89,9 +92,10 @@ class UserCreateSpec(UserUpdateSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.set_password(self.password)
-        obj.geo_organization = get_object_or_404(
-            Organization, external_id=self.geo_organization, org_type="govt"
-        )
+        if self.geo_organization is not None:
+            obj.geo_organization = get_object_or_404(
+                Organization, external_id=self.geo_organization, org_type="govt"
+            )
 
 
 class UserSpec(UserBaseSpec):
@@ -123,6 +127,9 @@ class UserRetrieveSpec(UserSpec):
         super().perform_extra_serialization(mapping, obj)
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+        logger.warning("\n" * 5)
+        logger.warning(obj.geo_organization)
+        logger.warning("\n" * 5)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
