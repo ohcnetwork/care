@@ -3,6 +3,7 @@ import base64
 import magic
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -214,15 +215,18 @@ class FileUploadViewSet(
             "mime_type": mime_type,
         }
 
-        file_upload = FileUploadCreateSpec(**request_data).de_serialize()
-        file_upload._just_created = False  # noqa SLF001
+        with transaction.atomic():
+            file_upload = FileUploadCreateSpec(**request_data).de_serialize()
+            file_upload._just_created = False  # noqa SLF001
+            self.authorize_create(file_upload)
+            file_upload.save()
 
-        self.authorize_create(file_upload)
-        file_upload.save()
-
-        file_upload.files_manager.put_object(file_upload, uploaded_file)
-
-        file_upload.upload_completed = True
-        file_upload.save(skip_internal_name=True)
+            try:
+                file_upload.files_manager.put_object(file_upload, uploaded_file)
+                file_upload.upload_completed = True
+                file_upload.save(skip_internal_name=True)
+            except Exception as e:
+                error_msg = f"Failed to upload file to storage: {e!s}"
+                raise ValidationError(error_msg) from e
 
         return Response(FileUploadRetrieveSpec.serialize(file_upload).to_json())
