@@ -44,7 +44,7 @@ pywebpush = "==2.0.1"
 redis = { extras = ["hiredis"], version = "==5.2.1" }
 redis-om = "==0.3.3"
 requests = "==2.32.3"
-simplejson = "==3.19.3"
+simplejson = "==3.20.1"
 sentry-sdk = "==2.18.0"
 whitenoise = "==6.8.2"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
