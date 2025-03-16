@@ -119,7 +119,6 @@ class Question(QuestionnaireBaseSpec):
     )
     text: str = Field(
         description="Question text",
-        max_length=settings.QUESTIONNAIRE_TEXT_AREA_LIMIT_SIZE,
     )
     description: str | None = Field(None, description="Question description")
     type: QuestionType
@@ -183,6 +182,17 @@ class Question(QuestionnaireBaseSpec):
             err = "Group type questions cannot be repeated"
             raise ValueError(err)
         return self
+
+    # we have to create this classmethod to load the limit from setting dynamically,
+    # setting max_length in field was not working for tests
+    @field_validator("text")
+    @classmethod
+    def validate_text_length(cls, value):
+        limit = settings.QUESTIONNAIRE_TEXT_AREA_LIMIT_SIZE
+        if len(value) > limit:
+            error = f"Text length exceeds limit ({limit})"
+            raise ValueError(error)
+        return value
 
 
 class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
