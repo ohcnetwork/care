@@ -9,7 +9,13 @@ from rest_framework.generics import get_object_or_404
 from care.emr.models import Organization
 from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
-from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
+from care.security.roles.role import (
+    ADMINISTRATOR,
+    DOCTOR_ROLE,
+    NURSE_ROLE,
+    STAFF_ROLE,
+    VOLUNTEER_ROLE,
+)
 from care.users.models import User
 
 
@@ -18,6 +24,7 @@ class UserTypeOptions(str, Enum):
     nurse = "nurse"
     staff = "staff"
     volunteer = "volunteer"
+    administrator = "administrator"
 
 
 class UserTypeRoleMapping(Enum):
@@ -25,6 +32,7 @@ class UserTypeRoleMapping(Enum):
     nurse = NURSE_ROLE
     staff = STAFF_ROLE
     volunteer = VOLUNTEER_ROLE
+    administrator = ADMINISTRATOR
 
 
 class UserBaseSpec(EMRResource):
@@ -48,7 +56,7 @@ class UserUpdateSpec(UserBaseSpec):
 
 
 class UserCreateSpec(UserUpdateSpec):
-    geo_organization: UUID4
+    geo_organization: UUID4 | None = None
     password: str
     username: str
     email: str
@@ -89,9 +97,10 @@ class UserCreateSpec(UserUpdateSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.set_password(self.password)
-        obj.geo_organization = get_object_or_404(
-            Organization, external_id=self.geo_organization, org_type="govt"
-        )
+        if self.geo_organization is not None:
+            obj.geo_organization = get_object_or_404(
+                Organization, external_id=self.geo_organization, org_type="govt"
+            )
 
 
 class UserSpec(UserBaseSpec):
