@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.urls import reverse
 from model_bakery import baker
 
@@ -481,6 +482,24 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
 
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 200)
+
+    def test_create_questionnaire_question_text_size_limit(self):
+        permissions = [QuestionnairePermissions.can_write_questionnaire.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_organization_user(self.organization, self.user, role)
+
+        questionnaire_data = self._create_questionnaire()
+        questionnaire_data["questions"][0]["text"] = (
+            "aa" * settings.QUESTIONNAIRE_TEXT_AREA_LIMIT_SIZE
+        )
+        response = self.client.post(self.base_url, questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 400)
+        error_response = response.json()
+        self.assertEqual(error_response["errors"][0]["loc"], ["questions", 0, "text"])
+        self.assertIn(
+            "String should have at most 100 characters",
+            error_response["errors"][0]["msg"],
+        )
 
     def test_questionnaire_creation_access_denied(self):
         """

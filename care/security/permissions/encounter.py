@@ -3,9 +3,9 @@ import enum
 from care.security.permissions.constants import Permission, PermissionContext
 from care.security.roles.role import (
     ADMIN_ROLE,
+    ADMINISTRATOR,
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
-    GEO_ADMIN,
     NURSE_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
@@ -15,7 +15,7 @@ ALL_ROLES = [
     ADMIN_ROLE,
     DOCTOR_ROLE,
     NURSE_ROLE,
-    GEO_ADMIN,
+    ADMINISTRATOR,
     STAFF_ROLE,
     FACILITY_ADMIN_ROLE,
     VOLUNTEER_ROLE,

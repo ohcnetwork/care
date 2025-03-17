@@ -2,6 +2,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
+from django.conf import settings
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
@@ -116,7 +117,10 @@ class Question(QuestionnaireBaseSpec):
         default=False,
         description="Whether to collect performer",
     )
-    text: str = Field(description="Question text")
+    text: str = Field(
+        description="Question text",
+        max_length=settings.QUESTIONNAIRE_TEXT_AREA_LIMIT_SIZE,
+    )
     description: str | None = Field(None, description="Question description")
     type: QuestionType
     structured_type: str | None = None  # TODO : Add validation later

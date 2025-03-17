@@ -44,7 +44,8 @@ Make sure you have Postgres and Redis installed on your system.
 
 ```bash
 sudo -u postgres psql
-CREATE DATABASE care;
+CREATE ROLE my_username LOGIN PASSWORD 'my_password';
+CREATE DATABASE care WITH OWNER = my_username;
 ```
 put the following in your `.env` file
 ```bash
