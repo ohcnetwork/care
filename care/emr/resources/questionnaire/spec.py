@@ -1,6 +1,5 @@
 import uuid
 from enum import Enum
-from functools import reduce
 from typing import Any
 
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
@@ -174,7 +173,7 @@ class Question(QuestionnaireBaseSpec):
             raise ValueError(err)
 
         if self.answer_option:
-            options_present=reduce(lambda x,y:x and y.value,self.answer_option,True)
+            options_present = all(option.value for option in self.answer_option)
             if not options_present:
                 err="All the answer options must be provided for custom choices"
                 raise ValueError(err)
