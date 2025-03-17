@@ -3,6 +3,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[[source]]
+url = "https://github.com/ohcnetwork/python-magic-bin/releases/expanded_assets/v0.1"
+verify_ssl = true
+name = "python-magic-bin"
+
 [packages]
 argon2-cffi = "==23.1.0"
 authlib = "==1.4.0"
@@ -45,6 +50,7 @@ whitenoise = "==6.8.2"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
 pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
+python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
