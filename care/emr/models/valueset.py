@@ -1,5 +1,4 @@
 import json
-from functools import lru_cache
 
 from django.conf import settings
 from django.core.cache import cache
@@ -114,17 +113,15 @@ class UserValueSetPreference(EMRBaseModel):
         self._saved_favourite_and_update_cache([])
 
 
-@lru_cache(maxsize=1)
-def get_cached_redis_client():
-    return get_redis_connection("default")
-
-
 class RecentViewsManager:
+    _client = None
     MAX_RECENT_VIEW = getattr(settings, "MAX_RECENT_VIEW_FOR_VALUESET", 20)
 
     @classmethod
     def get_client(cls):
-        return get_cached_redis_client()
+        if cls._client is None:
+            cls._client = get_redis_connection("default")
+        return cls._client
 
     @classmethod
     def get_recent_views(cls, cache_key):
