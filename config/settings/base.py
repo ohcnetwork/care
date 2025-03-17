@@ -18,6 +18,8 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 from care.utils.csp import config as csp_config
 from plug_config import manager
 
+from .custom_limits import *  # noqa F403
+
 warnings.filterwarnings("ignore", category=UserWarning)
 
 logger = logging.getLogger(__name__)
@@ -722,26 +724,3 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
-
-MAX_APPOINTMENTS_PER_PATIENT = env.int("MAX_APPOINTMENTS_PER_PATIENT", default=10)
-
-MAX_ACTIVE_ENCOUNTERS_PER_PATIENT = env.int(
-    "MAX_ACTIVE_ENCOUNTERS_PER_PATIENT", default=5
-)
-
-# Maximum file upload size in MB
-MAX_FILE_UPLOAD_SIZE = env.int("MAX_FILE_UPLOAD_SIZE", default=5)
-
-QUESTIONNAIRE_TEXT_AREA_LIMIT_SIZE = env.int(
-    "QUESTIONNAIRE_TEXT_AREA_LIMIT", default=100
-)
-
-LOCATION_MAX_DEPTH = env.int("LOCATION_MAX_DEPTH", default=10)
-
-ORGANIZATION_MAX_DEPTH = env.int("ORGANIZATION_MAX_DEPTH", default=10)
-
-FACILITY_ORGANIZATION_MAX_DEPTH = env.int("FACILITY_ORGANIZATION_MAX_DEPTH", default=10)
-
-MAX_LOCATION_IN_FACILITY = env.int("MAX_LOCATION_IN_FACILITY", default=1000)
-
-MAX_ORGANIZATION_IN_FACILITY = env.int("MAX_ORGANIZATION_IN_FACILITY", default=1000)

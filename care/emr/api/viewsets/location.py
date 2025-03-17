@@ -103,13 +103,9 @@ class FacilityLocationViewSet(EMRModelViewSet):
                 raise ValidationError("Instances cannot have children")
 
             # Validate Depth
-            depth = 1
-            while parent:
-                depth += 1
-                parent = parent.parent
-                if depth > settings.LOCATION_MAX_DEPTH:
-                    error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
-                    raise ValidationError(error)
+            if parent.level_cache >= settings.LOCATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+                raise ValidationError(error)
 
         if model_obj is None:
             # validate number of locations in facility

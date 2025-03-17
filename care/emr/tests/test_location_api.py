@@ -265,8 +265,16 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
     def test_for_maximum_depth_for_location(self):
         self.client.force_authenticate(self.super_user)
 
-        # Create root (depth 1)
+        # Create root (depth 0)
         data = self.generate_data_for_facility_location(organizations=[], mode="kind")
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        # Create child (depth 1)
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
         parent_id = response.data["id"]
@@ -311,6 +319,20 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         self.assertEqual(
             response.json()["errors"][0]["msg"], "Max location reached for facility (2)"
         )
+
+    def test_create_facility_location_with_invalid_sort_index(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityOrganizationPermissions.can_create_facility_organization.name,
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+            ]
+        )
+        data = self.generate_data_for_facility_location(sort_index=-1)
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        data = self.generate_data_for_facility_location(sort_index=1000)
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
 
     # RETRIEVE TESTS
     def test_retrieve_facility_location_without_permissions(self):

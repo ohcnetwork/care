@@ -83,13 +83,9 @@ class OrganizationViewSet(EMRModelViewSet):
             parent = get_object_or_404(Organization, external_id=instance.parent)
 
             # Validate Depth
-            depth = 1
-            while parent:
-                depth += 1
-                parent = parent.parent
-                if depth > settings.ORGANIZATION_MAX_DEPTH:
-                    error = f"Max depth reached ({settings.ORGANIZATION_MAX_DEPTH})"
-                    raise ValidationError(error)
+            if parent.level_cache >= settings.LOCATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+                raise ValidationError(error)
 
     def authorize_destroy(self, instance):
         if Organization.objects.filter(parent=instance).exists():
