@@ -1,14 +1,12 @@
 import json
 
 from django.conf import settings
-from django.core.cache import cache
-from django.db import models, transaction
+from django.db import models
 from django_redis import get_redis_connection
 
 from care.emr.fhir.resources.valueset import ValueSetResource
 from care.emr.models import EMRBaseModel
 from care.emr.resources.common.valueset import ValueSetCompose
-from care.utils.lock import Lock
 
 
 class ValueSet(EMRBaseModel):
@@ -64,53 +62,7 @@ class UserValueSetPreference(EMRBaseModel):
     class Meta:
         unique_together = ("user", "valueset")
 
-    CACHE_KEY_PREFIX = "user_valueset_code_prefs:"
     MAX_FAVORITES = getattr(settings, "MAX_FAVORITES_FOR_VALUESET", 50)
-
-    def _get_cache_key(self, field_name):
-        return f"{self.CACHE_KEY_PREFIX}{self.external_id}:{field_name}"
-
-    def _get_or_set_favourites(self):
-        cache_key = self._get_cache_key("favourites")
-        with Lock(cache_key):
-            favourites = cache.get(cache_key)
-            if not favourites:
-                favourites = self.favorite_codes
-                cache.set(cache_key, favourites)
-            return favourites
-
-    def _saved_favourite_and_update_cache(self, favourites):
-        self.favorite_codes = favourites
-        with transaction.atomic(), Lock(self._get_cache_key("favourites")):
-            cache.set(self._get_cache_key("favourites"), favourites)
-            self.save(update_fields=["favorite_codes"])
-
-    def get_favourites(self):
-        return self._get_or_set_favourites()
-
-    def add_favourite(self, code_obj):
-        refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-            pk=self.pk
-        )
-        favourites = refreshed_instance.favorite_codes
-
-        if code_obj not in favourites:
-            favourites.append(code_obj)
-            self._saved_favourite_and_update_cache(favourites)
-
-    def remove_favourite(self, code_value):
-        refreshed_instance = UserValueSetPreference.objects.select_for_update().get(
-            pk=self.pk
-        )
-        favourites = refreshed_instance.favorite_codes
-
-        new_favourites = [c for c in favourites if c["code"] != code_value]
-
-        if new_favourites != favourites:
-            self._saved_favourite_and_update_cache(new_favourites)
-
-    def clear_favourites(self):
-        self._saved_favourite_and_update_cache([])
 
 
 class RecentViewsManager:
@@ -127,7 +79,7 @@ class RecentViewsManager:
     def get_recent_views(cls, cache_key):
         client = cls.get_client()
         items = client.lrange(cache_key, 0, -1)
-        return [json.loads(item.decode("utf-8")) for item in items]
+        return [json.loads(item.decode()) for item in items]
 
     @classmethod
     def add_recent_view(cls, cache_key, code_obj):

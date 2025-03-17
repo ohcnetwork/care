@@ -1,9 +1,9 @@
+from django.core.cache import cache
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -63,8 +63,11 @@ class ValueSetViewSet(EMRModelViewSet):
     def get_serializer_class(self):
         return ValueSetSpec
 
-    def get_cache_key(self, valueset_id, user_id):
-        return f"user_valueset_code_prefs:{valueset_id}:{user_id}:recent_views"
+    def get_recent_view_cache_key(self, valueset_slug, user_id):
+        return f"user_valueset_code_prefs:{valueset_slug}:{user_id}:recent_views"
+
+    def get_favourites_cache_key(self, valueset_slug, user_id):
+        return f"user_valueset_code_prefs:{valueset_slug}:{user_id}:favourites"
 
     @extend_schema(request=ExpandRequest, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
@@ -115,69 +118,86 @@ class ValueSetViewSet(EMRModelViewSet):
             )
         return Response(result)
 
-    def _get_or_create_user_preferences(self, user, valueset) -> UserValueSetPreference:
-        return UserValueSetPreference.objects.get_or_create(
-            user=user,
-            valueset=valueset,
-            defaults={"favorite_codes": []},
-        )[0]
+    @action(detail=True, methods=["GET"])
+    def favourites(self, request, *args, **kwargs):
+        valueset_slug = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_favourites_cache_key(valueset_slug, user_id)
+        favs = cache.get(cache_key)
+        if favs is None:
+            try:
+                pref = UserValueSetPreference.objects.get(
+                    user=request.user, valueset=self.get_object()
+                )
+                favs = pref.favorite_codes
+            except UserValueSetPreference.DoesNotExist:
+                favs = []
+            cache.set(cache_key, favs, timeout=3600)
+        return Response(favs)
 
-    @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def add_favourite(self, request, *args, **kwargs):
-        valueset = self.get_object()
+        valueset_slug = kwargs.get(self.lookup_field)
+        user = request.user
+        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
         code_obj = MinimalCodeConcept(**request.data)
-
-        # validate the code
-        if not valueset.lookup(code_obj):
-            raise ValidationError("Invalid value")
-
-        preferences = self._get_or_create_user_preferences(request.user, valueset)
-
-        if len(preferences.get_favourites()) >= preferences.MAX_FAVORITES:
-            raise ValidationError("Maximum number of favorites reached (50)")
-
-        preferences.add_favourite(code_obj.model_dump())
-        valueset_id = kwargs.get(self.lookup_field)
-        user_id = request.user.external_id
-        cache_key = self.get_cache_key(valueset_id, user_id)
-        # Add to recent views as well
-        RecentViewsManager.add_recent_view(cache_key, code_obj.model_dump())
-        return Response({"message": f"Code {code_obj.code} marked as favorite"})
+        pref, created = UserValueSetPreference.objects.get_or_create(
+            user=user, valueset=self.get_object(), defaults={"favorite_codes": []}
+        )
+        favs = pref.favorite_codes
+        if not any(fav.get("code") == code_obj.code for fav in favs):
+            favs.append(code_obj.model_dump())
+            pref.favorite_codes = favs
+            pref.save(update_fields=["favorite_codes"])
+            cache.set(cache_key, favs, timeout=3600)
+            message = f"Code {code_obj.code} added to favourites"
+        else:
+            message = f"Code {code_obj.code} already exists in favourites"
+        return Response({"message": message})
 
     @action(detail=True, methods=["POST"])
     def remove_favourite(self, request, *args, **kwargs):
-        valueset = self.get_object()
+        valueset_slug = kwargs.get(self.lookup_field)
+        user = request.user
+        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
         code_obj = MinimalCodeConcept(**request.data)
-
-        preferences = self._get_or_create_user_preferences(request.user, valueset)
-        preferences.remove_favourite(code_obj.code)
-        return Response({"message": f"Code {code_obj.code} removed from favorites"})
+        try:
+            pref = UserValueSetPreference.objects.get(
+                user=user, valueset=self.get_object()
+            )
+            favs = pref.favorite_codes
+            new_favs = [fav for fav in favs if fav.get("code") != code_obj.code]
+            pref.favorite_codes = new_favs
+            pref.save(update_fields=["favorite_codes"])
+            cache.set(cache_key, new_favs, timeout=3600)
+            message = f"Code {code_obj.code} removed from favourites"
+        except UserValueSetPreference.DoesNotExist:
+            message = "No favourites found to remove from"
+        return Response({"message": message})
 
     @action(detail=True, methods=["POST"])
     def clear_favourites(self, request, *args, **kwargs):
-        valueset = self.get_object()
-        preference = UserValueSetPreference.objects.filter(
-            user=request.user, valueset=valueset
-        ).first()
-        if preference:
-            preference.clear_favourites()
-        return Response({"message": "All favorite codes cleared"})
-
-    @action(detail=True, methods=["GET"])
-    def favourites(self, request, *args, **kwargs):
-        valueset = self.get_object()
-        preferences = UserValueSetPreference.objects.filter(
-            user=request.user, valueset=valueset
-        ).first()
-        return Response(preferences.get_favourites() if preferences else [])
+        valueset_slug = kwargs.get(self.lookup_field)
+        user = request.user
+        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
+        try:
+            pref = UserValueSetPreference.objects.get(
+                user=user, valueset=self.get_object()
+            )
+            pref.favorite_codes = []
+            pref.save(update_fields=["favorite_codes"])
+            cache.delete(cache_key)
+            message = "All favourites cleared"
+        except UserValueSetPreference.DoesNotExist:
+            message = "No favourites found"
+        return Response({"message": message})
 
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def add_recent_view(self, request, *args, **kwargs):
-        valueset_id = kwargs.get(self.lookup_field)
+        valueset_slug = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_cache_key(valueset_id, user_id)
+        cache_key = self.get_cache_key(valueset_slug, user_id)
         code_obj = MinimalCodeConcept(**request.data)
         RecentViewsManager.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} added to recent views"})
@@ -185,24 +205,24 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def remove_recent_view(self, request, *args, **kwargs):
-        valueset_id = kwargs.get(self.lookup_field)
+        valueset_slug = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_cache_key(valueset_id, user_id)
+        cache_key = self.get_cache_key(valueset_slug, user_id)
         code_obj = MinimalCodeConcept(**request.data)
         RecentViewsManager.remove_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} removed from recent views"})
 
     @action(detail=True, methods=["GET"])
     def recent_views(self, request, *args, **kwargs):
-        valueset_id = kwargs.get(self.lookup_field)
+        valueset_slug = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_cache_key(valueset_id, user_id)
+        cache_key = self.get_cache_key(valueset_slug, user_id)
         return Response(RecentViewsManager.get_recent_views(cache_key))
 
     @action(detail=True, methods=["POST"])
     def clear_recent_views(self, request, *args, **kwargs):
-        valueset_id = kwargs.get(self.lookup_field)
+        valueset_slug = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_cache_key(valueset_id, user_id)
+        cache_key = self.get_cache_key(valueset_slug, user_id)
         RecentViewsManager.clear_recent_views(cache_key)
         return Response({"message": "All recent views cleared"})
