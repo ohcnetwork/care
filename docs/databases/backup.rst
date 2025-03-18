@@ -23,7 +23,7 @@ For Fedora Based Systems
 
 .. code-block:: bash
 
-    mstmp
+    msmtp
     cronie
     mailx
 
