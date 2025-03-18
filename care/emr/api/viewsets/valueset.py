@@ -133,7 +133,7 @@ class ValueSetViewSet(EMRModelViewSet):
                 favs = pref.favorite_codes
             except UserValueSetPreference.DoesNotExist:
                 favs = []
-            cache.set(cache_key, favs, timeout=3600)
+            cache.set(cache_key, favs)
         return Response(favs)
 
     @action(detail=True, methods=["POST"])
@@ -155,7 +155,7 @@ class ValueSetViewSet(EMRModelViewSet):
             favs.append(code_obj.model_dump())
             pref.favorite_codes = favs
             pref.save(update_fields=["favorite_codes"])
-            cache.set(cache_key, favs, timeout=3600)
+            cache.set(cache_key, favs)
             message = f"Code {code_obj.code} added to favourites"
         else:
             message = f"Code {code_obj.code} already exists in favourites"
@@ -180,7 +180,7 @@ class ValueSetViewSet(EMRModelViewSet):
             new_favs = [fav for fav in favs if fav.get("code") != code_obj.code]
             pref.favorite_codes = new_favs
             pref.save(update_fields=["favorite_codes"])
-            cache.set(cache_key, new_favs, timeout=3600)
+            cache.set(cache_key, new_favs)
             message = f"Code {code_obj.code} removed from favourites"
         except UserValueSetPreference.DoesNotExist:
             message = "No favourites found to remove from"
