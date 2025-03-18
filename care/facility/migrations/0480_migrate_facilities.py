@@ -17,14 +17,14 @@ USER_TYPE_TO_ROLE = {
     14: "Nurse",  # Nurse
     15: "Doctor",  # Doctor
     20: "Doctor",  # Reserved
-    21: "Geo Admin",  # WardAdmin
-    23: "Geo Admin",  # LocalBodyAdmin
-    25: "Geo Admin",  # DistrictLabAdmin
-    29: "Geo Admin Read Only",  # DistrictReadOnlyAdmin
-    30: "Geo Admin",  # DistrictAdmin
-    35: "Geo Admin",  # StateLabAdmin
-    39: "Geo Admin Read Only",  # StateReadOnlyAdmin
-    40: "Geo Admin",  # StateAdmin
+    21: "Administrator",  # WardAdmin
+    23: "Administrator",  # LocalBodyAdmin
+    25: "Administrator",  # DistrictLabAdmin
+    29: "Administrator Read Only",  # DistrictReadOnlyAdmin
+    30: "Administrator",  # DistrictAdmin
+    35: "Administrator",  # StateLabAdmin
+    39: "Administrator Read Only",  # StateReadOnlyAdmin
+    40: "Administrator",  # StateAdmin
 }
 
 

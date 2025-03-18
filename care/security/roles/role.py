@@ -40,8 +40,8 @@ ADMINISTRATOR = Role(
     description="Administrator at a given boundary",
 )
 ADMINISTRATOR_READONLY_ROLE = Role(
-    name="Geo Admin Read Only",
-    description="Read-only access for Geo Admins",
+    name="Administrator Read Only",
+    description="Read-only access for Administrators",
 )
 FACILITY_ADMIN_ROLE = Role(
     name="Facility Admin",
