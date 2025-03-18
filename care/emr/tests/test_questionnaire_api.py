@@ -255,6 +255,39 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
                 self.assertEqual(error["question_id"], question["id"])
                 self.assertIn(f"Invalid {question_type}", error["msg"])
 
+    def test_false_choice_values_validations(self):
+        questionnaire_definition = {
+            "title": "Comprehensive Health Assessment",
+            "slug": "ques-choices-type",
+            "description": "Complete health assessment questionnaire with various response types",
+            "status": "active",
+            "subject_type": "patient",
+            "organizations": [str(self.organization.external_id)],
+            "questions": [
+                {
+                    "link_id": "1",
+                    "type": "choice",
+                    "text": "Overall health assessment",
+                    "answer_option": [
+                        {"value": " ", "display": "Excellent"},
+                        {"value": "GOOD", "display": "Good"},
+                        {"value": "FAIR", "display": "Fair"},
+                        {"value": "POOR", "display": "Poor"},
+                    ]
+                },
+            ],
+        }
+        response = self.client.post(
+            self.base_url, questionnaire_definition, format="json"
+        )
+        data=response.json()
+        status_code=response.status_code
+        self.assertEqual(status_code, 400)
+        self.assertIn("errors", data)
+        error = data["errors"][0]
+        self.assertEqual(error["type"], "value_error")
+        self.assertIn("All the answer options must be provided for custom choices", error["msg"])
+
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):
     """

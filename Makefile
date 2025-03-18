@@ -1,7 +1,7 @@
 .PHONY: logs
 
 
-DOCKER_VERSION := $(shell docker --version 2>/dev/null)
+DOCKER_VERSION := docker --version
 
 docker_config_file := 'docker-compose.local.yaml'
 
