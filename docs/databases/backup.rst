@@ -43,17 +43,12 @@ List the Cron Jobs
 Check the Status of Cron
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For Fedora-based systems:
-
-.. code-block:: bash
-
-   sudo systemctl status crond
-
-For Debian-based systems:
+For any systemd based system:
 
 .. code-block:: bash
 
    sudo systemctl status cron
+
 
 Verify the Cron Job
 ~~~~~~~~~~~~~~~~~~~
@@ -73,19 +68,19 @@ Configure the SMTP Config File
 
 To receive an email notification when a backup fails, configure your SMTP settings:
 
-    
-     Note: You need to set up an `App Password <https://myaccount.google.com/apppasswords>`_ for Gmail authentication.
+
+     Refer to your email provider docs for smtp credentials, This documentation uses Gmail as an example.
 
 -----------------------------------
 
-For Fedora-based systems:
+Configuration for  SMTP Settings:
 --------------------------
 
 .. code-block:: bash
 
    nano ~/.msmtprc
 
-Configuration for Fedora SMTP:
+Configuration for Gmail:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: ini
@@ -119,54 +114,13 @@ Save the file and set correct permissions:
 
     chmod 600 ~/.msmtprc
 
-
-For Debian-based systems:
--------------------------
-
-.. code-block:: bash
-
-   nano ~/.msmtprc
-
-Configuration for Debian SMTP:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: ini
-
-   # ~/.msmtprc
-   defaults
-   auth           on
-   tls            on
-   tls_trust_file /etc/ssl/certs/ca-certificates.crt
-   logfile        ~/.msmtp.log
-
-   # Account details
-   account        gmail
-   host           smtp.gmail.com
-   port           587
-   from           your_email@gmail.com
-   user           your_email@gmail.com
-   password       your_app_password
-   # Set default account
-   account default : gmail
-
---------------------------------------------------------
-
-    Check ``~/.msmtp.log`` for troubleshooting
-
-Save the file and set correct permissions:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-    chmod 600 ~/.msmtprc
-
-------------------------------------------
+----------------------------
 
     Note: Ensure your email address is also added to the environment variables (`env <../../.env.example>`_).
 
 Restoring the Database
 ======================
-    
+
     Make sure you have stopped all the containers that are dependent on the ``care-db`` except the ``care-db`` before proceeding. And be inside the care directory at the time of executing the following.
 
 This script restores a PostgreSQL database (care) from a backup file. Restoring the database involves deleting the existing database, creating a new one, and using ``pg_restore`` to restore the backup. The script identifies the database container, stops all other containers, lists available backups for user selection, and restores the chosen backup. All actions and errors are logged in ``./restore_db.log`` for tracking and troubleshooting.
@@ -178,5 +132,5 @@ Make the script executable and run
     chmod +x /scripts/restore_backup.sh
     ./scripts/restore_backup.sh
 ---------------------------------------------
-    
+
     After successful restoration restart the containers
