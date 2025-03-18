@@ -157,7 +157,8 @@ Restoring the Database
 
 This script restores a PostgreSQL database (care) from a backup file. Restoring the database involves deleting the existing database, creating a new one, and using ``pg_restore`` to restore the backup. The script identifies the database container, stops all other containers, lists available backups for user selection, and restores the chosen backup. All actions and errors are logged in ``./restore_db.log`` for tracking and troubleshooting.
 
-Make the script executable and run
+Make The Script Executable And Run
+-----------------------------------
 
 .. code-block:: bash
 
