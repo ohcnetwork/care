@@ -1,8 +1,10 @@
 import uuid
 
+from django.conf import settings
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.resources.questionnaire.spec import QuestionType
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -199,6 +201,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "time": "25:61:00",
             "choice": "INVALID_CHOICE",
             "url": "not_a_url",
+            "text": "a" * settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE + "extra",
         }
         return invalid_values.get(question_type)
 
@@ -238,6 +241,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "time",
             "choice",
             "url",
+            "text",
         ]
 
         for question_type in test_types:
@@ -253,7 +257,13 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
                 error = response_data["errors"][0]
                 self.assertEqual(error["type"], "type_error")
                 self.assertEqual(error["question_id"], question["id"])
-                self.assertIn(f"Invalid {question_type}", error["msg"])
+                if question_type == QuestionType.text.value:
+                    self.assertIn(
+                        f"Text too long. Max allowed size is {settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE}",
+                        error["msg"],
+                    )
+                else:
+                    self.assertIn(f"Invalid {question_type}", error["msg"])
 
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):

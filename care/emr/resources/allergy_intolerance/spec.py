@@ -46,6 +46,11 @@ class AllergyIntoleranceOnSetSpec(EMRResource):
     note: str
 
 
+class AllergyIntoleranceTypeOptions(str, Enum):
+    allergy = "allergy"
+    intolerance = "intolerance"
+
+
 class BaseAllergyIntoleranceSpec(EMRResource):
     __model__ = AllergyIntolerance
     __exclude__ = ["patient", "encounter"]
@@ -59,6 +64,7 @@ class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
     last_occurrence: datetime.datetime | None = None
     note: str | None = None
     encounter: UUID4
+    type: AllergyIntoleranceTypeOptions = AllergyIntoleranceTypeOptions.allergy
 
     @field_validator("encounter")
     @classmethod
@@ -85,6 +91,7 @@ class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
         {}, json_schema_extra={"slug": CARE_ALLERGY_CODE_VALUESET.slug}
     )
     onset: AllergyIntoleranceOnSetSpec = {}
+    type: AllergyIntoleranceTypeOptions = AllergyIntoleranceTypeOptions.allergy
 
     @field_validator("code")
     @classmethod
@@ -124,6 +131,7 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     created_by: dict = {}
     updated_by: dict = {}
     note: str | None = None
+    type: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

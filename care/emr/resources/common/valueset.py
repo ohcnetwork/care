@@ -1,4 +1,7 @@
-from pydantic import BaseModel, ConfigDict
+from enum import Enum
+from typing import Self
+
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class ValueSetConcept(BaseModel):
@@ -11,6 +14,20 @@ class ValueSetConcept(BaseModel):
     display: str | None = None
 
 
+class FilterOperatorOptions(str, Enum):
+    equal = "="
+    is_a = "is-a"
+    descendent_of = "descendent-of"
+    is_not_a = "is-not-a"
+    regex = "regex"
+    in_ = "in"  # 'in' is a Python keyword, so use 'in_'
+    not_in = "not-in"
+    generalizes = "generalizes"
+    child_of = "child-of"
+    descendent_leaf = "descendent-leaf"
+    exists = "exists"
+
+
 class ValueSetFilter(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -18,7 +35,7 @@ class ValueSetFilter(BaseModel):
     id: str | None = None
 
     property: str | None = None
-    op: str | None = None
+    op: FilterOperatorOptions
     value: str | None = None
 
 
@@ -31,6 +48,14 @@ class ValueSetInclude(BaseModel):
     version: str | None = None
     concept: list[ValueSetConcept] | None = None
     filter: list[ValueSetFilter] | None = None
+
+    @model_validator(mode="after")
+    def check_concept_or_filter(self) -> Self:
+        if self.concept and self.filter:
+            raise ValueError(
+                "Only one of 'concept' or 'filter' can be present, not both."
+            )
+        return self
 
 
 class ValueSetCompose(BaseModel):
