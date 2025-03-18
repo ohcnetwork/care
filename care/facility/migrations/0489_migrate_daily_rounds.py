@@ -2272,7 +2272,7 @@ def migrate_daily_rounds(apps, schema_editor):
             ):
                 questionnaire_responses[insulin_intake_dose["id"]] = {
                     "question_id": insulin_intake_dose["id"],
-                    "values": [{"value": float(daily_round.insulin_intake_dose)}],
+                    "values": [{"value": str(daily_round.insulin_intake_dose) if daily_round.insulin_intake_dose is not None else None}],
                     "note": insulin_intake_frequency_map.get(
                         daily_round.insulin_intake_frequency
                     ),
