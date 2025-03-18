@@ -27,9 +27,9 @@ STAFF_ROLE = Role(
     name="Staff",
     description="Staff at some facility",
 )
-GEO_ADMIN = Role(
-    name="Geo Admin",
-    description="Administrator restricted with geographical boundaries",
+ADMINISTRATOR = Role(
+    name="Administrator",
+    description="Administrator at a given boundary",
 )
 FACILITY_ADMIN_ROLE = Role(
     name="Facility Admin",
@@ -48,7 +48,7 @@ class RoleController:
         DOCTOR_ROLE,
         STAFF_ROLE,
         NURSE_ROLE,
-        GEO_ADMIN,
+        ADMINISTRATOR,
         FACILITY_ADMIN_ROLE,
         ADMIN_ROLE,
         VOLUNTEER_ROLE,
@@ -70,14 +70,14 @@ class RoleController:
             "Nurse": NURSE_ROLE,
             "Doctor": DOCTOR_ROLE,
             "Reserved": DOCTOR_ROLE,
-            "WardAdmin": GEO_ADMIN,
-            "LocalBodyAdmin": GEO_ADMIN,
-            "DistrictLabAdmin": GEO_ADMIN,
-            "DistrictReadOnlyAdmin": GEO_ADMIN,
-            "DistrictAdmin": GEO_ADMIN,
-            "StateLabAdmin": GEO_ADMIN,
-            "StateReadOnlyAdmin": GEO_ADMIN,
-            "StateAdmin": GEO_ADMIN,
+            "WardAdmin": ADMINISTRATOR,
+            "LocalBodyAdmin": ADMINISTRATOR,
+            "DistrictLabAdmin": ADMINISTRATOR,
+            "DistrictReadOnlyAdmin": ADMINISTRATOR,
+            "DistrictAdmin": ADMINISTRATOR,
+            "StateLabAdmin": ADMINISTRATOR,
+            "StateReadOnlyAdmin": ADMINISTRATOR,
+            "StateAdmin": ADMINISTRATOR,
         }
         return mapping[old_role]
 

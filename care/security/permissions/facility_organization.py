@@ -3,9 +3,9 @@ import enum
 from care.security.permissions.constants import Permission, PermissionContext
 from care.security.roles.role import (
     ADMIN_ROLE,
+    ADMINISTRATOR,
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
-    GEO_ADMIN,
     NURSE_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
@@ -34,7 +34,7 @@ class FacilityOrganizationPermissions(enum.Enum):
             ADMIN_ROLE,
             STAFF_ROLE,
             DOCTOR_ROLE,
-            GEO_ADMIN,
+            ADMINISTRATOR,
             NURSE_ROLE,
             VOLUNTEER_ROLE,
         ],
@@ -49,7 +49,7 @@ class FacilityOrganizationPermissions(enum.Enum):
         "Can Manage Facility Organizations",
         "This includes changing names, descriptions, metadata, etc..",
         PermissionContext.FACILITY_ORGANIZATION,
-        [FACILITY_ADMIN_ROLE],
+        [FACILITY_ADMIN_ROLE, ADMINISTRATOR],
     )
     can_list_facility_organization_users = Permission(
         "Can List Users in a Facility Organizations",
@@ -60,7 +60,7 @@ class FacilityOrganizationPermissions(enum.Enum):
             ADMIN_ROLE,
             STAFF_ROLE,
             DOCTOR_ROLE,
-            GEO_ADMIN,
+            ADMINISTRATOR,
             NURSE_ROLE,
         ],
     )
@@ -68,5 +68,5 @@ class FacilityOrganizationPermissions(enum.Enum):
         "Can Manage Users in an Organizations",
         "",
         PermissionContext.FACILITY_ORGANIZATION,
-        [FACILITY_ADMIN_ROLE],
+        [FACILITY_ADMIN_ROLE, ADMINISTRATOR],
     )

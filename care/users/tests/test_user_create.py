@@ -22,7 +22,13 @@ class UserTestCreate(CareAPITestBase):
         self.base_url = reverse("users-list")
 
     def generate_user_data(self, **kwargs):
-        return UserFactory.build(email=self.fake.email(), meta={}, **kwargs)
+        return UserFactory.build(
+            email=self.fake.email(),
+            meta={},
+            prefix=self.fake.prefix(),
+            suffix=self.fake.suffix(),
+            **kwargs,
+        )
 
     def test_create_user_unauthenticated(self):
         response = self.client.post(self.base_url, {}, format="json")
