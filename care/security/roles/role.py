@@ -35,11 +35,11 @@ STAFF_READONLY_ROLE = Role(
     name="Staff Read Only",
     description="Read-only access for staff",
 )
-GEO_ADMIN = Role(
-    name="Geo Admin",
-    description="Administrator restricted with geographical boundaries",
+ADMINISTRATOR = Role(
+    name="Administrator",
+    description="Administrator at a given boundary",
 )
-GEO_ADMIN_READONLY_ROLE = Role(
+ADMINISTRATOR_READONLY_ROLE = Role(
     name="Geo Admin Read Only",
     description="Read-only access for Geo Admins",
 )
@@ -63,8 +63,8 @@ class RoleController:
         STAFF_READONLY_ROLE,
         NURSE_ROLE,
         NURSE_READONLY_ROLE,
-        GEO_ADMIN,
-        GEO_ADMIN_READONLY_ROLE,
+        ADMINISTRATOR,
+        ADMINISTRATOR_READONLY_ROLE,
         FACILITY_ADMIN_ROLE,
         ADMIN_ROLE,
         VOLUNTEER_ROLE,
@@ -86,14 +86,14 @@ class RoleController:
             "Nurse": NURSE_ROLE,
             "Doctor": DOCTOR_ROLE,
             "Reserved": DOCTOR_ROLE,
-            "WardAdmin": GEO_ADMIN,
-            "LocalBodyAdmin": GEO_ADMIN,
-            "DistrictLabAdmin": GEO_ADMIN,
-            "DistrictReadOnlyAdmin": GEO_ADMIN_READONLY_ROLE,
-            "DistrictAdmin": GEO_ADMIN,
-            "StateLabAdmin": GEO_ADMIN,
-            "StateReadOnlyAdmin": GEO_ADMIN_READONLY_ROLE,
-            "StateAdmin": GEO_ADMIN,
+            "WardAdmin": ADMINISTRATOR,
+            "LocalBodyAdmin": ADMINISTRATOR,
+            "DistrictLabAdmin": ADMINISTRATOR,
+            "DistrictReadOnlyAdmin": ADMINISTRATOR_READONLY_ROLE,
+            "DistrictAdmin": ADMINISTRATOR,
+            "StateLabAdmin": ADMINISTRATOR,
+            "StateReadOnlyAdmin": ADMINISTRATOR_READONLY_ROLE,
+            "StateAdmin": ADMINISTRATOR,
         }
         return mapping[old_role]
 

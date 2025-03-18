@@ -32,6 +32,8 @@ class FacilityLocation(EMRBaseModel):
     current_encounter = models.ForeignKey(
         Encounter, on_delete=models.SET_NULL, null=True, blank=True, default=None
     )  # Populated from FacilityLocationEncounter
+    sort_index = models.IntegerField(default=0)
+
     cache_expiry_days = 15
 
     def get_parent_json(self):
@@ -102,7 +104,6 @@ class FacilityLocation(EMRBaseModel):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            super().save(*args, **kwargs)
             if self.parent:
                 self.level_cache = self.parent.level_cache + 1
                 if self.parent.root_location is None:
@@ -111,10 +112,9 @@ class FacilityLocation(EMRBaseModel):
                     self.root_location = self.parent.root_location
                 if not self.parent.has_children:
                     self.parent.has_children = True
-                    self.parent.save(update_fields=["has_children"])
         else:
             self.cached_parent_json = {}
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self.sync_organization_cache()
 
     def cascade_changes(self):

@@ -19,6 +19,7 @@ from care.emr.models.scheduling.schedule import Availability, SchedulableUserRes
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
+    COMPLETED_STATUS_CHOICES,
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
@@ -230,7 +231,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                 patient=patient,
                 token_slot__start_datetime__gte=care_now(),
             )
-            .exclude(status__in=CANCELLED_STATUS_CHOICES)
+            .exclude(status__in=COMPLETED_STATUS_CHOICES)
             .count()
             >= settings.MAX_APPOINTMENTS_PER_PATIENT
         ):
