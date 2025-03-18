@@ -32,13 +32,6 @@ class DeviceTypeBase:
         """
         return {}
 
-    def perform_action(self, obj, action, request):
-        """
-        Perform some kind of action on an asset, the HTTP request is proxied through as is.
-        an HTTP response object is expected as the return.
-        """
-        return  # Return an HTTP Response
-
 
 class DeviceTypeRegistry:
     _device_types = {}
@@ -95,13 +88,6 @@ class SomeCameraPlugin(DeviceTypeBase):
         Return Extra metadata for the given obj during retrieves
         """
         return {"Hello": "There from retrieve"}
-
-    def perform_action(self, obj, action, request):
-        """
-        Perform some kind of action on an asset, the HTTP request is proxied through as is.
-        an HTTP response object is expected as the return.
-        """
-        return  # Return an HTTP Response
 
 
 DeviceTypeRegistry.register("camera", SomeCameraPlugin)
