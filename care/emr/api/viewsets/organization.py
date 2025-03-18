@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -77,6 +78,14 @@ class OrganizationViewSet(EMRModelViewSet):
             Organization.objects.all(), instance, model_obj
         ):
             raise ValidationError("Organization already exists with same name")
+
+        if instance.parent and model_obj is None:
+            parent = get_object_or_404(Organization, external_id=instance.parent)
+
+            # Validate Depth
+            if parent.level_cache >= settings.LOCATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+                raise ValidationError(error)
 
     def authorize_destroy(self, instance):
         if Organization.objects.filter(parent=instance).exists():

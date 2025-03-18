@@ -149,7 +149,7 @@ Setting Up Your Users
 If the command prompts for username only and after entering if it goes to error
 do make sure that you have done the following
 
-Note: Make sure that you have created a database named `care` (replace thisw with your database name)  with privileges set for the user `postgres`
+Note: Make sure that you have created a database named `care` (replace this with your database name)  with privileges set for the user `postgres`
 
 In the virtualenv shell type the following commands also::
 

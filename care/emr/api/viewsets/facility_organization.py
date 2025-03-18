@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
@@ -58,6 +59,22 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "Cannot create organizations under root organization"
                 )
+            if model_obj is None and parent.level_cache >= settings.LOCATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+                raise ValidationError(error)
+
+        if model_obj is None:
+            # validate max number in facility
+            facility_external_id = self.kwargs["facility_external_id"]
+            if (
+                FacilityOrganization.objects.filter(
+                    facility__external_id=facility_external_id
+                ).count()
+                >= settings.MAX_ORGANIZATION_IN_FACILITY
+            ):
+                error = f"Max location reached for facility ({settings.MAX_ORGANIZATION_IN_FACILITY})"
+                raise ValidationError(error)
+
         # Validate Uniqueness
         if FacilityOrganization.validate_uniqueness(
             FacilityOrganization.objects.filter(facility=self.get_facility_obj()),
@@ -191,6 +208,18 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
             )
         if queryset.exists():
             raise ValidationError("User association already exists")
+
+    def validate_destroy(self, instance):
+        if (
+            instance.organization.org_type == "root"
+            and FacilityOrganizationUser.objects.filter(
+                organization=self.get_organization_obj()
+            ).count()
+            <= 1
+        ):
+            raise ValidationError(
+                "Cannot delete the last user from the root organization"
+            )
 
     def authorize_destroy(self, instance):
         organization = self.get_organization_obj()

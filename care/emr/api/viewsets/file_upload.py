@@ -1,9 +1,15 @@
+import base64
+
+import magic
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -166,3 +172,61 @@ class FileUploadViewSet(
             ]
         )
         return Response(FileUploadListSpec.serialize(obj).to_json())
+
+    @action(detail=False, methods=["POST"], url_path="upload-file")
+    def upload_file(self, request, *args, **kwargs):
+        file_name = request.data.get("original_name")
+        file_data = request.data.get("file_data")
+
+        if not file_name or not file_data:
+            raise ValidationError(
+                "Missing required fields: 'original_name' or 'file_data'"
+            )
+
+        try:
+            file_content = base64.b64decode(file_data)
+        except Exception as e:
+            error = "Invalid base64-encoded file data"
+            raise ValidationError(error) from e
+
+        uploaded_file = ContentFile(file_content, name=file_name)
+
+        max_file_size = settings.MAX_FILE_UPLOAD_SIZE * 1024 * 1024
+        if uploaded_file.size > max_file_size:
+            error = f"File size exceeds the limit of {max_file_size / (1024 * 1024)}MB"
+            raise ValidationError(error)
+
+        try:
+            mime_type = magic.from_buffer(file_content[:2048], mime=True)
+        except Exception as e:
+            error = "Error detecting file type."
+            raise ValidationError(error) from e
+
+        if mime_type not in settings.ALLOWED_MIME_TYPES:
+            error = f"File type '{mime_type}' is not allowed"
+            raise ValidationError(error)
+
+        request_data = {
+            "original_name": file_name,
+            "name": request.data.get("name"),
+            "associating_id": request.data.get("associating_id"),
+            "file_type": request.data.get("file_type"),
+            "file_category": request.data.get("file_category"),
+            "mime_type": mime_type,
+        }
+
+        with transaction.atomic():
+            file_upload = FileUploadCreateSpec(**request_data).de_serialize()
+            file_upload._just_created = False  # noqa SLF001
+            self.authorize_create(file_upload)
+            file_upload.save()
+
+            try:
+                file_upload.files_manager.put_object(file_upload, uploaded_file)
+                file_upload.upload_completed = True
+                file_upload.save(skip_internal_name=True)
+            except Exception as e:
+                error_msg = "Failed to upload file to storage"
+                raise ValidationError(error_msg) from e
+
+        return Response(FileUploadRetrieveSpec.serialize(file_upload).to_json())
