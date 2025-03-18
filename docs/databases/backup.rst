@@ -16,38 +16,70 @@ Backup files are named using the following format:
 
 ``care_backup_%Y%m%d%H%M%S.dump``
 
-Install Packages and Automate the Cron Job
+Required Packages
 ------------------------------------------
 
-This script installs required packages for backups based on the OS (Debian or Fedora-based) and sets up a cron job to run /scripts/backup.sh daily at midnight.
-
-    Note: This script is compatible with **Fedora** and **Debian-based** systems only, and make sure you are inside the care directory when you are setting this up.
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Make the Script Executable and Run It
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For Fedora Based Systems
 
 .. code-block:: bash
 
-   chmod +x /scripts/backup_setup.sh
-   ./scripts/backup_setup.sh
+    mstmp
+    cronie
+    mailx
 
-List the Cron Jobs
+For Debian/Ubuntu Based systems
+
+.. code-block:: bash
+
+    msmtp
+    cron
+    mailutils
+----------------------------------------
+
+Set Up The Cron Job
+----------------------------------------
+
+Backup your database running on docker automatically everyday by initiating a cronjob.
+
+   Note: Make sure you are inside the care directory at the time of executing the following.
+-------------------------------------------------------------------------------
+
+
+Open up a crontab:
+~~~~~~~~~~~~~~~~~~~~
+
+.. code:: bash
+
+ crontab -e
+
+Add the cronjob:
+~~~~~~~~~~~~~~~~~~~
+
+.. code:: bash
+
+ 0 0 * * * "/scripts/backup.sh"
+
+List the cron jobs
 ~~~~~~~~~~~~~~~~~~
 
-.. code-block:: bash
+.. code:: bash
 
-   crontab -l
+ crontab -l
 
-Check the Status of Cron
+Check the status of cron
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For any systemd based system:
+For a fedora based os:
 
-.. code-block:: bash
+.. code:: bash
 
-   sudo systemctl status cron
+ sudo systemctl status crond
+
+For a debian based os:
+
+.. code:: bash
+
+ sudo systemctl status cron
 
 
 Verify the Cron Job
