@@ -286,7 +286,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
         self.assertIn("errors", data)
         error = data["errors"][0]
         self.assertEqual(error["type"], "value_error")
-        self.assertIn("All the answer options must be provided for custom choices", error["msg"])
+        self.assertIn("All the answer option values must be provided for custom choices", error["msg"])
 
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):

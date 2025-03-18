@@ -95,6 +95,12 @@ class AnswerOption(QuestionnaireBaseSpec):
         default=False,
         description="Whether option is initially selected",
     )
+    @field_validator("value")
+    @classmethod
+    def validate_title(cls, value: str, info):
+        if not value.strip():
+            raise ValueError("All the answer option values must be provided for custom choices")
+        return value.strip()
 
 
 class Question(QuestionnaireBaseSpec):
@@ -171,13 +177,6 @@ class Question(QuestionnaireBaseSpec):
         ):
             err = "Either answer options or a value set must be provided for choice type questions"
             raise ValueError(err)
-
-        if self.answer_option:
-            options_present = all(option.value.strip() for option in self.answer_option)
-            if not options_present:
-                err="All the answer options must be provided for custom choices"
-                raise ValueError(err)
-
         return self
 
     @model_validator(mode="after")
