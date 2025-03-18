@@ -54,16 +54,18 @@ put the required environment variables in a `.env` file and run:
 make up
 ```
 
-to load dummy data for testing run:
+to load seed data for testing run:
 
 ```bash
-make load-dummy-data
+make load-seed-data
 ```
+
 Stops and removes the containers without affecting the volumes:
 
 ```bash
 make down
 ```
+
 Stops and removes the containers and their volumes:
 
 ```bash
@@ -76,6 +78,7 @@ Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
 For backup and restore use [this](/docs/databases/backup.rst) documentation.
+
 ## Contributing
 
 We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.
