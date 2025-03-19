@@ -57,11 +57,15 @@ class PatientCreateSpec(PatientBaseSpec):
     def validate_date_of_birth_and_death_date(self):
         if not (self.age or self.date_of_birth):
             raise ValueError("Either age or date of birth is required")
-        if self.date_of_birth and self.death_datetime and self.date_of_birth > self.death_datetime.date():
+        if (
+            self.date_of_birth
+            and self.death_datetime
+            and self.date_of_birth > self.death_datetime.date()
+        ):
             raise ValueError("Date of birth cannot be after the date of death")
         if self.age and self.death_datetime:
-            curr_year=datetime.datetime.now().year
-            if curr_year-self.age > self.death_datetime.year:
+            curr_year = datetime.datetime.now().year
+            if curr_year - self.age > self.death_datetime.year:
                 raise ValueError("Year of birth cannot be after the year of death")
         return self
 

@@ -190,11 +190,11 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id,
             date_of_birth=datetime.date(1993, 1, 10),
-            death_datetime=datetime.datetime(1992, 5, 15, 14, 30, 0)
+            death_datetime=datetime.datetime(1992, 5, 15, 14, 30, 0),
         )
         response = self.client.post(self.base_url, patient_data, format="json")
-        data=response.json()
-        status_code=response.status_code
+        data = response.json()
+        status_code = response.status_code
         self.assertEqual(status_code, 400)
         self.assertIn("errors", data)
         error = data["errors"][0]
@@ -216,11 +216,11 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id,
             age=12,
-            death_datetime=datetime.datetime(2010, 5, 15, 14, 30, 0)
+            death_datetime=datetime.datetime(2010, 5, 15, 14, 30, 0),
         )
         response = self.client.post(self.base_url, patient_data, format="json")
-        data=response.json()
-        status_code=response.status_code
+        data = response.json()
+        status_code = response.status_code
         self.assertEqual(status_code, 400)
         self.assertIn("errors", data)
         error = data["errors"][0]
