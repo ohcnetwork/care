@@ -48,7 +48,9 @@ def get_consent_category(patient_consent):
 
 
 def format_note(patient_consent):
-    note = f"Archived by: {patient_consent.archived_by.username}\n"
+    note = "Consent archived\n"
+    if patient_consent.archived_by:
+        note = f"Archived by: {patient_consent.archived_by.username}\n"
     if patient_consent.archived_date:
         note += f"Archived on: {patient_consent.archived_date.strftime('%d/%m/%Y %H:%M')}\n"
     return note
