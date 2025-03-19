@@ -1698,10 +1698,10 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
                 }
             elif value:
                 observation["value"] = {
-                        "value": str(value.get("value")),
-                        "unit": questionnaire.get("unit"),
-                        "coding": value.get("coding"),
-                    }
+                    "value": str(value.get("value")),
+                    "unit": questionnaire.get("unit"),
+                    "coding": value.get("coding"),
+                }
 
             if response.get("note"):
                 observation["note"] = response.get("note")
@@ -1710,6 +1710,7 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         observation["effective_datetime"] = timezone.now()
         observations.append(observation)
     return observations
+
 
 def convert_to_observation_spec(
     questionnaire, responses, parent_id=None, is_component=False
@@ -2272,7 +2273,15 @@ def migrate_daily_rounds(apps, schema_editor):
             ):
                 questionnaire_responses[insulin_intake_dose["id"]] = {
                     "question_id": insulin_intake_dose["id"],
-                    "values": [{"value": str(daily_round.insulin_intake_dose) if daily_round.insulin_intake_dose is not None else None}],
+                    "values": [
+                        {
+                            "value": (
+                                str(daily_round.insulin_intake_dose)
+                                if daily_round.insulin_intake_dose is not None
+                                else None
+                            )
+                        }
+                    ],
                     "note": insulin_intake_frequency_map.get(
                         daily_round.insulin_intake_frequency
                     ),
@@ -2419,7 +2428,9 @@ def migrate_daily_rounds(apps, schema_editor):
                             }
                         )
 
-                    values.append({"value": pain_scale_to_text(region, scale, description)})
+                    values.append(
+                        {"value": pain_scale_to_text(region, scale, description)}
+                    )
                     extra_observations.append(pain_observation)
 
                 questionnaire_responses[pain_scale_enhanced["id"]] = {
@@ -2507,15 +2518,17 @@ def migrate_daily_rounds(apps, schema_editor):
                         )
 
                     values.append(
-                        {"value": pressure_sore_to_text(
-                            region,
-                            length,
-                            width,
-                            exudate_amount,
-                            tissue_type,
-                            push_score,
-                            description,
-                        )}
+                        {
+                            "value": pressure_sore_to_text(
+                                region,
+                                length,
+                                width,
+                                exudate_amount,
+                                tissue_type,
+                                push_score,
+                                description,
+                            )
+                        }
                     )
                     extra_observations.append(pressure_sore_observation)
 
@@ -2575,9 +2588,13 @@ def migrate_daily_rounds(apps, schema_editor):
                     pydantic_observation = ObservationSpec(
                         **observation,
                         subject_type=selected_questionnaire.subject_type,
-                        data_entered_by_id=daily_round.last_edited_by_id or daily_round.created_by_id,
-                        created_by_id=daily_round.created_by_id,
-                        updated_by_id=daily_round.last_edited_by_id or daily_round.created_by_id,
+                        data_entered_by_id=daily_round.last_edited_by_id
+                        or daily_round.created_by_id
+                        or 1,
+                        created_by_id=daily_round.created_by_id or 1,
+                        updated_by_id=daily_round.last_edited_by_id
+                        or daily_round.created_by_id
+                        or 1,
                     )
                 except Exception as e:
                     print(e, observation)
