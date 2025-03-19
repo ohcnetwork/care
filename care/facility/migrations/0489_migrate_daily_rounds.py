@@ -2186,7 +2186,9 @@ def migrate_daily_rounds(apps, schema_editor):
             for attr, question_obj, map_obj in less_simple_fields:
                 value = getattr(daily_round, attr)
                 if value is not None:
-                    if value_text := map_obj.get(value.strip()):
+                    if isinstance(value, str):
+                        value = value.strip()
+                    if value_text := map_obj.get(value):
                         questionnaire_responses[question_obj["id"]] = {
                             "question_id": question_obj["id"],
                             "values": [{"value": value_text}],
