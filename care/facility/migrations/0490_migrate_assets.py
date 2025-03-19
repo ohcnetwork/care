@@ -110,22 +110,23 @@ def migrate_assets(apps, schema_editor):
                 "consultation_bed",
                 "consultation_bed__consultation",
             ):
+                consultation_bed = consultation_bed_asset.consultation_bed
                 bulk_device_history.append(
                     DeviceEncounterHistory(
                         device_id=device.id,
-                        encounter_id=consultation_bed_asset.consultation_bed.consultation.migrated_emr_encounter_id,
-                        start=consultation_bed_asset.start_date,
-                        end=consultation_bed_asset.end_date,
-                        created_date=consultation_bed_asset.created_date,
-                        modified_date=consultation_bed_asset.modified_date,
+                        encounter_id=consultation_bed.consultation.migrated_emr_encounter_id,
+                        start=consultation_bed.start_date,
+                        end=consultation_bed.end_date,
+                        created_date=consultation_bed.created_date,
+                        modified_date=consultation_bed.modified_date,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },
                     )
                 )
-                if not consultation_bed_asset.end_date:
+                if not consultation_bed.end_date:
                     device.current_encounter_id = (
-                        consultation_bed_asset.consultation_bed.consultation.migrated_emr_encounter_id
+                        consultation_bed.consultation_bed.consultation.migrated_emr_encounter_id
                     )
 
             DeviceEncounterHistory.objects.bulk_create(bulk_device_history)
