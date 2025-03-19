@@ -42,7 +42,9 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
                     Encounter, external_id=self.request.GET["encounter"]
                 )
         else:
-            obj = get_object_or_404(QuestionnaireResponse, self.kwargs["external_id"])
+            obj = get_object_or_404(
+                QuestionnaireResponse, external_id=self.kwargs["external_id"]
+            )
             patient = obj.patient
             encounter = obj.encounter
         if encounter:
