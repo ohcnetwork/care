@@ -2575,9 +2575,9 @@ def migrate_daily_rounds(apps, schema_editor):
                     pydantic_observation = ObservationSpec(
                         **observation,
                         subject_type=selected_questionnaire.subject_type,
-                        data_entered_by_id=daily_round.last_edited_by_id,
+                        data_entered_by_id=daily_round.last_edited_by_id or daily_round.created_by_id,
                         created_by_id=daily_round.created_by_id,
-                        updated_by_id=daily_round.last_edited_by_id,
+                        updated_by_id=daily_round.last_edited_by_id or daily_round.created_by_id,
                     )
                 except Exception as e:
                     print(e, observation)
