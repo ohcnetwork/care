@@ -161,6 +161,7 @@ def migrate_users(apps, schema_editor):
             if geo_org := _get_org(user):
                 user.geo_organization_id = geo_org.id
                 bulk_update.append(user)
+                logger.debug(f"User: {user.id=}, {geo_org.name=}")
 
         role_id = get_role_for_user_type(user.old_user_type)
         if not role_id:
@@ -174,7 +175,6 @@ def migrate_users(apps, schema_editor):
         if role_org := user_type_to_org.get(user.old_user_type):
             bulk_roles.append((role_org.id, user.id, role_id, user.created_by_id))
 
-        logger.debug(f"User: {user.id=}, {geo_org.name=}")
     User.objects.bulk_update(bulk_update, ["geo_organization"])
 
     time_now = timezone.now()
