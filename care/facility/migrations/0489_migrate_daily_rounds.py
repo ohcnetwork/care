@@ -2186,7 +2186,7 @@ def migrate_daily_rounds(apps, schema_editor):
             for attr, question_obj, map_obj in less_simple_fields:
                 value = getattr(daily_round, attr)
                 if value is not None:
-                    if value_text := map_obj.get(value):
+                    if value_text := map_obj.get(value.strip()):
                         questionnaire_responses[question_obj["id"]] = {
                             "question_id": question_obj["id"],
                             "values": [{"value": value_text}],
@@ -2312,7 +2312,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_infusion in daily_round.infusions:
                     if infusion := daily_round_infusion.get("infusion"):
-                        code = infusions_map[infusion]
+                        code = infusions_map[infusion.strip()]
                         values.append(
                             {
                                 "coding": code,
@@ -2328,7 +2328,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_iv_fluid in daily_round.iv_fluids:
                     if iv_fluid := daily_round_iv_fluid.get("iv_fluid"):
-                        code = iv_fluids_map[iv_fluid]
+                        code = iv_fluids_map[iv_fluid.strip()]
                         values.append(
                             {
                                 "coding": code,
@@ -2344,7 +2344,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_feed in daily_round.feeds:
                     if feed := daily_round_feed.get("feed"):
-                        code = feeds_map[feed]
+                        code = feeds_map[feed.strip()]
                         values.append(
                             {
                                 "coding": code,
@@ -2360,7 +2360,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_output in daily_round.output:
                     if output_name := daily_round_output.get("name"):
-                        code = output_map[output_name]
+                        code = output_map[output_name.strip()]
                         values.append(
                             {
                                 "coding": code,
@@ -2376,7 +2376,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 values = []
                 for daily_round_nursing in daily_round.nursing:
                     if nursing_procedure := daily_round_nursing.get("procedure"):
-                        code = nursing_map[nursing_procedure]
+                        code = nursing_map[nursing_procedure.strip()]
                         values.append(
                             {
                                 "coding": code,
