@@ -442,7 +442,7 @@ MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 # ------------------------------------------------------------------------------
 # https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
-DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 24
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
 
@@ -724,3 +724,5 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 
 # Path to the typst binary, see scripts/install_typst.sh
 TYPST_BIN = env("TYPST_BIN", default="typst")
+
+DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
