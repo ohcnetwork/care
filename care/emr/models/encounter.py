@@ -18,6 +18,8 @@ class Encounter(EMRBaseModel):
     hospitalization = models.JSONField(default=dict)
     priority = models.CharField(max_length=100, null=True, blank=True)
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
+    discharge_summary_advice = models.TextField(null=True, blank=True)
+
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
 
