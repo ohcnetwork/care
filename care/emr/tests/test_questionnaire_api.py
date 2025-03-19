@@ -273,20 +273,23 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
                         {"value": "GOOD", "display": "Good"},
                         {"value": "FAIR", "display": "Fair"},
                         {"value": "POOR", "display": "Poor"},
-                    ]
+                    ],
                 },
             ],
         }
         response = self.client.post(
             self.base_url, questionnaire_definition, format="json"
         )
-        data=response.json()
-        status_code=response.status_code
+        data = response.json()
+        status_code = response.status_code
         self.assertEqual(status_code, 400)
         self.assertIn("errors", data)
         error = data["errors"][0]
         self.assertEqual(error["type"], "value_error")
-        self.assertIn("All the answer option values must be provided for custom choices", error["msg"])
+        self.assertIn(
+            "All the answer option values must be provided for custom choices",
+            error["msg"],
+        )
 
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):
