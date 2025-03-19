@@ -17,7 +17,7 @@ def send_password_creation_email(instance: User, fail_silently=False):
             user=instance,
         )
     context = {
-        "current_user": reset_password_token.user,
+        "name": reset_password_token.user.full_name,
         "username": reset_password_token.user.username,
         "email": reset_password_token.user.email,
         "create_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
