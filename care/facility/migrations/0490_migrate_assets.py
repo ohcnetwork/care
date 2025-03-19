@@ -79,7 +79,7 @@ def migrate_assets(apps, schema_editor):
                 identifier=asset.serial_number,
                 status="active",
                 availability_status="available" if asset.is_working else "damaged",
-                manufacturer=asset.manufacturer,
+                manufacturer=asset.manufacturer or "",
                 expiration_date=asset.warranty_amc_end_of_validity,
                 serial_number=asset.serial_number,
                 registered_name=asset.name,
