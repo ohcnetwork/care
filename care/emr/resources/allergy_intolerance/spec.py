@@ -91,7 +91,9 @@ class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
         {}, json_schema_extra={"slug": CARE_ALLERGY_CODE_VALUESET.slug}
     )
     onset: AllergyIntoleranceOnSetSpec = {}
-    type: AllergyIntoleranceTypeOptions = AllergyIntoleranceTypeOptions.allergy
+    allergy_intolerance_type: AllergyIntoleranceTypeOptions = (
+        AllergyIntoleranceTypeOptions.allergy
+    )
 
     @field_validator("code")
     @classmethod
@@ -131,7 +133,7 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     created_by: dict = {}
     updated_by: dict = {}
     note: str | None = None
-    type: str
+    allergy_intolerance_type: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

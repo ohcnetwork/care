@@ -1,7 +1,6 @@
-from enum import Enum
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 
 class ValueSetConcept(BaseModel):
@@ -9,23 +8,8 @@ class ValueSetConcept(BaseModel):
         extra="forbid",
     )
     id: str | None = None
-
     code: str | None = None
     display: str | None = None
-
-
-class FilterOperatorOptions(str, Enum):
-    equal = "="
-    is_a = "is-a"
-    descendent_of = "descendent-of"
-    is_not_a = "is-not-a"
-    regex = "regex"
-    in_ = "in"  # 'in' is a Python keyword, so use 'in_'
-    not_in = "not-in"
-    generalizes = "generalizes"
-    child_of = "child-of"
-    descendent_leaf = "descendent-leaf"
-    exists = "exists"
 
 
 class ValueSetFilter(BaseModel):
@@ -35,8 +19,28 @@ class ValueSetFilter(BaseModel):
     id: str | None = None
 
     property: str | None = None
-    op: FilterOperatorOptions
+    op: str | None = None
     value: str | None = None
+
+    @field_validator("op")
+    @classmethod
+    def validate_op(cls, op: str | None, info):
+        allowed_op = [
+            "=",
+            "is-a",
+            "descendent-of",
+            "is-not-a",
+            "regex",
+            "in",
+            "not-in",
+            "generalizes",
+            "child-of",
+            "descendent-leaf",
+            "exists",
+        ]
+        if op is not None and op not in allowed_op:
+            error = f"Invalid op value {op}. Allowed values are {allowed_op}"
+            raise ValueError(error)
 
 
 class ValueSetInclude(BaseModel):
