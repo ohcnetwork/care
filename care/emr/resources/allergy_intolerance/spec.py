@@ -64,7 +64,9 @@ class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
     last_occurrence: datetime.datetime | None = None
     note: str | None = None
     encounter: UUID4
-    type: AllergyIntoleranceTypeOptions = AllergyIntoleranceTypeOptions.allergy
+    allergy_intolerance_type: AllergyIntoleranceTypeOptions = (
+        AllergyIntoleranceTypeOptions.allergy
+    )
 
     @field_validator("encounter")
     @classmethod
