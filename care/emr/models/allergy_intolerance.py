@@ -18,4 +18,4 @@ class AllergyIntolerance(EMRBaseModel):
     copied_from = models.BigIntegerField(
         default=None, null=True, blank=True
     )  # If True, the record is a copy maintained of the given ID
-    allergy_intolerance_type = models.CharField(max_length=100, default="allergy")
+    allergy_intolerance_type = models.CharField(max_length=20, default="allergy")
