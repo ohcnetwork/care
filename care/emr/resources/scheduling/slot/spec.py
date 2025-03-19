@@ -54,6 +54,14 @@ CANCELLED_STATUS_CHOICES = [
     BookingStatusChoices.rescheduled.value,
 ]
 
+COMPLETED_STATUS_CHOICES = [
+    BookingStatusChoices.fulfilled.value,
+    BookingStatusChoices.noshow.value,
+    BookingStatusChoices.entered_in_error.value,
+    BookingStatusChoices.cancelled.value,
+    BookingStatusChoices.rescheduled.value,
+]
+
 
 class TokenBookingBaseSpec(EMRResource):
     __model__ = TokenBooking

@@ -41,6 +41,8 @@ from care.emr.api.viewsets.medication_administration import (
 )
 from care.emr.api.viewsets.medication_request import MedicationRequestViewSet
 from care.emr.api.viewsets.medication_statement import MedicationStatementViewSet
+from care.emr.api.viewsets.meta_artifact import MetaArtifactViewSet
+from care.emr.api.viewsets.mfa_login import MFALoginViewSet
 from care.emr.api.viewsets.notes import NoteMessageViewSet, NoteThreadViewSet
 from care.emr.api.viewsets.observation import ObservationViewSet
 from care.emr.api.viewsets.organization import (
@@ -68,6 +70,7 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
     AvailabilityExceptionsViewSet,
 )
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
+from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 
@@ -78,6 +81,7 @@ router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
 router.register("files", FileUploadViewSet, basename="files")
+router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
 
@@ -107,6 +111,10 @@ router.register("role", RoleViewSet, basename="role")
 
 
 router.register("encounter", EncounterViewSet, basename="encounter")
+
+router.register("mfa/totp", TOTPViewSet, basename="mfa-totp")
+
+router.register("mfa", MFALoginViewSet, basename="mfa")
 
 organization_nested_router = NestedSimpleRouter(
     router, r"organization", lookup="organization"

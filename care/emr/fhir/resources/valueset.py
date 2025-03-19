@@ -2,8 +2,8 @@ from pydantic.main import BaseModel
 
 from care.emr.fhir.resources.base import ResourceManger
 from care.emr.fhir.resources.code_concept import MinimalCodeConcept
-from care.emr.fhir.schema.base import Coding
-from care.emr.fhir.schema.valueset.valueset import ValueSetInclude
+from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.valueset import ValueSetInclude
 
 
 class ValueSetFilterValidation(BaseModel):

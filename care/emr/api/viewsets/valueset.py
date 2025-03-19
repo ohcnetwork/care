@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.fhir.resources.code_concept import CodeConceptResource
-from care.emr.fhir.schema.base import Coding
 from care.emr.models.valueset import ValueSet
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
 
 
@@ -82,12 +82,19 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=Coding, responses={200: None}, methods=["POST"])
     @action(detail=False, methods=["POST"])
     def lookup_code(self, request, *args, **kwargs):
-        Coding(**request.data)  # Validate
-        result = (
-            CodeConceptResource()
-            .filter(
-                code=request.data["code"], system=request.data["system"], property="*"
+        Coding(**request.data)
+        try:
+            result = (
+                CodeConceptResource()
+                .filter(
+                    code=request.data["code"],
+                    system=request.data["system"],
+                    property="*",
+                )
+                .get()
             )
-            .get()
-        )
+        except ValueError:
+            return Response(
+                {"error": "No results found for the given system and code"}, status=404
+            )
         return Response(result)

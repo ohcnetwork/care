@@ -1,5 +1,6 @@
 import tempfile
 
+from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -20,6 +21,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.api.viewsets.device import disassociate_device_from_encounter
+from care.emr.api.viewsets.location import close_related_location_from_encounter
 from care.emr.models import (
     Encounter,
     EncounterOrganization,
@@ -81,6 +83,25 @@ class EncounterViewSet(
     filterset_class = EncounterFilters
     filter_backends = [filters.DjangoFilterBackend]
 
+    def validate_data(self, instance, model_obj=None):
+        if model_obj is None:
+            if (
+                self.database_model.objects.filter(
+                    patient__external_id=instance.patient
+                )
+                .exclude(status__in=COMPLETED_CHOICES)
+                .count()
+                >= settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT
+            ):
+                error = f"Patient already has maximum number of active encounters ({settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT})"
+                raise ValidationError(error)
+
+            if not Patient.objects.filter(external_id=instance.patient).exists():
+                raise ValidationError("Patient does not exist")
+
+            if not Facility.objects.filter(external_id=instance.facility).exists():
+                raise ValidationError("Facility does not exist")
+
     def perform_create(self, instance):
         with transaction.atomic():
             organizations = getattr(instance, "_organizations", [])
@@ -100,6 +121,7 @@ class EncounterViewSet(
     def perform_update(self, instance):
         with transaction.atomic():
             disassociate_device_from_encounter(instance)
+            close_related_location_from_encounter(instance)
             super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):

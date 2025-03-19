@@ -1,6 +1,9 @@
+from django.conf import settings
+from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -16,6 +19,7 @@ from care.emr.models import (
     FacilityLocationOrganization,
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
     FacilityLocationEncounterCreateSpec,
@@ -31,6 +35,7 @@ from care.emr.resources.location.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
+from care.utils.time_util import care_now
 
 
 class AvailabilityFilter(filters.BooleanFilter):
@@ -61,7 +66,11 @@ class FacilityLocationViewSet(EMRModelViewSet):
     pydantic_retrieve_model = FacilityLocationRetrieveSpec
     pydantic_update_model = FacilityLocationUpdateSpec
     filterset_class = FacilityLocationFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["sort_index"]
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -74,14 +83,41 @@ class FacilityLocationViewSet(EMRModelViewSet):
             raise ValidationError("Location has active children")
         # TODO Add validation to check if patient association exists
 
+    def perform_destroy(self, instance):
+        parent = instance.parent
+        with transaction.atomic():
+            super().perform_destroy(instance)
+            if parent:
+                parent.has_children = FacilityLocation.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
+
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
-        if not model_obj and instance.parent:
+        if model_obj is None and instance.parent:
             parent = get_object_or_404(FacilityLocation, external_id=instance.parent)
             if parent.facility_id != facility.id:
                 raise PermissionDenied("Parent Incompatible with Location")
             if parent.mode == FacilityLocationModeChoices.instance.value:
                 raise ValidationError("Instances cannot have children")
+
+            # Validate Depth
+            if parent.level_cache >= settings.LOCATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+                raise ValidationError(error)
+
+        if model_obj is None:
+            # validate number of locations in facility
+            facility_external_id = self.kwargs["facility_external_id"]
+            if (
+                FacilityLocation.objects.filter(
+                    facility__external_id=facility_external_id
+                ).count()
+                >= settings.MAX_LOCATION_IN_FACILITY
+            ):
+                error = f"Max location reached for facility ({settings.MAX_LOCATION_IN_FACILITY})"
+                raise ValidationError(error)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
@@ -423,3 +459,17 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to given location")
         return FacilityLocationEncounter.objects.filter(location=location)
+
+
+def close_related_location_from_encounter(instance):
+    if instance.status in COMPLETED_CHOICES:
+        with transaction.atomic():
+            FacilityLocation.objects.filter(current_encounter=instance).update(
+                current_encounter=None
+            )
+            FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
+                status__in=COMPLETED_CHOICES
+            ).update(
+                end_datetime=care_now(),
+                status=LocationEncounterAvailabilityStatusChoices.completed.value,
+            )

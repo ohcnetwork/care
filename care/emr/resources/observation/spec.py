@@ -3,10 +3,10 @@ from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field
 
-from care.emr.fhir.schema.base import CodeableConcept
 from care.emr.models.observation import Observation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.resources.common.codable_concept import CodeableConcept
 from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,
@@ -38,6 +38,14 @@ class ReferenceRange(BaseModel):
     high: float | None = None
     unit: str | None = None
     text: str | None = None
+
+
+class Component(BaseModel):
+    value: QuestionnaireSubmitResultValue
+    interpretation: str | None = None
+    reference_range: list[ReferenceRange] = []
+    code: Coding | None = None
+    note: str = ""
 
 
 class BaseObservationSpec(EMRResource):
@@ -106,6 +114,8 @@ class BaseObservationSpec(EMRResource):
     parent: UUID4 | None = Field(None, description="ID reference to parent observation")
 
     questionnaire_response: UUID4 | None = None
+
+    component: list[Component] = []
 
 
 class ObservationSpec(BaseObservationSpec):

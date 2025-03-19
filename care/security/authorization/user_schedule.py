@@ -41,10 +41,11 @@ class UserScheduleAccess(AuthorizationHandler):
         """
         facility_orgs = FacilityOrganizationUser.objects.filter(
             user=schedule_user, organization__facility=facility
-        ).values_list("organization__parent_cache", flat=True)
+        ).values("organization__parent_cache", "organization_id")
         cache = []
-        for org_cache in facility_orgs:
-            cache.extend(org_cache)
+        for facility_org in facility_orgs:
+            cache.extend(facility_org["organization__parent_cache"])
+            cache.append(facility_org["organization_id"])
         cache = list(set(cache))
         return self.check_permission_in_facility_organization(
             [UserSchedulePermissions.can_write_user_schedule.name], user, orgs=cache
@@ -56,10 +57,11 @@ class UserScheduleAccess(AuthorizationHandler):
         """
         facility_orgs = FacilityOrganizationUser.objects.filter(
             user=schedule_user, organization__facility=facility
-        ).values_list("organization__parent_cache", flat=True)
+        ).values("organization__parent_cache", "organization_id")
         cache = []
-        for org_cache in facility_orgs:
-            cache.extend(org_cache)
+        for facility_org in facility_orgs:
+            cache.extend(facility_org["organization__parent_cache"])
+            cache.append(facility_org["organization_id"])
         cache = list(set(cache))
         return self.check_permission_in_facility_organization(
             [UserSchedulePermissions.can_write_user_booking.name], user, orgs=cache

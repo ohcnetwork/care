@@ -1,5 +1,5 @@
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.registries.care_valueset.care_valueset import CareValueset
+from care.emr.resources.common.valueset import ValueSetCompose
 from care.emr.resources.valueset.spec import ValueSetStatusOptions
 
 CARE_OBSERVATION_VALUSET = CareValueset(

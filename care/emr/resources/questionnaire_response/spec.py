@@ -14,9 +14,7 @@ class QuestionnaireSubmitResultValue(BaseModel):
     # For Quantity
     unit: Coding | None = None
     # For Codes
-    system: str | None = None
-    code: str | None = None
-    display: str | None = None
+    coding: Coding | None = None
 
 
 class QuestionnaireSubmitResult(BaseModel):

@@ -2,12 +2,23 @@ import datetime
 import uuid
 from secrets import choice
 
-from django.test import ignore_warnings
+from django.test import ignore_warnings, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from care.emr.models import FacilityLocation, FacilityLocationOrganization
-from care.emr.resources.encounter.constants import COMPLETED_CHOICES
+from care.emr.models import (
+    FacilityLocation,
+    FacilityLocationEncounter,
+    FacilityLocationOrganization,
+)
+from care.emr.resources.encounter.constants import (
+    COMPLETED_CHOICES,
+    ClassChoices,
+    EncounterPriorityChoices,
+)
+from care.emr.resources.encounter.constants import (
+    StatusChoices as EncounterStatusChoices,
+)
 from care.emr.resources.location.spec import (
     FacilityLocationFormChoices,
     FacilityLocationModeChoices,
@@ -87,6 +98,50 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         self.base_url = reverse(
             "location-list", kwargs={"facility_external_id": self.facility.external_id}
         )
+
+    def test_deleting_child_location_updates_parent(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityLocationPermissions.can_list_facility_locations.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+        parent_location = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child_location_1 = self.create_facility_location(parent=parent_location["id"])
+        child_location_2 = self.create_facility_location(parent=parent_location["id"])
+
+        # Delete the first child location
+        url_1 = reverse(
+            "location-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": child_location_1["id"],
+            },
+        )
+        response_1 = self.client.delete(url_1, format="json")
+        self.assertEqual(response_1.status_code, 204)
+
+        parent_location_instance = FacilityLocation.objects.get(
+            external_id=parent_location["id"]
+        )
+        parent_location_instance.refresh_from_db()
+        self.assertTrue(parent_location_instance.has_children)
+
+        # Delete the second child location
+        url_2 = reverse(
+            "location-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": child_location_2["id"],
+            },
+        )
+        response_2 = self.client.delete(url_2, format="json")
+        self.assertEqual(response_2.status_code, 204)
+
+        parent_location_instance.refresh_from_db()
+        self.assertFalse(parent_location_instance.has_children)
 
     # LIST TESTS
     def test_list_facility_locations(self):
@@ -205,6 +260,79 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["detail"], "Parent Incompatible with Location")
+
+    @override_settings(LOCATION_MAX_DEPTH=2)
+    def test_for_maximum_depth_for_location(self):
+        self.client.force_authenticate(self.super_user)
+
+        # Create root (depth 0)
+        data = self.generate_data_for_facility_location(organizations=[], mode="kind")
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        # Create child (depth 1)
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        # Create child (depth 2)
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        # Create child at depth 3 → should fail
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["errors"][0]["msg"], "Max depth reached (2)")
+
+    @override_settings(MAX_LOCATION_IN_FACILITY=2)
+    def test_for_maximum_location_in_facility(self):
+        self.client.force_authenticate(self.super_user)
+
+        data = self.generate_data_for_facility_location(organizations=[], mode="kind")
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        parent_id = response.data["id"]
+
+        data = self.generate_data_for_facility_location(
+            parent=parent_id, organizations=[], mode="kind"
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"], "Max location reached for facility (2)"
+        )
+
+    def test_create_facility_location_with_invalid_sort_index(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityOrganizationPermissions.can_create_facility_organization.name,
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+            ]
+        )
+        data = self.generate_data_for_facility_location(sort_index=-1)
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        data = self.generate_data_for_facility_location(sort_index=1000)
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 400)
 
     # RETRIEVE TESTS
     def test_retrieve_facility_location_without_permissions(self):
@@ -935,3 +1063,74 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         error = response_data["errors"][0]
         self.assertEqual(error["type"], "validation_error")
         self.assertIn("Cannot change status after marking completed", error["msg"])
+
+    def test_completion_of_location_encounter_after_encounter_status_update_to_completed(
+        self,
+    ):
+        # Create Encounter
+        encounter = self.create_encounter(
+            self.patient,
+            self.facility,
+            self.facility.default_internal_organization,
+            status_history={"history": []},
+            encounter_class=ClassChoices.imp.value,
+        )
+
+        # Create Facility Location Encounter
+        facility_location_encounter = self.create_facility_location_encounter(encounter)
+        url = reverse(
+            "association-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "location_external_id": self.location["id"],
+                "external_id": facility_location_encounter["id"],
+            },
+        )
+
+        data = self.generate_facility_location_encounter_data(
+            encounter.external_id,
+            status=LocationEncounterAvailabilityStatusChoices.active.value,
+        )
+
+        self.client.force_authenticate(self.super_user)  # To avoid permissions error
+        # Update Facility Location Encounter
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        # Fetch updated object
+        encounter_location_obj = FacilityLocationEncounter.objects.get(
+            external_id=response.json()["id"]
+        )
+
+        # Verify status before encounter completion
+        self.assertEqual(
+            encounter_location_obj.status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+        )
+        self.assertIsNone(encounter_location_obj.end_datetime)
+
+        # Update Encounter to Completed
+        encounter_update_url = reverse(
+            "encounter-detail", kwargs={"external_id": encounter.external_id}
+        )
+        update_data = {
+            "status": EncounterStatusChoices.completed.value,
+            "priority": EncounterPriorityChoices.urgent.value,
+            "encounter_class": ClassChoices.imp.value,
+        }
+
+        self.client.force_authenticate(self.super_user)  # To avoid permissions error
+        self.client.put(encounter_update_url, data=update_data, format="json")
+
+        # Refresh and verify encounter location status
+        encounter_location_obj.refresh_from_db()
+        self.assertEqual(
+            encounter_location_obj.status,
+            LocationEncounterAvailabilityStatusChoices.completed.value,
+        )
+        self.assertIsNotNone(encounter_location_obj.end_datetime)
+
+        self.assertIsNone(
+            FacilityLocation.objects.get(
+                external_id=self.location["id"]
+            ).current_encounter
+        )
