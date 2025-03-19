@@ -62,7 +62,7 @@ def migrate_diagnosis(apps, schema_editor):
             if diagnosis.consultation.patient.deleted:
                 print("patient deleted", diagnosis.consultation.patient.id)
                 continue
-            icd10 = icd11_to_icd10_map.get(diagnosis.diagnosis_id)
+            icd10 = icd11_to_icd10_map[diagnosis.diagnosis_id]
             condition = Condition(
                 verification_status=verification_status_map.get(
                     diagnosis.verification_status
