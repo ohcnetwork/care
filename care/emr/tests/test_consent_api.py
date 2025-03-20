@@ -81,13 +81,17 @@ class TestConsentViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         encounter_self = self.create_encounter(
-            patient=self.patient, facility=self.facility, organization=self.organization
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
         )
         consent_self = self.create_consent(encounter=encounter_self)
 
         other_patient = self.create_patient()
         encounter_other = self.create_encounter(
-            patient=other_patient, facility=self.facility, organization=self.organization
+            patient=other_patient,
+            facility=self.facility,
+            organization=self.organization,
         )
         self.create_consent(encounter=encounter_other)
 
