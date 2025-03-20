@@ -148,7 +148,7 @@ class ValueSetViewSet(EMRModelViewSet):
             raise ValidationError("Invalid code value")
 
         pref, created = UserValueSetPreference.objects.get_or_create(
-            user=user, valueset=self.get_object(), defaults={"favorite_codes": []}
+            user=user, valueset=valueset, defaults={"favorite_codes": []}
         )
         favs = pref.favorite_codes
         if not any(fav.get("code") == code_obj.code for fav in favs):
@@ -169,12 +169,10 @@ class ValueSetViewSet(EMRModelViewSet):
         code_obj = MinimalCodeConcept(**request.data)
 
         valueset = self.get_object()
-        if not valueset.lookup(code_obj):
-            raise ValidationError("Invalid code value")
 
         try:
             pref = UserValueSetPreference.objects.get(
-                user=user, valueset=self.get_object()
+                user=user, valueset=valueset
             )
             favs = pref.favorite_codes
             new_favs = [fav for fav in favs if fav.get("code") != code_obj.code]
