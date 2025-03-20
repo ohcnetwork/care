@@ -69,13 +69,13 @@ List the cron jobs
 Check the status of cron
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For a fedora based os:
+For fedora or any systemd based systems that is using ``cronie``:
 
 .. code:: bash
 
  sudo systemctl status crond
 
-For a debian based os:
+For debian or any systemd based systems that is using ``cron``:
 
 .. code:: bash
 
