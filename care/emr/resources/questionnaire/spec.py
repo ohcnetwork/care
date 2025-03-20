@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Any
 
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
+from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
@@ -95,6 +96,15 @@ class AnswerOption(QuestionnaireBaseSpec):
         default=False,
         description="Whether option is initially selected",
     )
+
+    @field_validator("value")
+    @classmethod
+    def validate_value(cls, value: str, info):
+        if not value.strip():
+            raise ValueError(
+                "All the answer option values must be provided for custom choices"
+            )
+        return value.strip()
 
 
 class Question(QuestionnaireBaseSpec):
@@ -245,6 +255,16 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
 
 class QuestionnaireSpec(QuestionnaireWriteSpec):
     organizations: list[UUID4] = Field(min_length=1)
+    tags: list[UUID4]
+
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, tags):
+        tag_ids = []
+        for external_id in tags:
+            tag = get_object_or_404(QuestionnaireTag, external_id=external_id)
+            tag_ids.append(tag.id)
+        return tag_ids
 
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001

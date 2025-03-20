@@ -1,8 +1,10 @@
 import uuid
 
+from django.conf import settings
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.resources.questionnaire.spec import QuestionType
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -143,6 +145,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
+            "tags": [self.create_questionnaire_tag().external_id],
         }
 
         response = self.client.post(
@@ -199,6 +202,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "time": "25:61:00",
             "choice": "INVALID_CHOICE",
             "url": "not_a_url",
+            "text": "a" * settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE + "extra",
         }
         return invalid_values.get(question_type)
 
@@ -238,6 +242,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "time",
             "choice",
             "url",
+            "text",
         ]
 
         for question_type in test_types:
@@ -253,7 +258,49 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
                 error = response_data["errors"][0]
                 self.assertEqual(error["type"], "type_error")
                 self.assertEqual(error["question_id"], question["id"])
-                self.assertIn(f"Invalid {question_type}", error["msg"])
+                if question_type == QuestionType.text.value:
+                    self.assertIn(
+                        f"Text too long. Max allowed size is {settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE}",
+                        error["msg"],
+                    )
+                else:
+                    self.assertIn(f"Invalid {question_type}", error["msg"])
+
+    def test_false_choice_values_validations(self):
+        questionnaire_definition = {
+            "title": "Comprehensive Health Assessment",
+            "slug": "ques-choices-type",
+            "description": "Complete health assessment questionnaire with various response types",
+            "status": "active",
+            "subject_type": "patient",
+            "organizations": [str(self.organization.external_id)],
+            "questions": [
+                {
+                    "link_id": "1",
+                    "type": "choice",
+                    "text": "Overall health assessment",
+                    "answer_option": [
+                        {"value": " ", "display": "Excellent"},
+                        {"value": "GOOD", "display": "Good"},
+                        {"value": "FAIR", "display": "Fair"},
+                        {"value": "POOR", "display": "Poor"},
+                    ],
+                },
+            ],
+        }
+        response = self.client.post(
+            self.base_url, questionnaire_definition, format="json"
+        )
+        data = response.json()
+        status_code = response.status_code
+        self.assertEqual(status_code, 400)
+        self.assertIn("errors", data)
+        error = data["errors"][0]
+        self.assertEqual(error["type"], "value_error")
+        self.assertIn(
+            "All the answer option values must be provided for custom choices",
+            error["msg"],
+        )
 
 
 class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
@@ -1137,6 +1184,7 @@ class RequiredFieldValidationTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
+            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "link_id": "1",
@@ -1203,6 +1251,7 @@ class RequiredGroupValidationTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
+            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "styling_metadata": {"layout": "vertical"},
@@ -1290,6 +1339,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
+            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "link_id": "1",

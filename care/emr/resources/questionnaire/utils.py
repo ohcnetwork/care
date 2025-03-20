@@ -3,6 +3,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from dateutil.parser import isoparse
+from django.conf import settings
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
@@ -76,6 +77,12 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
                 parsed = urlparse(value.value)
                 if not all([parsed.scheme, parsed.netloc]):
                     errors.append(f"Invalid {value_type}")
+            elif (
+                value_type == QuestionType.text.value
+                and len(value.value) > settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE
+            ):
+                error = f"Text too long. Max allowed size is {settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE}"
+                errors.append(error)
         except ValueError:
             errors.append(f"Invalid {value_type}")
         except Exception:

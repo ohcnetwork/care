@@ -34,6 +34,7 @@ class ConsentViewSet(
         return (
             super()
             .get_queryset()
+            .filter(encounter__patient__external_id=self.kwargs["patient_external_id"])
             .select_related("encounter", "created_by", "updated_by")
         )
 
