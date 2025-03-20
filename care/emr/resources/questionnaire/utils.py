@@ -84,8 +84,81 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     return errors
 
 
+def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
+    """
+    Check if a question should be enabled based on its enable_when conditions.
+    Returns True if the question is enabled, False otherwise.
+    """
+    question_link_id_to_id = {
+        q["link_id"]: q["id"] for q in questionnaire_obj.questions
+    }
+
+    if not question.get("enable_when"):
+        return True
+
+    conditions = question["enable_when"]
+    behavior = question.get("enable_behavior", "all")
+    results = []
+
+    for condition in conditions:
+        link_id = condition["question"]
+
+        if link_id not in question_link_id_to_id:
+            results.append(False)
+            continue
+
+        condition_question_id = question_link_id_to_id[link_id]
+
+        if (
+            condition_question_id not in responses
+            or not responses[condition_question_id].values
+        ):
+            condition_value = None
+        else:
+            condition_value = responses[condition_question_id].values[0].value
+
+        operator = condition["operator"]
+        expected_answer = condition["answer"]
+
+        # Evaluate the condition based on the operator.
+        if operator == "exists":
+            result = bool(condition_value) == bool(expected_answer)
+        elif operator == "equals":
+            result = condition_value == expected_answer
+        elif operator == "not_equals":
+            result = condition_value != expected_answer
+        elif operator == "greater":
+            try:
+                result = float(condition_value) > float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less":
+            try:
+                result = float(condition_value) < float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "greater_or_equals":
+            try:
+                result = float(condition_value) >= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less_or_equals":
+            try:
+                result = float(condition_value) <= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        else:
+            # Unsupported operator; treat as condition not met.
+            result = False
+
+        results.append(result)
+
+    # Combine condition results using the enable_behavior.
+    return all(results) if behavior == "all" else any(results)
+
+
 def validate_question_result(  # noqa : PLR0912
-    questionnaire, responses, errors, parent, questionnaire_mapping
+    questionnaire, responses, errors, parent, questionnaire_mapping, questionnaire_obj
 ):
     questionnaire["parent"] = parent
     # Validate question responses
@@ -102,8 +175,26 @@ def validate_question_result(  # noqa : PLR0912
                     errors,
                     questionnaire["id"],
                     questionnaire_mapping,
+                    questionnaire_obj,
                 )
     else:
+        if "enable_when" in questionnaire and not is_question_enabled(
+            questionnaire, responses, questionnaire_obj
+        ):
+            # If a response was provided for a question that should be disabled, register an error.
+            if (
+                questionnaire["id"] in responses
+                and responses[questionnaire["id"]].values
+            ):
+                errors.append(
+                    {
+                        "question_id": questionnaire["id"],
+                        "error": "Response provided for a question that is disabled by enable_when conditions.",
+                    }
+                )
+            # Skip further validation for this question.
+            return
+
         # Case when question is not answered ( Not in response )
         if questionnaire["id"] not in responses and questionnaire.get(
             "required", False
@@ -335,6 +426,7 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
             errors,
             parent=None,
             questionnaire_mapping=questionnaire_mapping,
+            questionnaire_obj=questionnaire_obj,
         )
     if errors:
         raise ValidationError({"errors": errors})
