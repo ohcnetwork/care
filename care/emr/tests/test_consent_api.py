@@ -102,7 +102,7 @@ class TestConsentViewSet(CareAPITestBase):
         consents = data.get("results", data)
 
         self.assertEqual(len(consents), 1)
-        self.assertEqual(consents[0]["id"], consent_self.external_id)
+        self.assertEqual(consents[0]["id"], str(consent_self.external_id))
 
     def test_list_consent_without_permissions(self):
         self.create_encounter(
