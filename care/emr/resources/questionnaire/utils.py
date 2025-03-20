@@ -102,7 +102,6 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
 
     for condition in conditions:
         link_id = condition["question"]
-
         if link_id not in question_link_id_to_id:
             results.append(False)
             continue
@@ -122,7 +121,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
 
         # Evaluate the condition based on the operator.
         if operator == "exists":
-            result = bool(condition_value) == bool(expected_answer)
+            result = condition_value is not None
         elif operator == "equals":
             result = condition_value == expected_answer
         elif operator == "not_equals":
@@ -158,7 +157,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
 
 
 def validate_question_result(  # noqa : PLR0912
-    questionnaire, responses, errors, parent, questionnaire_mapping, questionnaire_obj
+    questionnaire, responses, errors, parent, questionnaire_mapping
 ):
     questionnaire["parent"] = parent
     # Validate question responses
@@ -175,26 +174,8 @@ def validate_question_result(  # noqa : PLR0912
                     errors,
                     questionnaire["id"],
                     questionnaire_mapping,
-                    questionnaire_obj,
                 )
     else:
-        if "enable_when" in questionnaire and not is_question_enabled(
-            questionnaire, responses, questionnaire_obj
-        ):
-            # If a response was provided for a question that should be disabled, register an error.
-            if (
-                questionnaire["id"] in responses
-                and responses[questionnaire["id"]].values
-            ):
-                errors.append(
-                    {
-                        "question_id": questionnaire["id"],
-                        "error": "Response provided for a question that is disabled by enable_when conditions.",
-                    }
-                )
-            # Skip further validation for this question.
-            return
-
         # Case when question is not answered ( Not in response )
         if questionnaire["id"] not in responses and questionnaire.get(
             "required", False
@@ -388,7 +369,7 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):
+def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PLR0912
     """
     Generate observations and questionnaire responses after validation
     """
@@ -420,13 +401,26 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
             }
         )
     for question in questionnaire_obj.questions:
+        if "enable_when" in question and not is_question_enabled(  # noqa SIM102
+            question, responses, questionnaire_obj
+        ):
+            # If a response was provided for a question that should be disabled, remove from results
+            if question["id"] in responses and responses[question["id"]].values:
+                results.results = [
+                    r for r in results.results if str(r.question_id) != question["id"]
+                ]
+                responses.pop(question["id"])
+                questionnaire_obj.questions = [
+                    q for q in questionnaire_obj.questions if q["id"] != question["id"]
+                ]
+
+    for question in questionnaire_obj.questions:
         validate_question_result(
             question,
             responses,
             errors,
             parent=None,
             questionnaire_mapping=questionnaire_mapping,
-            questionnaire_obj=questionnaire_obj,
         )
     if errors:
         raise ValidationError({"errors": errors})
