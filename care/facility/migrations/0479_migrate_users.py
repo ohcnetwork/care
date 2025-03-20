@@ -39,6 +39,26 @@ def get_role_for_user_type(user_type):
             return role.id
 
 
+old_new_user_type_map = {
+    2: "staff",  # Transportation
+    3: "staff",  # Pharmacist
+    5: "staff",  # Volunteer
+    9: "staff",  # StaffReadOnly
+    10: "Staff",  # Staff
+    13: "nurse",  # NurseReadOnly
+    14: "nurse",  # Nurse
+    15: "doctor",  # Doctor
+    20: "doctor",  # Reserved
+    21: "administrator",  # WardAdmin
+    23: "administrator",  # LocalBodyAdmin
+    25: "administrator",  # DistrictLabAdmin
+    29: "administrator",  # DistrictReadOnlyAdmin
+    30: "administrator",  # DistrictAdmin
+    35: "administrator",  # StateLabAdmin
+    39: "administrator",  # StateReadOnlyAdmin
+    40: "administrator",  # StateAdmin
+}
+
 def _get_org(obj):
     state = None
     district = None
@@ -176,6 +196,13 @@ def migrate_users(apps, schema_editor):
             bulk_roles.append((role_org.id, user.id, role_id, user.created_by_id))
 
     User.objects.bulk_update(bulk_update, ["geo_organization"])
+
+    bulk_update = []
+    for user in User.objects.all():
+        if user.user_type is None or user.user_type == "":
+            user.user_type = old_new_user_type_map.get(user.old_user_type)
+            bulk_update.append(user)
+    User.objects.bulk_update(bulk_update, ["user_type"])
 
     time_now = timezone.now()
     OrganizationUser.objects.bulk_create(
