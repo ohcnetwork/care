@@ -126,7 +126,7 @@ def migrate_assets(apps, schema_editor):
                 )
                 if not consultation_bed.end_date:
                     device.current_encounter_id = (
-                        consultation_bed.consultation_bed.consultation.migrated_emr_encounter_id
+                        consultation_bed.consultation.migrated_emr_encounter_id
                     )
 
             DeviceEncounterHistory.objects.bulk_create(bulk_device_history)
@@ -139,10 +139,16 @@ def migrate_assets(apps, schema_editor):
                 for edit in AssetServiceEdit.objects.filter(
                     asset_service_id=asset_service.id
                 ):
+                    edit_serviced_on = datetime(
+                        year=edit.serviced_on.year,
+                        month=edit.serviced_on.month,
+                        day=edit.serviced_on.day,
+                        tzinfo=asset_service.created_date.tzinfo
+                    ).isoformat() if edit.serviced_on else None
                     history.append(
                         {
                             "updated_by": edit.edited_by_id,
-                            "serviced_on": edit.serviced_on,
+                            "serviced_on": edit_serviced_on,
                             "note": edit.note,
                         }
                     )
@@ -153,7 +159,7 @@ def migrate_assets(apps, schema_editor):
                     month=asset_service.serviced_on.month,
                     day=asset_service.serviced_on.day,
                     tzinfo=asset_service.created_date.tzinfo
-                )
+                ) if asset_service.serviced_on else None
                 bulk_device_location_history.append(
                     DeviceServiceHistory(
                         device_id=device.id,
