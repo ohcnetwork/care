@@ -34,13 +34,13 @@ def validate_temp_token(temp_token: str) -> tuple[RefreshToken, str]:
 
 def check_mfa_ip_rate_limit(request):
     """Check IP-based rate limit"""
-    if ratelimit(request, "mfa-login", ["ip"], "10/5m"):
+    if ratelimit(request, "mfa-login", ["ip"]):
         raise Throttled(detail="Too Many Requests. Please try again later.")
 
 
 def check_mfa_user_rate_limit(request, user_id: str):
     """Check user-based rate limit"""
-    if ratelimit(request, "mfa-login", [user_id], "3/5m"):
+    if ratelimit(request, "mfa-login", [user_id]):
         raise Throttled(detail="Too Many Requests. Please try again later.")
 
 

@@ -100,3 +100,5 @@ JWKS = JsonWebKey.import_key_set(
         )
     )
 )
+
+DISABLE_RATELIMIT = True
