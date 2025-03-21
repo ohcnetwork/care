@@ -107,7 +107,7 @@ class DeviceViewSet(EMRModelViewSet):
                 care_device_class = DeviceTypeRegistry.get_care_device_class(
                     instance.care_type
                 )
-                care_device_class().handle_update(self.request.data, instance)
+                care_device_class().handle_delete(instance)
             super().perform_destroy(instance)
 
     def get_queryset(self):
