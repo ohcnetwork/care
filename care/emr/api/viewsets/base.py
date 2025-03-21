@@ -46,18 +46,18 @@ def emr_exception_handler(exc, context):
     return drf_exception_handler(exc, context)
 
 
-class EMRQuestionnaireMixin:
-    @action(detail=False, methods=["GET"])
-    def questionnaire_spec(self, *args, **kwargs):
-        return Response(
-            {"version": "1.0", "questions": self.pydantic_model.as_questionnaire()}
-        )
-
-    @action(detail=False, methods=["GET"])
-    def json_schema_spec(self, *args, **kwargs):
-        return Response(
-            {"version": "1.0", "questions": self.pydantic_model.model_json_schema()}
-        )
+# class EMRQuestionnaireMixin:
+#     @action(detail=False, methods=["GET"])
+#     def questionnaire_spec(self, *args, **kwargs):
+#         return Response(
+#             {"version": "1.0", "questions": self.pydantic_model.as_questionnaire()}
+#         )
+#
+#     @action(detail=False, methods=["GET"])
+#     def json_schema_spec(self, *args, **kwargs):
+#         return Response(
+#             {"version": "1.0", "questions": self.pydantic_model.model_json_schema()}
+#         )
 
 
 class EMRRetrieveMixin:
