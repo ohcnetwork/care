@@ -65,9 +65,9 @@ class Dosage(BaseModel):
         None,
         description="Free text dosage instructions",
     )
-    site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug]
-    route: ValueSetBoundCoding[CARE_ROUTE_VALUESET.slug]
-    method: ValueSetBoundCoding[CARE_ADMINISTRATION_METHOD_VALUESET.slug]
+    site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
+    route: ValueSetBoundCoding[CARE_ROUTE_VALUESET.slug] | None = None
+    method: ValueSetBoundCoding[CARE_ADMINISTRATION_METHOD_VALUESET.slug] | None = None
     dose: Quantity | None = Field(
         None,
         description="The amount of medication administered",
@@ -85,7 +85,7 @@ class BaseMedicationAdministrationSpec(EMRResource):
 
     status: MedicationAdministrationStatus
 
-    status_reason: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
+    status_reason: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
     category: MedicationAdministrationCategory | None = None
 
     medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
