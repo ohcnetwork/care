@@ -2630,7 +2630,7 @@ def migrate_daily_rounds(apps, schema_editor):
                     print(e, observation)
                     raise e
                 observations_obj = pydantic_observation.de_serialize()
-                observations_obj.effective_datetime = daily_round.taken_at
+                observations_obj.effective_datetime = daily_round.taken_at or daily_round.created_date
                 observations_obj.questionnaire_response = questionnaire_response
                 observations_obj.encounter_id = encounter.id
                 observations_obj.patient_id = encounter.patient_id
