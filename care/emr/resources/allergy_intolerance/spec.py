@@ -1,15 +1,15 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, Field, field_validator
+from pydantic import UUID4, field_validator
 
 from care.emr.models.allergy_intolerance import AllergyIntolerance
 from care.emr.models.encounter import Encounter
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.allergy_intolerance.valueset import CARE_ALLERGY_CODE_VALUESET
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class ClinicalStatusChoices(str, Enum):
@@ -46,6 +46,11 @@ class AllergyIntoleranceOnSetSpec(EMRResource):
     note: str
 
 
+class AllergyIntoleranceTypeOptions(str, Enum):
+    allergy = "allergy"
+    intolerance = "intolerance"
+
+
 class BaseAllergyIntoleranceSpec(EMRResource):
     __model__ = AllergyIntolerance
     __exclude__ = ["patient", "encounter"]
@@ -59,6 +64,9 @@ class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
     last_occurrence: datetime.datetime | None = None
     note: str | None = None
     encounter: UUID4
+    allergy_intolerance_type: AllergyIntoleranceTypeOptions = (
+        AllergyIntoleranceTypeOptions.allergy
+    )
 
     @field_validator("encounter")
     @classmethod
@@ -81,17 +89,11 @@ class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
     last_occurrence: datetime.datetime | None = None
     recorded_date: datetime.datetime | None = None
     encounter: UUID4
-    code: Coding = Field(
-        {}, json_schema_extra={"slug": CARE_ALLERGY_CODE_VALUESET.slug}
-    )
+    code: ValueSetBoundCoding[CARE_ALLERGY_CODE_VALUESET.slug]
     onset: AllergyIntoleranceOnSetSpec = {}
-
-    @field_validator("code")
-    @classmethod
-    def validate_code(cls, code: int):
-        return validate_valueset(
-            "code", cls.model_fields["code"].json_schema_extra["slug"], code
-        )
+    allergy_intolerance_type: AllergyIntoleranceTypeOptions = (
+        AllergyIntoleranceTypeOptions.allergy
+    )
 
     @field_validator("encounter")
     @classmethod
@@ -124,6 +126,7 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     created_by: dict = {}
     updated_by: dict = {}
     note: str | None = None
+    allergy_intolerance_type: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

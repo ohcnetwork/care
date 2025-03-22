@@ -59,8 +59,13 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "Cannot create organizations under root organization"
                 )
-            if model_obj is None and parent.level_cache >= settings.LOCATION_MAX_DEPTH:
-                error = f"Max depth reached ({settings.LOCATION_MAX_DEPTH})"
+            if (
+                model_obj is None
+                and parent.level_cache >= settings.FACILITY_ORGANIZATION_MAX_DEPTH
+            ):
+                error = (
+                    f"Max depth reached ({settings.FACILITY_ORGANIZATION_MAX_DEPTH})"
+                )
                 raise ValidationError(error)
 
         if model_obj is None:

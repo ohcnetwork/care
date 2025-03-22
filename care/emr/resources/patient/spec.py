@@ -9,6 +9,7 @@ from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.permissions import PatientPermissionsMixin
+from care.utils.time_util import care_now
 
 
 class BloodGroupChoices(str, Enum):
@@ -54,9 +55,19 @@ class PatientCreateSpec(PatientBaseSpec):
     age: int | None = None
 
     @model_validator(mode="after")
-    def validate_age(self):
+    def validate_date_of_birth_and_death_date(self):
         if not (self.age or self.date_of_birth):
             raise ValueError("Either age or date of birth is required")
+        if (
+            self.date_of_birth
+            and self.death_datetime
+            and self.date_of_birth > self.death_datetime.date()
+        ):
+            raise ValueError("Date of birth cannot be after the date of death")
+        if self.age and self.death_datetime:
+            curr_year = care_now().year
+            if curr_year - self.age > self.death_datetime.year:
+                raise ValueError("Year of birth cannot be after the year of death")
         return self
 
     @field_validator("geo_organization")

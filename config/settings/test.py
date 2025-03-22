@@ -42,9 +42,18 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 # test in peace
 CACHES = {
     "default": {
-        "BACKEND": "config.caches.DummyCache",
-    }
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,  # noqa F405
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # Mimicing memcache behavior.
+            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
+            "IGNORE_EXCEPTIONS": True,
+            "KEY_PREFIX": "test_",
+        },
+    },
 }
+
 # for testing retelimit use override_settings decorator
 SILENCED_SYSTEM_CHECKS = ["django_ratelimit.E003", "django_ratelimit.W001"]
 
@@ -91,3 +100,5 @@ JWKS = JsonWebKey.import_key_set(
         )
     )
 )
+
+DISABLE_RATELIMIT = True

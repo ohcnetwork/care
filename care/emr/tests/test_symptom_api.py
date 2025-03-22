@@ -24,6 +24,7 @@ from care.utils.time_util import care_now
 class TestSymptomViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        self.super_user = self.create_super_user()
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
@@ -40,7 +41,7 @@ class TestSymptomViewSet(CareAPITestBase):
         }
         # Mocking validate_valueset
         self.patcher = patch(
-            "care.emr.resources.condition.spec.validate_valueset",
+            "care.emr.utils.valueset_coding_type.validate_valueset",
             return_value=self.valid_code,
         )
         self.mock_validate_valueset = self.patcher.start()

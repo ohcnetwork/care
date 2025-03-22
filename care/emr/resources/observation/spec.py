@@ -16,6 +16,7 @@ from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireSubmitResultValue,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class ObservationStatus(str, Enum):
@@ -91,17 +92,9 @@ class BaseObservationSpec(EMRResource):
 
     note: str | None = Field(None, description="Additional notes about the observation")
 
-    body_site: Coding | None = Field(
-        None,
-        description="Body site where observation was made",
-        json_schema_extra={"slug": CARE_BODY_SITE_VALUESET.slug},
-    )
+    body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
 
-    method: Coding | None = Field(
-        None,
-        description="Method used for the observation",
-        json_schema_extra={"slug": CARE_OBSERVATION_COLLECTION_METHOD.slug},
-    )
+    method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
 
     reference_range: list[ReferenceRange] = Field(
         [], description="Reference ranges for interpretation"

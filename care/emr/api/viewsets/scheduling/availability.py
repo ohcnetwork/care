@@ -18,7 +18,6 @@ from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, SchedulableUserResource
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
-    CANCELLED_STATUS_CHOICES,
     COMPLETED_STATUS_CHOICES,
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
@@ -114,7 +113,7 @@ def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
             raise ValidationError("Slot is already full")
         if (
             TokenBooking.objects.filter(token_slot=token_slot, patient=patient)
-            .exclude(status__in=CANCELLED_STATUS_CHOICES)
+            .exclude(status__in=COMPLETED_STATUS_CHOICES)
             .exists()
         ):
             raise ValidationError("Patient already has a booking for this slot")

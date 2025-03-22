@@ -5,12 +5,11 @@ from pydantic import UUID4, Field, field_validator
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_statement import MedicationStatement
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
-from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.period import Period
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class MedicationStatementStatus(str, Enum):
@@ -38,9 +37,7 @@ class BaseMedicationStatementSpec(EMRResource):
     status: MedicationStatementStatus
     reason: str | None = None
 
-    medication: Coding = Field(
-        json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
-    )
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
     dosage_text: str | None = Field(
         None,
     )  # consider using Dosage from MedicationRequest
@@ -71,15 +68,6 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
             err = "Encounter not found"
             raise ValueError(err)
         return encounter
-
-    @field_validator("medication")
-    @classmethod
-    def validate_medication(cls, medication):
-        return validate_valueset(
-            "medication",
-            cls.model_fields["medication"].json_schema_extra["slug"],
-            medication,
-        )
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:

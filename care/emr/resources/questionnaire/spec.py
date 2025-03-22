@@ -3,16 +3,16 @@ from enum import Enum
 from typing import Any
 
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
+from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
-from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class EnableOperator(str, Enum):
@@ -96,6 +96,15 @@ class AnswerOption(QuestionnaireBaseSpec):
         description="Whether option is initially selected",
     )
 
+    @field_validator("value")
+    @classmethod
+    def validate_value(cls, value: str, info):
+        if not value.strip():
+            raise ValueError(
+                "All the answer option values must be provided for custom choices"
+            )
+        return value.strip()
+
 
 class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
@@ -104,11 +113,7 @@ class Question(QuestionnaireBaseSpec):
     id: UUID4 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
-    code: Coding | None = Field(
-        None,
-        description="Coding for observation creation",
-        json_schema_extra={"slug": CARE_OBSERVATION_VALUSET.slug},
-    )
+    code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
     collect_time: bool = Field(
         default=False, description="Whether to collect timestamp"
     )
@@ -135,18 +140,11 @@ class Question(QuestionnaireBaseSpec):
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
-    unit: Coding | None = Field(None, json_schema_extra={"slug": CARE_UCUM_UNITS.slug})
+    unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
     is_component: bool = False
-
-    @field_validator("unit")
-    @classmethod
-    def validate_unit(cls, code):
-        return validate_valueset(
-            "unit", cls.model_fields["unit"].json_schema_extra["slug"], code
-        )
 
     @field_validator("answer_value_set")
     @classmethod
@@ -245,6 +243,16 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
 
 class QuestionnaireSpec(QuestionnaireWriteSpec):
     organizations: list[UUID4] = Field(min_length=1)
+    tags: list[UUID4]
+
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, tags):
+        tag_ids = []
+        for external_id in tags:
+            tag = get_object_or_404(QuestionnaireTag, external_id=external_id)
+            tag_ids.append(tag.id)
+        return tag_ids
 
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001

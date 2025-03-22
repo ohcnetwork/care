@@ -75,6 +75,35 @@ class TestConsentViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 200)
 
+    def test_list_consent_are_filtered_by_patients(self):
+        permissions = [PatientPermissions.can_view_clinical_data.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        encounter_self = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        consent_self = self.create_consent(encounter=encounter_self)
+
+        other_patient = self.create_patient()
+        encounter_other = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        self.create_consent(encounter=encounter_other)
+
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        consents = data.get("results", data)
+
+        self.assertEqual(len(consents), 1)
+        self.assertEqual(consents[0]["id"], str(consent_self.external_id))
+
     def test_list_consent_without_permissions(self):
         self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization

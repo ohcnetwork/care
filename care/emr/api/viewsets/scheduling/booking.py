@@ -1,7 +1,12 @@
 from typing import Literal
 
 from django.db import transaction
-from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
+from django_filters import (
+    CharFilter,
+    DateFromToRangeFilter,
+    FilterSet,
+    UUIDFilter,
+)
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -49,8 +54,12 @@ class TokenBookingFilters(FilterSet):
     patient = UUIDFilter(field_name="patient__external_id")
 
     def filter_by_user(self, queryset, name, value):
+        facility_external_id = self.request.parser_context.get("kwargs", {}).get(
+            "facility_external_id"
+        )
         resource = SchedulableUserResource.objects.filter(
-            user__external_id=value
+            user__external_id=value,
+            facility__external_id=facility_external_id,
         ).first()
         if not resource:
             return queryset.none()
