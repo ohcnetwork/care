@@ -3,13 +3,12 @@ import uuid
 from enum import Enum
 
 from django.utils import timezone
-from pydantic import UUID4, Field, field_validator, model_validator
+from pydantic import UUID4, Field, field_validator
 
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.permissions import PatientPermissionsMixin
-from care.utils.time_util import care_now
 
 
 class BloodGroupChoices(str, Enum):
@@ -54,22 +53,6 @@ class PatientCreateSpec(PatientBaseSpec):
 
     age: int | None = None
 
-    @model_validator(mode="after")
-    def validate_date_of_birth_and_death_date(self):
-        if not (self.age or self.date_of_birth):
-            raise ValueError("Either age or date of birth is required")
-        if (
-            self.date_of_birth
-            and self.deceased_datetime
-            and self.date_of_birth > self.deceased_datetime.date()
-        ):
-            raise ValueError("Date of birth cannot be after the date of death")
-        if self.age and self.deceased_datetime:
-            curr_year = care_now().year
-            if curr_year - self.age > self.deceased_datetime.year:
-                raise ValueError("Year of birth cannot be after the year of death")
-        return self
-
     @field_validator("geo_organization")
     @classmethod
     def validate_geo_organization(cls, geo_organization):
@@ -103,9 +86,25 @@ class PatientUpdateSpec(PatientBaseSpec):
     blood_group: BloodGroupChoices | None = None
     date_of_birth: datetime.date | None = None
     age: int | None = None
+    geo_organization: UUID4 | None = None
+
+    @field_validator("geo_organization")
+    @classmethod
+    def validate_geo_organization(cls, geo_organization):
+        if geo_organization is None:
+            return None
+        if not Organization.objects.filter(
+            org_type="govt", external_id=geo_organization
+        ).exists():
+            raise ValueError("Geo Organization does not exist")
+        return geo_organization
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
+            if self.geo_organization:
+                obj.geo_organization = Organization.objects.get(
+                    external_id=self.geo_organization
+                )
             if self.age is not None:
                 obj.date_of_birth = None
                 obj.year_of_birth = timezone.now().year - self.age
