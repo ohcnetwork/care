@@ -56,21 +56,30 @@ class PatientViewSet(EMRModelViewSet):
             raise PermissionDenied("Cannot delete patient")
 
     def validate_data(self, instance, model_obj=None):
-        dob = instance.date_of_birth or model_obj.date_of_birth
-        deceased = instance.deceased_datetime or model_obj.deceased_datetime
+        if instance.date_of_birth is not None:
+            dob = instance.date_of_birth
+        elif model_obj:
+            dob = model_obj.date_of_birth
+        else:
+            dob = None
+
+        if instance.deceased_datetime is not None:
+            deceased = instance.deceased_datetime
+        elif model_obj:
+            deceased = model_obj.deceased_datetime
+        else:
+            deceased = None
 
         if dob and deceased and dob > deceased.date():
             raise ValidationError("Date of birth cannot be after the date of death")
 
-        age = (
-            instance.age
-            if instance.age is not None
-            else (
-                timezone.now().year - model_obj.year_of_birth
-                if model_obj.year_of_birth
-                else None
-            )
-        )
+        if instance.age is not None:
+            age = instance.age
+        elif model_obj and model_obj.year_of_birth:
+            age = timezone.now().year - model_obj.year_of_birth
+        else:
+            age = None
+
         if age and deceased:
             calculated_birth_year = timezone.now().year - age
             if calculated_birth_year > deceased.year:
