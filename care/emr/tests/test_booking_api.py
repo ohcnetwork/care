@@ -634,6 +634,22 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         )
         self.assertContains(response, status_code=400, text="Slot is already past")
 
+    def test_create_appointment_ongoing_slot(self):
+        """Users can create appointments for a slot that's currently ongoing."""
+        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        slot = self.create_slot(
+            start_datetime=datetime.now(UTC) - timedelta(minutes=5),
+            end_datetime=datetime.now(UTC) + timedelta(minutes=5),
+        )
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_create_multiple_appointments_on_same_slot(self):
         """Users cannot create multiple appointments on the same slot for the same patient."""
         permissions = [UserSchedulePermissions.can_create_appointment.name]

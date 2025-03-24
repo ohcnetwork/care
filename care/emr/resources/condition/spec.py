@@ -87,6 +87,7 @@ class ConditionSpec(BaseConditionSpec):
     onset: ConditionOnSetSpec = {}
     abatement: ConditionAbatementSpec = {}
     note: str | None = None
+    category: CategoryChoices
 
     @field_validator("encounter")
     @classmethod
