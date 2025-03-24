@@ -91,6 +91,28 @@ class PatientCreateSpec(PatientBaseSpec):
             obj.year_of_birth = self.date_of_birth.year
 
 
+class PatientUpdateSpec(PatientBaseSpec):
+    name: str | None = Field(default=None, max_length=200)
+    gender: GenderChoices | None = None
+    phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    address: str | None = None
+    permanent_address: str | None = None
+    pincode: int | None = None
+    deceased_datetime: datetime.datetime | None = None
+    blood_group: BloodGroupChoices | None = None
+    date_of_birth: datetime.date | None = None
+    age: int | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if is_update:
+            if self.age is not None:
+                obj.date_of_birth = None
+                obj.year_of_birth = timezone.now().year - self.age
+            elif self.date_of_birth:
+                obj.year_of_birth = self.date_of_birth.year
+
+
 class PatientListSpec(PatientBaseSpec):
     date_of_birth: datetime.date | None = None
     year_of_birth: datetime.date | None = None
