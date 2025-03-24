@@ -9,6 +9,7 @@ from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.permissions import PatientPermissionsMixin
+from care.utils.time_util import care_now
 
 
 class BloodGroupChoices(str, Enum):
@@ -64,7 +65,7 @@ class PatientCreateSpec(PatientBaseSpec):
         ):
             raise ValueError("Date of birth cannot be after the date of death")
         if self.age and self.death_datetime:
-            curr_year = datetime.datetime.now().year
+            curr_year = care_now().year
             if curr_year - self.age > self.death_datetime.year:
                 raise ValueError("Year of birth cannot be after the year of death")
         return self

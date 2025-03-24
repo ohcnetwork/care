@@ -34,7 +34,7 @@ class TestMedicationRequestApi(CareAPITestBase):
         }
         # Mocking validate_valueset
         self.patcher = patch(
-            "care.emr.resources.medication.request.spec.validate_valueset",
+            "care.emr.utils.valueset_coding_type.validate_valueset",
             return_value=self.valid_code,
         )
         self.mock_validate_valueset = self.patcher.start()
