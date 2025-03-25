@@ -6,14 +6,13 @@ from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
-from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class EnableOperator(str, Enum):
@@ -114,11 +113,7 @@ class Question(QuestionnaireBaseSpec):
     id: UUID4 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
-    code: Coding | None = Field(
-        None,
-        description="Coding for observation creation",
-        json_schema_extra={"slug": CARE_OBSERVATION_VALUSET.slug},
-    )
+    code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
     collect_time: bool = Field(
         default=False, description="Whether to collect timestamp"
     )
@@ -145,18 +140,11 @@ class Question(QuestionnaireBaseSpec):
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
-    unit: Coding | None = Field(None, json_schema_extra={"slug": CARE_UCUM_UNITS.slug})
+    unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
     is_component: bool = False
-
-    @field_validator("unit")
-    @classmethod
-    def validate_unit(cls, code):
-        return validate_valueset(
-            "unit", cls.model_fields["unit"].json_schema_extra["slug"], code
-        )
 
     @field_validator("answer_value_set")
     @classmethod

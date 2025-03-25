@@ -1,5 +1,6 @@
 import datetime
 
+from django.utils import timezone
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -17,6 +18,7 @@ from care.emr.resources.patient.spec import (
     PatientListSpec,
     PatientPartialSpec,
     PatientRetrieveSpec,
+    PatientUpdateSpec,
 )
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
@@ -34,6 +36,7 @@ class PatientViewSet(EMRModelViewSet):
     database_model = Patient
     pydantic_model = PatientCreateSpec
     pydantic_read_model = PatientListSpec
+    pydantic_update_model = PatientUpdateSpec
     pydantic_retrieve_model = PatientRetrieveSpec
     filterset_class = PatientFilters
     filter_backends = [DjangoFilterBackend]
@@ -51,6 +54,26 @@ class PatientViewSet(EMRModelViewSet):
     def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Cannot delete patient")
+
+    def validate_data(self, instance, model_obj=None):
+        dob = instance.date_of_birth or (model_obj and model_obj.date_of_birth)
+        deceased = instance.deceased_datetime or (
+            model_obj and model_obj.deceased_datetime
+        )
+
+        if dob and deceased and dob > deceased.date():
+            raise ValidationError("Date of birth cannot be after the date of death")
+
+        age = instance.age or (
+            model_obj
+            and model_obj.year_of_birth
+            and timezone.now().year - model_obj.year_of_birth
+        )
+
+        if age and deceased:
+            calculated_birth_year = timezone.now().year - age
+            if calculated_birth_year > deceased.year:
+                raise ValidationError("Year of birth cannot be after the year of death")
 
     def get_queryset(self):
         qs = (

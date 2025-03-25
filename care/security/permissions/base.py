@@ -1,3 +1,4 @@
+from care.security.permissions.device import DevicePermissions
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.facility import FacilityPermissions
 from care.security.permissions.facility_organization import (
@@ -34,6 +35,7 @@ class PermissionController:
         UserPermissions,
         UserSchedulePermissions,
         FacilityLocationPermissions,
+        DevicePermissions,
     ]
 
     cache = {}

@@ -41,6 +41,7 @@ class ValueSetFilter(BaseModel):
         if op is not None and op not in allowed_op:
             error = f"Invalid op value {op}. Allowed values are {allowed_op}"
             raise ValueError(error)
+        return op
 
 
 class ValueSetInclude(BaseModel):

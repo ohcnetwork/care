@@ -9,7 +9,6 @@ from care.emr.api.otp_viewsets.slot import OTPSlotViewSet
 from care.emr.api.viewsets.allergy_intolerance import AllergyIntoleranceViewSet
 from care.emr.api.viewsets.batch_request import BatchRequestView
 from care.emr.api.viewsets.condition import (
-    ChronicConditionViewSet,
     DiagnosisViewSet,
     SymptomViewSet,
 )
@@ -231,9 +230,6 @@ patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
 
 patient_nested_router.register(r"consent", ConsentViewSet, basename="consent")
-patient_nested_router.register(
-    r"chronic_condition", ChronicConditionViewSet, basename="chronic-condition"
-)
 
 patient_nested_router.register(
     "observation", ObservationViewSet, basename="observation"
