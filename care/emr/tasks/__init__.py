@@ -7,7 +7,7 @@ from care.emr.tasks.cleanup_expired_token_slots import cleanup_expired_token_slo
 @current_app.on_after_finalize.connect
 def setup_periodic_tasks(sender: Celery, **kwargs):
     sender.add_periodic_task(
-        crontab(hour="18", minute="44"),
+        crontab(hour="0", minute="0"),
         cleanup_expired_token_slots.s(),
         name="cleanup_expired_token_slots",
     )
