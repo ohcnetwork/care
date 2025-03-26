@@ -8,6 +8,17 @@ from django.db import models
 MIGRATION_ID = 158445695209
 
 
+care_type_map = {
+    "ONVIF": "camera",
+    "HL7MONITOR":"vitals-observation",
+    "VENTILATOR":"vitals-observation",
+}
+
+sub_type_map = {
+    "HL7MONITOR": "HL7-Monitor",
+    "VENTILATOR": "Ventilator",
+}
+
 def migrate_assets(apps, schema_editor):
     from care.emr.models import (
         Device,
@@ -74,9 +85,21 @@ def migrate_assets(apps, schema_editor):
                         "use": "work",
                     }
                 )
+            metadata = {}
+            if sub_type:= sub_type_map.get(asset.asset_class):
+                metadata["type"] = sub_type
+            if endpoint_address := asset.meta.get("local_ip_address"):
+                metadata["endpoint_address"] = endpoint_address
+            try:
+                metadata["username"], metadata["password"], metadata["stream_id"] = (
+                    asset.meta.get.get("camera_access_key", "").split(":")
+                )
+            except ValueError:
+                pass
             device = Device.objects.create(
                 external_id=asset.external_id,
                 identifier=asset.serial_number,
+                care_type=care_type_map.get(asset.asset_class),
                 status="active",
                 availability_status="available" if asset.is_working else "damaged",
                 manufacturer=asset.manufacturer or "",
@@ -90,15 +113,13 @@ def migrate_assets(apps, schema_editor):
                 current_location_id=asset.current_location.migrated_emr_location_id,
                 created_date=asset.created_date,
                 modified_date=asset.modified_date,
-                metadata={
+                metadata=metadata,
+                meta={
+                    "migration_id": MIGRATION_ID,
                     "not_working_reason": asset.not_working_reason,
                     "warranty_details": asset.warranty_details,
                     "qr_code_id": asset.qr_code_id,
-                    "connection_meta": asset.meta,
                     "class": asset.asset_class,
-                },
-                meta={
-                    "migration_id": MIGRATION_ID,
                 },
             )
             bulk_asset_device_reference.append((asset.id, device.id))
