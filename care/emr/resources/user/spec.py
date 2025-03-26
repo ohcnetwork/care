@@ -113,6 +113,7 @@ class UserSpec(UserBaseSpec):
     username: str
     mfa_enabled: bool = False
     phone_number: str = Field(max_length=14)
+    deleted: bool = False
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
