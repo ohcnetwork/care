@@ -151,8 +151,4 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
                 "-created_date"
             )
         ]
-        mapping["treating_doctors"] = [
-            UserSpec.serialize(User.objects.get(external_id=treating_doctor)).to_json()
-            for treating_doctor in obj.treating_doctors
-        ]
         cls.serialize_audit_users(mapping, obj)
