@@ -280,6 +280,54 @@ class EncounterViewSet(
             status=status.HTTP_202_ACCEPTED,
         )
 
+    class EncounterTreatingDoctorSpec(BaseModel):
+        treating_doctor_id: UUID4
+
+    @extend_schema(
+        request=EncounterTreatingDoctorSpec, responses={200: EncounterRetrieveSpec}
+    )
+    @action(detail=True, methods=["POST"])
+    def add_treating_doctor(self, request, *args, **kwargs):
+        request_data = self.EncounterTreatingDoctorSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+
+        if not AuthorizationController.call(
+            "can_view_clinical_data", self.request.user, encounter.patient
+        ):
+            raise PermissionDenied(
+                "Treating doctor does not have permission on encounter"
+            )
+
+        if request_data.treating_doctor_id in encounter.treating_doctors:
+            return Response(
+                {"detail": "Treating doctor is already added to this encounter."},
+                status=400,
+            )
+
+        encounter.treating_doctors.append(request_data.treating_doctor_id)
+        encounter.save(update_fields=["treating_doctors"])
+        return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
+
+    @extend_schema(
+        request=EncounterTreatingDoctorSpec, responses={200: EncounterRetrieveSpec}
+    )
+    @action(detail=True, methods=["POST"])
+    def remove_treating_doctor(self, request, *args, **kwargs):
+        request_data = self.EncounterTreatingDoctorSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+
+        if request_data.treating_doctor_id not in encounter.treating_doctors:
+            return Response(
+                {"detail": "Treating doctor is not assigned to this encounter."},
+                status=400,
+            )
+
+        encounter.treating_doctors.remove(request_data.treating_doctor_id)
+        encounter.save(update_fields=["treating_doctors"])
+        return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
+
 
 def dev_preview_discharge_summary(request, encounter_id):
     """

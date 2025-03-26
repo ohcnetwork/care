@@ -1,6 +1,7 @@
 # Not Being used
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
@@ -29,7 +30,10 @@ from care.emr.resources.location.spec import (
 from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
+from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
+
+User = get_user_model()
 
 
 class HospitalizationSpec(BaseModel):
@@ -47,6 +51,7 @@ class EncounterSpecBase(EMRResource):
         "facility",
         "appointment",
         "current_location",
+        "treating_doctors",
     ]
 
     id: UUID4 = None
@@ -101,12 +106,18 @@ class EncounterListSpec(EncounterSpecBase):
     encounter_class_history: dict
     created_date: datetime.datetime
     modified_date: datetime.datetime
+    treating_doctors: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
+
+        mapping["treating_doctors"] = [
+            UserSpec.serialize(User.objects.get(external_id=treating_doctor)).to_json()
+            for treating_doctor in obj.treating_doctors
+        ]
 
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
@@ -139,5 +150,9 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
             for i in FacilityLocationEncounter.objects.filter(encounter=obj).order_by(
                 "-created_date"
             )
+        ]
+        mapping["treating_doctors"] = [
+            UserSpec.serialize(User.objects.get(external_id=treating_doctor)).to_json()
+            for treating_doctor in obj.treating_doctors
         ]
         cls.serialize_audit_users(mapping, obj)
