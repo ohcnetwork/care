@@ -1,6 +1,7 @@
 import tempfile
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -40,6 +41,8 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+
+User = get_user_model()
 
 
 class LiveFilter(filters.CharFilter):
@@ -292,17 +295,18 @@ class EncounterViewSet(
         encounter = self.get_object()
         self.authorize_update({}, encounter)
 
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, encounter.patient
-        ):
-            raise PermissionDenied(
-                "Treating doctor does not have permission on encounter"
-            )
-
         if request_data.treating_doctor_id in encounter.treating_doctors:
             return Response(
                 {"detail": "Treating doctor is already added to this encounter."},
                 status=400,
+            )
+
+        doc = get_object_or_404(User, external_id=request_data.treating_doctor_id)
+        if not AuthorizationController.call(
+            "can_view_clinical_data", doc, encounter.patient
+        ):
+            raise PermissionDenied(
+                "Treating doctor does not have permission on encounter"
             )
 
         encounter.treating_doctors.append(request_data.treating_doctor_id)
