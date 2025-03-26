@@ -183,7 +183,7 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
     version: str = Field("1.0", frozen=True, description="Version of the questionnaire")
     slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
     title: str
-    description: str = ""
+    description: str | None = None
     type: str = "custom"
     status: QuestionnaireStatus
     subject_type: SubjectType
@@ -267,7 +267,7 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     slug: str | None = None
     version: str
     title: str
-    description: str = ""
+    description: str | None = None
     status: QuestionnaireStatus
     subject_type: SubjectType
     styling_metadata: dict

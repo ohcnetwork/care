@@ -660,6 +660,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         self.client.force_authenticate(user=self.super_user)
 
         updated_data = self._create_questionnaire()
+        updated_data["description"] = ""
         updated_data["questions"] = [
             {
                 "link_id": "1",
@@ -678,6 +679,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         self.assertEqual(
             response.json()["questions"][0]["text"], "Modified question text"
         )
+        self.assertEqual(response.json()["description"], "")
 
     # def test_active_questionnaire_modification_prevented(self):
     #     """
