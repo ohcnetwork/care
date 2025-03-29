@@ -3,6 +3,7 @@ from datetime import UTC
 from enum import Enum
 
 from django.db.models import Sum
+from django.utils import timezone
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -123,12 +124,17 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     user: UUID4
     facility: UUID4
     name: str
-    valid_from: datetime.datetime
-    valid_to: datetime.datetime
+    valid_from: datetime.date
+    valid_to: datetime.date
     availabilities: list[AvailabilityForScheduleSpec]
 
     @model_validator(mode="after")
     def validate_period(self):
+        now = timezone.now().date()
+        if self.valid_from < now:
+            raise ValueError("Valid from date cannot be before the current date")
+        if self.valid_to < now:
+            raise ValueError("Valid to date cannot be before the current date")
         if self.valid_from > self.valid_to:
             raise ValidationError("Valid from cannot be greater than valid to")
         return self
