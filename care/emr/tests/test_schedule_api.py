@@ -243,7 +243,7 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
             response,
-            "Valid from date cannot be before the current date",
+            "Date cannot be before the current date",
             status_code=400,
         )
 
@@ -259,7 +259,7 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
             response,
-            "Valid to date cannot be before the current date",
+            "Date cannot be before the current date",
             status_code=400,
         )
 
@@ -554,7 +554,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, exception_data, format="json")
         self.assertContains(
             response,
-            "Valid from date cannot be before the current date",
+            "Date cannot be before the current date",
             status_code=400,
         )
 
@@ -570,7 +570,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, exception_data, format="json")
         self.assertContains(
             response,
-            "Valid to date cannot be before the current date",
+            "Date cannot be before the current date",
             status_code=400,
         )
 

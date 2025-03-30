@@ -128,13 +128,16 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     valid_to: datetime.date
     availabilities: list[AvailabilityForScheduleSpec]
 
+    @field_validator("valid_from", "valid_to")
+    @classmethod
+    def validate_dates(cls, value):
+        now = timezone.now().date()
+        if value < now:
+            raise ValueError("Date cannot be before the current date")
+        return value
+
     @model_validator(mode="after")
     def validate_period(self):
-        now = timezone.now().date()
-        if self.valid_from < now:
-            raise ValueError("Valid from date cannot be before the current date")
-        if self.valid_to < now:
-            raise ValueError("Valid to date cannot be before the current date")
         if self.valid_from > self.valid_to:
             raise ValidationError("Valid from cannot be greater than valid to")
         return self

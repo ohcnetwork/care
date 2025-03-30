@@ -3,7 +3,7 @@ from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models import AvailabilityException, TokenSlot
@@ -33,13 +33,16 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     facility: UUID4 | None = None
     user: UUID4
 
+    @field_validator("valid_from", "valid_to")
+    @classmethod
+    def validate_dates(cls, value):
+        now = timezone.now().date()
+        if value < now:
+            raise ValueError("Date cannot be before the current date")
+        return value
+
     @model_validator(mode="after")
     def validate_period(self):
-        now = timezone.now().date()
-        if self.valid_from < now:
-            raise ValueError("Valid from date cannot be before the current date")
-        if self.valid_to < now:
-            raise ValueError("Valid to date cannot be before the current date")
         if self.valid_from > self.valid_to:
             raise ValidationError("Valid from cannot be greater than valid to")
         return self
