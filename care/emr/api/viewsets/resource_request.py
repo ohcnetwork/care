@@ -76,12 +76,16 @@ class ResourceRequestViewSet(EMRModelViewSet):
         )
 
     def get_queryset(self):
-        queryset = ResourceRequest.objects.all().select_related(
-            "origin_facility",
-            "approving_facility",
-            "assigned_facility",
-            "related_patient",
-            "assigned_to",
+        queryset = (
+            ResourceRequest.objects.all()
+            .select_related(
+                "origin_facility",
+                "approving_facility",
+                "assigned_facility",
+                "related_patient",
+                "assigned_to",
+            )
+            .order_by("-created_date")
         )
         if self.request.user.is_superuser:
             return queryset
