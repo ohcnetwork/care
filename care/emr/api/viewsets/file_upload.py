@@ -83,6 +83,7 @@ class FileCategoryFilter(filters.CharFilter):
 class FileUploadFilter(filters.FilterSet):
     is_archived = filters.BooleanFilter(field_name="is_archived")
     file_category = FileCategoryFilter()
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
 class FileUploadViewSet(
