@@ -255,7 +255,7 @@ def create_observation_spec(questionnaire, response, parent_id=None):
         spec["value"] = {}
         return [spec]
     observations = []
-    if response and response.values and response.values[0]:
+    if getattr(response, "values", []):
         observation = {}
         for value in response.values:
             observation = spec.copy()
