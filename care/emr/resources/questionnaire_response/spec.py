@@ -24,6 +24,7 @@ class QuestionnaireSubmitResult(BaseModel):
     taken_at: datetime | None = None
     values: list[QuestionnaireSubmitResultValue] = []
     note: str | None = None
+    sub_results: list[list["QuestionnaireSubmitResult"]] = []
 
 
 class QuestionnaireSubmitRequest(BaseModel):
