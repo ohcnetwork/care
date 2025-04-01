@@ -195,12 +195,9 @@ def validate_question_result(  # noqa : PLR0912
                 ):
                     # Handle repeating groups
                     response = responses.get(question["id"])
-                    if not response:
+                    if not response or not response.get("sub_results", []):
                         continue
-                    sub_results = response.get("sub_results", [])
-                    if sub_results:
-                        continue
-                    for sub_responses in sub_results:
+                    for sub_responses in response.sub_results:
                         validate_question_result(
                             question,
                             create_responses_mapping(sub_responses),
@@ -415,7 +412,7 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PLR0912
+def handle_response(questionnaire_obj: Questionnaire, results, user):
     """
     Generate observations and questionnaire responses after validation
     """
