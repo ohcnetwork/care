@@ -128,10 +128,10 @@ def validate_question_result(  # noqa : PLR0912
                     sub_results = response.get("sub_results", [])
                     if sub_results:
                         continue
-                    for sub_response in sub_results:
+                    for sub_responses in sub_results:
                         validate_question_result(
                             question,
-                            create_responses_mapping(sub_response),
+                            create_responses_mapping(sub_responses),
                             errors,
                             questionnaire["id"],
                             questionnaire_mapping,
