@@ -243,7 +243,7 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
 
 class QuestionnaireSpec(QuestionnaireWriteSpec):
     organizations: list[UUID4] = Field(min_length=1)
-    tags: list[UUID4]
+    tags: list[UUID4] = []
 
     @field_validator("tags")
     @classmethod

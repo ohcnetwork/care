@@ -303,6 +303,865 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
         )
 
 
+class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
+    def setUp(self):
+        # Override setUp so that we don't create a default questionnaire.
+        self.user = self.create_super_user()
+        self.organization = self.create_organization(org_type="govt")
+        self.patient = self.create_patient()
+        self.client.force_authenticate(user=self.user)
+        self.base_url = reverse("questionnaire-list")
+
+    def _create_questionnaire(self, questions):
+        """
+        Creates a questionnaire with the given list of questions.
+        A base code template is added to each question and a unique slug is generated.
+        """
+        question_templates = {
+            "base": {
+                "code": {
+                    "display": "Test Value",
+                    "system": "http://test_system.care/test",
+                    "code": "123",
+                }
+            },
+        }
+        for question in questions:
+            question.update(question_templates["base"])
+        questionnaire_definition = {
+            "title": "Test Questionnaire",
+            "slug": f"test-ques-{uuid.uuid4()!s}"[:20],
+            "description": "Questionnaire for testing enable_when operators",
+            "status": "active",
+            "subject_type": "patient",
+            "organizations": [str(self.organization.external_id)],
+            "questions": questions,
+        }
+        response = self.client.post(
+            self.base_url, questionnaire_definition, format="json"
+        )
+        self.assertEqual(
+            response.status_code,
+            200,
+            f"Questionnaire creation failed: {response.json()}",
+        )
+        return response.json()
+
+    def _submit(self, responses):
+        """
+        Utility method to submit responses.
+        Returns a tuple: (status_code, response_data)
+        """
+        payload = {
+            "resource_id": str(self.patient.external_id),
+            "patient": str(self.patient.external_id),
+            "results": responses,
+        }
+        return self._submit_questionnaire(payload)
+
+    # --- Equals operator ---
+    def test_equals_operator_valid(self):
+        # Q2 is enabled if Q1 equals "true"
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "10"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid equals operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"], saved_qids, "Q2 should be present (condition met)"
+        )
+
+    def test_equals_operator_invalid(self):
+        # Q2 should be disabled because Q1 does not equal "true"
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "false"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "10"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Not Equals operator ---
+    def test_not_equals_operator_valid(self):
+        # Q2 is enabled if Q1 not_equals "true"
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "not_equals", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "false"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "20"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid not_equals operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_not_equals_operator_invalid(self):
+        # Q2 should be disabled if Q1 equals "true"
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "not_equals", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "20"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Greater operator ---
+    def test_greater_operator_valid(self):
+        # Q2 enabled if Q1 (integer) is greater than 8
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "greater", "answer": "8"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "9"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid greater operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_greater_operator_invalid(self):
+        # Q2 should be disabled because Q1 is not greater than 8.
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "greater", "answer": "8"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "7"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Less operator ---
+    def test_less_operator_valid(self):
+        # Q2 enabled if Q1 is less than 10
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [{"question": "1", "operator": "less", "answer": "10"}],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "5"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid less operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_less_operator_invalid(self):
+        # Q2 should be disabled because Q1 is not less than 10.
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [{"question": "1", "operator": "less", "answer": "10"}],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "15"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Greater or Equals operator ---
+    def test_greater_or_equals_operator_valid(self):
+        # Q2 is enabled if Q1 is greater or equal to 10
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "greater_or_equals", "answer": "10"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "10"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid greater_or_equals operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_greater_or_equals_operator_invalid(self):
+        # Q2 should be disabled because Q1 is less than 10.
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "greater_or_equals", "answer": "10"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "9"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Less or Equals operator ---
+    def test_less_or_equals_operator_valid(self):
+        # Q2 is enabled if Q1 is less or equal to 10
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "less_or_equals", "answer": "10"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "10"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid less_or_equals operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_less_or_equals_operator_invalid(self):
+        # Q2 should be disabled because Q1 is greater than 10.
+        questions = [
+            {"link_id": "1", "type": "integer", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "decimal",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "less_or_equals", "answer": "10"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "15"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Exists operator ---
+    def test_exists_operator_valid(self):
+        # Q2 is enabled if Q1 has a non-empty value (exists condition)
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "string",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "exists", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {
+                "question_id": self.questions[1]["id"],
+                "values": [{"value": "A valid answer"}],
+            },
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid exists operator submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be present")
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present since condition met",
+        )
+
+    def test_exists_operator_invalid(self):
+        # Q2 should be disabled because Q1's answer is empty
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "string",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "exists", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {
+                "question_id": self.questions[1]["id"],
+                "values": [{"value": "A valid answer"}],
+            },
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertNotIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be removed since condition failed",
+        )
+
+    # --- Nested dependency chain tests ---
+    def test_nested_dependency_chain_valid(self):
+        """
+        Test a valid nested dependency chain:
+          - Q2 is enabled if Q3 equals "true"
+          - Q1 is enabled if Q2 is greater than "5"
+        Valid responses: Q3 = "true", Q2 = "10", Q1 = "34.5"
+        """
+        questions = [
+            {"link_id": "3", "type": "boolean", "text": "Q3"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "3", "operator": "equals", "answer": "true"}
+                ],
+            },
+            {
+                "link_id": "1",
+                "type": "decimal",
+                "text": "Q1",
+                "enable_when": [
+                    {"question": "2", "operator": "greater", "answer": "5"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = []
+        for q in questionnaire["questions"]:
+            if q["link_id"] == "3":
+                responses.append(
+                    {"question_id": q["id"], "values": [{"value": "true"}]}
+                )
+            elif q["link_id"] == "2":
+                responses.append({"question_id": q["id"], "values": [{"value": "10"}]})
+            elif q["link_id"] == "1":
+                responses.append(
+                    {"question_id": q["id"], "values": [{"value": "34.5"}]}
+                )
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid nested dependency chain should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        # Expect all responses to be present.
+        expected_qids = {q["id"] for q in questionnaire["questions"]}
+        self.assertSetEqual(
+            saved_qids, expected_qids, "All valid responses should be present"
+        )
+
+    def test_nested_dependency_chain_invalid(self):
+        """
+        Test an invalid nested dependency chain:
+          - Q2 is enabled if Q3 equals "true"
+          - Q1 is enabled if Q2 is greater than "5"
+        In this case, Q3 is answered as "false", so Q2 (and thus Q1) should be disabled.
+        Even if responses for Q2 and Q1 are provided, they should be ignored.
+        """
+        questions = [
+            {"link_id": "3", "type": "boolean", "text": "Q3"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "3", "operator": "equals", "answer": "true"}
+                ],
+            },
+            {
+                "link_id": "1",
+                "type": "decimal",
+                "text": "Q1",
+                "enable_when": [
+                    {"question": "2", "operator": "greater", "answer": "5"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = []
+        for q in questionnaire["questions"]:
+            if q["link_id"] == "3":
+                # Q3 is "false", so condition fails.
+                responses.append(
+                    {"question_id": q["id"], "values": [{"value": "false"}]}
+                )
+            elif q["link_id"] == "2":
+                responses.append({"question_id": q["id"], "values": [{"value": "10"}]})
+            elif q["link_id"] == "1":
+                responses.append(
+                    {"question_id": q["id"], "values": [{"value": "34.5"}]}
+                )
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        # Expect only Q3 to be present because Q3's false value disables Q2 and Q1.
+        q3_id = next(q["id"] for q in questionnaire["questions"] if q["link_id"] == "3")
+        self.assertSetEqual(
+            saved_qids, {q3_id}, "Only the response for Q3 should be present"
+        )
+
+    # --- Enable Behavior tests ---
+    def test_enable_behavior_all_valid(self):
+        # With default "all" behavior, Q3 is enabled if both conditions are met.
+        # Q3 enabled if Q1 equals "true" AND Q2 is greater than "8"
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {"link_id": "2", "type": "integer", "text": "Q2"},
+            {
+                "link_id": "3",
+                "type": "decimal",
+                "text": "Q3",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"},
+                    {"question": "2", "operator": "greater", "answer": "8"},
+                ],
+            },  # Default enable_behavior is "all"
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Valid: Q1 true, Q2 = 9 (9 > 8)
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "9"}]},
+            {"question_id": self.questions[2]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid enable_behavior (all) submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        expected_qids = {q["id"] for q in questionnaire["questions"]}
+        self.assertSetEqual(
+            saved_qids, expected_qids, "All responses should be present"
+        )
+
+    def test_enable_behavior_all_invalid(self):
+        # With "all" behavior, if one condition fails then Q3 is disabled.
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {"link_id": "2", "type": "integer", "text": "Q2"},
+            {
+                "link_id": "3",
+                "type": "decimal",
+                "text": "Q3",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"},
+                    {"question": "2", "operator": "greater", "answer": "8"},
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Invalid: Q1 true but Q2 = 7 (fails condition) → Q3 disabled.
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "7"}]},
+            {"question_id": self.questions[2]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        # Expect only Q1 and Q2 are saved; Q3 is filtered out.
+        expected_qids = {self.questions[0]["id"], self.questions[1]["id"]}
+        self.assertSetEqual(
+            saved_qids, expected_qids, "Only Q1 and Q2 responses should be present"
+        )
+
+    def test_enable_behavior_any_valid(self):
+        # With "any" behavior, Q3 is enabled if at least one condition is met.
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {"link_id": "2", "type": "integer", "text": "Q2"},
+            {
+                "link_id": "3",
+                "type": "decimal",
+                "text": "Q3",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"},
+                    {"question": "2", "operator": "greater", "answer": "8"},
+                ],
+                "enable_behavior": "any",
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Valid: Q1 false but Q2 = 9 (one condition met) enables Q3.
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "false"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "9"}]},
+            {"question_id": self.questions[2]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid enable_behavior (any) submission should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        expected_qids = {q["id"] for q in questionnaire["questions"]}
+        self.assertSetEqual(
+            saved_qids, expected_qids, "All responses should be present"
+        )
+
+    def test_enable_behavior_any_invalid(self):
+        # With "any" behavior, Q3 is disabled only if neither condition is met.
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {"link_id": "2", "type": "integer", "text": "Q2"},
+            {
+                "link_id": "3",
+                "type": "decimal",
+                "text": "Q3",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"},
+                    {"question": "2", "operator": "greater", "answer": "8"},
+                ],
+                "enable_behavior": "any",
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Invalid: Q1 false AND Q2 = 7 (neither condition met) → Q3 disabled.
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "false"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "7"}]},
+            {"question_id": self.questions[2]["id"], "values": [{"value": "34.5"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Submission should succeed in ignore mode: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        # Expect only Q1 and Q2 are saved; Q3 should be filtered out.
+        expected_qids = {self.questions[0]["id"], self.questions[1]["id"]}
+        self.assertSetEqual(
+            saved_qids, expected_qids, "Only Q1 and Q2 responses should be present"
+        )
+
+
 class RequiredFieldValidationTests(QuestionnaireTestBase):
     """
     Test suite focusing on validation of required fields in questionnaires.
