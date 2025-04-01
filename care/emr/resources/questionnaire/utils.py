@@ -122,9 +122,13 @@ def validate_question_result(  # noqa : PLR0912
                     "repeats", False
                 ):
                     # Handle repeating groups
-                    for sub_response in responses.get(question["id"], {}).get(
-                        "sub_results", []
-                    ):
+                    response = responses.get(question["id"])
+                    if not response:
+                        continue
+                    sub_results = response.get("sub_results", [])
+                    if sub_results:
+                        continue
+                    for sub_response in sub_results:
                         validate_question_result(
                             question,
                             create_responses_mapping(sub_response),
