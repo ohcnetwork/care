@@ -1,7 +1,6 @@
 import tempfile
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -303,8 +302,8 @@ class EncounterViewSet(
             )
 
         if not AuthorizationController.call(
-                "can_view_encounter_obj", request.user, encounter
-            ):
+            "can_view_encounter_obj", request.user, encounter
+        ):
             raise PermissionDenied(
                 "Treating doctor does not have permission on encounter"
             )
