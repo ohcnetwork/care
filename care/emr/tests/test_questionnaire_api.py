@@ -10,7 +10,7 @@ from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
 
 
-def determenistic_uuid(string):
+def deterministic_uuid(string):
     """
     Generates a UUID based on the provided string.
 
@@ -20,7 +20,7 @@ def determenistic_uuid(string):
     Returns:
         str: A UUID generated from the input string.
     """
-    return str(uuid.uuid5(uuid.NAMESPACE_OID, string))
+    return str(uuid.uuid5(uuid.NAMESPACE_DNS, string))
 
 
 class QuestionnaireTestBase(CareAPITestBase):
@@ -1319,7 +1319,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         questions = [
             {
                 "link_id": "1",
-                "id": determenistic_uuid("1"),
+                "id": deterministic_uuid("1"),
                 "type": "group",
                 "text": "Repeatable Group",
                 "code": self.default_code,
@@ -1328,7 +1328,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
                 "questions": [
                     {
                         "link_id": "1.1",
-                        "id": determenistic_uuid("1.1"),
+                        "id": deterministic_uuid("1.1"),
                         "type": "boolean",
                         "text": "Within normal range",
                         "code": {
@@ -1339,7 +1339,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
                     },
                     {
                         "link_id": "1.2",
-                        "id": determenistic_uuid("1.2"),
+                        "id": deterministic_uuid("1.2"),
                         "type": "decimal",
                         "text": "Measurement",
                         "code": {
@@ -1359,21 +1359,21 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         payload = self._create_submission_payload(
             [
                 {
-                    "question_id": determenistic_uuid("1"),
+                    "question_id": deterministic_uuid("1"),
                     "sub_results": [
                         [
                             {
-                                "question_id": determenistic_uuid("1.1"),
+                                "question_id": deterministic_uuid("1.1"),
                                 "values": [{"value": "true"}],
                             }
                         ],
                         [
                             {
-                                "question_id": determenistic_uuid("1.1"),
+                                "question_id": deterministic_uuid("1.1"),
                                 "values": [{"value": "false"}],
                             },
                             {
-                                "question_id": determenistic_uuid("1.2"),
+                                "question_id": deterministic_uuid("1.2"),
                                 "values": [{"value": "34.5"}],
                             },
                         ],
@@ -1404,7 +1404,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         questions = [
             {
                 "link_id": "1",
-                "id": determenistic_uuid("1"),
+                "id": deterministic_uuid("1"),
                 "type": "group",
                 "text": "Repeatable Group",
                 "code": self.default_code,
@@ -1413,7 +1413,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
                 "questions": [
                     {
                         "link_id": "1.1",
-                        "id": determenistic_uuid("1.1"),
+                        "id": deterministic_uuid("1.1"),
                         "type": "boolean",
                         "text": "Within normal range",
                         "required": True,
@@ -1425,7 +1425,7 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
                     },
                     {
                         "link_id": "1.2",
-                        "id": determenistic_uuid("1.2"),
+                        "id": deterministic_uuid("1.2"),
                         "type": "decimal",
                         "text": "Measurement",
                         "code": {
@@ -1445,17 +1445,17 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         payload = self._create_submission_payload(
             [
                 {
-                    "question_id": determenistic_uuid("1"),
+                    "question_id": deterministic_uuid("1"),
                     "sub_results": [
                         [
                             {
-                                "question_id": determenistic_uuid("1.1"),
+                                "question_id": deterministic_uuid("1.1"),
                                 "values": [{"value": "true"}],
                             }
                         ],
                         [
                             {
-                                "question_id": determenistic_uuid("1.2"),
+                                "question_id": deterministic_uuid("1.2"),
                                 "values": [{"value": "34.5"}],
                             },
                         ],
