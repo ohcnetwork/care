@@ -189,29 +189,30 @@ def validate_question_result(  # noqa : PLR0912
         # Iterate and call all child questions
         questionnaire_mapping[questionnaire["id"]] = questionnaire
         if questionnaire["questions"]:
-            for question in questionnaire["questions"]:
-                if question.get("is_component", False) and question.get(
-                    "repeats", False
-                ):
-                    # Handle repeating groups
-                    response = responses.get(question["id"])
-                    if not response or not response.get("sub_results", []):
-                        continue
-                    for sub_responses in response.sub_results:
-                        validate_question_result(
-                            question,
-                            create_responses_mapping(sub_responses),
-                            errors,
-                            questionnaire["id"],
-                            questionnaire_mapping,
-                        )
-                validate_question_result(
-                    question,
-                    responses,
-                    errors,
-                    questionnaire["id"],
-                    questionnaire_mapping,
-                )
+            if questionnaire.get("repeats", False):
+                # Handle repeating groups
+                response = responses.get(questionnaire["id"])
+                if not response or not response.sub_results:
+                    return
+                for sub_responses in response.sub_results:
+                    question = questionnaire.copy()
+                    question["repeats"] = False  # Set to false to avoid infinite loop
+                    validate_question_result(
+                        question,
+                        create_responses_mapping(sub_responses),
+                        errors,
+                        questionnaire["id"],
+                        questionnaire_mapping,
+                    )
+            else:
+                for question in questionnaire["questions"]:
+                    validate_question_result(
+                        question,
+                        responses,
+                        errors,
+                        questionnaire["id"],
+                        questionnaire_mapping,
+                    )
     else:
         # Case when question is not answered ( Not in response )
         if questionnaire["id"] not in responses and questionnaire.get(
@@ -383,7 +384,9 @@ def convert_to_observation_spec(
         response = responses.get(question["id"])
         if question["type"] == QuestionType.group.value:
             if not is_component and question.get("is_component", False):
-                if getattr(response, "sub_results", None):
+                if question.get("repeats", False) and getattr(
+                    response, "sub_results", None
+                ):
                     # create components for repeating groups
                     for sub_responses in response.sub_results:
                         observation = create_observation_spec(question, None, parent_id)
