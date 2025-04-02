@@ -384,7 +384,7 @@ def remove_nested_questions(group_question, responses, results):
         ]
         # If it's another group inside, clean it recursively
         if child.get("type") == QuestionType.group.value:
-            remove_nested_questions(child, responses)
+            remove_nested_questions(child, responses, results)
 
 
 def prune_nested_disabled_questions(question, responses, results, questionnaire_obj):
