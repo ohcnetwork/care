@@ -44,7 +44,7 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     @model_validator(mode="after")
     def validate_period(self):
         if self.valid_from > self.valid_to:
-            raise ValidationError("Valid from cannot be greater than valid to")
+            raise ValueError("Valid from cannot be greater than valid to")
         return self
 
     def perform_extra_deserialization(self, is_update, obj):

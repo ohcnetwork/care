@@ -113,8 +113,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
-        valid_from = datetime.now(UTC).date()
-        valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
+        valid_from = datetime.now(UTC).replace(tzinfo=None)
+        valid_to = (datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
 
         return {
             "user": str(self.user.external_id),
@@ -162,14 +162,18 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        schedule_data = self.generate_schedule_data()
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], schedule_data["name"])
 
     def test_create_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create schedules."""
-        schedule_data = self.generate_schedule_data()
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -225,7 +229,10 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         user = self.create_user()
-        schedule_data = self.generate_schedule_data(user=user.external_id)
+        schedule_data = self.generate_schedule_data(
+            user=user.external_id,
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
             response, "Schedule User is not part of the facility", status_code=400
@@ -238,7 +245,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC).date() - timedelta(days=1)).isoformat()
+            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -254,7 +261,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC).date() - timedelta(days=1)).isoformat()
+            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -270,8 +277,8 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC).date() + timedelta(days=1)).isoformat(),
-            valid_from=(datetime.now(UTC).date() + timedelta(days=4)).isoformat(),
+            valid_to=(datetime.now(UTC) + timedelta(minutes=10)).replace(tzinfo=None),
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
