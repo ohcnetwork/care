@@ -31,6 +31,7 @@ from care.emr.models import (
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
+    EncounterCareTeamMemberWriteSpec,
     EncounterCreateSpec,
     EncounterListSpec,
     EncounterRetrieveSpec,
@@ -281,57 +282,33 @@ class EncounterViewSet(
             status=status.HTTP_202_ACCEPTED,
         )
 
-    class EncounterCareTeamMemberSpec(BaseModel):
-        care_team_member_id: UUID4
-
     @extend_schema(
-        request=EncounterCareTeamMemberSpec, responses={200: EncounterRetrieveSpec}
+        request=EncounterCareTeamMemberWriteSpec, responses={200: EncounterRetrieveSpec}
     )
     @action(detail=True, methods=["POST"])
-    def add_care_team_member(self, request, *args, **kwargs):
-        request_data = self.EncounterCareTeamMemberSpec(**request.data)
+    def set_care_team_members(self, request, *args, **kwargs):
+        request_data = EncounterCareTeamMemberWriteSpec(**request.data)
         encounter = self.get_object()
         self.authorize_update({}, encounter)
 
-        doc = get_object_or_404(User, external_id=request_data.care_team_member_id)
+        members = []
 
-        if doc.id in encounter.care_team:
-            return Response(
-                {"detail": "Treating doctor is already added to this encounter."},
-                status=400,
+        for member in request_data.members:
+            user_obj = get_object_or_404(User, external_id=member.user_id)
+
+            if not AuthorizationController.call(
+                "can_view_encounter_obj", request.user, encounter
+            ):
+                raise PermissionDenied(
+                    "Treating doctor does not have permission on encounter"
+                )
+            members.append(
+                {"user_id": user_obj.id, "role": member.role.model_dump(mode="json")}
             )
 
-        if not AuthorizationController.call(
-            "can_view_encounter_obj", request.user, encounter
-        ):
-            raise PermissionDenied(
-                "Treating doctor does not have permission on encounter"
-            )
-
-        encounter.care_team.append(doc.id)
+        encounter.care_team = members
         encounter.save(update_fields=["care_team"])
-        return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
-
-    @extend_schema(
-        request=EncounterCareTeamMemberSpec, responses={200: EncounterRetrieveSpec}
-    )
-    @action(detail=True, methods=["POST"])
-    def remove_care_team_member(self, request, *args, **kwargs):
-        request_data = self.EncounterCareTeamMemberSpec(**request.data)
-        encounter = self.get_object()
-        self.authorize_update({}, encounter)
-
-        doc = get_object_or_404(User, external_id=request_data.care_team_member_id)
-
-        if doc.id not in encounter.care_team:
-            return Response(
-                {"detail": "Treating doctor is not assigned to this encounter."},
-                status=400,
-            )
-
-        encounter.care_team.remove(doc.id)
-        encounter.save(update_fields=["care_team"])
-        return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
+        return Response({}, status=status.HTTP_200_OK)
 
 
 def dev_preview_discharge_summary(request, encounter_id):

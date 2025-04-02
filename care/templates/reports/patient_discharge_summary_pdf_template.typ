@@ -189,15 +189,6 @@
     #align(center, [#line(length: 40%, stroke: mygray)])
 {% endif %}
 
-
-#align(right)[#text(12pt,fill: mygray)[*Care Team* :] #text(10pt,weight: "bold")[{% if care_team %}
-    {% for member in care_team %}
-        {{ member.full_name }}
-    {% endfor %}
-{% else %}
-    -
-{% endif %}]]
-
 {% if files %}
     #align(left, text(18pt,)[== Annexes])
     #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])

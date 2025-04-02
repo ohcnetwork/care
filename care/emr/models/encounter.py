@@ -19,7 +19,7 @@ class Encounter(EMRBaseModel):
     priority = models.CharField(max_length=100, null=True, blank=True)
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
 
-    care_team = ArrayField(models.IntegerField(), default=list)
+    care_team = models.JSONField(default=dict)
 
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)

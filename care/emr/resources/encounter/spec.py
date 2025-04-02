@@ -1,4 +1,3 @@
-# Not Being used
 import datetime
 
 from django.contrib.auth import get_user_model
@@ -21,6 +20,7 @@ from care.emr.resources.encounter.constants import (
     EncounterPriorityChoices,
     StatusChoices,
 )
+from care.emr.resources.encounter.valueset import PRACTITIONER_ROLE_VALUESET
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
@@ -31,6 +31,7 @@ from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
 
 User = get_user_model()
@@ -106,18 +107,12 @@ class EncounterListSpec(EncounterSpecBase):
     encounter_class_history: dict
     created_date: datetime.datetime
     modified_date: datetime.datetime
-    care_team: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
-
-        mapping["care_team"] = [
-            UserSpec.serialize(User.objects.get(id=care_team_member)).to_json()
-            for care_team_member in obj.care_team
-        ]
 
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
@@ -127,6 +122,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     organizations: list[dict] = []
     current_location: dict | None = None
     location_history: list[dict] = []
+    care_team: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -151,4 +147,27 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
                 "-created_date"
             )
         ]
+
+        care_team = []
+        for member in obj.care_team:
+            care_team.append(
+                {
+                    "member": UserSpec.serialize(
+                        User.objects.get(id=member["user_id"])
+                    ).to_json(),
+                    "role": member["role"],
+                }
+            )
+
+        mapping["care_team"] = care_team
+
         cls.serialize_audit_users(mapping, obj)
+
+
+class EncounterCareTeamMemberSpec(BaseModel):
+    user_id: UUID4
+    role: ValueSetBoundCoding[PRACTITIONER_ROLE_VALUESET.slug]
+
+
+class EncounterCareTeamMemberWriteSpec(BaseModel):
+    members: list[EncounterCareTeamMemberSpec]
