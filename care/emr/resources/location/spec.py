@@ -173,7 +173,7 @@ class FacilityLocationEncounterUpdateSpec(FacilityLocationEncounterBaseSpec):
     status: LocationEncounterAvailabilityStatusChoices
 
     start_datetime: datetime.datetime
-    end_datetime: datetime.datetime | None
+    end_datetime: datetime.datetime | None = None
 
 
 class FacilityLocationEncounterListSpec(FacilityLocationEncounterBaseSpec):
