@@ -330,7 +330,7 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         data = self.generate_data_for_facility_location(sort_index=-1)
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)
-        data = self.generate_data_for_facility_location(sort_index=100000)
+        data = self.generate_data_for_facility_location(sort_index=10001)
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 400)
 
