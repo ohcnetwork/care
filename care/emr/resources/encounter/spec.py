@@ -115,7 +115,7 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
 
         mapping["treating_doctors"] = [
-            UserSpec.serialize(User.objects.get(external_id=treating_doctor)).to_json()
+            UserSpec.serialize(User.objects.get(id=treating_doctor)).to_json()
             for treating_doctor in obj.treating_doctors
         ]
 

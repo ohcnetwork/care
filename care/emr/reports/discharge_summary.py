@@ -24,6 +24,7 @@ from care.emr.resources.allergy_intolerance.spec import (
 from care.emr.resources.condition.spec import CategoryChoices, VerificationStatusChoices
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.medication.request.spec import MedicationRequestStatus
+from care.users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +119,8 @@ def get_discharge_summary_data(encounter: Encounter):
         else None
     )
 
+    treating_doctors = User.objects.filter(id__in=encounter.treating_doctors)
+
     return {
         "encounter": encounter,
         "admission_duration": admission_duration,
@@ -129,6 +132,7 @@ def get_discharge_summary_data(encounter: Encounter):
         "observations": observations,
         "medication_requests": medication_requests,
         "files": files,
+        "treating_doctors": treating_doctors,
     }
 
 

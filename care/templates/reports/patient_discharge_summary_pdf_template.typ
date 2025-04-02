@@ -190,6 +190,14 @@
 {% endif %}
 
 
+#align(right)[#text(12pt,fill: mygray)[*Treating Doctors* :] #text(10pt,weight: "bold")[{% if treating_doctors %}
+    {% for doctor in treating_doctors %}
+        {{ doctor.full_name }}
+    {% endfor %}
+{% else %}
+    -
+{% endif %}]]
+
 {% if files %}
     #align(left, text(18pt,)[== Annexes])
     #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])

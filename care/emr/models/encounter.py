@@ -19,7 +19,7 @@ class Encounter(EMRBaseModel):
     priority = models.CharField(max_length=100, null=True, blank=True)
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
 
-    treating_doctors = ArrayField(models.UUIDField(), default=list)
+    treating_doctors = ArrayField(models.IntegerField(), default=list)
 
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)

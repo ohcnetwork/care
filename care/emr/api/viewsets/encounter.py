@@ -41,8 +41,7 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
-
-User = get_user_model()
+from care.users.models import User
 
 
 class LiveFilter(filters.CharFilter):
@@ -295,21 +294,22 @@ class EncounterViewSet(
         encounter = self.get_object()
         self.authorize_update({}, encounter)
 
-        if request_data.treating_doctor_id in encounter.treating_doctors:
+        doc = get_object_or_404(User, external_id=request_data.treating_doctor_id)
+
+        if doc.id in encounter.treating_doctors:
             return Response(
                 {"detail": "Treating doctor is already added to this encounter."},
                 status=400,
             )
 
-        doc = get_object_or_404(User, external_id=request_data.treating_doctor_id)
         if not AuthorizationController.call(
-            "can_view_clinical_data", doc, encounter.patient
-        ):
+                "can_view_encounter_obj", request.user, encounter
+            ):
             raise PermissionDenied(
                 "Treating doctor does not have permission on encounter"
             )
 
-        encounter.treating_doctors.append(request_data.treating_doctor_id)
+        encounter.treating_doctors.append(doc.id)
         encounter.save(update_fields=["treating_doctors"])
         return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
 
@@ -322,13 +322,15 @@ class EncounterViewSet(
         encounter = self.get_object()
         self.authorize_update({}, encounter)
 
-        if request_data.treating_doctor_id not in encounter.treating_doctors:
+        doc = get_object_or_404(User, external_id=request_data.treating_doctor_id)
+
+        if doc.id not in encounter.treating_doctors:
             return Response(
                 {"detail": "Treating doctor is not assigned to this encounter."},
                 status=400,
             )
 
-        encounter.treating_doctors.remove(request_data.treating_doctor_id)
+        encounter.treating_doctors.remove(doc.id)
         encounter.save(update_fields=["treating_doctors"])
         return Response(EncounterRetrieveSpec.serialize(encounter).to_json())
 
