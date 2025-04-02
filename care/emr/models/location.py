@@ -114,6 +114,10 @@ class FacilityLocation(EMRBaseModel):
                     self.parent.has_children = True
         else:
             self.cached_parent_json = {}
+        if not self.sort_index:
+            self.sort_index = (
+                FacilityLocation.objects.filter(parent=self.parent).count() + 1
+            )
         super().save(*args, **kwargs)
         self.sync_organization_cache()
 
