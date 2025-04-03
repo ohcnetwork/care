@@ -396,7 +396,7 @@ class TestBookingViewSet(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         response = self.client.get(available_users_url)
-        self.assertContains(response, self.user.username)
+        self.assertContains(response, self.user.external_id)
         self.assertNotContains(response, deleted_user.external_id)
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
