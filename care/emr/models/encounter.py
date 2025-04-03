@@ -28,6 +28,8 @@ class Encounter(EMRBaseModel):
         "emr.FacilityLocation", on_delete=models.SET_NULL, null=True, blank=True
     )  # Cached field, used for easier querying
 
+    discharge_summary_advice = models.TextField(null=True, blank=True)
+
     def sync_organization_cache(self):
         orgs = set()
         for encounter_organization in EncounterOrganization.objects.filter(

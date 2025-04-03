@@ -62,6 +62,7 @@ class EncounterSpecBase(EMRResource):
     hospitalization: HospitalizationSpec | None = {}
     priority: EncounterPriorityChoices
     external_identifier: str | None = None
+    discharge_summary_advice: str | None = None
 
 
 class EncounterCreateSpec(EncounterSpecBase):
