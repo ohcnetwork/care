@@ -83,7 +83,19 @@ class ResourceRequestCreateSpec(ResourceRequestBaseSpec):
 
 
 class ResourceRequestListSpec(ResourceRequestBaseSpec):
-    pass
+    origin_facility: dict
+    assigned_facility: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = str(obj.external_id)
+        mapping["origin_facility"] = FacilityReadSpec.serialize(
+            obj.origin_facility
+        ).to_json()
+        if obj.assigned_facility:
+            mapping["assigned_facility"] = FacilityReadSpec.serialize(
+                obj.assigned_facility
+            ).to_json()
 
 
 class ResourceRequestRetrieveSpec(ResourceRequestBaseSpec):

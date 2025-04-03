@@ -1,11 +1,10 @@
 FROM python:3.13-slim-bookworm
 
-ARG TYPST_VERSION=0.12.0
 ARG APP_HOME=/app
+ARG TYPST_VERSION=0.12.0
 
 WORKDIR $APP_HOME
 
-ENV PATH=/.venv/bin:$PATH
 ENV PIPENV_CACHE_DIR=/root/.cache/pip
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -14,23 +13,11 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-# Download and install Typst for the correct architecture
-RUN ARCH=$(dpkg --print-architecture) && \
-    if [ "$ARCH" = "amd64" ]; then \
-        TYPST_ARCH="x86_64-unknown-linux-musl"; \
-    elif [ "$ARCH" = "arm64" ]; then \
-        TYPST_ARCH="aarch64-unknown-linux-musl"; \
-    else \
-        echo "Unsupported architecture: $ARCH"; \
-        exit 1; \
-    fi && \
-    wget -qO typst.tar.xz https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz && \
-    tar -xf typst.tar.xz && \
-    mv typst-${TYPST_ARCH}/typst /usr/local/bin/typst && \
-    chmod +x /usr/local/bin/typst && \
-    rm -rf typst.tar.xz typst-${TYPST_ARCH}
+COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
+RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 
 # use pipenv to manage virtualenv
+ENV PATH=/.venv/bin:$PATH
 RUN python -m venv /.venv
 RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
 

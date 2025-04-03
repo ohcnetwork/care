@@ -6,8 +6,6 @@ from rest_framework import exceptions, serializers
 from care.emr.models import Organization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.organization.spec import OrganizationReadSpec
-from care.emr.resources.role.spec import PermissionSpec
-from care.facility.api.serializers.facility import FacilityBareMinimumSerializer
 from care.facility.models import Facility, FacilityUser
 from care.security.models import RolePermission
 from care.users.api.serializers.lsg import (
@@ -25,6 +23,17 @@ from care.utils.models.validators import (
 from care.utils.serializers.fields import ChoiceField
 
 
+class FacilityBareMinimumSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="external_id", read_only=True)
+
+    class Meta:
+        model = Facility
+        fields = (
+            "id",
+            "name",
+        )
+
+
 class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -35,6 +44,8 @@ class SignUpSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "prefix",
+            "suffix",
             "email",
             "password",
             "user_type",
@@ -306,16 +317,14 @@ class UserSerializer(SignUpSerializer):
                 "role_id", flat=True
             )
         ).select_related("permission")
-        return [
-            PermissionSpec.serialize(obj.permission).to_json() for obj in permissions
-        ]
+        return [obj.permission.slug for obj in permissions]
 
     def get_facilities(self, user):
         unique_ids = []
         data = []
-        for obj in FacilityOrganizationUser.objects.filter(user=user).select_related(
-            "organization__facility"
-        ):
+        for obj in FacilityOrganizationUser.objects.filter(
+            user=user, organization__facility__deleted=False
+        ).select_related("organization__facility"):
             if obj.organization.facility.id not in unique_ids:
                 unique_ids.append(obj.organization.facility.id)
                 data.append(
@@ -334,6 +343,8 @@ class UserSerializer(SignUpSerializer):
             "username",
             "first_name",
             "last_name",
+            "prefix",
+            "suffix",
             "email",
             "video_connect_link",
             "user_type",
@@ -452,6 +463,8 @@ class UserListSerializer(serializers.ModelSerializer):
             "external_id",
             "first_name",
             "last_name",
+            "prefix",
+            "suffix",
             "username",
             "date_of_birth",
             "local_body_object",

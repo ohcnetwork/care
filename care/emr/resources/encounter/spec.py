@@ -1,12 +1,17 @@
-# Not Being used
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel
 
-from care.emr.models import Encounter, EncounterOrganization, TokenBooking
+from care.emr.models import (
+    Encounter,
+    EncounterOrganization,
+    FacilityLocationEncounter,
+    TokenBooking,
+)
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
     ClassChoices,
@@ -15,23 +20,21 @@ from care.emr.resources.encounter.constants import (
     EncounterPriorityChoices,
     StatusChoices,
 )
+from care.emr.resources.encounter.valueset import PRACTITIONER_ROLE_VALUESET
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.location.spec import (
+    FacilityLocationEncounterListSpecWithLocation,
+    FacilityLocationListSpec,
+)
 from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
 
-
-class PeriodSpec(BaseModel):
-    start: datetime.datetime | None = None
-    end: datetime.datetime | None = None
-
-    @model_validator(mode="after")
-    def validate_period(self):
-        if (self.start and self.end) and (self.start > self.end):
-            raise ValueError("Start Date cannot be greater than End Date")
-        return self
+User = get_user_model()
 
 
 class HospitalizationSpec(BaseModel):
@@ -43,7 +46,14 @@ class HospitalizationSpec(BaseModel):
 
 class EncounterSpecBase(EMRResource):
     __model__ = Encounter
-    __exclude__ = ["patient", "organizations", "facility", "appointment"]
+    __exclude__ = [
+        "patient",
+        "organizations",
+        "facility",
+        "appointment",
+        "current_location",
+        "care_team",
+    ]
 
     id: UUID4 = None
     status: StatusChoices
@@ -95,7 +105,7 @@ class EncounterListSpec(EncounterSpecBase):
     facility: dict
     status_history: dict
     encounter_class_history: dict
-    created_at: datetime.datetime
+    created_date: datetime.datetime
     modified_date: datetime.datetime
 
     @classmethod
@@ -105,11 +115,14 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
 
 
-class EncounterRetrieveSpec(EncounterListSpec):
+class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}
     created_by: dict = {}
     updated_by: dict = {}
     organizations: list[dict] = []
+    current_location: dict | None = None
+    location_history: list[dict] = []
+    care_team: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -123,7 +136,38 @@ class EncounterRetrieveSpec(EncounterListSpec):
             FacilityOrganizationReadSpec.serialize(encounter_org.organization).to_json()
             for encounter_org in organizations
         ]
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        mapping["current_location"] = None
+        if obj.current_location:
+            mapping["current_location"] = FacilityLocationListSpec.serialize(
+                obj.current_location
+            ).to_json()
+        mapping["location_history"] = [
+            FacilityLocationEncounterListSpecWithLocation.serialize(i)
+            for i in FacilityLocationEncounter.objects.filter(encounter=obj).order_by(
+                "-created_date"
+            )
+        ]
+
+        care_team = []
+        for member in obj.care_team:
+            care_team.append(
+                {
+                    "member": UserSpec.serialize(
+                        User.objects.get(id=member["user_id"])
+                    ).to_json(),
+                    "role": member["role"],
+                }
+            )
+
+        mapping["care_team"] = care_team
+
+        cls.serialize_audit_users(mapping, obj)
+
+
+class EncounterCareTeamMemberSpec(BaseModel):
+    user_id: UUID4
+    role: ValueSetBoundCoding[PRACTITIONER_ROLE_VALUESET.slug]
+
+
+class EncounterCareTeamMemberWriteSpec(BaseModel):
+    members: list[EncounterCareTeamMemberSpec]

@@ -1,4 +1,5 @@
 from django.db import transaction
+from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -26,6 +27,9 @@ class BatchRequestView(GenericViewSet):
     def get_exception_handler(self):
         return emr_exception_handler
 
+    @extend_schema(
+        request=BatchRequest,
+    )
     def create(self, request, *args, **kwargs):
         requests = BatchRequest(**request.data)
         errored = False

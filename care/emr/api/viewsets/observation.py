@@ -1,16 +1,15 @@
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.authz_base import EncounterBasedAuthorizationBase
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
+from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.observation import Observation
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.spec import ObservationReadSpec
 from care.emr.resources.questionnaire.spec import QuestionType
-from care.security.authorization import AuthorizationController
 
 
 class MultipleCodeFilter(filters.CharFilter):
@@ -46,10 +45,7 @@ class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSe
     filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, self.get_patient_obj()
-        ):
-            raise PermissionDenied("Permission denied to user")
+        self.authorize_read_encounter()
 
         queryset = (
             super()
@@ -60,6 +56,9 @@ class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSe
 
         return queryset.order_by("-modified_date")
 
+    @extend_schema(
+        request=ObservationAnalyseRequest,
+    )
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
         request_params = ObservationAnalyseRequest(**request.data)

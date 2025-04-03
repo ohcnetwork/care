@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import UUID4, field_validator
 
 from care.emr.models import Encounter
@@ -36,6 +38,8 @@ class NoteThreadUpdateSpec(NoteThreadSpec):
 class NoteThreadReadSpec(NoteThreadSpec):
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

@@ -1,10 +1,9 @@
 {% load static %}
-{% load filters static %}
 {% load data_formatting_extras %}
 {% load discharge_summary_utils %}
 
 #set page("a4",margin: 40pt)
-#set text(font: "DejaVu Sans",size: 10pt,hyphenate: true)
+#set text(font: "DejaVu Sans",size: 10pt,hyphenate: true, fallback: true)
 #let mygray = luma(100)
 
 #let frame(stroke) = (x, y) => (
@@ -189,7 +188,6 @@
 
     #align(center, [#line(length: 40%, stroke: mygray)])
 {% endif %}
-
 
 {% if files %}
     #align(left, text(18pt,)[== Annexes])

@@ -4,10 +4,9 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*'
+      - "v*"
     branches:
       - develop
-      - staging
     paths-ignore:
       - "docs/**"
 
@@ -15,24 +14,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  IMAGE_NAME: care
-  AWS_DEFAULT_REGION: ap-south-1
-  AWS_DEFAULT_OUTPUT: json
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
-  ECS_SERVICE_BACKEND: "care-backend"
-  ECS_SERVICE_CELERY: "care-celery"
-  ECS_CLUSTER: "egov"
-  ECS_TASK_DEFINITION_BACKEND: "./aws/backend.json"
-  ECS_TASK_DEFINITION_CELERY: "./aws/celery.json"
-  CONTAINER_NAME_BACKEND: "care-backend"
-  CONTAINER_NAME_WORKER: "care-celery-worker"
-  CONTAINER_NAME_CRON: "care-celery-beat"
+# env:
+#   AWS_DEFAULT_REGION: ap-south-1
+#   AWS_DEFAULT_OUTPUT: json
+#   ECS_SERVICE_BACKEND: "care-backend"
+#   ECS_SERVICE_CELERY: "care-celery"
+#   ECS_TASK_BACKEND: "care"
+#   ECS_TASK_CELERY: "care-celery"
+#   ECS_CLUSTER: "egov"
+#   CONTAINER_NAME_BACKEND: "care-backend"
+#   CONTAINER_NAME_WORKER: "care-celery-worker"
+#   CONTAINER_NAME_CRON: "care-celery-beat"
 
 jobs:
   test:
+    name: Test
     uses: ./.github/workflows/reusable-test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -41,10 +37,23 @@ jobs:
 
   build:
     needs: test
-    name: Build & Push to container registries
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       - name: Generate docker tags
         id: meta
@@ -52,29 +61,9 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
-          tags: |
-            type=raw,value=production-latest,enable=${{ startsWith(github.event.ref, 'refs/tags/v') }}
-            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ startsWith(github.event.ref, 'refs/tags/v') }}
-            type=raw,value=staging-latest,enable=${{ github.ref == 'refs/heads/staging' }}
-            type=raw,value=staging-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/staging' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
-            type=raw,value=latest-${{ github.run_number }},enable=${{ github.ref == 'refs/heads/develop' }}
-            type=semver,pattern={{version}}
-          flavor: |
-            latest=false
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -86,25 +75,96 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-build-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
+          path: ${{ runner.temp }}/.buildx-cache
+          key: ${{ runner.os }}-${{ runner.arch }}-buildx-prod-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
           restore-keys: |
-            ${{ runner.os }}-buildx-build-
+            ${{ runner.os }}-${{ runner.arch }}-buildx-prod-
 
-      - name: Build and push image
+      - name: Create new cache
+        run: |
+          mkdir -p ${{ runner.temp }}/.buildx-cache
+          mkdir -p ${{ runner.temp }}/.buildx-cache-new
+
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/prod.Dockerfile
-          push: true
-          provenance: false
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
           build-args: |
             APP_VERSION=${{ github.sha }}
             ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Move cache
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+  merge-manifests:
+    needs: build
+    name: Merge & Push Manifests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate docker tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=production-latest,enable=${{ startsWith(github.event.ref, 'refs/tags/v') }}
+            type=raw,value=production-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ startsWith(github.event.ref, 'refs/tags/v') }}
+            type=raw,value=staging-latest,enable=${{ github.ref == 'refs/heads/staging' }}
+            type=raw,value=staging-latest-${{ github.run_number }}-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/staging' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw,value=latest-${{ github.run_number }},enable=${{ github.ref == 'refs/heads/develop' }}
+            type=semver,pattern={{version}}
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
@@ -115,98 +175,94 @@ jobs:
         with:
           version: ${{ github.sha }}
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
   notify-release:
-    needs: build
+    needs: merge-manifests
     if: startsWith(github.event.ref, 'refs/tags/v')
     name: Notify release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Notify release
         run: |
           echo "Release ${{ github.sha }} is ready to be deployed to production"
 
-  deploy-staging-egov:
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    name: Deploy to ECS API Egov
-    runs-on: ubuntu-latest
-    environment:
-      name: Staging-egov
-      url: https://careapi.ohc.network
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-
-      - name: IMAGE Tagging
-        env:
-          ECR_REGISTRY: ghcr.io/${{ github.repository }}
-          IMAGE_TAG: latest-${{ github.run_number }}
-        run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
-
-      - name: Fill Celery Cron definition
-        id: task-def-celery-cron
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION_CELERY }}
-          container-name: ${{ env.CONTAINER_NAME_CRON }}
-          image: ${{env.IMAGE_VALUE}}
-
-      - name: Fill Celery Worker definition
-        id: task-def-celery-worker
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def-celery-cron.outputs.task-definition }}
-          container-name: ${{ env.CONTAINER_NAME_WORKER }}
-          image: ${{env.IMAGE_VALUE}}
-
-      - name: Deploy Backend Celery
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def-celery-worker.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_CELERY }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
-
-      - name: Fill Backend Api definition
-        id: task-def-api
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION_BACKEND }}
-          container-name: ${{ env.CONTAINER_NAME_BACKEND }}
-          image: ${{env.IMAGE_VALUE}}
-
-      - name: Deploy Backend Api
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def-api.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_BACKEND }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
-
-  deploy-staging-gcp:
-    needs: build
-    if: github.ref == 'refs/heads/staging'
-    name: Deploy to staging GCP cluster
-    runs-on: ubuntu-latest
-    environment:
-      name: Staging-GCP
-      url: https://care-staging-api.ohc.network/
-    steps:
-      - name: Trigger deploy
-        run: |
-          COMMIT_SHA=${{ github.sha }}
-          JSON='{ "substitutions": { "care_be_tag":"'"$COMMIT_SHA"'", "care_fe_tag": "", "metabase_tag": "" } }'
-          curl --location "${{ secrets.STAGING_GCP_DEPLOY_URL }}" \
-            --header 'Content-Type: application/json' --data "$JSON"
+#   deploy-staging-egov:
+#     needs: merge-manifests
+#     if: github.ref == 'refs/heads/develop'
+#     name: Deploy to ECS API Egov
+#     runs-on: ubuntu-24.04-arm
+#     environment:
+#       name: Staging-egov
+#       url: https://careapi.ohc.network
+#     steps:
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ env.AWS_DEFAULT_REGION }}
+#
+#       - name: IMAGE Tagging
+#         env:
+#           ECR_REGISTRY: ghcr.io/${{ github.repository }}
+#           IMAGE_TAG: latest-${{ github.run_number }}
+#         run: echo "IMAGE_VALUE=`echo ghcr.io/${{ github.repository }}:$IMAGE_TAG`" >> $GITHUB_ENV
+#
+#       - name: Download task definition for Celery Service
+#         run: |
+#           set -e
+#           if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_CELERY }} --query taskDefinition > celery-task-definition.json; then
+#             echo "Successfully downloaded Celery task definition."
+#           else
+#             echo "Failed to download Celery task definition." >&2
+#             exit 1
+#           fi
+#
+#       - name: Fill in the new image ID for the worker container
+#         id: render-worker
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: celery-task-definition.json
+#           container-name: ${{ env.CONTAINER_NAME_WORKER }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Fill in the new image ID for the cron container
+#         id: render-cron
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: ${{ steps.render-worker.outputs.task-definition }}
+#           container-name: ${{ env.CONTAINER_NAME_CRON }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Deploy Celery task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: ${{ steps.render-cron.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE_CELERY }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
+#
+#       - name: Download task definition for Backend Service
+#         run: |
+#           set -e
+#           if aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_BACKEND }} --query taskDefinition > backend-task-definition.json; then
+#             echo "Successfully downloaded Backend task definition."
+#           else
+#             echo "Failed to download Backend task definition." >&2
+#             exit 1
+#           fi
+#       - name: Fill in the new image ID in the Backend task definition
+#         id: backend-task-def
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: backend-task-definition.json
+#           container-name: ${{ env.CONTAINER_NAME_BACKEND }}
+#           image: ${{ env.IMAGE_VALUE }}
+#
+#       - name: Deploy Backend task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+#         with:
+#           task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE_BACKEND }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
+#

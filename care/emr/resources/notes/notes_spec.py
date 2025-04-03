@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 from pydantic import UUID4
 
@@ -40,6 +42,8 @@ class NoteMessageReadSpec(NoteMessageSpec):
 
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

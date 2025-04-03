@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
@@ -18,6 +18,7 @@ from care.emr.resources.user.spec import (
     UserTypeRoleMapping,
     UserUpdateSpec,
 )
+from care.emr.utils.send_password_reset_mail import send_password_creation_email
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
@@ -45,6 +46,9 @@ class UserViewSet(EMRModelViewSet):
     filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]
 
+    def get_queryset(self):
+        return User.objects.filter(deleted=False)
+
     def perform_create(self, instance):
         with transaction.atomic():
             super().perform_create(instance)
@@ -69,17 +73,32 @@ class UserViewSet(EMRModelViewSet):
                     name=UserTypeRoleMapping[instance.user_type].value.name,
                 ),
             )
+            if not instance.has_usable_password():
+                try:
+                    send_password_creation_email(instance)
+                except Exception as e:
+                    raise IntegrityError(
+                        "User creation failed due to email error."
+                    ) from e  # to fail the transaction
 
     def authorize_update(self, request_obj, model_instance):
         if self.request.user.is_superuser:
-            return True
-        return self.request.user.id == model_instance.id
+            return
+        if not self.request.user.id == model_instance.id:
+            raise PermissionDenied("You do not have permission to update this user")
 
     def authorize_create(self, instance):
         if not AuthorizationController.call("can_create_user", self.request.user):
             raise PermissionDenied("You do not have permission to create Users")
 
-    def authorize_delete(self, instance):
+    def perform_destroy(self, instance):
+        if instance.last_login:
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+        else:
+            instance.delete()
+
+    def authorize_destroy(self, instance):
         return self.request.user.is_superuser
 
     @action(detail=False, methods=["GET"])
@@ -98,25 +117,26 @@ class UserViewSet(EMRModelViewSet):
         return Response(status=200)
 
     @method_decorator(parser_classes([MultiPartParser]))
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True, methods=["POST", "DELETE"], permission_classes=[IsAuthenticated]
+    )
     def profile_picture(self, request, *args, **kwargs):
         user = self.get_object()
-        if not self.authorize_update({}, user):
-            raise PermissionDenied("Permission Denied")
-        serializer = UserImageUploadSerializer(user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=200)
+        self.authorize_update({}, user)
 
-    @profile_picture.mapping.delete
-    def profile_picture_delete(self, request, *args, **kwargs):
-        user = self.get_object()
-        if not self.authorize_update({}, user):
-            raise PermissionDenied("Permission Denied")
-        delete_cover_image(user.profile_picture_url, "avatars")
-        user.profile_picture_url = None
-        user.save()
-        return Response(status=204)
+        if request.method == "POST":
+            serializer = UserImageUploadSerializer(user, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(status=200)
+        if request.method == "DELETE":
+            if not user.profile_picture_url:
+                return Response({"detail": "No cover image to delete"}, status=404)
+            delete_cover_image(user.profile_picture_url, "avatars")
+            user.profile_picture_url = None
+            user.save()
+            return Response(status=204)
+        return Response({"detail": "Method not allowed"}, status=405)
 
     @action(
         detail=True,

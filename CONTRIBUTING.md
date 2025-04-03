@@ -44,7 +44,8 @@ Make sure you have Postgres and Redis installed on your system.
 
 ```bash
 sudo -u postgres psql
-CREATE DATABASE care;
+CREATE ROLE my_username LOGIN PASSWORD 'my_password';
+CREATE DATABASE care WITH OWNER = my_username;
 ```
 put the following in your `.env` file
 ```bash
@@ -119,7 +120,12 @@ python manage.py runserver
 Docker:
 
 ```bash
+# To run all tests
 make test
+```
+```bash
+# To run a specific test file, class, or method:
+make test path=<path_to_test>
 ```
 Local:
 

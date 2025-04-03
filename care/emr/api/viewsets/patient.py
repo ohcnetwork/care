@@ -1,7 +1,9 @@
 import datetime
 
+from django.utils import timezone
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -9,14 +11,16 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.models import Organization, PatientUser
+from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient
 from care.emr.resources.patient.spec import (
     PatientCreateSpec,
     PatientListSpec,
     PatientPartialSpec,
     PatientRetrieveSpec,
+    PatientUpdateSpec,
 )
+from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
@@ -32,6 +36,7 @@ class PatientViewSet(EMRModelViewSet):
     database_model = Patient
     pydantic_model = PatientCreateSpec
     pydantic_read_model = PatientListSpec
+    pydantic_update_model = PatientUpdateSpec
     pydantic_retrieve_model = PatientRetrieveSpec
     filterset_class = PatientFilters
     filter_backends = [DjangoFilterBackend]
@@ -46,9 +51,29 @@ class PatientViewSet(EMRModelViewSet):
         if not AuthorizationController.call("can_create_patient", self.request.user):
             raise PermissionDenied("Cannot Create Patient")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         if not self.request.user.is_superuser:
             raise PermissionDenied("Cannot delete patient")
+
+    def validate_data(self, instance, model_obj=None):
+        dob = instance.date_of_birth or (model_obj and model_obj.date_of_birth)
+        deceased = instance.deceased_datetime or (
+            model_obj and model_obj.deceased_datetime
+        )
+
+        if dob and deceased and dob > deceased.date():
+            raise ValidationError("Date of birth cannot be after the date of death")
+
+        age = instance.age or (
+            model_obj
+            and model_obj.year_of_birth
+            and timezone.now().year - model_obj.year_of_birth
+        )
+
+        if age and deceased:
+            calculated_birth_year = timezone.now().year - age
+            if calculated_birth_year > deceased.year:
+                raise ValidationError("Year of birth cannot be after the year of death")
 
     def get_queryset(self):
         qs = (
@@ -65,11 +90,10 @@ class PatientViewSet(EMRModelViewSet):
             ):
                 return qs.filter(external_id=self.kwargs.get("external_id"))
 
-        if self.request.GET.get("geo_organization"):
+        if self.request.GET.get("organization"):
             geo_organization = get_object_or_404(
                 Organization,
-                external_id=self.request.GET["geo_organization"],
-                org_type="govt",
+                external_id=self.request.GET["organization"],
             )
             qs = qs.filter(organization_cache__overlap=[geo_organization.id])
         return AuthorizationController.call(
@@ -82,6 +106,9 @@ class PatientViewSet(EMRModelViewSet):
         date_of_birth: datetime.date | None = None
         year_of_birth: int | None = None
 
+    @extend_schema(
+        request=SearchRequestSpec,
+    )
     @action(detail=False, methods=["POST"])
     def search(self, request, *args, **kwargs):
         max_page_size = 200
@@ -103,6 +130,9 @@ class PatientViewSet(EMRModelViewSet):
         year_of_birth: int
         partial_id: str
 
+    @extend_schema(
+        request=SearchRetrieveRequestSpec, responses={200: PatientRetrieveSpec}
+    )
     @action(detail=False, methods=["POST"])
     def search_retrieve(self, request, *args, **kwargs):
         request_data = self.SearchRetrieveRequestSpec(**request.data)
@@ -127,6 +157,7 @@ class PatientViewSet(EMRModelViewSet):
         user: UUID4
         role: UUID4
 
+    @extend_schema(request=PatientUserCreateSpec, responses={200: UserSpec})
     @action(detail=True, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
         request_data = self.PatientUserCreateSpec(**self.request.data)
@@ -142,6 +173,7 @@ class PatientViewSet(EMRModelViewSet):
     class PatientUserDeleteSpec(BaseModel):
         user: UUID4
 
+    @extend_schema(request=PatientUserDeleteSpec, responses={200: {}})
     @action(detail=True, methods=["POST"])
     def delete_user(self, request, *args, **kwargs):
         request_data = self.PatientUserDeleteSpec(**self.request.data)
@@ -152,3 +184,15 @@ class PatientViewSet(EMRModelViewSet):
             raise ValidationError("User does not exist")
         PatientUser.objects.filter(user=user, patient=patient).delete()
         return Response({})
+
+    @action(detail=True, methods=["GET"])
+    def get_appointments(self, request, *args, **kwargs):
+        appointments = TokenBooking.objects.filter(patient=self.get_object())
+        return Response(
+            {
+                "results": [
+                    TokenBookingReadSpec.serialize(obj).to_json()
+                    for obj in appointments
+                ]
+            }
+        )

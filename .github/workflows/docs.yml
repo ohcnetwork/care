@@ -17,14 +17,14 @@ jobs:
   build-docs:
     if: github.repository == 'ohcnetwork/care'
     name: Build docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-          cache: 'pipenv'
+          cache: "pipenv"
 
       - name: Install pipenv
         run: pip install pipenv
@@ -46,7 +46,7 @@ jobs:
   deploy-docs:
     if: github.repository == 'ohcnetwork/care' && github.ref == 'refs/heads/develop'
     name: Deploy docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: build-docs
     permissions:
       contents: write

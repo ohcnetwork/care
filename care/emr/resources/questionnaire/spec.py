@@ -3,16 +3,16 @@ from enum import Enum
 from typing import Any
 
 from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
+from rest_framework.generics import get_object_or_404
 
-from care.emr.fhir.schema.base import Coding
-from care.emr.models import Questionnaire, ValueSet
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
+from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.resources.base import EMRResource
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class EnableOperator(str, Enum):
@@ -96,6 +96,15 @@ class AnswerOption(QuestionnaireBaseSpec):
         description="Whether option is initially selected",
     )
 
+    @field_validator("value")
+    @classmethod
+    def validate_value(cls, value: str, info):
+        if not value.strip():
+            raise ValueError(
+                "All the answer option values must be provided for custom choices"
+            )
+        return value.strip()
+
 
 class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
@@ -104,11 +113,7 @@ class Question(QuestionnaireBaseSpec):
     id: UUID4 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
-    code: Coding | None = Field(
-        None,
-        description="Coding for observation creation",
-        json_schema_extra={"slug": CARE_OBSERVATION_VALUSET.slug},
-    )
+    code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
     collect_time: bool = Field(
         default=False, description="Whether to collect timestamp"
     )
@@ -135,17 +140,11 @@ class Question(QuestionnaireBaseSpec):
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
-    unit: Coding | None = Field(None, json_schema_extra={"slug": CARE_UCUM_UNITS.slug})
+    unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
-
-    @field_validator("unit")
-    @classmethod
-    def validate_unit(cls, code):
-        return validate_valueset(
-            "unit", cls.model_fields["unit"].json_schema_extra["slug"], code
-        )
+    is_component: bool = False
 
     @field_validator("answer_value_set")
     @classmethod
@@ -180,11 +179,11 @@ class Question(QuestionnaireBaseSpec):
         return self
 
 
-class QuestionnaireSpec(QuestionnaireBaseSpec):
+class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
     version: str = Field("1.0", frozen=True, description="Version of the questionnaire")
     slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
     title: str
-    description: str = ""
+    description: str | None = None
     type: str = "custom"
     status: QuestionnaireStatus
     subject_type: SubjectType
@@ -192,7 +191,6 @@ class QuestionnaireSpec(QuestionnaireBaseSpec):
         {}, description="Styling requirements without validation"
     )
     questions: list[Question]
-    organizations: list[UUID4] = Field(min_length=1)
 
     @field_validator("slug")
     @classmethod
@@ -212,6 +210,13 @@ class QuestionnaireSpec(QuestionnaireBaseSpec):
             err = "Slug cannot shadow internal question types"
             raise ValueError(err)
         return slug
+
+    @field_validator("title")
+    @classmethod
+    def validate_title(cls, title: str, info):
+        if not title.strip():
+            raise ValueError("Title cannot be empty")
+        return title.strip()
 
     def get_all_ids(self):
         ids = []
@@ -235,8 +240,26 @@ class QuestionnaireSpec(QuestionnaireBaseSpec):
             raise ValueError(err)
         return self
 
+
+class QuestionnaireSpec(QuestionnaireWriteSpec):
+    organizations: list[UUID4] = Field(min_length=1)
+    tags: list[UUID4] = []
+
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, tags):
+        tag_ids = []
+        for external_id in tags:
+            tag = get_object_or_404(QuestionnaireTag, external_id=external_id)
+            tag_ids.append(tag.id)
+        return tag_ids
+
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001
+
+
+class QuestionnaireUpdateSpec(QuestionnaireWriteSpec):
+    pass
 
 
 class QuestionnaireReadSpec(QuestionnaireBaseSpec):
@@ -244,18 +267,22 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     slug: str | None = None
     version: str
     title: str
-    description: str = ""
+    description: str | None = None
     status: QuestionnaireStatus
     subject_type: SubjectType
     styling_metadata: dict
     questions: list
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-
+        tags = []
+        for tag in obj.tags:
+            tags.append(QuestionnaireTag.get_tag(tag))
+        mapping["tags"] = tags
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
         if obj.updated_by:
@@ -264,3 +291,26 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
 
 # Add this to handle recursive Question type
 Question.model_rebuild()
+
+
+class QuestionnaireTagSpec(EMRResource):
+    __model__ = QuestionnaireTag
+    id: UUID4 | None = None
+    name: str
+    slug: str
+
+    @field_validator("slug")
+    @classmethod
+    def validate_slug(cls, slug: str, info):
+        queryset = QuestionnaireTag.objects.filter(slug=slug)
+        context = cls.get_serializer_context(info)
+        if context.get("is_update", False):
+            queryset = queryset.exclude(id=info.context["object"].id)
+        if queryset.exists():
+            err = "Slug must be unique"
+            raise ValueError(err)
+        return slug
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id

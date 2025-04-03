@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -30,6 +31,7 @@ class OrganizationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     org_type = filters.CharFilter(field_name="org_type", lookup_expr="iexact")
+    level_cache = filters.NumberFilter(field_name="level_cache")
 
 
 class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
@@ -41,7 +43,10 @@ class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
     permission_classes = []
 
     def get_queryset(self):
-        return Organization.objects.filter(org_type="govt")
+        queryset = super().get_queryset().order_by("created_date")
+        if "parent" in self.request.GET and not self.request.GET.get("parent"):
+            queryset = queryset.filter(parent__isnull=True)
+        return queryset
 
 
 class OrganizationViewSet(EMRModelViewSet):
@@ -65,7 +70,24 @@ class OrganizationViewSet(EMRModelViewSet):
         # Deny all other permissions in OTP mode
         return not getattr(request.user, "is_alternative_login", False)
 
-    def authorize_delete(self, instance):
+    def validate_data(self, instance, model_obj=None):
+        """
+        Validating uniqueness on a given level
+        """
+        if Organization.validate_uniqueness(
+            Organization.objects.all(), instance, model_obj
+        ):
+            raise ValidationError("Organization already exists with same name")
+
+        if instance.parent and model_obj is None:
+            parent = get_object_or_404(Organization, external_id=instance.parent)
+
+            # Validate Depth
+            if parent.level_cache >= settings.ORGANIZATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.ORGANIZATION_MAX_DEPTH})"
+                raise ValidationError(error)
+
+    def authorize_destroy(self, instance):
         if Organization.objects.filter(parent=instance).exists():
             raise PermissionDenied("Cannot delete organization with children")
 
@@ -132,7 +154,10 @@ class OrganizationViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            super().get_queryset().select_related("parent", "created_by", "updated_by")
+            super()
+            .get_queryset()
+            .select_related("parent", "created_by", "updated_by")
+            .order_by("created_date")
         )
         if "parent" in self.request.GET and not self.request.GET.get("parent"):
             # Filter for root organizations, For some reason its not working as intended in Django Filters
@@ -182,11 +207,20 @@ class OrganizationViewSet(EMRModelViewSet):
         return Response({"count": len(data), "results": data})
 
 
+class OrganizationUserFilter(filters.FilterSet):
+    phone_number = filters.CharFilter(
+        field_name="user__phone_number", lookup_expr="iexact"
+    )
+    username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
+
+
 class OrganizationUsersViewSet(EMRModelViewSet):
     database_model = OrganizationUser
     pydantic_model = OrganizationUserWriteSpec
     pydantic_read_model = OrganizationUserReadSpec
     pydantic_update_model = OrganizationUserUpdateSpec
+    filterset_class = OrganizationUserFilter
+    filter_backends = [filters.DjangoFilterBackend]
 
     def get_organization_obj(self):
         return get_object_or_404(
@@ -201,16 +235,21 @@ class OrganizationUsersViewSet(EMRModelViewSet):
         if model_obj:
             return
         organization = self.get_organization_obj()
+        # TODO : Optimise by fetching user first, avoiding the extra join to org
         queryset = OrganizationUser.objects.filter(user__external_id=instance.user)
-        if organization.root_org is None:
-            queryset = queryset.filter(organization=organization)
-        else:
-            queryset = queryset.filter(
-                Q(organization=organization)
-                | Q(organization__root_org=organization.root_org)
-            )
-        if queryset.exists():
+        # Case 1 - Same organization
+        if queryset.filter(Q(organization=organization)).exists():
             raise ValidationError("User association already exists")
+        # Case 2 - Adding to a child organization ( parent already linked )
+        if organization.parent:
+            parent_orgs = organization.parent_cache
+            if queryset.filter(Q(organization__in=parent_orgs)).exists():
+                raise ValidationError("User is already linked to a parent organization")
+        # Case 3 - Adding to a parent organization ( child already linked )
+        if queryset.filter(
+            organization__parent_cache__overlap=[organization.id]
+        ).exists():
+            raise ValidationError("User has association to some child organization")
 
     def authorize_update(self, request_obj, model_instance):
         organization = self.get_organization_obj()
@@ -230,7 +269,7 @@ class OrganizationUsersViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("User does not have permission for this action")
 
-    def authorize_delete(self, instance):
+    def authorize_destroy(self, instance):
         organization = self.get_organization_obj()
         if not AuthorizationController.call(
             "can_manage_organization_users_obj",

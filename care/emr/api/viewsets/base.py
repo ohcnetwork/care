@@ -3,6 +3,7 @@ import json
 from django.db import transaction
 from django.http.response import Http404
 from pydantic import ValidationError
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
 from rest_framework.generics import get_object_or_404
@@ -45,18 +46,18 @@ def emr_exception_handler(exc, context):
     return drf_exception_handler(exc, context)
 
 
-class EMRQuestionnaireMixin:
-    @action(detail=False, methods=["GET"])
-    def questionnaire_spec(self, *args, **kwargs):
-        return Response(
-            {"version": "1.0", "questions": self.pydantic_model.as_questionnaire()}
-        )
-
-    @action(detail=False, methods=["GET"])
-    def json_schema_spec(self, *args, **kwargs):
-        return Response(
-            {"version": "1.0", "questions": self.pydantic_model.model_json_schema()}
-        )
+# class EMRQuestionnaireMixin:
+#     @action(detail=False, methods=["GET"])
+#     def questionnaire_spec(self, *args, **kwargs):
+#         return Response(
+#             {"version": "1.0", "questions": self.pydantic_model.as_questionnaire()}
+#         )
+#
+#     @action(detail=False, methods=["GET"])
+#     def json_schema_spec(self, *args, **kwargs):
+#         return Response(
+#             {"version": "1.0", "questions": self.pydantic_model.model_json_schema()}
+#         )
 
 
 class EMRRetrieveMixin:
@@ -131,7 +132,7 @@ class EMRUpdateMixin:
             instance.save()
             if getattr(self, "CREATE_QUESTIONNAIRE_RESPONSE", False):
                 QuestionnaireResponse.objects.create(
-                    subject_id=self.fetch_patient_from_instance(instance),
+                    subject_id=self.fetch_patient_from_instance(instance).external_id,
                     patient=self.fetch_patient_from_instance(instance),
                     encounter=self.fetch_encounter_from_instance(instance),
                     structured_responses={
@@ -145,13 +146,14 @@ class EMRUpdateMixin:
                     updated_by=self.request.user,
                 )
 
-    def clean_update_data(self, request_data):
+    def clean_update_data(self, request_data, keep_fields: set | None = None):
         if type(request_data) is list:
             return request_data
-        request_data.pop("id", None)
-        request_data.pop("external_id", None)
-        request_data.pop("patient", None)
-        request_data.pop("encounter", None)
+        ignored_fields = {"id", "external_id", "patient", "encounter"}
+        if keep_fields:
+            ignored_fields = ignored_fields - set(keep_fields)
+        for field in ignored_fields:
+            request_data.pop(field, None)
         return request_data
 
     def update(self, request, *args, **kwargs):
@@ -174,19 +176,23 @@ class EMRUpdateMixin:
         return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
 
 
-class EMRDeleteMixin:
-    def authorize_delete(self, instance):
+class EMRDestroyMixin:
+    def authorize_destroy(self, instance):
         pass
 
-    def perform_delete(self, instance):
+    def perform_destroy(self, instance):
         instance.deleted = True
         instance.save(update_fields=["deleted"])
 
-    def delete(self, request, *args, **kwargs):
+    def validate_destroy(self, instance):
+        pass
+
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.authorize_delete(instance)
-        self.perform_delete(instance)
-        return Response(status=204)
+        self.validate_destroy(instance)
+        self.authorize_destroy(instance)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EMRUpsertMixin:
@@ -229,7 +235,7 @@ class EMRBaseViewSet(GenericViewSet):
         return emr_exception_handler
 
     def get_queryset(self):
-        return self.filter_queryset(self.database_model.objects.all())
+        return self.database_model.objects.all()
 
     def get_retrieve_pydantic_model(self):
         if self.pydantic_retrieve_model:
@@ -271,7 +277,7 @@ class EMRModelViewSet(
     EMRRetrieveMixin,
     EMRUpdateMixin,
     EMRListMixin,
-    EMRDeleteMixin,
+    EMRDestroyMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):

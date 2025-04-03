@@ -1,14 +1,15 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4, Field, field_validator
 
-from care.emr.fhir.schema.base import Coding, Period
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_statement import MedicationStatement
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.period import Period
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class MedicationStatementStatus(str, Enum):
@@ -24,7 +25,7 @@ class MedicationStatementStatus(str, Enum):
 
 class MedicationStatementInformationSourceType(str, Enum):
     related_person = "related_person"
-    user = "user"
+    practitioner = "practitioner"
     patient = "patient"
 
 
@@ -33,43 +34,30 @@ class BaseMedicationStatementSpec(EMRResource):
     __exclude__ = ["patient", "encounter"]
     id: UUID4 = None
 
-    status: MedicationStatementStatus = Field(
-        ...,
-        description="Represents the current status of the medication request",
-    )
-    reason: str | None = Field(
-        None,
-        description="The reason why the medication is being/was taken",
-    )
+    status: MedicationStatementStatus
+    reason: str | None = None
 
-    medication: Coding = Field(
-        ...,
-        description="The medication that was taken",
-        json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
-    )
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
     dosage_text: str | None = Field(
         None,
-        description="The dosage of the medication",
     )  # consider using Dosage from MedicationRequest
-    effective_period: Period | None = Field(
-        None,
-        description="The period during which the medication was taken",
-    )
 
-    encounter: UUID4 = Field(
-        ...,
-        description="The encounter where the statement was noted",
-    )
+    effective_period: Period | None = None
 
-    information_source: MedicationStatementInformationSourceType | None = Field(
-        None,
-        description="The source of the information about the medication, patient, related person, or healthcare provider",
-    )
+    encounter: UUID4
 
-    note: str | None = Field(
-        None,
-        description="Any additional notes about the medication",
-    )
+    information_source: MedicationStatementInformationSourceType | None = None
+
+    note: str | None = None
+
+
+class MedicationStatementUpdateSpec(EMRResource):
+    __model__ = MedicationStatement
+    __exclude__ = ["patient", "encounter"]
+
+    status: MedicationStatementStatus
+    effective_period: Period | None = None
+    note: str | None = None
 
 
 class MedicationStatementSpec(BaseMedicationStatementSpec):
@@ -80,15 +68,6 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
             err = "Encounter not found"
             raise ValueError(err)
         return encounter
-
-    @field_validator("medication")
-    @classmethod
-    def validate_medication(cls, medication):
-        return validate_valueset(
-            "medication",
-            cls.model_fields["medication"].json_schema_extra["slug"],
-            medication,
-        )
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
@@ -101,6 +80,8 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
 class MedicationStatementReadSpec(BaseMedicationStatementSpec):
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

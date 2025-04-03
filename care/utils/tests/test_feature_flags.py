@@ -1,10 +1,6 @@
 from django.test import TestCase
 
-from care.utils.registries.feature_flag import (
-    FlagNotFoundError,
-    FlagRegistry,
-    FlagType,
-)
+from care.utils.registries.feature_flag import FlagNotFoundError, FlagRegistry, FlagType
 
 
 # ruff: noqa: SLF001
@@ -24,10 +20,6 @@ class FeatureFlagTestCase(TestCase):
         self.assertTrue(FlagRegistry._flags[FlagType.USER]["TEST_FLAG"])
         FlagRegistry.unregister(FlagType.USER, "TEST_FLAG")
         self.assertFalse(FlagRegistry._flags[FlagType.USER].get("TEST_FLAG"))
-
-    def test_unregister_flag_not_found(self):
-        FlagRegistry.unregister(FlagType.USER, "TEST_FLAG")
-        self.assertEqual(FlagRegistry._flags, {})
 
     def test_validate_flag_type(self):
         FlagRegistry.register(FlagType.USER, "TEST_FLAG")

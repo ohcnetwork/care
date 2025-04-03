@@ -3,7 +3,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
-from care.emr.models import Patient
+from care.emr.models import Encounter, Patient
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.questionnaire_response.spec import QuestionnaireResponseReadSpec
 from care.security.authorization import AuthorizationController
@@ -39,16 +39,19 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
             )
             if "encounter" in self.request.GET:
                 encounter = get_object_or_404(
-                    Patient, external_id=self.request.GET["encounter"]
+                    Encounter, external_id=self.request.GET["encounter"]
                 )
         else:
-            obj = get_object_or_404(QuestionnaireResponse, self.kwargs["external_id"])
+            obj = get_object_or_404(
+                QuestionnaireResponse, external_id=self.kwargs["external_id"]
+            )
             patient = obj.patient
-            if obj.encounter:
-                encounter = obj.encounter
+            encounter = obj.encounter
         if encounter:
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", self.request.user, patient
+            ) or AuthorizationController.call(
+                "can_view_encounter_obj", self.request.user, encounter
             )
         else:
             allowed = AuthorizationController.call(
@@ -61,4 +64,6 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
         if "questionnaire_slugs" in self.request.GET:
             questionnaire_slugs = self.request.GET.get("questionnaire_slugs").split(",")
             queryset = queryset.filter(questionnaire__slug__in=questionnaire_slugs)
+        if "only_unstructured" in self.request.GET:
+            queryset = queryset.filter(structured_response_type__isnull=True)
         return queryset

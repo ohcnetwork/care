@@ -1,13 +1,21 @@
 from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
-from pydantic import UUID4, field_validator
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from pydantic import UUID4, Field, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
 from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
-from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
+from care.security.roles.role import (
+    ADMINISTRATOR,
+    DOCTOR_ROLE,
+    NURSE_ROLE,
+    STAFF_ROLE,
+    VOLUNTEER_ROLE,
+)
 from care.users.models import User
 
 
@@ -16,6 +24,7 @@ class UserTypeOptions(str, Enum):
     nurse = "nurse"
     staff = "staff"
     volunteer = "volunteer"
+    administrator = "administrator"
 
 
 class UserTypeRoleMapping(Enum):
@@ -23,6 +32,7 @@ class UserTypeRoleMapping(Enum):
     nurse = NURSE_ROLE
     staff = STAFF_ROLE
     volunteer = VOLUNTEER_ROLE
+    administrator = ADMINISTRATOR
 
 
 class UserBaseSpec(EMRResource):
@@ -33,30 +43,54 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
-    phone_number: str
+    phone_number: str = Field(max_length=14)
+
+    prefix: str | None = None
+    suffix: str | None = None
 
 
 class UserUpdateSpec(UserBaseSpec):
     user_type: UserTypeOptions
     gender: GenderChoices
+    phone_number: str = Field(max_length=14)
 
 
 class UserCreateSpec(UserUpdateSpec):
-    geo_organization: UUID4
-    password: str
+    geo_organization: UUID4 | None = None
+    password: str | None = None
     username: str
     email: str
 
     @field_validator("username")
     @classmethod
     def validate_username(cls, username):
-        if User.objects.filter(username=username).exists():
+        if User.check_username_exists(username):
             raise ValueError("Username already exists")
         return username
+
+    @field_validator("phone_number")
+    @classmethod
+    def validate_phone_number(cls, phone_number):
+        if User.objects.filter(phone_number=phone_number).exists():
+            raise ValueError("Phone Number already exists")
+        return phone_number
+
+    @field_validator("email")
+    @classmethod
+    def validate_user_email(cls, email):
+        if User.objects.filter(email=email).exists():
+            raise ValueError("Email already exists")
+        try:
+            validate_email(email)
+        except ValidationError as e:
+            raise ValueError("Invalid Email") from e
+        return email
 
     @field_validator("password")
     @classmethod
     def validate_password(cls, password):
+        if password is None:
+            return None
         try:
             validate_password(password)
         except Exception as e:
@@ -65,9 +99,10 @@ class UserCreateSpec(UserUpdateSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.set_password(self.password)
-        obj.geo_organization = get_object_or_404(
-            Organization, external_id=self.geo_organization, org_type="govt"
-        )
+        if self.geo_organization is not None:
+            obj.geo_organization = get_object_or_404(
+                Organization, external_id=self.geo_organization, org_type="govt"
+            )
 
 
 class UserSpec(UserBaseSpec):
@@ -76,17 +111,22 @@ class UserSpec(UserBaseSpec):
     user_type: str
     gender: str
     username: str
+    mfa_enabled: bool = False
+    phone_number: str = Field(max_length=14)
+    deleted: bool = False
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
+        mapping["mfa_enabled"] = obj.is_mfa_enabled()
 
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
     created_by: dict
     email: str
+    flags: list[str] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
@@ -99,3 +139,17 @@ class UserRetrieveSpec(UserSpec):
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+        mapping["flags"] = obj.get_all_flags()
+
+
+class PublicUserReadSpec(UserBaseSpec):
+    last_login: str
+    profile_picture_url: str
+    user_type: str
+    gender: str
+    username: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj: User):
+        mapping["id"] = str(obj.external_id)
+        mapping["profile_picture_url"] = obj.read_profile_picture_url()

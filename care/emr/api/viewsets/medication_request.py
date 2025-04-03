@@ -1,48 +1,36 @@
-from django.db.models import Q
-from django.utils import timezone
 from django_filters import rest_framework as filters
-from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404
 
-from care.emr.api.viewsets.authz_base import EncounterBasedAuthorizationBase
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
+from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
+from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.medication.request.spec import (
-    MedicationRequestDiscontinueRequest,
     MedicationRequestReadSpec,
     MedicationRequestSpec,
-    MedicationRequestStatus,
+    MedicationRequestUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
+from care.users.models import User
+
+
+class StatusFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if value:
+            statuses = value.split(",")
+            return qs.filter(status__in=statuses)
+        return qs
 
 
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    status = filters.CharFilter(method="filter_statuses")
-    is_prn = filters.BooleanFilter(field_name="dosage_instruction__as_needed_boolean")
-
-    def filter_statuses(self, queryset, name, value):
-        """
-        Handle multiple values for the same 'status' parameter in an OR-fashion
-        (case-insensitive).
-        """
-
-        # Get *all* values for 'status' as a list: ["active", "on_hold", ...]
-        values = self.request.GET.getlist("status")
-        if not values:
-            return queryset
-
-        query = Q()
-        for v in values:
-            query |= Q(status__iexact=v)
-
-        return queryset.filter(query)
+    status = StatusFilter()
+    name = filters.CharFilter(field_name="medication__display", lookup_expr="icontains")
 
 
 class MedicationRequestViewSet(
@@ -51,6 +39,7 @@ class MedicationRequestViewSet(
     database_model = MedicationRequest
     pydantic_model = MedicationRequestSpec
     pydantic_read_model = MedicationRequestReadSpec
+    pydantic_update_model = MedicationRequestUpdateSpec
     questionnaire_type = "medication_request"
     questionnaire_title = "Medication Request"
     questionnaire_description = "Medication Request"
@@ -59,10 +48,7 @@ class MedicationRequestViewSet(
     filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, self.get_patient_obj()
-        ):
-            raise PermissionDenied("Permission denied to user")
+        self.authorize_read_encounter()
         return (
             super()
             .get_queryset()
@@ -70,24 +56,17 @@ class MedicationRequestViewSet(
             .select_related("patient", "encounter", "created_by", "updated_by")
         )
 
-    @extend_schema(
-        request=MedicationRequestDiscontinueRequest,
-        responses={200: MedicationRequestReadSpec},
-        tags=["medication_request"],
-    )
-    @action(detail=True, methods=["POST"])
-    def discontinue(self, request, *args, **kwargs):
-        data = MedicationRequestDiscontinueRequest(**request.data)
-        request: MedicationRequest = self.get_object()
-        self.authorize_update({}, request)
-        request.status = MedicationRequestStatus.ended
-        request.status_changed = timezone.now()
-        request.status_reason = data.status_reason
-        request.save()
-
-        return Response(
-            self.get_read_pydantic_model().serialize(request).to_json(),
-        )
+    def authorize_create(self, instance):
+        super().authorize_create(instance)
+        if instance.requester:
+            encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+            requester = get_object_or_404(User, external_id=instance.requester)
+            if not AuthorizationController.call(
+                "can_update_encounter_obj", requester, encounter
+            ):
+                raise PermissionDenied(
+                    "Requester does not have permission to update encounter"
+                )
 
 
 InternalQuestionnaireRegistry.register(MedicationRequestViewSet)

@@ -7,3 +7,6 @@ from .scheduling import *  # noqa F403
 from .encounter import *  # noqa F403
 from .patient import *  # noqa F403
 from .file_upload import *  # noqa F403
+from .location import *  # noqa F403
+from .device import *  # noqa F403
+from .meta_artifact import *  # noqa F403

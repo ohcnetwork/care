@@ -303,6 +303,8 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     )
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
+    is_public = models.BooleanField(default=False)
+
     class Meta:
         verbose_name_plural = "Facilities"
 
@@ -363,7 +365,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityOrganizationUser.objects.create(
                 organization=facility_organization,
                 user=self.created_by,
-                role=RoleModel.objects.get(name=FACILITY_ADMIN_ROLE.name),
+                role=RoleModel.objects.get_or_create(name=FACILITY_ADMIN_ROLE.name)[0],
             )
             FacilityUser.objects.create(
                 facility=self, user=self.created_by, created_by=self.created_by

@@ -3,9 +3,9 @@ from enum import Enum
 from django.core.validators import slug_re
 from pydantic import UUID4, Field, field_validator, model_validator
 
-from care.emr.fhir.schema.valueset.valueset import ValueSetCompose
 from care.emr.models.valueset import ValueSet as ValuesetDatabaseModel
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.valueset import ValueSetCompose
 from care.emr.resources.user.spec import UserSpec
 
 
@@ -29,6 +29,13 @@ class ValueSetBaseSpec(EMRResource):
 
 
 class ValueSetSpec(ValueSetBaseSpec):
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, name: str, info):
+        if not name.strip():
+            raise ValueError("Name cannot be empty")
+        return name.strip()
+
     @field_validator("slug")
     @classmethod
     def validate_slug(cls, slug: str, info) -> str:
@@ -65,7 +72,7 @@ class ValueSetReadSpec(ValueSetBaseSpec):
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
         if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.created_by)
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
 
 
 ValueSetSpec.model_rebuild()

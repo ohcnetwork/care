@@ -11,7 +11,10 @@ class Condition(EMRBaseModel):
     code = models.JSONField(default=dict, null=False, blank=False)
     body_site = models.JSONField(default=dict, null=False, blank=False)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
-    encounter = models.ForeignKey("emr.Encounter", on_delete=models.CASCADE)
+    encounter = models.ForeignKey(
+        "emr.Encounter", on_delete=models.CASCADE, null=True, blank=True
+    )
     onset = models.JSONField(default=dict)
+    abatement = models.JSONField(default=dict)
     recorded_date = models.DateTimeField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)

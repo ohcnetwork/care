@@ -1,7 +1,7 @@
 import datetime
 from datetime import time, timedelta
 
-from dateutil.parser import parse
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
@@ -18,12 +18,14 @@ from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, SchedulableUserResource
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
+    COMPLETED_STATUS_CHOICES,
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.lock import Lock
+from care.utils.time_util import care_now
 
 
 class SlotsForDayRequestSpec(BaseModel):
@@ -45,34 +47,59 @@ class AvailabilityStatsRequestSpec(BaseModel):
     def validate_period(self):
         max_period = 32
         if self.from_date > self.to_date:
-            raise ValidationError("From Date cannot be greater than To Date")
-        if self.from_date - self.to_date > datetime.timedelta(days=max_period):
-            raise ValidationError("Period cannot be be greater than max days")
+            raise ValidationError("From Date cannot be after To Date")
+        if self.to_date - self.from_date > datetime.timedelta(days=max_period):
+            msg = f"Period cannot be be greater than {max_period} days"
+            raise ValidationError(msg)
 
 
-def convert_availability_to_slots(availabilities):
+def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day):
     slots = {}
     for availability in availabilities:
-        start_time = parse(availability["availability"]["start_time"])
-        end_time = parse(availability["availability"]["end_time"])
+        start_time = datetime.datetime.combine(
+            day,
+            time.fromisoformat(availability["availability"]["start_time"]),
+            tzinfo=None,
+        )
+        end_time = datetime.datetime.combine(
+            day,
+            time.fromisoformat(availability["availability"]["end_time"]),
+            tzinfo=None,
+        )
         slot_size_in_minutes = availability["slot_size_in_minutes"]
         availability_id = availability["availability_id"]
         current_time = start_time
         i = 0
         while current_time < end_time:
             i += 1
-            if i == 30:  # noqa PLR2004
+            if i == 30:  # noqa PLR2004 pragma: no cover
                 # Failsafe to prevent infinite loop
                 break
-            slots[
-                f"{current_time.time()}-{(current_time + datetime.timedelta(minutes=slot_size_in_minutes)).time()}"
-            ] = {
-                "start_time": current_time.time(),
-                "end_time": (
-                    current_time + datetime.timedelta(minutes=slot_size_in_minutes)
-                ).time(),
-                "availability_id": availability_id,
-            }
+
+            conflicting = False
+            for exception in exceptions:
+                exception_start_time = datetime.datetime.combine(
+                    day, exception.start_time, tzinfo=None
+                )
+                exception_end_time = datetime.datetime.combine(
+                    day, exception.end_time, tzinfo=None
+                )
+                if (
+                    exception_start_time
+                    < (current_time + datetime.timedelta(minutes=slot_size_in_minutes))
+                ) and exception_end_time > current_time:
+                    conflicting = True
+
+            if not conflicting:
+                slots[
+                    f"{current_time.time()}-{(current_time + datetime.timedelta(minutes=slot_size_in_minutes)).time()}"
+                ] = {
+                    "start_time": current_time.time(),
+                    "end_time": (
+                        current_time + datetime.timedelta(minutes=slot_size_in_minutes)
+                    ).time(),
+                    "availability_id": availability_id,
+                }
 
             current_time += datetime.timedelta(minutes=slot_size_in_minutes)
     return slots
@@ -80,8 +107,16 @@ def convert_availability_to_slots(availabilities):
 
 def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
+        if token_slot.end_datetime < timezone.now():
+            raise ValidationError("Slot is already past")
         if token_slot.allocated >= token_slot.availability.tokens_per_slot:
             raise ValidationError("Slot is already full")
+        if (
+            TokenBooking.objects.filter(token_slot=token_slot, patient=patient)
+            .exclude(status__in=COMPLETED_STATUS_CHOICES)
+            .exists()
+        ):
+            raise ValidationError("Patient already has a booking for this slot")
         token_slot.allocated += 1
         token_slot.save()
         return TokenBooking.objects.create(
@@ -132,9 +167,15 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                             "availability_id": schedule_availability.id,
                         }
                     )
-        # Remove anything that has an availability exception
-        # Generate all slots already created for that day
-        slots = convert_availability_to_slots(calculated_dow_availabilities)
+        exceptions = AvailabilityException.objects.filter(
+            resource=schedulable_resource_obj,
+            valid_from__lte=request_data.day,
+            valid_to__gte=request_data.day,
+        )
+        # Generate all slots already created for that day, exclude anything that conflicts with availability exception
+        slots = convert_availability_and_exceptions_to_slots(
+            calculated_dow_availabilities, exceptions, request_data.day
+        )
         # Fetch all existing slots in that day
         created_slots = TokenSlot.objects.filter(
             start_datetime__date=request_data.day,
@@ -142,7 +183,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             resource=schedulable_resource_obj,
         )
         for slot in created_slots:
-            slot_key = f"{slot.start_datetime.time()}-{slot.end_datetime.time()}"
+            slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
             if (
                 slot_key in slots
                 and slots[slot_key]["availability_id"] == slot.availability.id
@@ -152,14 +193,18 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         # Create everything else
         for _slot in slots:
             slot = slots[_slot]
+            end_datetime = datetime.datetime.combine(
+                request_data.day, slot["end_time"], tzinfo=None
+            )
+            # Skip creating slots in the past
+            if end_datetime < timezone.make_naive(timezone.now()):
+                continue
             TokenSlot.objects.create(
                 resource=schedulable_resource_obj,
                 start_datetime=datetime.datetime.combine(
-                    request_data.day, slot["start_time"], tzinfo=timezone.now().tzinfo
+                    request_data.day, slot["start_time"], tzinfo=None
                 ),
-                end_datetime=datetime.datetime.combine(
-                    request_data.day, slot["end_time"], tzinfo=timezone.now().tzinfo
-                ),
+                end_datetime=end_datetime,
                 availability_id=slot["availability_id"],
             )
         # Compare and figure out what needs to be created
@@ -183,8 +228,21 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment_handler(cls, obj, request_data, user):
         request_data = AppointmentBookingSpec(**request_data)
         patient = Patient.objects.filter(external_id=request_data.patient).first()
+
+        if (
+            TokenBooking.objects.filter(
+                patient=patient,
+                token_slot__start_datetime__gte=care_now(),
+            )
+            .exclude(status__in=COMPLETED_STATUS_CHOICES)
+            .count()
+            >= settings.MAX_APPOINTMENTS_PER_PATIENT
+        ):
+            error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
+            raise ValidationError(error)
+
         if not patient:
-            raise ValidationError({"Patient not found"})
+            raise ValidationError("Patient not found")
         appointment = lock_create_appointment(
             obj, patient, user, request_data.reason_for_visit
         )
@@ -242,7 +300,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         days = {}
         response_days = {}
         day = request_data.from_date
-        while day < request_data.to_date:
+        while day <= request_data.to_date:
             days[day] = {"total_slots": 0, "booked_slots": 0}
             response_days[str(day)] = {"total_slots": 0, "booked_slots": 0}
             day += timedelta(days=1)
@@ -251,12 +309,16 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             # Calculate all matching schedules
             current_schedules = []
             for schedule in schedules:
-                if schedule["valid_from"].date() <= day <= schedule["valid_to"].date():
+                valid_from = timezone.make_naive(schedule["valid_from"]).date()
+                valid_to = timezone.make_naive(schedule["valid_to"]).date()
+                if valid_from <= day <= valid_to:
                     current_schedules.append(schedule)
             # Calculate availability exception for that day
             exceptions = []
             for exception in availability_exceptions:
-                if exception["valid_from"] <= day <= exception["valid_to"]:
+                valid_from = exception["valid_from"]
+                valid_to = exception["valid_to"]
+                if valid_from <= day <= valid_to:
                     exceptions.append(exception)
             # Calculate slots based on these data
 
@@ -270,7 +332,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         booked_slots = (
             TokenSlot.objects.filter(
                 start_datetime__lte=request_data.to_date,
-                end_datetime__gte=request_data.from_date,
+                end_datetime__gt=request_data.from_date,
                 resource=resource,
             )
             .values("start_datetime__date")
@@ -301,20 +363,31 @@ def calculate_slots(
             for available_slot in availability["availability"]:
                 if available_slot["day_of_week"] != day_of_week:
                     continue
-                start_time = time.fromisoformat(available_slot["start_time"])
-                end_time = time.fromisoformat(available_slot["end_time"])
-                while start_time <= end_time:
+                start_time = datetime.datetime.combine(
+                    date, time.fromisoformat(available_slot["start_time"]), tzinfo=None
+                )
+                end_time = datetime.datetime.combine(
+                    date, time.fromisoformat(available_slot["end_time"]), tzinfo=None
+                )
+                current_start_time = start_time
+                while current_start_time < end_time:
                     conflicting = False
+                    current_end_time = current_start_time + timedelta(
+                        minutes=availability["slot_size_in_minutes"]
+                    )
                     for exception in exceptions:
+                        exception_start_time = datetime.datetime.combine(
+                            date, exception["start_time"], tzinfo=None
+                        )
+                        exception_end_time = datetime.datetime.combine(
+                            date, exception["end_time"], tzinfo=None
+                        )
                         if (
-                            exception["start_time"] <= end_time
-                            and exception["end_time"] >= start_time
+                            exception_start_time < current_end_time
+                            and exception_end_time > current_start_time
                         ):
                             conflicting = True
-                    start_time = (
-                        datetime.datetime.combine(date.today(), start_time)
-                        + timedelta(minutes=availability["slot_size_in_minutes"])
-                    ).time()
+                    current_start_time = current_end_time
                     if conflicting:
                         continue
                     slots += availability["tokens_per_slot"]

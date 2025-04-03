@@ -1,3 +1,5 @@
+from datetime import date
+
 from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
@@ -12,7 +14,7 @@ from care.utils.models.validators import mobile_or_landline_number_validator
 
 class Patient(EMRBaseModel):
     name = models.CharField(max_length=200, default="")
-    gender = models.CharField(max_length=10, default="")
+    gender = models.CharField(max_length=35, default="")
 
     phone_number = models.CharField(
         max_length=14, validators=[mobile_or_landline_number_validator], default=""
@@ -32,7 +34,7 @@ class Patient(EMRBaseModel):
 
     marital_status = models.CharField(max_length=50, default="")
 
-    blood_group = models.CharField()
+    blood_group = models.CharField(max_length=16)
 
     geo_organization = models.ForeignKey(
         "emr.Organization", on_delete=models.SET_NULL, null=True, blank=True
@@ -43,7 +45,7 @@ class Patient(EMRBaseModel):
     users_cache = ArrayField(models.IntegerField(), default=list)
 
     def get_age(self) -> str:
-        start = self.date_of_birth or timezone.date(self.year_of_birth, 1, 1)
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.deceased_datetime or timezone.now()).date()
 
         delta = relativedelta(end, start)

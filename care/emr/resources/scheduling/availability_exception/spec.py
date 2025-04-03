@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from pydantic import UUID4
 from rest_framework.exceptions import ValidationError
 
-from care.emr.models import AvailabilityException
+from care.emr.models import AvailabilityException, TokenSlot
 from care.emr.models.scheduling.schedule import SchedulableUserResource
 from care.emr.resources.base import EMRResource
 from care.facility.models import Facility
@@ -30,13 +30,12 @@ class AvailabilityExceptionBaseSpec(EMRResource):
 
 class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     facility: UUID4 | None = None
-    resource: UUID4
+    user: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
-            resource = None
             try:
-                user = User.objects.get(external_id=self.resource)
+                user = User.objects.get(external_id=self.user)
                 resource = SchedulableUserResource.objects.get(
                     user=user,
                     facility=Facility.objects.get(external_id=self.facility),
@@ -44,6 +43,17 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
                 obj.resource = resource
             except ObjectDoesNotExist as e:
                 raise ValidationError("Object does not exist") from e
+
+        slots = TokenSlot.objects.filter(
+            resource=obj.resource,
+            start_datetime__date__gte=self.valid_from,
+            start_datetime__date__lte=self.valid_to,
+            start_datetime__time__gte=self.start_time,
+            start_datetime__time__lte=self.end_time,
+        )
+        if slots.filter(allocated__gt=0):
+            raise ValidationError("There are bookings during this exception")
+        slots.delete()
 
 
 class AvailabilityExceptionReadSpec(AvailabilityExceptionBaseSpec):

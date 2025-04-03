@@ -1,10 +1,11 @@
 from django.db.models import Q
+from django_filters import rest_framework as filters
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
-    EMRDeleteMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRModelViewSet,
     EMRRetrieveMixin,
@@ -21,11 +22,25 @@ from care.emr.resources.resource_request.spec import (
 )
 
 
+class ResourceRequestFilters(filters.FilterSet):
+    origin_facility = filters.UUIDFilter(field_name="origin_facility__external_id")
+    approving_facility = filters.UUIDFilter(
+        field_name="approving_facility__external_id"
+    )
+    assigned_facility = filters.UUIDFilter(field_name="assigned_facility__external_id")
+    related_patient = filters.UUIDFilter(field_name="related_patient__external_id")
+    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    category = filters.CharFilter(field_name="category", lookup_expr="iexact")
+
+
 class ResourceRequestViewSet(EMRModelViewSet):
     database_model = ResourceRequest
     pydantic_model = ResourceRequestCreateSpec
     pydantic_read_model = ResourceRequestListSpec
     pydantic_retrieve_model = ResourceRequestRetrieveSpec
+    filterset_class = ResourceRequestFilters
+    filter_backends = [filters.DjangoFilterBackend]
 
     @classmethod
     def build_queryset(cls, queryset, user):
@@ -61,12 +76,16 @@ class ResourceRequestViewSet(EMRModelViewSet):
         )
 
     def get_queryset(self):
-        queryset = ResourceRequest.objects.all().select_related(
-            "origin_facility",
-            "approving_facility",
-            "assigned_facility",
-            "related_patient",
-            "assigned_to",
+        queryset = (
+            ResourceRequest.objects.all()
+            .select_related(
+                "origin_facility",
+                "approving_facility",
+                "assigned_facility",
+                "related_patient",
+                "assigned_to",
+            )
+            .order_by("-created_date")
         )
         if self.request.user.is_superuser:
             return queryset
@@ -74,7 +93,7 @@ class ResourceRequestViewSet(EMRModelViewSet):
 
 
 class ResourceRequestCommentViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRListMixin, EMRDeleteMixin, EMRBaseViewSet
+    EMRCreateMixin, EMRRetrieveMixin, EMRListMixin, EMRDestroyMixin, EMRBaseViewSet
 ):
     database_model = ResourceRequestComment
     pydantic_model = ResourceRequestCommentCreateSpec
@@ -94,6 +113,8 @@ class ResourceRequestCommentViewSet(
 
     def get_queryset(self):
         resource_request_obj = self.get_resource_request_obj()
-        return ResourceRequestComment.objects.filter(
-            request=resource_request_obj
-        ).select_related("created_by")
+        return (
+            ResourceRequestComment.objects.filter(request=resource_request_obj)
+            .select_related("created_by")
+            .order_by("-created_date")
+        )

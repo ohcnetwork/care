@@ -1,12 +1,12 @@
 import tempfile
 
-from django.core.validators import validate_email as django_validate_email
+from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, field_validator
+from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -20,36 +20,28 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.api.viewsets.device import disassociate_device_from_encounter
+from care.emr.api.viewsets.location import close_related_location_from_encounter
 from care.emr.models import (
     Encounter,
     EncounterOrganization,
     FacilityOrganization,
-    FileUpload,
     Patient,
 )
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
+    EncounterCareTeamMemberWriteSpec,
     EncounterCreateSpec,
     EncounterListSpec,
     EncounterRetrieveSpec,
     EncounterUpdateSpec,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
-from care.emr.resources.file_upload.spec import (
-    FileCategoryChoices,
-    FileTypeChoices,
-    FileUploadRetrieveSpec,
-)
-from care.emr.tasks.discharge_summary import (
-    email_discharge_summary_task,
-    generate_discharge_summary_task,
-)
-from care.facility.api.serializers.patient_consultation import (
-    EmailDischargeSummarySerializer,
-)
+from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.users.models import User
 
 
 class LiveFilter(filters.CharFilter):
@@ -78,6 +70,7 @@ class EncounterFilters(filters.FilterSet):
         field_name="patient__phone_number", lookup_expr="icontains"
     )
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
+    location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
 
 
@@ -91,6 +84,25 @@ class EncounterViewSet(
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
     filter_backends = [filters.DjangoFilterBackend]
+
+    def validate_data(self, instance, model_obj=None):
+        if model_obj is None:
+            if (
+                self.database_model.objects.filter(
+                    patient__external_id=instance.patient
+                )
+                .exclude(status__in=COMPLETED_CHOICES)
+                .count()
+                >= settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT
+            ):
+                error = f"Patient already has maximum number of active encounters ({settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT})"
+                raise ValidationError(error)
+
+            if not Patient.objects.filter(external_id=instance.patient).exists():
+                raise ValidationError("Patient does not exist")
+
+            if not Facility.objects.filter(external_id=instance.facility).exists():
+                raise ValidationError("Facility does not exist")
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -107,6 +119,12 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            disassociate_device_from_encounter(instance)
+            close_related_location_from_encounter(instance)
+            super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
@@ -126,7 +144,14 @@ class EncounterViewSet(
         qs = (
             super()
             .get_queryset()
-            .select_related("patient", "facility", "appointment")
+            .select_related(
+                "patient",
+                "facility",
+                "appointment",
+                "current_location",
+                "created_by",
+                "updated_by",
+            )
             .order_by("-created_date")
         )
         if (
@@ -178,6 +203,10 @@ class EncounterViewSet(
     class EncounterOrganizationManageSpec(BaseModel):
         organization: UUID4
 
+    @extend_schema(
+        request=EncounterOrganizationManageSpec,
+        responses={200: FacilityOrganizationReadSpec},
+    )
     @action(detail=True, methods=["POST"])
     def organizations_add(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -198,6 +227,9 @@ class EncounterViewSet(
         )
         return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
 
+    @extend_schema(
+        request=EncounterOrganizationManageSpec,
+    )
     @action(detail=True, methods=["DELETE"])
     def organizations_remove(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -216,31 +248,7 @@ class EncounterViewSet(
         EncounterOrganization.objects.filter(
             encounter=instance, organization=organization
         ).delete()
-        return Response({}, status=204)
-
-    def _check_discharge_summary_access(self, encounter):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, encounter.patient
-        ):
-            raise PermissionDenied("Permission denied to user")
-
-    def _generate_discharge_summary(self, encounter_ext_id: str):
-        if current_progress := discharge_summary.get_progress(encounter_ext_id):
-            return Response(
-                {
-                    "detail": (
-                        "Discharge Summary is already being generated, "
-                        f"current progress {current_progress}%"
-                    )
-                },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
-            )
-        discharge_summary.set_lock(encounter_ext_id, 1)
-        generate_discharge_summary_task.delay(encounter_ext_id)
-        return Response(
-            {"detail": "Discharge Summary will be generated shortly"},
-            status=status.HTTP_202_ACCEPTED,
-        )
+        return Response({})
 
     @extend_schema(
         description="Generate a discharge summary",
@@ -252,86 +260,60 @@ class EncounterViewSet(
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
         encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
-        return self._generate_discharge_summary(encounter.external_id)
-
-    @extend_schema(
-        description="Get the discharge summary",
-        responses={200: "Success"},
-        tags=["encounter"],
-    )
-    @action(detail=True, methods=["GET"])
-    def preview_discharge_summary(self, request, *args, **kwargs):
-        encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
-        summary_file = (
-            FileUpload.objects.filter(
-                file_type=FileTypeChoices.encounter.value,
-                file_category=FileCategoryChoices.discharge_summary.value,
-                associating_id=encounter.external_id,
-                upload_completed=True,
-            )
-            .order_by("id")
-            .last()
-        )
-        if summary_file:
-            return Response(FileUploadRetrieveSpec.serialize(summary_file).to_json())
-        return self._generate_discharge_summary(encounter.external_id)
-
-    class EmailDischargeSummarySpec(BaseModel):
-        email: str
-
-        @field_validator("email")
-        @classmethod
-        def validate_email(cls, value):
-            django_validate_email(value)
-            return value
-
-    @extend_schema(
-        description="Email the discharge summary to the user",
-        request=EmailDischargeSummarySerializer,
-        responses={200: "Success"},
-        tags=["encounter"],
-    )
-    @action(detail=True, methods=["POST"])
-    def email_discharge_summary(self, request, *args, **kwargs):
-        encounter = self.get_object()
-        self._check_discharge_summary_access(encounter)
+        if not AuthorizationController.call(
+            "can_view_clinical_data", self.request.user, encounter.patient
+        ):
+            raise PermissionDenied("Permission denied to user")
         encounter_ext_id = encounter.external_id
-        if existing_progress := discharge_summary.get_progress(encounter_ext_id):
+        if current_progress := discharge_summary.get_progress(encounter_ext_id):
             return Response(
                 {
                     "detail": (
                         "Discharge Summary is already being generated, "
-                        f"current progress {existing_progress}%"
+                        f"current progress {current_progress}%"
                     )
                 },
-                status=status.HTTP_406_NOT_ACCEPTABLE,
+                status=status.HTTP_409_CONFLICT,
             )
-
-        request_data = self.EmailDischargeSummarySpec(**request.data)
-        email = request_data.email
-        summary_file = (
-            FileUpload.objects.filter(
-                file_type=FileTypeChoices.encounter.value,
-                file_category=FileCategoryChoices.discharge_summary.value,
-                associating_id=encounter_ext_id,
-                upload_completed=True,
-            )
-            .order_by("id")
-            .last()
-        )
-        if not summary_file:
-            (
-                generate_discharge_summary_task.s(encounter_ext_id)
-                | email_discharge_summary_task.s(emails=[email])
-            ).delay()
-        else:
-            email_discharge_summary_task.delay(summary_file.id, [email])
+        discharge_summary.set_lock(encounter_ext_id, 1)
+        generate_discharge_summary_task.delay(encounter_ext_id)
         return Response(
-            {"detail": "Discharge Summary will be emailed shortly"},
+            {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    @extend_schema(
+        request=EncounterCareTeamMemberWriteSpec, responses={200: EncounterRetrieveSpec}
+    )
+    @action(detail=True, methods=["POST"])
+    def set_care_team_members(self, request, *args, **kwargs):
+        request_data = EncounterCareTeamMemberWriteSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+
+        members = []
+        users = []
+        for member in request_data.members:
+            user_obj = get_object_or_404(User, external_id=member.user_id)
+            if user_obj.id in users:
+                raise ValidationError({"user": "repeats are not allowed"})
+            users.append(user_obj.id)
+            if not AuthorizationController.call(
+                "can_view_encounter_obj", request.user, encounter
+            ):
+                raise PermissionDenied(
+                    "Treating doctor does not have permission on encounter"
+                )
+            members.append(
+                {
+                    "user_id": user_obj.id,
+                    "role": member.role.model_dump(mode="json", exclude_defaults=True),
+                }
+            )
+
+        encounter.care_team = members
+        encounter.save(update_fields=["care_team"])
+        return Response({}, status=status.HTTP_200_OK)
 
 
 def dev_preview_discharge_summary(request, encounter_id):

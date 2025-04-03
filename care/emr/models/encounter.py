@@ -18,8 +18,15 @@ class Encounter(EMRBaseModel):
     hospitalization = models.JSONField(default=dict)
     priority = models.CharField(max_length=100, null=True, blank=True)
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
+
+    care_team = models.JSONField(default=dict)
+
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
+
+    current_location = models.ForeignKey(
+        "emr.FacilityLocation", on_delete=models.SET_NULL, null=True, blank=True
+    )  # Cached field, used for easier querying
 
     def sync_organization_cache(self):
         orgs = set()
@@ -32,12 +39,19 @@ class Encounter(EMRBaseModel):
                     encounter_organization.organization.id,
                 }
             )
+
         facility_root_org = FacilityOrganization.objects.filter(
             org_type="root", facility=self.facility
         ).first()
-        orgs = orgs.union({facility_root_org.id})
+        if facility_root_org:
+            orgs = orgs.union({facility_root_org.id})
+
         self.facility_organization_cache = list(orgs)
-        self.save(update_fields=["facility_organization_cache"])
+        super().save(update_fields=["facility_organization_cache"])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.sync_organization_cache()
 
 
 class EncounterOrganization(EMRBaseModel):

@@ -3,10 +3,10 @@ from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field
 
-from care.emr.fhir.schema.base import CodeableConcept
 from care.emr.models.observation import Observation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.resources.common.codable_concept import CodeableConcept
 from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,
@@ -16,6 +16,7 @@ from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireSubmitResultValue,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
 class ObservationStatus(str, Enum):
@@ -38,6 +39,14 @@ class ReferenceRange(BaseModel):
     high: float | None = None
     unit: str | None = None
     text: str | None = None
+
+
+class Component(BaseModel):
+    value: QuestionnaireSubmitResultValue
+    interpretation: str | None = None
+    reference_range: list[ReferenceRange] = []
+    code: Coding | None = None
+    note: str = ""
 
 
 class BaseObservationSpec(EMRResource):
@@ -83,17 +92,9 @@ class BaseObservationSpec(EMRResource):
 
     note: str | None = Field(None, description="Additional notes about the observation")
 
-    body_site: Coding | None = Field(
-        None,
-        description="Body site where observation was made",
-        json_schema_extra={"slug": CARE_BODY_SITE_VALUESET.slug},
-    )
+    body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
 
-    method: Coding | None = Field(
-        None,
-        description="Method used for the observation",
-        json_schema_extra={"slug": CARE_OBSERVATION_COLLECTION_METHOD.slug},
-    )
+    method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
 
     reference_range: list[ReferenceRange] = Field(
         [], description="Reference ranges for interpretation"
@@ -106,6 +107,8 @@ class BaseObservationSpec(EMRResource):
     parent: UUID4 | None = Field(None, description="ID reference to parent observation")
 
     questionnaire_response: UUID4 | None = None
+
+    component: list[Component] = []
 
 
 class ObservationSpec(BaseObservationSpec):

@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from django.views.decorators.cache import cache_page
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -18,7 +19,12 @@ from care.users.reset_password_views import (
 )
 from config import api_router
 
-from .auth_views import AnnotatedTokenVerifyView, TokenObtainPairView, TokenRefreshView
+from .auth_views import (
+    AnnotatedTokenVerifyView,
+    LogoutView,
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from .views import app_version, home_view, ping
 
 urlpatterns = [
@@ -29,6 +35,7 @@ urlpatterns = [
     path(f"{settings.ADMIN_URL.rstrip('/')}/", admin.site.urls),
     # Rest API
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/auth/logout/", LogoutView.as_view(), name="token_obtain_pair"),
     path(
         "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),
@@ -100,7 +107,11 @@ if settings.DEBUG:
 
 if settings.DEBUG or not settings.IS_PRODUCTION:
     urlpatterns += [
-        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path(
+            "api/schema/",
+            cache_page(None, cache="swagger_cache")(SpectacularAPIView.as_view()),
+            name="schema",
+        ),
         path(
             "swagger/",
             SpectacularSwaggerView.as_view(url_name="schema"),

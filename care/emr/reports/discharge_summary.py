@@ -2,13 +2,11 @@ import logging
 import subprocess
 import tempfile
 import time
-from collections.abc import Iterable
 from pathlib import Path
 from uuid import uuid4
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -26,6 +24,7 @@ from care.emr.resources.allergy_intolerance.spec import (
 from care.emr.resources.condition.spec import CategoryChoices, VerificationStatusChoices
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.medication.request.spec import MedicationRequestStatus
+from care.users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +119,8 @@ def get_discharge_summary_data(encounter: Encounter):
         else None
     )
 
+    care_team = User.objects.filter(id__in=encounter.care_team)
+
     return {
         "encounter": encounter,
         "admission_duration": admission_duration,
@@ -131,6 +132,7 @@ def get_discharge_summary_data(encounter: Encounter):
         "observations": observations,
         "medication_requests": medication_requests,
         "files": files,
+        "care_team": care_team,
     }
 
 
@@ -144,29 +146,34 @@ def compile_typ(output_file, data):
             / "black-logo.svg"
         )
 
-        data["logo_path"] = str(logo_path)
+        data["logo_path"] = "black-logo.svg"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            template = Path(tmpdir) / "template.typ"
+            template.write_text(
+                render_to_string(
+                    "reports/patient_discharge_summary_pdf_template.typ", context=data
+                )
+            )
 
-        content = render_to_string(
-            "reports/patient_discharge_summary_pdf_template.typ", context=data
-        )
+            logo_dest = Path(tmpdir) / "black-logo.svg"
+            logo_dest.write_text(logo_path.read_text())
 
-        subprocess.run(  # noqa: S603
-            [  # noqa: S607
-                "typst",
-                "compile",
-                "-",
-                str(output_file),
-            ],
-            input=content.encode("utf-8"),
-            capture_output=True,
-            check=True,
-            cwd="/",
-        )
+            subprocess.run(  # noqa: S603
+                [
+                    settings.TYPST_BIN,
+                    "compile",
+                    str(template.name),
+                    str(output_file),
+                ],
+                capture_output=True,
+                check=True,
+                shell=False,
+                cwd=tmpdir,
+            )
 
         logging.info(
             "Successfully Compiled Summary pdf for %s", data["encounter"].external_id
         )
-        return True
 
     except subprocess.CalledProcessError as e:
         logging.error(
@@ -174,7 +181,7 @@ def compile_typ(output_file, data):
             data["encounter"].external_id,
             e.stderr.decode("utf-8"),
         )
-        return False
+        raise e
 
 
 def generate_discharge_summary_pdf(data, file):
@@ -195,9 +202,11 @@ def generate_and_upload_discharge_summary(encounter: Encounter):
     try:
         current_date = timezone.now()
         timestamp = int(current_date.timestamp() * 1000)
-        patient_name_slug: str = encounter.patient.name.lower().replace(" ", "_")
+        patient_name_slug: str = (
+            encounter.patient.name.lower().strip().replace(" ", "_")
+        )
         summary_file = FileUpload(
-            name=f"discharge_summary-{patient_name_slug}-{timestamp}.pdf",
+            name=f"discharge_summary-{patient_name_slug}-{int(timestamp)}",
             internal_name=f"{uuid4()}{int(time.time())}.pdf",
             file_type=FileTypeChoices.encounter.value,
             file_category=FileCategoryChoices.discharge_summary.value,
@@ -226,19 +235,6 @@ def generate_and_upload_discharge_summary(encounter: Encounter):
         clear_lock(encounter.external_id)
 
     return summary_file
-
-
-def email_discharge_summary(summary_file: FileUpload, emails: Iterable[str]):
-    msg = EmailMessage(
-        "Patient Discharge Summary",
-        "Please find the attached file",
-        settings.DEFAULT_FROM_EMAIL,
-        emails,
-    )
-    msg.content_subtype = "html"
-    _, data = summary_file.files_manager.file_contents(summary_file)
-    msg.attach(summary_file.name, data, "application/pdf")
-    return msg.send()
 
 
 def generate_discharge_report_signed_url(patient_external_id: str):

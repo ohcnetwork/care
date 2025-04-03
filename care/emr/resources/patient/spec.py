@@ -3,11 +3,12 @@ import uuid
 from enum import Enum
 
 from django.utils import timezone
-from pydantic import UUID4, field_validator, model_validator
+from pydantic import UUID4, Field, field_validator
 
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, PhoneNumber
+from care.emr.resources.permissions import PatientPermissionsMixin
 
 
 class BloodGroupChoices(str, Enum):
@@ -32,16 +33,17 @@ class GenderChoices(str, Enum):
 class PatientBaseSpec(EMRResource):
     __model__ = Patient
     __exclude__ = ["geo_organization"]
+    __store_metadata__ = True
 
     id: UUID4 | None = None
-    name: str
+    name: str = Field(max_length=200)
     gender: GenderChoices
-    phone_number: str
-    emergency_phone_number: str | None = None
+    phone_number: PhoneNumber = Field(max_length=14)
+    emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
     address: str
     permanent_address: str
     pincode: int
-    death_datetime: datetime.datetime | None = None
+    deceased_datetime: datetime.datetime | None = None
     blood_group: BloodGroupChoices | None = None
 
 
@@ -50,12 +52,6 @@ class PatientCreateSpec(PatientBaseSpec):
     date_of_birth: datetime.date | None = None
 
     age: int | None = None
-
-    @model_validator(mode="after")
-    def validate_age(self):
-        if not (self.age or self.date_of_birth):
-            raise ValueError("Either age or date of birth is required")
-        return self
 
     @field_validator("geo_organization")
     @classmethod
@@ -67,19 +63,59 @@ class PatientCreateSpec(PatientBaseSpec):
         return geo_organization
 
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            obj.geo_organization = Organization.objects.get(
-                external_id=self.geo_organization
-            )
-            if self.age:
-                obj.year_of_birth = timezone.now().date().year - self.age
-            else:
+        obj.geo_organization = Organization.objects.get(
+            external_id=self.geo_organization
+        )
+        if self.age:
+            # override dob if user chooses to update age
+            obj.date_of_birth = None
+            obj.year_of_birth = timezone.now().date().year - self.age
+        else:
+            obj.year_of_birth = self.date_of_birth.year
+
+
+class PatientUpdateSpec(PatientBaseSpec):
+    name: str | None = Field(default=None, max_length=200)
+    gender: GenderChoices | None = None
+    phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    address: str | None = None
+    permanent_address: str | None = None
+    pincode: int | None = None
+    deceased_datetime: datetime.datetime | None = None
+    blood_group: BloodGroupChoices | None = None
+    date_of_birth: datetime.date | None = None
+    age: int | None = None
+    geo_organization: UUID4 | None = None
+
+    @field_validator("geo_organization")
+    @classmethod
+    def validate_geo_organization(cls, geo_organization):
+        if geo_organization is None:
+            return None
+        if not Organization.objects.filter(
+            org_type="govt", external_id=geo_organization
+        ).exists():
+            raise ValueError("Geo Organization does not exist")
+        return geo_organization
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if is_update:
+            if self.geo_organization:
+                obj.geo_organization = Organization.objects.get(
+                    external_id=self.geo_organization
+                )
+            if self.age is not None:
+                obj.date_of_birth = None
+                obj.year_of_birth = timezone.now().year - self.age
+            elif self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
 
 
 class PatientListSpec(PatientBaseSpec):
     date_of_birth: datetime.date | None = None
-    age: int | None = None
+    year_of_birth: datetime.date | None = None
+
     created_date: datetime.datetime
     modified_date: datetime.datetime
 
@@ -103,7 +139,7 @@ class PatientPartialSpec(EMRResource):
         mapping["id"] = str(uuid.uuid4())
 
 
-class PatientRetrieveSpec(PatientListSpec):
+class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
     geo_organization: dict = {}
 
     created_by: dict | None = None

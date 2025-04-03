@@ -1,8 +1,10 @@
 import re
 from collections.abc import Iterable
 from fractions import Fraction
+from pathlib import Path
 
 import jsonschema
+from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
@@ -347,4 +349,90 @@ cover_image_validator = ImageSizeValidator(
 
 custom_image_extension_validator = validators.FileExtensionValidator(
     allowed_extensions=["jpg", "jpeg", "png"]
+)
+
+
+def parse_file_extension(file_name: str, max_extensions: int = 1) -> list[str]:
+    """
+    Extract up to `max_extensions` file extensions.
+
+    - "file.tar.gz" -> ['tar', 'gz']
+    - "file.tar.bz2.xz" (max 3) -> ['tar', 'bz2', 'xz']
+    - "file" -> []
+
+    Returns a list of extensions in lowercase (without the dot).
+    """
+    path = Path(file_name)
+    extensions = [ext[1:].lower() for ext in path.suffixes]  # Remove leading dots
+
+    return extensions[-max_extensions:]  # Keep only the last `max_extensions`
+
+
+class FileNameValidator:
+    """
+    This validator is used to validate the file name length and extension.
+    - File name length should not exceed `max_length` characters.
+    - File name should not start with a dot.
+    - File outermost extension should not be in `blocked_extensions` if provided.
+    - File outermost extension should be in `allowed_extensions` if provided.
+    """
+
+    def __init__(
+        self,
+        max_length: int = 255,
+        max_extensions: int = 1,
+        allowed_extensions: set[str] | None = None,
+        blocked_extensions: set[str] | None = None,
+    ):
+        self.max_length = max_length
+        self.max_extensions = max_extensions
+        self.allowed_extensions = allowed_extensions or set()
+        self.blocked_extensions = blocked_extensions or set()
+
+    def __call__(self, file_name: str):
+        if len(file_name) > self.max_length:
+            raise ValidationError(
+                _("File name cannot exceed %(max_length)d characters.")
+                % {"max_length": self.max_length}
+            )
+
+        if file_name.startswith("."):
+            raise ValidationError(
+                _("File name cannot start with a dot."),
+            )
+
+        extensions = parse_file_extension(file_name, self.max_extensions)
+        if not extensions:
+            raise ValidationError(_("Invalid file extension."))
+
+        extension = extensions[-1].lower()
+        if self.blocked_extensions and extension in self.blocked_extensions:
+            raise ValidationError(
+                _(
+                    "File extension not allowed. Blocked extensions are: %(blocked_extensions)s"
+                )
+                % {"blocked_extensions": ", ".join(self.blocked_extensions)},
+            )
+
+        if self.allowed_extensions and extension not in self.allowed_extensions:
+            raise ValidationError(
+                _(
+                    "File extension not allowed. Allowed extensions are: %(allowed_extensions)s"
+                )
+                % {"allowed_extensions": ", ".join(self.allowed_extensions)},
+            )
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, FileNameValidator)
+            and self.max_length == other.max_length
+            and self.max_extensions == other.max_extensions
+            and self.allowed_extensions == other.allowed_extensions
+            and self.blocked_extensions == other.blocked_extensions
+        )
+
+
+file_name_validator = FileNameValidator(
+    allowed_extensions=settings.ALLOWED_FILE_EXTENSIONS,
+    blocked_extensions=settings.BLOCKED_FILE_EXTENSIONS,
 )

@@ -1,8 +1,7 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
 
-from care.emr.api.viewsets.authz_base import EncounterBasedAuthorizationBase
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
+from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.medication_administration import MedicationAdministration
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
@@ -10,9 +9,9 @@ from care.emr.registries.system_questionnaire.system_questionnaire import (
 from care.emr.resources.medication.administration.spec import (
     MedicationAdministrationReadSpec,
     MedicationAdministrationSpec,
+    MedicationAdministrationUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.security.authorization import AuthorizationController
 
 
 class MedicationAdministrationFilter(filters.FilterSet):
@@ -22,9 +21,12 @@ class MedicationAdministrationFilter(filters.FilterSet):
     occurrence_period_end = filters.DateTimeFromToRangeFilter()
 
 
-class MedicationAdministrationViewSet(EncounterBasedAuthorizationBase, EMRModelViewSet):
+class MedicationAdministrationViewSet(
+    EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
+):
     database_model = MedicationAdministration
     pydantic_model = MedicationAdministrationSpec
+    pydantic_update_model = MedicationAdministrationUpdateSpec
     pydantic_read_model = MedicationAdministrationReadSpec
     questionnaire_type = "medication_administration"
     questionnaire_title = "Medication Administration"
@@ -34,10 +36,7 @@ class MedicationAdministrationViewSet(EncounterBasedAuthorizationBase, EMRModelV
     filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, self.get_patient_obj()
-        ):
-            raise PermissionDenied("Permission denied to user")
+        self.authorize_read_encounter()
         return (
             super()
             .get_queryset()

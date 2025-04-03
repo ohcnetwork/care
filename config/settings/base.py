@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import logging
+import warnings
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -16,6 +17,10 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
 from plug_config import manager
+
+from .custom_limits import *  # noqa F403
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +91,11 @@ CACHES = {
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
         },
-    }
+    },
+    "swagger_cache": {  # In-memory cache (only for Swagger)
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "swagger-schema-cache",
+    },
 }
 
 # URLS
@@ -373,7 +382,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "care.utils.pagination.care_pagination.CareLimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
-    "DEFAULT_SCHEMA_CLASS": "care.utils.schema.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
 }
 
@@ -384,6 +393,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Care API",
     "DESCRIPTION": "Documentation of API endpoints of Care ",
     "VERSION": "1.0.0",
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
 # Simple JWT (JWT Authentication)
@@ -432,15 +442,9 @@ MAINTENANCE_MODE = int(env("MAINTENANCE_MODE", default="0"))
 # ------------------------------------------------------------------------------
 # https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
-DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 24
 # https://github.com/anexia-it/django-rest-passwordreset#custom-email-lookup
 DJANGO_REST_LOOKUP_FIELD = "username"
-
-# Hardcopy settings (pdf generation)
-# ------------------------------------------------------------------------------
-# https://github.com/loftylabs/django-hardcopy#installation
-CHROME_WINDOW_SIZE = "2480,3508"
-CHROME_PATH = "/usr/bin/chromium"
 
 # Health Django (Health Check Config)
 # ------------------------------------------------------------------------------
@@ -521,6 +525,10 @@ GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 # SMS
 # ------------------------------------------------------------------------------
 USE_SMS = False
+SMS_TEMPLATE = env(
+    "SMS_TEMPLATE",
+    default="Open Healthcare Network Patient Management System Login, OTP is {} Please do not share this Confidential Login Token with anyone else",
+)
 
 # Push Notifications
 # ------------------------------------------------------------------------------
@@ -563,45 +571,115 @@ FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
     ),
 )
 
-ALLOWED_MIME_TYPES = env.list(
-    "ALLOWED_MIME_TYPES",
-    default=[
-        # Images
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/bmp",
-        "image/webp",
-        "image/svg+xml",
-        # Videos
-        "video/mp4",
-        "video/mpeg",
-        "video/x-msvideo",
-        "video/quicktime",
-        "video/x-ms-wmv",
-        "video/x-flv",
-        "video/webm",
-        # Audio
-        "audio/mpeg",
-        "audio/wav",
-        "audio/aac",
-        "audio/ogg",
-        "audio/midi",
-        "audio/x-midi",
-        "audio/webm",
-        "audio/mp4",
-        # Documents
-        "text/plain",
-        "text/csv",
-        "application/rtf",
-        "application/msword",
-        "application/vnd.oasis.opendocument.text",
-        "application/pdf",
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/vnd.oasis.opendocument.spreadsheet",
-    ],
+ALLOWED_MIME_TYPES = set(
+    env.list(
+        "ALLOWED_MIME_TYPES",
+        default=[
+            # Images
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            # Videos
+            "video/mp4",
+            "video/mpeg",
+            "video/x-msvideo",
+            "video/quicktime",
+            "video/x-ms-wmv",
+            "video/x-flv",
+            "video/webm",
+            # Audio
+            "audio/mpeg",
+            "audio/wav",
+            "audio/aac",
+            "audio/ogg",
+            "audio/midi",
+            "audio/x-midi",
+            "audio/webm",
+            "audio/mp4",
+            # Documents
+            "text/plain",
+            "text/csv",
+            "application/rtf",
+            "application/msword",
+            "application/vnd.oasis.opendocument.text",
+            "application/pdf",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.oasis.opendocument.spreadsheet",
+        ],
+    )
 )
+
+ALLOWED_FILE_EXTENSIONS = set(
+    env.list(
+        "ALLOWED_FILE_EXTENSIONS",
+        default=[
+            # Images
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "bmp",
+            "webp",
+            "svg",
+            # Videos
+            "mp4",
+            "mpeg",
+            "avi",
+            "mov",
+            "wmv",
+            "flv",
+            "webm",
+            # Audio
+            "mp3",
+            "wav",
+            "aac",
+            "ogg",
+            "midi",
+            "mid",
+            "m4a",
+            # Documents
+            "txt",
+            "csv",
+            "rtf",
+            "doc",
+            "odt",
+            "pdf",
+            "xls",
+            "xlsx",
+            "ods",
+        ],
+    )
+)
+
+BLOCKED_FILE_EXTENSIONS = set(
+    env.list(
+        "BLOCKED_FILE_EXTENSIONS",
+        default=[
+            # Executable Files
+            "exe",
+            "dll",
+            "msi",
+            "msp",
+            "mst",
+            "com",
+            "scr",
+            "sys",
+            "pif",
+            # Registry Files
+            "reg",
+            # Script Files
+            "bat",
+            "cmd",
+            "wsf",
+            "sh",
+        ],
+    )
+)
+
 
 FACILITY_S3_BUCKET = env("FACILITY_S3_BUCKET", default="")
 FACILITY_S3_REGION = env("FACILITY_S3_REGION_CODE", default=BUCKET_REGION)
@@ -637,16 +715,16 @@ BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 APP_VERSION = env("APP_VERSION", default="unknown")
 
 IS_PRODUCTION = False
-
-PLAUSIBLE_HOST = env("PLAUSIBLE_HOST", default="")
-PLAUSIBLE_SITE_ID = env("PLAUSIBLE_SITE_ID", default="")
-PLAUSIBLE_AUTH_TOKEN = env("PLAUSIBLE_AUTH_TOKEN", default="")
-
 # Timeout for middleware request (in seconds)
 MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
 
 SNOWSTORM_DEPLOYMENT_URL = env(
     "SNOWSTORM_DEPLOYMENT_URL", default="http://165.22.211.144/fhir"
 )
+
+# Path to the typst binary, see scripts/install_typst.sh
+TYPST_BIN = env("TYPST_BIN", default="typst")
+
+DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"

@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime
+from urllib.parse import urlparse
 
-from dateutil import parser
+from dateutil.parser import isoparse
+from django.conf import settings
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
@@ -27,7 +29,19 @@ def check_required(questionnaire, questionnaire_ref):
     return False
 
 
-def validate_data(values, value_type, questionnaire_ref):
+def get_valid_choices(question):
+    """
+    Extracts valid choices from a choice question dictionary.
+    """
+    answer_options = question.get("answer_option", [])
+    if not answer_options:
+        error = f"No 'answer_option' found in question with id {question.get('id')}."
+        raise ValueError(error)
+
+    return [option["value"] for option in answer_options if "value" in option]
+
+
+def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     """
     Validate the type of the value based on the question type.
     Args:
@@ -51,17 +65,102 @@ def validate_data(values, value_type, questionnaire_ref):
                 if value.value.lower() not in ["true", "false", "1", "0"]:
                     errors.append(f"Invalid boolean value: {value.value}")
             elif value_type == QuestionType.date.value:
-                parser.parse(value.value).date()
+                isoparse(value.value).date()
             elif value_type == QuestionType.datetime.value:
-                parser.parse(value.value)
+                isoparse(value.value)
             elif value_type == QuestionType.time.value:
                 datetime.strptime(value.value, "%H:%M:%S")  # noqa DTZ007
+            elif value_type == QuestionType.choice.value:
+                if value.value not in get_valid_choices(questionnaire_ref):
+                    errors.append(f"Invalid {value_type}")
+            elif value_type == QuestionType.url.value:
+                parsed = urlparse(value.value)
+                if not all([parsed.scheme, parsed.netloc]):
+                    errors.append(f"Invalid {value_type}")
+            elif (
+                value_type == QuestionType.text.value
+                and len(value.value) > settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE
+            ):
+                error = f"Text too long. Max allowed size is {settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE}"
+                errors.append(error)
         except ValueError:
             errors.append(f"Invalid {value_type}")
         except Exception:
             errors.append(f"Error validating {value_type}")
 
     return errors
+
+
+def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
+    """
+    Check if a question should be enabled based on its enable_when conditions.
+    Returns True if the question is enabled, False otherwise.
+    """
+    question_link_id_to_id = {
+        q["link_id"]: q["id"] for q in questionnaire_obj.questions
+    }
+
+    if not question.get("enable_when"):
+        return True
+
+    conditions = question["enable_when"]
+    behavior = question.get("enable_behavior", "all")
+    results = []
+
+    for condition in conditions:
+        link_id = condition["question"]
+        if link_id not in question_link_id_to_id:
+            results.append(False)
+            continue
+
+        condition_question_id = question_link_id_to_id[link_id]
+
+        if (
+            condition_question_id not in responses
+            or not responses[condition_question_id].values
+        ):
+            condition_value = None
+        else:
+            condition_value = responses[condition_question_id].values[0].value
+
+        operator = condition["operator"]
+        expected_answer = condition["answer"]
+
+        # Evaluate the condition based on the operator.
+        if operator == "exists":
+            result = condition_value is not None
+        elif operator == "equals":
+            result = condition_value == expected_answer
+        elif operator == "not_equals":
+            result = condition_value != expected_answer
+        elif operator == "greater":
+            try:
+                result = float(condition_value) > float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less":
+            try:
+                result = float(condition_value) < float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "greater_or_equals":
+            try:
+                result = float(condition_value) >= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less_or_equals":
+            try:
+                result = float(condition_value) <= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        else:
+            # Unsupported operator; treat as condition not met.
+            result = False
+
+        results.append(result)
+
+    # Combine condition results using the enable_behavior.
+    return all(results) if behavior == "all" else any(results)
 
 
 def validate_question_result(  # noqa : PLR0912
@@ -127,7 +226,7 @@ def validate_question_result(  # noqa : PLR0912
             "answer_value_set"
         ):
             for value in values:
-                if not value.value_code:
+                if not value.coding:
                     errors.append(
                         {
                             "type": "type_error",
@@ -140,7 +239,9 @@ def validate_question_result(  # noqa : PLR0912
                 if "answer_value_set" in questionnaire:
                     try:
                         validate_valueset(
-                            "unit", questionnaire["answer_value_set"], value.value_code
+                            "",
+                            questionnaire["answer_value_set"],
+                            value.coding,
                         )
                     except ValueError:
                         errors.append(
@@ -153,7 +254,7 @@ def validate_question_result(  # noqa : PLR0912
         # TODO : Validate for options created by user as well
         if questionnaire["type"] == QuestionType.quantity.value:
             for value in values:
-                if not value.value_quantity:
+                if not value.unit:
                     errors.append(
                         {
                             "type": "type_error",
@@ -167,9 +268,9 @@ def validate_question_result(  # noqa : PLR0912
                 if "answer_value_set" in questionnaire:
                     try:
                         validate_valueset(
-                            "unit",
+                            "",
                             questionnaire["answer_value_set"],
-                            value.value_quantity.code,
+                            value.coding,
                         )
                     except ValueError:
                         errors.append(
@@ -183,9 +284,10 @@ def validate_question_result(  # noqa : PLR0912
 
 
 def create_observation_spec(questionnaire, responses, parent_id=None):
-    spec = {}
-    spec["status"] = ObservationStatus.final.value
-    spec["value_type"] = questionnaire["type"]
+    spec = {
+        "status": ObservationStatus.final.value,
+        "value_type": questionnaire["type"],
+    }
     if "category" in questionnaire:
         spec["category"] = questionnaire["category"]
     if "code" in questionnaire:
@@ -202,24 +304,25 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         and responses[questionnaire["id"]].values
         and responses[questionnaire["id"]].values[0]
     ):
+        observation = {}
         for value in responses[questionnaire["id"]].values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
-            if questionnaire["type"] == QuestionType.choice.value and value.value_code:
+            if questionnaire["type"] == QuestionType.choice.value and value.coding:
                 observation["value"] = {
-                    "value_code": (value.value_code.model_dump(exclude_defaults=True))
+                    "coding": value.coding.model_dump(exclude_defaults=True),
                 }
-            elif (
-                questionnaire["type"] == QuestionType.quantity.value
-                and value.value_quantity
-            ):
+
+            elif questionnaire["type"] == QuestionType.quantity.value and value.coding:
                 observation["value"] = {
-                    "value_quantity": (
-                        value.value_quantity.model_dump(exclude_defaults=True)
-                    )
+                    "unit": questionnaire.get("unit"),
+                    "value": value.value,
+                    "coding": value.coding.model_dump(exclude_defaults=True),
                 }
             elif value:
                 observation["value"] = {"value": value.value}
+                if "unit" in questionnaire:
+                    observation["value"]["unit"] = questionnaire["unit"]
             if responses[questionnaire["id"]].note:
                 observation["note"] = responses[questionnaire["id"]].note
         if parent_id:
@@ -229,19 +332,42 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
     return observations
 
 
+def create_components(questionnaire, responses):
+    components = []
+    observations = convert_to_observation_spec(
+        questionnaire, responses, is_component=True
+    )
+    # Convert from observation spec into component spec
+    # Need to handle how body site and method works in these cases
+    # These values need to be ignored when is_component is selected in the FE and in the validations
+    for observation in observations:
+        if "main_code" not in observation or "value" not in observation:
+            continue
+        component = {"value": observation["value"], "code": observation["main_code"]}
+        if "note" in observation:
+            component["note"] = observation["note"]
+        components.append(component)
+    return components
+
+
 def convert_to_observation_spec(
-    questionnaire_obj: Questionnaire, responses, parent_id=None
+    questionnaire, responses, parent_id=None, is_component=False
 ):
     constructed_observation_mapping = []
-    for question in questionnaire_obj.get("questions", []):
+    for question in questionnaire.get("questions", []):
         if question["type"] == QuestionType.group.value:
             observation = create_observation_spec(question, responses, parent_id)
-            sub_mapping = convert_to_observation_spec(
-                question, responses, observation[0]["id"]
-            )
-            if sub_mapping:
+            if not is_component and question.get("is_component", False):
+                components = create_components(question, responses)
+                observation[0]["component"] = components
                 constructed_observation_mapping.extend(observation)
-                constructed_observation_mapping.extend(sub_mapping)
+            else:
+                sub_mapping = convert_to_observation_spec(
+                    question, responses, observation[0]["id"]
+                )
+                if sub_mapping:
+                    constructed_observation_mapping.extend(observation)
+                    constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
                 create_observation_spec(question, responses, parent_id)
@@ -250,7 +376,7 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):
+def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PLR0912
     """
     Generate observations and questionnaire responses after validation
     """
@@ -281,6 +407,20 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
                 "msg": "Empty Questionnaire cannot be submitted",
             }
         )
+    for question in questionnaire_obj.questions:
+        if "enable_when" in question and not is_question_enabled(  # noqa SIM102
+            question, responses, questionnaire_obj
+        ):
+            # If a response was provided for a question that should be disabled, remove from results
+            if question["id"] in responses and responses[question["id"]].values:
+                results.results = [
+                    r for r in results.results if str(r.question_id) != question["id"]
+                ]
+                responses.pop(question["id"])
+                questionnaire_obj.questions = [
+                    q for q in questionnaire_obj.questions if q["id"] != question["id"]
+                ]
+
     for question in questionnaire_obj.questions:
         validate_question_result(
             question,

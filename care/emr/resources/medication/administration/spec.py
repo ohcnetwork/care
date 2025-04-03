@@ -3,12 +3,11 @@ from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field, field_validator
 
-from care.emr.fhir.schema.base import Coding, Quantity
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_administration import MedicationAdministration
 from care.emr.models.medication_request import MedicationRequest
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common import Quantity
 from care.emr.resources.medication.valueset.administration_method import (
     CARE_ADMINISTRATION_METHOD_VALUESET,
 )
@@ -16,6 +15,7 @@ from care.emr.resources.medication.valueset.body_site import CARE_BODY_SITE_VALU
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
 
 
@@ -65,21 +65,9 @@ class Dosage(BaseModel):
         None,
         description="Free text dosage instructions",
     )
-    site: Coding | None = Field(
-        None,
-        description="The site of the administration",
-        json_schema_extra={"slug": CARE_BODY_SITE_VALUESET.slug},
-    )
-    route: Coding | None = Field(
-        None,
-        description="The route of the administration",
-        json_schema_extra={"slug": CARE_ROUTE_VALUESET.slug},
-    )
-    method: Coding | None = Field(
-        None,
-        description="The method of the administration",
-        json_schema_extra={"slug": CARE_ADMINISTRATION_METHOD_VALUESET.slug},
-    )
+    site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
+    route: ValueSetBoundCoding[CARE_ROUTE_VALUESET.slug] | None = None
+    method: ValueSetBoundCoding[CARE_ADMINISTRATION_METHOD_VALUESET.slug] | None = None
     dose: Quantity | None = Field(
         None,
         description="The amount of medication administered",
@@ -89,56 +77,18 @@ class Dosage(BaseModel):
         description="The speed of administration",
     )
 
-    @field_validator("site")
-    @classmethod
-    def validate_site(cls, code):
-        return validate_valueset(
-            "site",
-            cls.model_fields["site"].json_schema_extra["slug"],
-            code,
-        )
-
-    @field_validator("route")
-    @classmethod
-    def validate_route(cls, code):
-        return validate_valueset(
-            "route",
-            cls.model_fields["route"].json_schema_extra["slug"],
-            code,
-        )
-
-    @field_validator("method")
-    @classmethod
-    def validate_method(cls, code):
-        return validate_valueset(
-            "method",
-            cls.model_fields["method"].json_schema_extra["slug"],
-            code,
-        )
-
 
 class BaseMedicationAdministrationSpec(EMRResource):
     __model__ = MedicationAdministration
     __exclude__ = ["patient", "encounter", "request"]
     id: UUID4 = None
 
-    status: MedicationAdministrationStatus = Field(
-        description="Represents the current status of the medication administration",
-    )
-    status_reason: Coding | None = Field(
-        None,
-        description="The reason why the medication was not administered",
-        json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
-    )
-    category: MedicationAdministrationCategory | None = Field(
-        None,
-        description="The category of the medication administration",
-    )
+    status: MedicationAdministrationStatus
 
-    medication: Coding = Field(
-        description="The medication that was taken",
-        json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
-    )
+    status_reason: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
+    category: MedicationAdministrationCategory | None = None
+
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
 
     authored_on: datetime | None = Field(
         None,
@@ -147,10 +97,8 @@ class BaseMedicationAdministrationSpec(EMRResource):
     occurrence_period_start: datetime = Field(
         description="When the medication was administration started",
     )
-    occurrence_period_end: datetime | None = Field(
-        None,
-        description="When the medication administration ended. If not provided, it is assumed to be ongoing",
-    )
+    occurrence_period_end: datetime | None = None
+
     recorded: datetime | None = Field(
         None,
         description="When administration was recorded",
@@ -172,10 +120,7 @@ class BaseMedicationAdministrationSpec(EMRResource):
         description="The dosage of the medication",
     )
 
-    note: str | None = Field(
-        None,
-        description="Any additional notes about the medication",
-    )
+    note: str | None = None
 
 
 class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
@@ -195,24 +140,6 @@ class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
             raise ValueError(err)
         return request
 
-    @field_validator("medication")
-    @classmethod
-    def validate_medication(cls, code):
-        return validate_valueset(
-            "medication",
-            cls.model_fields["medication"].json_schema_extra["slug"],
-            code,
-        )
-
-    @field_validator("status_reason")
-    @classmethod
-    def validate_status_reason(cls, code):
-        return validate_valueset(
-            "status_reason",
-            cls.model_fields["status_reason"].json_schema_extra["slug"],
-            code,
-        )
-
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             obj.encounter = Encounter.objects.get(
@@ -220,6 +147,15 @@ class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
             )  # Needs more validation
             obj.patient = obj.encounter.patient
             obj.request = MedicationRequest.objects.get(external_id=self.request)
+
+
+class MedicationAdministrationUpdateSpec(EMRResource):
+    __model__ = MedicationAdministration
+    __exclude__ = ["patient", "encounter", "request"]
+
+    status: MedicationAdministrationStatus
+    note: str | None = None
+    occurrence_period_end: datetime | None = None
 
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):

@@ -1,13 +1,13 @@
 from datetime import datetime
 from enum import Enum
 
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator
 
-from care.emr.fhir.schema.base import Coding
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.medication.valueset.additional_instruction import (
     CARE_ADDITIONAL_INSTRUCTION_VALUESET,
 )
@@ -21,6 +21,8 @@ from care.emr.resources.medication.valueset.body_site import CARE_BODY_SITE_VALU
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.users.models import User
 
 
 class MedicationRequestStatus(str, Enum):
@@ -92,7 +94,12 @@ class DoseType(str, Enum):
 
 class DosageQuantity(BaseModel):
     value: float
-    unit: str
+    unit: Coding
+
+
+class TimingQuantity(BaseModel):
+    value: float
+    unit: TimingUnit
 
 
 class DoseRange(BaseModel):
@@ -101,144 +108,74 @@ class DoseRange(BaseModel):
 
 
 class DoseAndRate(BaseModel):
-    type: DoseType | None = None
+    type: DoseType
     dose_range: DoseRange | None = None
     dose_quantity: DosageQuantity | None = None
 
 
 class TimingRepeat(BaseModel):
-    frequency: int | None = None
-    period: float = 1
+    frequency: int
+    period: float
     period_unit: TimingUnit
-    bounds_duration: DosageQuantity | None = None
+    bounds_duration: TimingQuantity
 
 
 class Timing(BaseModel):
-    repeat: TimingRepeat | None = None
-    code: Coding | None = None
+    repeat: TimingRepeat
+    code: Coding
 
 
 class DosageInstruction(BaseModel):
     sequence: int | None = None
     text: str | None = None
-    additional_instruction: list[Coding] | None = Field(
-        None, json_schema_extra={"slug": CARE_ADDITIONAL_INSTRUCTION_VALUESET.slug}
-    )
+    additional_instruction: (
+        list[ValueSetBoundCoding[CARE_ADDITIONAL_INSTRUCTION_VALUESET.slug]] | None
+    ) = None
     patient_instruction: str | None = None
     timing: Timing | None = None
-    as_needed_boolean: bool | None = None
-    as_needed_for: Coding | None = Field(
-        None, json_schema_extra={"slug": CARE_AS_NEEDED_REASON_VALUESET.slug}
+    as_needed_boolean: bool
+    as_needed_for: ValueSetBoundCoding[CARE_AS_NEEDED_REASON_VALUESET.slug] | None = (
+        None
     )
-    site: Coding | None = Field(
-        None, json_schema_extra={"slug": CARE_BODY_SITE_VALUESET.slug}
-    )
-    route: Coding | None = Field(
-        None, json_schema_extra={"slug": CARE_ROUTE_VALUESET.slug}
-    )
-    method: Coding | None = Field(
-        None, json_schema_extra={"slug": CARE_ADMINISTRATION_METHOD_VALUESET.slug}
-    )
+    site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
+    route: ValueSetBoundCoding[CARE_ROUTE_VALUESET.slug] | None = None
+    method: ValueSetBoundCoding[CARE_ADMINISTRATION_METHOD_VALUESET.slug] | None = None
     dose_and_rate: DoseAndRate | None = None
     max_dose_per_period: DoseRange | None = None
 
-    @field_validator("additional_instruction")
-    @classmethod
-    def validate_additional_instruction(cls, codes):
-        if not codes:
-            return codes
-        return [
-            validate_valueset(
-                "additional_instruction",
-                cls.model_fields["additional_instruction"].json_schema_extra["slug"],
-                code,
-            )
-            for code in codes
-        ]
 
-    @field_validator("site")
-    @classmethod
-    def validate_site(cls, code):
-        if not code:
-            return code
-        return validate_valueset(
-            "site",
-            cls.model_fields["site"].json_schema_extra["slug"],
-            code,
-        )
-
-    @field_validator("route")
-    @classmethod
-    def validate_route(cls, code):
-        if not code:
-            return code
-        return validate_valueset(
-            "route",
-            cls.model_fields["route"].json_schema_extra["slug"],
-            code,
-        )
-
-    @field_validator("method")
-    @classmethod
-    def validate_method(cls, code):
-        if not code:
-            return code
-        return validate_valueset(
-            "method",
-            cls.model_fields["method"].json_schema_extra["slug"],
-            code,
-        )
-
-
-class BaseMedicationRequestSpec(EMRResource):
+class MedicationRequestResource(EMRResource):
     __model__ = MedicationRequest
-    __exclude__ = ["patient", "encounter"]
+    __exclude__ = ["patient", "encounter", "requester"]
+
+
+class BaseMedicationRequestSpec(MedicationRequestResource):
     id: UUID4 = None
 
-    status: MedicationRequestStatus = Field(
-        description="Status of the medication request",
-    )
+    status: MedicationRequestStatus
 
-    status_reason: StatusReason | None = Field(
-        None, description="Reason for current status"
-    )
+    status_reason: StatusReason | None = None
 
-    status_changed: datetime = None
+    intent: MedicationRequestIntent
 
-    intent: MedicationRequestIntent = Field(
-        description="Whether this is a proposal, plan, original order, etc.",
-    )
+    category: MedicationRequestCategory
+    priority: MedicationRequestPriority
 
-    category: MedicationRequestCategory = Field(
-        description="Context of medication request",
-    )
-    priority: MedicationRequestPriority = Field(
-        description="Urgency of the request",
-    )
+    do_not_perform: bool
 
-    do_not_perform: bool = Field(
-        description="True if medication is NOT to be given",
-    )
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
 
-    medication: Coding = Field(
-        description="Medication requested, using SNOMED CT coding",
-        json_schema_extra={"slug": CARE_MEDICATION_VALUESET.slug},
-    )
+    encounter: UUID4
 
-    encounter: UUID4 = Field(description="Encounter during which request was created")
+    dosage_instruction: list[DosageInstruction] = Field()
+    authored_on: datetime
 
-    authored_on: datetime = Field(
-        description="When request was initially authored",
-    )
-
-    dosage_instruction: list[DosageInstruction] = Field(
-        description="Dosage instructions for the medication",
-    )
-
-    note: str | None = Field(None, description="Additional notes about the request")
+    note: str | None = Field(None)
 
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):
+    requester: UUID4 | None = None
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
@@ -247,26 +184,23 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
             raise ValueError(err)
         return encounter
 
-    @field_validator("medication")
-    @classmethod
-    def validate_medication(cls, code):
-        return validate_valueset(
-            "medication",
-            cls.model_fields["medication"].json_schema_extra["slug"],
-            code,
-        )
-
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            obj.encounter = Encounter.objects.get(
-                external_id=self.encounter
-            )  # Needs more validation
-            obj.patient = obj.encounter.patient
+        obj.encounter = Encounter.objects.get(external_id=self.encounter)
+        obj.patient = obj.encounter.patient
+        if self.requester:
+            obj.requester = get_object_or_404(User, external_id=self.requester)
+
+
+class MedicationRequestUpdateSpec(MedicationRequestResource):
+    status: MedicationRequestStatus
+    note: str | None = None
 
 
 class MedicationRequestReadSpec(BaseMedicationRequestSpec):
     created_by: UserSpec = dict
     updated_by: UserSpec = dict
+    created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -277,7 +211,3 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
-
-
-class MedicationRequestDiscontinueRequest(BaseModel):
-    status_reason: StatusReason = Field(description="Reason for discontinuation")

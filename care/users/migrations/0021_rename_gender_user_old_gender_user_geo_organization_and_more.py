@@ -7,15 +7,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('emr', '0058_resourcerequest_resourcerequestcomment'),
+        ('emr', '0001_initial'),
         ('users', '0020_plugconfig'),
     ]
 
     operations = [
+        migrations.AlterField(
+            model_name='user',
+            name='gender',
+            field=models.IntegerField(blank=True, choices=[(1, 'Male'), (2, 'Female'), (3, 'Non-binary')], default=None,
+                                      null=True),
+        ),
+        migrations.AlterField(
+            model_name='user',
+            name='user_type',
+            field=models.IntegerField(blank=True, choices=[(2, 'Transportation'), (3, 'Pharmacist'), (5, 'Volunteer'),
+                                                           (9, 'StaffReadOnly'), (10, 'Staff'), (13, 'NurseReadOnly'),
+                                                           (14, 'Nurse'), (15, 'Doctor'), (20, 'Reserved'),
+                                                           (21, 'WardAdmin'), (23, 'LocalBodyAdmin'),
+                                                           (25, 'DistrictLabAdmin'), (29, 'DistrictReadOnlyAdmin'),
+                                                           (30, 'DistrictAdmin'), (35, 'StateLabAdmin'),
+                                                           (39, 'StateReadOnlyAdmin'), (40, 'StateAdmin')],
+                                      default=None, null=True),
+        ),
         migrations.RenameField(
             model_name='user',
             old_name='gender',
             new_name='old_gender',
+        ),
+        migrations.RenameField(
+            model_name='user',
+            old_name='user_type',
+            new_name='old_user_type',
         ),
         migrations.AddField(
             model_name='user',
@@ -24,12 +47,13 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='user',
-            name='old_user_type',
-            field=models.IntegerField(blank=True, choices=[(2, 'Transportation'), (3, 'Pharmacist'), (5, 'Volunteer'), (9, 'StaffReadOnly'), (10, 'Staff'), (13, 'NurseReadOnly'), (14, 'Nurse'), (15, 'Doctor'), (20, 'Reserved'), (21, 'WardAdmin'), (23, 'LocalBodyAdmin'), (25, 'DistrictLabAdmin'), (29, 'DistrictReadOnlyAdmin'), (30, 'DistrictAdmin'), (35, 'StateLabAdmin'), (39, 'StateReadOnlyAdmin'), (40, 'StateAdmin')], default=None, null=True),
-        ),
-        migrations.AlterField(
-            model_name='user',
             name='user_type',
-            field=models.CharField(max_length=100),
+            field=models.CharField(max_length=100,null=True,blank=True),
         ),
+        migrations.AddField(
+            model_name='user',
+            name='gender',
+            field=models.CharField(max_length=100 , null=True,blank=True),
+        ),
+
     ]

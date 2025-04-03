@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 
@@ -24,6 +25,10 @@ from care.emr.resources.notes.thread_spec import (
 from care.security.authorization import AuthorizationController
 
 
+class NoteThreadFilters(filters.FilterSet):
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
+
+
 class NoteThreadViewSet(
     EMRCreateMixin,
     EMRRetrieveMixin,
@@ -35,6 +40,8 @@ class NoteThreadViewSet(
     pydantic_model = NoteThreadCreateSpec
     pydantic_read_model = NoteThreadUpdateSpec
     pydantic_update_model = NoteThreadReadSpec
+    filterset_class = NoteThreadFilters
+    filter_backends = [filters.DjangoFilterBackend]
 
     def get_patient(self):
         return get_object_or_404(
@@ -83,7 +90,15 @@ class NoteThreadViewSet(
         if not AuthorizationController.call(
             "can_view_clinical_data", self.request.user, patient
         ):
-            raise PermissionDenied("Permission denied to user")
+            if encounter := self.request.GET.get("encounter"):
+                encounter_obj = get_object_or_404(Encounter, external_id=encounter)
+                if not AuthorizationController.call(
+                    "can_view_encounter_obj", self.request.user, encounter_obj
+                ):
+                    raise PermissionDenied("Permission denied to user")
+            else:
+                raise PermissionDenied("Permission denied to user")
+
         queryset = super().get_queryset().filter(patient=patient)
         return queryset.order_by("-created_date")
 
@@ -131,7 +146,15 @@ class NoteMessageViewSet(
         if not AuthorizationController.call(
             "can_view_clinical_data", self.request.user, self.get_patient_obj()
         ):
-            raise PermissionDenied("Permission denied to user")
+            if encounter := self.request.GET.get("encounter"):
+                encounter_obj = get_object_or_404(Encounter, external_id=encounter)
+                if not AuthorizationController.call(
+                    "can_view_encounter_obj", self.request.user, encounter_obj
+                ):
+                    raise PermissionDenied("Permission denied to user")
+            else:
+                raise PermissionDenied("Permission denied to user")
+
         return (
             super()
             .get_queryset()

@@ -3,6 +3,7 @@ from pydantic import UUID4
 from care.emr.models import Organization
 from care.emr.resources.base import EMRResource
 from care.emr.resources.organization.spec import OrganizationReadSpec
+from care.emr.resources.permissions import FacilityPermissionsMixin
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import (
     REVERSE_FACILITY_TYPES,
@@ -27,6 +28,7 @@ class FacilityBaseSpec(FacilityBareMinimumSpec):
     phone_number: str
     middleware_address: str | None = None
     facility_type: str
+    is_public: bool = False
 
 
 class FacilityCreateSpec(FacilityBaseSpec):
@@ -44,6 +46,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     features: list[int]
     cover_image_url: str
     read_cover_image_url: str
+    geo_organization: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -51,17 +54,17 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)
-
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
-
-
-class FacilityRetrieveSpec(FacilityReadSpec):
-    geo_organization: dict = {}
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+
+
+class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
+    flags: list[str] = []
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["flags"] = obj.get_facility_flags()

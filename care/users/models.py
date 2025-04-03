@@ -130,27 +130,12 @@ class Ward(models.Model):
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False).select_related(
-            "local_body", "district", "state"
-        )
+        return qs.filter(deleted=False)
 
     def get_entire_queryset(self):
-        return super().get_queryset().select_related("local_body", "district", "state")
+        return super().get_queryset()
 
     def create_superuser(self, username, email, password, **extra_fields):
-        district = District.objects.all().first()
-        data_command = (
-            "load_data" if settings.IS_PRODUCTION is True else "load_dummy_data"
-        )
-        if not district:
-            proceed = input(
-                f"It looks like you haven't loaded district data. It is recommended to populate district data before you create a super user. Please run `python manage.py {data_command}`.\n Proceed anyway? [y/N]"
-            )
-            if proceed.lower() != "y":
-                raise Exception
-            district = None
-
-        extra_fields["district"] = district
         extra_fields["phone_number"] = "+919696969696"
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
@@ -256,7 +241,7 @@ class User(AbstractUser):
     old_user_type = models.IntegerField(
         choices=TYPE_CHOICES, blank=True, null=True, default=None
     )
-    user_type = models.CharField(max_length=100)
+    user_type = models.CharField(max_length=100, null=True, blank=True)
     created_by = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -293,7 +278,7 @@ class User(AbstractUser):
     old_gender = models.IntegerField(
         choices=GENDER_CHOICES, blank=True, null=True, default=None
     )
-    gender = models.CharField(max_length=100)
+    gender = models.CharField(max_length=100, blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
@@ -322,6 +307,9 @@ class User(AbstractUser):
         null=True,
     )
 
+    prefix = models.CharField(max_length=10, blank=True, null=True)
+    suffix = models.CharField(max_length=50, blank=True, null=True)
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -329,6 +317,8 @@ class User(AbstractUser):
     pf_endpoint = models.TextField(default=None, null=True)
     pf_p256dh = models.TextField(default=None, null=True)
     pf_auth = models.TextField(default=None, null=True)
+    totp_secret = models.TextField(blank=True, null=True)
+    mfa_settings = models.JSONField(default=dict, blank=True)
 
     # Asset Fields
 
@@ -369,9 +359,18 @@ class User(AbstractUser):
             return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
         return None
 
+    def is_mfa_enabled(self):
+        return bool(self.mfa_settings.get("totp", {}).get("enabled", False))
+
     @property
     def full_name(self):
-        return self.get_full_name()
+        name_parts = []
+        if self.prefix:
+            name_parts.append(self.prefix)
+        name_parts.append(self.get_full_name())
+        if self.suffix:
+            name_parts.append(self.suffix)
+        return " ".join(name_parts)
 
     @staticmethod
     def has_read_permission(request):
@@ -418,10 +417,6 @@ class User(AbstractUser):
     @staticmethod
     def check_username_exists(username):
         return User.objects.get_entire_queryset().filter(username=username).exists()
-
-    def delete(self, *args, **kwargs):
-        self.deleted = True
-        self.save()
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
