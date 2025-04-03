@@ -169,7 +169,8 @@ class TokenBookingViewSet(
         facility_users = FacilityOrganizationUser.objects.filter(
             organization__facility=facility,
             user_id__in=SchedulableUserResource.objects.filter(
-                facility=facility
+                facility=facility,
+                user__deleted=False,
             ).values("user_id"),
         )
 
