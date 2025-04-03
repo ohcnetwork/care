@@ -525,10 +525,6 @@ GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 # SMS
 # ------------------------------------------------------------------------------
 USE_SMS = False
-SMS_TEMPLATE = env(
-    "SMS_TEMPLATE",
-    default="Open Healthcare Network Patient Management System Login, OTP is {} Please do not share this Confidential Login Token with anyone else",
-)
 
 # Push Notifications
 # ------------------------------------------------------------------------------
@@ -728,3 +724,5 @@ TYPST_BIN = env("TYPST_BIN", default="typst")
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"
+
+OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")

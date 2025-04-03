@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import PatientMobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
+from care.utils.sms.utils import get_sms_content
 from config.patient_otp_token import PatientToken
 
 
@@ -63,16 +64,20 @@ class OTPLoginView(EMRBaseViewSet):
         if settings.USE_SMS:
             random_otp = rand_pass(settings.OTP_LENGTH)
             try:
+                content = get_sms_content(
+                    settings.OTP_SMS_TEMPLATE_PATH, {"random_otp": random_otp}
+                )
                 sms.send_text_message(
-                    content=(
-                        f"Kerala Care Login, OTP {random_otp}.  Please do not share this Confidential Login Token with anyone else"
-                    ),
+                    content=content,
                     recipients=[data.phone_number],
                 )
             except Exception as e:
                 import logging
 
                 logging.error(e)
+                return Response(
+                    {"error": "Error while sending OTP. Contact admin."}, status=400
+                )
         else:
             random_otp = "45612"
 
