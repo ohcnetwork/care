@@ -73,6 +73,7 @@ class EncounterFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
     identifier_value = filters.CharFilter(method="filter_identifier_value")
+    identifier_type = filters.CharFilter(method=lambda qs, name, value: qs)
 
     def filter_identifier_value(self, queryset, name, value):
         if not value:
