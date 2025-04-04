@@ -12,6 +12,7 @@ from care.emr.models import (
 )
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
+from care.emr.resources.common.identifier import IdentifierSpec
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
     ClassChoices,
@@ -62,6 +63,35 @@ class EncounterSpecBase(EMRResource):
     hospitalization: HospitalizationSpec | None = {}
     priority: EncounterPriorityChoices
     external_identifier: str | None = None
+    identifiers: list[IdentifierSpec] | None = []
+
+    # TODO: remove this after the external_identifier is fully deprecated
+    def sync_identifiers(self, obj):
+        """
+        Temporary method to keep the identifiers in sync with external_identifier
+        """
+
+        medical_record_identifier = {
+            "type": {
+                # TODO: update to use the correct code available in snowstorm
+                "system": "http://snomed.info/sct",
+                "code": "MR",
+                "display": "Medical record number",
+            },
+            "use": "official",
+            "value": self.external_identifier,
+        }
+        if self.external_identifier:
+            if obj.identifiers is None:
+                obj.identifiers = []
+            for ident in obj.identifiers:
+                if ident.get("type") == medical_record_identifier["type"]:
+                    # Update the existing identifier
+                    ident["value"] = self.external_identifier
+                    break
+            else:
+                # If the identifier does not exist, add it
+                obj.identifiers.append(medical_record_identifier)
 
 
 class EncounterCreateSpec(EncounterSpecBase):
@@ -85,6 +115,7 @@ class EncounterCreateSpec(EncounterSpecBase):
                     {"status": obj.encounter_class, "moved_at": str(timezone.now())}
                 ]
             }
+            self.sync_identifiers(obj)
 
 
 class EncounterUpdateSpec(EncounterSpecBase):
@@ -98,6 +129,7 @@ class EncounterUpdateSpec(EncounterSpecBase):
             obj.encounter_class_history["history"].append(
                 {"status": self.status, "moved_at": str(timezone.now())}
             )
+        self.sync_identifiers(obj)
 
 
 class EncounterListSpec(EncounterSpecBase):

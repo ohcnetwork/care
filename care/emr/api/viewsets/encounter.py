@@ -72,6 +72,26 @@ class EncounterFilters(filters.FilterSet):
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
+    identifier_value = filters.CharFilter(method="filter_identifier_value")
+
+    def filter_identifier_value(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        identifier_type = self.request.query_params.get("identifier_type")
+
+        extra_where = (
+            "jsonb_typeof(identifiers) = 'array' AND "
+            "EXISTS ("
+            "SELECT 1 FROM jsonb_array_elements(identifiers) AS elem "
+            "WHERE elem->>'value' ILIKE %s"
+        )
+        params = [f"%{value}%"]
+        if identifier_type:
+            extra_where += "AND elem->'type'->>'code' = %s"
+            params.append(identifier_type)
+        extra_where += ")"
+        return queryset.extra(where=[extra_where], params=params)  # noqa: S610 the params are sanitized
 
 
 class EncounterViewSet(

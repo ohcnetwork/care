@@ -1,5 +1,4 @@
 import sys
-from unittest.mock import MagicMock
 
 from faker import Faker
 from model_bakery import baker
@@ -7,14 +6,20 @@ from rest_framework.test import APITestCase
 
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 
+
+def dummy_valuset_validate(field, slug, code):
+    """
+    Dummy function to validate valueset
+    This replaces care.emr.registries.care_valueset.care_valueset.validate_valueset
+    """
+    return code
+
+
+# TODO: figure out a more customizeable approach to mock this
 # Global mocking, since the types are loaded when specs load, mocking using patch was not working as the validations were already loaded.
-sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = MagicMock(
-    return_value={
-        "display": "Test Value",
-        "system": "http://test_system.care/test",
-        "code": "123",
-    }
-)
+sys.modules[
+    "care.emr.utils.valueset_coding_type"
+].validate_valueset = dummy_valuset_validate
 
 
 class CareAPITestBase(APITestCase):
