@@ -141,6 +141,8 @@ FACILITY_TYPES = [
     (1600, "District War Room"),
     (3000, "Non Governmental Organization"),
     (4000, "Community Based Organization"),
+    (5000, "Taluk Head Quarters Hospital"),
+    (6000, "General Hospital"),
 ]
 
 REVERSE_FACILITY_TYPES = reverse_choices(FACILITY_TYPES)
