@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
@@ -17,6 +18,11 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
+
+
+def is_valid_username(username):
+    pattern = r"^[a-zA-Z0-9_-]{3,}$"
+    return bool(re.fullmatch(pattern, username))
 
 
 class UserTypeOptions(str, Enum):
@@ -64,6 +70,10 @@ class UserCreateSpec(UserUpdateSpec):
     @field_validator("username")
     @classmethod
     def validate_username(cls, username):
+        if not is_valid_username(username):
+            raise ValueError(
+                "Username can only contain alpha numeric values, dashes ( - ) and underscores ( _ )"
+            )
         if User.check_username_exists(username):
             raise ValueError("Username already exists")
         return username

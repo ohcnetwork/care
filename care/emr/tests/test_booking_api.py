@@ -385,14 +385,19 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_list_available_users(self):
-        """Users can list available schedulable users."""
+        """Users can list available schedulable users and ensure deleted users are not listed"""
+        deleted_user = self.create_user()
+        self.create_resource(user=deleted_user)
+        deleted_user.deleted = True
+        deleted_user.save()
+
         available_users_url = reverse(
             "appointments-available-users",
             kwargs={"facility_external_id": self.facility.external_id},
         )
         response = self.client.get(available_users_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertGreaterEqual(len(response.data["users"]), 1)
+        self.assertContains(response, self.user.external_id)
+        self.assertNotContains(response, deleted_user.external_id)
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
         """Appointments for a user with schedules in multiple facilities are filtered correctly."""
