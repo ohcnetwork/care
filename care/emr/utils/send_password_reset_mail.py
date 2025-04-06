@@ -23,7 +23,7 @@ def send_password_creation_email(instance: User, fail_silently=False):
         "create_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
     }
     email_html_message = render_to_string(
-        "email/user_password_creation_email.html", context
+        settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
     )
     msg = EmailMessage(
         "Set Up Your Password for Care",

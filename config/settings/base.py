@@ -723,6 +723,22 @@ TYPST_BIN = env("TYPST_BIN", default="typst")
 
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
-SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"
+SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
 OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")
+
+USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH = env(
+    "USER_CREATE_PASSWORD_TEMPLATE_PATH", default="email/user_create_password.html"
+)
+
+USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH = env(
+    "USER_RESET_PASSWORD_TEMPLATE_PATH", default="email/user_reset_password.html"
+)
+
+TOTP_ENABLED_EMAIL_TEMPLATE_PATH = env(
+    "TOTP_ENABLED_EMAIL_TEMPLATE_PATH", default="email/totp_enabled.html"
+)
+
+TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
+    "TOTP_DISABLED_EMAIL_TEMPLATE_PATH", default="email/totp_disabled.html"
+)
