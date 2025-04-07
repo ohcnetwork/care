@@ -69,7 +69,7 @@ class FacilityOrgainzationUserApiTestCases(CareAPITestBase):
 
     def test_user_cannot_update_role_of_user_with_non_subset_roles(self):
         """
-        Test that a user can update the role of another user with a subset of roles.
+        Test that a user cannot update the role of another user with non-subset roles.
         """
 
         user = self.create_user()
@@ -125,7 +125,7 @@ class FacilityOrgainzationUserApiTestCases(CareAPITestBase):
 
     def test_user_can_update_own_role_if_only_user_in_org(self):
         """
-        Test that a user can update the role of another user with a subset of roles.
+        Test that a user can update its own role if it is the only user in the organization.
         """
 
         user = self.create_user()
