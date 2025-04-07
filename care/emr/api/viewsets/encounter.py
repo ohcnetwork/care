@@ -292,10 +292,12 @@ class EncounterViewSet(
         self.authorize_update({}, encounter)
 
         members = []
-
+        users = []
         for member in request_data.members:
             user_obj = get_object_or_404(User, external_id=member.user_id)
-
+            if user_obj.id in users:
+                raise ValidationError({"user": "repeats are not allowed"})
+            users.append(user_obj.id)
             if not AuthorizationController.call(
                 "can_view_encounter_obj", request.user, encounter
             ):
@@ -303,7 +305,10 @@ class EncounterViewSet(
                     "Treating doctor does not have permission on encounter"
                 )
             members.append(
-                {"user_id": user_obj.id, "role": member.role.model_dump(mode="json")}
+                {
+                    "user_id": user_obj.id,
+                    "role": member.role.model_dump(mode="json", exclude_defaults=True),
+                }
             )
 
         encounter.care_team = members

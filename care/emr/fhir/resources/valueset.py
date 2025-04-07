@@ -42,15 +42,15 @@ class ValueSetResource(ResourceManger):
             {"name": "coding", "valueCoding": code.model_dump(exclude_defaults=True)},
         ]
         request_json = {"resourceType": "Parameters", "parameter": parameters}
+
         full_result = self.query("POST", "ValueSet/$validate-code", request_json)
-        try:
-            results = full_result["parameter"]
-            for result in results:
-                if result["name"] == "result":
-                    return result["valueBoolean"]
-        except Exception as e:
-            err = "Unknown Value Returned from Terminology Server"
-            raise Exception(err) from e
+        if "parameter" not in full_result:
+            raise ValueError("Valueset does not have specified code")
+        results = full_result["parameter"]
+        for result in results:
+            if result["name"] == "result":
+                return result["valueBoolean"]
+        return False
 
     def search(self):
         parameters = []

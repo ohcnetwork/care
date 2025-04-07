@@ -118,4 +118,5 @@ class MetaArtifactViewSet(
                 associating_type=associating_type,
                 associating_external_id=associating_id,
             )
+            .order_by("-modified_date")
         )
