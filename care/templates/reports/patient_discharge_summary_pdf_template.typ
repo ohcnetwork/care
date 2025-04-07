@@ -199,8 +199,6 @@
 {% endif %}]]
 
 
-
-
 {% if files %}
     #align(left, text(18pt,)[== Annexes])
     #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])
@@ -217,4 +215,12 @@
         {% endfor %}
     )
 {% endif %}
-// #line(length: 100%, stroke: mygray)
+
+#text("")
+#line(length: 100%, stroke: mygray)
+#text("")
+{% if discharge_summary_advice %}
+
+    = Discharge Summary Advice
+    #text()[```{{ discharge_summary_advice }}```]
+{% endif %}

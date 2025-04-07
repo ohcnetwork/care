@@ -141,6 +141,7 @@ def get_discharge_summary_data(encounter: Encounter):
         "medication_requests": medication_requests,
         "files": files,
         "care_team": care_team_display,
+        "discharge_summary_advice": encounter.discharge_summary_advice,
     }
 
 
