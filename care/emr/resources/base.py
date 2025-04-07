@@ -2,6 +2,7 @@ import datetime
 from typing import Annotated, Union
 
 import phonenumbers
+from django.utils.timezone import is_naive
 from pydantic import BaseModel, model_validator
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
@@ -167,6 +168,10 @@ class PeriodSpec(BaseModel):
 
     @model_validator(mode="after")
     def validate_period(self):
+        if self.start and is_naive(self.start):
+            raise ValueError("Start Date must be timezone aware")
+        if self.end and is_naive(self.end):
+            raise ValueError("End Date must be timezone aware")
         if (self.start and self.end) and (self.start > self.end):
             raise ValueError("Start Date cannot be greater than End Date")
         return self
