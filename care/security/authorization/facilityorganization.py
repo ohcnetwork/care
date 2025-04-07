@@ -139,27 +139,6 @@ class FacilityOrganizationAccess(AuthorizationHandler):
             organization_parents,
         )
 
-    def can_update_facility_organization_users_obj_role(
-        self, user, organization, requested_role
-    ):
-        """
-        Check if the user has permission to update users in the given organization
-        """
-        if organization.org_type == "root" and not (
-            FacilityOrganizationUser.objects.filter(organization=organization)
-            .exclude(user=user)
-            .exists()
-        ):
-            # allow the last user in the organization to manage its role
-            return self.check_permission_in_facility_organization(
-                [FacilityOrganizationPermissions.can_view_facility_organization.name],
-                user,
-                [organization.id],
-            )
-        return self.can_manage_facility_organization_users_obj(
-            user, organization, requested_role
-        )
-
     def get_permission_on_facility_organization(self, organization, user):
         organization_parents = [*organization.parent_cache, organization.id]
         user_roles = RoleModel.objects.filter(

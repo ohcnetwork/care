@@ -245,14 +245,14 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         organization = self.get_organization_obj()
         requested_role = get_object_or_404(RoleModel, external_id=request_obj.role)
         if not AuthorizationController.call(
-            "can_update_facility_organization_users_obj_role",
+            "can_manage_facility_organization_users_obj",
             self.request.user,
             organization,
             model_instance.role,
         ):
             raise PermissionDenied("User does not have permission for this action")
         if not AuthorizationController.call(
-            "can_update_facility_organization_users_obj_role",
+            "can_manage_facility_organization_users_obj",
             self.request.user,
             organization,
             requested_role,
