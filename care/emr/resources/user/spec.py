@@ -59,10 +59,16 @@ class UserUpdateSpec(UserBaseSpec):
     user_type: UserTypeOptions
     gender: GenderChoices
     phone_number: str = Field(max_length=14)
+    geo_organization: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.geo_organization is not None:
+            obj.geo_organization = get_object_or_404(
+                Organization, external_id=self.geo_organization, org_type="govt"
+            )
 
 
 class UserCreateSpec(UserUpdateSpec):
-    geo_organization: UUID4 | None = None
     password: str | None = None
     username: str
     email: str
@@ -109,10 +115,6 @@ class UserCreateSpec(UserUpdateSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.set_password(self.password)
-        if self.geo_organization is not None:
-            obj.geo_organization = get_object_or_404(
-                Organization, external_id=self.geo_organization, org_type="govt"
-            )
 
 
 class UserSpec(UserBaseSpec):
