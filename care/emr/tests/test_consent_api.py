@@ -1,5 +1,5 @@
 import uuid
-from datetime import timedelta
+from datetime import timedelta, timezone
 from secrets import choice
 
 from django.forms import model_to_dict
@@ -47,7 +47,9 @@ class TestConsentViewSet(CareAPITestBase):
         return baker.make(Consent, encounter=encounter, **data)
 
     def generate_data_for_consent(self, encounter, **kwargs):
-        start = self.fake.date_time_this_year()
+        start = self.fake.date_time_this_year(
+            tzinfo=timezone(timedelta(hours=5, minutes=30))
+        )
         end = start + timedelta(days=1)
         date = start
 
@@ -139,7 +141,9 @@ class TestConsentViewSet(CareAPITestBase):
         encounter = self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization
         )
-        start = self.fake.date_time_this_year()
+        start = self.fake.date_time_this_year(
+            tzinfo=timezone(timedelta(hours=5, minutes=30))
+        )
         end = start + timedelta(days=1)
         date = end + timedelta(hours=1)
         data = self.generate_data_for_consent(
