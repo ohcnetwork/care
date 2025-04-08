@@ -11,6 +11,7 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
+from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
@@ -385,18 +386,35 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_list_available_users(self):
-        """Users can list available schedulable users and ensure deleted users are not listed"""
+        """Users can list available schedulable users and ensure deleted users are not listed and are distinct"""
+
+        # Create a deleted user and a schedulable user resource for it
         deleted_user = self.create_user()
         self.create_resource(user=deleted_user)
         deleted_user.deleted = True
         deleted_user.save()
+
+        # Attach user to multiple FacilityOrganization
+        self.attach_role_facility_organization_user(
+            organization=self.create_facility_organization(facility=self.facility),
+            user=self.user,
+            role=self.create_role(),
+        )
+
+        # Assert that user is linked to the same facility under two organizations
+        self.assertEqual(
+            FacilityOrganizationUser.objects.filter(
+                organization__facility=self.facility, user=self.user
+            ).count(),
+            2,
+        )
 
         available_users_url = reverse(
             "appointments-available-users",
             kwargs={"facility_external_id": self.facility.external_id},
         )
         response = self.client.get(available_users_url)
-        self.assertContains(response, self.user.external_id)
+        self.assertContains(response, self.user.external_id, count=1)
         self.assertNotContains(response, deleted_user.external_id)
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):

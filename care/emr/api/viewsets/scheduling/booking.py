@@ -172,7 +172,7 @@ class TokenBookingViewSet(
                 facility=facility,
                 user__deleted=False,
             ).values("user_id"),
-        )
+        ).distinct("user_id")
 
         return Response(
             {
