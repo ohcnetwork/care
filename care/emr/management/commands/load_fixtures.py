@@ -36,8 +36,15 @@ from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
 
-def generate_unique_indian_phone_number() -> str:
+def generate_unique_indian_phone_number():
+    max_attempts = 1000
+    attempts = 0
     while True:
+        attempts += 1
+        if attempts > max_attempts:
+            raise RuntimeError(
+                "Failed to generate unique phone number after maximum attempts"
+            )
         number = 6000000000 + secrets.randbelow(9999999999 - 6000000000 + 1)
         phone_str = f"+91{number}"
         try:
@@ -101,7 +108,13 @@ class Command(BaseCommand):
 
         super_user, created = User.objects.get_or_create(
             username="admin",
-            defaults={"user_type": "admin", "is_superuser": True, "is_staff": True},
+            defaults={
+                "user_type": "admin",
+                "is_superuser": True,
+                "is_staff": True,
+                "first_name": "Admin",
+                "last_name": "User",
+            },
         )
         if created:
             super_user.set_password("admin")
@@ -158,6 +171,7 @@ class Command(BaseCommand):
         )
         org = org_spec.de_serialize()
         org.created_by = super_user
+        org.updated_by = super_user
         org.save()
         return org
 
@@ -178,6 +192,7 @@ class Command(BaseCommand):
         )
         facility = facility_spec.de_serialize()
         facility.created_by = super_user
+        facility.updated_by = super_user
         facility.save()
         return facility
 
@@ -191,6 +206,7 @@ class Command(BaseCommand):
         )
         org = org_spec.de_serialize()
         org.created_by = super_user
+        org.updated_by = super_user
         org.save()
         return org
 
@@ -200,6 +216,7 @@ class Command(BaseCommand):
         )
         org = org_spec.de_serialize()
         org.created_by = super_user
+        org.updated_by = super_user
         org.save()
         return org
 
@@ -224,7 +241,6 @@ class Command(BaseCommand):
                 role = RoleModel.objects.get(name=role_name)
 
                 for i in range(count):
-                    # Generate a password or use the default if provided
                     password = default_password or fake.password(
                         length=10, special_chars=False
                     )
@@ -244,6 +260,7 @@ class Command(BaseCommand):
                     )
                     user = user_spec.de_serialize()
                     user.created_by = super_user
+                    user.updated_by = super_user
                     user.save()
 
                     self.stdout.write(f"{role_name:<15} {username:<30} {password:<20}")
@@ -281,6 +298,7 @@ class Command(BaseCommand):
             )
             patient = patient_spec.de_serialize()
             patient.created_by = super_user
+            patient.updated_by = super_user
             patient.save()
             patients.append(patient)
 
@@ -303,7 +321,7 @@ class Command(BaseCommand):
                 encounter_spec = EncounterCreateSpec(
                     organizations=[facility_organization.external_id],
                     discharge_summary_advice=fake.paragraph(),
-                    status=secrets.choice(list(StatusChoices)).value,
+                    status=StatusChoices.in_progress,
                     encounter_class=secrets.choice(list(ClassChoices)).value,
                     patient=patient.external_id,
                     facility=facility.external_id,
@@ -311,6 +329,7 @@ class Command(BaseCommand):
                 )
                 encounter = encounter_spec.de_serialize()
                 encounter.created_by = super_user
+                encounter.updated_by = super_user
                 encounter.save()
 
     def _create_questionnaires(self, facility_organization, super_user):
@@ -324,9 +343,7 @@ class Command(BaseCommand):
 
             questionnaire["version"] = questionnaire.get("version") or "1.0"
 
-            questionnaire["organizations"] = [
-                facility_organization.external_id
-            ]  # UUID4
+            questionnaire["organizations"] = [facility_organization.external_id]
             questionnaire["tags"] = []
 
             questionnaire_spec = QuestionnaireSpec(**questionnaire)
