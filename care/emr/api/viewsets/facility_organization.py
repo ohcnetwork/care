@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Q
+from django.db.models.expressions import Subquery
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
@@ -22,6 +23,8 @@ from care.emr.resources.facility_organization.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
+from care.security.roles.role import FACILITY_ADMIN_ROLE
+from care.users.models import User
 
 
 class FacilityOrganizationFilter(filters.FilterSet):
@@ -198,12 +201,31 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
-        if model_obj:
-            return
         organization = self.get_organization_obj()
-        # TODO : Optimise by fetching user first, avoiding the extra join to org
+        if model_obj:
+            # Deny update if user is the last facility admin
+            role_obj = model_obj.role
+            if (
+                organization.org_type == "root"
+                and role_obj.name == FACILITY_ADMIN_ROLE.name
+                and not FacilityOrganizationUser.objects.filter(
+                    organization=organization,
+                    role=role_obj,
+                )
+                .exclude(
+                    id=model_obj.id,
+                )
+                .exists()
+            ):
+                raise ValidationError(
+                    "Cannot change the role of the last admin user in the root organization"
+                )
+            return
+
         queryset = FacilityOrganizationUser.objects.filter(
-            user__external_id=instance.user
+            user__in=Subquery(
+                User.objects.filter(external_id=instance.user).values_list("id")
+            )
         )
         # Case 1 - Same organization
         if queryset.filter(Q(organization=organization)).exists():
