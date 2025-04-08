@@ -8,7 +8,7 @@ if [ -z "${DATABASE_URL}" ]; then
 fi
 
 if [ -z "${REDIS_URL}" ]; then
-  export REDIS_URL="rediss://:${REDIS_AUTH_TOKEN}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}?ssl_cert_reqs=none"
+  export REDIS_URL="rediss://:${REDIS_AUTH_TOKEN}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}?ssl_cert_reqs=CERT_NONE"
 fi
 
 

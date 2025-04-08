@@ -12,19 +12,12 @@ from care.emr.resources.medication.statement.spec import (
     MedicationStatementUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-
-
-class StatusFilter(filters.CharFilter):
-    def filter(self, qs, value):
-        if value:
-            statuses = value.split(",")
-            return qs.filter(status__in=statuses)
-        return qs
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class MedicationStatementFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    status = StatusFilter()
+    status = MultiSelectFilter(field_name="status")
     name = filters.CharFilter(field_name="medication__display", lookup_expr="icontains")
 
 

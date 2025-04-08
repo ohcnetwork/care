@@ -189,7 +189,6 @@
     #align(center, [#line(length: 40%, stroke: mygray)])
 {% endif %}
 
-
 {% if files %}
     #align(left, text(18pt,)[== Annexes])
     #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])

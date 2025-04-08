@@ -2,7 +2,8 @@ from datetime import datetime
 from enum import Enum
 
 from django.contrib.auth import get_user_model
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4, BaseModel, Field, model_validator
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.models.consent import Consent
@@ -71,6 +72,13 @@ class ConsentBaseSpec(EMRResource):
 
 
 class ConsentCreateSpec(ConsentBaseSpec):
+    @model_validator(mode="after")
+    def validate_period_and_date(self):
+        if self.period.end and self.period.end <= self.date:
+            raise ValidationError(
+                "Consent date cannot be greater than the end of the period"
+            )
+
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             obj.encounter = Encounter.objects.get(external_id=self.encounter)

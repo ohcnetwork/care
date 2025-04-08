@@ -16,7 +16,11 @@ class QuestionnaireTag(EMRBaseModel):
 
     @classmethod
     def serialize_model(cls, obj):
-        return {"name": obj.name, "slug": obj.slug}
+        return {
+            "id": obj.external_id,
+            "name": obj.name,
+            "slug": obj.slug,
+        }
 
     @classmethod
     def get_tag(cls, tag_id):
