@@ -8,7 +8,7 @@ from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.utils.tests.base import CareAPITestBase
 
 
-class FacilityOrgainzationUserApiTestCases(CareAPITestBase):
+class FacilityOrganizationUserApiTestCases(CareAPITestBase):
     def setUp(self):
         self.facility_admin_role = self.create_role_with_permissions(
             role_name=FACILITY_ADMIN_ROLE.name,
