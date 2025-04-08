@@ -3,6 +3,7 @@ import secrets
 from pathlib import Path
 
 import phonenumbers
+from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from faker import Faker
@@ -81,6 +82,14 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        if not settings.DEBUG:
+            self.stdout.write(
+                self.style.ERROR(
+                    "This command should not be run in production. Exiting..."
+                )
+            )
+            return
+
         self.stdout.write("Starting fixtures generation...")
 
         self.stdout.write("Syncing permissions and valuesets...")
