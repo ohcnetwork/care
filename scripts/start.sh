@@ -12,6 +12,11 @@ if [ -z "${REDIS_URL}" ]; then
 fi
 
 
+# https://docs.gunicorn.org/en/stable/settings.html#access-log-format
+GUNICORN_LOG_FORMAT="${GUNICORN_LOG_FORMAT:="%(h)s %(l)s %(t)s \"%(r)s\" %(s)s %(M)s %(b)s \"%(f)s\" \"%(a)s\""}"
+GUNICORN_ACCESS_LOGFILE="${GUNICORN_ACCESS_LOGFILE:="-"}"
+GUNICORN_ERROR_LOGFILE="${GUNICORN_ERROR_LOGFILE:="-"}"
+
 ./wait_for_db.sh
 ./wait_for_redis.sh
 
@@ -22,5 +27,6 @@ export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
 if [[ -f "$NEW_RELIC_CONFIG_FILE" ]]; then
   newrelic-admin run-program gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
 else
-  gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers 2
+  gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers 2 \
+    --access-logformat "$GUNICORN_LOG_FORMAT" --access-logfile $GUNICORN_ACCESS_LOGFILE --error-logfile $GUNICORN_ERROR_LOGFILE
 fi
