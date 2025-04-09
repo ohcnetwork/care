@@ -119,7 +119,15 @@ def get_discharge_summary_data(encounter: Encounter):
         else None
     )
 
-    care_team = User.objects.filter(id__in=encounter.care_team)
+    user_roles = {
+        member["user_id"]: member["role"]["display"] for member in encounter.care_team
+    }
+
+    care_team_users = User.objects.filter(id__in=user_roles.keys())
+
+    care_team_display = [
+        f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
+    ]
 
     return {
         "encounter": encounter,
@@ -132,7 +140,7 @@ def get_discharge_summary_data(encounter: Encounter):
         "observations": observations,
         "medication_requests": medication_requests,
         "files": files,
-        "care_team": care_team,
+        "care_team": care_team_display,
     }
 
 
