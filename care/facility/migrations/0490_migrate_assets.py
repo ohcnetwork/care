@@ -92,7 +92,7 @@ def migrate_assets(apps, schema_editor):
                 metadata["endpoint_address"] = endpoint_address
             try:
                 metadata["username"], metadata["password"], metadata["stream_id"] = (
-                    asset.meta.get.get("camera_access_key", "").split(":")
+                    asset.meta.get("camera_access_key", "").split(":")
                 )
             except ValueError:
                 pass
