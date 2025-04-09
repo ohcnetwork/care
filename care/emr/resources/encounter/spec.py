@@ -99,6 +99,8 @@ class EncounterUpdateSpec(EncounterSpecBase):
             obj.encounter_class_history["history"].append(
                 {"status": self.status, "moved_at": str(timezone.now())}
             )
+        if self.discharge_summary_advice is None and is_update:
+            obj.discharge_summary_advice = None
 
 
 class EncounterListSpec(EncounterSpecBase):
