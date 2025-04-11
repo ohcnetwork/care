@@ -15,6 +15,7 @@ care_type_map = {
 }
 
 sub_type_map = {
+    "ONVIF": "ONVIF",
     "HL7MONITOR": "HL7-Monitor",
     "VENTILATOR": "Ventilator",
 }
