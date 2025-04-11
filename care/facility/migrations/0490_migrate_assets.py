@@ -21,6 +21,23 @@ sub_type_map = {
 }
 
 
+def clean_gateway_url(url):
+    if not url:
+        return None
+    url = url.strip()
+    if url.removeprefix("http://").removeprefix("https://").removesuffix("/"):
+        return url
+
+
+def get_gateway_url(asset):
+    hostname = (
+        asset.meta.get("middleware_hostname")
+        or asset.current_location.middleware_address
+        or asset.current_location.facility.middleware_address
+    )
+    return clean_gateway_url(hostname)
+
+
 def migrate_assets(apps, schema_editor):
     from care.emr.models import (
         Device,
@@ -38,11 +55,50 @@ def migrate_assets(apps, schema_editor):
         DeviceServiceHistory,
     )
 
+    Facility = apps.get_model("facility", "Facility")
     Asset = apps.get_model("facility", "Asset")
     AssetTransaction = apps.get_model("facility", "AssetTransaction")
     AssetService = apps.get_model("facility", "AssetService")
     AssetServiceEdit = apps.get_model("facility", "AssetServiceEdit")
     ConsultationBedAsset = apps.get_model("facility", "ConsultationBedAsset")
+
+    managing_org_map = {}
+
+    gateway_device_map = {}
+
+    for facility in Facility.objects.filter():
+        managing_org = FacilityOrganization.objects.filter(
+            facility_id=facility.id,
+            org_type="root",
+            name="ICU",
+        ).first()
+        managing_org_map[facility.id] = (
+            managing_org.id
+            if managing_org
+            else facility.default_internal_organization_id
+        )
+
+        if facility.middleware_address:
+            gateway_device, created = Device.objects.get_or_create(
+                facility_id=facility.id,
+                care_type="gateway",
+                registered_name="TeleICU Gateway",
+                managing_organization_id=managing_org_map[facility.id],
+                defaults={
+                    "user_friendly_name": "TeleICU Gateway",
+                    "status": "active",
+                    "availability_status": "available",
+                    "manufacturer": "",
+                    "identifier": "",
+                    "metadata": {
+                        "endpoint_address": facility.middleware_address,
+                    },
+                    "meta": {
+                        "migration_id": MIGRATION_ID,
+                    },
+                },
+            )
+            gateway_device_map[facility.id] = str(gateway_device.external_id)
 
     query = (
         Asset.objects.filter(
@@ -93,6 +149,9 @@ def migrate_assets(apps, schema_editor):
                 metadata["type"] = sub_type
             if endpoint_address := asset.meta.get("local_ip_address"):
                 metadata["endpoint_address"] = endpoint_address
+                metadata["gateway"] = gateway_device_map.get(
+                    asset.current_location.facility_id
+                )
             try:
                 metadata["username"], metadata["password"], metadata["stream_id"] = (
                     asset.meta.get("camera_access_key", "").split(":")
@@ -100,15 +159,8 @@ def migrate_assets(apps, schema_editor):
             except ValueError:
                 pass
 
-            managing_org_id = (
-                asset.current_location.facility.default_internal_organization_id
-            )
-            if managing_org := FacilityOrganization.objects.filter(
-                facility_id=asset.current_location.facility_id,
-                org_type="root",
-                name="ICU",
-            ).first():
-                managing_org_id = managing_org.id
+            managing_org_id = managing_org_map.get(asset.current_location.facility_id)
+
             device = Device.objects.create(
                 external_id=asset.external_id,
                 identifier=asset.serial_number,
