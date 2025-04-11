@@ -63,9 +63,6 @@ def migrate_assets(apps, schema_editor):
     ConsultationBedAsset = apps.get_model("facility", "ConsultationBedAsset")
 
     managing_org_map = {}
-
-    gateway_device_map = {}
-
     for facility in Facility.objects.filter():
         managing_org = FacilityOrganization.objects.filter(
             facility_id=facility.id,
@@ -77,28 +74,6 @@ def migrate_assets(apps, schema_editor):
             if managing_org
             else facility.default_internal_organization_id
         )
-
-        if facility.middleware_address:
-            gateway_device, created = Device.objects.get_or_create(
-                facility_id=facility.id,
-                care_type="gateway",
-                registered_name="TeleICU Gateway",
-                managing_organization_id=managing_org_map[facility.id],
-                defaults={
-                    "user_friendly_name": "TeleICU Gateway",
-                    "status": "active",
-                    "availability_status": "available",
-                    "manufacturer": "",
-                    "identifier": "",
-                    "metadata": {
-                        "endpoint_address": facility.middleware_address,
-                    },
-                    "meta": {
-                        "migration_id": MIGRATION_ID,
-                    },
-                },
-            )
-            gateway_device_map[facility.id] = str(gateway_device.external_id)
 
     query = (
         Asset.objects.filter(
@@ -149,9 +124,7 @@ def migrate_assets(apps, schema_editor):
                 metadata["type"] = sub_type
             if endpoint_address := asset.meta.get("local_ip_address"):
                 metadata["endpoint_address"] = endpoint_address
-                metadata["gateway"] = gateway_device_map.get(
-                    asset.current_location.facility_id
-                )
+                metadata["gateway"] = None
             try:
                 metadata["username"], metadata["password"], metadata["stream_id"] = (
                     asset.meta.get("camera_access_key", "").split(":")
