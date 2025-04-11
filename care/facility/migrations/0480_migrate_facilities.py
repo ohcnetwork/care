@@ -8,23 +8,12 @@ logger = logging.getLogger(__name__)
 MIGRATION_ID = 158445695203
 
 USER_TYPE_TO_ROLE = {
-    2: "Staff",  # Transportation
-    3: "Staff",  # Pharmacist
-    5: "Staff",  # Volunteer
-    9: "Staff Read Only",  # StaffReadOnly
+    5: "Volunteer",  # Volunteer
     10: "Staff",  # Staff
-    13: "Nurse Read Only",  # NurseReadOnly
     14: "Nurse",  # Nurse
     15: "Doctor",  # Doctor
-    20: "Doctor",  # Reserved
-    21: "Administrator",  # WardAdmin
-    23: "Administrator",  # LocalBodyAdmin
-    25: "Administrator",  # DistrictLabAdmin
-    29: "Administrator Read Only",  # DistrictReadOnlyAdmin
-    30: "Administrator",  # DistrictAdmin
-    35: "Administrator",  # StateLabAdmin
-    39: "Administrator Read Only",  # StateReadOnlyAdmin
-    40: "Administrator",  # StateAdmin
+    30: "Facility Admin",  # DistrictAdmin
+    40: "Facility Admin",  # StateAdmin
 }
 
 
@@ -89,7 +78,9 @@ def migrate_facilities(apps, schema_editor):
         facility.geo_organization = geo_org
         facility.geo_organization_cache = [*geo_org.parent_cache, geo_org.id]
         bulk_update.append(facility)
-    Facility.objects.bulk_update(bulk_update, ["geo_organization", "geo_organization_cache"])
+    Facility.objects.bulk_update(
+        bulk_update, ["geo_organization", "geo_organization_cache"]
+    )
 
 
 def reverse_migrate_facilities(apps, schema_editor):
@@ -106,10 +97,33 @@ def migrate_facility_users(apps, schema_editor):
     Facility = apps.get_model("facility", "Facility")
     FacilityUser = apps.get_model("facility", "FacilityUser")
 
+    remote_doctor_role, _ = RoleModel.objects.get_or_create(
+        name="Remote Doctor",
+        defaults={
+            "description": "Hub doctor with remote access to the patient",
+            "is_system": False,
+            "temp_deleted": False,
+        },
+    )
+
     for facility in Facility.objects.all().order_by("id").prefetch_related("users"):
-        root_org, _ = FacilityOrganization.objects.get_or_create(
+        facility_root_org, _ = FacilityOrganization.objects.get_or_create(
             org_type="root",
             name="Administration",
+            facility_id=facility.id,
+            defaults={
+                "system_generated": True,
+                "parent": None,
+                "deleted": facility.deleted,
+                "meta": {"migration_id": MIGRATION_ID},
+                "created_by_id": facility.created_by_id,
+                "created_date": facility.created_date,
+            },
+        )
+
+        root_org, _ = FacilityOrganization.objects.get_or_create(
+            org_type="root",
+            name="ICU",
             facility_id=facility.id,
             defaults={
                 "system_generated": True,
@@ -125,10 +139,25 @@ def migrate_facility_users(apps, schema_editor):
             facility_id=facility.id
         ).prefetch_related("user"):
             facility_user = facility_user_obj.user
-            role_id = get_role_for_user_type(facility_user.old_user_type)
-            if not role_id:
+            if (
+                facility_user.home_facility_id == facility.id
+                or facility_user.old_user_type in (30, 40)
+            ):
+                # link users as their roles if they are associated with the facility
+                # or if they are admin users
+                role_id = get_role_for_user_type(facility_user.old_user_type)
+                if not role_id:
+                    logger.warning(
+                        f"Could not find role for user {facility_user.id} with type {facility_user.old_user_type}"
+                    )
+                    continue
+            elif facility_user.old_user_type == 15:
+                    # if the user is only associated with the facility as a doctor, we need to create a new user
+                    role_id = remote_doctor_role.id
+            else:
+                # skip invalid associations
                 logger.warning(
-                    f"Could not find role for user {facility_user.id} with type {facility_user.old_user_type}"
+                    f"User {facility_user.id} is not associated with the facility {facility.id}"
                 )
                 continue
 
@@ -144,10 +173,29 @@ def migrate_facility_users(apps, schema_editor):
                 },
             )
 
+            if facility_user.old_user_type in (30, 40):
+                # link admin role to the facility root org as well
+                FacilityOrganizationUser.objects.get_or_create(
+                    organization_id=facility_root_org.id,
+                    user_id=facility_user.id,
+                    role_id=role_id,
+                    defaults={
+                        "deleted": facility.deleted,
+                        "meta": {"migration_id": MIGRATION_ID},
+                        "created_by_id": facility_user.created_by_id,
+                        "created_date": facility.created_date,
+                    },
+                )
+
         if not facility.default_internal_organization:
-            facility.default_internal_organization_id = root_org.id
-            facility.internal_organization_cache = [root_org.id]
-            facility.save(update_fields=["default_internal_organization_id", "internal_organization_cache"])
+            facility.default_internal_organization_id = facility_root_org.id
+            facility.internal_organization_cache = [facility_root_org.id, root_org.id]
+            facility.save(
+                update_fields=[
+                    "default_internal_organization_id",
+                    "internal_organization_cache",
+                ]
+            )
 
 
 def reverse_migrate_facility_users(apps, schema_editor):

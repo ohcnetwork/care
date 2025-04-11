@@ -13,22 +13,11 @@ logger = logging.getLogger(__name__)
 MIGRATION_ID = 158445695202
 
 USER_TYPE_TO_ROLE = {
-    2: "Staff",  # Transportation
-    3: "Staff",  # Pharmacist
-    5: "Staff",  # Volunteer
-    9: "Staff Read Only",  # StaffReadOnly
+    5: "Volunteer",  # Volunteer
     10: "Staff",  # Staff
-    13: "Nurse Read Only",  # NurseReadOnly
     14: "Nurse",  # Nurse
     15: "Doctor",  # Doctor
-    20: "Doctor",  # Reserved
-    21: "Administrator",  # WardAdmin
-    23: "Administrator",  # LocalBodyAdmin
-    25: "Administrator",  # DistrictLabAdmin
-    29: "Administrator Read Only",  # DistrictReadOnlyAdmin
     30: "Administrator",  # DistrictAdmin
-    35: "Administrator",  # StateLabAdmin
-    39: "Administrator Read Only",  # StateReadOnlyAdmin
     40: "Administrator",  # StateAdmin
 }
 
@@ -40,22 +29,11 @@ def get_role_for_user_type(user_type):
 
 
 old_new_user_type_map = {
-    2: "staff",  # Transportation
-    3: "staff",  # Pharmacist
-    5: "staff",  # Volunteer
-    9: "staff",  # StaffReadOnly
-    10: "Staff",  # Staff
-    13: "nurse",  # NurseReadOnly
+    5: "volunteer",  # Volunteer
+    10: "staff",  # Staff
     14: "nurse",  # Nurse
     15: "doctor",  # Doctor
-    20: "doctor",  # Reserved
-    21: "administrator",  # WardAdmin
-    23: "administrator",  # LocalBodyAdmin
-    25: "administrator",  # DistrictLabAdmin
-    29: "administrator",  # DistrictReadOnlyAdmin
     30: "administrator",  # DistrictAdmin
-    35: "administrator",  # StateLabAdmin
-    39: "administrator",  # StateReadOnlyAdmin
     40: "administrator",  # StateAdmin
 }
 
@@ -111,64 +89,41 @@ def migrate_users(apps, schema_editor):
     }
 
     staff_role_org, _ = Organization.objects.get_or_create(
-        name="Staff Role",
-        org_type="role",
-        defaults=defaults,
-    )
-
-    staff_read_only_role_org, _ = Organization.objects.get_or_create(
-        name="Staff Read Only Role",
+        name="Staff",
         org_type="role",
         defaults=defaults,
     )
 
     nurse_role_org, _ = Organization.objects.get_or_create(
-        name="Nurse Role",
-        org_type="role",
-        defaults=defaults,
-    )
-
-    nurse_read_only_role_org, _ = Organization.objects.get_or_create(
-        name="Nurse Read Only Role",
+        name="Nurse",
         org_type="role",
         defaults=defaults,
     )
 
     doctor_role_org, _ = Organization.objects.get_or_create(
-        name="Doctor Role",
+        name="Doctor",
+        org_type="role",
+        defaults=defaults,
+    )
+
+    volunteer_role_org, _ = Organization.objects.get_or_create(
+        name="Volunteer",
         org_type="role",
         defaults=defaults,
     )
 
     geo_admin_role_org, _ = Organization.objects.get_or_create(
-        name="Administrator Role",
-        org_type="role",
-        defaults=defaults,
-    )
-
-    geo_admin_read_only_role_org, _ = Organization.objects.get_or_create(
-        name="Administrator Read Only Role",
+        name="Administrator",
         org_type="role",
         defaults=defaults,
     )
 
     user_type_to_org = {
-        2: staff_role_org,
-        3: staff_role_org,
-        5: staff_role_org,
-        9: staff_read_only_role_org,
+        5: volunteer_role_org,
         10: staff_role_org,
-        13: nurse_read_only_role_org,
         14: nurse_role_org,
         15: doctor_role_org,
-        20: doctor_role_org,
-        21: geo_admin_role_org,
-        23: geo_admin_role_org,
-        25: geo_admin_role_org,
-        29: geo_admin_read_only_role_org,
         30: geo_admin_role_org,
-        35: geo_admin_role_org,
-        39: geo_admin_read_only_role_org,
         40: geo_admin_role_org,
     }
 
