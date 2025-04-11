@@ -135,7 +135,7 @@ def migrate_symptoms(apps, schema_editor):
                 recorded_date=symptom.created_date,
                 patient_id=symptom.consultation.patient.migrated_emr_patient_id,
                 encounter_id=symptom.consultation.migrated_emr_encounter_id,
-                created_by_id=symptom.created_by_id,
+                created_by_id=symptom.created_by_id or 1,
                 updated_by_id=symptom.updated_by_id or symptom.created_by_id,
                 created_date=symptom.created_date,
                 modified_date=symptom.modified_date,

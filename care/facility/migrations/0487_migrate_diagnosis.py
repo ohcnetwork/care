@@ -85,7 +85,7 @@ def migrate_diagnosis(apps, schema_editor):
                 recorded_date=diagnosis.created_date,
                 patient_id=diagnosis.consultation.patient.migrated_emr_patient_id,
                 encounter_id=diagnosis.consultation.migrated_emr_encounter_id,
-                created_by_id=diagnosis.created_by_id
+                created_by_id=diagnosis.created_by_id or 1
                 # handling case for migrated data
                 or diagnosis.consultation.created_by_id,
                 updated_by_id=diagnosis.created_by_id

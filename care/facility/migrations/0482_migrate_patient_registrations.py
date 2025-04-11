@@ -241,7 +241,7 @@ def migrate_patient_registrations(apps, schema_editor):
                 meta={
                     "migration_id": MIGRATION_ID,
                 },
-                created_by_id=patient_registration.created_by_id,
+                created_by_id=patient_registration.created_by_id or 1,
                 created_date=patient_registration.created_date,
                 modified_date=patient_registration.modified_date,
             )
@@ -301,7 +301,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         patient_id=patient.id,
                         subject_id=str(patient.external_id),
                         responses=responses,
-                        created_by_id=patient_registration.created_by_id,
+                        created_by_id=patient_registration.created_by_id or 1,
                         created_date=patient_registration.created_date,
                         modified_date=patient_registration.modified_date,
                         meta={
@@ -334,7 +334,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         "meta": {
                             "migration_id": MIGRATION_ID,
                         },
-                        "created_by_id": patient_registration.created_by_id,
+                        "created_by_id": patient_registration.created_by_id or 1,
                         "created_date": patient_registration.created_date,
                         "modified_date": patient_registration.modified_date,
                     },
@@ -350,7 +350,7 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by_id=patient.created_by_id,
+                                created_by_id=patient.created_by_id or 1,
                             )
                             for message in messages
                         ]
@@ -392,7 +392,7 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by_id=patient.created_by_id,
+                                created_by_id=patient.created_by_id or 1,
                             )
                             for message in messages
                         ]
@@ -417,7 +417,7 @@ def migrate_patient_registrations(apps, schema_editor):
                         meta={
                             "migration_id": MIGRATION_ID,
                         },
-                        created_by_id=patient_registration.created_by_id,
+                        created_by_id=patient_registration.created_by_id or 1,
                         created_date=patient_registration.created_date,
                     )
                 )

@@ -358,7 +358,7 @@ def migrate_consultations(apps, schema_editor):
                 encounter_class=suggestion_to_class_map.get(
                     consultation.suggestion, "amb"
                 ),
-                created_by_id=consultation.created_by_id,
+                created_by_id=consultation.created_by_id or 1,
                 updated_by_id=consultation.last_edited_by_id,
                 created_date=consultation.created_date,
                 modified_date=consultation.modified_date,
@@ -649,7 +649,7 @@ def migrate_consultations(apps, schema_editor):
                     questionnaire_id=consultation_questionnaire.id,
                     subject_id=encounter.external_id,
                     encounter_id=encounter.id,
-                    created_by_id=consultation.created_by_id,
+                    created_by_id=consultation.created_by_id or 1,
                     updated_by_id=consultation.last_edited_by_id,
                     created_date=consultation.created_date,
                     modified_date=consultation.modified_date,
@@ -670,8 +670,7 @@ def migrate_consultations(apps, schema_editor):
                             patient_id=encounter.patient_id,
                             encounter_id=encounter.id,
                             effective_datetime=consultation.encounter_date,
-                            data_entered_by_id=consultation.created_by_id
-                            or 1,  # NOTE: this a very rare edge case with bad data in dev
+                            data_entered_by_id=consultation.created_by_id or 1,
                             questionnaire_response_id=questionnaire_response.id,
                             created_by_id=consultation.created_by_id or 1,
                             updated_by_id=consultation.last_edited_by_id
@@ -769,8 +768,8 @@ def migrate_consultations(apps, schema_editor):
                             ),  # we are reusing the external_id of the patient registration
                             encounter_id=patient_registration.last_consultation.migrated_emr_encounter_id,
                             effective_datetime=patient_registration.created_date,
-                            data_entered_by_id=patient_registration.created_by_id,
-                            created_by_id=patient_registration.created_by_id,
+                            data_entered_by_id=patient_registration.created_by_id or 1,
+                            created_by_id=patient_registration.created_by_id or 1,
                             created_date=patient_registration.created_date,
                             modified_date=patient_registration.modified_date,
                             alternate_coding={},

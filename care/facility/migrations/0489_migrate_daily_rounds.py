@@ -2589,7 +2589,7 @@ def migrate_daily_rounds(apps, schema_editor):
                 patient=encounter.patient,
                 responses=list(questionnaire_responses.values()),
                 subject_id=encounter.external_id,
-                created_by_id=daily_round.created_by_id,
+                created_by_id=daily_round.created_by_id or 1,
                 updated_by_id=daily_round.last_edited_by_id,
                 created_date=daily_round.created_date,
                 modified_date=daily_round.modified_date,

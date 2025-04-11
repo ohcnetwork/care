@@ -61,7 +61,7 @@ def migrate_patient_notes(apps, schema_editor):
                     },
                     "created_date": patient_note.created_date,
                     "modified_date": patient_note.modified_date,
-                    "created_by_id": patient_note.created_by_id,
+                    "created_by_id": patient_note.created_by_id or 1,
                     "updated_by_id": patient_note.created_by_id,
                 },
             )
@@ -91,7 +91,7 @@ def migrate_patient_notes(apps, schema_editor):
                 deleted=patient_note.deleted,
                 created_date=patient_note.created_date,
                 modified_date=patient_note.modified_date,
-                created_by_id=patient_note.created_by_id,
+                created_by_id=patient_note.created_by_id or 1,
                 updated_by_id=patient_note.created_by_id,
             )
     query.update(meta={"migration_id": MIGRATION_ID})

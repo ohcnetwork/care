@@ -109,7 +109,7 @@ def migrate_file_uploads(apps, schema_editor):
                     is_archived=old_file_upload.is_archived,
                     archive_reason=old_file_upload.archive_reason,
                     upload_completed=old_file_upload.upload_completed,
-                    created_by_id=old_file_upload.uploaded_by_id,
+                    created_by_id=old_file_upload.uploaded_by_id or 1,
                     created_date=old_file_upload.created_date,
                     modified_date=old_file_upload.modified_date,
                     meta={"migration_id": MIGRATION_ID},
