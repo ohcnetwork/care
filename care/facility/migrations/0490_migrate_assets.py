@@ -69,7 +69,7 @@ def migrate_assets(apps, schema_editor):
     for facility in Facility.objects.filter():
         managing_org = FacilityOrganization.objects.filter(
             facility_id=facility.id,
-            org_type="root",
+            org_type="dept",
             name="ICU",
         ).first()
         managing_org_map[facility.id] = (

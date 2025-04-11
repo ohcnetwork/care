@@ -122,8 +122,10 @@ def migrate_facility_users(apps, schema_editor):
         )
 
         root_org, _ = FacilityOrganization.objects.get_or_create(
-            org_type="root",
+            org_type="dept",
             name="ICU",
+            root_org=facility_root_org,
+            parent=facility_root_org,
             facility_id=facility.id,
             defaults={
                 "system_generated": True,

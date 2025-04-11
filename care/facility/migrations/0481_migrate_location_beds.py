@@ -50,7 +50,7 @@ def migrate_location_beds(apps, schema_editor):
         for asset_location in paginator.page(page):
             bulk_org_relation = []
             root_org = FacilityOrganization._base_manager.filter(
-                org_type="root",
+                org_type="dept",
                 name="ICU",
                 facility_id=asset_location.facility_id,
             ).first()
