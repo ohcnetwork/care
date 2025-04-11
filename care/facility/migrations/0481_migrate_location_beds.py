@@ -51,7 +51,7 @@ def migrate_location_beds(apps, schema_editor):
             bulk_org_relation = []
             root_org = FacilityOrganization._base_manager.filter(
                 org_type="root",
-                name="Administration",
+                name="ICU",
                 facility_id=asset_location.facility_id,
             ).first()
             location = FacilityLocation.objects.create(

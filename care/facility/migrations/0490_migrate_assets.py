@@ -10,8 +10,8 @@ MIGRATION_ID = 158445695209
 
 care_type_map = {
     "ONVIF": "camera",
-    "HL7MONITOR":"vitals-observation",
-    "VENTILATOR":"vitals-observation",
+    "HL7MONITOR": "vitals-observation",
+    "VENTILATOR": "vitals-observation",
 }
 
 sub_type_map = {
@@ -20,12 +20,14 @@ sub_type_map = {
     "VENTILATOR": "Ventilator",
 }
 
+
 def migrate_assets(apps, schema_editor):
     from care.emr.models import (
         Device,
         DeviceEncounterHistory,
         DeviceLocationHistory,
         DeviceServiceHistory,
+        FacilityOrganization,
     )
     from care.facility.utils import disable_auto_time
 
@@ -87,7 +89,7 @@ def migrate_assets(apps, schema_editor):
                     }
                 )
             metadata = {}
-            if sub_type:= sub_type_map.get(asset.asset_class):
+            if sub_type := sub_type_map.get(asset.asset_class):
                 metadata["type"] = sub_type
             if endpoint_address := asset.meta.get("local_ip_address"):
                 metadata["endpoint_address"] = endpoint_address
@@ -97,6 +99,16 @@ def migrate_assets(apps, schema_editor):
                 )
             except ValueError:
                 pass
+
+            managing_org_id = (
+                asset.current_location.facility.default_internal_organization_id
+            )
+            if managing_org := FacilityOrganization.objects.filter(
+                facility_id=asset.current_location.facility_id,
+                org_type="root",
+                name="ICU",
+            ).first():
+                managing_org_id = managing_org.id
             device = Device.objects.create(
                 external_id=asset.external_id,
                 identifier=asset.serial_number,
@@ -110,7 +122,7 @@ def migrate_assets(apps, schema_editor):
                 user_friendly_name=asset.name,
                 contact=contact,
                 facility_id=asset.current_location.facility_id,
-                managing_organization_id=asset.current_location.facility.default_internal_organization_id,
+                managing_organization_id=managing_org_id,
                 current_location_id=asset.current_location.migrated_emr_location_id,
                 created_date=asset.created_date,
                 modified_date=asset.modified_date,
@@ -161,12 +173,16 @@ def migrate_assets(apps, schema_editor):
                 for edit in AssetServiceEdit.objects.filter(
                     asset_service_id=asset_service.id
                 ):
-                    edit_serviced_on = datetime(
-                        year=edit.serviced_on.year,
-                        month=edit.serviced_on.month,
-                        day=edit.serviced_on.day,
-                        tzinfo=asset_service.created_date.tzinfo
-                    ).isoformat() if edit.serviced_on else None
+                    edit_serviced_on = (
+                        datetime(
+                            year=edit.serviced_on.year,
+                            month=edit.serviced_on.month,
+                            day=edit.serviced_on.day,
+                            tzinfo=asset_service.created_date.tzinfo,
+                        ).isoformat()
+                        if edit.serviced_on
+                        else None
+                    )
                     history.append(
                         {
                             "updated_by": edit.edited_by_id,
@@ -176,12 +192,16 @@ def migrate_assets(apps, schema_editor):
                     )
                     modified_date = max(modified_date, edit.edited_on)
 
-                serviced_on = datetime(
-                    year=asset_service.serviced_on.year,
-                    month=asset_service.serviced_on.month,
-                    day=asset_service.serviced_on.day,
-                    tzinfo=asset_service.created_date.tzinfo
-                ) if asset_service.serviced_on else None
+                serviced_on = (
+                    datetime(
+                        year=asset_service.serviced_on.year,
+                        month=asset_service.serviced_on.month,
+                        day=asset_service.serviced_on.day,
+                        tzinfo=asset_service.created_date.tzinfo,
+                    )
+                    if asset_service.serviced_on
+                    else None
+                )
                 bulk_device_location_history.append(
                     DeviceServiceHistory(
                         device_id=device.id,
@@ -198,9 +218,11 @@ def migrate_assets(apps, schema_editor):
             DeviceServiceHistory.objects.bulk_create(bulk_device_location_history)
 
             bulk_history_records = []
-            asset_transactions = list(AssetTransaction.objects.filter(
-                asset_id=asset.id
-            ).order_by("created_date", "id"))
+            asset_transactions = list(
+                AssetTransaction.objects.filter(asset_id=asset.id).order_by(
+                    "created_date", "id"
+                )
+            )
 
             if asset_transactions:
                 first_tx = asset_transactions[0]
@@ -226,12 +248,14 @@ def migrate_assets(apps, schema_editor):
                     previous_history = new_history
                     bulk_history_records.append(new_history)
             else:
-                bulk_history_records.append(DeviceLocationHistory(
-                    device=device,
-                    location_id=asset.current_location.migrated_emr_location_id,
-                    start=asset.created_date,
-                    end=None,
-                ))
+                bulk_history_records.append(
+                    DeviceLocationHistory(
+                        device=device,
+                        location_id=asset.current_location.migrated_emr_location_id,
+                        start=asset.created_date,
+                        end=None,
+                    )
+                )
 
             DeviceLocationHistory.objects.bulk_create(bulk_history_records)
 
