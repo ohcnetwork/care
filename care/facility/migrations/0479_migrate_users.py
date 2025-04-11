@@ -81,6 +81,7 @@ def migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
     logger.debug("Migrating Users")
     if not settings.TESTING:
+        call_command("sync_valueset")
         call_command("sync_permissions_roles")
 
     defaults = {
