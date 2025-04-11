@@ -76,6 +76,19 @@ class RecentViewsManager:
         return cls._client
 
     @classmethod
+    def _remove_by_code(cls, cache_key, code):
+        client = cls.get_client()
+        current_items = client.lrange(cache_key, 0, -1)
+
+        for item in current_items:
+            try:
+                item_dict = json.loads(item)
+                if item_dict.get("code") == code:
+                    client.lrem(cache_key, 0, item)
+            except Exception:  # noqa: S112
+                continue
+
+    @classmethod
     def get_recent_views(cls, cache_key):
         client = cls.get_client()
         items = client.lrange(cache_key, 0, -1)
@@ -83,17 +96,23 @@ class RecentViewsManager:
 
     @classmethod
     def add_recent_view(cls, cache_key, code_obj):
+        code = code_obj.get("code")
+        if not code:
+            return
+
+        cls._remove_by_code(cache_key, code)
+
         client = cls.get_client()
         code_json = json.dumps(code_obj)
-        client.lrem(cache_key, 0, code_json)  # Remove if exists
-        client.lpush(cache_key, code_json)  # Add new view at the front
-        client.ltrim(cache_key, 0, cls.MAX_RECENT_VIEW - 1)  # Trim list
+        client.lpush(cache_key, code_json)
+        client.ltrim(cache_key, 0, cls.MAX_RECENT_VIEW - 1)
 
     @classmethod
     def remove_recent_view(cls, cache_key, code_obj):
-        client = cls.get_client()
-        code_json = json.dumps(code_obj)
-        client.lrem(cache_key, 0, code_json)
+        code = code_obj.get("code")
+        if not code:
+            return
+        cls._remove_by_code(cache_key, code)
 
     @classmethod
     def clear_recent_views(cls, cache_key):

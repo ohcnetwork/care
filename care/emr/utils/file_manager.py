@@ -3,13 +3,13 @@ import boto3
 from care.utils.csp.config import get_client_config
 
 
-class FileManger:
+class FileManager:
     """
     A utility class to manage all file management related operations
     """
 
 
-class S3FilesManager(FileManger):
+class S3FilesManager(FileManager):
     bucket_type = None
 
     def __init__(self, bucket_type):

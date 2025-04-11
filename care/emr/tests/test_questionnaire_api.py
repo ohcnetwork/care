@@ -1161,6 +1161,411 @@ class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
             saved_qids, expected_qids, "Only Q1 and Q2 responses should be present"
         )
 
+    def test_nested_group_enable_when_valid(self):
+        """
+        Valid case:
+        - Q1 = true → enables Group G1
+        - Q2 (in G1) = true → enables Q3
+        - Q3 is submitted → all questions saved
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {"link_id": "2", "type": "boolean", "text": "Q2"},
+                    {
+                        "link_id": "3",
+                        "type": "decimal",
+                        "text": "Q3",
+                        "enable_when": [
+                            {"question": "2", "operator": "equals", "answer": "true"}
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                self.questions.extend(q["questions"])
+            else:
+                self.questions.append(q)
+
+        q1 = next(q for q in self.questions if q["link_id"] == "1")
+        q2 = next(q for q in self.questions if q["link_id"] == "2")
+        q3 = next(q for q in self.questions if q["link_id"] == "3")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "true"}]},
+            {"question_id": q2["id"], "values": [{"value": "true"}]},
+            {"question_id": q3["id"], "values": [{"value": "42.0"}]},
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(saved_qids, {q1["id"], q2["id"], q3["id"]})
+
+    def test_nested_group_enable_when_invalid(self):
+        """
+        Invalid case:
+        - Q1 = false → disables Group G1
+        - Q2 and Q3 are ignored even if submitted
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {"link_id": "2", "type": "boolean", "text": "Q2"},
+                    {
+                        "link_id": "3",
+                        "type": "decimal",
+                        "text": "Q3",
+                        "enable_when": [
+                            {"question": "2", "operator": "equals", "answer": "true"}
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                self.questions.extend(q["questions"])
+            else:
+                self.questions.append(q)
+
+        q1 = next(q for q in self.questions if q["link_id"] == "1")
+        q2 = next(q for q in self.questions if q["link_id"] == "2")
+        q3 = next(q for q in self.questions if q["link_id"] == "3")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "false"}]},  # disables group
+            {"question_id": q2["id"], "values": [{"value": "true"}]},
+            {"question_id": q3["id"], "values": [{"value": "42.0"}]},
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(saved_qids, {q1["id"]}, "Only Q1 should be saved")
+
+    def test_nested_group_partial_enable_inner_question_invalid(self):
+        """
+        Case:
+        - Q1 = true → enables Group G1
+        - Q2 = false → disables Q3
+        Expected: Q1 and Q2 are saved, Q3 is ignored
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {"link_id": "2", "type": "boolean", "text": "Q2"},
+                    {
+                        "link_id": "3",
+                        "type": "decimal",
+                        "text": "Q3",
+                        "enable_when": [
+                            {"question": "2", "operator": "equals", "answer": "true"}
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                self.questions.extend(q["questions"])
+            else:
+                self.questions.append(q)
+
+        q1 = next(q for q in self.questions if q["link_id"] == "1")
+        q2 = next(q for q in self.questions if q["link_id"] == "2")
+        q3 = next(q for q in self.questions if q["link_id"] == "3")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "true"}]},  # Enables group
+            {
+                "question_id": q2["id"],
+                "values": [{"value": "false"}],
+            },  # Q2 answered false
+            {
+                "question_id": q3["id"],
+                "values": [{"value": "42.0"}],
+            },  # Q3 condition fails
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(
+            saved_qids,
+            {q1["id"], q2["id"]},
+            "Q3 should not be saved because Q2 was false",
+        )
+
+    def test_deep_nested_group_enable_when_valid(self):
+        """
+        Valid case:
+        - Q1 = true → enables G1
+        - Q2 = true → enables G2
+        - Q3 = "yes" → enables Q4
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {"link_id": "2", "type": "boolean", "text": "Q2"},
+                    {
+                        "link_id": "grp-2",
+                        "type": "group",
+                        "text": "Group G2",
+                        "enable_when": [
+                            {"question": "2", "operator": "equals", "answer": "true"}
+                        ],
+                        "questions": [
+                            {"link_id": "3", "type": "string", "text": "Q3"},
+                            {
+                                "link_id": "4",
+                                "type": "decimal",
+                                "text": "Q4",
+                                "enable_when": [
+                                    {
+                                        "question": "3",
+                                        "operator": "equals",
+                                        "answer": "yes",
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        flat_questions = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                for sub in q["questions"]:
+                    if sub["type"] == "group":
+                        flat_questions.extend(sub["questions"])
+                    else:
+                        flat_questions.append(sub)
+            else:
+                flat_questions.append(q)
+
+        flat_questions += [
+            q for q in questionnaire["questions"] if q["type"] != "group"
+        ]
+
+        q1 = next(q for q in flat_questions if q["link_id"] == "1")
+        q2 = next(q for q in flat_questions if q["link_id"] == "2")
+        q3 = next(q for q in flat_questions if q["link_id"] == "3")
+        q4 = next(q for q in flat_questions if q["link_id"] == "4")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "true"}]},
+            {"question_id": q2["id"], "values": [{"value": "true"}]},
+            {"question_id": q3["id"], "values": [{"value": "yes"}]},
+            {"question_id": q4["id"], "values": [{"value": "42.0"}]},
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(saved_qids, {q1["id"], q2["id"], q3["id"], q4["id"]})
+
+    def test_deep_nested_group_enable_when_invalid(self):
+        """
+        Invalid case:
+        - Q1 = true → enables G1
+        - Q2 = false → disables G2 and everything inside
+        - Q3 and Q4 should be ignored even if submitted
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {"link_id": "2", "type": "boolean", "text": "Q2"},
+                    {
+                        "link_id": "grp-2",
+                        "type": "group",
+                        "text": "Group G2",
+                        "enable_when": [
+                            {"question": "2", "operator": "equals", "answer": "true"}
+                        ],
+                        "questions": [
+                            {"link_id": "3", "type": "string", "text": "Q3"},
+                            {
+                                "link_id": "4",
+                                "type": "decimal",
+                                "text": "Q4",
+                                "enable_when": [
+                                    {
+                                        "question": "3",
+                                        "operator": "equals",
+                                        "answer": "yes",
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        flat_questions = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                for sub in q["questions"]:
+                    if sub["type"] == "group":
+                        flat_questions.extend(sub["questions"])
+                    else:
+                        flat_questions.append(sub)
+            else:
+                flat_questions.append(q)
+
+        flat_questions += [
+            q for q in questionnaire["questions"] if q["type"] != "group"
+        ]
+
+        q1 = next(q for q in flat_questions if q["link_id"] == "1")
+        q2 = next(q for q in flat_questions if q["link_id"] == "2")
+        q3 = next(q for q in flat_questions if q["link_id"] == "3")
+        q4 = next(q for q in flat_questions if q["link_id"] == "4")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "true"}]},
+            {"question_id": q2["id"], "values": [{"value": "false"}]},  # disables G2
+            {"question_id": q3["id"], "values": [{"value": "yes"}]},
+            {"question_id": q4["id"], "values": [{"value": "42.0"}]},
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(
+            saved_qids, {q1["id"], q2["id"]}, "Q3 and Q4 should not be saved"
+        )
+
+    def test_remove_nested_groups_recursively_when_parent_group_disabled(self):
+        """
+        Q1 = false → disables G1
+        G1 contains nested group G2
+        G2 contains Q2 and Q3
+        We submit answers for Q2 and Q3 → all must be removed
+        """
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "grp-1",
+                "type": "group",
+                "text": "Group G1",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+                "questions": [
+                    {
+                        "link_id": "grp-2",
+                        "type": "group",
+                        "text": "Group G2",
+                        "questions": [
+                            {"link_id": "2", "type": "boolean", "text": "Q2"},
+                            {"link_id": "3", "type": "decimal", "text": "Q3"},
+                        ],
+                    }
+                ],
+            },
+        ]
+
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        flat = []
+
+        for q in questionnaire["questions"]:
+            if q["type"] == "group":
+                for sub in q["questions"]:
+                    if sub["type"] == "group":
+                        flat.extend(sub["questions"])
+                    else:
+                        flat.append(sub)
+            else:
+                flat.append(q)
+
+        flat += [q for q in questionnaire["questions"] if q["type"] != "group"]
+
+        q1 = next(q for q in flat if q["link_id"] == "1")
+        q2 = next(q for q in flat if q["link_id"] == "2")
+        q3 = next(q for q in flat if q["link_id"] == "3")
+
+        responses = [
+            {"question_id": q1["id"], "values": [{"value": "false"}]},  # disables G1
+            {"question_id": q2["id"], "values": [{"value": "true"}]},
+            {"question_id": q3["id"], "values": [{"value": "45.6"}]},
+        ]
+
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(status_code, 200)
+
+        saved_qids = {resp["question_id"] for resp in response_data["responses"]}
+        self.assertSetEqual(
+            saved_qids, {q1["id"]}, "Q2 and Q3 inside nested group should be removed"
+        )
+
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):
     """
