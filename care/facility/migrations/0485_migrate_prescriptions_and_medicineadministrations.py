@@ -368,6 +368,7 @@ def migrate_medication_request(MedicationRequest, prescription):
         note=prescription.notes,
         authored_on=prescription.created_date,
         requester_id=prescription.prescribed_by_id,
+        created_by_id=prescription.prescribed_by_id,
         created_date=prescription.created_date,
         modified_date=prescription.modified_date,
         meta=meta,

@@ -1763,6 +1763,19 @@ def migrate_daily_rounds(apps, schema_editor):
     )
 
     DailyRound = apps.get_model("facility", "DailyRound")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     encounter_actions_tag, _ = QuestionnaireTag.objects.get_or_create(
         slug="encounter_actions",
@@ -2589,8 +2602,8 @@ def migrate_daily_rounds(apps, schema_editor):
                 patient=encounter.patient,
                 responses=list(questionnaire_responses.values()),
                 subject_id=encounter.external_id,
-                created_by_id=daily_round.created_by_id or 1,
-                updated_by_id=daily_round.last_edited_by_id,
+                created_by_id=daily_round.created_by_id or fallback_care_user.id,
+                updated_by_id=daily_round.last_edited_by_id or daily_round.created_by_id or fallback_care_user.id,
                 created_date=daily_round.created_date,
                 modified_date=daily_round.modified_date,
                 meta={
@@ -2618,13 +2631,9 @@ def migrate_daily_rounds(apps, schema_editor):
                     pydantic_observation = ObservationSpec(
                         **observation,
                         subject_type=selected_questionnaire.subject_type,
-                        data_entered_by_id=daily_round.last_edited_by_id
-                        or daily_round.created_by_id
-                        or 1,
-                        created_by_id=daily_round.created_by_id or 1,
-                        updated_by_id=daily_round.last_edited_by_id
-                        or daily_round.created_by_id
-                        or 1,
+                        data_entered_by_id=daily_round.last_edited_by_id or daily_round.created_by_id or fallback_care_user.id,
+                        created_by_id=daily_round.created_by_id or fallback_care_user.id,
+                        updated_by_id=daily_round.last_edited_by_id or daily_round.created_by_id or fallback_care_user.id,
                     )
                 except Exception as e:
                     print(e, observation)

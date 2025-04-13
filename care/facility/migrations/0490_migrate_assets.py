@@ -178,6 +178,7 @@ def migrate_assets(apps, schema_editor):
                         end=consultation_bed.end_date,
                         created_date=consultation_bed.created_date,
                         modified_date=consultation_bed.modified_date,
+                        created_by=1,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },
@@ -235,6 +236,7 @@ def migrate_assets(apps, schema_editor):
                         created_date=asset_service.created_date,
                         modified_date=modified_date,
                         edit_history=history,
+                        created_by=1,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },

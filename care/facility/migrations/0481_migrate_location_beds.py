@@ -36,6 +36,20 @@ def migrate_location_beds(apps, schema_editor):
     )
     AssetLocation = apps.get_model("facility", "AssetLocation")
     Bed = apps.get_model("facility", "Bed")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
+
 
     query = (
         AssetLocation.objects.filter(migrated_emr_location_id__isnull=True)
@@ -63,6 +77,8 @@ def migrate_location_beds(apps, schema_editor):
                 form="wa",
                 facility_id=asset_location.facility_id,
                 external_id=asset_location.external_id,
+                created_by_id=fallback_care_user.id,
+                updated_by_id=fallback_care_user.id,
                 created_date=asset_location.created_date,
                 modified_date=asset_location.modified_date,
                 deleted=asset_location.deleted,
@@ -93,6 +109,8 @@ def migrate_location_beds(apps, schema_editor):
                     form="bd",
                     facility_id=asset_location.facility_id,
                     external_id=old_bed.external_id,
+                    created_by_id=fallback_care_user.id,
+                    updated_by_id=fallback_care_user.id,
                     created_date=old_bed.created_date,
                     modified_date=old_bed.modified_date,
                     deleted=old_bed.deleted,

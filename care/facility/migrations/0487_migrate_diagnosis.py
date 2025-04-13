@@ -25,6 +25,19 @@ def migrate_diagnosis(apps, schema_editor):
     enable_auto_time = disable_auto_time(Condition)
 
     ConsultationDiagnosis = apps.get_model("facility", "ConsultationDiagnosis")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     verification_status_map = {
         ConditionVerificationStatus.UNCONFIRMED: VerificationStatusChoices.unconfirmed.value,
@@ -85,12 +98,8 @@ def migrate_diagnosis(apps, schema_editor):
                 recorded_date=diagnosis.created_date,
                 patient_id=diagnosis.consultation.patient.migrated_emr_patient_id,
                 encounter_id=diagnosis.consultation.migrated_emr_encounter_id,
-                created_by_id=diagnosis.created_by_id or 1
-                # handling case for migrated data
-                or diagnosis.consultation.created_by_id,
-                updated_by_id=diagnosis.created_by_id
-                # handling case for migrated data
-                or diagnosis.consultation.created_by_id,
+                created_by_id=diagnosis.created_by_id or diagnosis.consultation.created_by_id or fallback_care_user.id,
+                updated_by_id=diagnosis.created_by_id or diagnosis.consultation.created_by_id or fallback_care_user.id,
                 created_date=diagnosis.created_date,
                 modified_date=diagnosis.modified_date,
                 meta={

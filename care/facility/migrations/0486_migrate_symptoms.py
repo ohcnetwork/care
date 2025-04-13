@@ -25,6 +25,19 @@ def migrate_symptoms(apps, schema_editor):
 
     enable_auto_time = disable_auto_time(Condition)
     Symptom = apps.get_model("facility", "EncounterSymptom")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     symptom_sct_map = {
         SymptomChoices.FEVER: ("386661006", "Fever"),
@@ -135,8 +148,8 @@ def migrate_symptoms(apps, schema_editor):
                 recorded_date=symptom.created_date,
                 patient_id=symptom.consultation.patient.migrated_emr_patient_id,
                 encounter_id=symptom.consultation.migrated_emr_encounter_id,
-                created_by_id=symptom.created_by_id or 1,
-                updated_by_id=symptom.updated_by_id or symptom.created_by_id,
+                created_by_id=symptom.created_by_id or fallback_care_user.id,
+                updated_by_id=symptom.updated_by_id or symptom.created_by_id or fallback_care_user.id,
                 created_date=symptom.created_date,
                 modified_date=symptom.modified_date,
                 meta={

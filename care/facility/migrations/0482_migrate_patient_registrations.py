@@ -149,6 +149,19 @@ def migrate_patient_registrations(apps, schema_editor):
     )
 
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     meta_info_questionnaire, created = Questionnaire.objects.get_or_create(
         slug="patient_meta_info_a2e6f",
@@ -241,7 +254,8 @@ def migrate_patient_registrations(apps, schema_editor):
                 meta={
                     "migration_id": MIGRATION_ID,
                 },
-                created_by_id=patient_registration.created_by_id or 1,
+                created_by_id=patient_registration.created_by_id or fallback_care_user.id,
+                updated_by_id=patient_registration.created_by_id or fallback_care_user.id,
                 created_date=patient_registration.created_date,
                 modified_date=patient_registration.modified_date,
             )
@@ -301,7 +315,8 @@ def migrate_patient_registrations(apps, schema_editor):
                         patient_id=patient.id,
                         subject_id=str(patient.external_id),
                         responses=responses,
-                        created_by_id=patient_registration.created_by_id or 1,
+                        created_by_id=patient_registration.created_by_id or fallback_care_user.id,
+                        updated_by_id=patient_registration.created_by_id or fallback_care_user.id,
                         created_date=patient_registration.created_date,
                         modified_date=patient_registration.modified_date,
                         meta={
@@ -334,7 +349,8 @@ def migrate_patient_registrations(apps, schema_editor):
                         "meta": {
                             "migration_id": MIGRATION_ID,
                         },
-                        "created_by_id": patient_registration.created_by_id or 1,
+                        "created_by_id": patient_registration.created_by_id or fallback_care_user.id,
+                        "updated_by_id": patient_registration.created_by_id or fallback_care_user.id,
                         "created_date": patient_registration.created_date,
                         "modified_date": patient_registration.modified_date,
                     },
@@ -350,7 +366,8 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by_id=patient.created_by_id or 1,
+                                created_by_id=patient.created_by_id or fallback_care_user.id,
+                                updated_by_id=patient.created_by_id or fallback_care_user.id,
                             )
                             for message in messages
                         ]
@@ -375,7 +392,8 @@ def migrate_patient_registrations(apps, schema_editor):
                             "meta": {
                                 "migration_id": MIGRATION_ID,
                             },
-                            "created_by_id": patient_registration.created_by_id,
+                            "created_by_id": patient_registration.created_by_id or fallback_care_user.id,
+                            "updated_by_id": patient_registration.created_by_id or fallback_care_user.id,
                             "created_date": patient_registration.created_date,
                             "modified_date": patient_registration.modified_date,
                         },
@@ -392,7 +410,8 @@ def migrate_patient_registrations(apps, schema_editor):
                                 },
                                 created_date=patient.created_date,
                                 modified_date=patient.modified_date,
-                                created_by_id=patient.created_by_id or 1,
+                                created_by_id=patient.created_by_id or fallback_care_user.id,
+                                updated_by_id=patient.created_by_id or fallback_care_user.id,
                             )
                             for message in messages
                         ]
@@ -417,8 +436,10 @@ def migrate_patient_registrations(apps, schema_editor):
                         meta={
                             "migration_id": MIGRATION_ID,
                         },
-                        created_by_id=patient_registration.created_by_id or 1,
+                        created_by_id=patient_registration.created_by_id or fallback_care_user.id,
+                        updated_by_id=patient_registration.created_by_id or fallback_care_user.id,
                         created_date=patient_registration.created_date,
+                        updated_date=patient_registration.created_date,
                     )
                 )
             Condition.objects.bulk_create(chronic_conditions)

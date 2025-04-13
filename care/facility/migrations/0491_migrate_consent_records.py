@@ -79,6 +79,7 @@ def migrate_consent_records(apps, schema_editor):
                 date=patient_consent.created_date,
                 period={},
                 created_by_id=patient_consent.created_by_id,
+                updated_by_id=patient_consent.updated_by_id,
                 meta={
                     "migration_id": MIGRATION_ID,
                 },

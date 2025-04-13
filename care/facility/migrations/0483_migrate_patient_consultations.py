@@ -100,6 +100,19 @@ def migrate_consultations(apps, schema_editor):
 
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     encounter_actions_tag, _ = QuestionnaireTag.objects.get_or_create(
         slug="encounter_actions",
@@ -358,7 +371,7 @@ def migrate_consultations(apps, schema_editor):
                 encounter_class=suggestion_to_class_map.get(
                     consultation.suggestion, "amb"
                 ),
-                created_by_id=consultation.created_by_id or 1,
+                created_by_id=consultation.created_by_id or fallback_care_user.id,
                 updated_by_id=consultation.last_edited_by_id,
                 created_date=consultation.created_date,
                 modified_date=consultation.modified_date,
@@ -649,7 +662,7 @@ def migrate_consultations(apps, schema_editor):
                     questionnaire_id=consultation_questionnaire.id,
                     subject_id=encounter.external_id,
                     encounter_id=encounter.id,
-                    created_by_id=consultation.created_by_id or 1,
+                    created_by_id=consultation.created_by_id or fallback_care_user.id,
                     updated_by_id=consultation.last_edited_by_id,
                     created_date=consultation.created_date,
                     modified_date=consultation.modified_date,
@@ -670,12 +683,10 @@ def migrate_consultations(apps, schema_editor):
                             patient_id=encounter.patient_id,
                             encounter_id=encounter.id,
                             effective_datetime=consultation.encounter_date,
-                            data_entered_by_id=consultation.created_by_id or 1,
+                            data_entered_by_id=consultation.created_by_id or fallback_care_user.id,
                             questionnaire_response_id=questionnaire_response.id,
-                            created_by_id=consultation.created_by_id or 1,
-                            updated_by_id=consultation.last_edited_by_id
-                            or consultation.created_by_id
-                            or 1,
+                            created_by_id=consultation.created_by_id or fallback_care_user.id,
+                            updated_by_id=consultation.last_edited_by_id or consultation.created_by_id or fallback_care_user.id,
                             created_date=consultation.created_date,
                             modified_date=consultation.modified_date,
                             meta={
@@ -768,8 +779,9 @@ def migrate_consultations(apps, schema_editor):
                             ),  # we are reusing the external_id of the patient registration
                             encounter_id=patient_registration.last_consultation.migrated_emr_encounter_id,
                             effective_datetime=patient_registration.created_date,
-                            data_entered_by_id=patient_registration.created_by_id or 1,
-                            created_by_id=patient_registration.created_by_id or 1,
+                            data_entered_by_id=patient_registration.created_by_id or fallback_care_user.id,
+                            created_by_id=patient_registration.created_by_id or fallback_care_user.id,
+                            updated_by_id=patient_registration.last_edited_by_id or patient_registration.created_by_id or fallback_care_user.id,
                             created_date=patient_registration.created_date,
                             modified_date=patient_registration.modified_date,
                             alternate_coding={},

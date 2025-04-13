@@ -37,6 +37,19 @@ def migrate_file_uploads(apps, schema_editor):
     OldFileUpload = apps.get_model("facility", "FileUpload")
     PatientRegistration = apps.get_model("facility", "PatientRegistration")
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        default={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     paginator = Paginator(
         OldFileUpload.objects.filter(
@@ -109,7 +122,8 @@ def migrate_file_uploads(apps, schema_editor):
                     is_archived=old_file_upload.is_archived,
                     archive_reason=old_file_upload.archive_reason,
                     upload_completed=old_file_upload.upload_completed,
-                    created_by_id=old_file_upload.uploaded_by_id or 1,
+                    created_by_id=old_file_upload.uploaded_by_id or fallback_care_user.id,
+                    updated_by_id=old_file_upload.archived_by_id or old_file_upload.uploaded_by_id or fallback_care_user.id,
                     created_date=old_file_upload.created_date,
                     modified_date=old_file_upload.modified_date,
                     meta={"migration_id": MIGRATION_ID},
