@@ -99,7 +99,7 @@ def migrate_facility_users(apps, schema_editor):
 
     fallback_care_user, _ = User.objects.get_or_create(
         username="careuser",
-        default={
+        defaults={
             "first_name": "Care",
             "last_name": "User",
             "user_type": "care_user",
@@ -122,7 +122,7 @@ def migrate_facility_users(apps, schema_editor):
     )
 
     for facility in Facility.objects.all().order_by("id").prefetch_related("users"):
-        facility_root_org, _ = FacilityOrganization.objects.get_or_create(
+        internal_root_org, _ = FacilityOrganization.objects.get_or_create(
             org_type="root",
             name="Administration",
             facility_id=facility.id,
@@ -132,7 +132,7 @@ def migrate_facility_users(apps, schema_editor):
                 "deleted": facility.deleted,
                 "meta": {"migration_id": MIGRATION_ID},
                 "created_by_id": facility.created_by_id or fallback_care_user.id,
-                "updated_by_id": facility.updated_by_id or fallback_care_user.id,
+                "updated_by_id": facility.created_by_id or fallback_care_user.id,
                 "created_date": facility.created_date,
             },
         )
@@ -147,6 +147,7 @@ def migrate_facility_users(apps, schema_editor):
                 "deleted": facility.deleted,
                 "meta": {"migration_id": MIGRATION_ID},
                 "created_by_id": facility.created_by_id or fallback_care_user.id,
+                "updated_by_id": facility.created_by_id or fallback_care_user.id,
                 "created_date": facility.created_date,
             },
         )
@@ -192,7 +193,7 @@ def migrate_facility_users(apps, schema_editor):
             if facility_user.old_user_type in (30, 40):
                 # link admin role to the facility root org as well
                 FacilityOrganizationUser.objects.get_or_create(
-                    organization_id=facility_root_org.id,
+                    organization_id=internal_root_org.id,
                     user_id=facility_user.id,
                     role_id=role_id,
                     defaults={
@@ -204,8 +205,8 @@ def migrate_facility_users(apps, schema_editor):
                 )
 
         if not facility.default_internal_organization:
-            facility.default_internal_organization_id = facility_root_org.id
-            facility.internal_organization_cache = [facility_root_org.id, root_org.id]
+            facility.default_internal_organization_id = internal_root_org.id
+            facility.internal_organization_cache = [internal_root_org.id, root_org.id]
             facility.save(
                 update_fields=[
                     "default_internal_organization_id",

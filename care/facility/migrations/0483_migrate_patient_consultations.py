@@ -104,7 +104,7 @@ def migrate_consultations(apps, schema_editor):
 
     fallback_care_user, _ = User.objects.get_or_create(
         username="careuser",
-        default={
+        defaults={
             "first_name": "Care",
             "last_name": "User",
             "user_type": "care_user",
@@ -781,7 +781,7 @@ def migrate_consultations(apps, schema_editor):
                             effective_datetime=patient_registration.created_date,
                             data_entered_by_id=patient_registration.created_by_id or fallback_care_user.id,
                             created_by_id=patient_registration.created_by_id or fallback_care_user.id,
-                            updated_by_id=patient_registration.last_edited_by_id or patient_registration.created_by_id or fallback_care_user.id,
+                            updated_by_id=patient_registration.last_edited_id or patient_registration.created_by_id or fallback_care_user.id,
                             created_date=patient_registration.created_date,
                             modified_date=patient_registration.modified_date,
                             alternate_coding={},

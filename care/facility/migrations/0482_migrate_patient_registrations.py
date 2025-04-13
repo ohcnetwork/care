@@ -153,7 +153,7 @@ def migrate_patient_registrations(apps, schema_editor):
 
     fallback_care_user, _ = User.objects.get_or_create(
         username="careuser",
-        default={
+        defaults={
             "first_name": "Care",
             "last_name": "User",
             "user_type": "care_user",
@@ -439,7 +439,6 @@ def migrate_patient_registrations(apps, schema_editor):
                         created_by_id=patient_registration.created_by_id or fallback_care_user.id,
                         updated_by_id=patient_registration.created_by_id or fallback_care_user.id,
                         created_date=patient_registration.created_date,
-                        updated_date=patient_registration.created_date,
                     )
                 )
             Condition.objects.bulk_create(chronic_conditions)

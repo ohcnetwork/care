@@ -62,6 +62,19 @@ def migrate_assets(apps, schema_editor):
     AssetService = apps.get_model("facility", "AssetService")
     AssetServiceEdit = apps.get_model("facility", "AssetServiceEdit")
     ConsultationBedAsset = apps.get_model("facility", "ConsultationBedAsset")
+    User = apps.get_model("users", "User")
+
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        defaults={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
 
     managing_org_map = {}
     for facility in Facility.objects.filter():
@@ -135,9 +148,9 @@ def migrate_assets(apps, schema_editor):
 
             managing_org_id = managing_org_map.get(asset.current_location.facility_id)
 
-            current_location_id = asset.current_location.migrated_emr_location_id,
+            current_location_id = asset.current_location.migrated_emr_location_id
             if asset.asset_class == "HL7MONITOR":
-                if  asset_bed := AssetBed.objects.filter(asset_id=asset.id).sort_by("created_date").select_related("bed").last():
+                if  asset_bed := AssetBed.objects.filter(asset_id=asset.id).order_by("created_date").select_related("bed").last():
                     current_location_id = asset_bed.bed.migrated_emr_bed_id
 
             device = Device.objects.create(
@@ -184,7 +197,8 @@ def migrate_assets(apps, schema_editor):
                         end=consultation_bed.end_date,
                         created_date=consultation_bed.created_date,
                         modified_date=consultation_bed.modified_date,
-                        created_by=1,
+                        created_by_id=fallback_care_user.id,
+                        updated_by_id=fallback_care_user.id,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },
@@ -242,7 +256,8 @@ def migrate_assets(apps, schema_editor):
                         created_date=asset_service.created_date,
                         modified_date=modified_date,
                         edit_history=history,
-                        created_by=1,
+                        created_by_id=fallback_care_user.id,
+                        updated_by_id=fallback_care_user.id,
                         meta={
                             "migration_id": MIGRATION_ID,
                         },

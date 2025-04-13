@@ -40,7 +40,7 @@ def migrate_location_beds(apps, schema_editor):
 
     fallback_care_user, _ = User.objects.get_or_create(
         username="careuser",
-        default={
+        defaults={
             "first_name": "Care",
             "last_name": "User",
             "user_type": "care_user",
