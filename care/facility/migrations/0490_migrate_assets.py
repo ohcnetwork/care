@@ -57,6 +57,7 @@ def migrate_assets(apps, schema_editor):
 
     Facility = apps.get_model("facility", "Facility")
     Asset = apps.get_model("facility", "Asset")
+    AssetBed = apps.get_model("facility", "AssetBed")
     AssetTransaction = apps.get_model("facility", "AssetTransaction")
     AssetService = apps.get_model("facility", "AssetService")
     AssetServiceEdit = apps.get_model("facility", "AssetServiceEdit")
@@ -134,6 +135,11 @@ def migrate_assets(apps, schema_editor):
 
             managing_org_id = managing_org_map.get(asset.current_location.facility_id)
 
+            current_location_id = asset.current_location.migrated_emr_location_id,
+            if asset.asset_class == "HL7MONITOR":
+                if  asset_bed := AssetBed.objects.filter(asset_id=asset.id).sort_by("created_date").select_related("bed").last():
+                    current_location_id = asset_bed.bed.migrated_emr_bed_id
+
             device = Device.objects.create(
                 external_id=asset.external_id,
                 identifier=asset.serial_number,
@@ -148,7 +154,7 @@ def migrate_assets(apps, schema_editor):
                 contact=contact,
                 facility_id=asset.current_location.facility_id,
                 managing_organization_id=managing_org_id,
-                current_location_id=asset.current_location.migrated_emr_location_id,
+                current_location_id=current_location_id,
                 created_date=asset.created_date,
                 modified_date=asset.modified_date,
                 metadata=metadata,
@@ -192,7 +198,7 @@ def migrate_assets(apps, schema_editor):
             DeviceEncounterHistory.objects.bulk_create(bulk_device_history)
             device.save(update_fields=["current_encounter_id"])
 
-            bulk_device_location_history = []
+            bulk_device_service_history = []
             for asset_service in AssetService.objects.filter(asset_id=asset.id):
                 history = []
                 modified_date = asset_service.modified_date
@@ -228,7 +234,7 @@ def migrate_assets(apps, schema_editor):
                     if asset_service.serviced_on
                     else None
                 )
-                bulk_device_location_history.append(
+                bulk_device_service_history.append(
                     DeviceServiceHistory(
                         device_id=device.id,
                         serviced_on=serviced_on,
@@ -242,9 +248,9 @@ def migrate_assets(apps, schema_editor):
                         },
                     )
                 )
-            DeviceServiceHistory.objects.bulk_create(bulk_device_location_history)
+            DeviceServiceHistory.objects.bulk_create(bulk_device_service_history)
 
-            bulk_history_records = []
+            bulk_device_location_history = []
             asset_transactions = list(
                 AssetTransaction.objects.filter(asset_id=asset.id).order_by(
                     "created_date", "id"
@@ -259,7 +265,7 @@ def migrate_assets(apps, schema_editor):
                     start=asset.created_date,
                     end=first_tx.created_date,
                 )
-                bulk_history_records.append(initial_history)
+                bulk_device_location_history.append(initial_history)
 
                 previous_history = initial_history
                 for asset_tx in asset_transactions[1:]:
@@ -273,9 +279,9 @@ def migrate_assets(apps, schema_editor):
                     # same as the to_location of the previous transaction
                     previous_history.end = asset_tx.created_date
                     previous_history = new_history
-                    bulk_history_records.append(new_history)
+                    bulk_device_location_history.append(new_history)
             else:
-                bulk_history_records.append(
+                bulk_device_location_history.append(
                     DeviceLocationHistory(
                         device=device,
                         location_id=asset.current_location.migrated_emr_location_id,
@@ -284,7 +290,7 @@ def migrate_assets(apps, schema_editor):
                     )
                 )
 
-            DeviceLocationHistory.objects.bulk_create(bulk_history_records)
+            DeviceLocationHistory.objects.bulk_create(bulk_device_location_history)
 
     Asset.objects.bulk_update(
         [
