@@ -175,6 +175,9 @@ def migrate_users(apps, schema_editor):
         ]
     )
 
+    # mark asset users as inactive
+    User.objects.exclude(asset=None).update(is_active=False)
+
 
 def reverse_migrate_users(apps, schema_editor):
     User = apps.get_model("users", "User")
