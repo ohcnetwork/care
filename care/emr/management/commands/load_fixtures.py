@@ -77,7 +77,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--default-password",
             type=str,
-            default=None,
+            default="Coronasafe@123",
             help="Set a default password for all users (easier for testing)",
         )
 
@@ -149,6 +149,8 @@ class Command(BaseCommand):
 
         organization = self._create_organization(fake, super_user)
         self.stdout.write(f"Created organization: {organization.name}")
+
+        self._create_default_users(fake, base, super_user, facility_organization)
 
         self._create_users(
             fake,
@@ -253,7 +255,7 @@ class Command(BaseCommand):
                     password = default_password or fake.password(
                         length=10, special_chars=False
                     )
-                    username = f"{role_name.lower()}_{fake.user_name()}_{i}"
+                    username = f"{role_name.lower()}_{facility_organization.id}_{i}"
 
                     user_spec = UserCreateSpec(
                         first_name=fake.first_name(),
@@ -364,3 +366,53 @@ class Command(BaseCommand):
             questionnaire_spec.save()
 
         self.stdout.write("Questionnaires loaded....")
+
+    def _create_default_users(self, fake, base, super_user, facility_organization):
+        fixed_users = [
+            ("Doctor", "care-doctor"),
+            ("Staff", "care-staff"),
+            ("Nurse", "care-nurse"),
+            ("Administrator", "care-admin"),
+            ("Volunteer", "care-volunteer"),
+            ("Administrator", "care-fac-admin"),
+        ]
+
+        password = "Ohcn@123"
+        for role_name, username in fixed_users:
+            try:
+                role = RoleModel.objects.get(name=role_name)
+
+                if User.objects.filter(username=username).exists():
+                    self.stdout.write(
+                        self.style.WARNING(f"User {username} already exists. Skipping.")
+                    )
+                    continue
+
+                user_spec = UserCreateSpec(
+                    first_name=username.split("-")[1].capitalize(),
+                    last_name="User",
+                    phone_number=generate_unique_indian_phone_number(),
+                    prefix=fake.prefix(),
+                    suffix=fake.suffix(),
+                    gender=secrets.choice(list(GenderChoices)).value,
+                    password=password,
+                    username=username,
+                    email=f"{username}@example.com",
+                    user_type=role_name.lower(),
+                )
+                user = user_spec.de_serialize()
+                user.created_by = super_user
+                user.updated_by = super_user
+                user.save()
+
+                base.attach_role_facility_organization_user(
+                    facility_organization=facility_organization,
+                    user=user,
+                    role=role,
+                )
+
+                self.stdout.write(f"{role_name:<15} {username:<30} {password:<20}")
+            except RoleModel.DoesNotExist:
+                self.stdout.write(
+                    self.style.WARNING(f"Role '{role_name}' not found, skipping.")
+                )
