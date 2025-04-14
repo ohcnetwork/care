@@ -134,6 +134,9 @@ def migrate_location_beds(apps, schema_editor):
                 ]
             )
 
+    for location in FacilityLocation.objects.all():
+        location.sync_organization_cache()
+
     AssetLocation.objects.bulk_update(
         [
             AssetLocation(id=id, migrated_emr_location_id=new_location_id)
