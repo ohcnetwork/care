@@ -9,7 +9,7 @@ from django.db import transaction
 from faker import Faker
 from phonenumbers import NumberParseException, PhoneNumberFormat
 
-from care.emr.models import Patient, Questionnaire
+from care.emr.models import FacilityOrganization, Patient, Questionnaire
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -140,11 +140,15 @@ class Command(BaseCommand):
         facility = self._create_facility(fake, super_user, geo_organization)
         self.stdout.write(f"Created facility: {facility.name}")
 
-        facility_organization = self._create_facility_organization(
+        facility_organization = FacilityOrganization.objects.filter(
+            facility=facility
+        ).first()
+
+        external_facility_organization = self._create_facility_organization(
             fake, super_user, facility
         )
         self.stdout.write(
-            f"Created facility organization (dept): {facility_organization.name}"
+            f"Created facility organization (dept): {external_facility_organization.name}"
         )
 
         organization = self._create_organization(fake, super_user)
@@ -240,7 +244,14 @@ class Command(BaseCommand):
         count,
         default_password=None,
     ):
-        roles = ["Volunteer", "Doctor", "Staff", "Nurse", "Administrator"]
+        roles = [
+            "Volunteer",
+            "Doctor",
+            "Staff",
+            "Nurse",
+            "Administrator",
+            "Facility Admin",
+        ]
         self.stdout.write("=" * 50)
         self.stdout.write("USER CREDENTIALS")
         self.stdout.write("=" * 50)
@@ -255,7 +266,11 @@ class Command(BaseCommand):
                     password = default_password or fake.password(
                         length=10, special_chars=False
                     )
-                    username = f"{role_name.lower()}_{facility_organization.id}_{i}"
+                    username = (
+                        f"{role_name.lower()}_{facility_organization.id}_{i}".replace(
+                            " ", "_"
+                        )
+                    )
 
                     user_spec = UserCreateSpec(
                         first_name=fake.first_name(),
@@ -267,7 +282,7 @@ class Command(BaseCommand):
                         password=password,
                         username=username,
                         email=fake.email(),
-                        user_type=role_name.lower(),
+                        user_type=role_name.lower().replace(" ", "_"),
                     )
                     user = user_spec.de_serialize()
                     user.created_by = super_user
@@ -374,7 +389,7 @@ class Command(BaseCommand):
             ("Nurse", "care-nurse"),
             ("Administrator", "care-admin"),
             ("Volunteer", "care-volunteer"),
-            ("Administrator", "care-fac-admin"),
+            ("Facility Admin", "care-fac-admin"),
         ]
 
         password = "Ohcn@123"
@@ -398,7 +413,7 @@ class Command(BaseCommand):
                     password=password,
                     username=username,
                     email=f"{username}@example.com",
-                    user_type=role_name.lower(),
+                    user_type=role_name.lower().replace(" ", "_"),
                 )
                 user = user_spec.de_serialize()
                 user.created_by = super_user
