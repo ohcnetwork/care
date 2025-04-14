@@ -118,7 +118,7 @@ class DeviceLocationHistoryListSpec(EMRResource):
     ]
     id: UUID4 = None
     location: dict
-    created_by: dict | None = None
+    created_by: dict
     start: datetime
     end: datetime | None = None
 
@@ -140,7 +140,7 @@ class DeviceEncounterHistoryListSpec(EMRResource):
     ]
     id: UUID4 = None
     encounter: dict
-    created_by: dict | None = None
+    created_by: dict
     start: datetime
     end: datetime | None = None
 
