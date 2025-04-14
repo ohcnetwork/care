@@ -336,10 +336,11 @@ def migrate_consultations(apps, schema_editor):
             if consultation.suggestion == "A":
                 hospitalization = {
                     "re_admission": consultation.is_readmission,
-                    "discharge_disposition": discharge_reason_map.get(
-                        consultation.new_discharge_reason, "oth"
-                    ),
                 }
+                if consultation.discharge_date:
+                    hospitalization["discharge_disposition"] = discharge_reason_map.get(
+                        consultation.new_discharge_reason, "oth"
+                    )
                 if consultation.transferred_from_location:
                     hospitalization["admit_source"] = "other"
                 elif (
