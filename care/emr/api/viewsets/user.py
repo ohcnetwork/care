@@ -46,6 +46,9 @@ class UserViewSet(EMRModelViewSet):
     filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]
 
+    def get_queryset(self):
+        return User.objects.filter(deleted=False)
+
     def perform_create(self, instance):
         with transaction.atomic():
             super().perform_create(instance)
@@ -87,6 +90,13 @@ class UserViewSet(EMRModelViewSet):
     def authorize_create(self, instance):
         if not AuthorizationController.call("can_create_user", self.request.user):
             raise PermissionDenied("You do not have permission to create Users")
+
+    def perform_destroy(self, instance):
+        if instance.last_login:
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+        else:
+            instance.delete()
 
     def authorize_destroy(self, instance):
         return self.request.user.is_superuser

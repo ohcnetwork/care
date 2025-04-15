@@ -385,14 +385,19 @@ class TestBookingViewSet(CareAPITestBase):
         )
 
     def test_list_available_users(self):
-        """Users can list available schedulable users."""
+        """Users can list available schedulable users and ensure deleted users are not listed"""
+        deleted_user = self.create_user()
+        self.create_resource(user=deleted_user)
+        deleted_user.deleted = True
+        deleted_user.save()
+
         available_users_url = reverse(
             "appointments-available-users",
             kwargs={"facility_external_id": self.facility.external_id},
         )
         response = self.client.get(available_users_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertGreaterEqual(len(response.data["users"]), 1)
+        self.assertContains(response, self.user.external_id)
+        self.assertNotContains(response, deleted_user.external_id)
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
         """Appointments for a user with schedules in multiple facilities are filtered correctly."""
@@ -788,17 +793,26 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         """Users can get available slots for a specific day."""
         data = {
             "user": self.user.external_id,
-            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 8)
 
+    def test_get_slots_for_day_on_past_day_does_not_create_objects(self):
+        """If get_slots_for_day API is called on a past day, new TokenSlot objects should not be created."""
+        data = {
+            "user": self.user.external_id,
+            "day": (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d"),
+        }
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
+        self.assertEqual(len(response.data["results"]), 0)
+
     def test_hit_on_get_slots_for_day_does_not_cause_duplicate_slots(self):
         """Multiple requests to get slots for a day should not create duplicate slots."""
         data = {
             "user": self.user.external_id,
-            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         url = self._get_slot_for_day_url()
 
@@ -849,13 +863,13 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             resource=self.resource,
             name="Test Exception",
             valid_from=datetime.now(UTC) - timedelta(days=1),
-            valid_to=datetime.now(UTC) + timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=2),
             start_time="00:00:00",
             end_time="12:00:00",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -867,13 +881,13 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             resource=self.resource,
             name="Test Exception",
             valid_from=datetime.now(UTC) - timedelta(days=1),
-            valid_to=datetime.now(UTC) + timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=2),
             start_time="10:00:00",
             end_time="23:59:59",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -885,13 +899,13 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             resource=self.resource,
             name="Test Exception",
             valid_from=datetime.now(UTC) - timedelta(days=1),
-            valid_to=datetime.now(UTC) + timedelta(days=1),
+            valid_to=datetime.now(UTC) + timedelta(days=2),
             start_time="10:00:00",
             end_time="12:00:00",
         )
         data = {
             "user": self.user.external_id,
-            "day": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -980,7 +994,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self,
     ):
         """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
-        from_date = datetime.now(UTC).date()
+        from_date = datetime.now(UTC).date() + timedelta(days=1)
         end_date = from_date + timedelta(days=7)
         data = {
             "user": self.user.external_id,

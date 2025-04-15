@@ -1,5 +1,4 @@
 from datetime import UTC, datetime
-from unittest.mock import patch
 
 from django.urls import reverse
 from model_bakery import baker
@@ -32,15 +31,6 @@ class TestMedicationRequestApi(CareAPITestBase):
             "system": "http://test_system.care/test",
             "code": "123",
         }
-        # Mocking validate_valueset
-        self.patcher = patch(
-            "care.emr.utils.valueset_coding_type.validate_valueset",
-            return_value=self.valid_code,
-        )
-        self.mock_validate_valueset = self.patcher.start()
-
-    def tearDown(self):
-        self.patcher.stop()
 
     def _get_medication_request_url(self, medication_request_id):
         """Helper to get the detail URL for a specific medication request."""

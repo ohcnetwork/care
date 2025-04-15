@@ -9,6 +9,7 @@ from rest_framework import status
 from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
+from care.utils.time_util import care_now
 
 
 def generate_random_valid_phone_number() -> str:
@@ -191,7 +192,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id,
             date_of_birth=datetime.date(1993, 1, 10),
-            death_datetime=datetime.datetime(1992, 5, 15, 14, 30, 0),
+            deceased_datetime=datetime.datetime(1992, 5, 15, 14, 30, 0),
         )
         response = self.client.post(self.base_url, patient_data, format="json")
         data = response.json()
@@ -199,7 +200,7 @@ class TestPatientViewSet(CareAPITestBase):
         self.assertEqual(status_code, 400)
         self.assertIn("errors", data)
         error = data["errors"][0]
-        self.assertEqual(error["type"], "value_error")
+        self.assertEqual(error["type"], "validation_error")
         self.assertIn("Date of birth cannot be after the date of death", error["msg"])
 
     def test_invalid_age_and_death_date(self):
@@ -216,8 +217,8 @@ class TestPatientViewSet(CareAPITestBase):
         self.client.force_authenticate(user=user)
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id,
-            age=12,
-            death_datetime=datetime.datetime(2010, 5, 15, 14, 30, 0),
+            deceased_datetime=care_now() - datetime.timedelta(days=2),
+            date_of_birth=(care_now() + datetime.timedelta(days=5)).date().isoformat(),
         )
         response = self.client.post(self.base_url, patient_data, format="json")
         data = response.json()
@@ -225,5 +226,5 @@ class TestPatientViewSet(CareAPITestBase):
         self.assertEqual(status_code, 400)
         self.assertIn("errors", data)
         error = data["errors"][0]
-        self.assertEqual(error["type"], "value_error")
-        self.assertIn("Year of birth cannot be after the year of death", error["msg"])
+        self.assertEqual(error["type"], "validation_error")
+        self.assertIn("Date of birth cannot be after the date of death", error["msg"])

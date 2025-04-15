@@ -418,10 +418,6 @@ class User(AbstractUser):
     def check_username_exists(username):
         return User.objects.get_entire_queryset().filter(username=username).exists()
 
-    def delete(self, *args, **kwargs):
-        self.deleted = True
-        self.save()
-
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 

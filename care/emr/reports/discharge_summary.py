@@ -24,6 +24,7 @@ from care.emr.resources.allergy_intolerance.spec import (
 from care.emr.resources.condition.spec import CategoryChoices, VerificationStatusChoices
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.medication.request.spec import MedicationRequestStatus
+from care.users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +119,16 @@ def get_discharge_summary_data(encounter: Encounter):
         else None
     )
 
+    user_roles = {
+        member["user_id"]: member["role"]["display"] for member in encounter.care_team
+    }
+
+    care_team_users = User.objects.filter(id__in=user_roles.keys())
+
+    care_team_display = [
+        f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
+    ]
+
     return {
         "encounter": encounter,
         "admission_duration": admission_duration,
@@ -129,6 +140,8 @@ def get_discharge_summary_data(encounter: Encounter):
         "observations": observations,
         "medication_requests": medication_requests,
         "files": files,
+        "care_team": care_team_display,
+        "discharge_summary_advice": encounter.discharge_summary_advice,
     }
 
 

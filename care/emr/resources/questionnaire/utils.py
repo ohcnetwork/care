@@ -91,6 +91,76 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     return errors
 
 
+def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
+    """
+    Check if a question should be enabled based on its enable_when conditions.
+    Returns True if the question is enabled, False otherwise.
+    """
+    question_link_id_to_id = get_link_id_map(questionnaire_obj.questions)
+
+    if not question.get("enable_when"):
+        return True
+
+    conditions = question["enable_when"]
+    behavior = question.get("enable_behavior", "all")
+    results = []
+
+    for condition in conditions:
+        link_id = condition["question"]
+        if link_id not in question_link_id_to_id:
+            results.append(False)
+            continue
+
+        condition_question_id = question_link_id_to_id[link_id]
+
+        if (
+            condition_question_id not in responses
+            or not responses[condition_question_id].values
+        ):
+            condition_value = None
+        else:
+            condition_value = responses[condition_question_id].values[0].value
+
+        operator = condition["operator"]
+        expected_answer = condition["answer"]
+
+        # Evaluate the condition based on the operator.
+        if operator == "exists":
+            result = condition_value is not None
+        elif operator == "equals":
+            result = condition_value == expected_answer
+        elif operator == "not_equals":
+            result = condition_value != expected_answer
+        elif operator == "greater":
+            try:
+                result = float(condition_value) > float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less":
+            try:
+                result = float(condition_value) < float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "greater_or_equals":
+            try:
+                result = float(condition_value) >= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        elif operator == "less_or_equals":
+            try:
+                result = float(condition_value) <= float(expected_answer)
+            except (TypeError, ValueError):
+                result = False
+        else:
+            # Unsupported operator; treat as condition not met.
+            result = False
+
+        results.append(result)
+
+    # Combine condition results using the enable_behavior.
+    return all(results) if behavior == "all" else any(results)
+
+
 def validate_question_result(  # noqa : PLR0912
     questionnaire, responses, errors, parent, questionnaire_mapping
 ):
@@ -304,7 +374,55 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):
+def remove_nested_questions(group_question, responses, results):
+    if "questions" not in group_question:
+        return
+    for child in group_question["questions"]:
+        responses.pop(child["id"], None)
+        results.results = [
+            r for r in results.results if str(r.question_id) != child["id"]
+        ]
+        # If it's another group inside, clean it recursively
+        if child.get("type") == QuestionType.group.value:
+            remove_nested_questions(child, responses, results)
+
+
+def prune_nested_disabled_questions(question, responses, results, questionnaire_obj):
+    if question.get("questions"):
+        enabled_children = []
+        for child in question["questions"]:
+            if "enable_when" in child and not is_question_enabled(
+                child, responses, questionnaire_obj
+            ):
+                responses.pop(child["id"], None)
+                results.results = [
+                    r for r in results.results if str(r.question_id) != child["id"]
+                ]
+                if child.get("type") == QuestionType.group.value:
+                    remove_nested_questions(child, responses, results)
+            else:
+                # Recursively check deeper levels
+                if child.get("type") == QuestionType.group.value:
+                    prune_nested_disabled_questions(
+                        child, responses, results, questionnaire_obj
+                    )
+                enabled_children.append(child)
+        question["questions"] = enabled_children
+
+
+def get_link_id_map(questions):
+    """
+    Recursively extract a map of link_id to question_id from all questions, including nested ones.
+    """
+    mapping = {}
+    for q in questions:
+        mapping[q["link_id"]] = q["id"]
+        if q.get("questions"):
+            mapping.update(get_link_id_map(q["questions"]))
+    return mapping
+
+
+def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PLR0912
     """
     Generate observations and questionnaire responses after validation
     """
@@ -335,6 +453,29 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
                 "msg": "Empty Questionnaire cannot be submitted",
             }
         )
+    valid_questions = []
+    for question in questionnaire_obj.questions:
+        if "enable_when" in question and not is_question_enabled(
+            question, responses, questionnaire_obj
+        ):
+            # Remove disabled question and any responses
+            responses.pop(question["id"], None)
+            results.results = [
+                r for r in results.results if str(r.question_id) != question["id"]
+            ]
+            # Also remove nested ones if it's a group
+            if question["type"] == QuestionType.group.value:
+                remove_nested_questions(question, responses, results)
+        else:
+            # Only keep enabled questions
+            if question["type"] == QuestionType.group.value:
+                prune_nested_disabled_questions(
+                    question, responses, results, questionnaire_obj
+                )
+            valid_questions.append(question)
+
+    questionnaire_obj.questions = valid_questions
+
     for question in questionnaire_obj.questions:
         validate_question_result(
             question,

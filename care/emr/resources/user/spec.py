@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
@@ -17,6 +18,11 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
+
+
+def is_valid_username(username):
+    pattern = r"^[a-zA-Z0-9_-]{3,}$"
+    return bool(re.fullmatch(pattern, username))
 
 
 class UserTypeOptions(str, Enum):
@@ -53,10 +59,16 @@ class UserUpdateSpec(UserBaseSpec):
     user_type: UserTypeOptions
     gender: GenderChoices
     phone_number: str = Field(max_length=14)
+    geo_organization: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.geo_organization is not None:
+            obj.geo_organization = get_object_or_404(
+                Organization, external_id=self.geo_organization, org_type="govt"
+            )
 
 
 class UserCreateSpec(UserUpdateSpec):
-    geo_organization: UUID4 | None = None
     password: str | None = None
     username: str
     email: str
@@ -64,6 +76,10 @@ class UserCreateSpec(UserUpdateSpec):
     @field_validator("username")
     @classmethod
     def validate_username(cls, username):
+        if not is_valid_username(username):
+            raise ValueError(
+                "Username can only contain alpha numeric values, dashes ( - ) and underscores ( _ )"
+            )
         if User.check_username_exists(username):
             raise ValueError("Username already exists")
         return username
@@ -99,10 +115,6 @@ class UserCreateSpec(UserUpdateSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.set_password(self.password)
-        if self.geo_organization is not None:
-            obj.geo_organization = get_object_or_404(
-                Organization, external_id=self.geo_organization, org_type="govt"
-            )
 
 
 class UserSpec(UserBaseSpec):
@@ -113,6 +125,7 @@ class UserSpec(UserBaseSpec):
     username: str
     mfa_enabled: bool = False
     phone_number: str = Field(max_length=14)
+    deleted: bool = False
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):

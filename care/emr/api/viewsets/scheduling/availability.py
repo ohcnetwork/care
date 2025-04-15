@@ -193,14 +193,18 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         # Create everything else
         for _slot in slots:
             slot = slots[_slot]
+            end_datetime = datetime.datetime.combine(
+                request_data.day, slot["end_time"], tzinfo=None
+            )
+            # Skip creating slots in the past
+            if end_datetime < timezone.make_naive(timezone.now()):
+                continue
             TokenSlot.objects.create(
                 resource=schedulable_resource_obj,
                 start_datetime=datetime.datetime.combine(
                     request_data.day, slot["start_time"], tzinfo=None
                 ),
-                end_datetime=datetime.datetime.combine(
-                    request_data.day, slot["end_time"], tzinfo=None
-                ),
+                end_datetime=end_datetime,
                 availability_id=slot["availability_id"],
             )
         # Compare and figure out what needs to be created

@@ -3,13 +3,12 @@ import uuid
 from enum import Enum
 
 from django.utils import timezone
-from pydantic import UUID4, Field, field_validator, model_validator
+from pydantic import UUID4, Field, field_validator
 
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.permissions import PatientPermissionsMixin
-from care.utils.time_util import care_now
 
 
 class BloodGroupChoices(str, Enum):
@@ -44,7 +43,7 @@ class PatientBaseSpec(EMRResource):
     address: str
     permanent_address: str
     pincode: int
-    death_datetime: datetime.datetime | None = None
+    deceased_datetime: datetime.datetime | None = None
     blood_group: BloodGroupChoices | None = None
 
 
@@ -53,22 +52,6 @@ class PatientCreateSpec(PatientBaseSpec):
     date_of_birth: datetime.date | None = None
 
     age: int | None = None
-
-    @model_validator(mode="after")
-    def validate_date_of_birth_and_death_date(self):
-        if not (self.age or self.date_of_birth):
-            raise ValueError("Either age or date of birth is required")
-        if (
-            self.date_of_birth
-            and self.death_datetime
-            and self.date_of_birth > self.death_datetime.date()
-        ):
-            raise ValueError("Date of birth cannot be after the date of death")
-        if self.age and self.death_datetime:
-            curr_year = care_now().year
-            if curr_year - self.age > self.death_datetime.year:
-                raise ValueError("Year of birth cannot be after the year of death")
-        return self
 
     @field_validator("geo_organization")
     @classmethod
@@ -89,6 +72,44 @@ class PatientCreateSpec(PatientBaseSpec):
             obj.year_of_birth = timezone.now().date().year - self.age
         else:
             obj.year_of_birth = self.date_of_birth.year
+
+
+class PatientUpdateSpec(PatientBaseSpec):
+    name: str | None = Field(default=None, max_length=200)
+    gender: GenderChoices | None = None
+    phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    address: str | None = None
+    permanent_address: str | None = None
+    pincode: int | None = None
+    deceased_datetime: datetime.datetime | None = None
+    blood_group: BloodGroupChoices | None = None
+    date_of_birth: datetime.date | None = None
+    age: int | None = None
+    geo_organization: UUID4 | None = None
+
+    @field_validator("geo_organization")
+    @classmethod
+    def validate_geo_organization(cls, geo_organization):
+        if geo_organization is None:
+            return None
+        if not Organization.objects.filter(
+            org_type="govt", external_id=geo_organization
+        ).exists():
+            raise ValueError("Geo Organization does not exist")
+        return geo_organization
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if is_update:
+            if self.geo_organization:
+                obj.geo_organization = Organization.objects.get(
+                    external_id=self.geo_organization
+                )
+            if self.age is not None:
+                obj.date_of_birth = None
+                obj.year_of_birth = timezone.now().year - self.age
+            elif self.date_of_birth:
+                obj.year_of_birth = self.date_of_birth.year
 
 
 class PatientListSpec(PatientBaseSpec):
