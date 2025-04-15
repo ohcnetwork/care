@@ -60,8 +60,8 @@ jobs:
 
       - name: Start services
         run: |
-          docker compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --wait ||\
-          docker compose -f docker-compose.yaml -f docker-compose.local.yaml logs && exit 1
+          docker compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --wait || \
+          (docker compose -f docker-compose.yaml -f docker-compose.local.yaml logs && exit 1)
 
       - name: Check missing migrations
         run: make checkmigration
