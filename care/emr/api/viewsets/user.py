@@ -42,6 +42,7 @@ class UserViewSet(EMRModelViewSet):
     pydantic_read_model = UserSpec
     pydantic_retrieve_model = UserRetrieveSpec
     lookup_field = "username"
+    lookup_value_regex = "[^/]+"
     filterset_class = UserFilter
     filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]
