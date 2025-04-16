@@ -275,6 +275,8 @@ def migrate_assets(apps, schema_editor):
             if asset_transactions:
                 first_tx = asset_transactions[0]
                 initial_history = DeviceLocationHistory(
+                    created_by_id=fallback_care_user.id,
+                    updated_by_id=fallback_care_user.id,
                     device=device,
                     location_id=first_tx.from_location.migrated_emr_location_id,
                     start=asset.created_date,
@@ -285,6 +287,8 @@ def migrate_assets(apps, schema_editor):
                 previous_history = initial_history
                 for asset_tx in asset_transactions[1:]:
                     new_history = DeviceLocationHistory(
+                        created_by_id=fallback_care_user.id,
+                        updated_by_id=fallback_care_user.id,
                         device=device,
                         location_id=asset_tx.to_location.migrated_emr_location_id,
                         start=asset_tx.created_date,
@@ -298,6 +302,8 @@ def migrate_assets(apps, schema_editor):
             else:
                 bulk_device_location_history.append(
                     DeviceLocationHistory(
+                        created_by_id=fallback_care_user.id,
+                        updated_by_id=fallback_care_user.id,
                         device=device,
                         location_id=asset.current_location.migrated_emr_location_id,
                         start=asset.created_date,
