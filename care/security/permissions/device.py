@@ -21,5 +21,5 @@ class DevicePermissions(enum.Enum):
         "Can Manage Devices on Facility",
         "",
         PermissionContext.FACILITY,
-        [STAFF_ROLE, ADMIN_ROLE, FACILITY_ADMIN_ROLE],
+        [STAFF_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE, FACILITY_ADMIN_ROLE],
     )
