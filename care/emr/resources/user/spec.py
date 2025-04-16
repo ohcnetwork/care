@@ -130,3 +130,8 @@ class UserRetrieveSpec(UserSpec):
             if obj.updated_by:
                 mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
                 cache.set(CACHED_UPDATED_BY, json.dumps(mapping["updated_by"]), timeout=CACHED_TTL)
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()
+        mapping["flags"] = obj.get_all_flags()
