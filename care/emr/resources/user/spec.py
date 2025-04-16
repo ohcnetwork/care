@@ -103,6 +103,7 @@ class UserSpec(UserBaseSpec):
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
     created_by: dict
+    updated_by:dict
     email: str
     flags: list[str] = []
 
