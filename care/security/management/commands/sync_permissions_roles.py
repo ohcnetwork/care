@@ -44,7 +44,9 @@ class Command(BaseCommand):
                 role_obj.save()
             RoleModel.objects.filter(temp_deleted=True).delete()
             # Sync permissions to role
-            RolePermission.objects.all().update(temp_deleted=True)
+            RolePermission.objects.filter(role__is_system=True).update(
+                temp_deleted=True
+            )
             role_cache = {}
             for permission, metadata in permissions.items():
                 permission_obj = PermissionModel.objects.filter(slug=permission).first()
