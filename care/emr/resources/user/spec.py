@@ -1,5 +1,5 @@
 from enum import Enum
-
+import json
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -11,7 +11,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
 from care.users.models import User
-
+from django.core.cache import cache
 
 class UserTypeOptions(str, Enum):
     doctor = "doctor"
@@ -111,10 +111,22 @@ class UserRetrieveSpec(UserSpec):
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj)
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-        if obj.geo_organization:
-            mapping["geo_organization"] = OrganizationReadSpec.serialize(
-                obj.geo_organization
-            ).to_json()
-        mapping["flags"] = obj.get_all_flags()
+
+        CACHED_CREATED_BY = f"user:{obj.external_id}:data"
+        CACHED_UPDATED_BY = f"user:{obj.external_id}:data"
+        CACHED_TTL = 60 * 60 * 24
+
+        created_by_data = cache.get(CACHED_CREATED_BY)
+        if created_by_data:
+            mapping["created_by"] = json.loads(created_by_data)
+        else:
+            if obj.created_by:
+                mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+                cache.set(CACHED_CREATED_BY, json.dumps(mapping["created_by"]), timeout=CACHED_TTL)
+        updated_by_data = cache.get(CACHED_UPDATED_BY)
+        if updated_by_data:
+            mapping["updated_by"] = json.loads(updated_by_data)
+        else:
+            if obj.updated_by:
+                mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+                cache.set(CACHED_UPDATED_BY, json.dumps(mapping["updated_by"]), timeout=CACHED_TTL)
