@@ -83,7 +83,7 @@ def migrate_diagnosis(apps, schema_editor):
                 verification_status=verification_status_map.get(
                     diagnosis.verification_status
                 ),
-                clinical_status="unknown",
+                clinical_status="active",
                 external_id=diagnosis.external_id,  # if you are very unlucky, comment this line
                 category="encounter_diagnosis",
                 code={
