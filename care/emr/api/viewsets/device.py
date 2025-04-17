@@ -265,7 +265,9 @@ class DeviceViewSet(EMRModelViewSet):
         ).exists():
             raise ValidationError("Organization is already associated with this device")
         device.managing_organization = organization
-        device.save(update_fields=["managing_organization"])
+        device.save(
+            update_fields=["managing_organization", "facility_organization_cache"]
+        )
         return Response({})
 
     @action(detail=True, methods=["POST"])
@@ -287,7 +289,9 @@ class DeviceViewSet(EMRModelViewSet):
             )
 
         device.managing_organization = None
-        device.save(update_fields=["managing_organization"])
+        device.save(
+            update_fields=["managing_organization", "facility_organization_cache"]
+        )
         return Response({})
 
 

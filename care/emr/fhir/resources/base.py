@@ -30,7 +30,7 @@ class ResourceManger:
         fingerprint = json_fingerprint.create(
             input=json.dumps(payload), hash_function=hash_functions.SHA256, version=1
         )
-        cache_key = f"self.cache_prefix_key{fingerprint}"
+        cache_key = f"{self.cache_prefix_key}{fingerprint}"
         if cached_data := cache.get(cache_key):
             return cached_data
         results = self._fhir_client.query(**payload)

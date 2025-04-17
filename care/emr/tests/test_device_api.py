@@ -469,6 +469,12 @@ class TestDeviceViewSet(DeviceBaseTest):
             Device.objects.get(external_id=self.device["id"]).managing_organization,
             self.managing_org,
         )
+        self.assertIn(
+            self.managing_org.id,
+            Device.objects.get(
+                external_id=self.device["id"]
+            ).facility_organization_cache,
+        )
 
         response = self.client.post(
             self.add_url,
@@ -509,6 +515,12 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(
             Device.objects.get(external_id=self.device["id"]).managing_organization
+        )
+        self.assertNotIn(
+            self.managing_org.id,
+            Device.objects.get(
+                external_id=self.device["id"]
+            ).facility_organization_cache,
         )
 
     def test_remove_managing_organization_without_permissions(self):

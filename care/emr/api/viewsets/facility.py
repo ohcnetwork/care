@@ -154,7 +154,8 @@ class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
     filterset_class = FacilityUserFilter
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter]
+    search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
         return User.objects.filter(

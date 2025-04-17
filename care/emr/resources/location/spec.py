@@ -69,7 +69,7 @@ class FacilityLocationBaseSpec(EMRResource):
 
 
 MIN_SORT_INDEX = 0
-MAX_SORT_INDEX = 999
+MAX_SORT_INDEX = 10000
 
 
 class FacilityLocationSpec(FacilityLocationBaseSpec):
