@@ -72,6 +72,9 @@ def migrate_consent_records(apps, schema_editor):
     for page_num in paginator.page_range:
         bulk_create_data = []
         for patient_consent in paginator.get_page(page_num):
+            decision = "permit"
+            if patient_consent.patient_code_status in (1,2):
+                decision = "deny"
             consent = Consent(
                 external_id=patient_consent.external_id,
                 encounter_id=patient_consent.consultation.migrated_emr_encounter_id,
@@ -79,6 +82,7 @@ def migrate_consent_records(apps, schema_editor):
                 category=get_consent_category(patient_consent),
                 date=patient_consent.created_date,
                 period={},
+                decision=decision,
                 created_by_id=patient_consent.created_by_id,
                 updated_by_id=patient_consent.created_by_id,
                 meta={
