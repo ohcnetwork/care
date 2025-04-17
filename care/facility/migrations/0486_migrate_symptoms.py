@@ -77,7 +77,7 @@ def migrate_symptoms(apps, schema_editor):
     clinical_status_map = {
         ClinicalImpressionStatus.IN_PROGRESS: {
             "clinical_status": ClinicalStatusChoices.active,
-            "verification_status": VerificationStatusChoices.provisional,
+            "verification_status": VerificationStatusChoices.confirmed,
         },
         ClinicalImpressionStatus.COMPLETED: {
             "clinical_status": ClinicalStatusChoices.resolved,
