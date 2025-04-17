@@ -73,6 +73,7 @@ def migrate_consent_records(apps, schema_editor):
         bulk_create_data = []
         for patient_consent in paginator.get_page(page_num):
             consent = Consent(
+                external_id=patient_consent.external_id,
                 encounter_id=patient_consent.consultation.migrated_emr_encounter_id,
                 status="active" if not patient_consent.archived else "inactive",
                 category=get_consent_category(patient_consent),

@@ -102,7 +102,7 @@ def migrate_file_uploads(apps, schema_editor):
                     )
                     continue
                 file_category = "consent_attachment"
-                file_type = "encounter"
+                file_type = "consent"
                 associating_id = old_file_upload.associating_id
             else:  # Nobody uses these: other, sample_management, claim, communication, abdm_health_information
                 continue
