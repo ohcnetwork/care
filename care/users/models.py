@@ -9,7 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-
+from django.core.cache import cache
 from care.utils.models.base import BaseFlag, BaseModel
 from care.utils.models.validators import (
     UsernameValidator,
@@ -438,6 +438,7 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
+        cache.delete(f"user:{self.external_id}")
 
 
 class UserFacilityAllocation(models.Model):
