@@ -95,10 +95,18 @@ class UserSpec(UserBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
+        cached_user = f"user:{obj.external_id}"
+        cached_ttl = 60 * 60 * 24
+
+        cached_user_data = cache.get(cached_user)
+        if cached_user_data:
+            mapping.update(json.loads(cached_user_data))
+            return
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
         mapping["mfa_enabled"] = obj.is_mfa_enabled()
 
+        cache.set(cached_user, json.dumps(mapping), timeout=cached_ttl)
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
@@ -112,27 +120,15 @@ class UserRetrieveSpec(UserSpec):
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj)
+        if obj.created_by:
+            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
 
-        CACHED_CREATED_BY = f"user:{obj.external_id}:data"
-        CACHED_UPDATED_BY = f"user:{obj.external_id}:data"
-        CACHED_TTL = 60 * 60 * 24
+        if obj.updated_by:
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
 
-        created_by_data = cache.get(CACHED_CREATED_BY)
-        if created_by_data:
-            mapping["created_by"] = json.loads(created_by_data)
-        else:
-            if obj.created_by:
-                mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-                cache.set(CACHED_CREATED_BY, json.dumps(mapping["created_by"]), timeout=CACHED_TTL)
-        updated_by_data = cache.get(CACHED_UPDATED_BY)
-        if updated_by_data:
-            mapping["updated_by"] = json.loads(updated_by_data)
-        else:
-            if obj.updated_by:
-                mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
-                cache.set(CACHED_UPDATED_BY, json.dumps(mapping["updated_by"]), timeout=CACHED_TTL)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+
         mapping["flags"] = obj.get_all_flags()
