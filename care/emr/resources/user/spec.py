@@ -11,7 +11,6 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import DOCTOR_ROLE, NURSE_ROLE, STAFF_ROLE, VOLUNTEER_ROLE
 from care.users.models import User
-from django.core.cache import cache
 
 class UserTypeOptions(str, Enum):
     doctor = "doctor"
@@ -95,23 +94,13 @@ class UserSpec(UserBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
-        cached_user = f"user:{obj.external_id}"
-        cached_ttl = 60 * 60 * 24
-
-        cached_user_data = cache.get(cached_user)
-        if cached_user_data:
-            mapping.update(json.loads(cached_user_data))
-            return
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
         mapping["mfa_enabled"] = obj.is_mfa_enabled()
 
-        cache.set(cached_user, json.dumps(mapping), timeout=cached_ttl)
-
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
     created_by: dict
-    updated_by:dict
     email: str
     flags: list[str] = []
 
@@ -122,9 +111,6 @@ class UserRetrieveSpec(UserSpec):
         super().perform_extra_serialization(mapping, obj)
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
 
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(

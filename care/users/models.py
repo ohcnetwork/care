@@ -20,7 +20,9 @@ from care.utils.registries.feature_flag import FlagName, FlagType
 
 USER_FLAG_CACHE_KEY = "user_flag_cache:{user_id}:{flag_name}"
 USER_ALL_FLAGS_CACHE_KEY = "user_all_flags_cache:{user_id}"
-USER_FLAG_CACHE_TTL = 60 * 60 * 24  # 1 Day
+USER_CACHE_TTL = 60 * 60 * 24  # 1 Day
+USER_CACHE_KEY = "user:{external_id}"
+
 
 
 def reverse_choices(choices):
@@ -140,6 +142,20 @@ class CustomUserManager(UserManager):
         extra_fields["gender"] = 3
         extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
+
+    def get(self, *args, **kwargs):
+        external_id = kwargs.get('external_id')
+        if external_id:
+            cache_key = USER_CACHE_KEY.format(external_id=external_id)
+            cached_user = cache.get(cache_key)
+
+            if cached_user:
+                return cached_user
+            user = super().get(*args, **kwargs)
+            cache.set(cache_key, user, USER_CACHE_TTL)
+            return user
+
+        return super().get(*args, **kwargs)
 
     def make_random_password(
         self,
@@ -438,7 +454,11 @@ class User(AbstractUser):
         if self.district is not None:
             self.state = self.district.state
         super().save(*args, **kwargs)
-        cache.delete(f"user:{self.external_id}")
+        cached_user = cache.get(USER_CACHE_KEY.format(external_id=self.external_id))
+        if cached_user:
+            cache.delete(USER_CACHE_KEY.format(external_id=self.external_id))
+        super().save(*args, **kwargs)
+
 
 
 class UserFacilityAllocation(models.Model):
