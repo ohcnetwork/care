@@ -54,6 +54,21 @@ class FacilityOrganizationDeleteValidationTests(CareAPITestBase):
         ):
             org_user_role.refresh_from_db()
 
+    def test_delete_root_facility_organization(self):
+        self.attach_role_facility_organization_user(
+            self.facility_root_org, self.user, self.manage_role
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(self._get_url(self.facility_root_org.external_id))
+
+        self.assertEqual(response.status_code, 400, f"Response: {response.data}")
+        self.assertContains(
+            response,
+            "Cannot delete root organization",
+            status_code=400,
+        )
+
     def test_delete_facility_organization_without_permission(self):
         facility_org = self.create_facility_organization(
             facility=self.facility, parent=self.facility_root_org
