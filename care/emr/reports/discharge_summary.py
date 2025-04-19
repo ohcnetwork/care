@@ -1,3 +1,4 @@
+import json
 import logging
 import subprocess
 import tempfile
@@ -128,6 +129,11 @@ def get_discharge_summary_data(encounter: Encounter):
     care_team_display = [
         f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
     ]
+
+    config = json.loads("care/templates/reports/config.json")
+    logging.error("\n" * 10)
+    logging.error(config)
+    logging.error("\n" * 10)
 
     return {
         "encounter": encounter,

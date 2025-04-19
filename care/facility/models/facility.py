@@ -409,6 +409,12 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
+class FacilityReportTemplate(BaseModel):
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    type = models.CharField(max_length=100)
+    config = models.JSONField(default=dict)
+
+
 class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
     hub = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="spokes")
     spoke = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="hubs")

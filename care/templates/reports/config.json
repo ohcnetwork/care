@@ -1,0 +1,214 @@
+{
+    "meta": {
+        "version": "1.0",
+        "created_by": "system",
+        "last_updated": "2025-04-17T12:00:00Z"
+    },
+    "layout": {
+        "font": "DejaVu Sans",
+        "font_size": 10,
+        "page_size": "a4",
+        "page_margin": {
+            "mode": "uniform",
+            "value": "40pt"
+        },
+        "page_numbering": {
+            "enabled": true,
+            "format": "1 of 1",
+            "position": "center"
+        }
+    },
+    "sections": {
+        "heading": {
+            "enabled": true,
+            "options": {
+                "title": "Discharge Summary",
+                "logo": "black-logo.svg",
+                "entity_name": "Care Health System"
+            }
+        },
+        "patient_info": {
+            "enabled": true,
+            "source": "patient",
+            "options": {
+                "title": "Patient Information",
+                "include": [
+                    "name",
+                    "gender",
+                    "date_of_birth",
+                    "address",
+                    "phone",
+                    "blood_group",
+                    "ration_card_category",
+                    "permanent_address",
+                    "marital_status",
+                    "emergency_phone_number",
+                    "deceased_datetime"
+                ]
+            }
+        },
+        "diagnoses": {
+            "enabled": true,
+            "source": "condition",
+            "is_table": true,
+            "options": {
+                "title": "Diagnoses",
+                "count": 5,
+                "filters": {
+                    "clinical_status": [
+                        "active",
+                        "resolved"
+                    ],
+                    "verification_status": [
+                        "confirmed",
+                        "differential",
+                        "provisional"
+                    ],
+                    "category": [
+                        "problem-list-item",
+                        "encounter-diagnosis"
+                    ],
+                    "severity": [
+                        "mild",
+                        "moderate",
+                        "severe"
+                    ]
+                },
+                "include": [
+                    "diagnosis",
+                    "clinical_status",
+                    "verification_status",
+                    "category",
+                    "severity",
+                    "onset_date",
+                    "note"
+                ]
+            }
+        },
+        "symptoms": {
+            "enabled": true,
+            "source": "condition",
+            "is_table": true,
+            "options": {
+                "title": "Symptoms Reported",
+                "count": 5,
+                "filters": {
+                    "clinical_status": [
+                        "active",
+                        "resolved"
+                    ],
+                    "verification_status": [
+                        "confirmed",
+                        "differential",
+                        "provisional"
+                    ],
+                    "category": [
+                        "problem-list-item"
+                    ],
+                    "severity": [
+                        "mild",
+                        "moderate",
+                        "severe"
+                    ]
+                },
+                "include": [
+                    "symptom",
+                    "clinical_status",
+                    "verification_status",
+                    "category",
+                    "severity",
+                    "onset_date",
+                    "note"
+                ]
+            }
+        },
+        "allergies": {
+            "enabled": true,
+            "source": "allergy",
+                        "is_table": true,
+            "options": {
+                "title": "Allergies",
+                "filters": {
+                    "criticality": [
+                        "high",
+                        "low",
+                        "unable-to-assess"
+                    ]
+                },
+                "include": [
+                    "allergen",
+                    "clinical_status",
+                    "category",
+                    "criticality",
+                    "verification_status",
+                    "note",
+                    "onset"
+                ]
+            }
+        },
+        "observations": {
+            "enabled": true,
+            "source": "observation",
+            "is_table": true,
+            "options": {
+                "title": "Observation Results",
+                "group_by": "date",
+                "include": [
+                    "observation",
+                    "value",
+                    "body_site",
+                    "date",
+                    "data_entered_by"
+                ]
+            }
+        },
+        "medication_requests": {
+            "enabled": true,
+            "source": "medication",
+            "options": {
+                "title": "Medications",
+                "include": [
+                    "medication_name",
+                    "dosage",
+                    "prescribed_by",
+                    "date",
+                    "note"
+                ]
+            }
+        },
+        "care_team": {
+            "enabled": true,
+            "source": "user",
+            "options": {
+                "title": "Treating Team",
+                "include": [
+                    "name",
+                    "role"
+                ]
+            }
+        },
+        "files": {
+            "enabled": true,
+            "source": "file",
+            "options": {
+                "title": "Attached Files",
+                "include": [
+                    "name",
+                    "modified_date",
+                    "type",
+                    "uploaded_by"
+                ]
+            }
+        },
+        "discharge_advice": {
+            "enabled": true,
+            "source": "encounter",
+            "options": {
+                "title": "Discharge Summary Advice",
+                "include": [
+                    "discharge_summary_advice"
+                ]
+            }
+        }
+    }
+}
