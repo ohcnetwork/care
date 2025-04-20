@@ -2,8 +2,14 @@
 {% load data_formatting_extras %}
 {% load discharge_summary_utils %}
 
-#set page("{{page_size}}",margin: {{page_margin}}pt, {% if numbering %} numbering: "{{numbering_format}}" {% endif %})
-#set text(font: "{{font}}",size: {{font_size}}pt,hyphenate: true, fallback: true)
+#set page(
+  margin: 40pt,
+)
+
+#set text(
+  size: 10pt,
+)
+
 #let mygray = luma(100)
 
 #let frame(stroke) = (x, y) => (

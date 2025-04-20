@@ -12,24 +12,32 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.emr.models import (
-    AllergyIntolerance,
-    Condition,
     Encounter,
     FileUpload,
-    Observation,
-    medication_request,
 )
-from care.emr.resources.allergy_intolerance.spec import (
-    VerificationStatusChoices as AllergyVerificationStatusChoices,
+from care.emr.reports.utils import (
+    build_discharge_context,
+    handle_condition,
+    handle_medication_request,
+    handle_observation,
 )
-from care.emr.resources.condition.spec import CategoryChoices, VerificationStatusChoices
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
-from care.emr.resources.medication.request.spec import MedicationRequestStatus
-from care.users.models import User
 
 logger = logging.getLogger(__name__)
 
 LOCK_DURATION = 2 * 60  # 2 minutes
+
+SOURCE_HANDLERS = {
+    "condition": handle_condition,
+    "observation": handle_observation,
+    "medication_request": handle_medication_request,
+    # "allergy": handle_allergy,
+    # "file": handle_file,
+    # "user": handle_user,
+    # "patient": handle_patient,
+    # "encounter": handle_encounter,
+    # Add more sources as needed
+}
 
 
 def lock_key(encounter_ext_id: str):
@@ -68,87 +76,76 @@ def format_duration(duration):
 
 def get_discharge_summary_data(encounter: Encounter):
     logger.info("fetching discharge summary data for %s", encounter.external_id)
-    symptoms = Condition.objects.filter(
-        encounter=encounter,
-        category=CategoryChoices.problem_list_item.value,
-    ).exclude(verification_status=VerificationStatusChoices.entered_in_error)
-    diagnoses = (
-        Condition.objects.filter(
-            encounter=encounter,
-            category=CategoryChoices.encounter_diagnosis.value,
-        )
-        .exclude(verification_status=VerificationStatusChoices.entered_in_error)
-        .order_by("id")
-    )
-    principal_diagnosis = diagnoses[0] if diagnoses else None
+    # symptoms = Condition.objects.filter(
+    #     encounter=encounter,
+    #     category=CategoryChoices.problem_list_item.value,
+    # ).exclude(verification_status=VerificationStatusChoices.entered_in_error)
+    # diagnoses = (
+    #     Condition.objects.filter(
+    #         encounter=encounter,
+    #         category=CategoryChoices.encounter_diagnosis.value,
+    #     )
+    #     .exclude(verification_status=VerificationStatusChoices.entered_in_error)
+    #     .order_by("id")
+    # )
+    # principal_diagnosis = diagnoses[0] if diagnoses else None
+    #
+    # allergies = sorted(
+    #     AllergyIntolerance.objects.filter(encounter=encounter).exclude(
+    #         verification_status=AllergyVerificationStatusChoices.entered_in_error
+    #     ),
+    #     key=lambda x: ("high", "low", "unable-to-assess", "", None).index(
+    #         x.criticality
+    #     ),
+    # )
+    #
+    # observations = (
+    #     Observation.objects.filter(
+    #         encounter=encounter,
+    #     )
+    #     .select_related("data_entered_by")
+    #     .order_by("id")
+    # )
+    #
+    # medication_requests = (
+    #     medication_request.MedicationRequest.objects.filter(encounter=encounter)
+    #     .exclude(status=MedicationRequestStatus.entered_in_error.value)
+    #     .select_related("created_by")
+    # )
 
-    allergies = sorted(
-        AllergyIntolerance.objects.filter(encounter=encounter).exclude(
-            verification_status=AllergyVerificationStatusChoices.entered_in_error
-        ),
-        key=lambda x: ("high", "low", "unable-to-assess", "", None).index(
-            x.criticality
-        ),
-    )
+    # files = FileUpload.objects.filter(
+    #     associating_id=encounter.external_id,
+    #     upload_completed=True,
+    #     is_archived=False,
+    # )
 
-    observations = (
-        Observation.objects.filter(
-            encounter=encounter,
-        )
-        .select_related("data_entered_by")
-        .order_by("id")
-    )
+    # admission_duration = (
+    #     format_duration(
+    #         parse_iso_datetime(encounter.period.get("end"))
+    #         - parse_iso_datetime(encounter.period.get("start"))
+    #     )
+    #     if encounter.period.get("end", None) and encounter.period.get("start", None)
+    #     else None
+    # )
 
-    medication_requests = (
-        medication_request.MedicationRequest.objects.filter(encounter=encounter)
-        .exclude(status=MedicationRequestStatus.entered_in_error.value)
-        .select_related("created_by")
-    )
+    # user_roles = {
+    #     member["user_id"]: member["role"]["display"] for member in encounter.care_team
+    # }
 
-    files = FileUpload.objects.filter(
-        associating_id=encounter.external_id,
-        upload_completed=True,
-        is_archived=False,
-    )
+    # care_team_users = User.objects.filter(id__in=user_roles.keys())
+    #
+    # care_team_display = [
+    #     f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
+    # ]
 
-    admission_duration = (
-        format_duration(
-            parse_iso_datetime(encounter.period.get("end"))
-            - parse_iso_datetime(encounter.period.get("start"))
-        )
-        if encounter.period.get("end", None) and encounter.period.get("start", None)
-        else None
-    )
+    with open("care/templates/reports/config.json") as f:  # noqa: PTH123
+        config = json.load(f)
 
-    user_roles = {
-        member["user_id"]: member["role"]["display"] for member in encounter.care_team
-    }
-
-    care_team_users = User.objects.filter(id__in=user_roles.keys())
-
-    care_team_display = [
-        f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
-    ]
-
-    config = json.loads("care/templates/reports/config.json")
     logging.error("\n" * 10)
-    logging.error(config)
+    logging.error(build_discharge_context(encounter, config))
     logging.error("\n" * 10)
 
-    return {
-        "encounter": encounter,
-        "admission_duration": admission_duration,
-        "patient": encounter.patient,
-        "symptoms": symptoms,
-        "diagnoses": diagnoses,
-        "principal_diagnosis": principal_diagnosis,
-        "allergies": allergies,
-        "observations": observations,
-        "medication_requests": medication_requests,
-        "files": files,
-        "care_team": care_team_display,
-        "discharge_summary_advice": encounter.discharge_summary_advice,
-    }
+    return build_discharge_context(encounter, config)
 
 
 def compile_typ(output_file, data):
@@ -164,12 +161,7 @@ def compile_typ(output_file, data):
         data["logo_path"] = "black-logo.svg"
         with tempfile.TemporaryDirectory() as tmpdir:
             template = Path(tmpdir) / "template.typ"
-            template.write_text(
-                render_to_string(
-                    "reports/patient_discharge_summary_pdf_template.typ", context=data
-                )
-            )
-
+            template.write_text(render_to_string("reports/main.typ", context=data))
             logo_dest = Path(tmpdir) / "black-logo.svg"
             logo_dest.write_text(logo_path.read_text())
 

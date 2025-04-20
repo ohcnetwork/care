@@ -65,7 +65,6 @@
                         "provisional"
                     ],
                     "category": [
-                        "problem-list-item",
                         "encounter-diagnosis"
                     ],
                     "severity": [
@@ -93,17 +92,8 @@
                 "title": "Symptoms Reported",
                 "count": 5,
                 "filters": {
-                    "clinical_status": [
-                        "active",
-                        "resolved"
-                    ],
-                    "verification_status": [
-                        "confirmed",
-                        "differential",
-                        "provisional"
-                    ],
                     "category": [
-                        "problem-list-item"
+                        "problem_list_item"
                     ],
                     "severity": [
                         "mild",
@@ -164,7 +154,7 @@
         },
         "medication_requests": {
             "enabled": true,
-            "source": "medication",
+            "source": "medication_request",
             "options": {
                 "title": "Medications",
                 "include": [
@@ -178,7 +168,7 @@
         },
         "care_team": {
             "enabled": true,
-            "source": "user",
+            "source": "care_team",
             "options": {
                 "title": "Treating Team",
                 "include": [
@@ -190,19 +180,20 @@
         "files": {
             "enabled": true,
             "source": "file",
+            "is_table": true,
             "options": {
                 "title": "Attached Files",
                 "include": [
                     "name",
-                    "modified_date",
-                    "type",
-                    "uploaded_by"
+                    "file_type",
+                    "created_date",
+                    "created_by"
                 ]
             }
         },
         "discharge_advice": {
             "enabled": true,
-            "source": "encounter",
+            "source": "discharge_summary_advice",
             "options": {
                 "title": "Discharge Summary Advice",
                 "include": [
