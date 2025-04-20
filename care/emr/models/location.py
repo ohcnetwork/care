@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel, Encounter, FacilityOrganization
@@ -116,7 +117,10 @@ class FacilityLocation(EMRBaseModel):
             self.cached_parent_json = {}
         if not self.sort_index:
             self.sort_index = (
-                FacilityLocation.objects.filter(parent=self.parent).count() + 1
+                FacilityLocation.objects.filter(parent=self.parent).aggregate(
+                    Max("sort_index", default=0)
+                )["sort_index__max"]
+                + 1
             )
         super().save(*args, **kwargs)
         self.sync_organization_cache()

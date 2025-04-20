@@ -62,6 +62,7 @@ class EncounterSpecBase(EMRResource):
     hospitalization: HospitalizationSpec | None = {}
     priority: EncounterPriorityChoices
     external_identifier: str | None = None
+    discharge_summary_advice: str | None = None
 
 
 class EncounterCreateSpec(EncounterSpecBase):
@@ -98,6 +99,8 @@ class EncounterUpdateSpec(EncounterSpecBase):
             obj.encounter_class_history["history"].append(
                 {"status": self.status, "moved_at": str(timezone.now())}
             )
+        if self.discharge_summary_advice is None and is_update:
+            obj.discharge_summary_advice = None
 
 
 class EncounterListSpec(EncounterSpecBase):
