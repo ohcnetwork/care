@@ -1,13 +1,12 @@
 import json
 import secrets
+import uuid
 from pathlib import Path
 
-import phonenumbers
 from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from faker import Faker
-from phonenumbers import NumberParseException, PhoneNumberFormat
 
 from care.emr.models import FacilityOrganization, Patient, Questionnaire
 from care.emr.resources.encounter.constants import (
@@ -38,27 +37,11 @@ from care.utils.tests.base import CareAPITestBase
 
 
 def generate_unique_indian_phone_number():
-    max_attempts = 1000
-    attempts = 0
-    while True:
-        attempts += 1
-        if attempts > max_attempts:
-            raise RuntimeError(
-                "Failed to generate unique phone number after maximum attempts"
-            )
-        number = 6000000000 + secrets.randbelow(9999999999 - 6000000000 + 1)
-        phone_str = f"+91{number}"
-        try:
-            parsed_number = phonenumbers.parse(phone_str, "IN")
-            if phonenumbers.is_valid_number_for_region(parsed_number, "IN"):
-                result = phonenumbers.format_number(
-                    parsed_number, PhoneNumberFormat.E164
-                )
-                if User.objects.filter(phone_number=result).exists():
-                    continue
-                return result
-        except NumberParseException:
-            continue
+    return (
+        "+91"
+        + secrets.choice(["9", "8", "7", "6"])
+        + "".join([str(secrets.randbelow(10)) for _ in range(9)])
+    )
 
 
 class Command(BaseCommand):
@@ -113,7 +96,7 @@ class Command(BaseCommand):
     def _generate_fixtures(self, options):
         """Generate all the fixture data within a transaction context."""
         base = CareAPITestBase()
-        fake = Faker()
+        fake = Faker("en_IN")
 
         super_user, created = User.objects.get_or_create(
             username="admin",
@@ -182,7 +165,7 @@ class Command(BaseCommand):
 
     def _create_geo_organization(self, fake, super_user):
         org_spec = OrganizationWriteSpec(
-            active=True, org_type=OrganizationTypeChoices.govt, name=fake.company()
+            active=True, org_type=OrganizationTypeChoices.govt, name=fake.state()
         )
         org = org_spec.de_serialize()
         org.created_by = super_user
@@ -281,7 +264,7 @@ class Command(BaseCommand):
                         gender=secrets.choice(list(GenderChoices)).value,
                         password=password,
                         username=username,
-                        email=fake.email(),
+                        email=str(uuid.uuid4()) + fake.email(),
                         user_type=role_name.lower().replace(" ", "_"),
                     )
                     user = user_spec.de_serialize()
