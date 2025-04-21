@@ -35,6 +35,15 @@ from care.security.models import RoleModel
 from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
+ROLES_OPTIONS = [
+    "Volunteer",
+    "Doctor",
+    "Staff",
+    "Nurse",
+    "Administrator",
+    "Facility Admin",
+]
+
 
 def generate_unique_indian_phone_number():
     return (
@@ -113,8 +122,13 @@ class Command(BaseCommand):
             super_user.save()
 
         self.stdout.write("=" * 30)
-        self.stdout.write("Superuser username: admin")
-        self.stdout.write("Superuser password: admin")
+        if created:
+            self.stdout.write("Superuser username: admin")
+            self.stdout.write("Superuser password: admin")
+        else:
+            self.stdout.write(
+                "Superuser 'admin' already exists, not creating a new one."
+            )
         self.stdout.write("=" * 30)
 
         geo_organization = self._create_geo_organization(fake, super_user)
@@ -134,8 +148,10 @@ class Command(BaseCommand):
             f"Created facility organization (dept): {external_facility_organization.name}"
         )
 
-        organization = self._create_organization(fake, super_user)
-        self.stdout.write(f"Created organization: {organization.name}")
+        organizations = self._create_organizations(fake, super_user)
+
+        for organization in organizations:
+            self.stdout.write(f"Created organization: {organization.name}")
 
         self._create_default_users(fake, base, super_user, facility_organization)
 
@@ -208,15 +224,18 @@ class Command(BaseCommand):
         org.save()
         return org
 
-    def _create_organization(self, fake, super_user):
-        org_spec = OrganizationWriteSpec(
-            active=True, org_type=OrganizationTypeChoices.role, name=fake.company()
-        )
-        org = org_spec.de_serialize()
-        org.created_by = super_user
-        org.updated_by = super_user
-        org.save()
-        return org
+    def _create_organizations(self, fake, super_user):
+        orgs = []
+        for role_name in ROLES_OPTIONS:
+            org_spec = OrganizationWriteSpec(
+                active=True, org_type=OrganizationTypeChoices.role, name=role_name
+            )
+            org = org_spec.de_serialize()
+            org.created_by = super_user
+            org.updated_by = super_user
+            org.save()
+            orgs.append(org)
+        return orgs
 
     def _create_users(
         self,
@@ -227,21 +246,13 @@ class Command(BaseCommand):
         count,
         default_password=None,
     ):
-        roles = [
-            "Volunteer",
-            "Doctor",
-            "Staff",
-            "Nurse",
-            "Administrator",
-            "Facility Admin",
-        ]
         self.stdout.write("=" * 50)
         self.stdout.write("USER CREDENTIALS")
         self.stdout.write("=" * 50)
         self.stdout.write(f"{'ROLE':<15} {'USERNAME':<30} {'PASSWORD':<20}")
         self.stdout.write("-" * 65)
 
-        for role_name in roles:
+        for role_name in ROLES_OPTIONS:
             try:
                 role = RoleModel.objects.get(name=role_name)
 
