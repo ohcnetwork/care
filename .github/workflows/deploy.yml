@@ -28,6 +28,7 @@ concurrency:
 
 jobs:
   test:
+    if: github.repository == 'ohcnetwork/care'
     name: Test
     uses: ./.github/workflows/reusable-test.yml
     secrets:
@@ -37,6 +38,7 @@ jobs:
 
   build:
     needs: test
+    if: github.repository == 'ohcnetwork/care'
     name: Build ${{ matrix.platform }}
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -121,6 +123,7 @@ jobs:
 
   merge-manifests:
     needs: build
+    if: github.repository == 'ohcnetwork/care'
     name: Merge & Push Manifests
     runs-on: ubuntu-24.04
     steps:
@@ -177,7 +180,7 @@ jobs:
 
   notify-release:
     needs: merge-manifests
-    if: startsWith(github.event.ref, 'refs/tags/v')
+    if: github.repository == 'ohcnetwork/care' && startsWith(github.event.ref, 'refs/tags/v')
     name: Notify release
     runs-on: ubuntu-24.04-arm
     steps:
@@ -187,7 +190,7 @@ jobs:
 
 #   deploy-staging-egov:
 #     needs: merge-manifests
-#     if: github.ref == 'refs/heads/develop'
+#     if: github.repository == 'ohcnetwork/care' && github.ref == 'refs/heads/develop'
 #     name: Deploy to ECS API Egov
 #     runs-on: ubuntu-24.04-arm
 #     environment:
