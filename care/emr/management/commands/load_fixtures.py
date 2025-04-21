@@ -8,7 +8,7 @@ from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from faker import Faker
 
-from care.emr.models import FacilityOrganization, Patient, Questionnaire
+from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -227,6 +227,15 @@ class Command(BaseCommand):
     def _create_organizations(self, fake, super_user):
         orgs = []
         for role_name in ROLES_OPTIONS:
+            if Organization.objects.filter(
+                name=role_name, org_type=OrganizationTypeChoices.role
+            ).exists():
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Organization '{role_name}' already exists, skipping."
+                    )
+                )
+                continue
             org_spec = OrganizationWriteSpec(
                 active=True, org_type=OrganizationTypeChoices.role, name=role_name
             )
