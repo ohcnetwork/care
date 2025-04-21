@@ -7,7 +7,7 @@ updates:
     groups:
       boto:
         patterns:
-          - "boto"
+          - "boto*"
     commit-message:
       prefix: "chore"
       include: "scope"
