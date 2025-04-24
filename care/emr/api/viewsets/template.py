@@ -22,6 +22,9 @@ class FacilityReportTemplateViewSet(EMRModelViewSet):
     pydantic_update_model = FacilityReportTemplateUpdateSpec
     pydantic_retrieve_model = FacilityReportTemplateRetrieveSpec
 
+    def permissions_controller(self, request):
+        return request.user.is_superuser
+
     def get_facility_obj(self):
         return get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
