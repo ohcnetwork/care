@@ -2,7 +2,6 @@ import json
 import logging
 import subprocess
 import tempfile
-import time
 from pathlib import Path
 from uuid import uuid4
 
@@ -11,250 +10,151 @@ from django.core.cache import cache
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from care.emr.models import (
-    Encounter,
-    FileUpload,
-)
-from care.emr.reports.utils import (
-    build_discharge_context,
-    handle_condition,
-    handle_medication_request,
-    handle_observation,
-)
+from care.emr.models import Encounter, FileUpload
+from care.emr.reports import SectionRegistry
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 
 logger = logging.getLogger(__name__)
 
 LOCK_DURATION = 2 * 60  # 2 minutes
 
-SOURCE_HANDLERS = {
-    "condition": handle_condition,
-    "observation": handle_observation,
-    "medication_request": handle_medication_request,
-    # "allergy": handle_allergy,
-    # "file": handle_file,
-    # "user": handle_user,
-    # "patient": handle_patient,
-    # "encounter": handle_encounter,
-    # Add more sources as needed
-}
+LOGOS_DIR = Path(settings.BASE_DIR) / "care" / "templates" / "reports" / "logos"
 
 
-def lock_key(encounter_ext_id: str):
-    return f"discharge_summary_{encounter_ext_id}"
+def lock_key(enc_id: str) -> str:
+    return f"discharge_summary_{enc_id}"
 
 
-def set_lock(encounter_ext_id: str, progress: int):
-    cache.set(lock_key(encounter_ext_id), progress, timeout=LOCK_DURATION)
+def set_lock(enc_id: str, progress: int):
+    cache.set(lock_key(enc_id), progress, timeout=LOCK_DURATION)
 
 
-def get_progress(encounter_ext_id: str):
-    return cache.get(lock_key(encounter_ext_id))
+def get_progress(enc_id: str) -> int | None:
+    return cache.get(lock_key(enc_id))
 
 
-def clear_lock(encounter_ext_id: str):
-    cache.delete(lock_key(encounter_ext_id))
+def clear_lock(enc_id: str):
+    cache.delete(lock_key(enc_id))
 
 
-def parse_iso_datetime(date_str):
-    try:
-        return timezone.datetime.fromisoformat(date_str)
-    except ValueError:
-        return None
+def get_discharge_summary_template(encounter: Encounter, config: dict) -> str:
+    logger.info("Building Typst template for %s", encounter.external_id)
+
+    # 1) render header
+    header_ctx = {
+        "layout": config["layout"],
+        "header": config["header"],
+        "logo_file_name": config["header"]["logo"]["file_name"],
+        "facility_name": encounter.facility.name,
+    }
+    header_typst = render_to_string("reports/typst/header.typ", header_ctx)
+
+    # 2) render each section
+    fragments = []
+    ctx = {"encounter": encounter}
+    for section_conf in config["sections"]:
+        if not section_conf.get("enabled", False):
+            continue
+        cls = SectionRegistry.get(section_conf["source"])
+        if not cls:
+            logger.warning("No handler for source %r", section_conf["source"])
+            continue
+        section = cls(section_conf, ctx)
+        frag = section.render()
+        fragments.append(frag)
+
+    return "\n\n".join([header_typst, *fragments])
 
 
-def format_duration(duration):
-    if not duration:
-        return ""
+def compile_typ(output_file: str, template_code: str, config: dict, enc_id: str):
+    logger.info("Compiling PDF for %s → %s", enc_id, output_file)
 
-    if duration.days > 0:
-        return f"{duration.days} days"
-    hours, remainder = divmod(duration.seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
-    return f"{hours:02}:{minutes:02}"
+    logo_name = config["header"]["logo"]["file_name"]
+    logo_path = LOGOS_DIR / logo_name
 
+    with tempfile.TemporaryDirectory() as tmpdir:
+        template = Path(tmpdir) / "template.typ"
+        template.write_text(template_code)
+        logo_dest = Path(tmpdir) / f"{logo_name}"
+        logo_dest.write_text(logo_path.read_text())
 
-def get_discharge_summary_data(encounter: Encounter):
-    logger.info("fetching discharge summary data for %s", encounter.external_id)
-    # symptoms = Condition.objects.filter(
-    #     encounter=encounter,
-    #     category=CategoryChoices.problem_list_item.value,
-    # ).exclude(verification_status=VerificationStatusChoices.entered_in_error)
-    # diagnoses = (
-    #     Condition.objects.filter(
-    #         encounter=encounter,
-    #         category=CategoryChoices.encounter_diagnosis.value,
-    #     )
-    #     .exclude(verification_status=VerificationStatusChoices.entered_in_error)
-    #     .order_by("id")
-    # )
-    # principal_diagnosis = diagnoses[0] if diagnoses else None
-    #
-    # allergies = sorted(
-    #     AllergyIntolerance.objects.filter(encounter=encounter).exclude(
-    #         verification_status=AllergyVerificationStatusChoices.entered_in_error
-    #     ),
-    #     key=lambda x: ("high", "low", "unable-to-assess", "", None).index(
-    #         x.criticality
-    #     ),
-    # )
-    #
-    # observations = (
-    #     Observation.objects.filter(
-    #         encounter=encounter,
-    #     )
-    #     .select_related("data_entered_by")
-    #     .order_by("id")
-    # )
-    #
-    # medication_requests = (
-    #     medication_request.MedicationRequest.objects.filter(encounter=encounter)
-    #     .exclude(status=MedicationRequestStatus.entered_in_error.value)
-    #     .select_related("created_by")
-    # )
-
-    # files = FileUpload.objects.filter(
-    #     associating_id=encounter.external_id,
-    #     upload_completed=True,
-    #     is_archived=False,
-    # )
-
-    # admission_duration = (
-    #     format_duration(
-    #         parse_iso_datetime(encounter.period.get("end"))
-    #         - parse_iso_datetime(encounter.period.get("start"))
-    #     )
-    #     if encounter.period.get("end", None) and encounter.period.get("start", None)
-    #     else None
-    # )
-
-    # user_roles = {
-    #     member["user_id"]: member["role"]["display"] for member in encounter.care_team
-    # }
-
-    # care_team_users = User.objects.filter(id__in=user_roles.keys())
-    #
-    # care_team_display = [
-    #     f"{user.full_name} ({user_roles[user.id]})" for user in care_team_users
-    # ]
-
-    with open("care/templates/reports/config.json") as f:  # noqa: PTH123
-        config = json.load(f)
-
-    logging.error("\n" * 10)
-    logging.error(build_discharge_context(encounter, config))
-    logging.error("\n" * 10)
-
-    return build_discharge_context(encounter, config)
-
-
-def compile_typ(output_file, data):
-    try:
-        logo_path = (
-            Path(settings.BASE_DIR)
-            / "staticfiles"
-            / "images"
-            / "logos"
-            / "black-logo.svg"
+        subprocess.run(  # noqa: S603
+            [
+                settings.TYPST_BIN,
+                "compile",
+                str(template.name),
+                str(output_file),
+            ],
+            # capture_output=True,
+            # check=True,
+            # shell=False,
+            cwd=tmpdir,
+            check=False,
         )
 
-        data["logo_path"] = "black-logo.svg"
-        with tempfile.TemporaryDirectory() as tmpdir:
-            template = Path(tmpdir) / "template.typ"
-            template.write_text(render_to_string("reports/main.typ", context=data))
-            logo_dest = Path(tmpdir) / "black-logo.svg"
-            logo_dest.write_text(logo_path.read_text())
-
-            subprocess.run(  # noqa: S603
-                [
-                    settings.TYPST_BIN,
-                    "compile",
-                    str(template.name),
-                    str(output_file),
-                ],
-                capture_output=True,
-                check=True,
-                shell=False,
-                cwd=tmpdir,
-            )
-
-        logging.info(
-            "Successfully Compiled Summary pdf for %s", data["encounter"].external_id
-        )
-
-    except subprocess.CalledProcessError as e:
-        logging.error(
-            "Error compiling summary pdf for %s: %s",
-            data["encounter"].external_id,
-            e.stderr.decode("utf-8"),
-        )
-        raise e
+    logger.info("Successfully compiled PDF for %s", enc_id)
 
 
-def generate_discharge_summary_pdf(data, file):
-    logger.info(
-        "Generating Discharge Summary pdf for %s", data["encounter"].external_id
-    )
-    compile_typ(output_file=file.name, data=data)
-    logger.info(
-        "Successfully Generated Discharge Summary pdf for %s",
-        data["encounter"].external_id,
-    )
+def generate_discharge_summary_pdf(
+    template_code: str, out_file, config: dict, encounter: Encounter
+):
+    logger.info("Generating Discharge Summary PDF for %s", encounter.external_id)
+    compile_typ(out_file.name, template_code, config, encounter.external_id)
+    logger.info("Generated Discharge Summary PDF for %s", encounter.external_id)
 
 
-def generate_and_upload_discharge_summary(encounter: Encounter):
-    logger.info("Generating Discharge Summary for %s", encounter.external_id)
-
+def generate_and_upload_discharge_summary(encounter: Encounter) -> FileUpload:
+    logger.info("Starting Discharge Summary for %s", encounter.external_id)
     set_lock(encounter.external_id, 5)
+
     try:
-        current_date = timezone.now()
-        timestamp = int(current_date.timestamp() * 1000)
-        patient_name_slug: str = (
-            encounter.patient.name.lower().strip().replace(" ", "_")
-        )
+        with open("care/templates/reports/config2.json") as f:  # noqa:PTH123
+            config = json.load(f)
+
+        now_ts = int(timezone.now().timestamp() * 1000)
+        slug = encounter.patient.name.lower().replace(" ", "_")
         summary_file = FileUpload(
-            name=f"discharge_summary-{patient_name_slug}-{int(timestamp)}",
-            internal_name=f"{uuid4()}{int(time.time())}.pdf",
+            name=f"discharge_summary-{slug}-{now_ts}",
+            internal_name=f"{uuid4()}{now_ts}.pdf",
             file_type=FileTypeChoices.encounter.value,
             file_category=FileCategoryChoices.discharge_summary.value,
             associating_id=encounter.external_id,
         )
 
         set_lock(encounter.external_id, 10)
-        data = get_discharge_summary_data(encounter)
-        data["date"] = current_date
+        template_code = get_discharge_summary_template(encounter, config)
 
         set_lock(encounter.external_id, 50)
-        with tempfile.NamedTemporaryFile(suffix=".pdf") as file:
-            generate_discharge_summary_pdf(data, file)
-            logger.info("Uploading Discharge Summary for %s", encounter.external_id)
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
+            generate_discharge_summary_pdf(template_code, tmp_pdf, config, encounter)
+            logger.info("Uploading PDF for %s", encounter.external_id)
             summary_file.files_manager.put_object(
-                summary_file, file, ContentType="application/pdf"
+                summary_file, tmp_pdf, ContentType="application/pdf"
             )
+
             summary_file.upload_completed = True
             summary_file.save(skip_internal_name=True)
             logger.info(
-                "Uploaded Discharge Summary for %s, file id: %s",
+                "Uploaded Discharge Summary for %s (file id: %s)",
                 encounter.external_id,
                 summary_file.id,
             )
+
     finally:
         clear_lock(encounter.external_id)
 
     return summary_file
 
 
-def generate_discharge_report_signed_url(patient_external_id: str):
-    encounter = (
-        Encounter()
-        .objects.filter(patient__external_id=patient_external_id)
+def generate_discharge_report_signed_url(patient_external_id: str) -> str | None:
+    enc = (
+        Encounter.objects.filter(patient__external_id=patient_external_id)
         .order_by("-created_date")
         .first()
     )
-    if not encounter:
+    if not enc:
         return None
-
-    summary_file = generate_and_upload_discharge_summary(encounter)
+    summary_file = generate_and_upload_discharge_summary(enc)
     return summary_file.files_manager.signed_url(
         summary_file, duration=2 * 24 * 60 * 60
     )

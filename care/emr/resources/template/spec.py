@@ -1,12 +1,110 @@
 from enum import Enum
+from typing import Literal
 
-from pydantic import UUID4
+from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility, FacilityReportTemplate
+
+
+class PageMargin(BaseModel):
+    mode: str
+    value: str
+
+
+class PageNumbering(BaseModel):
+    enabled: bool
+    format: str
+    align: Literal[
+        "left",
+        "center",
+        "right",
+        "right + bottom",
+        "left + bottom",
+        "center + bottom",
+        "top+left",
+        "top+right",
+        "top+center",
+    ]
+
+
+class TextConfig(BaseModel):
+    font: str
+    size: str
+
+
+class Layout(BaseModel):
+    page_size: str
+    page_margin: PageMargin
+    page_numbering: PageNumbering
+    text: TextConfig
+
+
+class FacilityHeading(BaseModel):
+    align: Literal["left", "center", "right"]
+    size: str
+    weight: str
+
+
+class Divider(BaseModel):
+    length: str
+    stroke: str
+
+
+class SummaryTitle(BaseModel):
+    text: str
+    size: str
+
+
+class LogoConfig(BaseModel):
+    file_name: str
+
+
+class CreatedOn(BaseModel):
+    label: str
+    style: dict[Literal["fill", "weight"], str | int]
+    date_format: str
+
+
+class HeaderConfig(BaseModel):
+    facility_name: str
+    facility_heading: FacilityHeading
+    divider: Divider
+    title: SummaryTitle
+    logo: LogoConfig
+    created_on: CreatedOn
+
+
+class SectionOptions(BaseModel):
+    title: str | None
+    fields: list[str] | None
+    columns: list[str] | None
+    style: Literal["list", "text"] | None
+    filters: dict[str, list[str]] | None
+
+
+class SectionConfig(BaseModel):
+    source: str
+    is_table: bool
+    enabled: bool
+    options: SectionOptions
+
+    @model_validator(mode="after")
+    def validate_table_config(self):
+        if not self.is_table and not self.options.fields:
+            raise ValueError("Field list is required for non-table sections")
+        if self.is_table and not self.options.columns:
+            raise ValueError("Column list is required for table sections")
+        return self
+
+
+class ReportConfig(BaseModel):
+    layout: Layout
+    header: HeaderConfig
+    sections: list[SectionConfig]
 
 
 class FacilityReportTemplateType(str, Enum):
@@ -21,7 +119,7 @@ class FacilityReportTemplateBaseSpec(EMRResource):
 
 
 class FacilityReportTemplateCreateSpec(FacilityReportTemplateBaseSpec):
-    config: dict = {}
+    config: ReportConfig
     facility: UUID4
     type: FacilityReportTemplateType
 
@@ -30,7 +128,7 @@ class FacilityReportTemplateCreateSpec(FacilityReportTemplateBaseSpec):
 
 
 class FacilityReportTemplateUpdateSpec(FacilityReportTemplateBaseSpec):
-    config: dict = {}
+    config: ReportConfig
 
 
 class FacilityReportTemplateReadSpec(FacilityReportTemplateBaseSpec):

@@ -1,9 +1,5 @@
-import tempfile
-
 from django.conf import settings
 from django.db import transaction
-from django.http import HttpResponse
-from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -316,19 +312,20 @@ class EncounterViewSet(
         return Response({}, status=status.HTTP_200_OK)
 
 
-def dev_preview_discharge_summary(request, encounter_id):
-    """
-    This is a dev only view to preview the discharge summary template
-    """
-    encounter = get_object_or_404(Encounter, external_id=encounter_id)
-    data = discharge_summary.get_discharge_summary_data(encounter)
-    data["date"] = timezone.now()
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        discharge_summary.generate_discharge_summary_pdf(data, tmp_file)
-        tmp_file.seek(0)
-
-        response = HttpResponse(tmp_file, content_type="application/pdf")
-        response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
-
-        return response
+# TODO : Update it to use new functions
+# def dev_preview_discharge_summary(request, encounter_id):
+#     """
+#     This is a dev only view to preview the discharge summary template
+#     """
+#     encounter = get_object_or_404(Encounter, external_id=encounter_id)
+#     data = discharge_summary.get_discharge_summary_data(encounter)
+#     data["date"] = timezone.now()
+#
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+#         discharge_summary.generate_discharge_summary_pdf(data, tmp_file,encounter)
+#         tmp_file.seek(0)
+#
+#         response = HttpResponse(tmp_file, content_type="application/pdf")
+#         response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
+#
+#         return response

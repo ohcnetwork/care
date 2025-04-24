@@ -1,338 +1,171 @@
 import logging
 
-from django.utils.timezone import now
-
 from care.emr.models import (
     AllergyIntolerance,
     Condition,
-    Encounter,
     FileUpload,
     Observation,
 )
 from care.emr.models.medication_request import MedicationRequest
+from care.emr.reports.base import BaseSection
+from care.emr.resources.condition.spec import CategoryChoices
 from care.facility.models import User
 
 logger = logging.getLogger(__name__)
 
 
-def handle_condition(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the condition data. Supports JSONField (code.display) mapping
-    for condition.
-    """
-    qs = Condition.objects.filter(encounter=encounter)
+class SymptomSection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "symptom": lambda o: o.code.get("display")
+                if o.code
+                else self.DEFAULT_EMPTY,
+                "onset": lambda o: o.onset.get("onset_datetime")
+                if o.onset
+                else self.DEFAULT_EMPTY,
+            }
+        )
 
-    for field, values in options.get("filters", {}).items():
-        if values:
-            qs = qs.filter(**{f"{field}__in": values})
-
-    display_fields = options.get("include", [])
-    rows = qs.all()
-
-    table = []
-
-    # Header
-    table.append([f.replace("_", " ").title() for f in display_fields])
-
-    for obj in rows:
-        row = []
-        for field in display_fields:
-            match field:
-                case "diagnosis" | "symptom":
-                    value = obj.code.get("display") if obj.code else "-"
-                case "onset":
-                    value = obj.onset.get("onset_datetime") if obj.onset else "-"
-                case _:
-                    value = getattr(obj, field, "-")
-            row.append(value if value is not None else "-")
-        table.append(row)
-
-    return {"title": options.get("title", "Conditions"), "table": table}
+    def fetch_data(self):
+        return Condition.objects.filter(
+            encounter=self.context["encounter"],
+            category=CategoryChoices.problem_list_item,
+        )
 
 
-def handle_allergy_intolerance(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the allergy intolerance data. Supports JSONField (code.display) mapping
-    for allergy intolerance.
-    """
-    qs = AllergyIntolerance.objects.filter(encounter=encounter)
+class DiagnosisSection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "diagnosis": lambda o: o.code.get("display")
+                if o.code
+                else self.DEFAULT_EMPTY,
+                "onset": lambda o: o.onset.get("onset_datetime")
+                if o.onset
+                else self.DEFAULT_EMPTY,
+            }
+        )
 
-    for field, values in options.get("filters", {}).items():
-        if values:
-            qs = qs.filter(**{f"{field}__in": values})
-
-    display_fields = options.get("include", [])
-    rows = qs.all()
-
-    table = []
-
-    # Header
-    table.append([f.replace("_", " ").title() for f in display_fields])
-
-    for obj in rows:
-        row = []
-        for field in display_fields:
-            match field:
-                case "allergen":
-                    value = obj.code.get("display") if obj.code else "-"
-                case "onset":
-                    value = obj.onset.get("onset_datetime") if obj.onset else "-"
-                case _:
-                    value = getattr(obj, field, "-")
-            row.append(value if value is not None else "-")
-        table.append(row)
-
-    return {"title": options.get("title", "Allergy Intolerance"), "table": table}
+    def fetch_data(self):
+        return Condition.objects.filter(
+            encounter=self.context["encounter"],
+            category=CategoryChoices.encounter_diagnosis,
+        )
 
 
-def get_observation_value(observation: Observation) -> str | None:
-    if observation.value.get("display", None):
-        return observation.value.get("display", None)
-    if observation.value.get("unit", None):
-        unit: str = observation.value.get("unit", {}).get("display", None)
-        value: float | None = observation.value.get("value", None)
-        value = int(value) if value and value.is_integer() else value
-        return f"{value} {unit}" if unit else value
-    return observation.value.get("value", None)
+class AllergySection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "allergen": lambda o: o.code.get("display")
+                if o.code
+                else self.DEFAULT_EMPTY,
+                "onset": lambda o: o.onset.get("onset_datetime")
+                if o.onset
+                else self.DEFAULT_EMPTY,
+            }
+        )
+
+    def fetch_data(self):
+        return AllergyIntolerance.objects.filter(encounter=self.context["encounter"])
 
 
-def handle_observation(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the observation data. Supports JSONField (main_code.display) mapping
-    and formatting for 'value'.
-    """
-    qs = Observation.objects.filter(encounter=encounter)
-
-    for field, values in options.get("filters", {}).items():
-        if values:
-            qs = qs.filter(**{f"{field}__in": values})
-
-    display_fields = options.get("include", [])
-    rows = qs.all()
-
-    table = []
-
-    # Add header row
-    table.append([f.replace("_", " ").title() for f in display_fields])
-
-    for obj in rows:
-        row = []
-        for field in display_fields:
-            match field:
-                case "observation":
-                    value = obj.main_code.get("display") if obj.main_code else "-"
-                case "value":
-                    value = get_observation_value(obj)
-                case "date":
-                    value = obj.effective_datetime or obj.created_date
-                case _:
-                    value = getattr(obj, field, "-")
-            row.append(value if value is not None else "-")
-        table.append(row)
-
-    return {"title": options.get("title", "Observations"), "table": table}
+def _get_observation_value(o: Observation):
+    if disp := o.value.get("display"):
+        return disp
+    if unit := o.value.get("unit", {}).get("display"):
+        v = o.value.get("value")
+        if isinstance(v, (int, float)) and getattr(v, "is_integer", lambda: False)():
+            v = int(v)
+        return f"{v} {unit}" if unit else v
+    return o.value.get("value", BaseSection.DEFAULT_EMPTY)
 
 
-def medication_dosage_display(medication: MedicationRequest) -> str:
+class ObservationSection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "observation": lambda o: o.main_code.get("display")
+                if o.main_code
+                else self.DEFAULT_EMPTY,
+                "value": _get_observation_value,
+                "date": lambda o: o.effective_datetime
+                or o.created_date
+                or self.DEFAULT_EMPTY,
+            }
+        )
+
+    def fetch_data(self):
+        return Observation.objects.filter(encounter=self.context["encounter"])
+
+
+def _med_dosage(o: MedicationRequest):
     try:
-        return medication.dosage_instruction[0]["text"]
-    except (IndexError, KeyError, TypeError):
-        return None
+        return o.dosage_instruction[0]["text"] or BaseSection.DEFAULT_EMPTY
+    except Exception:
+        return BaseSection.DEFAULT_EMPTY
 
 
-def handle_medication_request(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the medication request data. Supports JSONField (code.display) mapping
-    for medication request.
-    """
-    qs = MedicationRequest.objects.filter(encounter=encounter)
+class MedicationRequestSection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "medication": lambda m: m.medication.get("display", self.DEFAULT_EMPTY),
+                "value": _med_dosage,
+                "date": lambda m: m.authored_on or m.created_date or self.DEFAULT_EMPTY,
+            }
+        )
 
-    for field, values in options.get("filters", {}).items():
-        if values:
-            qs = qs.filter(**{f"{field}__in": values})
-
-    display_fields = options.get("include", [])
-    rows = qs.all()
-
-    table = []
-
-    # Header
-    table.append([f.replace("_", " ").title() for f in display_fields])
-
-    for obj in rows:
-        row = []
-        for field in display_fields:
-            match field:
-                case "medication":
-                    value = obj.medication.get("display", None)
-                case "value":
-                    value = medication_dosage_display(obj)
-                case "date":
-                    value = obj.authored_on or obj.created_date
-                case _:
-                    value = getattr(obj, field, "-")
-            row.append(value if value is not None else "-")
-        table.append(row)
-
-    return {"title": options.get("title", "Medication Requests"), "table": table}
+    def fetch_data(self):
+        return MedicationRequest.objects.filter(encounter=self.context["encounter"])
 
 
-def handle_patient_info(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the patient info data.
-    """
-    patient = encounter.patient
-
-    display_fields = options.get("include", [])
-
-    patient_data = {}
-
-    for field in display_fields:
-        if field == "date_of_birth":
-            if patient.date_of_birth:
-                patient_data[field] = patient.date_of_birth
-            else:
-                patient_data["age"] = patient.get_age()
-        if field == "age":
-            patient_data[field] = patient.get_age()
-        patient_data[field] = getattr(patient, field) or "-"
-
-    return patient_data
+class PatientInfoSection(BaseSection):
+    def fetch_data(self):
+        return [self.context["encounter"].patient]
 
 
-def handle_care_team(options: dict, encounter: Encounter) -> dict:
-    """
-    Format care team into a Typst-compatible table.
-    """
-    user_roles = {
-        member["user_id"]: member["role"]["display"]
-        for member in encounter.care_team
-        if member.get("user_id") and member.get("role")
-    }
+class CareTeamSection(BaseSection):
+    def __init__(self, config, context):
+        super().__init__(config, context)
+        self.field_extractors.update(
+            {
+                "name": lambda u: u.full_name,
+                "role": self._get_role_for,
+            }
+        )
 
-    care_team_users = User.objects.filter(id__in=user_roles.keys())
+    @property
+    def _role_map(self):
+        return {
+            m["user_id"]: m["role"]["display"]
+            for m in self.context["encounter"].care_team
+            if m.get("user_id") and m.get("role")
+        }
 
-    rows = [
-        [user.full_name, user_roles.get(user.id, "Unknown")] for user in care_team_users
-    ]
+    def _get_role_for(self, user: User):
+        return self._role_map.get(user.id, "Unknown")
 
-    return {
-        "title": options.get("title", "Care Team"),
-        "table": [["Name", "Role"], *rows],
-    }
-
-
-def handle_file_display(options: dict, encounter: Encounter) -> dict:
-    """
-    Handle the file display data.
-    """
-    qs = FileUpload.objects.filter(
-        associating_id=encounter.external_id,
-        upload_completed=True,
-        is_archived=False,
-    )
-
-    display_fields = options.get("include", [])
-    rows = qs.all()
-
-    table = []
-
-    # Header
-    table.append([f.replace("_", " ").title() for f in display_fields])
-
-    for obj in rows:
-        row = []
-        for field in display_fields:
-            value = getattr(obj, field, "-")
-            row.append(value if value is not None else "-")
-        table.append(row)
-
-    return {"title": options.get("title", "Files"), "table": table}
+    def fetch_data(self):
+        ids = [m["user_id"] for m in self.context["encounter"].care_team]
+        return User.objects.filter(id__in=ids)
 
 
-def build_discharge_context(encounter: Encounter, config: dict) -> dict:
-    """
-    Build grouped context from config and encounter.
-    Groups:
-    - tables → all tabular data
-    - patient_info → key-value dict
-    - care_team → table
-    - files → table
-    - discharge_advice → string
-    """
-    context = {
-        "encounter": encounter,
-        "patient": encounter.patient,
-        "date": now(),
-        "tables": [],
-        "patient_info": {},
-        "care_team": {},
-        "files": {},
-        "discharge_advice": encounter.discharge_summary_advice or "",
-    }
+class FileSection(BaseSection):
+    def fetch_data(self):
+        return FileUpload.objects.filter(
+            associating_id=self.context["encounter"].external_id,
+            upload_completed=True,
+            is_archived=False,
+        )
 
-    sections = config.get("sections", {})
 
-    SOURCE_HANDLERS = {  # noqa: N806
-        "condition": handle_condition,
-        "observation": handle_observation,
-        "allergy": handle_allergy_intolerance,
-        "medication_request": handle_medication_request,
-        "file": handle_file_display,
-        "care_team": handle_care_team,
-        "patient": handle_patient_info,
-        "encounter": lambda *args, **kwargs: {},  # Optional stub
-    }
-
-    for section_key, section in sections.items():
-        if not isinstance(section, dict) or not section.get("enabled"):
-            continue
-
-        source = section.get("source")
-        options = section.get("options", {})
-        handler = SOURCE_HANDLERS.get(source)
-
-        if not handler:
-            # logger.warning(
-            #     f"⚠️ No handler for source '{source}' in section '{section_key}'"
-            # )
-            continue
-
-        try:
-            result = handler(options=options, encounter=encounter)
-            if not result:
-                continue
-
-            title = (
-                result.get("title", section_key.replace("_", " ").title())
-                if isinstance(result, dict)
-                else section_key
-            )
-
-            # Group based on section key or source
-            if section.get("is_table", False):
-                context["tables"].append(
-                    {
-                        "key": section_key,
-                        "source": source,
-                        "title": title,
-                        "data": result,
-                    }
-                )
-            elif source == "patient":
-                context["patient_info"] = result
-            elif source == "user":
-                context["care_team"] = result
-            elif source == "file":
-                context["files"] = result
-            elif source == "encounter":
-                context["discharge_advice"] = result
-            else:
-                error = f"Unclassified section '{section_key}' - skipping"
-                logger.warning(error)
-
-        except Exception as e:
-            error = f"Error processing section '{section_key}': {e}"
-            logger.exception(error)
-
-    return context
+class DischargeAdviceSection(BaseSection):
+    def fetch_data(self):
+        return [self.context["encounter"].discharge_summary_advice or ""]
