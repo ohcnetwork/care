@@ -22,6 +22,9 @@ from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import District, LocalBody, State, Ward
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
+from care.utils.reports.load_default_report_config import (
+    load_default_discharge_summary_config,
+)
 
 User = get_user_model()
 
@@ -354,6 +357,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         super().save(*args, **kwargs)
 
         if is_create:
+            from care.emr.resources.template.spec import (
+                FacilityReportTemplateType,  # to avoid circular imports
+            )
+
             facility_organization = FacilityOrganization.objects.create(
                 org_type="root",
                 name="Administration",
@@ -369,6 +376,11 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             )
             FacilityUser.objects.create(
                 facility=self, user=self.created_by, created_by=self.created_by
+            )
+            FacilityReportTemplate.objects.create(
+                facility=self,
+                type=FacilityReportTemplateType.discharge_summary,
+                config=load_default_discharge_summary_config,
             )
 
         self.sync_cache()

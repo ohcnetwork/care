@@ -1,4 +1,4 @@
-from care.emr.reports.section_registry import SectionRegistry
+from care.emr.registries.report_section.report_section import SectionRegistry
 from care.emr.reports.utils import (
     AllergySection,
     CareTeamSection,

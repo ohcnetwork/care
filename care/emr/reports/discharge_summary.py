@@ -1,4 +1,3 @@
-import json
 import logging
 import subprocess
 import tempfile
@@ -13,6 +12,8 @@ from django.utils import timezone
 from care.emr.models import Encounter, FileUpload
 from care.emr.reports import SectionRegistry
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
+from care.emr.resources.template.spec import FacilityReportTemplateType
+from care.facility.models import FacilityReportTemplate
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +109,10 @@ def generate_and_upload_discharge_summary(encounter: Encounter) -> FileUpload:
     set_lock(encounter.external_id, 5)
 
     try:
-        with open("care/templates/reports/config2.json") as f:  # noqa:PTH123
-            config = json.load(f)
+        config = FacilityReportTemplate.objects.get(
+            facility=encounter.facility,
+            type=FacilityReportTemplateType.discharge_summary,
+        ).config
 
         now_ts = int(timezone.now().timestamp() * 1000)
         slug = encounter.patient.name.lower().replace(" ", "_")
