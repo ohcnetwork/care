@@ -41,7 +41,6 @@ def clear_lock(enc_id: str):
 def get_discharge_summary_template(encounter: Encounter, config: dict) -> str:
     logger.info("Building Typst template for %s", encounter.external_id)
 
-    # 1) render header
     header_ctx = {
         "layout": config["layout"],
         "header": config["header"],
@@ -50,7 +49,6 @@ def get_discharge_summary_template(encounter: Encounter, config: dict) -> str:
     }
     header_typst = render_to_string("reports/typst/header.typ", header_ctx)
 
-    # 2) render each section
     fragments = []
     ctx = {"encounter": encounter}
     for section_conf in config["sections"]:
@@ -86,9 +84,6 @@ def compile_typ(output_file: str, template_code: str, config: dict, enc_id: str)
                 str(template.name),
                 str(output_file),
             ],
-            # capture_output=True,
-            # check=True,
-            # shell=False,
             cwd=tmpdir,
             check=False,
         )
