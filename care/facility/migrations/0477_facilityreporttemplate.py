@@ -14,7 +14,7 @@ def add_default_summary_report_config_to_facility(apps, schema_editor):
 
     with transaction.atomic():
         for facility in Facility.objects.all():
-            FacilityReportTemplate.objects.create(facility=facility,type=FacilityReportTemplateType.discharge_summary,config=load_default_discharge_summary_config)
+            FacilityReportTemplate.objects.create(facility=facility,type=FacilityReportTemplateType.discharge_summary,config=load_default_discharge_summary_config())
 
 
 
