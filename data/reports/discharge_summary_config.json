@@ -7,7 +7,7 @@
     },
     "page_numbering": {
       "enabled": true,
-      "format": "Page {page} of {pages}",
+      "format": "1 of 1",
       "align": "right + bottom"
     },
     "text": {
@@ -16,7 +16,6 @@
     }
   },
   "header": {
-    "facility_name": "Care Health System",
     "facility_heading": {
       "align": "center",
       "size": "24pt",
@@ -51,7 +50,6 @@
         "title": "Patient Information",
         "fields": [
           "name",
-          "last_name",
           "date_of_birth",
           "gender",
           "phone_number"
@@ -137,6 +135,42 @@
         "fields": ["discharge_summary_advice"],
         "style": "text"
       }
-    }
+    },
+    {
+  "source": "custom_text",
+  "is_table": true,
+  "enabled": true,
+  "options": {
+    "title": "Follow-up Schedule",
+    "columns": ["Visit Type", "Date", "Location"],
+    "rows": [
+      ["Initial", "01/05/2025", "OPD"],
+      ["Specialist", "15/05/2025", "Cardiology"]
+    ]
+  }
+},{
+  "source": "custom_text",
+  "is_table": false,
+  "enabled": true,
+  "options": {
+    "title": "Disclaimer",
+    "style": "text",
+    "text": "This document is confidential and intended solely for the use of the individual or entity to whom they are addressed."
+  }
+}
+,{
+  "source": "custom_text",
+  "is_table": false,
+  "enabled": true,
+  "options": {
+    "title": "Emergency Contacts",
+    "style": "list",
+    "fields": [
+      {"label": "Primary Contact", "value": "+91-9876543210"},
+      {"label": "Ambulance", "value": "102"}
+    ]
+  }
+}
+
   ]
 }

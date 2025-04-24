@@ -1,5 +1,7 @@
 import logging
 
+from django.template.loader import render_to_string
+
 from care.emr.models import (
     AllergyIntolerance,
     Condition,
@@ -169,3 +171,35 @@ class FileSection(BaseSection):
 class DischargeAdviceSection(BaseSection):
     def fetch_data(self):
         return [self.context["encounter"].discharge_summary_advice or ""]
+
+
+class CustomTextSection(BaseSection):
+    def fetch_data(self):
+        # Custom sections don't fetch from DB
+        return None
+
+    def render(self):
+        opts = self.opts
+        title = opts.get("title", "")
+
+        if self.is_table:
+            columns = opts.get("columns", [])
+            rows = opts.get("rows", [])
+            return render_to_string(
+                "reports/typst/table.typ",
+                {"title": title, "columns": columns, "rows": rows},
+            )
+
+        style = opts.get("style", "text")
+        if style == "list":
+            fields = opts.get("fields", [])
+            rows = [[f["label"], f["value"]] for f in fields]
+            return render_to_string(
+                "reports/typst/list.typ", {"title": title, "rows": rows}
+            )
+
+        # Default to plain text
+        text = opts.get("text", "")
+        return render_to_string(
+            "reports/typst/text.typ", {"title": title, "text": text}
+        )
