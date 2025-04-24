@@ -4,17 +4,6 @@ import django.db.models.deletion
 import uuid
 from django.db import migrations, models, transaction
 
-from care.emr.resources.template.spec import FacilityReportTemplateType
-from care.utils.reports.load_default_report_config import load_default_discharge_summary_config
-
-
-def add_default_summary_report_config_to_facility(apps, schema_editor):
-    Facility               = apps.get_model("facility", "Facility")
-    FacilityReportTemplate = apps.get_model("facility", "FacilityReportTemplate")
-
-    with transaction.atomic():
-        for facility in Facility.objects.all():
-            FacilityReportTemplate.objects.create(facility=facility,type=FacilityReportTemplateType.discharge_summary,config=load_default_discharge_summary_config())
 
 
 
@@ -41,5 +30,4 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
-        migrations.RunPython(add_default_summary_report_config_to_facility),
     ]

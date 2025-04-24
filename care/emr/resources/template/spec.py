@@ -2,12 +2,11 @@ from enum import Enum
 from typing import Literal
 
 from pydantic import UUID4, BaseModel, model_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
-from care.facility.models import Facility, FacilityReportTemplate
+from care.facility.models import FacilityReportTemplate
 
 
 class PageMargin(BaseModel):
@@ -80,10 +79,10 @@ class HeaderConfig(BaseModel):
 
 class SectionOptions(BaseModel):
     title: str | None
-    fields: list[str] | None
-    columns: list[str] | None
-    style: Literal["list", "text"] | None
-    filters: dict[str, list[str]] | None
+    fields: list[str] = []
+    columns: list[str] = []
+    style: Literal["list", "text"] | None = "list"
+    filters: dict[str, list[str]] | None = []
 
 
 class SectionConfig(BaseModel):
@@ -117,14 +116,12 @@ class FacilityReportTemplateBaseSpec(EMRResource):
 
     __model__ = FacilityReportTemplate
 
+    __exclude__ = ["facility"]
+
 
 class FacilityReportTemplateCreateSpec(FacilityReportTemplateBaseSpec):
     config: ReportConfig
-    facility: UUID4
     type: FacilityReportTemplateType
-
-    def perform_extra_deserialization(self, is_update, obj):
-        obj.facility = get_object_or_404(Facility, external_id=self.facility)
 
 
 class FacilityReportTemplateUpdateSpec(FacilityReportTemplateBaseSpec):
