@@ -4,14 +4,14 @@ from typing import Literal
 
 from django.core.files.uploadedfile import UploadedFile
 
-from care.emr.utils.file_manager import S3FilesManager
+from care.emr.utils.file_manager import get_file_manager
 from care.utils.csp.config import BucketType
 
 logger = logging.getLogger(__name__)
 
 
 def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"]):
-    file_manager = S3FilesManager(BucketType.FACILITY)
+    file_manager = get_file_manager(BucketType.FACILITY)
 
     try:
         file_manager._delete_object(image_key)  # noqa: SLF001
@@ -25,7 +25,7 @@ def upload_cover_image(
     folder: Literal["cover_images", "avatars"],
     old_key: str | None = None,
 ) -> str:
-    file_manager = S3FilesManager(BucketType.FACILITY)
+    file_manager = get_file_manager(BucketType.FACILITY)
 
     if old_key:
         try:

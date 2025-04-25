@@ -22,6 +22,7 @@ class CSProvider(enum.Enum):
     MINIO = "MINIO"
     DOCKER = "DOCKER"  # localstack in docker
     LOCAL = "LOCAL"  # localstack on host
+    AZURE = "AZURE"
 
 
 class BucketType(enum.Enum):
