@@ -1,6 +1,7 @@
 import boto3
+from django.conf import settings
 
-from care.utils.csp.config import get_client_config
+from care.utils.csp.config import BucketType, get_client_config
 
 
 class FileManager:
@@ -69,3 +70,23 @@ class S3FilesManager(FileManager):
         content_type = response["ContentType"]
         content = response["Body"].read()
         return content_type, content
+
+    def _put_object(self, key, file):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+        boto_params = {
+            "Bucket": bucket_name,
+            "Key": key,
+            "Body": file,
+        }
+        if self.bucket_type == BucketType.FACILITY and settings.BUCKET_HAS_FINE_ACL:
+            boto_params["ACL"] = "public-read"
+        return s3.put_object(**boto_params)
+
+    def _delete_object(self, key):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+        return s3.delete_object(
+            Bucket=bucket_name,
+            Key=key,
+        )
