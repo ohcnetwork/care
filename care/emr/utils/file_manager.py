@@ -105,10 +105,10 @@ class AzureFileManager(FileManager):
         """Initialize with bucket type for configuration."""
         self.bucket_type = bucket_type
 
-    def _get_blob_service_client(self, external=False):
+    def _get_blob_service_client(self):
         """Get Azure Blob Service client and container name."""
-        config, container_name = get_client_config(self.bucket_type, external=external)
-        connection_string = config.get("connection_string")
+        config, container_name = get_client_config(self.bucket_type, external=True)
+        connection_string = config.get("aws_secret_access_key")
         if not connection_string:
             raise ValueError("Azure connection string is required in config")
 
@@ -118,7 +118,7 @@ class AzureFileManager(FileManager):
 
     def signed_url(self, file_obj, duration=60 * 60, mime_type=None):
         """Generate signed URL for uploading a file."""
-        service_client, container_name = self._get_blob_service_client(external=True)
+        service_client, container_name = self._get_blob_service_client()
         blob_client = service_client.get_blob_client(
             container=container_name,
             blob=f"{file_obj.file_type}/{file_obj.internal_name}",
@@ -141,7 +141,7 @@ class AzureFileManager(FileManager):
 
     def read_signed_url(self, file_obj, duration=60 * 60):
         """Generate signed URL for downloading a file."""
-        service_client, container_name = self._get_blob_service_client(external=True)
+        service_client, container_name = self._get_blob_service_client()
         blob_client = service_client.get_blob_client(
             container=container_name,
             blob=f"{file_obj.file_type}/{file_obj.internal_name}",
@@ -190,6 +190,24 @@ class AzureFileManager(FileManager):
         content_type = response.content_settings.content_type
         content = response.readall()
         return content_type, content
+
+    def _put_object(self, key, file):
+        """Upload a file to Azure Blob Storage."""
+        service_client, container_name = self._get_blob_service_client()
+        blob_client = service_client.get_blob_client(
+            container=container_name,
+            blob=key,
+        )
+        return blob_client.upload_blob(data=file, overwrite=True)
+
+    def _delete_object(self, key):
+        """Delete a file from Azure Blob Storage."""
+        service_client, container_name = self._get_blob_service_client()
+        blob_client = service_client.get_blob_client(
+            container=container_name,
+            blob=key,
+        )
+        return blob_client.delete_blob()
 
 
 def get_file_manager(bucket_type: BucketType) -> FileManager:

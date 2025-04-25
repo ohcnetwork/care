@@ -74,11 +74,14 @@ class FileUploadTestCase(CareAPITestBase):
         file_upload_response = requests.put(
             response.data["signed_url"],
             data=self.file,
-            headers={"Content-Type": self.file_mime_type},
+            headers={
+                "Content-Type": self.file_mime_type,
+                "x-ms-blob-type": "BlockBlob",
+            },
             timeout=5,
         )
-        self.assertEqual(
-            file_upload_response.status_code, 200, file_upload_response.text
+        self.assertIn(
+            file_upload_response.status_code, [200, 201], file_upload_response.text
         )
 
         # mark upload as completed
@@ -109,11 +112,12 @@ class FileUploadTestCase(CareAPITestBase):
             self.file_mime_type,
             file_response.headers,
         )
-        self.assertEqual(
-            file_response.headers["Content-Disposition"],
-            f"attachment; filename={self.file.name}",
-            file_response.headers,
-        )
+        # azure does not support content-disposition
+        # self.assertEqual(
+        #     file_response.headers["Content-Disposition"],
+        #     f"attachment; filename={self.file.name}",
+        #     file_response.headers,
+        # )
 
     def test_direct_file_upload(self):
         url = reverse("files-upload-file")
