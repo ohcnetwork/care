@@ -1,0 +1,27 @@
+{# templates/reports/typst/header.typ #}
+
+#set page(
+  numbering: "{{ layout.page_numbering.format }}",
+  number-align: {{ layout.page_numbering.align }}
+)
+#set page(
+  "{{ layout.page_size }}",
+  margin: {{ layout.page_margin.value }}
+)
+#set text(font: "DejaVu Sans",size: 10pt,hyphenate: true, fallback: true)
+
+#let mygray = luma(150)
+
+#let frame(stroke) = (x, y) => (
+    left: if x > 0 { 0pt } else { stroke },
+    right: stroke,
+    top: if y < 2 { stroke } else { 0pt },
+    bottom: stroke,
+)
+
+#set table(
+    fill: (_, y) => if calc.odd(y) { rgb("EAF2F5") },
+    stroke: frame(rgb("21222C")),
+)
+
+#show table: set block(width:100%)

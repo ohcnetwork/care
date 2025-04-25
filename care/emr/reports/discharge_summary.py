@@ -11,6 +11,7 @@ from django.utils import timezone
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.reports import SectionRegistry
+from care.emr.reports.utils import HeaderBuilder
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.template.spec import FacilityReportTemplateType
 from care.facility.models import FacilityReportTemplate
@@ -41,13 +42,14 @@ def clear_lock(enc_id: str):
 def get_discharge_summary_template(encounter: Encounter, config: dict) -> str:
     logger.info("Building Typst template for %s", encounter.external_id)
 
-    header_ctx = {
-        "layout": config["layout"],
-        "header": config["header"],
-        "logo_file_name": config["header"]["logo"]["file_name"],
-        "facility_name": encounter.facility.name,
-    }
-    header_typst = render_to_string("reports/typst/header.typ", header_ctx)
+    page_layout = render_to_string(
+        "reports/typst/page_layout.typ",
+        {
+            "layout": config["layout"],
+        },
+    )
+    hb = HeaderBuilder.from_config(config["header"])
+    header_typst = hb.render()
 
     fragments = []
     ctx = {"encounter": encounter}
@@ -62,7 +64,7 @@ def get_discharge_summary_template(encounter: Encounter, config: dict) -> str:
         frag = section.render()
         fragments.append(frag)
 
-    return "\n\n".join([header_typst, *fragments])
+    return "\n\n".join([page_layout, header_typst, *fragments])
 
 
 def compile_typ(output_file: str, template_code: str, config: dict, enc_id: str):

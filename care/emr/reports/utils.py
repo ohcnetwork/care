@@ -203,3 +203,138 @@ class CustomTextSection(BaseSection):
         return render_to_string(
             "reports/typst/text.typ", {"title": title, "text": text}
         )
+
+
+class HeaderBuilder:
+    def __init__(self, gutter: str = "1em"):
+        self.grid_rows: list[list[str]] = []
+        self.gutter = gutter
+
+    @classmethod
+    def from_config(cls, header_config: dict, gutter: str = "1em") -> "HeaderBuilder":
+        builder = cls(gutter=gutter)
+        for row_cfg in header_config.get("rows", []):
+            row_idx = builder.add_row()
+            for el in row_cfg:
+                t = el["type"]
+                align = el.get("align") or "left"
+                if t == "text":
+                    builder.add_text(
+                        row_idx,
+                        text=el["text"],
+                        size=el["size"],
+                        weight=el.get("weight"),
+                        align=align,
+                    )
+                elif t == "image":
+                    builder.add_image(
+                        row_idx,
+                        file_name=el["file_name"],
+                        width=el.get("width"),
+                        align=align,
+                    )
+                elif t == "rule":
+                    builder.add_rule(
+                        row_idx,
+                        length=el.get("length", "100%"),
+                        stroke=el.get("stroke", "black"),
+                        align=align,
+                    )
+                elif t in ("datetime", "date", "timestamp"):
+                    builder.add_datetime(
+                        row_idx,
+                        label=el["label"],
+                        date_format=el.get("format") or el.get("date_format"),
+                        style_fill=el.get("style", {}).get("fill"),
+                        style_weight=el.get("style", {}).get("weight"),
+                        align=align,
+                    )
+                else:
+                    error = f"Unknown header element type: {t!r}"
+                    logging.error(error)
+        return builder
+
+    def add_row(self) -> int:
+        self.grid_rows.append([])
+        return len(self.grid_rows) - 1
+
+    def add_text(
+        self,
+        row_idx: int,
+        text: str,
+        size: str,
+        weight: str | None = None,
+        align: str | None = None,
+    ):
+        parts = [f"size: {size}"]
+        if weight:
+            parts.append(f"weight: {weight}")
+        cfg = ", ".join(parts)
+        frag = f"text({cfg})[= {text}]"
+        if align:
+            frag = f"align({align}, {frag})"
+        self.grid_rows[row_idx].append(frag)
+
+    def add_image(
+        self,
+        row_idx: int,
+        file_name: str,
+        width: str | None = None,
+        align: str | None = None,
+    ):
+        parts = []
+        if width:
+            parts.append(f"width: {width}")
+        cfg = ", ".join(parts)
+        frag = f'image("{file_name}"{", " + cfg if cfg else ""})'
+        if align:
+            frag = f"align({align}, {frag})"
+        self.grid_rows[row_idx].append(frag)
+
+    def add_rule(
+        self,
+        row_idx: int,
+        length: str = "100%",
+        stroke: str = "black",
+        align: str | None = None,
+    ):
+        frag = f"line(length: {length}, stroke: {stroke})"
+        if align:
+            frag = f"align({align}, {frag})"
+        self.grid_rows[row_idx].append(frag)
+
+    def add_datetime(
+        self,
+        row_idx: int,
+        label: str,
+        date_format: str,
+        style_fill: str | None = None,
+        style_weight: str | None = None,
+        align: str | None = None,
+    ):
+        parts = []
+        if style_fill:
+            parts.append(f"fill: {style_fill}")
+        if style_weight:
+            parts.append(f"weight: {style_weight}")
+        cfg = ", ".join(parts)
+        frag = f'text({cfg})[*{label}* #datetime.today().display("{date_format}")]'
+        if align:
+            frag = f"align({align}, {frag})"
+        self.grid_rows[row_idx].append(frag)
+
+    def _render_grid_for_row(self, cells: list[str]) -> str:
+        count = len(cells)
+        lines = []
+        for i, frag in enumerate(cells):
+            comma = "," if i < count - 1 else ""
+            lines.append(f"  [#{frag}]{comma}")
+        body = "\n".join(lines)
+        return (
+            f"#grid(columns: {count}, column-gutter: {self.gutter}, align: center,\n"
+            f"{body}\n"
+            ")"
+        )
+
+    def render(self) -> str:
+        return "\n\n".join(self._render_grid_for_row(r) for r in self.grid_rows)

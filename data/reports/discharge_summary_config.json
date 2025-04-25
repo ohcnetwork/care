@@ -15,31 +15,54 @@
       "size": "10pt"
     }
   },
-  "header": {
-    "facility_heading": {
-      "align": "center",
-      "size": "24pt",
-      "weight": "bold"
-    },
-    "divider": {
-      "length": "100%",
-      "stroke": "mygray"
-    },
-    "title": {
-      "text": "Patient Discharge Summary",
-      "size": "15pt"
-    },
-    "logo": {
-      "file_name": "care-black-logo.svg"
-    },
-    "created_on": {
-      "label": "Created on",
-      "style": {
-        "fill": "mygray",
-        "weight": 500
-      },
-      "date_format": "[day]/[month]/[year]"
-    }
+    "header": {
+    "rows": [
+      [
+        {
+          "type": "text",
+          "text": "Central Diagnostic Laboratory",
+          "size": "24pt",
+          "weight": 400,
+          "align": "center"
+        }
+      ],
+      [
+        {
+          "type": "rule",
+          "length": "100%"
+        }
+      ],
+      [
+        {
+          "type": "text",
+          "text": "Patient Discharge Summary",
+          "size": "15pt",
+          "weight": 400
+        },
+        {
+          "type": "image",
+          "file_name": "care-black-logo.svg",
+          "width": "20%"
+        }
+      ],
+      [
+        {
+          "type": "datetime",
+          "label": "Created on",
+          "format": "[day]/[month]/[year]",
+          "style": {
+            "fill": "mygray",
+            "weight": 400
+          }
+        }
+      ],
+      [
+        {
+          "type": "rule",
+          "length": "100%"
+        }
+      ]
+    ]
   },
   "sections": [
     {
@@ -137,7 +160,7 @@
       }
     },
     {
-  "source": "custom_text",
+  "source": "custom-block",
   "is_table": true,
   "enabled": true,
   "options": {
@@ -149,7 +172,7 @@
     ]
   }
 },{
-  "source": "custom_text",
+  "source": "custom-block",
   "is_table": false,
   "enabled": true,
   "options": {
@@ -159,7 +182,7 @@
   }
 }
 ,{
-  "source": "custom_text",
+  "source": "custom-block",
   "is_table": false,
   "enabled": true,
   "options": {
