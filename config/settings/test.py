@@ -82,6 +82,10 @@ LOGGING = {
             "handlers": ["console"],
             "level": "ERROR",
         },
+        "celery": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
