@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Literal
 
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, HttpUrl, model_validator
 
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
@@ -68,13 +68,47 @@ class CreatedOn(BaseModel):
     date_format: str
 
 
+class StyleConfig(BaseModel):
+    fill: str | None
+    weight: int | None
+
+
+class TextElement(BaseModel):
+    type: Literal["text"]
+    text: str
+    size: str
+    weight: int
+    align: Literal["left", "center", "right"] | None
+
+
+class ImageElement(BaseModel):
+    type: Literal["image"]
+    file_name: str
+    url: HttpUrl
+    width: str | None
+    align: Literal["left", "center", "right"] | None
+
+
+class RuleElement(BaseModel):
+    type: Literal["rule"]
+    length: str = "100%"
+    stroke: str | None = "black"
+    align: Literal["left", "center", "right"] | None
+
+
+class DateTimeElement(BaseModel):
+    type: Literal["datetime"]
+    label: str
+    format: str
+    style: StyleConfig
+    align: Literal["left", "center", "right"] | None
+
+
+HeaderElement = TextElement | ImageElement | RuleElement | DateTimeElement
+
+
 class HeaderConfig(BaseModel):
-    facility_name: str
-    facility_heading: FacilityHeading
-    divider: Divider
-    title: SummaryTitle
-    logo: LogoConfig
-    created_on: CreatedOn
+    rows: list[list[HeaderElement]]
 
 
 class SectionOptions(BaseModel):

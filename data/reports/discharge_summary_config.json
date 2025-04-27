@@ -15,7 +15,7 @@
       "size": "10pt"
     }
   },
-    "header": {
+  "header": {
     "rows": [
       [
         {
@@ -41,8 +41,10 @@
         },
         {
           "type": "image",
-          "file_name": "care-black-logo.svg",
-          "width": "20%"
+          "file_name": "care-black-logo.png",
+          "url": "https://en.wikipedia.org/static/images/icons/wikipedia.png",
+          "width": "20%",
+          "align": "right"
         }
       ],
       [
