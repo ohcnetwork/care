@@ -2,6 +2,7 @@ import base64
 import io
 
 import requests
+from django.test import override_settings
 from django.urls import reverse
 from PIL import Image
 
@@ -9,6 +10,7 @@ from care.emr.models import SchedulableUserResource
 from care.utils.tests.base import CareAPITestBase
 
 
+@override_settings(BUCKET_EXTERNAL_ENDPOINT="http://minio:9000")
 class FileUploadTestCase(CareAPITestBase):
     def setUp(self):
         super().setUp()
