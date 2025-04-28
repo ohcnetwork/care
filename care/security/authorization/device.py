@@ -37,5 +37,12 @@ class DeviceAccess(AuthorizationHandler):
             device.facility_organization_cache,
         )
 
+    def can_manage_device_associations_to_encounters(self, user, device):
+        return self.check_permission_in_facility_organization(
+            [DevicePermissions.can_manage_device_associations_to_encounters.name],
+            user,
+            device.facility_organization_cache,
+        )
+
 
 AuthorizationController.register_internal_controller(DeviceAccess)

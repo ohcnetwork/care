@@ -163,7 +163,10 @@ class DeviceViewSet(EMRModelViewSet):
         if encounter and encounter.facility_id != facility.id:
             raise ValidationError("Encounter is not part of given facility")
 
-        self.authorize_update(None, device)
+        if not AuthorizationController.call(
+            "can_manage_device_associations_to_encounters", self.request.user, device
+        ):
+            raise PermissionDenied("You do not have permission to associate device")
 
         if encounter and not AuthorizationController.call(
             "can_update_encounter_obj", self.request.user, encounter
