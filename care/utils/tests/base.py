@@ -1,4 +1,5 @@
 import sys
+from secrets import choice
 from unittest.mock import MagicMock
 
 from faker import Faker
@@ -6,6 +7,10 @@ from model_bakery import baker
 from rest_framework.test import APITestCase
 
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
+from care.emr.resources.encounter.constants import (
+    ClassChoices,
+    EncounterPriorityChoices,
+)
 
 # Global mocking, since the types are loaded when specs load, mocking using patch was not working as the validations were already loaded.
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = MagicMock(
@@ -79,12 +84,19 @@ class CareAPITestBase(APITestCase):
         from care.emr.models.encounter import EncounterOrganization
         from care.emr.resources.encounter.constants import StatusChoices
 
+        data = {
+            "patient": patient,
+            "facility": facility,
+            "status": status or StatusChoices.in_progress.value,
+            "encounter_class": choice(list(ClassChoices)).value,
+            "priority": choice(list(EncounterPriorityChoices)).value,
+        }
+
+        data.update(**kwargs)
+
         encounter = baker.make(
             Encounter,
-            patient=patient,
-            facility=facility,
-            status=status or StatusChoices.in_progress.value,
-            **kwargs,
+            **data,
         )
         EncounterOrganization.objects.create(
             encounter=encounter, organization=organization
@@ -94,7 +106,7 @@ class CareAPITestBase(APITestCase):
     def attach_role_organization_user(self, organization, user, role):
         OrganizationUser.objects.create(organization=organization, user=user, role=role)
 
-    def attach_role_facility_organization_user(self, organization, user, role):
+    def attach_role_facility_organization_user(self, facility_organization, user, role):
         FacilityOrganizationUser.objects.create(
-            organization=organization, user=user, role=role
+            organization=facility_organization, user=user, role=role
         )
