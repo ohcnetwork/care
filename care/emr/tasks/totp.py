@@ -18,7 +18,9 @@ def send_totp_enabled_email(user_email: str, user_name: str):
         "enabled_at": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
 
-    email_html_message = render_to_string("email/totp_enabled.html", context)
+    email_html_message = render_to_string(
+        settings.TOTP_ENABLED_EMAIL_TEMPLATE_PATH, context
+    )
 
     msg = EmailMessage(
         "Two-Factor Authentication Enabled",
@@ -43,7 +45,9 @@ def send_totp_disabled_email(user_email: str, user_name: str):
         "disabled_at": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
 
-    email_html_message = render_to_string("email/totp_disabled.html", context)
+    email_html_message = render_to_string(
+        settings.TOTP_DISABLED_EMAIL_TEMPLATE_PATH, context
+    )
 
     msg = EmailMessage(
         "Two-Factor Authentication Disabled",
