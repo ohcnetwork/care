@@ -1,20 +1,22 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
+from django.db.models import QuerySet
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-from django.db.models import QuerySet
-from django.template.loader import render_to_string
+from care.emr.reports.renderer.base import Renderer
 
 
 class BaseSection(ABC):
     DEFAULT_EMPTY = "-"
 
-    def __init__(self, config: dict, context: dict):
+    def __init__(self, config: dict, context: dict, renderer: Renderer):
         self.is_table = config["is_table"]
         self.opts = config["options"]
         self.context = context
+        self.renderer = renderer
         self.field_extractors: dict[str, Callable[[Any], Any]] = {}
 
     @abstractmethod
@@ -43,41 +45,42 @@ class BaseSection(ABC):
             rows.append([self.extract_value(obj, f) for f in self.get_fields() or []])
         return rows
 
-    def render_list(self, qs):
-        fields = self.get_fields() or []
-        style = self.opts.get("style", "list")
-        title = self.opts.get("title", "")
-        obj = qs[0]
-        if style == "list":
-            rows = [
-                [f.replace("_", " ").title(), self.extract_value(obj, f)]
-                for f in fields
-            ]
-            return render_to_string(
-                "reports/typst/list.typ", {"title": title, "rows": rows}
-            )
-        # plain-text mode
-        text_field = fields[0]
-        text_value = self.extract_value(obj, text_field)
-        return render_to_string(
-            "reports/typst/text.typ", {"title": title, "text": text_value}
-        )
-
     def render_table(self, qs):
         columns = [f.replace("_", " ").title() for f in self.get_fields()]
         rows = self.build_table_rows(qs)
-        return render_to_string(
-            "reports/typst/table.typ",
-            {
-                "title": self.opts.get("title", ""),
-                "columns": columns,
-                "rows": rows,
-            },
-        )
+        title = self.opts.get("title", "")
+        return self.renderer.render_table(title, columns, rows)
+
+    def render_list(self, obj):
+        fields = self.get_fields() or []
+        title = self.opts.get("title", "")
+        rows = [
+            [f.replace("_", " ").title(), self.extract_value(obj, f)] for f in fields
+        ]
+        return self.renderer.render_list(title, rows)
+
+    def render_text(self, obj):
+        fields = self.get_fields() or []
+        title = self.opts.get("title", "")
+        text_field = fields[0] if fields else ""
+        text_value = self.extract_value(obj, text_field) if text_field else ""
+        return self.renderer.render_text(title, text_value)
+
+    def render_non_table(self, qs):
+        style = self.opts.get("style", "list")
+        first_obj = qs[0]
+        if style == "list":
+            return self.render_list(first_obj)
+        if style == "text":
+            return self.render_text(first_obj)
+        error = f"Unknown style '{style}'"
+        raise ValueError(error)
 
     def render(self) -> str:
         raw = self.fetch_data() or []
         data = self.filter_data(raw)
         if not data:
             return ""
-        return self.render_table(data) if self.is_table else self.render_list(data)
+        if self.is_table:
+            return self.render_table(data)
+        return self.render_non_table(data)

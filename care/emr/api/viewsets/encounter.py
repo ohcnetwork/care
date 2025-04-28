@@ -25,6 +25,7 @@ from care.emr.models import (
     Patient,
 )
 from care.emr.reports import discharge_summary
+from care.emr.reports.renderer.renderer_registry import RendererRegistry
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
     EncounterCareTeamMemberWriteSpec,
@@ -246,6 +247,9 @@ class EncounterViewSet(
         ).delete()
         return Response({})
 
+    class EncounterDischargeSummarySpec(BaseModel):
+        render_format: str | None = "typst"
+
     @extend_schema(
         description="Generate a discharge summary",
         responses={
@@ -271,8 +275,17 @@ class EncounterViewSet(
                 },
                 status=status.HTTP_409_CONFLICT,
             )
+
+        request_data = self.EncounterDischargeSummarySpec(**request.data)
+
+        if request_data.render_format not in RendererRegistry.all():
+            error = f"Invalid render format {request_data.render_format}. Valid choices are {RendererRegistry.all().keys()}"
+            raise ValidationError(error)
+
         discharge_summary.set_lock(encounter_ext_id, 1)
-        generate_discharge_summary_task.delay(encounter_ext_id)
+        generate_discharge_summary_task.delay(
+            encounter_ext_id, request_data.render_format
+        )
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,

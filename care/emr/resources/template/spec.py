@@ -9,9 +9,25 @@ from care.emr.resources.user.spec import UserSpec
 from care.facility.models import FacilityReportTemplate
 
 
+class MarginValues(BaseModel):
+    top: str
+    bottom: str
+    right: str
+    left: str
+
+
 class PageMargin(BaseModel):
-    mode: str
-    value: str
+    mode: Literal["uniform", "explicit"]
+    value: str | None = None
+    values: MarginValues | None = None
+
+    @model_validator(mode="after")
+    def validate_margin(self, values):
+        mode = self.mode
+        if mode == "uniform" and not self.value:
+            raise ValueError("Value is required for uniform margin mode")
+        if mode == "custom" and not self.values:
+            raise ValueError("Values are required for explicit margin mode")
 
 
 class PageNumbering(BaseModel):
@@ -46,11 +62,6 @@ class FacilityHeading(BaseModel):
     align: Literal["left", "center", "right"]
     size: str
     weight: str
-
-
-class Divider(BaseModel):
-    length: str
-    stroke: str
 
 
 class SummaryTitle(BaseModel):

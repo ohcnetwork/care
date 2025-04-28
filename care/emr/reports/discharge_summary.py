@@ -11,7 +11,11 @@ from django.utils import timezone
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.reports import SectionRegistry
-from care.emr.reports.utils import HeaderBuilder, download_image_to_cache
+from care.emr.reports.renderer.renderer_registry import RendererRegistry
+from care.emr.reports.utils import (
+    TypstHeaderBuilder,
+    download_image_to_cache,
+)
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.template.spec import FacilityReportTemplateType
 from care.facility.models import FacilityReportTemplate
@@ -48,7 +52,7 @@ def extract_images(images: list, config: dict):
 
 
 def get_discharge_summary_template(
-    encounter: Encounter, config: dict
+    encounter: Encounter, config: dict, render_format: str
 ) -> tuple[str, list]:
     """Generate Typst template for discharge summary"""
     logger.info("Building Typst template for %s", encounter.external_id)
@@ -60,10 +64,15 @@ def get_discharge_summary_template(
         {"layout": config["layout"]},
     )
 
-    header_typst = HeaderBuilder.from_config(config["header"]).render()
+    if render_format == "typst":
+        hb = TypstHeaderBuilder.from_config(config["header"])
+        header_typst = hb.render()
 
     fragments = []
     ctx = {"encounter": encounter}
+
+    renderer = RendererRegistry.get(render_format)
+
     for section_conf in config["sections"]:
         if not section_conf.get("enabled", False):
             continue
@@ -73,7 +82,7 @@ def get_discharge_summary_template(
             logger.warning("No handler for source %r", section_conf["source"])
             continue
 
-        section = cls(section_conf, ctx)
+        section = cls(section_conf, ctx, renderer())
         fragments.append(section.render())
 
     extract_images(included_images, config)
@@ -105,7 +114,9 @@ def compile_typ(
     logger.info("Successfully compiled PDF for %s", enc_id)
 
 
-def generate_and_upload_discharge_summary(encounter: Encounter) -> FileUpload:
+def generate_and_upload_discharge_summary(
+    encounter: Encounter, render_format: str = "typst"
+) -> FileUpload | None:
     """Generate and upload discharge summary PDF for an encounter"""
     enc_id = encounter.external_id
     logger.info("Starting Discharge Summary for %s", enc_id)
@@ -129,13 +140,16 @@ def generate_and_upload_discharge_summary(encounter: Encounter) -> FileUpload:
 
         set_lock(enc_id, 10)
         template_code, included_images = get_discharge_summary_template(
-            encounter, config
+            encounter, config, render_format
         )
 
         set_lock(enc_id, 50)
-        with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
-            compile_typ(tmp_pdf.name, template_code, included_images, enc_id)
 
+        # TODO: Need to update functions to call functions related to specific render_format
+        with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
+            if render_format == "typst":
+                logger.info("Compiling Typst for %s", enc_id)
+                compile_typ(tmp_pdf.name, template_code, included_images, enc_id)
             logger.info("Uploading PDF for %s", enc_id)
             summary_file.files_manager.put_object(
                 summary_file, tmp_pdf, ContentType="application/pdf"
@@ -155,7 +169,9 @@ def generate_and_upload_discharge_summary(encounter: Encounter) -> FileUpload:
     return summary_file
 
 
-def generate_discharge_report_signed_url(patient_external_id: str) -> str | None:
+def generate_discharge_report_signed_url(
+    patient_external_id: str, render_format: str
+) -> str | None:
     """Generate a signed URL for the latest discharge report of a patient"""
     enc = (
         Encounter.objects.filter(patient__external_id=patient_external_id)
@@ -166,7 +182,7 @@ def generate_discharge_report_signed_url(patient_external_id: str) -> str | None
     if not enc:
         return None
 
-    summary_file = generate_and_upload_discharge_summary(enc)
+    summary_file = generate_and_upload_discharge_summary(enc, render_format)
     return summary_file.files_manager.signed_url(
         summary_file,
         duration=2 * 24 * 60 * 60,  # 2 days

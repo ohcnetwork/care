@@ -14,7 +14,7 @@ logger: Logger = get_task_logger(__name__)
 @shared_task(
     autoretry_for=(ClientError,), retry_kwargs={"max_retries": 3}, expires=10 * 60
 )
-def generate_discharge_summary_task(encounter_ext_id: str):
+def generate_discharge_summary_task(encounter_ext_id: str, render_format: str):
     """
     Generate and Upload the Discharge Summary
     """
@@ -25,7 +25,7 @@ def generate_discharge_summary_task(encounter_ext_id: str):
         msg = f"Encounter {encounter_ext_id} does not exist"
         raise CeleryTaskError(msg) from e
 
-    summary_file = generate_and_upload_discharge_summary(encounter)
+    summary_file = generate_and_upload_discharge_summary(encounter, render_format)
     if not summary_file:
         msg = "Unable to generate discharge summary"
         raise CeleryTaskError(msg)

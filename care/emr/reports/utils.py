@@ -1,5 +1,6 @@
 import hashlib
 import logging
+from abc import ABC, abstractmethod
 
 import requests
 from django.core.cache import cache
@@ -21,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 class SymptomSection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "symptom": lambda o: o.code.get("display")
@@ -42,8 +43,8 @@ class SymptomSection(BaseSection):
 
 
 class DiagnosisSection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "diagnosis": lambda o: o.code.get("display")
@@ -63,8 +64,8 @@ class DiagnosisSection(BaseSection):
 
 
 class AllergySection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "allergen": lambda o: o.code.get("display")
@@ -92,8 +93,8 @@ def _get_observation_value(o: Observation):
 
 
 class ObservationSection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "observation": lambda o: o.main_code.get("display")
@@ -118,8 +119,8 @@ def _med_dosage(o: MedicationRequest):
 
 
 class MedicationRequestSection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "medication": lambda m: m.medication.get("display", self.DEFAULT_EMPTY),
@@ -133,13 +134,16 @@ class MedicationRequestSection(BaseSection):
 
 
 class PatientInfoSection(BaseSection):
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
+
     def fetch_data(self):
         return [self.context["encounter"].patient]
 
 
 class CareTeamSection(BaseSection):
-    def __init__(self, config, context):
-        super().__init__(config, context)
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
         self.field_extractors.update(
             {
                 "name": lambda u: u.full_name,
@@ -164,6 +168,9 @@ class CareTeamSection(BaseSection):
 
 
 class FileSection(BaseSection):
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
+
     def fetch_data(self):
         return FileUpload.objects.filter(
             associating_id=self.context["encounter"].external_id,
@@ -173,13 +180,18 @@ class FileSection(BaseSection):
 
 
 class DischargeAdviceSection(BaseSection):
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
+
     def fetch_data(self):
         return [self.context["encounter"].discharge_summary_advice or ""]
 
 
 class CustomTextSection(BaseSection):
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
+
     def fetch_data(self):
-        # Custom sections don't fetch from DB
         return None
 
     def render(self):
@@ -202,66 +214,126 @@ class CustomTextSection(BaseSection):
                 "reports/typst/list.typ", {"title": title, "rows": rows}
             )
 
-        # Default to plain text
         text = opts.get("text", "")
         return render_to_string(
             "reports/typst/text.typ", {"title": title, "text": text}
         )
 
 
-class HeaderBuilder:
+class BaseHeaderBuilder(ABC):
     def __init__(self, gutter: str = "1em"):
         self.grid_rows: list[list[str]] = []
         self.gutter = gutter
 
     @classmethod
-    def from_config(cls, header_config: dict, gutter: str = "1em") -> "HeaderBuilder":
+    def from_config(
+        cls, header_config: dict, gutter: str = "1em"
+    ) -> "BaseHeaderBuilder":
         builder = cls(gutter=gutter)
         for row_cfg in header_config.get("rows", []):
             row_idx = builder.add_row()
             for el in row_cfg:
-                t = el["type"]
-                align = el.get("align") or "left"
-                if t == "text":
-                    builder.add_text(
-                        row_idx,
-                        text=el["text"],
-                        size=el["size"],
-                        weight=el.get("weight"),
-                        align=align,
-                    )
-                elif t == "image":
-                    builder.add_image(
-                        row_idx,
-                        file_name=el["file_name"],
-                        width=el.get("width"),
-                        align=align,
-                    )
-                elif t == "rule":
-                    builder.add_rule(
-                        row_idx,
-                        length=el.get("length", "100%"),
-                        stroke=el.get("stroke", "black"),
-                        align=align,
-                    )
-                elif t in ("datetime", "date", "timestamp"):
-                    builder.add_datetime(
-                        row_idx,
-                        label=el["label"],
-                        date_format=el.get("format") or el.get("date_format"),
-                        style_fill=el.get("style", {}).get("fill"),
-                        style_weight=el.get("style", {}).get("weight"),
-                        align=align,
-                    )
-                else:
-                    error = f"Unknown header element type: {t!r}"
-                    logging.error(error)
+                builder._add_element(row_idx, el)  # noqa: SLF001
         return builder
 
     def add_row(self) -> int:
         self.grid_rows.append([])
         return len(self.grid_rows) - 1
 
+    def _add_element(self, row_idx: int, el: dict):
+        t = el.get("type")
+        align = el.get("align") or "left"
+
+        if t == "text":
+            builder_args = {
+                "row_idx": row_idx,
+                "text": el["text"],
+                "size": el["size"],
+                "weight": el.get("weight"),
+                "align": align,
+            }
+            self.add_text(**builder_args)
+
+        elif t == "image":
+            builder_args = {
+                "row_idx": row_idx,
+                "file_name": el["file_name"],
+                "width": el.get("width"),
+                "align": align,
+            }
+            self.add_image(**builder_args)
+
+        elif t == "rule":
+            builder_args = {
+                "row_idx": row_idx,
+                "length": el.get("length", "100%"),
+                "stroke": el.get("stroke", "black"),
+                "align": align,
+            }
+            self.add_rule(**builder_args)
+
+        elif t in ("datetime", "date", "timestamp"):
+            builder_args = {
+                "row_idx": row_idx,
+                "label": el["label"],
+                "date_format": el.get("format") or el.get("date_format"),
+                "style_fill": el.get("style", {}).get("fill"),
+                "style_weight": el.get("style", {}).get("weight"),
+                "align": align,
+            }
+            self.add_datetime(**builder_args)
+
+        else:
+            error = f"Unknown header element type: {t!r}"
+            logging.error(error)
+
+    @abstractmethod
+    def add_text(
+        self,
+        row_idx: int,
+        text: str,
+        size: str,
+        weight: str | None = None,
+        align: str | None = None,
+    ): ...
+
+    @abstractmethod
+    def add_image(
+        self,
+        row_idx: int,
+        file_name: str,
+        width: str | None = None,
+        align: str | None = None,
+    ): ...
+
+    @abstractmethod
+    def add_rule(
+        self,
+        row_idx: int,
+        length: str = "100%",
+        stroke: str = "black",
+        align: str | None = None,
+    ): ...
+
+    @abstractmethod
+    def add_datetime(
+        self,
+        row_idx: int,
+        label: str,
+        date_format: str,
+        style_fill: str | None = None,
+        style_weight: str | None = None,
+        align: str | None = None,
+    ): ...
+
+    @abstractmethod
+    def _render_grid_for_row(self, cells: list[str]) -> str: ...
+
+    def render(self) -> str:
+        return "\n\n".join(self._render_grid_for_row(r) for r in self.grid_rows)
+
+
+class TypstHeaderBuilder(BaseHeaderBuilder):
     def add_text(
         self,
         row_idx: int,
@@ -339,9 +411,6 @@ class HeaderBuilder:
             f"{body}\n"
             ")"
         )
-
-    def render(self) -> str:
-        return "\n\n".join(self._render_grid_for_row(r) for r in self.grid_rows)
 
 
 def download_image_to_cache(file_name, url):
