@@ -17,7 +17,7 @@ class MarginValues(BaseModel):
 
 
 class PageMargin(BaseModel):
-    mode: Literal["uniform", "explicit"]
+    mode: Literal["uniform", "custom"]
     value: str | None = None
     values: MarginValues | None = None
 
@@ -181,7 +181,7 @@ class FacilityReportTemplateReadSpec(FacilityReportTemplateBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["facility"] = FacilityRetrieveSpec.serialize(obj.facility)
+        mapping["facility"] = FacilityRetrieveSpec.serialize(obj.facility).to_json()
 
 
 class FacilityReportTemplateRetrieveSpec(FacilityReportTemplateReadSpec):

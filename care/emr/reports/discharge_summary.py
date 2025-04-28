@@ -148,7 +148,6 @@ def generate_and_upload_discharge_summary(
 
         set_lock(enc_id, 50)
 
-        # TODO: Need to update functions to call functions related to specific render_format
         with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
             if render_format == "typst":
                 logger.info("Compiling Typst for %s", enc_id)
