@@ -111,7 +111,7 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         if FacilityLocationOrganization.objects.filter(organization=instance).exists():
             raise ValidationError("Cannot delete organization with locations")
 
-        if Device.objects.filter(organization=instance).exists():
+        if Device.objects.filter(managing_organization=instance).exists():
             raise ValidationError("Cannot delete organization with devices")
 
         if self.request.user.is_superuser:
