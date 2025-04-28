@@ -2,6 +2,7 @@ import sys
 from secrets import choice
 from unittest.mock import MagicMock
 
+from django.forms.models import model_to_dict
 from faker import Faker
 from model_bakery import baker
 from rest_framework.test import APITestCase
@@ -63,10 +64,14 @@ class CareAPITestBase(APITestCase):
 
         role = baker.make(RoleModel, name=role_name or self.fake.name())
 
+        bulk = []
         for permission in permissions:
-            RolePermission.objects.create(
-                role=role, permission=baker.make(PermissionModel, slug=permission)
+            permission_obj, _ = PermissionModel.objects.get_or_create(
+                slug=permission,
+                defaults=model_to_dict(baker.prepare(PermissionModel, slug=permission)),
             )
+            bulk.append(RolePermission(role=role, permission=permission_obj))
+        RolePermission.objects.bulk_create(bulk)
         return role
 
     def create_patient(self, **kwargs):
@@ -104,9 +109,11 @@ class CareAPITestBase(APITestCase):
         return encounter
 
     def attach_role_organization_user(self, organization, user, role):
-        OrganizationUser.objects.create(organization=organization, user=user, role=role)
+        return OrganizationUser.objects.create(
+            organization=organization, user=user, role=role
+        )
 
     def attach_role_facility_organization_user(self, facility_organization, user, role):
-        FacilityOrganizationUser.objects.create(
+        return FacilityOrganizationUser.objects.create(
             organization=facility_organization, user=user, role=role
         )
