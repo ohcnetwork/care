@@ -17,6 +17,12 @@ class DevicePermissions(enum.Enum):
         PermissionContext.FACILITY,
         [STAFF_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE, FACILITY_ADMIN_ROLE],
     )
+    can_manage_device_associations_to_encounters = Permission(
+        "Can Manage Device Associations to Encounters",
+        "",
+        PermissionContext.FACILITY,
+        [STAFF_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE, FACILITY_ADMIN_ROLE],
+    )
     can_manage_devices = Permission(
         "Can Manage Devices on Facility",
         "",
