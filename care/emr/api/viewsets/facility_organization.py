@@ -8,6 +8,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.models.device import Device
+from care.emr.models.encounter import EncounterOrganization
+from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.emr.resources.facility_organization.facility_orgnization_user_spec import (
     FacilityOrganizationUserReadSpec,
@@ -101,6 +104,15 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             .exists()
         ):
             raise ValidationError("Cannot delete organization with users")
+
+        if EncounterOrganization.objects.filter(organization=instance).exists():
+            raise ValidationError("Cannot delete organization with encounters")
+
+        if FacilityLocationOrganization.objects.filter(organization=instance).exists():
+            raise ValidationError("Cannot delete organization with locations")
+
+        if Device.objects.filter(organization=instance).exists():
+            raise ValidationError("Cannot delete organization with devices")
 
         if self.request.user.is_superuser:
             return
