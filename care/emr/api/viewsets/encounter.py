@@ -326,22 +326,3 @@ class EncounterViewSet(
         encounter.care_team = members
         encounter.save(update_fields=["care_team"])
         return Response({}, status=status.HTTP_200_OK)
-
-
-# TODO : Update it to use new functions
-# def dev_preview_discharge_summary(request, encounter_id):
-#     """
-#     This is a dev only view to preview the discharge summary template
-#     """
-#     encounter = get_object_or_404(Encounter, external_id=encounter_id)
-#     data = discharge_summary.get_discharge_summary_data(encounter)
-#     data["date"] = timezone.now()
-#
-#     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-#         discharge_summary.generate_discharge_summary_pdf(data, tmp_file,encounter)
-#         tmp_file.seek(0)
-#
-#         response = HttpResponse(tmp_file, content_type="application/pdf")
-#         response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
-#
-#         return response
