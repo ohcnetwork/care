@@ -1,5 +1,4 @@
 import sys
-
 from secrets import choice
 
 from faker import Faker
