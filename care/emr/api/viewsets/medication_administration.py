@@ -14,11 +14,19 @@ from care.emr.resources.medication.administration.spec import (
 from care.emr.resources.questionnaire.spec import SubjectType
 
 
+class StatusFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(status__in=value.split(","))
+        return qs
+
+
 class MedicationAdministrationFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     request = filters.UUIDFilter(field_name="request__external_id")
     occurrence_period_start = filters.DateTimeFromToRangeFilter()
     occurrence_period_end = filters.DateTimeFromToRangeFilter()
+    status = StatusFilter()
 
 
 class MedicationAdministrationViewSet(
