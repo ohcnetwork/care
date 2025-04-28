@@ -31,6 +31,7 @@ class UserTypeOptions(str, Enum):
     staff = "staff"
     volunteer = "volunteer"
     administrator = "administrator"
+    facility_admin = "facility_admin"
 
 
 class UserTypeRoleMapping(Enum):
