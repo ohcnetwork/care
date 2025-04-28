@@ -90,7 +90,7 @@ class AllergyIntoleranceViewSet(
             return super().perform_update(instance)
 
     def authorize_update(self, request_obj, model_instance):
-        encounter = get_object_or_404(Encounter, external_id=request_obj.encounter)
+        encounter = model_instance.encounter
         if not AuthorizationController.call(
             "can_update_encounter_obj",
             self.request.user,

@@ -54,7 +54,6 @@ class BaseAllergyIntoleranceSpec(EMRResource):
     __model__ = AllergyIntolerance
     __exclude__ = ["patient", "encounter"]
     id: UUID4 = None
-    encounter: UUID4
     category: CategoryChoices
     clinical_status: ClinicalStatusChoices
     verification_status: VerificationStatusChoices
@@ -68,6 +67,13 @@ class BaseAllergyIntoleranceSpec(EMRResource):
     code: ValueSetBoundCoding[CARE_ALLERGY_CODE_VALUESET.slug]
     onset: AllergyIntoleranceOnSetSpec = {}
 
+
+class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec): ...
+
+
+class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
+    encounter: UUID4
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
@@ -76,14 +82,6 @@ class BaseAllergyIntoleranceSpec(EMRResource):
             raise ValueError(err)
         return encounter
 
-
-class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
-    def perform_extra_deserialization(self, is_update, obj):
-        if self.encounter:
-            obj.encounter = Encounter.objects.get(external_id=self.encounter)
-
-
-class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = Encounter.objects.get(external_id=self.encounter)
         obj.patient = obj.encounter.patient
