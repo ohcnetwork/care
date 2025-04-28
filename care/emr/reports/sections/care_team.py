@@ -1,0 +1,32 @@
+from care.emr.registries.report.section import SectionRegistry
+from care.emr.reports.sections.base import BaseSection
+from care.users.models import User
+
+
+class CareTeamSection(BaseSection):
+    def __init__(self, config, context, renderer):
+        super().__init__(config, context, renderer)
+        self.field_extractors.update(
+            {
+                "name": lambda u: u.full_name,
+                "role": self._get_role_for,
+            }
+        )
+
+    @property
+    def _role_map(self):
+        return {
+            m["user_id"]: m["role"]["display"]
+            for m in self.context["encounter"].care_team
+            if m.get("user_id") and m.get("role")
+        }
+
+    def _get_role_for(self, user: User):
+        return self._role_map.get(user.id, "Unknown")
+
+    def fetch_data(self):
+        ids = [m["user_id"] for m in self.context["encounter"].care_team]
+        return User.objects.filter(id__in=ids)
+
+
+SectionRegistry.register("care_team", CareTeamSection)

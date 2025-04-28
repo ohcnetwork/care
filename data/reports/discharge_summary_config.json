@@ -68,7 +68,7 @@
   },
   "sections": [
     {
-      "source": "patient",
+      "source": "patient_info",
       "is_table": false,
       "enabled": true,
       "options": {
@@ -83,7 +83,7 @@
       }
     },
     {
-      "source": "condition",
+      "source": "diagnosis",
       "is_table": true,
       "enabled": true,
       "options": {
@@ -95,7 +95,7 @@
       }
     },
     {
-      "source": "symptom",
+      "source": "symptoms",
       "is_table": true,
       "enabled": true,
       "options": {
@@ -104,7 +104,7 @@
       }
     },
     {
-      "source": "allergy",
+      "source": "allergy_intolerance",
       "is_table": true,
       "enabled": true,
       "options": {
@@ -143,7 +143,7 @@
       }
     },
     {
-      "source": "file",
+      "source": "file_upload",
       "is_table": true,
       "enabled": true,
       "options": {
@@ -152,7 +152,7 @@
       }
     },
     {
-      "source": "encounter",
+      "source": "discharge_summary_advice",
       "is_table": false,
       "enabled": true,
       "options": {
@@ -162,7 +162,7 @@
       }
     },
     {
-  "source": "custom-block",
+  "source": "custom_section",
   "is_table": true,
   "enabled": true,
   "options": {
@@ -174,7 +174,7 @@
     ]
   }
 },{
-  "source": "custom-block",
+  "source": "custom_section",
   "is_table": false,
   "enabled": true,
   "options": {
@@ -184,7 +184,7 @@
   }
 }
 ,{
-  "source": "custom-block",
+  "source": "custom_section",
   "is_table": false,
   "enabled": true,
   "options": {

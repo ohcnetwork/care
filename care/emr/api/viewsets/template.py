@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.registries.report_section.report_section import SectionRegistry
+from care.emr.registries.report.section import SectionRegistry
 from care.emr.resources.template.spec import (
     FacilityReportTemplateCreateSpec,
     FacilityReportTemplateReadSpec,

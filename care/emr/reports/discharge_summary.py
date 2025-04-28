@@ -6,14 +6,13 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.core.cache import cache
-from django.template.loader import render_to_string
 from django.utils import timezone
 
 from care.emr.models import Encounter, FileUpload
-from care.emr.reports import SectionRegistry
-from care.emr.reports.renderer.renderer_registry import RendererRegistry
+from care.emr.registries.report.renderer import RendererRegistry
+from care.emr.registries.report.section import SectionRegistry
+from care.emr.reports.headers.typst_header import TypstHeaderBuilder
 from care.emr.reports.utils import (
-    TypstHeaderBuilder,
     download_image_to_cache,
 )
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
@@ -54,40 +53,44 @@ def extract_images(images: list, config: dict):
 def get_discharge_summary_template(
     encounter: Encounter, config: dict, render_format: str
 ) -> tuple[str, list]:
-    """Generate Typst template for discharge summary"""
-    logger.info("Building Typst template for %s", encounter.external_id)
-
-    included_images = []
-
-    page_layout = render_to_string(
-        "reports/typst/page_layout.typ",
-        {"layout": config["layout"]},
+    logger.info(
+        "Building discharge summary for %s in format %s",
+        encounter.external_id,
+        render_format,
     )
 
-    if render_format == "typst":
-        hb = TypstHeaderBuilder.from_config(config["header"])
-        header_typst = hb.render()
-
-    fragments = []
+    included_images = []
     ctx = {"encounter": encounter}
 
-    renderer = RendererRegistry.get(render_format)
+    renderer_cls = RendererRegistry.get(render_format)
+    renderer = renderer_cls()
 
+    page_layout = renderer.render_page_layout(config["layout"])
+
+    header_content = ""
+    if render_format == "typst":
+        header_builder = TypstHeaderBuilder.from_config(config["header"])
+        header_content = header_builder.render()
+    else:
+        logger.warning("No header builder implemented for format: %s", render_format)
+
+    fragments = []
     for section_conf in config["sections"]:
         if not section_conf.get("enabled", False):
             continue
 
-        cls = SectionRegistry.get(section_conf["source"])
-        if not cls:
+        section_cls = SectionRegistry.get(section_conf["source"])
+        if not section_cls:
             logger.warning("No handler for source %r", section_conf["source"])
             continue
 
-        section = cls(section_conf, ctx, renderer())
+        section = section_cls(section_conf, ctx, renderer)
         fragments.append(section.render())
 
     extract_images(included_images, config)
 
-    return "\n\n".join([page_layout, header_typst, *fragments]), included_images
+    final_content = "\n\n".join([page_layout, header_content, *fragments])
+    return final_content, included_images
 
 
 def compile_typ(

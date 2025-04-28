@@ -1,4 +1,4 @@
-from care.emr.reports.base import BaseSection
+from care.emr.reports.sections.base import BaseSection
 
 
 class SectionRegistry:

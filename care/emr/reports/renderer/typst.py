@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 
+from care.emr.registries.report.renderer import RendererRegistry
 from care.emr.reports.renderer.base import Renderer
 
 
@@ -45,3 +46,15 @@ class TypstRenderer(Renderer):
                 "text": text,
             },
         )
+
+    def render_page_layout(self, layout_config: dict) -> str:
+        """
+        Use the Typst page layout template.
+        """
+        return render_to_string(
+            "reports/typst/page_layout.typ",
+            {"layout": layout_config},
+        )
+
+
+RendererRegistry.register("typst", TypstRenderer)

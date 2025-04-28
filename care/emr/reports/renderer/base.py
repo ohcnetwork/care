@@ -41,3 +41,12 @@ class Renderer(ABC):
         :return: Rendered output string
         """
         ...
+
+    @abstractmethod
+    def render_page_layout(self, layout_config: dict) -> str:
+        """
+        Render the page layout.
+        :param layout_config: Configuration for the page layout
+        :return: Rendered output string
+        """
+        ...
