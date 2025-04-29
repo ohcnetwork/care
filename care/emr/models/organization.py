@@ -15,6 +15,8 @@ class OrganizationCommonBase(EMRBaseModel):
     org_type = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     has_children = models.BooleanField(default=False)
+    # Remove once we have clean data
+    has_children_old = models.BooleanField(default=False)
     description = models.TextField(blank=True, null=True)
     system_generated = models.BooleanField(default=False)
     parent = models.ForeignKey(

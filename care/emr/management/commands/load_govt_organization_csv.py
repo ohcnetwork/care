@@ -188,6 +188,7 @@ class Command(BaseCommand):
                 "system_generated": True,
                 "metadata": metadata,
                 "meta": {"migration_id": self.timestamp},
+                "has_children": False,
             },
         )
         logger.debug(
@@ -214,6 +215,7 @@ class Command(BaseCommand):
                     "system_generated": True,
                     "metadata": metadata,
                     "meta": {"migration_id": self.timestamp},
+                    "has_children": True,
                 },
             )
             logger.debug(
@@ -242,6 +244,7 @@ class Command(BaseCommand):
                         "system_generated": True,
                         "metadata": metadata,
                         "meta": {"migration_id": self.timestamp},
+                        "has_children": True,
                     },
                 )
                 logger.debug(
@@ -278,6 +281,7 @@ class Command(BaseCommand):
                                 "system_generated": True,
                                 "metadata": metadata,
                                 "meta": {"migration_id": self.timestamp},
+                                "has_children": True,
                             },
                         )
                         logger.debug(
@@ -309,6 +313,7 @@ class Command(BaseCommand):
                                             "system_generated": True,
                                             "metadata": metadata,
                                             "meta": {"migration_id": self.timestamp},
+                                            "has_children": True,
                                         },
                                     )
                                 )
