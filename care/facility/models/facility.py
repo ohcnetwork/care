@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
-from care.emr.models import FacilityOrganization
+from care.emr.models import EMRBaseModel, FacilityOrganization
 from care.emr.models.organization import FacilityOrganizationUser
 from care.facility.models import FacilityBaseModel, reverse_choices
 from care.facility.models.facility_flag import FacilityFlag
@@ -421,7 +421,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     CSV_MAKE_PRETTY = {"facility_type": (lambda x: REVERSE_FACILITY_TYPES[x])}
 
 
-class FacilityReportTemplate(BaseModel):
+class FacilityReportTemplate(EMRBaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     config = models.JSONField(default=dict)

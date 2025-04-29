@@ -23,7 +23,10 @@ class FacilityReportTemplateViewSet(EMRModelViewSet):
     pydantic_retrieve_model = FacilityReportTemplateRetrieveSpec
 
     def permissions_controller(self, request):
-        return request.user.is_superuser
+        return (
+            request.user.is_superuser
+            and self.get_facility_obj().external_id == request.user.facility.external_id
+        )
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -34,9 +37,12 @@ class FacilityReportTemplateViewSet(EMRModelViewSet):
         return super().get_queryset().filter(facility=self.get_facility_obj())
 
     def validate_data(self, instance, model_obj=None):
-        if FacilityReportTemplate.objects.filter(
-            type=instance.type, facility=self.get_facility_obj()
-        ).exists():
+        if (
+            model_obj is None
+            and FacilityReportTemplate.objects.filter(
+                type=instance.type, facility=self.get_facility_obj()
+            ).exists()
+        ):
             raise ValidationError(
                 detail=f"Report template with type {instance.type.value} already exists for this facility"
             )
