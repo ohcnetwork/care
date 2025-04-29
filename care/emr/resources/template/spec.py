@@ -22,12 +22,12 @@ class PageMargin(BaseModel):
     values: MarginValues | None = None
 
     @model_validator(mode="after")
-    def validate_margin(self, values):
-        mode = self.mode
-        if mode == "uniform" and not self.value:
+    def validate_margin(self):
+        if self.mode == "uniform" and not self.value:
             raise ValueError("Value is required for uniform margin mode")
-        if mode == "custom" and not self.values:
-            raise ValueError("Values are required for explicit margin mode")
+        if self.mode == "custom" and not self.values:
+            raise ValueError("Values are required for custom margin mode")
+        return self
 
 
 class PageNumbering(BaseModel):
@@ -58,30 +58,9 @@ class Layout(BaseModel):
     text: TextConfig
 
 
-class FacilityHeading(BaseModel):
-    align: Literal["left", "center", "right"]
-    size: str
-    weight: str
-
-
-class SummaryTitle(BaseModel):
-    text: str
-    size: str
-
-
-class LogoConfig(BaseModel):
-    file_name: str
-
-
-class CreatedOn(BaseModel):
-    label: str
-    style: dict[Literal["fill", "weight"], str | int]
-    date_format: str
-
-
 class StyleConfig(BaseModel):
-    fill: str | None
-    weight: int | None
+    fill: str | None = None
+    weight: int | None = None
 
 
 class TextElement(BaseModel):
@@ -89,22 +68,22 @@ class TextElement(BaseModel):
     text: str
     size: str
     weight: int
-    align: Literal["left", "center", "right"] | None
+    align: Literal["left", "center", "right"] | None = None
 
 
 class ImageElement(BaseModel):
     type: Literal["image"]
     file_name: str
     url: HttpUrl
-    width: str | None
-    align: Literal["left", "center", "right"] | None
+    width: str | None = None
+    align: Literal["left", "center", "right"] | None = None
 
 
 class RuleElement(BaseModel):
     type: Literal["rule"]
     length: str = "100%"
     stroke: str | None = "black"
-    align: Literal["left", "center", "right"] | None
+    align: Literal["left", "center", "right"] | None = None
 
 
 class DateTimeElement(BaseModel):
@@ -112,7 +91,7 @@ class DateTimeElement(BaseModel):
     label: str
     format: str
     style: StyleConfig
-    align: Literal["left", "center", "right"] | None
+    align: Literal["left", "center", "right"] | None = None
 
 
 HeaderElement = TextElement | ImageElement | RuleElement | DateTimeElement
@@ -122,12 +101,19 @@ class HeaderConfig(BaseModel):
     rows: list[list[HeaderElement]]
 
 
+class LabelValueField(BaseModel):
+    label: str
+    value: str
+
+
 class SectionOptions(BaseModel):
-    title: str | None
-    fields: list[str] = []
+    title: str | None = None
+    fields: list[str] | list[LabelValueField] = []
     columns: list[str] = []
     style: Literal["list", "text"] | None = "list"
-    filters: dict[str, list[str]] | None = []
+    filters: dict[str, list[str]] | None = None
+    text: str | None = None
+    rows: list[list[str]] | None = None
 
 
 class SectionConfig(BaseModel):
@@ -137,11 +123,14 @@ class SectionConfig(BaseModel):
     options: SectionOptions
 
     @model_validator(mode="after")
-    def validate_table_config(self):
-        if not self.is_table and not self.options.fields:
-            raise ValueError("Field list is required for non-table sections")
-        if self.is_table and not self.options.columns:
-            raise ValueError("Column list is required for table sections")
+    def validate_section(self):
+        if not self.is_table:
+            if not (self.options.fields or self.options.text):
+                raise ValueError(
+                    "Non-table sections must have either 'fields' or 'text'"
+                )
+        elif not (self.options.columns or self.options.rows):
+            raise ValueError("Table sections must have either 'columns' or 'rows'")
         return self
 
 
@@ -160,7 +149,6 @@ class FacilityReportTemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
 
     __model__ = FacilityReportTemplate
-
     __exclude__ = ["facility"]
 
 

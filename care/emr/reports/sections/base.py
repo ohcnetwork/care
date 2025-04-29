@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -33,7 +34,11 @@ class BaseSection(ABC):
         return self.opts.get("columns") if self.is_table else self.opts.get("fields")
 
     def extract_value(self, obj, field: str):
+        logging.warning("Extracting value for field: %s", field)
         if field in self.field_extractors:
+            logging.warning("Extracting extractor for field: %s", field)
+            logging.warning("Extractor: %s", self.field_extractors[field])
+            logging.warning("Object: %s", obj.created_by)
             val = self.field_extractors[field](obj)
         else:
             val = getattr(obj, field, None)

@@ -29,7 +29,8 @@
       [
         {
           "type": "rule",
-          "length": "100%"
+          "length": "100%",
+          "stroke": "mygray"
         }
       ],
       [
@@ -54,18 +55,21 @@
           "format": "[day]/[month]/[year]",
           "style": {
             "fill": "mygray",
-            "weight": 400
-          }
+            "weight": 500
+          },
+          "align": "right"
         }
       ],
       [
         {
           "type": "rule",
-          "length": "100%"
+          "length": "100%",
+          "stroke": "mygray"
         }
       ]
     ]
   },
+
   "sections": [
     {
       "source": "patient_info",
@@ -75,9 +79,16 @@
         "title": "Patient Information",
         "fields": [
           "name",
-          "date_of_birth",
           "gender",
-          "phone_number"
+          "phone_number",
+          "emergency_phone_number",
+          "address",
+          "permanent_address",
+          "pincode",
+            "date_of_birth",
+          "deceased_datetime",
+          "marital_status",
+          "blood_group"
         ],
         "style": "list"
       }
@@ -87,11 +98,14 @@
       "is_table": true,
       "enabled": true,
       "options": {
-        "title": "Active Diagnoses",
-        "columns": ["diagnosis", "onset", "clinical_status"],
-        "filters": {
-          "verification_status": ["confirmed", "provisional"]
-        }
+        "title": "Diagnoses",
+        "columns": [
+          "diagnosis",
+          "onset",
+          "clinical_status",
+          "severity",
+          "note"
+        ]
       }
     },
     {
@@ -100,7 +114,13 @@
       "enabled": true,
       "options": {
         "title": "Symptoms Reported",
-        "columns": ["symptom", "onset"]
+                "columns": [
+          "diagnosis",
+          "onset",
+          "clinical_status",
+          "severity",
+          "note"
+        ]
       }
     },
     {
@@ -108,11 +128,18 @@
       "is_table": true,
       "enabled": true,
       "options": {
-        "title": "Allergies & Intolerances",
-        "columns": ["allergen", "onset", "criticality"],
-        "filters": {
-          "criticality": ["high", "low"]
-        }
+        "title": "Allergies And Intolerances",
+        "columns": [
+          "allergen",
+          "onset",
+          "criticality",
+          "clinical_status",
+          "criticality",
+          "recorded_date",
+          "last_occurrence",
+          "allergy_intolerance_type",
+          "note"
+        ]
       }
     },
     {
@@ -130,7 +157,7 @@
       "enabled": true,
       "options": {
         "title": "Medication Requests",
-        "columns": ["medication", "value", "date"]
+        "columns": ["medication", "value", "date","subject_type","interpretation"]
       }
     },
     {
@@ -148,7 +175,10 @@
       "enabled": true,
       "options": {
         "title": "Attached Files",
-        "columns": ["name", "file_type", "created_date", "created_by"]
+        "columns": ["name", "file_type", "created_date"],
+        "filters": {
+          "file_category": ["discharge_summary"]
+        }
       }
     },
     {

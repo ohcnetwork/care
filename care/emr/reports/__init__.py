@@ -5,7 +5,7 @@ from .sections import (
     custom_section,
     diagnosis,
     discharge_summary_advice,
-    file,
+    file_upload,
     medication_request,
     observation,
     patient_info,
