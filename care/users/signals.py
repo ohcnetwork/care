@@ -28,7 +28,9 @@ def password_reset_token_created(
     }
 
     # render email text
-    email_html_message = render_to_string("email/user_reset_password.html", context)
+    email_html_message = render_to_string(
+        settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
+    )
 
     msg = EmailMessage(
         "Password Reset for Care",

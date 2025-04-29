@@ -12,6 +12,7 @@ from care.emr.resources.medication.administration.spec import (
     MedicationAdministrationUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class MedicationAdministrationFilter(filters.FilterSet):
@@ -19,6 +20,7 @@ class MedicationAdministrationFilter(filters.FilterSet):
     request = filters.UUIDFilter(field_name="request__external_id")
     occurrence_period_start = filters.DateTimeFromToRangeFilter()
     occurrence_period_end = filters.DateTimeFromToRangeFilter()
+    status = MultiSelectFilter(field_name="status")
 
 
 class MedicationAdministrationViewSet(

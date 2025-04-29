@@ -196,7 +196,9 @@ class TestDeviceViewSet(DeviceBaseTest):
             self.patient, self.facility, self.facility.default_internal_organization
         )
         # Only encounter permission attached (missing device permission).
-        self.add_permissions([DevicePermissions.can_manage_devices.name])
+        self.add_permissions(
+            [DevicePermissions.can_manage_device_associations_to_encounters.name]
+        )
         url = self.get_associate_encounter_url(device)
         data = {"encounter": encounter.external_id}
         response = self.client.post(url, data=data, format="json")
@@ -248,7 +250,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.add_permissions(
             [
                 EncounterPermissions.can_write_encounter.name,
-                DevicePermissions.can_manage_devices.name,
+                DevicePermissions.can_manage_device_associations_to_encounters.name,
             ]
         )
         url = self.get_associate_encounter_url(device)
@@ -267,7 +269,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.add_permissions(
             [
                 EncounterPermissions.can_write_encounter.name,
-                DevicePermissions.can_manage_devices.name,
+                DevicePermissions.can_manage_device_associations_to_encounters.name,
             ]
         )
         url = self.get_associate_encounter_url(device)
@@ -290,7 +292,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.add_permissions(
             [
                 EncounterPermissions.can_write_encounter.name,
-                DevicePermissions.can_manage_devices.name,
+                DevicePermissions.can_manage_device_associations_to_encounters.name,
             ]
         )
         url = self.get_associate_encounter_url(device)
@@ -410,7 +412,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.add_permissions(
             [
                 EncounterPermissions.can_write_encounter.name,
-                DevicePermissions.can_manage_devices.name,
+                DevicePermissions.can_manage_device_associations_to_encounters.name,
             ]
         )
         associate_url = self.get_associate_encounter_url(device)

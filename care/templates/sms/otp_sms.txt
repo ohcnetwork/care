@@ -1,0 +1,1 @@
+Kerala Care Login, OTP {{random_otp}}.  Please do not share this Confidential Login Token with anyone else
