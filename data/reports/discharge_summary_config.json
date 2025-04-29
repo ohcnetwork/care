@@ -42,8 +42,8 @@
         },
         {
           "type": "image",
-          "file_name": "care-black-logo.png",
-          "url": "https://en.wikipedia.org/static/images/icons/wikipedia.png",
+          "file_name": "care-black-logo.svg",
+          "url": "https://github.com/ohcnetwork/care/blob/develop/care/static/images/logos/black-logo.svg",
           "width": "20%",
           "align": "right"
         }

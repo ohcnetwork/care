@@ -4,9 +4,22 @@ from pathlib import Path
 from django.conf import settings
 
 
-def load_default_discharge_summary_config():
+def load_default_discharge_summary_config(facility=None):
+    """Load the default configuration for the discharge summary report from a JSON file.
+    If a facility is provided, the configuration will be adjusted accordingly."""
     config_path = (
         Path(settings.BASE_DIR) / "data" / "reports" / "discharge_summary_config.json"
     )
     with config_path.open(encoding="utf-8") as fp:
-        return json.load(fp)
+        data = json.load(fp)
+
+    if facility and "header" in data:
+        for row in data["header"].get("rows", []):
+            for item in row:
+                if (
+                    item.get("type") == "text"
+                    and item.get("text") == "Central Diagnostic Laboratory"
+                ):
+                    item["text"] = facility.name
+
+    return data
