@@ -29,7 +29,7 @@ class AvailabilityExceptionBaseSpec(EMRResource):
 
 
 class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
-    facility: UUID4
+    facility: UUID4 | None = None
     user: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
