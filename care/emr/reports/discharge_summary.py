@@ -1,20 +1,14 @@
 import logging
-import subprocess
 import tempfile
-from pathlib import Path
 from uuid import uuid4
 
-from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.registries.report.renderer import RendererRegistry
 from care.emr.registries.report.section import SectionRegistry
-from care.emr.reports.headers.typst_header import TypstHeaderBuilder
-from care.emr.reports.utils import (
-    download_image_to_cache,
-)
+from care.emr.reports.renderer.base import Renderer
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.template.spec import FacilityReportTemplateType
 from care.facility.models import FacilityReportTemplate
@@ -24,20 +18,24 @@ logger = logging.getLogger(__name__)
 LOCK_DURATION = 2 * 60  # 2 minutes
 
 
-def _cache_key(prefix, enc_id):
-    return f"{prefix}_{enc_id}"
+def _cache_key(prefix, encounter_external_id):
+    return f"{prefix}_{encounter_external_id}"
 
 
-def set_lock(enc_id: str, progress: int):
-    cache.set(_cache_key("discharge_summary", enc_id), progress, timeout=LOCK_DURATION)
+def set_lock(encounter_external_id: str, progress: int):
+    cache.set(
+        _cache_key("discharge_summary", encounter_external_id),
+        progress,
+        timeout=LOCK_DURATION,
+    )
 
 
-def get_progress(enc_id: str) -> int | None:
-    return cache.get(_cache_key("discharge_summary", enc_id))
+def get_progress(encounter_external_id: str) -> int | None:
+    return cache.get(_cache_key("discharge_summary", encounter_external_id))
 
 
-def clear_lock(enc_id: str):
-    cache.delete(_cache_key("discharge_summary", enc_id))
+def clear_lock(encounter_external_id: str):
+    cache.delete(_cache_key("discharge_summary", encounter_external_id))
 
 
 def extract_images(images: list, config: dict):
@@ -51,28 +49,20 @@ def extract_images(images: list, config: dict):
 
 
 def get_discharge_summary_template(
-    encounter: Encounter, config: dict, render_format: str
+    encounter: Encounter, config: dict, renderer: Renderer
 ) -> tuple[str, list]:
     logger.info(
         "Building discharge summary for %s in format %s",
         encounter.external_id,
-        render_format,
+        renderer.name,
     )
 
     included_images = []
     ctx = {"encounter": encounter}
 
-    renderer_cls = RendererRegistry.get(render_format)
-    renderer = renderer_cls()
-
     page_layout = renderer.render_page_layout(config["layout"])
 
-    header_content = ""
-    if render_format == "typst":
-        header_builder = TypstHeaderBuilder.from_config(config["header"])
-        header_content = header_builder.render()
-    else:
-        logger.warning("No header builder implemented for format: %s", render_format)
+    header_content = renderer.render_header(config["header"])
 
     fragments = []
     for section_conf in config["sections"]:
@@ -93,37 +83,19 @@ def get_discharge_summary_template(
     return final_content, included_images
 
 
-def compile_typ(
-    output_file: str, template_code: str, included_images: list, enc_id: str
-):
-    """Compile Typst template into PDF"""
-    logger.info("Compiling PDF for %s → %s", enc_id, output_file)
-
-    with tempfile.TemporaryDirectory() as tmpdir:
-        template_path = Path(tmpdir) / "template.typ"
-        template_path.write_text(template_code)
-
-        for file_name, url in included_images:
-            logo_bytes = download_image_to_cache(file_name, url)
-            with Path.open(Path(tmpdir) / file_name, "wb") as f:
-                f.write(logo_bytes)
-
-        subprocess.run(  # noqa: S603
-            [settings.TYPST_BIN, "compile", str(template_path.name), str(output_file)],
-            cwd=tmpdir,
-            check=False,
-        )
-
-    logger.info("Successfully compiled PDF for %s", enc_id)
-
-
 def generate_and_upload_discharge_summary(
-    encounter: Encounter, render_format: str = "typst"
+    encounter: Encounter, render_format: str
 ) -> FileUpload | None:
     """Generate and upload discharge summary PDF for an encounter"""
-    enc_id = encounter.external_id
-    logger.info("Starting Discharge Summary for %s", enc_id)
-    set_lock(enc_id, 5)
+    encounter_external_id = encounter.external_id
+    logger.info("Starting Discharge Summary for %s", encounter_external_id)
+    set_lock(str(encounter_external_id), 5)
+
+    renderer_cls = RendererRegistry.get(render_format)
+    if not renderer_cls:
+        logger.warning("No handler for format %r", render_format)
+        return None
+    renderer = renderer_cls()
 
     try:
         config = FacilityReportTemplate.objects.get(
@@ -138,21 +110,30 @@ def generate_and_upload_discharge_summary(
             internal_name=f"{uuid4()}{now_ts}.pdf",
             file_type=FileTypeChoices.encounter.value,
             file_category=FileCategoryChoices.discharge_summary.value,
-            associating_id=enc_id,
+            associating_id=encounter_external_id,
         )
 
-        set_lock(enc_id, 10)
+        set_lock(str(encounter_external_id), 10)
         template_code, included_images = get_discharge_summary_template(
-            encounter, config, render_format
+            encounter, config, renderer
         )
 
-        set_lock(enc_id, 50)
+        set_lock(str(encounter_external_id), 50)
 
         with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
-            if render_format == "typst":
-                logger.info("Compiling Typst for %s", enc_id)
-                compile_typ(tmp_pdf.name, template_code, included_images, enc_id)
-            logger.info("Uploading PDF for %s", enc_id)
+            try:
+                renderer.compile(
+                    tmp_pdf.name,
+                    template_code,
+                    included_images,
+                    str(encounter_external_id),
+                )
+            except Exception as e:
+                logger.error(
+                    "Error generating PDF for %s: %s", encounter_external_id, e
+                )
+                return None
+            logger.info("Uploading PDF for %s", encounter_external_id)
             summary_file.files_manager.put_object(
                 summary_file, tmp_pdf, ContentType="application/pdf"
             )
@@ -161,12 +142,12 @@ def generate_and_upload_discharge_summary(
             summary_file.save(skip_internal_name=True)
             logger.info(
                 "Uploaded Discharge Summary for %s (file id: %s)",
-                enc_id,
+                encounter_external_id,
                 summary_file.id,
             )
 
     finally:
-        clear_lock(enc_id)
+        clear_lock(str(encounter_external_id))
 
     return summary_file
 
@@ -175,16 +156,16 @@ def generate_discharge_report_signed_url(
     patient_external_id: str, render_format: str
 ) -> str | None:
     """Generate a signed URL for the latest discharge report of a patient"""
-    enc = (
+    encounter = (
         Encounter.objects.filter(patient__external_id=patient_external_id)
         .order_by("-created_date")
         .first()
     )
 
-    if not enc:
+    if not encounter:
         return None
 
-    summary_file = generate_and_upload_discharge_summary(enc, render_format)
+    summary_file = generate_and_upload_discharge_summary(encounter, render_format)
     return summary_file.files_manager.signed_url(
         summary_file,
         duration=2 * 24 * 60 * 60,  # 2 days

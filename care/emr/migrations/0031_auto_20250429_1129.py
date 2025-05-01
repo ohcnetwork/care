@@ -10,10 +10,20 @@ def add_default_summary_report_config_to_facility(apps, schema_editor):
     Facility = apps.get_model("facility", "Facility")
     FacilityReportTemplate = apps.get_model("emr", "FacilityReportTemplate")
 
-    with transaction.atomic():
-        for facility in Facility.objects.all():
-            FacilityReportTemplate.objects.create(facility=facility,type=FacilityReportTemplateType.discharge_summary,config=load_default_discharge_summary_config())
+    default_config = load_default_discharge_summary_config()
 
+    batch_size = 100
+    facilities = Facility.objects.all()
+    total_facilities = facilities.count()
+
+    for i in range(0, total_facilities, batch_size):
+        batch_facilities = facilities[i:i+batch_size]
+        with transaction.atomic():
+            for facility in batch_facilities:
+                FacilityReportTemplate.objects.get_or_create(
+                    facility=facility,
+                    type=FacilityReportTemplateType.discharge_summary,
+                    defaults={"config": default_config},)
 
 class Migration(migrations.Migration):
 
@@ -22,5 +32,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_default_summary_report_config_to_facility),
+        migrations.RunPython(add_default_summary_report_config_to_facility, migrations.RunPython.noop),
     ]

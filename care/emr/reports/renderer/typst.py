@@ -1,13 +1,26 @@
+import logging
+import subprocess
+import tempfile
+from pathlib import Path
+
+from django.conf import settings
 from django.template.loader import render_to_string
 
 from care.emr.registries.report.renderer import RendererRegistry
+from care.emr.reports.headers.typst_header import TypstHeaderBuilder
 from care.emr.reports.renderer.base import Renderer
+from care.emr.reports.utils import download_image_to_cache
+
+logger = logging.getLogger(__name__)
 
 
 class TypstRenderer(Renderer):
     """
     Renderer implementation that uses Typst templates.
     """
+
+    def __init__(self):
+        super().__init__(name="typst")
 
     def render_list(self, title, rows) -> str:
         """
@@ -55,6 +68,51 @@ class TypstRenderer(Renderer):
             "reports/typst/page_layout.typ",
             {"layout": layout_config},
         )
+
+    def compile(
+        self,
+        output_file: str,
+        template_code: str,
+        included_images: list,
+        encounter_external_id: str,
+    ):
+        """Compile Typst template into PDF"""
+        logger.info("Compiling PDF for %s → %s", encounter_external_id, output_file)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            template_path = Path(tmpdir) / "template.typ"
+            template_path.write_text(template_code)
+
+            for file_name, url in included_images:
+                logo_bytes = download_image_to_cache(file_name, url)
+                with Path.open(Path(tmpdir) / file_name, "wb") as f:
+                    f.write(logo_bytes)
+
+            try:
+                subprocess.run(  # noqa: S603
+                    [
+                        settings.TYPST_BIN,
+                        "compile",
+                        str(template_path.name),
+                        str(output_file),
+                    ],
+                    cwd=tmpdir,
+                    check=True,
+                )
+            except subprocess.CalledProcessError as e:
+                logger.error(
+                    "Typst compilation failed for %s: %s",
+                    encounter_external_id,
+                    e.stderr,
+                )
+                error = f"Failed to compile PDF for encounter {encounter_external_id}: {e.stderr.strip()}"
+                raise RuntimeError(error) from e
+
+        logger.info("Successfully compiled PDF for %s", encounter_external_id)
+
+    def render_header(self, header_config: dict) -> str:
+        header_builder = TypstHeaderBuilder.from_config(header_config)
+        return header_builder.render()
 
 
 RendererRegistry.register("typst", TypstRenderer)

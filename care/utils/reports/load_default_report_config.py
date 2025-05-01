@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from django.conf import settings
+from pydantic import ValidationError
 
 
 def load_default_discharge_summary_config(facility=None):
@@ -22,4 +23,14 @@ def load_default_discharge_summary_config(facility=None):
                 ):
                     item["text"] = facility.name
 
-    return data
+    try:
+        from care.emr.resources.template.spec import (
+            FacilityReportTemplateCreateSpec,  # circular import
+        )
+
+        validated_config = FacilityReportTemplateCreateSpec.model_validate(data)
+    except ValidationError as e:
+        error = f"Invalid discharge summary config: {e}"
+        raise ValueError(error) from e
+
+    return validated_config

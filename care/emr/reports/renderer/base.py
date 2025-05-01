@@ -6,6 +6,9 @@ class Renderer(ABC):
     Strategy interface for rendering sections in various formats.
     """
 
+    def __init__(self, name: str):
+        self.name = name
+
     @abstractmethod
     def render_list(self, title, rows) -> str:
         """
@@ -47,6 +50,32 @@ class Renderer(ABC):
         """
         Render the page layout.
         :param layout_config: Configuration for the page layout
+        :return: Rendered output string
+        """
+        ...
+
+    @abstractmethod
+    def compile(
+        self,
+        output_file: str,
+        template_code: str,
+        included_images: list,
+        encounter_external_id: str,
+    ):
+        """
+        Compile the rendered template into a final output format (e.g., PDF).
+        :param output_file: Path to the output file
+        :param template_code: Rendered template code
+        :param included_images: List of images to include in the output
+        :param encounter_external_id: Encounter ID for logging or tracking
+        """
+        ...
+
+    @abstractmethod
+    def render_header(self, header_config: dict) -> str:
+        """
+        Render the header section.
+        :param header_config: Configuration for the header
         :return: Rendered output string
         """
         ...
