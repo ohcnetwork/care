@@ -51,9 +51,9 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
             start_datetime__time__gte=self.start_time,
             start_datetime__time__lte=self.end_time,
         )
-        if slots.filter(allocated__gt=0):
+        if slots.filter(allocated__gt=0).exists():
             raise ValidationError("There are bookings during this exception")
-        slots.delete()
+        slots.update(deleted=True)
 
 
 class AvailabilityExceptionReadSpec(AvailabilityExceptionBaseSpec):
