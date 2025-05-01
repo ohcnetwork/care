@@ -113,6 +113,7 @@ class FacilityLocation(EMRBaseModel):
                     self.root_location = self.parent.root_location
                 if not self.parent.has_children:
                     self.parent.has_children = True
+                    self.parent.save(update_fields=["has_children"])
         else:
             self.cached_parent_json = {}
         if not self.sort_index:

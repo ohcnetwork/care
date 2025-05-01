@@ -1,12 +1,7 @@
 from typing import Literal
 
 from django.db import transaction
-from django_filters import (
-    CharFilter,
-    DateFromToRangeFilter,
-    FilterSet,
-    UUIDFilter,
-)
+from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -30,7 +25,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingWriteSpec,
 )
 from care.emr.resources.user.spec import UserSpec
-from care.facility.models import Facility, FacilityOrganizationUser
+from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 
 
@@ -76,7 +71,6 @@ class TokenBookingViewSet(
 
     filterset_class = TokenBookingFilters
     filter_backends = [DjangoFilterBackend]
-    CREATE_QUESTIONNAIRE_RESPONSE = False
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -166,19 +160,16 @@ class TokenBookingViewSet(
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):
         facility = self.get_facility_obj()
-        facility_users = FacilityOrganizationUser.objects.filter(
-            organization__facility=facility,
-            user_id__in=SchedulableUserResource.objects.filter(
-                facility=facility,
-                user__deleted=False,
-            ).values("user_id"),
+        user_resources = SchedulableUserResource.objects.filter(
+            facility=facility,
+            user__deleted=False,
         )
 
         return Response(
             {
                 "users": [
-                    UserSpec.serialize(facility_user.user).to_json()
-                    for facility_user in facility_users
+                    UserSpec.serialize(user_resource.user).to_json()
+                    for user_resource in user_resources
                 ]
             }
         )

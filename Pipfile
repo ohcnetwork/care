@@ -33,7 +33,6 @@ gunicorn = "==23.0.0"
 healthy-django = "==0.1.0"
 json-fingerprint = "==0.14.0"
 jsonschema = "==4.23.0"
-newrelic = "==10.4.0"
 pillow = "==11.1.0"
 psycopg = { extras = ["c"], version = "==3.2.3" }
 pydantic = "==2.9.2"
