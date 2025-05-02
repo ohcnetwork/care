@@ -21,6 +21,6 @@ class Command(BaseCommand):
         ).filter(children_count__gt=0, has_children=False)
         count = queryset.update(has_children=True)
         logger.info(
-            "Fixed %d FacilityLocation(s) objects where has_children was never set to true but actually had children instances",
+            "Fixed %d FacilityLocation objects where has_children was never set to true but actually had children instances",
             count,
         )
