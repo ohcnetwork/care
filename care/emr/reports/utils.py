@@ -1,12 +1,9 @@
 import hashlib
-import logging
 
 import requests
 from django.core.cache import cache
 
 from care.utils.lock import Lock
-
-logger = logging.getLogger(__name__)
 
 
 def download_image_to_cache(file_name, url):
@@ -25,6 +22,5 @@ def download_image_to_cache(file_name, url):
 
         response = requests.get(url, timeout=30)
         response.raise_for_status()
-        logger.error(response.content)
         cache.set(cache_key, response.content, timeout=24 * 60 * 60)
         return response.content

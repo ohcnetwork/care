@@ -1,7 +1,17 @@
+import tempfile
 from enum import Enum
-from typing import Literal
+from pathlib import Path
+from typing import Annotated, Literal
 
-from pydantic import UUID4, BaseModel, HttpUrl, model_validator
+import magic
+import requests
+from pydantic import (
+    UUID4,
+    BaseModel,
+    Field,
+    HttpUrl,
+    model_validator,
+)
 
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
@@ -78,6 +88,45 @@ class ImageElement(BaseModel):
     width: str | None = None
     align: Literal["left", "center", "right"] | None = None
 
+    @model_validator(mode="after")
+    def fix_filename_extension(self) -> "ImageElement":
+        try:
+            response = requests.get(self.url, timeout=10)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            error = f"Failed to download image from {self.url}. Please Recheck the URL."
+            raise ValueError(error) from e
+
+        tmp_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                tmp_file.write(response.content)
+                tmp_path = Path(tmp_file.name)
+
+            mime_type = magic.from_file(str(tmp_path), mime=True)
+            extension_map = {
+                "image/svg+xml": ".svg",
+                "image/png": ".png",
+                "image/jpeg": ".jpg",
+                "image/gif": ".gif",
+                "image/webp": ".webp",
+            }
+            ext = extension_map.get(mime_type)
+
+            if not ext:
+                error = f"Unsupported or unknown image format: {mime_type}"
+                raise ValueError(error)
+
+            file_path = Path(self.file_name)
+            if file_path.suffix.lower() != ext:
+                self.file_name = f"{file_path.stem}{ext}"
+
+        finally:
+            if tmp_path and tmp_path.exists():
+                tmp_path.unlink()
+
+        return self
+
 
 class RuleElement(BaseModel):
     type: Literal["rule"]
@@ -94,7 +143,10 @@ class DateTimeElement(BaseModel):
     align: Literal["left", "center", "right"] | None = None
 
 
-HeaderElement = TextElement | ImageElement | RuleElement | DateTimeElement
+HeaderElement = Annotated[
+    TextElement | ImageElement | RuleElement | DateTimeElement,
+    Field(discriminator="type"),
+]
 
 
 class HeaderConfig(BaseModel):

@@ -43,8 +43,8 @@
         {
           "type": "image",
           "file_name": "care-black-logo.svg",
-          "url": "https://github.com/ohcnetwork/care/blob/develop/care/static/images/logos/black-logo.svg",
-          "width": "20%",
+          "url": "https://raw.githubusercontent.com/ohcnetwork/care/refs/heads/develop/care/static/images/logos/black-logo.svg",
+          "width": "40%",
           "align": "right"
         }
       ],

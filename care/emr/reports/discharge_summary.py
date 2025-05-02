@@ -98,10 +98,14 @@ def generate_and_upload_discharge_summary(
     renderer = renderer_cls()
 
     try:
-        config = FacilityReportTemplate.objects.get(
-            facility=encounter.facility,
-            type=FacilityReportTemplateType.discharge_summary,
-        ).config
+        config = (
+            FacilityReportTemplate.objects.filter(
+                facility=encounter.facility,
+                type=FacilityReportTemplateType.discharge_summary,
+            )
+            .first()
+            .config
+        )
 
         now_ts = int(timezone.now().timestamp() * 1000)
         slug = encounter.patient.name.lower().replace(" ", "_")
