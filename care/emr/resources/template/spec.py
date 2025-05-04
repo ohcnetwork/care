@@ -13,10 +13,10 @@ from pydantic import (
     model_validator,
 )
 
+from care.emr.models.template import FacilityReportTemplate
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
-from care.facility.models import FacilityReportTemplate
 
 
 class MarginValues(BaseModel):
@@ -132,7 +132,6 @@ class RuleElement(BaseModel):
     type: Literal["rule"]
     length: str = "100%"
     stroke: str | None = "black"
-    align: Literal["left", "center", "right"] | None = None
 
 
 class DateTimeElement(BaseModel):
@@ -143,14 +142,15 @@ class DateTimeElement(BaseModel):
     align: Literal["left", "center", "right"] | None = None
 
 
-HeaderElement = Annotated[
-    TextElement | ImageElement | RuleElement | DateTimeElement,
-    Field(discriminator="type"),
-]
-
-
 class HeaderConfig(BaseModel):
-    rows: list[list[HeaderElement]]
+    rows: list[
+        list[
+            Annotated[
+                TextElement | ImageElement | RuleElement | DateTimeElement,
+                Field(discriminator="type"),
+            ]
+        ]
+    ]
 
 
 class LabelValueField(BaseModel):
@@ -162,10 +162,10 @@ class SectionOptions(BaseModel):
     title: str | None = None
     fields: list[str] | list[LabelValueField] = []
     columns: list[str] = []
-    style: Literal["list", "text"] | None = "list"
+    style: Literal["list", "text"] | None = None
     filters: dict[str, list[str]] | None = None
     text: str | None = None
-    rows: list[list[str]] | None = None
+    rows: list[list[str]] | None = []
 
 
 class SectionConfig(BaseModel):

@@ -381,7 +381,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityReportTemplate.objects.create(
                 facility=self,
                 type=FacilityReportTemplateType.discharge_summary,
-                config=load_default_discharge_summary_config(),
+                config=load_default_discharge_summary_config(self).model_dump(
+                    mode="json"
+                ),
             )
 
         self.sync_cache()

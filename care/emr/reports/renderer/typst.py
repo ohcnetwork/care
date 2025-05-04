@@ -78,15 +78,27 @@ class TypstRenderer(Renderer):
     ):
         """Compile Typst template into PDF"""
         logger.info("Compiling PDF for %s → %s", encounter_external_id, output_file)
-
         with tempfile.TemporaryDirectory() as tmpdir:
             template_path = Path(tmpdir) / "template.typ"
             template_path.write_text(template_code)
 
             for file_name, url in included_images:
-                logo_bytes = download_image_to_cache(file_name, url)
-                with Path.open(Path(tmpdir) / file_name, "wb") as f:
-                    f.write(logo_bytes)
+                try:
+                    image_bytes = download_image_to_cache(file_name, url)
+                    image_path = Path(tmpdir) / file_name
+                    with image_path.open("wb") as f:
+                        f.write(image_bytes)
+                except Exception as e:
+                    logger.error(
+                        "Failed to download or validate image '%s' from '%s' for encounter %s: %s",
+                        file_name,
+                        url,
+                        encounter_external_id,
+                        str(e),
+                    )
+                    error = f"Image '{file_name}' is invalid or corrupted. Aborting compilation for encounter {encounter_external_id}."
+
+                    raise RuntimeError(error) from e
 
             try:
                 subprocess.run(  # noqa: S603
@@ -106,6 +118,7 @@ class TypstRenderer(Renderer):
                     e.stderr,
                 )
                 error = f"Failed to compile PDF for encounter {encounter_external_id}: {e.stderr.strip()}"
+
                 raise RuntimeError(error) from e
 
         logger.info("Successfully compiled PDF for %s", encounter_external_id)

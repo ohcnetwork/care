@@ -1,4 +1,3 @@
-import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -34,7 +33,6 @@ class BaseSection(ABC):
         return self.opts.get("columns") if self.is_table else self.opts.get("fields")
 
     def extract_value(self, obj, field: str):
-        logging.warning("Extracting value for field: %s", field)
         if field in self.field_extractors:
             val = self.field_extractors[field](obj)
         else:

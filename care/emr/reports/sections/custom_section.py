@@ -24,7 +24,7 @@ class CustomSection(BaseSection):
             rows = [[f["label"], f["value"]] for f in fields]
             return self.renderer.render_list(title, rows)
 
-        text = opts.get("text", "")
+        text = opts.get("text", self.DEFAULT_EMPTY)
         return self.renderer.render_text(title, text)
 
 

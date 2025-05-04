@@ -24,13 +24,11 @@ def load_default_discharge_summary_config(facility=None):
                     item["text"] = facility.name
 
     try:
-        from care.emr.resources.template.spec import (
-            FacilityReportTemplateCreateSpec,  # circular import
-        )
+        from care.emr.resources.template.spec import ReportConfig  # circular import
 
-        validated_config = FacilityReportTemplateCreateSpec.model_validate(data)
+        validate_config_data = ReportConfig.model_validate(data)
     except ValidationError as e:
         error = f"Invalid discharge summary config: {e}"
         raise ValueError(error) from e
 
-    return validated_config
+    return validate_config_data
