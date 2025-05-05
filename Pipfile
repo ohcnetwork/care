@@ -54,7 +54,7 @@ python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
 coverage = "==7.6.10"
-debugpy = "==1.8.12"
+debugpy = "==1.8.14"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
 django-silk = "==5.3.2"
