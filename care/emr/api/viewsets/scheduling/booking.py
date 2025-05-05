@@ -1,12 +1,7 @@
 from typing import Literal
 
 from django.db import transaction
-from django_filters import (
-    CharFilter,
-    DateFromToRangeFilter,
-    FilterSet,
-    UUIDFilter,
-)
+from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -76,7 +71,6 @@ class TokenBookingViewSet(
 
     filterset_class = TokenBookingFilters
     filter_backends = [DjangoFilterBackend]
-    CREATE_QUESTIONNAIRE_RESPONSE = False
 
     def get_facility_obj(self):
         return get_object_or_404(

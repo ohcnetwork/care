@@ -113,8 +113,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
-        valid_from = datetime.now(UTC)
-        valid_to = valid_from + timedelta(days=30)
+        valid_from = datetime.now(UTC).replace(tzinfo=None)
+        valid_to = (datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
 
         return {
             "user": str(self.user.external_id),
@@ -162,33 +162,20 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        schedule_data = self.generate_schedule_data()
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], schedule_data["name"])
 
     def test_create_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create schedules."""
-        schedule_data = self.generate_schedule_data()
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_create_schedule_with_invalid_dates(self):
-        """Schedule creation fails when valid_from is after valid_to."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        valid_from = datetime.now(UTC)
-        valid_to = valid_from - timedelta(days=1)  # Invalid: end before start
-
-        schedule_data = self.generate_schedule_data(
-            valid_from=valid_from.isoformat(), valid_to=valid_to.isoformat()
-        )
-        response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertContains(
-            response, "Valid from cannot be greater than valid to", status_code=400
-        )
 
     def test_create_schedule_with_overlapping_availability(self):
         """Schedule creation fails when availability sessions overlap"""
@@ -242,10 +229,62 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         user = self.create_user()
-        schedule_data = self.generate_schedule_data(user=user.external_id)
+        schedule_data = self.generate_schedule_data(
+            user=user.external_id,
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+        )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
             response, "Schedule User is not part of the facility", status_code=400
+        )
+
+    def test_create_schedule_with_valid_from_date_less_than_current_date(self):
+        """Users cannot create schedule with valid_from date less than now date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response,
+            "Date cannot be before the current date",
+            status_code=400,
+        )
+
+    def test_create_schedule_with_valid_to_date_less_than_current_date(self):
+        """Users cannot create schedule with valid_to date less than now date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response,
+            "Date cannot be before the current date",
+            status_code=400,
+        )
+
+    def test_create_schedule_with_valid_to_date_less_than_valid_from_date(self):
+        """Users cannot create schedule with valid_to date less than valid_from date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            valid_to=(datetime.now(UTC) + timedelta(minutes=10)).replace(tzinfo=None),
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
         )
 
     def test_update_schedule_with_permissions(self):
@@ -509,6 +548,55 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         exception_data = self.generate_exception_data()
         response = self.client.post(self.base_url, exception_data, format="json")
         self.assertContains(response, "Object does not exist", status_code=400)
+
+    def test_create_exception_with_valid_from_date_less_than_current_date(self):
+        """Users cannot create exception with valid_from date less than now date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        exception_data = self.generate_exception_data(
+            valid_from=(datetime.now(UTC).date() - timedelta(days=1)).isoformat()
+        )
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(
+            response,
+            "Date cannot be before the current date",
+            status_code=400,
+        )
+
+    def test_create_exception_with_valid_to_date_less_than_current_date(self):
+        """Users cannot create exception with valid_to date less than now date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        exception_data = self.generate_exception_data(
+            valid_to=(datetime.now(UTC).date() - timedelta(days=1)).isoformat()
+        )
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(
+            response,
+            "Date cannot be before the current date",
+            status_code=400,
+        )
+
+    def test_create_exception_with_valid_to_date_less_than_valid_from_date(self):
+        """Users cannot create exception with valid_to date less than now valid_from date"""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        exception_data = self.generate_exception_data(
+            valid_to=(datetime.now(UTC).date() + timedelta(days=1)).isoformat(),
+            valid_from=(datetime.now(UTC).date() + timedelta(days=4)).isoformat(),
+        )
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
+        )
 
     def test_update_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can update exceptions."""
