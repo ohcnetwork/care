@@ -35,14 +35,15 @@ from care.security.models import RoleModel
 from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
-ROLES_OPTIONS = [
-    "Volunteer",
-    "Doctor",
-    "Staff",
-    "Nurse",
-    "Administrator",
-    "Facility Admin",
-]
+# Roles with their user types
+ROLES_OPTIONS = {
+    "Volunteer": "volunteer",
+    "Doctor": "doctor",
+    "Staff": "staff",
+    "Nurse": "nurse",
+    "Administrator": "administrator",
+    "Facility Admin": "administrator",
+}
 
 
 def generate_unique_indian_phone_number():
@@ -261,7 +262,7 @@ class Command(BaseCommand):
         self.stdout.write(f"{'ROLE':<15} {'USERNAME':<30} {'PASSWORD':<20}")
         self.stdout.write("-" * 65)
 
-        for role_name in ROLES_OPTIONS:
+        for role_name, user_type in ROLES_OPTIONS.items():
             try:
                 role = RoleModel.objects.get(name=role_name)
 
@@ -285,7 +286,7 @@ class Command(BaseCommand):
                         password=password,
                         username=username,
                         email=str(uuid.uuid4()) + fake.email(),
-                        user_type=role_name.lower().replace(" ", "_"),
+                        user_type=user_type,
                     )
                     user = user_spec.de_serialize()
                     user.created_by = super_user
@@ -416,7 +417,7 @@ class Command(BaseCommand):
                     password=password,
                     username=username,
                     email=f"{username}@example.com",
-                    user_type=role_name.lower().replace(" ", "_"),
+                    user_type=ROLES_OPTIONS[role_name],
                 )
                 user = user_spec.de_serialize()
                 user.created_by = super_user
