@@ -2,7 +2,6 @@ import datetime
 from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 from pydantic import UUID4, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 
@@ -11,6 +10,7 @@ from care.emr.models.scheduling.schedule import SchedulableUserResource
 from care.emr.resources.base import EMRResource
 from care.facility.models import Facility
 from care.users.models import User
+from care.utils.time_util import care_now
 
 
 class ResourceTypeOptions(str, Enum):
@@ -36,7 +36,7 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = timezone.now().date()
+        now = care_now().date()
         if value < now:
             raise ValueError("Date cannot be before the current date")
         return value

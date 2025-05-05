@@ -17,6 +17,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.users.models import User
+from care.utils.time_util import care_now
 
 
 class SlotTypeOptions(str, Enum):
@@ -130,7 +131,7 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = datetime.datetime.now(tz=UTC).replace(tzinfo=None)
+        now = care_now().replace(tzinfo=None)
         if value < now:
             raise ValueError("Date cannot be before the current date")
         return value
