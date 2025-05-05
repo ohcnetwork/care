@@ -20,7 +20,7 @@ class TokenSlot(EMRBaseModel):
 
 class TokenBooking(EMRBaseModel):
     token_slot = models.ForeignKey(
-        TokenSlot, on_delete=models.CASCADE, null=False, blank=False
+        TokenSlot, on_delete=models.PROTECT, null=False, blank=False
     )
     patient = models.ForeignKey(
         "emr.Patient",

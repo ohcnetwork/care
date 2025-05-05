@@ -31,6 +31,7 @@ from care.emr.models import (
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
+    EncounterCareTeamMemberWriteSpec,
     EncounterCreateSpec,
     EncounterListSpec,
     EncounterRetrieveSpec,
@@ -40,6 +41,7 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.users.models import User
 
 
 class LiveFilter(filters.CharFilter):
@@ -279,6 +281,39 @@ class EncounterViewSet(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    @extend_schema(
+        request=EncounterCareTeamMemberWriteSpec, responses={200: EncounterRetrieveSpec}
+    )
+    @action(detail=True, methods=["POST"])
+    def set_care_team_members(self, request, *args, **kwargs):
+        request_data = EncounterCareTeamMemberWriteSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+
+        members = []
+        users = []
+        for member in request_data.members:
+            user_obj = get_object_or_404(User, external_id=member.user_id)
+            if user_obj.id in users:
+                raise ValidationError({"user": "repeats are not allowed"})
+            users.append(user_obj.id)
+            if not AuthorizationController.call(
+                "can_view_encounter_obj", request.user, encounter
+            ):
+                raise PermissionDenied(
+                    "Treating doctor does not have permission on encounter"
+                )
+            members.append(
+                {
+                    "user_id": user_obj.id,
+                    "role": member.role.model_dump(mode="json", exclude_defaults=True),
+                }
+            )
+
+        encounter.care_team = members
+        encounter.save(update_fields=["care_team"])
+        return Response({}, status=status.HTTP_200_OK)
 
 
 def dev_preview_discharge_summary(request, encounter_id):

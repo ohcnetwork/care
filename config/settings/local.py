@@ -58,3 +58,5 @@ JWKS = JsonWebKey.import_key_set(
         )
     )
 )
+
+SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"

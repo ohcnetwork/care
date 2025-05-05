@@ -19,12 +19,16 @@ class Encounter(EMRBaseModel):
     priority = models.CharField(max_length=100, null=True, blank=True)
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
 
+    care_team = models.JSONField(default=dict)
+
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
 
     current_location = models.ForeignKey(
         "emr.FacilityLocation", on_delete=models.SET_NULL, null=True, blank=True
     )  # Cached field, used for easier querying
+
+    discharge_summary_advice = models.TextField(null=True, blank=True)
 
     def sync_organization_cache(self):
         orgs = set()

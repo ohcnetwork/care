@@ -8,7 +8,7 @@ if [ -z "${DATABASE_URL}" ]; then
 fi
 
 if [ -z "${REDIS_URL}" ]; then
-  export REDIS_URL="rediss://:${REDIS_AUTH_TOKEN}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}?ssl_cert_reqs=CERT_NONE"
+  export REDIS_URL="rediss://:${REDIS_AUTH_TOKEN}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DATABASE}?ssl_cert_reqs=none"
 fi
 
 
@@ -18,9 +18,4 @@ fi
 python manage.py collectstatic --noinput
 python manage.py compilemessages -v 0
 
-export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
-if [[ -f "$NEW_RELIC_CONFIG_FILE" ]]; then
-  newrelic-admin run-program gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app
-else
-  gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers 2
-fi
+gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers 2

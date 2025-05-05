@@ -1,6 +1,6 @@
-# Not Being used
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
@@ -20,6 +20,7 @@ from care.emr.resources.encounter.constants import (
     EncounterPriorityChoices,
     StatusChoices,
 )
+from care.emr.resources.encounter.valueset import PRACTITIONER_ROLE_VALUESET
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
@@ -29,7 +30,11 @@ from care.emr.resources.location.spec import (
 from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
+from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
+
+User = get_user_model()
 
 
 class HospitalizationSpec(BaseModel):
@@ -47,6 +52,7 @@ class EncounterSpecBase(EMRResource):
         "facility",
         "appointment",
         "current_location",
+        "care_team",
     ]
 
     id: UUID4 = None
@@ -56,6 +62,7 @@ class EncounterSpecBase(EMRResource):
     hospitalization: HospitalizationSpec | None = {}
     priority: EncounterPriorityChoices
     external_identifier: str | None = None
+    discharge_summary_advice: str | None = None
 
 
 class EncounterCreateSpec(EncounterSpecBase):
@@ -92,6 +99,8 @@ class EncounterUpdateSpec(EncounterSpecBase):
             obj.encounter_class_history["history"].append(
                 {"status": self.status, "moved_at": str(timezone.now())}
             )
+        if self.discharge_summary_advice is None and is_update:
+            obj.discharge_summary_advice = None
 
 
 class EncounterListSpec(EncounterSpecBase):
@@ -116,6 +125,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     organizations: list[dict] = []
     current_location: dict | None = None
     location_history: list[dict] = []
+    care_team: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -140,4 +150,27 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
                 "-created_date"
             )
         ]
+
+        care_team = []
+        for member in obj.care_team:
+            care_team.append(
+                {
+                    "member": UserSpec.serialize(
+                        User.objects.get(id=member["user_id"])
+                    ).to_json(),
+                    "role": member["role"],
+                }
+            )
+
+        mapping["care_team"] = care_team
+
         cls.serialize_audit_users(mapping, obj)
+
+
+class EncounterCareTeamMemberSpec(BaseModel):
+    user_id: UUID4
+    role: ValueSetBoundCoding[PRACTITIONER_ROLE_VALUESET.slug]
+
+
+class EncounterCareTeamMemberWriteSpec(BaseModel):
+    members: list[EncounterCareTeamMemberSpec]

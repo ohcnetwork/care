@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework import filters as rest_framework_filters
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -12,19 +13,12 @@ from care.emr.resources.medication.statement.spec import (
     MedicationStatementUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-
-
-class StatusFilter(filters.CharFilter):
-    def filter(self, qs, value):
-        if value:
-            statuses = value.split(",")
-            return qs.filter(status__in=statuses)
-        return qs
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class MedicationStatementFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    status = StatusFilter()
+    status = MultiSelectFilter(field_name="status")
     name = filters.CharFilter(field_name="medication__display", lookup_expr="icontains")
 
 
@@ -40,7 +34,11 @@ class MedicationStatementViewSet(
     questionnaire_description = "Medication Statement"
     questionnaire_subject_type = SubjectType.patient.value
     filterset_class = MedicationStatementFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_queryset(self):
         self.authorize_read_encounter()

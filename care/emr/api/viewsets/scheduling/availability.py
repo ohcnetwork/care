@@ -22,6 +22,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
+from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.lock import Lock
@@ -193,14 +194,18 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         # Create everything else
         for _slot in slots:
             slot = slots[_slot]
+            end_datetime = datetime.datetime.combine(
+                request_data.day, slot["end_time"], tzinfo=None
+            )
+            # Skip creating slots in the past
+            if end_datetime < timezone.make_naive(timezone.now()):
+                continue
             TokenSlot.objects.create(
                 resource=schedulable_resource_obj,
                 start_datetime=datetime.datetime.combine(
                     request_data.day, slot["start_time"], tzinfo=None
                 ),
-                end_datetime=datetime.datetime.combine(
-                    request_data.day, slot["end_time"], tzinfo=None
-                ),
+                end_datetime=end_datetime,
                 availability_id=slot["availability_id"],
             )
         # Compare and figure out what needs to be created
@@ -267,7 +272,12 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         user = User.objects.filter(external_id=request_data.user).first()
         if not user:
             raise ValidationError("User does not exist")
-        resource = SchedulableUserResource.objects.filter(user=user).first()
+        facility = get_object_or_404(
+            Facility, external_id=self.kwargs["facility_external_id"]
+        )
+        resource = SchedulableUserResource.objects.filter(
+            user=user, facility=facility
+        ).first()
         if not resource:
             raise ValidationError("Resource is not schedulable")
 
