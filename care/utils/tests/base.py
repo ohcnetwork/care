@@ -8,6 +8,8 @@ from rest_framework.test import APITestCase
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 
 # Global mocking, since the types are loaded when specs load, mocking using patch was not working as the validations were already loaded.
+import care.emr.utils.valueset_coding_type  # noqa # isort:skip
+
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = MagicMock(
     return_value={
         "display": "Test Value",

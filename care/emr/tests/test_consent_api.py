@@ -160,6 +160,26 @@ class TestConsentViewSet(CareAPITestBase):
             response_data["errors"][0]["msg"],
         )
 
+    def test_create_consent_same_date(self):
+        permissions = [EncounterPermissions.can_write_encounter.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+        start = self.fake.date_time_this_year(
+            tzinfo=timezone(timedelta(hours=5, minutes=30))
+        )
+        date = start
+        end = start
+        data = self.generate_data_for_consent(
+            encounter,
+            period={"start": start.isoformat(), "end": end.isoformat()},
+            date=date.isoformat(),
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
     # RETRIEVE TESTS
     def test_retrieve_consent_with_permissions(self):
         permissions = [
