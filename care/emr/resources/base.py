@@ -73,7 +73,7 @@ class EMRResource(BaseModel):
             obj = self.__model__()
         database_fields = self.get_database_mapping()
         meta = getattr(obj, "meta", {})
-        dump = self.model_dump(mode="json", exclude_defaults=True)
+        dump = self.model_dump(mode="json", exclude_unset=True)
         for field in dump:
             if (
                 field in database_fields
