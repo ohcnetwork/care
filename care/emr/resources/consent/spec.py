@@ -76,7 +76,7 @@ class ConsentCreateSpec(ConsentBaseSpec):
     def validate_period_and_date(self):
         if self.period.start and self.period.start < self.date:
             raise ValidationError(
-                "Start of the period cannot be less than the Consent date"
+                "Start of the period cannot be before than the Consent date"
             )
 
     def perform_extra_deserialization(self, is_update, obj):
