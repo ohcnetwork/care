@@ -358,10 +358,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
         super().save(*args, **kwargs)
 
         if is_create:
-            from care.emr.resources.template.spec import (
-                FacilityReportTemplateType,  # to avoid circular imports
-            )
-
             facility_organization = FacilityOrganization.objects.create(
                 org_type="root",
                 name="Administration",
@@ -380,7 +376,7 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             )
             FacilityReportTemplate.objects.create(
                 facility=self,
-                type=FacilityReportTemplateType.discharge_summary,
+                slug="default-discharge-summary",
                 config=load_default_discharge_summary_config(self).model_dump(
                     mode="json"
                 ),

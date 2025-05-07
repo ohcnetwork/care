@@ -1,5 +1,4 @@
 import tempfile
-from enum import Enum
 from pathlib import Path
 from typing import Annotated, Literal
 
@@ -192,11 +191,6 @@ class ReportConfig(BaseModel):
     sections: list[SectionConfig]
 
 
-class FacilityReportTemplateType(str, Enum):
-    discharge_summary = "discharge_summary"
-    lab_report = "lab_report"
-
-
 class FacilityReportTemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
 
@@ -206,7 +200,7 @@ class FacilityReportTemplateBaseSpec(EMRResource):
 
 class FacilityReportTemplateCreateSpec(FacilityReportTemplateBaseSpec):
     config: ReportConfig
-    type: FacilityReportTemplateType
+    slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
 
 
 class FacilityReportTemplateUpdateSpec(FacilityReportTemplateBaseSpec):
@@ -216,7 +210,7 @@ class FacilityReportTemplateUpdateSpec(FacilityReportTemplateBaseSpec):
 class FacilityReportTemplateReadSpec(FacilityReportTemplateBaseSpec):
     config: dict
     facility: dict
-    type: str
+    slug: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

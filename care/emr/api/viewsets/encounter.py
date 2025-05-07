@@ -24,6 +24,7 @@ from care.emr.models import (
     FacilityOrganization,
     Patient,
 )
+from care.emr.models.template import FacilityReportTemplate
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
@@ -248,6 +249,7 @@ class EncounterViewSet(
 
     class EncounterDischargeSummarySpec(BaseModel):
         render_format: str | None = "typst"
+        slug: str | None = "default-discharge-summary"
 
     @extend_schema(
         description="Generate a discharge summary",
@@ -285,9 +287,15 @@ class EncounterViewSet(
             error = f"Invalid render format {request_data.render_format}. Valid choices are {RendererRegistry.all().keys()}"
             raise ValidationError(error)
 
+        if not FacilityReportTemplate.objects.filter(
+            facility=encounter.facility.external_id, slug=request_data.slug
+        ).exists():
+            error = f"Invalid slug {request_data.slug}. Facility report template does not exist"
+            raise ValidationError(error)
+
         discharge_summary.set_lock(encounter_ext_id, 1)
         generate_discharge_summary_task.delay(
-            encounter_ext_id, request_data.render_format
+            encounter_ext_id, request_data.render_format, request_data.slug
         )
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},

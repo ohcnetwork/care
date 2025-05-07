@@ -11,7 +11,6 @@ from care.emr.registries.report.renderer import RendererRegistry
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.renderer.base import Renderer
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
-from care.emr.resources.template.spec import FacilityReportTemplateType
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +83,7 @@ def get_discharge_summary_template(
 
 
 def generate_and_upload_discharge_summary(
-    encounter: Encounter, render_format: str
+    encounter: Encounter, render_format: str, slug: str
 ) -> FileUpload | None:
     """Generate and upload discharge summary PDF for an encounter"""
     encounter_external_id = encounter.external_id
@@ -92,15 +91,17 @@ def generate_and_upload_discharge_summary(
     set_lock(str(encounter_external_id), 5)
 
     renderer_cls = RendererRegistry.get(render_format)
+
     if not renderer_cls:
         logger.warning("No handler for format %r", render_format)
         return None
+
     renderer = renderer_cls()
     try:
         config = (
             FacilityReportTemplate.objects.filter(
                 facility=encounter.facility,
-                type=FacilityReportTemplateType.discharge_summary,
+                slug=slug,
             )
             .first()
             .config
