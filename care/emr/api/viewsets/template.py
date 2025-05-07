@@ -35,11 +35,11 @@ class FacilityReportTemplateViewSet(EMRModelViewSet):
         if (
             model_obj is None
             and FacilityReportTemplate.objects.filter(
-                slug=instance.slug, facility=self.get_facility_obj()
+                slug=instance.slug, type=instance.type, facility=self.get_facility_obj()
             ).exists()
         ):
             raise ValidationError(
-                detail=f"Report template with slug {instance.slug} already exists for this facility"
+                detail=f"Report template with slug {instance.slug} and type {instance.type} already exists for this facility"
             )
 
     def perform_create(self, instance):

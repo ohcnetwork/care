@@ -288,7 +288,7 @@ class EncounterViewSet(
             raise ValidationError(error)
 
         if not FacilityReportTemplate.objects.filter(
-            facility=encounter.facility.external_id, slug=request_data.slug
+            facility=encounter.facility, slug=request_data.slug
         ).exists():
             error = f"Invalid slug {request_data.slug}. Facility report template does not exist"
             raise ValidationError(error)

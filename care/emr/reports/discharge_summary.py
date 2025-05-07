@@ -11,6 +11,7 @@ from care.emr.registries.report.renderer import RendererRegistry
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.renderer.base import Renderer
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
+from care.emr.resources.template.spec import FacilityReportTemplateTypes
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +103,7 @@ def generate_and_upload_discharge_summary(
             FacilityReportTemplate.objects.filter(
                 facility=encounter.facility,
                 slug=slug,
+                type=FacilityReportTemplateTypes.discharge_summary,
             )
             .first()
             .config

@@ -11,7 +11,6 @@ from simple_history.models import HistoricalRecords
 
 from care.emr.models import FacilityOrganization
 from care.emr.models.organization import FacilityOrganizationUser
-from care.emr.models.template import FacilityReportTemplate
 from care.facility.models import FacilityBaseModel, reverse_choices
 from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
@@ -23,9 +22,6 @@ from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import District, LocalBody, State, Ward
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
-from care.utils.reports.load_default_report_config import (
-    load_default_discharge_summary_config,
-)
 
 User = get_user_model()
 
@@ -374,14 +370,6 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
             FacilityUser.objects.create(
                 facility=self, user=self.created_by, created_by=self.created_by
             )
-            FacilityReportTemplate.objects.create(
-                facility=self,
-                slug="default-discharge-summary",
-                config=load_default_discharge_summary_config(self).model_dump(
-                    mode="json"
-                ),
-            )
-
         self.sync_cache()
 
     @transaction.atomic
