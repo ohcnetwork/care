@@ -17,7 +17,11 @@
   },
   "header": {
     "rows": [
-      [
+      {
+        "size_ratio": [
+          1
+        ],
+        "columns": [
         {
           "type": "text",
           "text": "Central Diagnostic Laboratory",
@@ -25,15 +29,26 @@
           "weight": 400,
           "align": "center"
         }
-      ],
-      [
+        ]
+      },
+      {
+        "size_ratio": [
+          1
+        ],
+        "columns": [
         {
           "type": "rule",
           "length": "100%",
           "stroke": "mygray"
         }
-      ],
-      [
+        ]
+      },
+      {
+        "size_ratio": [
+          4,
+          2
+        ],
+        "columns": [
         {
           "type": "text",
           "text": "Patient Discharge Summary",
@@ -47,8 +62,13 @@
           "width": "40%",
           "align": "right"
         }
-      ],
-      [
+        ]
+      },
+      {
+        "size_ratio": [
+          1
+        ],
+        "columns": [
         {
           "type": "datetime",
           "label": "Created on",
@@ -57,16 +77,22 @@
             "fill": "mygray",
             "weight": 500
           },
-          "align": "right"
+          "align": "left"
         }
-      ],
-      [
+        ]
+      },
+      {
+        "size_ratio": [
+          1
+        ],
+        "columns": [
         {
           "type": "rule",
           "length": "100%",
           "stroke": "mygray"
         }
       ]
+      }
     ]
   },
   "sections": [
@@ -114,7 +140,7 @@
       "options": {
         "title": "Symptoms Reported",
                 "columns": [
-          "diagnosis",
+                  "symptom",
           "onset",
           "clinical_status",
           "severity",

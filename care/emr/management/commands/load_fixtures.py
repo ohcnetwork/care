@@ -205,6 +205,7 @@ class Command(BaseCommand):
                             facility
                         ).model_dump(mode="json"),
                     )
+        self.stdout.write("Default discharge summary loaded....")
 
     def _create_geo_organization(self, fake, super_user):
         org_spec = OrganizationWriteSpec(

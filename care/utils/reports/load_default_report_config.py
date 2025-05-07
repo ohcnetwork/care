@@ -16,7 +16,7 @@ def load_default_discharge_summary_config(facility=None):
 
     if facility and "header" in data:
         for row in data["header"].get("rows", []):
-            for item in row:
+            for item in row.get("columns", []):
                 if (
                     item.get("type") == "text"
                     and item.get("text") == "Central Diagnostic Laboratory"

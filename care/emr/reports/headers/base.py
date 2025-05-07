@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 class BaseHeaderBuilder(ABC):
     def __init__(self, gutter: str = "1em"):
         self.grid_rows: list[list[str]] = []
+        self.size_ratios: list[list[int]] = []
         self.gutter = gutter
 
     @classmethod
@@ -12,13 +13,17 @@ class BaseHeaderBuilder(ABC):
     ) -> "BaseHeaderBuilder":
         builder = cls(gutter=gutter)
         for row_cfg in header_config.get("rows", []):
-            row_idx = builder.add_row()
-            for el in row_cfg:
+            size_ratio = row_cfg.get("size_ratio", [1])
+            row_idx = builder.add_row(size_ratio)
+            for el in row_cfg.get("columns", []):
                 builder._add_element(row_idx, el)  # noqa: SLF001
         return builder
 
-    def add_row(self) -> int:
+    def add_row(self, size_ratio=None) -> int:
+        if size_ratio is None:
+            size_ratio = [1]
         self.grid_rows.append([])
+        self.size_ratios.append(size_ratio)
         return len(self.grid_rows) - 1
 
     def _add_element(self, row_idx: int, el: dict):
@@ -108,7 +113,10 @@ class BaseHeaderBuilder(ABC):
     ): ...
 
     @abstractmethod
-    def _render_grid_for_row(self, cells: list[str]) -> str: ...
+    def _render_grid_for_row(self, cells: list[str], size_ratio: list[int]) -> str: ...
 
     def render(self) -> str:
-        return "\n\n".join(self._render_grid_for_row(r) for r in self.grid_rows)
+        return "\n\n".join(
+            self._render_grid_for_row(self.grid_rows[i], self.size_ratios[i])
+            for i in range(len(self.grid_rows))
+        )

@@ -142,15 +142,25 @@ class DateTimeElement(BaseModel):
     align: Literal["left", "center", "right"] | None = None
 
 
-class HeaderConfig(BaseModel):
-    rows: list[
-        list[
-            Annotated[
-                TextElement | ImageElement | RuleElement | DateTimeElement,
-                Field(discriminator="type"),
-            ]
+class HeaderRow(BaseModel):
+    size_ratio: list[int] = [1]
+    columns: list[
+        Annotated[
+            TextElement | ImageElement | RuleElement | DateTimeElement,
+            Field(discriminator="type"),
         ]
     ]
+
+    @model_validator(mode="after")
+    def validate_size_ratio_length(self):
+        if len(self.size_ratio) != len(self.columns):
+            error = f"Size ratio {self.size_ratio} does not match number of columns {len(self.columns)}"
+            raise ValueError(error)
+        return self
+
+
+class HeaderConfig(BaseModel):
+    rows: list[HeaderRow]
 
 
 class LabelValueField(BaseModel):

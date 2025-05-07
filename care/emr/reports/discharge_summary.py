@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.core.cache import cache
 from django.utils import timezone
+from pydantic.v1 import UUID4
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.models.template import FacilityReportTemplate
@@ -40,10 +41,10 @@ def clear_lock(encounter_external_id: str):
 
 def extract_images(images: list, config: dict):
     """Extract image information from configuration sections"""
-    for row in config["header"].get("rows", []):
-        for el in row:
-            if el["type"] == "image":
-                images.append((el["file_name"], el["url"]))
+    for row in config.get("header", {}).get("rows", []):
+        for element in row.get("columns", []):
+            if element.get("type") == "image":
+                images.append((element["file_name"], element["url"]))
 
     # TODO: Add support for images in sections
 
@@ -159,7 +160,7 @@ def generate_and_upload_discharge_summary(
 
 
 def generate_discharge_report_signed_url(
-    patient_external_id: str, render_format: str
+    patient_external_id: UUID4, render_format: str, slug: str
 ) -> str | None:
     """Generate a signed URL for the latest discharge report of a patient"""
     encounter = (
@@ -170,9 +171,8 @@ def generate_discharge_report_signed_url(
 
     if not encounter:
         return None
-
-    summary_file = generate_and_upload_discharge_summary(encounter, render_format)
-    return summary_file.files_manager.signed_url(
+    summary_file = generate_and_upload_discharge_summary(encounter, render_format, slug)
+    return summary_file.files_manager.read_signed_url(
         summary_file,
         duration=2 * 24 * 60 * 60,  # 2 days
     )

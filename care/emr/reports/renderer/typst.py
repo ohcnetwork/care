@@ -78,6 +78,9 @@ class TypstRenderer(Renderer):
     ):
         """Compile Typst template into PDF"""
         logger.info("Compiling PDF for %s → %s", encounter_external_id, output_file)
+        logger.info("\n" * 20)
+        logger.info(template_code)
+        logger.info("\n" * 20)
         with tempfile.TemporaryDirectory() as tmpdir:
             template_path = Path(tmpdir) / "template.typ"
             template_path.write_text(template_code)

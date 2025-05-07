@@ -67,15 +67,18 @@ class TypstHeaderBuilder(BaseHeaderBuilder):
             frag = f"align({align}, {frag})"
         self.grid_rows[row_idx].append(frag)
 
-    def _render_grid_for_row(self, cells: list[str]) -> str:
-        count = len(cells)
+    def _render_grid_for_row(self, cells: list[str], size_ratio: list[int]) -> str:
+        def convert_ratio_to_typst(ratio: list[int]) -> str:
+            fr_parts = [f"{x}fr" for x in ratio]
+            return f"({', '.join(fr_parts)})"
+
+        columns_typst = convert_ratio_to_typst(size_ratio)
         lines = []
         for i, frag in enumerate(cells):
-            comma = "," if i < count - 1 else ""
+            comma = "," if i < len(cells) - 1 else ""
             lines.append(f"  [#{frag}]{comma}")
         body = "\n".join(lines)
         return (
-            f"#grid(columns: {count}, column-gutter: {self.gutter}, align: center,\n"
-            f"{body}\n"
-            ")"
+            f"#grid(columns: {columns_typst}, column-gutter: {self.gutter}, align: center,\n"
+            f"{body}\n)"
         )
