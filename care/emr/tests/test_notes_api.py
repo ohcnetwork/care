@@ -251,3 +251,137 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.assertContains(response, note.message, status_code=200)
+
+    def test_list_notes_on_thread_without_permission(self):
+        thread = self._create_thread()
+        self._create_note(thread)
+        url = self._get_note_list_url(thread.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
+
+    def test_list_notes_on_encounter(self):
+        role=self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_view_clinical_data.name,
+                EncounterPermissions.can_read_encounter.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread=self._create_thread(encounter=self.encounter)
+        url=f"{self._get_note_list_url(thread.external_id)}?encounter={self.encounter.external_id}"
+        note=self._create_note(thread)
+        response=self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, note.message, status_code=200)
+
+    def test_create_note_on_encounter_with_permission(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_write_encounter.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread(encounter=self.encounter)
+        url = self._get_note_list_url(thread.external_id)
+        data = {
+            "message": "Test Note",
+            "encounter": self.encounter.external_id
+            }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, data["message"], status_code=200)
+
+    def test_create_note_on_encounter_without_permission(self):
+        thread=self._create_thread(encounter=self.encounter)
+        url=self._get_note_list_url(thread.external_id)
+        data = {
+            "message": "Test Note",
+            "encounter": self.encounter.external_id
+        }
+        response=self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "You do not have permission for this action", status_code=403)
+
+    def test_create_note_on_encounter_with_patient_mismatch(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_write_encounter.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread(encounter=self.encounter)
+        url = self._get_note_list_url(thread.external_id)
+        encounter = self.create_encounter(
+            patient=self.create_patient(),
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        data = {
+            "message": "Test Note",
+            "encounter": encounter.external_id
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(response, "Patient Mismatch", status_code=400)
+
+    def test_create_note_on_thread(self):   
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_write_patient.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        url = self._get_note_list_url(thread.external_id)
+        data = {"message": "Test Note"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, data["message"], status_code=200)
+
+    def test_create_note_on_thread_without_permission(self):
+        thread = self._create_thread()
+        url = self._get_note_list_url(thread.external_id)
+        data = {"message": "Test Note"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "You do not have permission for this action", status_code=403)
+
+
+    def test_update_note(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_view_clinical_data.name,
+                PatientPermissions.can_write_patient.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(thread.external_id, note.external_id)
+        data = {
+            "message": "Updated Note",
+            "created_date": note.created_date.isoformat(),
+            "modified_date": note.modified_date.isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        note.refresh_from_db()
+        self.assertEqual(note.message, data["message"])
+
+    def test_update_note_without_permission(self):
+        thread=self._create_thread()
+        note=self._create_note(thread)
+        url=self._get_note_detail_url(thread.external_id, note.external_id)
+        data = {
+            "message": "Updated Note",
+            "created_date": note.created_date.isoformat(),
+            "modified_date": note.modified_date.isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
