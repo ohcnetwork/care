@@ -4,6 +4,8 @@ from care.emr.reports.sections.base import BaseSection
 
 
 def _get_observation_value(o: Observation):
+    if o.value is None:
+        return BaseSection.DEFAULT_EMPTY
     if disp := o.value.get("display"):
         return disp
     if unit := o.value.get("unit", {}).get("display"):

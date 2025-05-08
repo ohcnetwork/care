@@ -16,6 +16,8 @@ class CustomSection(BaseSection):
         if self.is_table:
             columns = opts.get("columns", [])
             rows = opts.get("rows", [])
+            if not columns or not rows:
+                return ""
             return self.renderer.render_table(title, columns, rows)
 
         style = opts.get("style", "text")

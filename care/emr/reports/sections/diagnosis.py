@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from care.emr.models import Condition
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.sections.base import BaseSection
@@ -12,9 +14,11 @@ class DiagnosisSection(BaseSection):
                 "diagnosis": lambda o: o.code.get("display")
                 if o.code
                 else self.DEFAULT_EMPTY,
-                "onset": lambda o: o.onset.get("onset_datetime")
-                if o.onset
-                else self.DEFAULT_EMPTY,
+                "onset": lambda o: (
+                    datetime.fromisoformat(o.onset.get("onset_datetime")).date()
+                    if o.onset and o.onset.get("onset_datetime")
+                    else self.DEFAULT_EMPTY
+                ),
             }
         )
 

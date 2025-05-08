@@ -5,6 +5,7 @@ from typing import Annotated, Literal
 
 import magic
 import requests
+from django.conf import settings
 from pydantic import (
     UUID4,
     BaseModel,
@@ -96,6 +97,10 @@ class ImageElement(BaseModel):
         except requests.RequestException as e:
             error = f"Failed to download image from {self.url}. Please Recheck the URL."
             raise ValueError(error) from e
+
+        if len(response.content) > settings.MAX_IMAGE_SIZE_FOR_REPORTS * 1024 * 1024:
+            error = f"Image from {self.url} exceeds maximum allowed size of {settings.MAX_IMAGE_SIZE_FOR_REPORTS}MB"
+            raise ValueError(error)
 
         tmp_path: Path | None = None
         try:

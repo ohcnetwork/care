@@ -110,7 +110,7 @@
           "address",
           "permanent_address",
           "pincode",
-            "date_of_birth",
+          "date_of_birth",
           "deceased_datetime",
           "marital_status",
           "blood_group"
@@ -156,13 +156,9 @@
         "title": "Allergies And Intolerances",
         "columns": [
           "allergen",
-          "onset",
           "criticality",
           "clinical_status",
-          "criticality",
-          "recorded_date",
           "last_occurrence",
-          "allergy_intolerance_type",
           "note"
         ]
       }

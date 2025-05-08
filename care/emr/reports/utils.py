@@ -2,6 +2,7 @@ import hashlib
 
 import magic
 import requests
+from django.conf import settings
 from django.core.cache import cache
 
 from care.utils.lock import Lock
@@ -28,6 +29,10 @@ def download_image_to_cache(file_name: str, url: str) -> bytes:
             raise ValueError(error) from e
 
         image_bytes = response.content
+
+        if len(image_bytes) > settings.MAX_IMAGE_SIZE_FOR_REPORTS * 1024 * 1024:
+            error = f"Image from {url} exceeds maximum allowed size of {settings.MAX_IMAGE_SIZE_FOR_REPORTS}MB"
+            raise ValueError(error)
 
         mime_type = magic.from_buffer(image_bytes, mime=True)
         allowed_mime_types = {
