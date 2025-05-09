@@ -11,6 +11,7 @@ from pydantic import (
     BaseModel,
     Field,
     HttpUrl,
+    field_validator,
     model_validator,
 )
 
@@ -140,6 +141,13 @@ class RuleElement(BaseModel):
     length: str = "100%"
     stroke: str | None = "black"
     align: Literal["left", "center", "right"] | None = "center"
+
+    @field_validator("length")
+    def validate_percentage(self, v):
+        if not (v.endswith("%") and v[:-1].isdigit()) and 0 < int(v[:-1]) <= 100:  # noqa PLR2004
+            error = "length must be a percentage string like '100%'"
+            raise ValueError(error)
+        return v
 
 
 class DateTimeElement(BaseModel):
