@@ -2,6 +2,15 @@ from care.emr.models import FileUpload
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.sections.base import BaseSection
 
+FILE_CATEGORY_DISPLAY = {
+    "audio": "Audio File",
+    "xray": "X-Ray Image",
+    "identity_proof": "Identity Proof",
+    "unspecified": "Unspecified",
+    "discharge_summary": "Discharge Summary",
+    "consent_attachment": "Consent Form/Attachment",
+}
+
 
 class FileSection(BaseSection):
     def __init__(self, config, context, renderer):
@@ -9,7 +18,9 @@ class FileSection(BaseSection):
 
         self.register_field("name", lambda o: o.name)
         self.register_field("type", lambda o: o.file_type)
-        self.register_field("category", lambda o: o.file_category)
+        self.register_field(
+            "category", lambda o: FILE_CATEGORY_DISPLAY.get(o.file_category)
+        )
 
     def fetch_data(self):
         return FileUpload.objects.filter(

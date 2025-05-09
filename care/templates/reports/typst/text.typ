@@ -8,6 +8,6 @@
 
 = {{ title }}
 
-#text()[```{{ text }}```]
+#text()[{{ text }}]
 
 #line(length: 100%, stroke: mygray)

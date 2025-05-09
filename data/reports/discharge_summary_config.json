@@ -209,7 +209,7 @@
       "enabled": true,
       "options": {
         "title": "Attached Files",
-        "columns": ["name", "type", "category","created_by"],
+        "columns": ["name", "type", "category"],
         "filters": {
           "file_category": ["discharge_summary"]
         }

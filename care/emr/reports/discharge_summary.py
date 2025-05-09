@@ -126,7 +126,9 @@ def generate_and_upload_discharge_summary(
         )
 
         set_lock(str(encounter_external_id), 50)
-
+        logger.error("\n" * 20)
+        logger.error(template_code)
+        logger.error("\n" * 20)
         with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_pdf:
             try:
                 renderer.compile(
