@@ -191,7 +191,7 @@
       "enabled": true,
       "options": {
         "title": "Medication Requests",
-        "columns": ["medication", "value", "date","requested_by","intent","priority","status","status_reason","logged_by"]
+        "columns": ["medication", "instructions", "date","priority","status","logged_by"]
       }
     },
     {
