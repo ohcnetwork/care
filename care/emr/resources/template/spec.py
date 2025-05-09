@@ -143,7 +143,8 @@ class RuleElement(BaseModel):
     align: Literal["left", "center", "right"] | None = "center"
 
     @field_validator("length")
-    def validate_percentage(self, v):
+    @classmethod
+    def validate_percentage(cls, v):
         if not (v.endswith("%") and v[:-1].isdigit()) and 0 < int(v[:-1]) <= 100:  # noqa PLR2004
             error = "length must be a percentage string like '100%'"
             raise ValueError(error)
