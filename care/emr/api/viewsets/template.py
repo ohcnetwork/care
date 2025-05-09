@@ -1,3 +1,4 @@
+from django.db import models
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -23,10 +24,9 @@ from care.emr.resources.template.spec import (
 from care.security.authorization import AuthorizationController
 
 
-class TemplateFilter(filters.FilterSet):
+class TemplateFilterSet(filters.FilterSet):
     slug = filters.CharFilter(field_name="slug", lookup_expr="icontains")
     type = filters.CharFilter(field_name="type", lookup_expr="icontains")
-    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class ReportTemplateViewSet(EMRModelViewSet):
@@ -35,17 +35,25 @@ class ReportTemplateViewSet(EMRModelViewSet):
     pydantic_read_model = ReportTemplateReadSpec
     pydantic_update_model = ReportTemplateUpdateSpec
     pydantic_retrieve_model = ReportTemplateRetrieveSpec
+    filterset_class = TemplateFilterSet
+    filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
         if not AuthorizationController.call(
             "can_list_template_in_facility",
             self.request.user,
-            self.request.user.facility,
         ):
             raise PermissionDenied("You do not have permission to access this endpoint")
-        return ReportTemplate.objects.filter(
-            facility=self.request.user.facility
-        ) + ReportTemplate.objects.filter(facility=None)
+
+        queryset = ReportTemplate.objects.all()
+        if self.request.query_params.get("facility"):
+            facility = self.request.query_params.get("facility")
+            queryset = queryset.filter(
+                models.Q(facility__external_id=facility) | models.Q(facility=None)
+            )
+        else:
+            queryset = queryset.filter(facility=None)
+        return queryset
 
     def validate_data(self, instance, model_obj=None):
         if (
