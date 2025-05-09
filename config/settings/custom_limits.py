@@ -64,7 +64,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "CGST @ 9",
                 "code": {
                     "code": "cgst",
-                    "display": "Central Goods and Services Tax",
+                    "display": "CGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -74,7 +74,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "SGST @ 9",
                 "code": {
                     "code": "sgst",
-                    "display": "State Goods and Services Tax",
+                    "display": "SGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -84,7 +84,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "IGST @ 18",
                 "code": {
                     "code": "igst",
-                    "display": "Integrated Goods and Services Tax",
+                    "display": "IGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -95,7 +95,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "CGST @ 6",
                 "code": {
                     "code": "cgst",
-                    "display": "Central Goods and Services Tax",
+                    "display": "CGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -105,7 +105,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "SGST @ 6",
                 "code": {
                     "code": "sgst",
-                    "display": "State Goods and Services Tax",
+                    "display": "SGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -115,7 +115,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "IGST @ 12",
                 "code": {
                     "code": "igst",
-                    "display": "Integrated Goods and Services Tax",
+                    "display": "IGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -126,7 +126,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "CGST @ 2.5",
                 "code": {
                     "code": "cgst",
-                    "display": "Central Goods and Services Tax",
+                    "display": "CGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -136,7 +136,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "SGST @ 2.5",
                 "code": {
                     "code": "sgst",
-                    "display": "State Goods and Services Tax",
+                    "display": "SGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
@@ -146,7 +146,7 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "title": "IGST @ 5",
                 "code": {
                     "code": "igst",
-                    "display": "Integrated Goods and Services Tax",
+                    "display": "IGST",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
