@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -19,6 +19,7 @@ from care.emr.resources.template.spec import (
     ReportTemplateTypes,
     ReportTemplateUpdateSpec,
 )
+from care.security.authorization import AuthorizationController
 
 
 class ReportTemplateViewSet(EMRModelViewSet):
@@ -27,6 +28,17 @@ class ReportTemplateViewSet(EMRModelViewSet):
     pydantic_read_model = ReportTemplateReadSpec
     pydantic_update_model = ReportTemplateUpdateSpec
     pydantic_retrieve_model = ReportTemplateRetrieveSpec
+
+    def get_queryset(self):
+        if not AuthorizationController.call(
+            "can_list_template_in_facility",
+            self.request.user,
+            self.request.user.facility,
+        ):
+            raise PermissionDenied("You do not have permission to access this endpoint")
+        return ReportTemplate.objects.filter(
+            facility=self.request.user.facility
+        ) + ReportTemplate.objects.filter(facility=None)
 
     def validate_data(self, instance, model_obj=None):
         if (
@@ -41,14 +53,58 @@ class ReportTemplateViewSet(EMRModelViewSet):
 
     def authorize_create(self, instance):
         if instance.facility is None:
-            # Add permission for super user (instance level)
-            pass
-        else:
-            # Add permission for facility admin (facility level)
-            pass
+            if not AuthorizationController.call(
+                "can_write_template_in_instance", self.request.user
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to create template for facility"
+                )
+        elif not AuthorizationController.call(
+            "can_write_template_in_facility", self.request.user, instance.facility
+        ):
+            raise PermissionDenied(
+                "You do not have permission to create template for facility"
+            )
+
+    def authorize_destroy(self, instance):
+        if instance.facility is None:
+            if not AuthorizationController.call(
+                "can_write_template_in_instance", self.request.user
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to create template for facility"
+                )
+        elif not AuthorizationController.call(
+            "can_write_template_in_facility", self.request.user, instance.facility
+        ):
+            raise PermissionDenied(
+                "You do not have permission to create template for facility"
+            )
+
+    def authorize_update(self, instance, model_obj=None):
+        if model_obj:
+            if model_obj.facility is None:
+                if not AuthorizationController.call(
+                    "can_write_template_in_instance", self.request.user
+                ):
+                    raise PermissionDenied(
+                        "You do not have permission to create template for facility"
+                    )
+            elif not AuthorizationController.call(
+                "can_write_template_in_facility", self.request.user, instance.facility
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to create template for facility"
+                )
 
     @action(detail=False, methods=["GET"])
     def get_available_section_source(self, request, *args, **kwargs):
+        if not AuthorizationController.call(
+            "can_list_template_in_facility",
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to access this endpoint")
+
         output = {
             key: section_cls(
                 config={}, context={}, renderer=DummyRenderer()
@@ -70,6 +126,13 @@ class ReportTemplateViewSet(EMRModelViewSet):
         """
         Display the report template for the given facility.
         """
+
+        if not AuthorizationController.call(
+            "can_list_template_in_facility",
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to access this endpoint")
+
         request_data = self.ReportDisplaySpec(**request.data)
 
         report_type = request_data.type
