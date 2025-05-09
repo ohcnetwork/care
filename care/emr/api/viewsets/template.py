@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework import status
@@ -20,6 +21,12 @@ from care.emr.resources.template.spec import (
     ReportTemplateUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+
+
+class TemplateFilter(filters.FilterSet):
+    slug = filters.CharFilter(field_name="slug", lookup_expr="icontains")
+    type = filters.CharFilter(field_name="type", lookup_expr="icontains")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class ReportTemplateViewSet(EMRModelViewSet):
