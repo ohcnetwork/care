@@ -69,7 +69,7 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
     AvailabilityExceptionsViewSet,
 )
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
-from care.emr.api.viewsets.template import FacilityReportTemplateViewSet
+from care.emr.api.viewsets.template import ReportTemplateViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
@@ -148,12 +148,6 @@ facility_nested_router.register(
     basename="facility-schedulable-users",
 )
 
-facility_nested_router.register(
-    "report_template",
-    FacilityReportTemplateViewSet,
-    basename="facility-report-template",
-)
-
 facility_organization_nested_router = NestedSimpleRouter(
     facility_nested_router, r"organizations", lookup="facility_organizations"
 )
@@ -227,6 +221,11 @@ facility_location_nested_router.register(
     basename="association",
 )
 
+router.register(
+    "report_template",
+    ReportTemplateViewSet,
+    basename="report-template",
+)
 router.register("patient", PatientViewSet, basename="patient")
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 

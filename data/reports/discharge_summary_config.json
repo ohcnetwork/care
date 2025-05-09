@@ -39,7 +39,8 @@
         {
           "type": "rule",
           "length": "100%",
-          "stroke": "mygray"
+          "stroke": "mygray",
+          "align": "center"
         }
         ]
       },
@@ -89,7 +90,8 @@
         {
           "type": "rule",
           "length": "100%",
-          "stroke": "mygray"
+          "stroke": "mygray",
+          "align": "center"
         }
       ]
       }
@@ -111,9 +113,11 @@
           "permanent_address",
           "pincode",
           "date_of_birth",
+          "year_of_birth",
           "deceased_datetime",
           "marital_status",
-          "blood_group"
+          "blood_group",
+          "age"
         ],
         "style": "list"
       }
@@ -127,9 +131,11 @@
         "columns": [
           "diagnosis",
           "onset",
-          "clinical_status",
+          "status",
+          "verification",
           "severity",
-          "note"
+          "note",
+          "logged_by"
         ]
       }
     },
@@ -139,12 +145,14 @@
       "enabled": true,
       "options": {
         "title": "Symptoms Reported",
-                "columns": [
-                  "symptom",
+        "columns": [
+          "symptom",
           "onset",
-          "clinical_status",
+          "status",
+          "verification",
           "severity",
-          "note"
+          "note",
+          "logged_by"
         ]
       }
     },
@@ -156,10 +164,14 @@
         "title": "Allergies And Intolerances",
         "columns": [
           "allergen",
+          "onset",
           "criticality",
-          "clinical_status",
+          "status",
           "last_occurrence",
-          "note"
+          "note",
+          "logged_by",
+          "last_occurrence",
+          "type"
         ]
       }
     },
@@ -169,7 +181,8 @@
       "enabled": true,
       "options": {
         "title": "Observation Results",
-        "columns": ["observation", "value", "date"]
+        "columns": ["observation", "value", "date","status",
+        "category","subject_type","subject_id","interpretation","logged_by"]
       }
     },
     {
@@ -178,7 +191,7 @@
       "enabled": true,
       "options": {
         "title": "Medication Requests",
-        "columns": ["medication", "value", "date","subject_type","interpretation"]
+        "columns": ["medication", "value", "date","requested_by","intent","priority","status","status_reason","logged_by"]
       }
     },
     {
@@ -196,7 +209,7 @@
       "enabled": true,
       "options": {
         "title": "Attached Files",
-        "columns": ["name", "file_type", "created_date"],
+        "columns": ["name", "type", "category","created_by"],
         "filters": {
           "file_category": ["discharge_summary"]
         }

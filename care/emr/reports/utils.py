@@ -5,6 +5,7 @@ import requests
 from django.conf import settings
 from django.core.cache import cache
 
+from care.emr.registries.report.section import SectionRegistry
 from care.utils.lock import Lock
 
 
@@ -49,3 +50,7 @@ def download_image_to_cache(file_name: str, url: str) -> bytes:
 
         cache.set(cache_key, image_bytes, timeout=24 * 60 * 60)
         return image_bytes
+
+
+def register_section(section_name, section):
+    SectionRegistry.register(section_name, section)

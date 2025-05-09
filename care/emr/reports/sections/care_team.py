@@ -6,12 +6,8 @@ from care.users.models import User
 class CareTeamSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
-        self.field_extractors.update(
-            {
-                "name": lambda u: u.full_name,
-                "role": self._get_role_for,
-            }
-        )
+        self.register_field("name", lambda o: o.full_name)
+        self.register_field("role", lambda o: o._get_role_for)  # noqa SLF001
 
     @property
     def _role_map(self):

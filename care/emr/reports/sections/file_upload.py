@@ -7,6 +7,11 @@ class FileSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
 
+        self.register_field("name", lambda o: o.name)
+        self.register_field("type", lambda o: o.file_type)
+        self.register_field("category", lambda o: o.file_category)
+        self.register_field("created_by", lambda o: o.created_by.full_name)
+
     def fetch_data(self):
         return FileUpload.objects.filter(
             associating_id=self.context["encounter"].external_id,

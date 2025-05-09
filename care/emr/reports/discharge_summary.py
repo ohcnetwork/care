@@ -7,12 +7,12 @@ from django.utils import timezone
 from pydantic.v1 import UUID4
 
 from care.emr.models import Encounter, FileUpload
-from care.emr.models.template import FacilityReportTemplate
+from care.emr.models.template import ReportTemplate
 from care.emr.registries.report.renderer import RendererRegistry
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.renderer.base import Renderer
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
-from care.emr.resources.template.spec import FacilityReportTemplateTypes
+from care.emr.resources.template.spec import ReportTemplateTypes
 
 logger = logging.getLogger(__name__)
 
@@ -101,10 +101,10 @@ def generate_and_upload_discharge_summary(
     renderer = renderer_cls()
     try:
         config = (
-            FacilityReportTemplate.objects.filter(
+            ReportTemplate.objects.filter(
                 facility=encounter.facility,
                 slug=slug,
-                type=FacilityReportTemplateTypes.discharge_summary,
+                type=ReportTemplateTypes.discharge_summary,
             )
             .first()
             .config

@@ -24,10 +24,7 @@ from care.emr.models import (
     FacilityOrganization,
     Patient,
 )
-from care.emr.models.template import FacilityReportTemplate
-from care.emr.registries.report.renderer import (
-    RendererRegistry,
-)
+from care.emr.models.template import ReportTemplate
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
@@ -263,6 +260,10 @@ class EncounterViewSet(
     )
     @action(detail=True, methods=["POST"])
     def generate_discharge_summary(self, request, *args, **kwargs):
+        from care.emr.registries.report.renderer import (
+            RendererRegistry,
+        )
+
         encounter = self.get_object()
         if not AuthorizationController.call(
             "can_view_clinical_data", self.request.user, encounter.patient
@@ -286,7 +287,7 @@ class EncounterViewSet(
             error = f"Invalid render format {request_data.render_format}. Valid choices are {RendererRegistry.all().keys()}"
             raise ValidationError(error)
 
-        if not FacilityReportTemplate.objects.filter(
+        if not ReportTemplate.objects.filter(
             facility=encounter.facility, slug=request_data.slug
         ).exists():
             error = f"Invalid slug {request_data.slug}. Facility report template does not exist"

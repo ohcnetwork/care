@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework import status
@@ -7,60 +6,63 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.models.template import FacilityReportTemplate
+from care.emr.models.template import ReportTemplate
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.discharge_summary import (
     generate_discharge_report_signed_url,
 )
+from care.emr.reports.renderer.dummy import DummyRenderer
 from care.emr.resources.template.spec import (
-    FacilityReportTemplateCreateSpec,
-    FacilityReportTemplateReadSpec,
-    FacilityReportTemplateRetrieveSpec,
-    FacilityReportTemplateTypes,
-    FacilityReportTemplateUpdateSpec,
+    ReportTemplateCreateSpec,
+    ReportTemplateReadSpec,
+    ReportTemplateRetrieveSpec,
+    ReportTemplateTypes,
+    ReportTemplateUpdateSpec,
 )
-from care.facility.models import Facility
 
 
-class FacilityReportTemplateViewSet(EMRModelViewSet):
-    database_model = FacilityReportTemplate
-    pydantic_model = FacilityReportTemplateCreateSpec
-    pydantic_read_model = FacilityReportTemplateReadSpec
-    pydantic_update_model = FacilityReportTemplateUpdateSpec
-    pydantic_retrieve_model = FacilityReportTemplateRetrieveSpec
-
-    def get_facility_obj(self):
-        return get_object_or_404(
-            Facility, external_id=self.kwargs["facility_external_id"]
-        )
-
-    def get_queryset(self):
-        return super().get_queryset().filter(facility=self.get_facility_obj())
+class ReportTemplateViewSet(EMRModelViewSet):
+    database_model = ReportTemplate
+    pydantic_model = ReportTemplateCreateSpec
+    pydantic_read_model = ReportTemplateReadSpec
+    pydantic_update_model = ReportTemplateUpdateSpec
+    pydantic_retrieve_model = ReportTemplateRetrieveSpec
 
     def validate_data(self, instance, model_obj=None):
         if (
             model_obj is None
-            and FacilityReportTemplate.objects.filter(
-                slug=instance.slug, type=instance.type, facility=self.get_facility_obj()
+            and ReportTemplate.objects.filter(
+                slug=instance.slug, facility=instance.facility
             ).exists()
         ):
             raise ValidationError(
-                detail=f"Report template with slug {instance.slug} and type {instance.type} already exists for this facility"
+                detail=f"Report template with slug {instance.slug} already exists for this facility/instance"
             )
 
-    def perform_create(self, instance):
-        instance.facility = self.get_facility_obj()
-        super().perform_create(instance)
+    def authorize_create(self, instance):
+        if instance.facility is None:
+            # Add permission for super user (instance level)
+            pass
+        else:
+            # Add permission for facility admin (facility level)
+            pass
 
     @action(detail=False, methods=["GET"])
     def get_available_section_source(self, request, *args, **kwargs):
-        return Response(SectionRegistry.all().keys(), status=status.HTTP_200_OK)
+        output = {
+            key: section_cls(
+                config={}, context={}, renderer=DummyRenderer()
+            ).available_fields()
+            for key, section_cls in SectionRegistry.all().items()
+        }
+        return Response(output, status=status.HTTP_200_OK)
 
     class ReportDisplaySpec(BaseModel):
         render_format: str | None = "typst"
-        type: FacilityReportTemplateTypes
+        type: ReportTemplateTypes
         slug: str
         patient_external_id: UUID4 | None = None
+        facility: UUID4 | None = None
 
     @extend_schema(request=ReportDisplaySpec)
     @action(detail=False, methods=["POST"])
@@ -72,16 +74,17 @@ class FacilityReportTemplateViewSet(EMRModelViewSet):
 
         report_type = request_data.type
         slug = request_data.slug
+        facility = request_data.facility
 
-        if not FacilityReportTemplate.objects.filter(
-            slug=slug, type=report_type, facility=self.get_facility_obj()
+        if not ReportTemplate.objects.filter(
+            slug=slug, type=report_type, facility=facility
         ).exists():
             return Response(
                 {"detail": "Report template not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if report_type == FacilityReportTemplateTypes.discharge_summary:
+        if report_type == ReportTemplateTypes.discharge_summary:
             if not request_data.patient_external_id:
                 return Response(
                     {

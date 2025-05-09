@@ -19,17 +19,16 @@ def _get_observation_value(o: Observation):
 class ObservationSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
-        self.field_extractors.update(
-            {
-                "observation": lambda o: o.main_code.get("display")
-                if o.main_code
-                else self.DEFAULT_EMPTY,
-                "value": _get_observation_value,
-                "date": lambda o: o.effective_datetime
-                or o.created_date
-                or self.DEFAULT_EMPTY,
-            }
-        )
+
+        self.register_field("observation", lambda o: o.main_code.get("display"))
+        self.register_field("value", lambda o: _get_observation_value)
+        self.register_field("date", lambda o: o.effective_datetime or o.created_date)
+        self.register_field("status", lambda o: o.status)
+        self.register_field("category", lambda o: o.category)
+        self.register_field("subject_type", lambda o: o.subject_type)
+        self.register_field("subject_id", lambda o: o.subject_id)
+        self.register_field("logged_by", lambda o: o.data_entered_by.full_name)
+        self.register_field("interpretation", lambda o: o.interpretation)
 
     def fetch_data(self):
         return Observation.objects.filter(encounter=self.context["encounter"])

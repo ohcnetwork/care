@@ -4,10 +4,10 @@ from pathlib import Path
 from django.conf import settings
 from pydantic import ValidationError
 
-from care.emr.resources.template.spec import ReportConfig
-
 
 def load_default_discharge_summary_config(facility=None):
+    from care.emr.resources.template.spec import ReportConfig
+
     """Load the default configuration for the discharge summary report from a JSON file.
     If a facility is provided, the configuration will be adjusted accordingly."""
     config_path = (

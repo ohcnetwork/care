@@ -6,16 +6,14 @@ from care.emr.reports.sections.base import BaseSection
 class AllergyIntoleranceSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
-        self.field_extractors.update(
-            {
-                "allergen": lambda o: o.code.get("display")
-                if o.code
-                else self.DEFAULT_EMPTY,
-                "onset": lambda o: o.onset.get("onset_datetime")
-                if o.onset
-                else self.DEFAULT_EMPTY,
-            }
-        )
+        self.register_field("allergen", lambda o: o.code.get("display"))
+        self.register_field("onset", lambda o: o.onset.get("onset_datetime"))
+        self.register_field("status", lambda o: o.clinical_status)
+        self.register_field("criticality", lambda o: o.criticality)
+        self.register_field("note", lambda o: o.notes)
+        self.register_field("logged_by", lambda o: o.created_by.full_name)
+        self.register_field("last_occurrence", lambda o: o.last_occurrence)
+        self.register_field("type", lambda o: o.allergy_intolerance_type)
 
     def fetch_data(self):
         return AllergyIntolerance.objects.filter(encounter=self.context["encounter"])

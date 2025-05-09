@@ -6,8 +6,8 @@ class Renderer(ABC):
     Strategy interface for rendering sections in various formats.
     """
 
-    def __init__(self, name: str):
-        self.name = name
+    def __init__(self, name: str or None = None):
+        self.name = name or None
 
     @abstractmethod
     def render_list(self, title, rows) -> str:

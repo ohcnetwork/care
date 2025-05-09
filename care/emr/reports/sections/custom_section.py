@@ -5,6 +5,9 @@ from care.emr.reports.sections.base import BaseSection
 class CustomSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
+        self.register_field("text", lambda o: o)
+        self.register_field("list", lambda o: o)
+        self.register_field("table", lambda o: o)
 
     def fetch_data(self):
         return None

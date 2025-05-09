@@ -14,7 +14,9 @@ from pydantic import (
     model_validator,
 )
 
-from care.emr.models.template import FacilityReportTemplate
+from care.emr.models.template import ReportTemplate
+from care.emr.registries.report.section import SectionRegistry
+from care.emr.reports.renderer.dummy import DummyRenderer
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
@@ -137,6 +139,7 @@ class RuleElement(BaseModel):
     type: Literal["rule"]
     length: str = "100%"
     stroke: str | None = "black"
+    align: Literal["left", "center", "right"] | None = "center"
 
 
 class DateTimeElement(BaseModel):
@@ -198,6 +201,32 @@ class SectionConfig(BaseModel):
                 )
         elif not (self.options.columns or self.options.rows):
             raise ValueError("Table sections must have either 'columns' or 'rows'")
+
+        if self.source == "custom_section":
+            return self
+
+        section_cls = SectionRegistry.get(self.source)
+        if not section_cls:
+            error = f"Section {self.source} does not exist"
+            raise ValueError(error)
+
+        section = section_cls(config={}, context={}, renderer=DummyRenderer())
+        allowed_fields = section.available_fields()
+
+        if not self.is_table:
+            for field in self.options.fields:
+                if field not in allowed_fields and not isinstance(
+                    field, LabelValueField
+                ):
+                    error = f"Section {self.source} does not support field {field}"
+                    raise ValueError(error)
+
+        if self.is_table:
+            for col in self.options.columns:
+                if col not in allowed_fields:
+                    error = f"Section {self.source} does not support column {col}"
+                    raise ValueError(error)
+
         return self
 
 
@@ -207,41 +236,48 @@ class ReportConfig(BaseModel):
     sections: list[SectionConfig]
 
 
-class FacilityReportTemplateTypes(str, Enum):
+class ReportTemplateTypes(str, Enum):
     discharge_summary = "discharge_summary"
     lab_report = "lab_report"
 
 
-class FacilityReportTemplateBaseSpec(EMRResource):
+class ReportTemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
 
-    __model__ = FacilityReportTemplate
-    __exclude__ = ["facility"]
+    __model__ = ReportTemplate
 
 
-class FacilityReportTemplateCreateSpec(FacilityReportTemplateBaseSpec):
+class ReportTemplateCreateSpec(ReportTemplateBaseSpec):
     config: ReportConfig
     slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
-    type: FacilityReportTemplateTypes
+    type: ReportTemplateTypes
+    derived_from_url: str | None = None
+    facility: UUID4 | None = None
 
 
-class FacilityReportTemplateUpdateSpec(FacilityReportTemplateBaseSpec):
+class ReportTemplateUpdateSpec(ReportTemplateBaseSpec):
     config: ReportConfig
 
 
-class FacilityReportTemplateReadSpec(FacilityReportTemplateBaseSpec):
+class ReportTemplateReadSpec(ReportTemplateBaseSpec):
     config: dict
-    facility: dict
+    facility: dict | None = None
     slug: str
     type: str
+    derived_from_url: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["facility"] = FacilityRetrieveSpec.serialize(obj.facility).to_json()
+        if obj.facility:
+            mapping["facility"] = (
+                FacilityRetrieveSpec.serialize(obj.facility).to_json()
+                if obj.facility
+                else None
+            )
 
 
-class FacilityReportTemplateRetrieveSpec(FacilityReportTemplateReadSpec):
+class ReportTemplateRetrieveSpec(ReportTemplateReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)

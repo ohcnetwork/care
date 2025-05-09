@@ -9,7 +9,7 @@ from django.db import transaction
 from faker import Faker
 
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
-from care.emr.models.template import FacilityReportTemplate
+from care.emr.models.template import ReportTemplate
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -31,7 +31,6 @@ from care.emr.resources.patient.spec import (
     PatientCreateSpec,
 )
 from care.emr.resources.questionnaire.spec import QuestionnaireSpec
-from care.emr.resources.template.spec import FacilityReportTemplateTypes
 from care.emr.resources.user.spec import UserCreateSpec
 from care.facility.models import Facility
 from care.security.models import RoleModel
@@ -197,10 +196,10 @@ class Command(BaseCommand):
             batch_facilities = facilities[i : i + batch_size]
             with transaction.atomic():
                 for facility in batch_facilities:
-                    FacilityReportTemplate.objects.get_or_create(
+                    ReportTemplate.objects.get_or_create(
                         facility=facility,
                         slug="default-discharge-summary",
-                        type=FacilityReportTemplateTypes.discharge_summary,
+                        type="discharge_summary",
                         config=load_default_discharge_summary_config(
                             facility
                         ).model_dump(mode="json"),
