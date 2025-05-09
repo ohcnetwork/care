@@ -37,13 +37,18 @@ TAX_CODES = MonetaryCodes(
                 "system": "http://ohc.network/codes/monetary/tax",
             },
             {
-                "code": "gst",
-                "display": "GST",
+                "code": "cgst",
+                "display": "CGST",
                 "system": "http://ohc.network/codes/monetary/tax",
             },
             {
                 "code": "sgst",
                 "display": "SGST",
+                "system": "http://ohc.network/codes/monetary/tax",
+            },
+            {
+                "code": "utgst",
+                "display": "UTGST",
                 "system": "http://ohc.network/codes/monetary/tax",
             },
         ],
@@ -54,25 +59,98 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
     env.json(
         "TAX_MONETARY_COMPONENT_DEFINITIONS",
         default=[
+            # 18% Slab
             {
-                "title": "IGST",
+                "title": "CGST @ 9",
                 "code": {
-                    "code": "igst",
-                    "display": "IGST",
+                    "code": "cgst",
+                    "display": "Central Goods and Services Tax",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
-                "factor": 10,
+                "factor": 9,
             },
             {
-                "title": "GST",
+                "title": "SGST @ 9",
                 "code": {
-                    "code": "gst",
-                    "display": "GST",
+                    "code": "sgst",
+                    "display": "State Goods and Services Tax",
                     "system": "http://ohc.network/codes/monetary/tax",
                 },
                 "monetary_component_type": "tax",
-                "factor": 10,
+                "factor": 9,
+            },
+            {
+                "title": "IGST @ 18",
+                "code": {
+                    "code": "igst",
+                    "display": "Integrated Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 18,
+            },
+            # 12% slab
+            {
+                "title": "CGST @ 6",
+                "code": {
+                    "code": "cgst",
+                    "display": "Central Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 6,
+            },
+            {
+                "title": "SGST @ 6",
+                "code": {
+                    "code": "sgst",
+                    "display": "State Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 6,
+            },
+            {
+                "title": "IGST @ 12",
+                "code": {
+                    "code": "igst",
+                    "display": "Integrated Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 12,
+            },
+            # 5% Slab
+            {
+                "title": "CGST @ 2.5",
+                "code": {
+                    "code": "cgst",
+                    "display": "Central Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 2.5,
+            },
+            {
+                "title": "SGST @ 2.5",
+                "code": {
+                    "code": "sgst",
+                    "display": "State Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 2.5,
+            },
+            {
+                "title": "IGST @ 5",
+                "code": {
+                    "code": "igst",
+                    "display": "Integrated Goods and Services Tax",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 5,
             },
         ],
     )
