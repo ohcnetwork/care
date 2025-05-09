@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 
@@ -45,7 +46,11 @@ class MedicationRequestViewSet(
     questionnaire_description = "Medication Request"
     questionnaire_subject_type = SubjectType.patient.value
     filterset_class = MedicationRequestFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_queryset(self):
         self.authorize_read_encounter()
