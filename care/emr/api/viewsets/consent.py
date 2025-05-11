@@ -1,3 +1,7 @@
+from django.db.models import CharField, Exists, OuterRef
+from django.db.models.functions import Cast
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -7,6 +11,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.condition import ValidateEncounterMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
+from care.emr.models import FileUpload
 from care.emr.models.consent import Consent
 from care.emr.resources.consent.spec import (
     ConsentCreateSpec,
@@ -15,7 +20,40 @@ from care.emr.resources.consent.spec import (
     ConsentUpdateSpec,
     ConsentVerificationSpec,
 )
+from care.emr.resources.file_upload.spec import (
+    FileCategoryChoices,
+    FileTypeChoices,
+)
 from care.utils.time_util import care_now
+
+
+class ConsentFilter(filters.FilterSet):
+    attachment_name = filters.CharFilter(
+        method="filter_attachment_name", label="Filter by attachment name"
+    )
+
+    def filter_attachment_name(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        # Find consents that have attachments with names containing the search value
+        # Cast external_id to string to match the type in associating_id
+        queryset = queryset.annotate(external_id_str=Cast("external_id", CharField()))
+
+        # Create a subquery to check for matching file attachments
+        attachment_filter = FileUpload.objects.filter(
+            associating_id=OuterRef("external_id_str"),
+            file_category=FileCategoryChoices.consent_attachment,
+            file_type=FileTypeChoices.consent,
+            name__icontains=value,
+        )
+
+        # Filter the queryset to include only consents with matching attachments
+        return queryset.filter(Exists(attachment_filter))
+
+    class Meta:
+        model = Consent
+        fields = ["attachment_name"]
 
 
 class ConsentViewSet(
@@ -28,6 +66,8 @@ class ConsentViewSet(
     pydantic_read_model = ConsentListSpec
     pydantic_update_model = ConsentUpdateSpec
     pydantic_retrieve_model = ConsentRetrieveSpec
+    filterset_class = ConsentFilter
+    filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
         self.authorize_read_encounter()
