@@ -5,7 +5,7 @@ from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFil
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -108,6 +108,8 @@ class TokenBookingViewSet(
     @classmethod
     def cancel_appointment_handler(cls, instance, request_data, user):
         request_data = CancelBookingSpec(**request_data)
+        if instance.status == BookingStatusChoices.in_consultation:
+            raise ValidationError("You cannot cancel an appointment In-Consultation")
         with transaction.atomic():
             if instance.status not in CANCELLED_STATUS_CHOICES:
                 # Free up the slot if it is not cancelled already

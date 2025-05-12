@@ -426,6 +426,11 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PL
     """
     Generate observations and questionnaire responses after validation
     """
+    if questionnaire_obj.status != "active":
+        raise ValidationError(
+            {"type": "questionnaire_inactive", "msg": "Questionnaire is inactive"}
+        )
+
     # Construct questionnaire response
 
     if questionnaire_obj.subject_type == "patient":
