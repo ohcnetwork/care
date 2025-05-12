@@ -109,7 +109,7 @@ class TokenBookingViewSet(
     def cancel_appointment_handler(cls, instance, request_data, user):
         request_data = CancelBookingSpec(**request_data)
         if instance.status == BookingStatusChoices.in_consultation:
-            raise ValidationError("You cannot cancel an appointment In Consultation")
+            raise ValidationError("You cannot cancel an appointment In-Consultation")
         with transaction.atomic():
             if instance.status not in CANCELLED_STATUS_CHOICES:
                 # Free up the slot if it is not cancelled already
