@@ -375,10 +375,10 @@ REST_FRAMEWORK = {
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.IsAuthenticated",
-    #     "care.security.utils.permission_class.CareAuthentication",
-    # ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+        "care.security.utils.permission_class.CareAuthentication",
+    ],
     "DEFAULT_PAGINATION_CLASS": "care.utils.pagination.care_pagination.CareLimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
