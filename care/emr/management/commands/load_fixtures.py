@@ -11,6 +11,7 @@ from faker import Faker
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.questionnaire import QuestionnaireOrganization
+from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -135,17 +136,11 @@ class Command(BaseCommand):
         self.stdout.write("=" * 30)
 
         geo_organization = self._create_geo_organization(fake, super_user)
+        self.geo_organization = geo_organization
         self.stdout.write(f"Created geo organization: {geo_organization.name}")
 
         facility = self._create_facility(fake, super_user, geo_organization)
         self.stdout.write(f"Created facility: {facility.name}")
-
-        self._create_facility(fake, super_user, geo_organization, "Resource Facility")
-        self.stdout.write("Created resource facility")
-
-        facility_organization = FacilityOrganization.objects.filter(
-            facility=facility
-        ).first()
 
         external_facility_organization = self._create_facility_organization(
             fake, super_user, facility
@@ -153,6 +148,9 @@ class Command(BaseCommand):
         self.stdout.write(
             f"Created facility organization (dept): {external_facility_organization.name}"
         )
+
+        self._create_facility(fake, super_user, geo_organization, "Resource Facility")
+        self.stdout.write("Created resource facility")
 
         location = self._create_location(
             fake,
@@ -177,17 +175,26 @@ class Command(BaseCommand):
             )
             self.stdout.write(f"Created bed: {bed.name}")
 
+        for i in range(1, 6):
+            device = self._create_device(
+                fake,
+                super_user,
+                external_facility_organization,
+                name=f"Device {i}",
+            )
+            self.stdout.write(f"Created device: {device.user_friendly_name}")
+
         organizations = self._create_organizations(fake, super_user)
 
         for organization in organizations:
             self.stdout.write(f"Created organization: {organization.name}")
 
-        self._create_default_users(fake, super_user, facility_organization)
+        self._create_default_users(fake, super_user, external_facility_organization)
 
         self._create_facility_users(
             fake,
             super_user,
-            facility_organization,
+            external_facility_organization,
             options["users"],
             options["default_password"],
         )
@@ -201,11 +208,11 @@ class Command(BaseCommand):
             super_user,
             patients,
             facility,
-            facility_organization,
+            external_facility_organization,
             options["encounter"],
         )
 
-        self._create_questionnaires(facility_organization, super_user)
+        self._create_questionnaires(facility, super_user)
 
     def _create_geo_organization(self, fake, super_user):
         org_spec = OrganizationWriteSpec(
@@ -297,11 +304,12 @@ class Command(BaseCommand):
         user_type,
         super_user,
         facility_organization=None,
+        geo_organization=None,
         role=None,
         password=None,
     ):
         password = password or fake.password(length=10, special_chars=False)
-
+        geo_organization = geo_organization or self.geo_organization
         user_spec = UserCreateSpec(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
@@ -313,20 +321,35 @@ class Command(BaseCommand):
             username=username,
             email=str(uuid.uuid4()) + fake.email(),
             user_type=user_type,
+            geo_organization=geo_organization.external_id,
         )
         user = user_spec.de_serialize()
         user.created_by = super_user
         user.updated_by = super_user
         user.save()
 
-        if facility_organization and role:
-            self._attach_role_facility_organization_user(
-                facility_organization=facility_organization,
-                user=user,
-                role=role,
-            )
-
         if role:
+            if facility_organization:
+                self._attach_role_facility_organization_user(
+                    facility_organization=facility_organization,
+                    user=user,
+                    role=role,
+                )
+                if (
+                    user.user_type == "administrator"
+                    and facility_organization.facility.default_internal_organization
+                ):
+                    self._attach_role_facility_organization_user(
+                        facility_organization=facility_organization.facility.default_internal_organization,
+                        user=user,
+                        role=role,
+                    )
+            if user.geo_organization:
+                self._attach_role_organization_user(
+                    organization=user.geo_organization,
+                    user=user,
+                    role=role,
+                )
             self._attach_role_organization_user(
                 organization=Organization.objects.get(
                     name=role.name, org_type=OrganizationTypeChoices.role
@@ -474,13 +497,17 @@ class Command(BaseCommand):
                 encounter.updated_by = super_user
                 encounter.save()
 
-    def _create_questionnaires(self, facility_organization, super_user):
+    def _create_questionnaires(self, facility, super_user):
         with Path.open("data/questionnaire_fixtures.json") as f:
             questionnaires = json.load(f)
 
         roles = Organization.objects.filter(
             name__in=ROLES_OPTIONS.keys(), org_type=OrganizationTypeChoices.role
         )
+
+        facility_organizations = FacilityOrganization.objects.filter(
+            facility=facility,
+        ).values_list("external_id", flat=True)
 
         for questionnaire in questionnaires:
             questionnaire_slug = questionnaire["slug"]
@@ -489,7 +516,7 @@ class Command(BaseCommand):
 
             questionnaire["version"] = questionnaire.get("version") or "1.0"
 
-            questionnaire["organizations"] = [facility_organization.external_id]
+            questionnaire["organizations"] = facility_organizations
             questionnaire["tags"] = []
 
             questionnaire_spec = QuestionnaireSpec(**questionnaire)
@@ -535,3 +562,27 @@ class Command(BaseCommand):
         location.updated_by = super_user
         location.save()
         return location
+
+    def _create_device(
+        self,
+        fake,
+        super_user,
+        facility_organization,
+        name=None,
+    ):
+        name = name or fake.company()
+        device_spec = DeviceCreateSpec(
+            registered_name=name,
+            user_friendly_name=name,
+            description=fake.text(max_nb_chars=200),
+            status="active",
+            availability_status="available",
+            manufacturer=fake.company(),
+        )
+        device = device_spec.de_serialize()
+        device.facility = facility_organization.facility
+        device.managing_organization = facility_organization
+        device.created_by = super_user
+        device.updated_by = super_user
+        device.save()
+        return device
