@@ -21,7 +21,7 @@ class RoleViewSet(EMRModelViewSet):
         if self.action in [
             "create",
             "update",
-            "delete",
+            "destroy",
             "add_permissions",
             "remove_permissions",
         ]:
