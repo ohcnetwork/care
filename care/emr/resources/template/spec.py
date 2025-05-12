@@ -1,3 +1,4 @@
+import re
 import tempfile
 from enum import Enum
 from pathlib import Path
@@ -6,6 +7,7 @@ from typing import Annotated, Literal
 import magic
 import requests
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from pydantic import (
     UUID4,
     BaseModel,
@@ -21,6 +23,7 @@ from care.emr.reports.renderer.dummy import DummyRenderer
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
+from care.facility.models import Facility
 
 
 class MarginValues(BaseModel):
@@ -258,10 +261,27 @@ class ReportTemplateBaseSpec(EMRResource):
 
 class ReportTemplateCreateSpec(ReportTemplateBaseSpec):
     config: ReportConfig
-    slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
+    slug: str
     type: ReportTemplateTypes
     derived_from_url: str | None = None
     facility: UUID4 | None = None
+
+    @model_validator(mode="after")
+    def validate_slug(self):
+        if len(self.slug) < 5 or len(self.slug) > 25:  # noqa PLR2004
+            error = "Slug must be between 5 and 25 characters"
+            raise ValueError(error)
+
+        if re.fullmatch(r"^[-\w]+$", self.slug) is None:
+            error = "Slug can only contain letters, digits, underscores, and hyphens"
+
+            raise ValueError(error)
+
+        return self
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.facility:
+            self.facility = get_object_or_404(Facility, external_id=self.facility)
 
 
 class ReportTemplateUpdateSpec(ReportTemplateBaseSpec):

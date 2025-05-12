@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -8,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.models import Patient
 from care.emr.models.template import ReportTemplate
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.discharge_summary import (
@@ -21,6 +23,7 @@ from care.emr.resources.template.spec import (
     ReportTemplateTypes,
     ReportTemplateUpdateSpec,
 )
+from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 
 
@@ -154,6 +157,9 @@ class ReportTemplateViewSet(EMRModelViewSet):
         slug = request_data.slug
         facility = request_data.facility
 
+        if facility:
+            facility = get_object_or_404(Facility, external_id=facility)
+
         if not ReportTemplate.objects.filter(
             slug=slug, type=report_type, facility=facility
         ).exists():
@@ -170,8 +176,12 @@ class ReportTemplateViewSet(EMRModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+            get_object_or_404(Patient, external_id=request_data.patient_external_id)
             report_read_singed_url = generate_discharge_report_signed_url(
-                request_data.patient_external_id, request_data.render_format, slug
+                request_data.patient_external_id,
+                request_data.facility,
+                request_data.render_format,
+                slug,
             )
             return Response(
                 {"report_read_signed_url": report_read_singed_url},

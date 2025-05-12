@@ -3,6 +3,7 @@ import tempfile
 from uuid import uuid4
 
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from pydantic.v1 import UUID4
 
@@ -13,6 +14,7 @@ from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.renderer.base import Renderer
 from care.emr.resources.file_upload.spec import FileCategoryChoices, FileTypeChoices
 from care.emr.resources.template.spec import ReportTemplateTypes
+from care.facility.models import Facility
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +87,10 @@ def get_discharge_summary_template(
 
 
 def generate_and_upload_discharge_summary(
-    encounter: Encounter, render_format: str, slug: str
+    encounter: Encounter,
+    facility: Facility,
+    render_format: str,
+    slug: str,
 ) -> FileUpload | None:
     """Generate and upload discharge summary PDF for an encounter"""
     encounter_external_id = encounter.external_id
@@ -100,15 +105,13 @@ def generate_and_upload_discharge_summary(
 
     renderer = renderer_cls()
     try:
-        config = (
-            ReportTemplate.objects.filter(
-                facility=encounter.facility,
-                slug=slug,
-                type=ReportTemplateTypes.discharge_summary,
-            )
-            .first()
-            .config
+        query = ReportTemplate.objects.filter(
+            slug=slug, type=ReportTemplateTypes.discharge_summary
         )
+        if facility:
+            query = query.filter(facility=facility)
+
+        config = query.first().config
 
         now_ts = int(timezone.now().timestamp() * 1000)
         slug = encounter.patient.name.lower().replace(" ", "_")
@@ -159,7 +162,7 @@ def generate_and_upload_discharge_summary(
 
 
 def generate_discharge_report_signed_url(
-    patient_external_id: UUID4, render_format: str, slug: str
+    patient_external_id: UUID4, facility_id: str | None, render_format: str, slug: str
 ) -> str | None:
     """Generate a signed URL for the latest discharge report of a patient"""
     encounter = (
@@ -170,7 +173,14 @@ def generate_discharge_report_signed_url(
 
     if not encounter:
         return None
-    summary_file = generate_and_upload_discharge_summary(encounter, render_format, slug)
+    if facility_id:
+        facility = get_object_or_404(Facility, external_id=facility_id)
+        summary_file = generate_and_upload_discharge_summary(
+            encounter, facility, render_format, slug
+        )
+    summary_file = generate_and_upload_discharge_summary(
+        encounter, None, render_format, slug
+    )
     return summary_file.files_manager.read_signed_url(
         summary_file,
         duration=2 * 24 * 60 * 60,  # 2 days

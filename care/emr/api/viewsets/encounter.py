@@ -295,7 +295,10 @@ class EncounterViewSet(
 
         discharge_summary.set_lock(encounter_ext_id, 1)
         generate_discharge_summary_task.delay(
-            encounter_ext_id, request_data.render_format, request_data.slug
+            encounter_ext_id,
+            encounter.facility.external_id,
+            request_data.render_format,
+            request_data.slug,
         )
         return Response(
             {"detail": "Discharge Summary will be generated shortly"},

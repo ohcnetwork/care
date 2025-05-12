@@ -6,6 +6,7 @@ from celery.utils.log import get_task_logger
 
 from care.emr.models.encounter import Encounter
 from care.emr.reports.discharge_summary import generate_and_upload_discharge_summary
+from care.facility.models import Facility
 from care.utils.exceptions import CeleryTaskError
 
 logger: Logger = get_task_logger(__name__)
@@ -15,7 +16,7 @@ logger: Logger = get_task_logger(__name__)
     autoretry_for=(ClientError,), retry_kwargs={"max_retries": 3}, expires=10 * 60
 )
 def generate_discharge_summary_task(
-    encounter_ext_id: str, render_format: str, slug: str
+    encounter_ext_id: str, facility_id: str, render_format: str, slug: str
 ):
     """
     Generate and Upload the Discharge Summary
@@ -27,7 +28,15 @@ def generate_discharge_summary_task(
         msg = f"Encounter {encounter_ext_id} does not exist"
         raise CeleryTaskError(msg) from e
 
-    summary_file = generate_and_upload_discharge_summary(encounter, render_format, slug)
+    try:
+        facility = Facility.objects.get(external_id=facility_id)
+    except Facility.DoesNotExist as e:
+        msg = f"Facility {facility_id} does not exist"
+        raise CeleryTaskError(msg) from e
+
+    summary_file = generate_and_upload_discharge_summary(
+        encounter, facility, render_format, slug
+    )
     if not summary_file:
         msg = "Unable to generate discharge summary"
         raise CeleryTaskError(msg)
