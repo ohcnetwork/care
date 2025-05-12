@@ -272,6 +272,31 @@ class TestBookingViewSet(CareAPITestBase):
             text="You do not have permission to update bookings",
         )
 
+    def test_cancel_booking_in_consultation_status(self):
+        """Users cannot cancel a appointment which is in In-consultation status"""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking(status=BookingStatusChoices.in_consultation.value)
+        cancel_url = reverse(
+            "appointments-cancel",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {"reason": BookingStatusChoices.cancelled.value}
+        response = self.client.post(cancel_url, data, format="json")
+        self.assertContains(
+            response,
+            status_code=400,
+            text="You cannot cancel an appointment In Consultation",
+        )
+
     def test_cancel_cancelled_booking(self):
         """Users can cancel bookings to another cancelled status even if already cancelled. However, tokens allocated on slot won't be changed."""
         permissions = [
@@ -1228,6 +1253,20 @@ class TestOtpSlotViewSet(CareAPITestBase):
         }
         response = self.client.post(url, data, format="json")
         self.assertContains(response, BookingStatusChoices.cancelled.value)
+
+    def test_cancel_appointment_patient_in_consultation_status(self):
+        booking = self.create_appointment(status=BookingStatusChoices.in_consultation)
+        url = reverse("otp-slots-cancel-appointment")
+        data = {
+            "patient": booking.patient.external_id,
+            "appointment": booking.external_id,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response,
+            "You cannot cancel an appointment In Consultation",
+            status_code=400,
+        )
 
     def test_cancel_appointment_of_another_patient(self):
         """OTP authenticated users cannot cancel appointments of other patients."""
