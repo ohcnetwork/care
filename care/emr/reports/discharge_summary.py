@@ -88,7 +88,7 @@ def get_discharge_summary_template(
 
 def generate_and_upload_discharge_summary(
     encounter: Encounter,
-    facility: Facility,
+    facility: Facility | None,
     render_format: str,
     slug: str,
 ) -> FileUpload | None:
@@ -178,9 +178,10 @@ def generate_discharge_report_signed_url(
         summary_file = generate_and_upload_discharge_summary(
             encounter, facility, render_format, slug
         )
-    summary_file = generate_and_upload_discharge_summary(
-        encounter, None, render_format, slug
-    )
+    else:
+        summary_file = generate_and_upload_discharge_summary(
+            encounter, None, render_format, slug
+        )
     return summary_file.files_manager.read_signed_url(
         summary_file,
         duration=2 * 24 * 60 * 60,  # 2 days
