@@ -9,6 +9,7 @@ from django.db import transaction
 from faker import Faker
 
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
+from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.questionnaire import QuestionnaireOrganization
 from care.emr.resources.device.spec import DeviceCreateSpec
@@ -35,7 +36,6 @@ from care.emr.resources.patient.spec import (
 )
 from care.emr.resources.questionnaire.spec import QuestionnaireSpec
 from care.emr.resources.user.spec import UserCreateSpec
-from care.facility.models.facility import Facility
 from care.security.models import RoleModel
 from care.users.models import User
 
@@ -149,14 +149,14 @@ class Command(BaseCommand):
             f"Created facility organization (dept): {external_facility_organization.name}"
         )
 
-        self._create_facility(fake, super_user, geo_organization, "Resource Facility")
+        self._create_facility(fake, super_user, geo_organization)
         self.stdout.write("Created resource facility")
 
         location = self._create_location(
             fake,
             super_user,
             facility,
-            [external_facility_organization.external_id],
+            [external_facility_organization],
             mode="kind",
             form="wa",
         )
@@ -167,7 +167,7 @@ class Command(BaseCommand):
                 fake,
                 super_user,
                 facility,
-                [external_facility_organization.external_id],
+                [external_facility_organization],
                 mode="instance",
                 form="bd",
                 parent=location.external_id,
@@ -225,10 +225,6 @@ class Command(BaseCommand):
         return org
 
     def _create_facility(self, fake, super_user, geo_organization, name=None):
-        if facility := Facility.objects.filter(
-            name="Resource Facility", geo_organization=geo_organization
-        ).first():
-            return facility
         facility_spec = FacilityCreateSpec(
             geo_organization=geo_organization.external_id,
             name=name or fake.company(),
@@ -309,7 +305,6 @@ class Command(BaseCommand):
         password=None,
     ):
         password = password or fake.password(length=10, special_chars=False)
-        geo_organization = geo_organization or self.geo_organization
         user_spec = UserCreateSpec(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
@@ -321,9 +316,9 @@ class Command(BaseCommand):
             username=username,
             email=str(uuid.uuid4()) + fake.email(),
             user_type=user_type,
-            geo_organization=geo_organization.external_id,
         )
         user = user_spec.de_serialize()
+        user.geo_organization = geo_organization or self.geo_organization
         user.created_by = super_user
         user.updated_by = super_user
         user.save()
@@ -547,7 +542,7 @@ class Command(BaseCommand):
         name=None,
     ):
         location_spec = FacilityLocationWriteSpec(
-            organizations=organizations,
+            organizations=[],  # backend is not using this field
             parent=parent,
             status="active",
             operational_status="O",
@@ -561,6 +556,11 @@ class Command(BaseCommand):
         location.created_by = super_user
         location.updated_by = super_user
         location.save()
+
+        for organization in organizations:
+            FacilityLocationOrganization.objects.create(
+                location=location, organization=organization
+            )
         return location
 
     def _create_device(
