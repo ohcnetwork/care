@@ -294,7 +294,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertContains(
             response,
             status_code=400,
-            text="You cannot cancel an appointment In Consultation",
+            text="You cannot cancel an appointment In-Consultation",
         )
 
     def test_cancel_cancelled_booking(self):
@@ -1264,7 +1264,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         response = self.client.post(url, data, format="json")
         self.assertContains(
             response,
-            "You cannot cancel an appointment In Consultation",
+            "You cannot cancel an appointment In-Consultation",
             status_code=400,
         )
 
