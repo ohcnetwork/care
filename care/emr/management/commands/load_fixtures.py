@@ -9,6 +9,10 @@ from django.db import transaction
 from faker import Faker
 
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
+from care.emr.models.location import FacilityLocationOrganization
+from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
+from care.emr.models.questionnaire import QuestionnaireOrganization
+from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -20,6 +24,7 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationTypeChoices,
     FacilityOrganizationWriteSpec,
 )
+from care.emr.resources.location.spec import FacilityLocationWriteSpec
 from care.emr.resources.organization.spec import (
     OrganizationTypeChoices,
     OrganizationWriteSpec,
@@ -33,7 +38,6 @@ from care.emr.resources.questionnaire.spec import QuestionnaireSpec
 from care.emr.resources.user.spec import UserCreateSpec
 from care.security.models import RoleModel
 from care.users.models import User
-from care.utils.tests.base import CareAPITestBase
 
 # Roles with their user types
 ROLES_OPTIONS = {
@@ -105,7 +109,6 @@ class Command(BaseCommand):
 
     def _generate_fixtures(self, options):
         """Generate all the fixture data within a transaction context."""
-        base = CareAPITestBase()
         fake = Faker("en_IN")
 
         super_user, created = User.objects.get_or_create(
@@ -133,14 +136,11 @@ class Command(BaseCommand):
         self.stdout.write("=" * 30)
 
         geo_organization = self._create_geo_organization(fake, super_user)
+        self.geo_organization = geo_organization
         self.stdout.write(f"Created geo organization: {geo_organization.name}")
 
         facility = self._create_facility(fake, super_user, geo_organization)
         self.stdout.write(f"Created facility: {facility.name}")
-
-        facility_organization = FacilityOrganization.objects.filter(
-            facility=facility
-        ).first()
 
         external_facility_organization = self._create_facility_organization(
             fake, super_user, facility
@@ -149,18 +149,52 @@ class Command(BaseCommand):
             f"Created facility organization (dept): {external_facility_organization.name}"
         )
 
+        self._create_facility(fake, super_user, geo_organization)
+        self.stdout.write("Created resource facility")
+
+        location = self._create_location(
+            fake,
+            super_user,
+            facility,
+            [external_facility_organization],
+            mode="kind",
+            form="wa",
+        )
+        self.stdout.write(f"Created location: {location.name}")
+
+        for i in range(1, 6):
+            bed = self._create_location(
+                fake,
+                super_user,
+                facility,
+                [external_facility_organization],
+                mode="instance",
+                form="bd",
+                parent=location.external_id,
+                name=f"Bed {i}",
+            )
+            self.stdout.write(f"Created bed: {bed.name}")
+
+        for i in range(1, 6):
+            device = self._create_device(
+                fake,
+                super_user,
+                external_facility_organization,
+                name=f"Device {i}",
+            )
+            self.stdout.write(f"Created device: {device.user_friendly_name}")
+
         organizations = self._create_organizations(fake, super_user)
 
         for organization in organizations:
             self.stdout.write(f"Created organization: {organization.name}")
 
-        self._create_default_users(fake, base, super_user, facility_organization)
+        self._create_default_users(fake, super_user, external_facility_organization)
 
-        self._create_users(
+        self._create_facility_users(
             fake,
-            base,
             super_user,
-            facility_organization,
+            external_facility_organization,
             options["users"],
             options["default_password"],
         )
@@ -174,11 +208,11 @@ class Command(BaseCommand):
             super_user,
             patients,
             facility,
-            facility_organization,
+            external_facility_organization,
             options["encounter"],
         )
 
-        self._create_questionnaires(facility_organization, super_user)
+        self._create_questionnaires(facility, super_user)
 
     def _create_geo_organization(self, fake, super_user):
         org_spec = OrganizationWriteSpec(
@@ -190,10 +224,10 @@ class Command(BaseCommand):
         org.save()
         return org
 
-    def _create_facility(self, fake, super_user, geo_organization):
+    def _create_facility(self, fake, super_user, geo_organization, name=None):
         facility_spec = FacilityCreateSpec(
             geo_organization=geo_organization.external_id,
-            name=fake.company(),
+            name=name or fake.company(),
             description=fake.text(max_nb_chars=200),
             longitude=float(fake.longitude()),
             latitude=float(fake.latitude()),
@@ -247,10 +281,81 @@ class Command(BaseCommand):
             orgs.append(org)
         return orgs
 
-    def _create_users(
+    def _attach_role_organization_user(self, organization, user, role):
+        return OrganizationUser.objects.create(
+            organization=organization, user=user, role=role
+        )
+
+    def _attach_role_facility_organization_user(
+        self, facility_organization, user, role
+    ):
+        return FacilityOrganizationUser.objects.create(
+            organization=facility_organization, user=user, role=role
+        )
+
+    def _create_user(
         self,
         fake,
-        base,
+        username,
+        user_type,
+        super_user,
+        facility_organization=None,
+        geo_organization=None,
+        role=None,
+        password=None,
+    ):
+        password = password or fake.password(length=10, special_chars=False)
+        user_spec = UserCreateSpec(
+            first_name=fake.first_name(),
+            last_name=fake.last_name(),
+            phone_number=generate_unique_indian_phone_number(),
+            prefix=fake.prefix(),
+            suffix=fake.suffix(),
+            gender=secrets.choice(list(GenderChoices)).value,
+            password=password,
+            username=username,
+            email=str(uuid.uuid4()) + fake.email(),
+            user_type=user_type,
+        )
+        user = user_spec.de_serialize()
+        user.geo_organization = geo_organization or self.geo_organization
+        user.created_by = super_user
+        user.updated_by = super_user
+        user.save()
+
+        if role:
+            if facility_organization:
+                self._attach_role_facility_organization_user(
+                    facility_organization=facility_organization,
+                    user=user,
+                    role=role,
+                )
+                if (
+                    user.user_type == "administrator"
+                    and facility_organization.facility.default_internal_organization
+                ):
+                    self._attach_role_facility_organization_user(
+                        facility_organization=facility_organization.facility.default_internal_organization,
+                        user=user,
+                        role=role,
+                    )
+            if user.geo_organization:
+                self._attach_role_organization_user(
+                    organization=user.geo_organization,
+                    user=user,
+                    role=role,
+                )
+            self._attach_role_organization_user(
+                organization=Organization.objects.get(
+                    name=role.name, org_type=OrganizationTypeChoices.role
+                ),
+                user=user,
+                role=role,
+            )
+
+    def _create_facility_users(
+        self,
+        fake,
         super_user,
         facility_organization,
         count,
@@ -276,36 +381,61 @@ class Command(BaseCommand):
                         )
                     )
 
-                    user_spec = UserCreateSpec(
-                        first_name=fake.first_name(),
-                        last_name=fake.last_name(),
-                        phone_number=generate_unique_indian_phone_number(),
-                        prefix=fake.prefix(),
-                        suffix=fake.suffix(),
-                        gender=secrets.choice(list(GenderChoices)).value,
-                        password=password,
+                    self._create_user(
+                        fake,
                         username=username,
-                        email=str(uuid.uuid4()) + fake.email(),
                         user_type=user_type,
+                        super_user=super_user,
+                        facility_organization=facility_organization,
+                        role=role,
+                        password=password,
                     )
-                    user = user_spec.de_serialize()
-                    user.created_by = super_user
-                    user.updated_by = super_user
-                    user.save()
 
                     self.stdout.write(f"{role_name:<15} {username:<30} {password:<20}")
 
-                    base.attach_role_facility_organization_user(
-                        facility_organization=facility_organization,
-                        user=user,
-                        role=role,
-                    )
             except RoleModel.DoesNotExist:
                 self.stdout.write(
                     self.style.WARNING(f"Role '{role_name}' not found, skipping.")
                 )
 
         self.stdout.write("=" * 50)
+
+    def _create_default_users(self, fake, super_user, facility_organization):
+        fixed_users = [
+            ("Doctor", "care-doctor"),
+            ("Staff", "care-staff"),
+            ("Nurse", "care-nurse"),
+            ("Administrator", "care-admin"),
+            ("Volunteer", "care-volunteer"),
+            ("Facility Admin", "care-fac-admin"),
+        ]
+
+        password = "Ohcn@123"
+        for role_name, username in fixed_users:
+            try:
+                role = RoleModel.objects.get(name=role_name)
+
+                if User.objects.filter(username=username).exists():
+                    self.stdout.write(
+                        self.style.WARNING(f"User {username} already exists. Skipping.")
+                    )
+                    continue
+
+                self._create_user(
+                    fake,
+                    username=username,
+                    user_type=ROLES_OPTIONS[role_name],
+                    super_user=super_user,
+                    facility_organization=facility_organization,
+                    role=role,
+                    password=password,
+                )
+
+                self.stdout.write(f"{role_name:<15} {username:<30} {password:<20}")
+            except RoleModel.DoesNotExist:
+                self.stdout.write(
+                    self.style.WARNING(f"Role '{role_name}' not found, skipping.")
+                )
 
     def _create_patients(
         self, fake, super_user, geo_organization, count
@@ -362,9 +492,17 @@ class Command(BaseCommand):
                 encounter.updated_by = super_user
                 encounter.save()
 
-    def _create_questionnaires(self, facility_organization, super_user):
+    def _create_questionnaires(self, facility, super_user):
         with Path.open("data/questionnaire_fixtures.json") as f:
             questionnaires = json.load(f)
+
+        roles = Organization.objects.filter(
+            name__in=ROLES_OPTIONS.keys(), org_type=OrganizationTypeChoices.role
+        )
+
+        facility_organizations = FacilityOrganization.objects.filter(
+            facility=facility,
+        ).values_list("external_id", flat=True)
 
         for questionnaire in questionnaires:
             questionnaire_slug = questionnaire["slug"]
@@ -373,7 +511,7 @@ class Command(BaseCommand):
 
             questionnaire["version"] = questionnaire.get("version") or "1.0"
 
-            questionnaire["organizations"] = [facility_organization.external_id]
+            questionnaire["organizations"] = facility_organizations
             questionnaire["tags"] = []
 
             questionnaire_spec = QuestionnaireSpec(**questionnaire)
@@ -384,54 +522,67 @@ class Command(BaseCommand):
             questionnaire_spec.updated_by = super_user
             questionnaire_spec.save()
 
+            for role in roles:
+                QuestionnaireOrganization.objects.create(
+                    questionnaire=questionnaire_spec,
+                    organization=role,
+                )
+
         self.stdout.write("Questionnaires loaded....")
 
-    def _create_default_users(self, fake, base, super_user, facility_organization):
-        fixed_users = [
-            ("Doctor", "care-doctor"),
-            ("Staff", "care-staff"),
-            ("Nurse", "care-nurse"),
-            ("Administrator", "care-admin"),
-            ("Volunteer", "care-volunteer"),
-            ("Facility Admin", "care-fac-admin"),
-        ]
+    def _create_location(
+        self,
+        fake,
+        super_user,
+        facility,
+        organizations,
+        mode,
+        form,
+        parent=None,
+        name=None,
+    ):
+        location_spec = FacilityLocationWriteSpec(
+            organizations=[],  # backend is not using this field
+            parent=parent,
+            status="active",
+            operational_status="O",
+            name=name or fake.company(),
+            description=fake.text(max_nb_chars=200),
+            mode=mode,
+            form=form,
+        )
+        location = location_spec.de_serialize()
+        location.facility = facility
+        location.created_by = super_user
+        location.updated_by = super_user
+        location.save()
 
-        password = "Ohcn@123"
-        for role_name, username in fixed_users:
-            try:
-                role = RoleModel.objects.get(name=role_name)
+        for organization in organizations:
+            FacilityLocationOrganization.objects.create(
+                location=location, organization=organization
+            )
+        return location
 
-                if User.objects.filter(username=username).exists():
-                    self.stdout.write(
-                        self.style.WARNING(f"User {username} already exists. Skipping.")
-                    )
-                    continue
-
-                user_spec = UserCreateSpec(
-                    first_name=username.split("-")[1].capitalize(),
-                    last_name="User",
-                    phone_number=generate_unique_indian_phone_number(),
-                    prefix=fake.prefix(),
-                    suffix=fake.suffix(),
-                    gender=secrets.choice(list(GenderChoices)).value,
-                    password=password,
-                    username=username,
-                    email=f"{username}@example.com",
-                    user_type=ROLES_OPTIONS[role_name],
-                )
-                user = user_spec.de_serialize()
-                user.created_by = super_user
-                user.updated_by = super_user
-                user.save()
-
-                base.attach_role_facility_organization_user(
-                    facility_organization=facility_organization,
-                    user=user,
-                    role=role,
-                )
-
-                self.stdout.write(f"{role_name:<15} {username:<30} {password:<20}")
-            except RoleModel.DoesNotExist:
-                self.stdout.write(
-                    self.style.WARNING(f"Role '{role_name}' not found, skipping.")
-                )
+    def _create_device(
+        self,
+        fake,
+        super_user,
+        facility_organization,
+        name=None,
+    ):
+        name = name or fake.company()
+        device_spec = DeviceCreateSpec(
+            registered_name=name,
+            user_friendly_name=name,
+            description=fake.text(max_nb_chars=200),
+            status="active",
+            availability_status="available",
+            manufacturer=fake.company(),
+        )
+        device = device_spec.de_serialize()
+        device.facility = facility_organization.facility
+        device.managing_organization = facility_organization
+        device.created_by = super_user
+        device.updated_by = super_user
+        device.save()
+        return device
