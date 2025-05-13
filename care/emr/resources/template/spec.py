@@ -257,6 +257,7 @@ class ReportTemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
 
     __model__ = ReportTemplate
+    __exclude__ = ["facility"]
 
 
 class ReportTemplateCreateSpec(ReportTemplateBaseSpec):
