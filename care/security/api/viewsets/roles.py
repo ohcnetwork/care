@@ -47,8 +47,7 @@ class RoleViewSet(EMRModelViewSet):
             "create",
             "update",
             "destroy",
-            "add_permissions",
-            "remove_permissions",
+            "update_permissions",
             "bulk_create_roles",
         ]:
             return request.user.is_superuser
@@ -81,59 +80,34 @@ class RoleViewSet(EMRModelViewSet):
                 if permission not in valid_permissions:
                     error = f"Invalid permission slug: {permission}."
                     raise ValidationError(error)
-
             return self
 
     @extend_schema(request=PermissionManageSpec)
     @action(methods=["POST"], detail=True)
-    def add_permissions(self, request, *args, **kwargs):
+    def update_permissions(self, request, *args, **kwargs):
         request_data = self.PermissionManageSpec(**request.data)
 
         role = self.get_object()
-
         if role.is_system:
             return Response(
                 data={"error": "Cannot add permissions to system roles"}, status=400
             )
 
-        permissions = request_data.permissions
+        permissions = PermissionModel.objects.filter(slug__in=request_data.permissions)
 
-        existing_permissions_on_role = RolePermission.objects.filter(
-            role=role
-        ).values_list("permission__slug", flat=True)
+        with transaction.atomic():
+            RolePermission.objects.filter(role=role).delete()
 
-        new_permissions_slugs = set(permissions) - set(existing_permissions_on_role)
+            role_permissions = []
+            for permission in permissions:
+                role_permissions.append(
+                    RolePermission(role=role, permission=permission)
+                )
 
-        new_permissions = PermissionModel.objects.filter(slug__in=new_permissions_slugs)
-        role_permissions = []
-        for permission in new_permissions:
-            role_permissions.append(RolePermission(role=role, permission=permission))
-
-        RolePermission.objects.bulk_create(role_permissions)
-
-        return Response(data={"message": "Permissions added successfully"}, status=200)
-
-    @extend_schema(request=PermissionManageSpec)
-    @action(methods=["POST"], detail=True)
-    def remove_permissions(self, request, *args, **kwargs):
-        request_data = self.PermissionManageSpec(**request.data)
-
-        role = self.get_object()
-
-        if role.is_system:
-            return Response(
-                data={"error": "Cannot remove permissions from system roles"},
-                status=400,
-            )
-
-        permissions = request_data.permissions
-
-        RolePermission.objects.filter(
-            role=role, permission__slug__in=permissions
-        ).delete()
+            RolePermission.objects.bulk_create(role_permissions)
 
         return Response(
-            data={"message": "Permissions removed successfully"}, status=200
+            data={"message": "Permissions updated successfully"}, status=200
         )
 
     class BulkPermissionManageSpec(BaseModel):

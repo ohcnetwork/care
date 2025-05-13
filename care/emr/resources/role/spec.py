@@ -19,7 +19,7 @@ class RoleBaseSpec(EMRResource):
     id: UUID4 | None = None
     name: str
     description: str
-    is_system: bool
+    is_system: bool | None = False
 
 
 class RoleCreateSpec(RoleBaseSpec):
