@@ -235,6 +235,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
         return baker.make(
             NoteMessage,
             thread=thread,
+            created_by=self.user,
             _fill_optional=True,
         )
 
@@ -307,18 +308,19 @@ class NoteMessageApiTestCase(CareAPITestBase):
 
     def test_create_note_on_encounter_with_patient_mismatch(self):
         role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name]
+            permissions=[EncounterPermissions.can_write_encounter.name,
+                         PatientPermissions.can_write_patient.name]
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
         )
-        thread = self._create_thread(encounter=self.encounter)
-        url = self._get_note_list_url(thread.external_id)
+        thread = self._create_thread()
         encounter = self.create_encounter(
             patient=self.create_patient(),
             facility=self.facility,
             organization=self.facility_organization,
         )
+        url = self._get_note_list_url(thread.external_id)
         data = {
             "message": "Test Note",
             "encounter": encounter.external_id
@@ -327,7 +329,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 400, response.data)
         self.assertContains(response, "Patient Mismatch", status_code=400)
 
-    def test_create_note_on_thread(self):   
+    def test_create_note_on_thread(self):
         role = self.create_role_with_permissions(
             permissions=[PatientPermissions.can_write_patient.name]
         )
@@ -385,3 +387,27 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403, response.data)
         self.assertContains(response, "Permission denied to user", status_code=403)
+
+    def test_create_note_after_encounter_complete(self):
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_write_encounter.name,
+                        PatientPermissions.can_write_patient.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        encounter.status="completed"
+        encounter.save()
+        thread=self._create_thread(encounter=encounter)
+
+        url=self._get_note_list_url(thread.external_id)
+        data = {
+            "message": "Late Note"
+            }
+        response=self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
