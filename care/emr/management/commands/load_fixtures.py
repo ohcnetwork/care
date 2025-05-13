@@ -209,7 +209,7 @@ class Command(BaseCommand):
             super_user,
             patients,
             facility,
-            external_facility_organization,
+            [external_facility_organization],
             options["encounter"],
         )
 
@@ -471,7 +471,7 @@ class Command(BaseCommand):
         super_user,
         patients,
         facility,
-        facility_organization,
+        facility_organizations,
         count_per_patient,
     ):
         total = len(patients) * count_per_patient
@@ -492,7 +492,7 @@ class Command(BaseCommand):
                 encounter.created_by = super_user
                 encounter.updated_by = super_user
                 encounter.save()
-                for organization in facility_organization:
+                for organization in facility_organizations:
                     EncounterOrganization.objects.create(
                         encounter=encounter,
                         organization=organization,
