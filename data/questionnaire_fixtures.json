@@ -221,11 +221,6 @@
         "questions": [
             {
                 "id": "31f02e46-7d14-4a68-9c94-de009b54fb54",
-                "code": {
-                    "code": "48064009",
-                    "system": "http://snomed.info/sct",
-                    "display": "Bilateral Air Entry"
-                },
                 "text": "Bilateral Air Entry",
                 "type": "group",
                 "link_id": "1.1",
@@ -257,11 +252,6 @@
             },
             {
                 "id": "80130e9a-e15c-4181-a32e-73dc68bd8755",
-                "code": {
-                    "code": "53950000",
-                    "system": "http://snomed.info/sct",
-                    "display": "Respiratory Support"
-                },
                 "text": "Respiratory Support",
                 "type": "group",
                 "link_id": "1.2",
