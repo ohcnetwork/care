@@ -255,6 +255,7 @@ class ReportTemplateTypes(str, Enum):
 
 class ReportTemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
+    facility: UUID4 | None = None
 
     __model__ = ReportTemplate
     __exclude__ = ["facility"]
@@ -282,7 +283,7 @@ class ReportTemplateCreateSpec(ReportTemplateBaseSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.facility:
-            self.facility = get_object_or_404(Facility, external_id=self.facility)
+            obj.facility = get_object_or_404(Facility, external_id=self.facility)
 
 
 class ReportTemplateUpdateSpec(ReportTemplateBaseSpec):

@@ -62,7 +62,7 @@ class ReportTemplateViewSet(EMRModelViewSet):
         if (
             model_obj is None
             and ReportTemplate.objects.filter(
-                slug=instance.slug, facility=instance.facility
+                slug=instance.slug, facility__external_id=instance.facility
             ).exists()
         ):
             raise ValidationError(
