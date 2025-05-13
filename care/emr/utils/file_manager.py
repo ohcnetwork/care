@@ -1,6 +1,10 @@
+import logging
+
 import boto3
 
 from care.utils.csp.config import get_client_config
+
+logger = logging.getLogger(__name__)
 
 
 class FileManager:
@@ -69,3 +73,27 @@ class S3FilesManager(FileManager):
         content_type = response["ContentType"]
         content = response["Body"].read()
         return content_type, content
+
+    def delete_object(self, file_obj, **kwargs):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+
+        return s3.delete_object(
+            Bucket=bucket_name, Key=f"{file_obj.file_type}/{file_obj.internal_name}"
+        )
+
+    def delete_objects(self, file_obj_list, quiet, **kwargs):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+
+        keys = [
+            f"{file_obj.file_type}/{file_obj.internal_name}"
+            for file_obj in file_obj_list
+        ]
+        objects = [{"Key": key} for key in keys]
+
+        return s3.delete_objects(
+            Bucket=bucket_name,
+            Delete={"Objects": objects, "Quiet": quiet},
+            **kwargs,
+        )

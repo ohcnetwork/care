@@ -742,3 +742,6 @@ TOTP_ENABLED_EMAIL_TEMPLATE_PATH = env(
 TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
     "TOTP_DISABLED_EMAIL_TEMPLATE_PATH", default="email/totp_disabled.html"
 )
+
+# Cleanup incomplete file uploads, set to 0 to disable
+FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
