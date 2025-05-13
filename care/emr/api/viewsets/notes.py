@@ -120,13 +120,8 @@ class NoteMessageViewSet(
         instance.thread = get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
-        if instance.thread.encounter and instance.thread.encounter.status == "completed":
-            raise ValidationError("Cannot add note to completed encounter")
-
         if encounter_id := self.request.data.get('encounter'):
             encounter = get_object_or_404(Encounter, external_id=encounter_id)
-            if encounter.status == "completed":
-                raise ValidationError("Cannot add note to completed encounter")
             if encounter.patient != instance.thread.patient:
                 raise ValidationError("Patient Mismatch")
             instance.encounter = encounter
