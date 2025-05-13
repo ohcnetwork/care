@@ -38,6 +38,3 @@ class RoleReadSpec(RoleBaseSpec):
         mapping["id"] = obj.external_id
         mapping["permissions"] = obj.get_permissions_for_role()
         return mapping
-
-
-# class RoleRetr

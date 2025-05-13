@@ -1,3 +1,4 @@
+from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, model_validator
 from rest_framework.decorators import action
@@ -8,6 +9,30 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.resources.role.spec import RoleCreateSpec, RoleReadSpec
 from care.security.models import PermissionModel, RoleModel, RolePermission
 from care.security.permissions.base import PermissionController
+
+
+class RoleConfig(BaseModel):
+    role: RoleCreateSpec
+    permissions: list[str]
+
+    @model_validator(mode="after")
+    def validate_role_and_permissions(self):
+        valid_permissions = PermissionController.get_permissions().keys()
+        self.permissions = list(set(self.permissions))  # Remove duplicates
+        for permission in self.permissions:
+            if permission not in valid_permissions:
+                error = f"Invalid permission slug: {permission}."
+                raise ValidationError(error)
+
+        system_roles = RoleModel.objects.filter(is_system=True).values_list(
+            "name", flat=True
+        )
+        role = self.role.name
+        if role in system_roles:
+            error = f"Role {role} already exists."
+            raise ValidationError(error)
+
+        return self
 
 
 class RoleViewSet(EMRModelViewSet):
@@ -24,6 +49,7 @@ class RoleViewSet(EMRModelViewSet):
             "destroy",
             "add_permissions",
             "remove_permissions",
+            "bulk_create_roles",
         ]:
             return request.user.is_superuser
         return False
@@ -50,10 +76,13 @@ class RoleViewSet(EMRModelViewSet):
         @model_validator(mode="after")
         def validate_permissions(self):
             valid_permissions = PermissionController.get_permissions().keys()
+            self.permissions = list(set(self.permissions))  # Remove duplicates
             for permission in self.permissions:
                 if permission not in valid_permissions:
                     error = f"Invalid permission slug: {permission}."
                     raise ValidationError(error)
+
+            return self
 
     @extend_schema(request=PermissionManageSpec)
     @action(methods=["POST"], detail=True)
@@ -105,4 +134,45 @@ class RoleViewSet(EMRModelViewSet):
 
         return Response(
             data={"message": "Permissions removed successfully"}, status=200
+        )
+
+    class BulkPermissionManageSpec(BaseModel):
+        roles_data: list[RoleConfig]
+
+    @extend_schema(request=BulkPermissionManageSpec)
+    @action(methods=["POST"], detail=False)
+    def bulk_create_roles(self, request, *args, **kwargs):
+        request_data = self.BulkPermissionManageSpec(**request.data)
+        role_configs = request_data.roles_data
+
+        with transaction.atomic():
+            for role_config in role_configs:
+                role_data = role_config.role
+                permission_slugs = role_config.permissions
+
+                role_obj = RoleModel.objects.filter(name=role_data.name).first()
+
+                if role_obj:
+                    if role_obj.is_system:
+                        continue
+                    RolePermission.objects.filter(role=role_obj).delete()
+                else:
+                    role_obj = RoleModel.objects.create(
+                        name=role_data.name,
+                        description=role_data.description,
+                        is_system=False,
+                        temp_deleted=False,
+                    )
+
+                valid_permissions = PermissionModel.objects.filter(
+                    slug__in=permission_slugs
+                )
+                role_permissions = [
+                    RolePermission(role=role_obj, permission=perm)
+                    for perm in valid_permissions
+                ]
+                RolePermission.objects.bulk_create(role_permissions)
+
+        return Response(
+            data={"message": "Roles and permissions processed successfully"}, status=200
         )
