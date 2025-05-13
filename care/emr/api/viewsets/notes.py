@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied,ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -120,7 +120,7 @@ class NoteMessageViewSet(
         instance.thread = get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
-        if encounter_id := self.request.data.get('encounter'):
+        if encounter_id := self.request.data.get("encounter"):
             encounter = get_object_or_404(Encounter, external_id=encounter_id)
             if encounter.patient != instance.thread.patient:
                 raise ValidationError("Patient Mismatch")
