@@ -57,7 +57,7 @@ make up
 to load seed data for testing run:
 
 ```bash
-make load-seed-data
+make load-fixtures
 ```
 
 Stops and removes the containers without affecting the volumes:

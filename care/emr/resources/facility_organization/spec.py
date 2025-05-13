@@ -13,6 +13,7 @@ class FacilityOrganizationTypeChoices(str, Enum):
     dept = "dept"
     team = "team"
     root = "root"
+    role = "role"
     other = "other"
 
 

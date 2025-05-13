@@ -1,6 +1,5 @@
 import sys
 from secrets import choice
-from unittest.mock import MagicMock
 
 from django.forms.models import model_to_dict
 from faker import Faker
@@ -14,13 +13,10 @@ from care.emr.resources.encounter.constants import (
 )
 
 # Global mocking, since the types are loaded when specs load, mocking using patch was not working as the validations were already loaded.
-sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = MagicMock(
-    return_value={
-        "display": "Test Value",
-        "system": "http://test_system.care/test",
-        "code": "123",
-    }
-)
+# TODO: figure out a more customizeable approach to mock this
+import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
+
+sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = lambda f, s, c: c
 
 
 class CareAPITestBase(APITestCase):
