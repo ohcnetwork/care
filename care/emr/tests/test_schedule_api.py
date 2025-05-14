@@ -1083,7 +1083,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
             availability=[
@@ -1108,7 +1107,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
             availability=[
@@ -1128,7 +1126,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
             availability=[
