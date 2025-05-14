@@ -84,7 +84,7 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                 slot_size_in_seconds = self.slot_size_in_minutes * 60
                 total_slots = availability_duration_in_seconds / slot_size_in_seconds
                 if total_slots > settings.MAX_SLOTS_PER_AVAILABILITY:
-                    error_message = f"Daily slot allocation limit exceeded; maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per day."
+                    error_message = f"Too many slots per availability. Maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per availability session."
                     raise ValueError(error_message)
                 if availability_duration_in_seconds % slot_size_in_seconds != 0:
                     raise ValueError(

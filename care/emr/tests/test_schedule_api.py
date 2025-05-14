@@ -1093,7 +1093,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
                 },
             ],
         )
-        expected_error = f"Daily slot allocation limit exceeded; maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per day."
+        expected_error = f"Too many slots per availability. Maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per availability session."
         response = self.client.post(self.base_url, data, format="json")
         self.assertContains(
             response,
