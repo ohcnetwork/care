@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
 from rest_framework import status
@@ -1093,10 +1094,14 @@ class TestAvailabilityViewSet(CareAPITestBase):
                 },
             ],
         )
+        expected_error = (
+            f"Daily slot allocation limit exceeded; maximum allowed is "
+            f"{settings.MAX_SLOTS_PER_AVAILABILITY} slots per day."
+        )
         response = self.client.post(self.base_url, data, format="json")
         self.assertContains(
             response,
-            "Daily slot allocation limit exceeded; the maximum allowed is 30 slots per day",
+            expected_error,
             status_code=400,
         )
 
