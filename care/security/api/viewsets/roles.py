@@ -20,18 +20,18 @@ class RoleViewSet(EMRModelViewSet):
     pydantic_model = RoleCreateSpec
     pydantic_read_model = RoleReadSpec
 
-    # def permissions_controller(self, request):
-    #     if self.action in ["list", "retrieve"]:
-    #         return True
-    #     if self.action in [
-    #         "create",
-    #         "update",
-    #         "destroy",
-    #         "update_permissions",
-    #         "bulk_create_roles",
-    #     ]:
-    #         return request.user.is_superuser
-    #     return False
+    def permissions_controller(self, request):
+        if self.action in ["list", "retrieve"]:
+            return True
+        if self.action in [
+            "create",
+            "update",
+            "destroy",
+            "update_permissions",
+            "bulk_create_roles",
+        ]:
+            return request.user.is_superuser
+        return False
 
     def validate_destroy(self, instance):
         if instance.is_system:
