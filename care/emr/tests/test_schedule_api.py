@@ -1085,7 +1085,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
-            tokens_per_slot=2,
             availability=[
                 {
                     "day_of_week": 1,
@@ -1097,7 +1096,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertContains(
             response,
-            "Daily slot allocation limit exceeded",
+            "Daily slot allocation limit exceeded; the maximum allowed is 30 slots per day",
             status_code=400,
         )
 
@@ -1110,7 +1109,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
-            tokens_per_slot=1,
             availability=[
                 {
                     "day_of_week": 2,
@@ -1131,7 +1129,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         # Try to create availability with end time before start time
         data = self.generate_availability_data(
             slot_size_in_minutes=10,
-            tokens_per_slot=1,
             availability=[
                 {
                     "day_of_week": 2,
