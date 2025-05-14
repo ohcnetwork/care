@@ -1,38 +1,18 @@
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.resources.role.spec import RoleCreateSpec, RoleReadSpec
+from care.emr.resources.role.spec import (
+    PermissionManageSpec,
+    RoleConfig,
+    RoleCreateSpec,
+    RoleReadSpec,
+)
 from care.security.models import PermissionModel, RoleModel, RolePermission
-from care.security.permissions.base import PermissionController
-
-
-class RoleConfig(BaseModel):
-    role: RoleCreateSpec
-    permissions: list[str]
-
-    @model_validator(mode="after")
-    def validate_role_and_permissions(self):
-        valid_permissions = PermissionController.get_permissions().keys()
-        self.permissions = list(set(self.permissions))  # Remove duplicates
-        for permission in self.permissions:
-            if permission not in valid_permissions:
-                error = f"Invalid permission slug: {permission}."
-                raise ValidationError(error)
-
-        system_roles = RoleModel.objects.filter(is_system=True).values_list(
-            "name", flat=True
-        )
-        role = self.role.name
-        if role in system_roles:
-            error = f"Role {role} already exists."
-            raise ValidationError(error)
-
-        return self
 
 
 class RoleViewSet(EMRModelViewSet):
@@ -40,18 +20,18 @@ class RoleViewSet(EMRModelViewSet):
     pydantic_model = RoleCreateSpec
     pydantic_read_model = RoleReadSpec
 
-    def permissions_controller(self, request):
-        if self.action in ["list", "retrieve"]:
-            return True
-        if self.action in [
-            "create",
-            "update",
-            "destroy",
-            "update_permissions",
-            "bulk_create_roles",
-        ]:
-            return request.user.is_superuser
-        return False
+    # def permissions_controller(self, request):
+    #     if self.action in ["list", "retrieve"]:
+    #         return True
+    #     if self.action in [
+    #         "create",
+    #         "update",
+    #         "destroy",
+    #         "update_permissions",
+    #         "bulk_create_roles",
+    #     ]:
+    #         return request.user.is_superuser
+    #     return False
 
     def validate_destroy(self, instance):
         if instance.is_system:
@@ -69,23 +49,10 @@ class RoleViewSet(EMRModelViewSet):
         if name_changed and RoleModel.objects.filter(name=instance.name).exists():
             raise ValidationError("Role with this name already exists")
 
-    class PermissionManageSpec(BaseModel):
-        permissions: list[str]
-
-        @model_validator(mode="after")
-        def validate_permissions(self):
-            valid_permissions = PermissionController.get_permissions().keys()
-            self.permissions = list(set(self.permissions))  # Remove duplicates
-            for permission in self.permissions:
-                if permission not in valid_permissions:
-                    error = f"Invalid permission slug: {permission}."
-                    raise ValidationError(error)
-            return self
-
     @extend_schema(request=PermissionManageSpec)
     @action(methods=["POST"], detail=True)
     def update_permissions(self, request, *args, **kwargs):
-        request_data = self.PermissionManageSpec(**request.data)
+        request_data = PermissionManageSpec(**request.data)
 
         role = self.get_object()
         if role.is_system:
@@ -111,13 +78,13 @@ class RoleViewSet(EMRModelViewSet):
         )
 
     class BulkPermissionManageSpec(BaseModel):
-        roles_data: list[RoleConfig]
+        roles: list[RoleConfig]
 
     @extend_schema(request=BulkPermissionManageSpec)
     @action(methods=["POST"], detail=False)
     def bulk_create_roles(self, request, *args, **kwargs):
         request_data = self.BulkPermissionManageSpec(**request.data)
-        role_configs = request_data.roles_data
+        role_configs = request_data.roles
 
         with transaction.atomic():
             for role_config in role_configs:
