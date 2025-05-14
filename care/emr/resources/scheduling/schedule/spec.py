@@ -2,6 +2,7 @@ import datetime
 from datetime import UTC
 from enum import Enum
 
+from django.conf import settings
 from django.db.models import Sum
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
@@ -77,6 +78,12 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                 end_time = datetime.datetime.combine(
                     datetime.datetime.now(tz=UTC).date(), availability.end_time
                 )
+                total_time = (end_time - start_time).total_seconds() / 60
+                total_slots = (
+                    total_time / self.slot_size_in_minutes
+                ) * self.tokens_per_slot
+                if total_slots > settings.MAX_SLOTS_PER_AVAILABILITY:
+                    raise ValueError("Daily slot allocation limit exceeded")
                 slot_size_in_seconds = self.slot_size_in_minutes * 60
                 if (end_time - start_time).total_seconds() % slot_size_in_seconds != 0:
                     raise ValueError(
