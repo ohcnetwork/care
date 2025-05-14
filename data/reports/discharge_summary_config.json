@@ -38,8 +38,8 @@
         "columns": [
         {
           "type": "rule",
-          "length": "100%",
-          "stroke": "mygray",
+          "length": 100,
+          "stroke": "#808080",
           "align": "center"
         }
         ]
@@ -75,7 +75,7 @@
           "label": "Created on",
           "format": "[day]/[month]/[year]",
           "style": {
-            "fill": "mygray",
+            "fill": "#808080",
             "weight": 500
           },
           "align": "left"
@@ -89,8 +89,8 @@
         "columns": [
         {
           "type": "rule",
-          "length": "100%",
-          "stroke": "mygray",
+          "length": 100,
+          "stroke": "#808080",
           "align": "center"
         }
       ]

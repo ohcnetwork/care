@@ -38,11 +38,11 @@ class TypstHeaderBuilder(BaseHeaderBuilder):
     def add_rule(
         self,
         row_idx: int,
-        length: str = "100%",
-        stroke: str = "black",
+        length: int = 100,
+        stroke: str = "#808080",
         align: str | None = None,
     ):
-        frag = f"line(length: {length}, stroke: {stroke})"
+        frag = f'line(length: {length}%, stroke: rgb("{stroke}"))'
         if align:
             frag = f"align({align}, {frag})"
         self.grid_rows[row_idx].append(frag)
@@ -58,7 +58,7 @@ class TypstHeaderBuilder(BaseHeaderBuilder):
     ):
         parts = []
         if style_fill:
-            parts.append(f"fill: {style_fill}")
+            parts.append(f'fill: rgb("{style_fill}")')
         if style_weight:
             parts.append(f"weight: {style_weight}")
         cfg = ", ".join(parts)

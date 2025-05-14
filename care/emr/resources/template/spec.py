@@ -76,8 +76,19 @@ class Layout(BaseModel):
 
 
 class StyleConfig(BaseModel):
-    fill: str | None = None
+    fill: str | None = 'rgb("#808080")'
     weight: int | None = None
+
+    @field_validator("fill")
+    @classmethod
+    def validate_fill_format(cls, value):
+        if value is None:
+            return value
+
+        pattern = r"^#[0-9a-fA-F]{6}$"
+        if not re.match(pattern, value):
+            raise ValueError('Fill must be in format: #RRGGBB" (color hex code)')
+        return value
 
 
 class TextElement(BaseModel):
@@ -141,17 +152,26 @@ class ImageElement(BaseModel):
 
 class RuleElement(BaseModel):
     type: Literal["rule"]
-    length: str = "100%"
-    stroke: str | None = "black"
+    length: int = 100
+    stroke: str | None = 'rgb("#808080")'
     align: Literal["left", "center", "right"] | None = "center"
 
-    @field_validator("length")
+    @field_validator("stroke")
     @classmethod
-    def validate_percentage(cls, v):
-        if not (v.endswith("%") and v[:-1].isdigit()) and 0 < int(v[:-1]) <= 100:  # noqa PLR2004
-            error = "length must be a percentage string like '100%'"
-            raise ValueError(error)
-        return v
+    def validate_stroke_format(cls, value):
+        if value is None:
+            return value
+
+        pattern = r"^#[0-9a-fA-F]{6}$"
+        if not re.match(pattern, value):
+            raise ValueError('stroke must be in format: #RRGGBB" (color hex code)')
+        return value
+
+    @model_validator(mode="after")
+    def validate_length_range(self) -> "RuleElement":
+        if not (0 <= self.length <= 100):  # noqa PLR2004
+            raise ValueError("length must be between 0 and 100")
+        return self
 
 
 class DateTimeElement(BaseModel):
@@ -266,7 +286,6 @@ class ReportTemplateCreateSpec(ReportTemplateBaseSpec):
     slug: str
     type: ReportTemplateTypes
     derived_from_url: str | None = None
-    facility: UUID4 | None = None
 
     @model_validator(mode="after")
     def validate_slug(self):

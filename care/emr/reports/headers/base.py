@@ -96,7 +96,7 @@ class BaseHeaderBuilder(ABC):
     def add_rule(
         self,
         row_idx: int,
-        length: str = "100%",
+        length: int = 100,
         stroke: str = "black",
         align: str | None = None,
     ): ...

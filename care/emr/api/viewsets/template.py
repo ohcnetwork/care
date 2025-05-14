@@ -49,13 +49,15 @@ class ReportTemplateViewSet(EMRModelViewSet):
             raise PermissionDenied("You do not have permission to access this endpoint")
 
         queryset = ReportTemplate.objects.all()
-        if self.request.query_params.get("facility"):
-            facility = self.request.query_params.get("facility")
-            queryset = queryset.filter(
-                models.Q(facility__external_id=facility) | models.Q(facility=None)
-            )
-        else:
-            queryset = queryset.filter(facility=None)
+
+        if self.lookup_field not in self.kwargs:
+            if self.request.query_params.get("facility"):
+                facility = self.request.query_params.get("facility")
+                queryset = queryset.filter(
+                    models.Q(facility__external_id=facility) | models.Q(facility=None)
+                )
+            else:
+                queryset = queryset.filter(facility=None)
         return queryset
 
     def validate_data(self, instance, model_obj=None):
