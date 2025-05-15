@@ -9,6 +9,7 @@ from django.db import transaction
 from faker import Faker
 
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
+from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.questionnaire import QuestionnaireOrganization
@@ -208,7 +209,7 @@ class Command(BaseCommand):
             super_user,
             patients,
             facility,
-            external_facility_organization,
+            [external_facility_organization],
             options["encounter"],
         )
 
@@ -470,7 +471,7 @@ class Command(BaseCommand):
         super_user,
         patients,
         facility,
-        facility_organization,
+        facility_organizations,
         count_per_patient,
     ):
         total = len(patients) * count_per_patient
@@ -479,7 +480,7 @@ class Command(BaseCommand):
         for patient in patients:
             for _ in range(count_per_patient):
                 encounter_spec = EncounterCreateSpec(
-                    organizations=[facility_organization.external_id],
+                    organizations=[],  # this field is used by the viewset to add the relations
                     discharge_summary_advice=fake.paragraph(),
                     status=StatusChoices.in_progress,
                     encounter_class=secrets.choice(list(ClassChoices)).value,
@@ -491,6 +492,11 @@ class Command(BaseCommand):
                 encounter.created_by = super_user
                 encounter.updated_by = super_user
                 encounter.save()
+                for organization in facility_organizations:
+                    EncounterOrganization.objects.create(
+                        encounter=encounter,
+                        organization=organization,
+                    )
 
     def _create_questionnaires(self, facility, super_user):
         with Path.open("data/questionnaire_fixtures.json") as f:
@@ -542,7 +548,7 @@ class Command(BaseCommand):
         name=None,
     ):
         location_spec = FacilityLocationWriteSpec(
-            organizations=[],  # backend is not using this field
+            organizations=[],  # this field is used by the viewset to add the relations
             parent=parent,
             status="active",
             operational_status="O",
