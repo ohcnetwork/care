@@ -266,6 +266,46 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
                 else:
                     self.assertIn(f"Invalid {question_type}", error["msg"])
 
+    def test_submit_inactive_questionnaire(self):
+        """
+        Tests that submitting a response to an inactive questionnaire returns a 400 error.
+        """
+        questionnaire_definition = {
+            "title": "Inactive Questionnaire",
+            "slug": "inactive-ques",
+            "description": "This questionnaire is inactive.",
+            "status": "draft",
+            "subject_type": "patient",
+            "organizations": [str(self.organization.external_id)],
+            "questions": [
+                {
+                    "link_id": "1",
+                    "type": "boolean",
+                    "text": "Is this active?",
+                },
+            ],
+        }
+        response = self.client.post(
+            self.base_url, questionnaire_definition, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        submit_url = reverse(
+            "questionnaire-submit", kwargs={"slug": response.json()["slug"]}
+        )
+
+        payload = {
+            "resource_id": str(self.patient.external_id),
+            "patient": str(self.patient.external_id),
+            "results": [{"question_id": uuid.uuid4(), "values": [{"value": ""}]}],
+        }
+        response = self.client.post(submit_url, payload, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errors", response.json())
+        error = response.json()["errors"][0]
+        self.assertEqual(error["msg"]["type"], "questionnaire_inactive")
+
     def test_false_choice_values_validations(self):
         questionnaire_definition = {
             "title": "Comprehensive Health Assessment",
