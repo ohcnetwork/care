@@ -4,7 +4,7 @@ from enum import Enum
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from pydantic import UUID4, Field, field_validator
+from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
@@ -19,6 +19,7 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
+from care.utils.registries.feature_flag import FlagNotFoundError
 
 
 def is_valid_username(username):
@@ -170,13 +171,23 @@ class PublicUserReadSpec(UserBaseSpec):
 
 class UserFlagBaseSpec(EMRResource):
     __model__ = UserFlag
+    __exclude__ = ["user"]
 
     id: UUID4 | None = None
 
 
 class UserFlagCreateSpec(UserFlagBaseSpec):
     flag: str
-    user: UUID4 | None = None
+    user: UUID4
+
+    @model_validator(mode="after")
+    def validate_flag(self):
+        try:
+            if not UserFlag.check_user_has_flag(self.user, self.flag):
+                raise ValueError("User already has this flag")
+        except FlagNotFoundError:
+            pass
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:

@@ -2,7 +2,6 @@ from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
-from rest_framework import status
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
@@ -12,10 +11,10 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRModelViewSet,
     EMRRetrieveMixin,
-    EMRUpdateMixin,
 )
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
@@ -35,7 +34,7 @@ from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image
-from care.utils.registries.feature_flag import FlagRegistry, FlagType
+from care.utils.registries.feature_flag import FlagNotFoundError, FlagRegistry, FlagType
 
 
 class UserFilter(filters.FilterSet):
@@ -179,7 +178,7 @@ class UserFlagFilter(filters.FilterSet):
 
 
 class UserFlagViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRDestroyMixin, EMRCreateMixin, EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet
 ):
     database_model = UserFlag
     pydantic_model = UserFlagCreateSpec
@@ -190,6 +189,14 @@ class UserFlagViewSet(
     def permissions_controller(self, request):
         return request.user.is_superuser
 
+    def perform_create(self, instance):
+        FlagRegistry.register(FlagType.USER.value, instance.flag)
+        super().perform_create(instance)
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        FlagRegistry.unregister(FlagType.USER.value, instance.flag)
+
     @action(detail=False, methods=["get"], url_path="available-flags")
     def list_available_flags(self, request):
         """
@@ -198,8 +205,5 @@ class UserFlagViewSet(
         try:
             flags = FlagRegistry.get_all_flags(FlagType.USER)
             return Response({"available_flags": list(flags)})
-        except Exception as e:
-            return Response(
-                {"error": "Failed to fetch available flags", "detail": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        except FlagNotFoundError:
+            return Response({"message": "No registered flag with this type"})

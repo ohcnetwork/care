@@ -22,6 +22,7 @@ from care.emr.api.viewsets.device import (
 from care.emr.api.viewsets.encounter import EncounterViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
+    FacilityFlagViewSet,
     FacilitySchedulableUsersViewSet,
     FacilityUsersViewSet,
     FacilityViewSet,
@@ -70,7 +71,7 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
 )
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
-from care.emr.api.viewsets.user import UserViewSet
+from care.emr.api.viewsets.user import UserFlagViewSet, UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
@@ -273,6 +274,9 @@ thread_nested_router.register(
     NoteMessageViewSet,
     basename="note",
 )
+
+router.register(r"facility_flags", FacilityFlagViewSet, basename="facility-flags")
+router.register(r"user_flags", UserFlagViewSet, basename="user-flags")
 
 app_name = "api"
 urlpatterns = [

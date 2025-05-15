@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from pydantic import UUID4
+from pydantic import UUID4, model_validator
 
 from care.emr.models import Organization
 from care.emr.models.facility import FacilityFlag
@@ -12,6 +12,7 @@ from care.facility.models import (
     REVERSE_REVERSE_FACILITY_TYPES,
     Facility,
 )
+from care.utils.registries.feature_flag import FlagNotFoundError
 
 
 class FacilityBareMinimumSpec(EMRResource):
@@ -74,13 +75,23 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
 
 class FacilityFlagBaseSpec(EMRResource):
     __model__ = FacilityFlag
+    __exclude__ = ["facility"]
 
     id: UUID4 | None = None
 
 
 class FacilityFlagCreateSpec(FacilityFlagBaseSpec):
     flag: str
-    facility: UUID4 | None = None
+    facility: UUID4
+
+    @model_validator(mode="after")
+    def validate_flag(self):
+        try:
+            if not FacilityFlag.check_facility_has_flag(self.facility, self.flag):
+                raise ValueError("User already has this flag")
+        except FlagNotFoundError:
+            pass
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:

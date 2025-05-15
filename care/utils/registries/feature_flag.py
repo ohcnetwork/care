@@ -10,7 +10,7 @@ class FlagNotFoundError(ValidationError):
     pass
 
 
-class FlagType(enum.Enum):
+class FlagType(str, enum.Enum):
     USER = "USER"
     FACILITY = "FACILITY"
 
