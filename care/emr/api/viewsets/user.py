@@ -2,17 +2,28 @@ from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
+from rest_framework import status
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRModelViewSet,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
+from care.emr.models.user import UserFlag
 from care.emr.resources.user.spec import (
     UserCreateSpec,
+    UserFlagCreateSpec,
+    UserFlagReadSpec,
     UserRetrieveSpec,
     UserSpec,
     UserTypeRoleMapping,
@@ -24,6 +35,7 @@ from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image
+from care.utils.registries.feature_flag import FlagRegistry, FlagType
 
 
 class UserFilter(filters.FilterSet):
@@ -159,3 +171,35 @@ class UserViewSet(EMRModelViewSet):
                 setattr(user, field, request.data[field])
         user.save()
         return Response({})
+
+
+class UserFlagFilter(filters.FilterSet):
+    flag = filters.CharFilter(field_name="flag", lookup_expr="exact")
+    user = filters.UUIDFilter(field_name="user__external_id")
+
+
+class UserFlagViewSet(
+    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+):
+    database_model = UserFlag
+    pydantic_model = UserFlagCreateSpec
+    pydantic_read_model = UserFlagReadSpec
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = UserFlagFilter
+
+    def permissions_controller(self, request):
+        return request.user.is_superuser
+
+    @action(detail=False, methods=["get"], url_path="available-flags")
+    def list_available_flags(self, request):
+        """
+        List all available flags for UserFlag.
+        """
+        try:
+            flags = FlagRegistry.get_all_flags(FlagType.USER)
+            return Response({"available_flags": list(flags)})
+        except Exception as e:
+            return Response(
+                {"error": "Failed to fetch available flags", "detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

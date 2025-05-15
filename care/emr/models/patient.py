@@ -8,7 +8,6 @@ from django.template.defaultfilters import pluralize
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
-from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 
@@ -115,7 +114,7 @@ class PatientUser(EMRBaseModel):
     Add a user that can access the patient
     """
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     role = models.ForeignKey("security.RoleModel", on_delete=models.PROTECT)
 

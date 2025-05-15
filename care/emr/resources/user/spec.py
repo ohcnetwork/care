@@ -8,6 +8,7 @@ from pydantic import UUID4, Field, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
+from care.emr.models.user import UserFlag
 from care.emr.resources.base import EMRResource
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import (
@@ -165,3 +166,29 @@ class PublicUserReadSpec(UserBaseSpec):
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
+
+
+class UserFlagBaseSpec(EMRResource):
+    __model__ = UserFlag
+
+    id: UUID4 | None = None
+
+
+class UserFlagCreateSpec(UserFlagBaseSpec):
+    flag: str
+    user: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if not is_update:
+            obj.user = get_object_or_404(User, external_id=self.user)
+
+
+class UserFlagReadSpec(UserFlagBaseSpec):
+    user: dict = {}
+    flag: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["user"] = UserRetrieveSpec.serialize(obj.user).to_json()
+        mapping["flag"] = obj.flag
+        mapping["id"] = obj.external_id

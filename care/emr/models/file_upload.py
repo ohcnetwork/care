@@ -5,7 +5,6 @@ from django.db import models
 
 from care.emr.models import EMRBaseModel
 from care.emr.utils.file_manager import S3FilesManager
-from care.users.models import User
 from care.utils.csp.config import BucketType
 from care.utils.models.validators import parse_file_extension
 
@@ -23,7 +22,7 @@ class FileUpload(EMRBaseModel):
     archive_reason = models.TextField(blank=True)
     archived_datetime = models.DateTimeField(blank=True, null=True)
     archived_by = models.ForeignKey(
-        User,
+        "users.User",
         on_delete=models.PROTECT,
         null=True,
         blank=True,

@@ -2,7 +2,6 @@ from django.db import models
 
 from care.emr.models import EMRBaseModel
 from care.emr.models.scheduling.schedule import Availability, SchedulableUserResource
-from care.users.models import User
 
 
 class TokenSlot(EMRBaseModel):
@@ -29,6 +28,8 @@ class TokenBooking(EMRBaseModel):
         blank=False,
     )
     booked_on = models.DateTimeField(auto_now_add=True)
-    booked_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    booked_by = models.ForeignKey(
+        "users.User", on_delete=models.CASCADE, null=True, blank=True
+    )
     status = models.CharField()
     reason_for_visit = models.TextField(null=True, blank=True)

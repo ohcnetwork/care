@@ -4,13 +4,13 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 from djqscsv import render_to_csv_response
 
+from care.emr.models.user import UserFlag
 from care.users.forms import UserChangeForm, UserCreationForm
 from care.users.models import (
     District,
     LocalBody,
     Skill,
     State,
-    UserFlag,
     UserSkill,
     Ward,
 )

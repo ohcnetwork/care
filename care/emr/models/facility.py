@@ -1,11 +1,7 @@
 from django.db import models
 
-from care.utils.models.base import BaseFlag
+from care.emr.models.base import BaseFlag
 from care.utils.registries.feature_flag import FlagName, FlagType
-
-FACILITY_FLAG_CACHE_KEY = "facility_flag_cache:{facility_id}:{flag_name}"
-FACILITY_ALL_FLAGS_CACHE_KEY = "facility_all_flags_cache:{facility_id}"
-FACILITY_FLAG_CACHE_TTL = 60 * 60 * 24  # 1 Day
 
 
 class FacilityFlag(BaseFlag):
@@ -27,7 +23,7 @@ class FacilityFlag(BaseFlag):
             models.UniqueConstraint(
                 fields=["facility", "flag"],
                 condition=models.Q(deleted=False),
-                name="unique_facility_flag",
+                name="emr_unique_facility_flag",
             )
         ]
 

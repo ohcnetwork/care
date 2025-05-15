@@ -10,9 +10,9 @@ from rest_framework import serializers
 from simple_history.models import HistoricalRecords
 
 from care.emr.models import FacilityOrganization
+from care.emr.models.facility import FacilityFlag
 from care.emr.models.organization import FacilityOrganizationUser
 from care.facility.models import FacilityBaseModel, reverse_choices
-from care.facility.models.facility_flag import FacilityFlag
 from care.facility.models.mixins.permissions.facility import (
     FacilityPermissionMixin,
     FacilityRelatedPermissionMixin,

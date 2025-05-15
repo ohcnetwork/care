@@ -4,18 +4,29 @@ from django_filters import CharFilter, FilterSet, NumberFilter
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters as drf_filters
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRModelReadOnlyViewSet,
+    EMRModelViewSet,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models import Organization, SchedulableUserResource
+from care.emr.models.facility import FacilityFlag
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
+    FacilityFlagCreateSpec,
+    FacilityFlagReadSpec,
     FacilityReadSpec,
     FacilityRetrieveSpec,
 )
@@ -28,6 +39,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.registries.feature_flag import FlagRegistry, FlagType
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
@@ -180,3 +192,35 @@ class AllFacilityViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         return Facility.objects.filter(is_public=True).select_related()
+
+
+class FacilityFlagFilter(filters.FilterSet):
+    flag = filters.CharFilter(field_name="flag", lookup_expr="exact")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
+
+
+class FacilityFlagViewSet(
+    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+):
+    database_model = FacilityFlag
+    pydantic_model = FacilityFlagCreateSpec
+    pydantic_read_model = FacilityFlagReadSpec
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = FacilityFlagFilter
+
+    def permissions_controller(self, request):
+        return request.user.is_superuser
+
+    @action(detail=False, methods=["get"], url_path="available-flags")
+    def list_available_flags(self, request):
+        """
+        List all available flags for FacilityFlag.
+        """
+        try:
+            flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+            return Response({"available_flags": list(flags)})
+        except Exception as e:
+            return Response(
+                {"error": "Failed to fetch available flags", "detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

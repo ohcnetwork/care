@@ -1,6 +1,8 @@
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models import Organization
+from care.emr.models.facility import FacilityFlag
 from care.emr.resources.base import EMRResource
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.permissions import FacilityPermissionsMixin
@@ -68,3 +70,29 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
         mapping["flags"] = obj.get_facility_flags()
+
+
+class FacilityFlagBaseSpec(EMRResource):
+    __model__ = FacilityFlag
+
+    id: UUID4 | None = None
+
+
+class FacilityFlagCreateSpec(FacilityFlagBaseSpec):
+    flag: str
+    facility: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if not is_update:
+            obj.facility = get_object_or_404(Facility, external_id=self.facility)
+
+
+class FacilityFlagReadSpec(FacilityFlagBaseSpec):
+    facility: dict = {}
+    flag: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["facility"] = FacilityReadSpec.serialize(obj.facility).to_json()
+        mapping["flag"] = obj.flag
+        mapping["id"] = obj.external_id
