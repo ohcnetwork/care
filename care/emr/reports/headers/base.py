@@ -52,7 +52,7 @@ class BaseHeaderBuilder(ABC):
         elif t == "rule":
             builder_args = {
                 "row_idx": row_idx,
-                "length": el.get("length", "100%"),
+                "length": el.get("length", 100),
                 "stroke": el.get("stroke", "black"),
                 "align": align,
             }
@@ -97,7 +97,7 @@ class BaseHeaderBuilder(ABC):
         self,
         row_idx: int,
         length: int = 100,
-        stroke: str = "black",
+        stroke: str = "#808080",
         align: str | None = None,
     ): ...
 
