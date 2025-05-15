@@ -177,7 +177,15 @@ class RuleElement(BaseModel):
 class DateTimeElement(BaseModel):
     type: Literal["datetime"]
     label: str
-    format: str
+    format: Literal[
+        "[day]/[month]/[year]",
+        "[month]/[day]/[year]",
+        "[year]/[month]/[day]",
+        "[day]-[month]-[year]",
+        "[month]-[day]-[year]",
+        "[year]-[month]-[day]",
+        "[year]-[day]-[month]",
+    ]
     style: StyleConfig
     align: Literal["left", "center", "right"] | None = None
 

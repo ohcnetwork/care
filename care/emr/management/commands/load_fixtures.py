@@ -13,6 +13,7 @@ from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.questionnaire import QuestionnaireOrganization
+from care.emr.models.template import ReportTemplate
 from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
     ClassChoices,
@@ -37,8 +38,12 @@ from care.emr.resources.patient.spec import (
 )
 from care.emr.resources.questionnaire.spec import QuestionnaireSpec
 from care.emr.resources.user.spec import UserCreateSpec
+from care.facility.models import Facility
 from care.security.models import RoleModel
 from care.users.models import User
+from care.utils.reports.load_default_report_config import (
+    load_default_discharge_summary_config,
+)
 
 # Roles with their user types
 ROLES_OPTIONS = {
@@ -214,6 +219,26 @@ class Command(BaseCommand):
         )
 
         self._create_questionnaires(facility, super_user)
+        self._add_default_summary_report_config_to_facility()
+
+    def _add_default_summary_report_config_to_facility(self):
+        batch_size = 100
+        facilities = Facility.objects.all()
+        total_facilities = facilities.count()
+
+        for i in range(0, total_facilities, batch_size):
+            batch_facilities = facilities[i : i + batch_size]
+            with transaction.atomic():
+                for facility in batch_facilities:
+                    ReportTemplate.objects.get_or_create(
+                        facility=facility,
+                        slug="default-discharge-summary",
+                        type="discharge_summary",
+                        config=load_default_discharge_summary_config(
+                            facility
+                        ).model_dump(mode="json"),
+                    )
+        self.stdout.write("Default discharge summary loaded....")
 
     def _create_geo_organization(self, fake, super_user):
         org_spec = OrganizationWriteSpec(

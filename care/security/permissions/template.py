@@ -3,7 +3,9 @@ import enum
 from care.security.permissions.constants import Permission, PermissionContext
 from care.security.roles.role import (
     ADMIN_ROLE,
+    DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
+    NURSE_ROLE,
 )
 
 
@@ -12,7 +14,7 @@ class TemplatePermissions(enum.Enum):
         "Can List Templates in Facility",
         "",
         PermissionContext.FACILITY,
-        [ADMIN_ROLE, FACILITY_ADMIN_ROLE],
+        [ADMIN_ROLE, FACILITY_ADMIN_ROLE, NURSE_ROLE, DOCTOR_ROLE],
     )
     can_manage_template = Permission(
         "Can Write/Update/Delete Templates in Facility",
