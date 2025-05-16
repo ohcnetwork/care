@@ -87,3 +87,10 @@ class BaseFlag(EMRBaseModel):
             ),
             timeout=FLAGS_CACHE_TTL,
         )
+
+    @classmethod
+    def invalidate_cache(cls, entity_id: int, flag_name: str):
+        cache.delete(
+            cls.cache_key_template.format(entity_id=entity_id, flag_name=flag_name)
+        )
+        cache.delete(cls.all_flags_cache_key_template.format(entity_id=entity_id))

@@ -190,20 +190,34 @@ class UserFlagViewSet(
         return request.user.is_superuser
 
     def perform_create(self, instance):
-        FlagRegistry.register(FlagType.USER.value, instance.flag)
-        super().perform_create(instance)
+        with transaction.atomic():
+            FlagRegistry.register(FlagType.USER.value, instance.flag)
+            super().perform_create(instance)
 
     def perform_destroy(self, instance):
-        super().perform_destroy(instance)
-        FlagRegistry.unregister(FlagType.USER.value, instance.flag)
+        with transaction.atomic():
+            super().perform_destroy(instance)
+            UserFlag.invalidate_cache(instance.user, instance.flag)
+            transaction.on_commit(
+                lambda: self._safe_unregister_flag_if_unused(instance.flag, instance.id)
+            )
+
+    def _safe_unregister_flag_if_unused(self, flag_name: str, deleted_instance_id: int):
+        still_used = (
+            UserFlag.objects.filter(flag=flag_name)
+            .exclude(id=deleted_instance_id)
+            .exists()
+        )
+
+        if not still_used:
+            FlagRegistry.unregister(FlagType.USER.value, flag_name)
 
     @action(detail=False, methods=["get"], url_path="available-flags")
     def list_available_flags(self, request):
-        """
-        List all available flags for UserFlag.
-        """
         try:
-            flags = FlagRegistry.get_all_flags(FlagType.USER)
+            flags = FlagRegistry.get_all_flags(FlagType.USER.value)
             return Response({"available_flags": list(flags)})
         except FlagNotFoundError:
-            return Response({"message": "No registered flag with this type"})
+            return Response(
+                {"message": "No registered flag type 'user' found."}, status=400
+            )

@@ -2,7 +2,6 @@ import re
 from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.generics import get_object_or_404
@@ -19,7 +18,7 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
-from care.utils.registries.feature_flag import FlagNotFoundError
+from care.utils.registries.feature_flag import FlagName, FlagNotFoundError
 
 
 def is_valid_username(username):
@@ -100,7 +99,7 @@ class UserCreateSpec(UserUpdateSpec):
             raise ValueError("Email already exists")
         try:
             validate_email(email)
-        except ValidationError as e:
+        except ValueError as e:
             raise ValueError("Invalid Email") from e
         return email
 
@@ -177,13 +176,15 @@ class UserFlagBaseSpec(EMRResource):
 
 
 class UserFlagCreateSpec(UserFlagBaseSpec):
-    flag: str
+    flag: FlagName
     user: UUID4
 
     @model_validator(mode="after")
     def validate_flag(self):
         try:
-            if not UserFlag.check_user_has_flag(self.user, self.flag):
+            if UserFlag.check_user_has_flag(
+                get_object_or_404(User, external_id=self.user).id, self.flag
+            ):
                 raise ValueError("User already has this flag")
         except FlagNotFoundError:
             pass

@@ -11,7 +11,7 @@ class FacilityFlag(BaseFlag):
 
     cache_key_template = "facility_flag_cache:{entity_id}:{flag_name}"
     all_flags_cache_key_template = "facility_all_flags_cache:{entity_id}"
-    flag_type = FlagType.FACILITY
+    flag_type = FlagType.FACILITY.value
     entity_field_name = "facility"
 
     def __str__(self) -> str:

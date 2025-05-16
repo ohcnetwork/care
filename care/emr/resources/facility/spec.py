@@ -12,7 +12,7 @@ from care.facility.models import (
     REVERSE_REVERSE_FACILITY_TYPES,
     Facility,
 )
-from care.utils.registries.feature_flag import FlagNotFoundError
+from care.utils.registries.feature_flag import FlagName, FlagNotFoundError
 
 
 class FacilityBareMinimumSpec(EMRResource):
@@ -81,13 +81,15 @@ class FacilityFlagBaseSpec(EMRResource):
 
 
 class FacilityFlagCreateSpec(FacilityFlagBaseSpec):
-    flag: str
+    flag: FlagName
     facility: UUID4
 
     @model_validator(mode="after")
     def validate_flag(self):
         try:
-            if not FacilityFlag.check_facility_has_flag(self.facility, self.flag):
+            if FacilityFlag.check_facility_has_flag(
+                get_object_or_404(Facility, external_id=self.user).id, self.flag
+            ):
                 raise ValueError("User already has this flag")
         except FlagNotFoundError:
             pass

@@ -11,7 +11,7 @@ class UserFlag(BaseFlag):
 
     cache_key_template = "user_flag_cache:{entity_id}:{flag_name}"
     all_flags_cache_key_template = "user_all_flags_cache:{entity_id}"
-    flag_type = FlagType.USER
+    flag_type = FlagType.USER.value
     entity_field_name = "user"
 
     def __str__(self):
