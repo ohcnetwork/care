@@ -17,7 +17,7 @@ from care.emr.tasks.cleanup_incomplete_file_uploads import (
 from care.utils.tests.base import CareAPITestBase
 
 
-@override_settings(BUCKET_EXTERNAL_ENDPOINT=settings.BUCKET_ENDPOINT)
+@override_settings(FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT=settings.BUCKET_ENDPOINT)
 class FileUploadTestCase(CareAPITestBase):
     def setUp(self):
         super().setUp()
