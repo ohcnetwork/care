@@ -36,11 +36,11 @@ class Renderer(ABC):
         ...
 
     @abstractmethod
-    def render_text(self, title: str, text: str) -> str:
+    def render_text(self, title: str, values: list[str]) -> str:
         """
         Render a plain text section.
         :param title: Section title
-        :param text: Text content
+        :param values: Text content in an array
         :return: Rendered output string
         """
         ...

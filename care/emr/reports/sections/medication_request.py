@@ -48,6 +48,8 @@ def _med_dosage_instructions(o: MedicationRequest):
 
 
 class MedicationRequestSection(BaseSection):
+    __model__ = MedicationRequest
+
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
 

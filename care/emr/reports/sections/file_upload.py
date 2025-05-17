@@ -13,6 +13,8 @@ FILE_CATEGORY_DISPLAY = {
 
 
 class FileSection(BaseSection):
+    __model__ = FileUpload
+
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
 

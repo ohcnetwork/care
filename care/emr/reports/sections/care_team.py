@@ -4,6 +4,8 @@ from care.users.models import User
 
 
 class CareTeamSection(BaseSection):
+    __model__ = User
+
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
         self.register_field("name", lambda o: o.full_name)

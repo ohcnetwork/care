@@ -17,6 +17,8 @@ def _get_observation_value(o: Observation):
 
 
 class ObservationSection(BaseSection):
+    __model__ = Observation
+
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
 

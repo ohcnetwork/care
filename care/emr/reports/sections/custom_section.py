@@ -15,6 +15,7 @@ class CustomSection(BaseSection):
     def render(self):
         opts = self.opts
         title = opts.get("title", "")
+        style = opts.get("style", "text")
 
         if self.is_table:
             columns = opts.get("columns", [])
@@ -23,14 +24,24 @@ class CustomSection(BaseSection):
                 return ""
             return self.renderer.render_table(title, columns, rows)
 
-        style = opts.get("style", "text")
         if style == "list":
             fields = opts.get("fields", [])
-            rows = [[f["label"], f["value"]] for f in fields]
-            return self.renderer.render_list(title, rows)
+            formatted_rows = [
+                [
+                    [f["label"], f["value"]]
+                    for f in field_group
+                    if "label" in f and "value" in f
+                ]
+                for field_group in fields
+            ]
+            return self.renderer.render_list(title, formatted_rows)
 
-        text = opts.get("text", self.DEFAULT_EMPTY)
-        return self.renderer.render_text(title, text)
+        if style == "text":
+            text = opts.get("text", [])
+            return self.renderer.render_text(title, text)
+
+        error = f"Unsupported style: {style}"
+        raise ValueError(error)
 
 
 SectionRegistry.register("custom_section", CustomSection)

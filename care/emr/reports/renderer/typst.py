@@ -48,7 +48,7 @@ class TypstRenderer(Renderer):
             {"title": title, "columns": columns, "rows": rows},
         )
 
-    def render_text(self, title: str, text: str) -> str:
+    def render_text(self, title: str, values: list[str]) -> str:
         """
         Use the Typst text template.
         """
@@ -56,7 +56,7 @@ class TypstRenderer(Renderer):
             "reports/typst/text.typ",
             {
                 "title": title,
-                "text": text,
+                "text": values,
             },
         )
 

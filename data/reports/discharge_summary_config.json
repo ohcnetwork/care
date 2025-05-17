@@ -161,6 +161,7 @@
       "is_table": true,
       "enabled": true,
       "options": {
+        "count": 1,
         "title": "Allergies And Intolerances",
         "columns": [
           "allergen",
@@ -242,24 +243,30 @@
   "is_table": false,
   "enabled": true,
   "options": {
-    "title": "Disclaimer",
-    "style": "text",
-    "text": "This document is confidential and intended solely for the use of the individual or entity to whom they are addressed."
+    "title": "Emergency Contacts",
+    "style": "list",
+    "fields": [
+      [
+        {"label": "Primary Contact", "value": "+91-9876543210"},
+        {"label": "Ambulance", "value": "102"}
+      ]
+    ]
   }
-}
-,{
+},
+    {
   "source": "custom_section",
   "is_table": false,
   "enabled": true,
   "options": {
-    "title": "Emergency Contacts",
-    "style": "list",
-    "fields": [
-      {"label": "Primary Contact", "value": "+91-9876543210"},
-      {"label": "Ambulance", "value": "102"}
+    "title": "Disclaimer",
+    "style": "text",
+    "text": [
+      "This document is confidential and intended solely for the use of the individual or entity to whom they are addressed."
     ]
   }
 }
+
+
 
   ]
 }

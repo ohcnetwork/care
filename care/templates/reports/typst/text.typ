@@ -1,13 +1,16 @@
-{# templates/typst/sections/text.typ #}
 {% comment %}
-  Renders a single-paragraph text block under a level-1 heading.
+  Renders multiple values under a common title.
   Expects in context:
     - title: String
-    - text:  String
+    - text:  List of strings
 {% endcomment %}
 
 = {{ title }}
 
-#text()[{{ text }}]
+#list(
+  {% for t in text %}
+    [{{ t }}],
+  {% endfor %}
+)
 
 #line(length: 100%, stroke: mygray)

@@ -218,12 +218,14 @@ class LabelValueField(BaseModel):
 
 class SectionOptions(BaseModel):
     title: str | None = None
-    fields: list[str] | list[LabelValueField] = []
+    fields: list[str] | list[list[LabelValueField]] = []
     columns: list[str] = []
     style: Literal["list", "text"] | None = None
     filters: dict[str, list[str]] | None = None
-    text: str | None = None
+    separator: str | None = None
+    text: list[str] | None = []
     rows: list[list[str]] | None = []
+    count: int | None = None
 
 
 class SectionConfig(BaseModel):
@@ -233,7 +235,7 @@ class SectionConfig(BaseModel):
     options: SectionOptions
 
     @model_validator(mode="after")
-    def validate_section(self):
+    def validate_section(self):  # noqa PLR912
         if not self.is_table:
             if not (self.options.fields or self.options.text):
                 raise ValueError(
@@ -251,6 +253,17 @@ class SectionConfig(BaseModel):
             raise ValueError(error)
 
         section = section_cls(config={}, context={}, renderer=DummyRenderer())
+
+        if self.options.filters:
+            filters = self.options.filters
+            valid_fields = section.get_valid_filters()
+            for filter_str in filters:
+                if filter_str not in valid_fields:
+                    error = (
+                        f"Section {self.source} does not support filter {filter_str}"
+                    )
+                    raise ValueError(error)
+
         allowed_fields = section.available_fields()
 
         if not self.is_table:
@@ -266,6 +279,27 @@ class SectionConfig(BaseModel):
                 if col not in allowed_fields:
                     error = f"Section {self.source} does not support column {col}"
                     raise ValueError(error)
+
+        if self.source == "custom_section":
+            if self.options.separator is not None:
+                raise ValueError("Separator is not allowed in custom section")
+            for field in self.options.fields:
+                if not isinstance(field, LabelValueField):
+                    raise ValueError("Fields must in format [{label: str, value: str}]")
+
+        if self.source != "custom_section":
+            if self.options.style != "text" and self.options.separator is not None:
+                raise ValueError("Separator is not allowed in non-text style")
+
+            for field in self.options.fields:
+                if not isinstance(field, str):
+                    raise ValueError("Fields must in format ['string']")
+
+        if self.options.count is not None:
+            count = self.options.count
+            if count <= 0:
+                error = f"Count must be greater than 0, got {count}"
+                raise ValueError(error)
 
         return self
 
