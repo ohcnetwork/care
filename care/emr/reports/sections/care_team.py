@@ -9,7 +9,7 @@ class CareTeamSection(BaseSection):
     def __init__(self, config, context, renderer):
         super().__init__(config, context, renderer)
         self.register_field("name", lambda o: o.full_name)
-        self.register_field("role", lambda o: o._get_role_for)  # noqa SLF001
+        self.register_field("role", lambda o: self._get_role_for(o))
 
     @property
     def _role_map(self):

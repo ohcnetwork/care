@@ -33,7 +33,7 @@ class ObservationSection(BaseSection):
         super().__init__(config, context, renderer)
 
         self.register_field("observation", lambda o: o.main_code.get("display"))
-        self.register_field("value", lambda o: _get_observation_value)
+        self.register_field("value", lambda o: _get_observation_value(o))
         self.register_field("date", lambda o: o.effective_datetime or o.created_date)
         self.register_field("status", lambda o: STATUS_DISPLAY.get(o.status, o.status))
         self.register_field("category", lambda o: o.category)
