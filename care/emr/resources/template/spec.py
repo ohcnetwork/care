@@ -76,7 +76,7 @@ class Layout(BaseModel):
 
 
 class StyleConfig(BaseModel):
-    fill: str | None = 'rgb("#808080")'
+    fill: str | None = "#808080"
     weight: int | None = None
 
     @field_validator("fill")
@@ -153,7 +153,7 @@ class ImageElement(BaseModel):
 class RuleElement(BaseModel):
     type: Literal["rule"]
     length: int = 100
-    stroke: str | None = 'rgb("#808080")'
+    stroke: str | None = "#808080"
     align: Literal["left", "center", "right"] | None = "center"
 
     @field_validator("stroke")

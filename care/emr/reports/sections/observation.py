@@ -2,6 +2,16 @@ from care.emr.models import Observation
 from care.emr.registries.report.section import SectionRegistry
 from care.emr.reports.sections.base import BaseSection
 
+STATUS_DISPLAY = {
+    "final": "Final",
+    "amended": "Amended",
+}
+
+SUBJECT_TYPE_DISPLAY = {
+    "patient": "Patient",
+    "encounter": "Encounter",
+}
+
 
 def _get_observation_value(o: Observation):
     if o.value is None:
@@ -25,9 +35,12 @@ class ObservationSection(BaseSection):
         self.register_field("observation", lambda o: o.main_code.get("display"))
         self.register_field("value", lambda o: _get_observation_value)
         self.register_field("date", lambda o: o.effective_datetime or o.created_date)
-        self.register_field("status", lambda o: o.status)
+        self.register_field("status", lambda o: STATUS_DISPLAY.get(o.status, o.status))
         self.register_field("category", lambda o: o.category)
-        self.register_field("subject_type", lambda o: o.subject_type)
+        self.register_field(
+            "subject_type",
+            lambda o: SUBJECT_TYPE_DISPLAY.get(o.subject_type, o.subject_type),
+        )
         self.register_field("subject_id", lambda o: o.subject_id)
         self.register_field("logged_by", lambda o: o.data_entered_by.full_name)
         self.register_field("interpretation", lambda o: o.interpretation)

@@ -166,12 +166,12 @@
         "columns": [
           "allergen",
           "onset",
+          "clinical_status",
           "criticality",
-          "status",
+          "verification_status",
           "last_occurrence",
           "note",
           "logged_by",
-          "last_occurrence",
           "type"
         ]
       }
