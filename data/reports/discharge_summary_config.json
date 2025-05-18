@@ -22,13 +22,13 @@
           1
         ],
         "columns": [
-        {
-          "type": "text",
-          "text": "Central Diagnostic Laboratory",
-          "size": "24pt",
-          "weight": 400,
-          "align": "center"
-        }
+          {
+            "type": "text",
+            "text": "Central Diagnostic Laboratory",
+            "size": "24pt",
+            "weight": 400,
+            "align": "center"
+          }
         ]
       },
       {
@@ -36,12 +36,12 @@
           1
         ],
         "columns": [
-        {
-          "type": "rule",
-          "length": 100,
-          "stroke": "#808080",
-          "align": "center"
-        }
+          {
+            "type": "rule",
+            "length": 100,
+            "stroke": "#808080",
+            "align": "center"
+          }
         ]
       },
       {
@@ -50,36 +50,19 @@
           2
         ],
         "columns": [
-        {
-          "type": "text",
-          "text": "Patient Discharge Summary",
-          "size": "15pt",
-          "weight": 400
-        },
-        {
-          "type": "image",
-          "file_name": "care-black-logo.svg",
-          "url": "https://raw.githubusercontent.com/ohcnetwork/care/refs/heads/develop/care/static/images/logos/black-logo.svg",
-          "width": "40%",
-          "align": "right"
-        }
-        ]
-      },
-      {
-        "size_ratio": [
-          1
-        ],
-        "columns": [
-        {
-          "type": "datetime",
-          "label": "Created on",
-          "format": "[day]/[month]/[year]",
-          "style": {
-            "fill": "#808080",
-            "weight": 500
+          {
+            "type": "text",
+            "text": "Patient Discharge Summary",
+            "size": "15pt",
+            "weight": 400
           },
-          "align": "left"
-        }
+          {
+            "type": "image",
+            "file_name": "care-black-logo.svg",
+            "url": "https://raw.githubusercontent.com/ohcnetwork/care/refs/heads/develop/care/static/images/logos/black-logo.svg",
+            "width": "40%",
+            "align": "right"
+          }
         ]
       },
       {
@@ -87,13 +70,30 @@
           1
         ],
         "columns": [
-        {
-          "type": "rule",
-          "length": 100,
-          "stroke": "#808080",
-          "align": "center"
-        }
-      ]
+          {
+            "type": "datetime",
+            "label": "Created on",
+            "format": "[day]/[month]/[year]",
+            "style": {
+              "fill": "#808080",
+              "weight": 500
+            },
+            "align": "left"
+          }
+        ]
+      },
+      {
+        "size_ratio": [
+          1
+        ],
+        "columns": [
+          {
+            "type": "rule",
+            "length": 100,
+            "stroke": "#808080",
+            "align": "center"
+          }
+        ]
       }
     ]
   },
@@ -183,7 +183,7 @@
       "options": {
         "title": "Observation Results",
         "columns": ["observation", "value", "date","status",
-        "category","subject_type","subject_id","interpretation","logged_by"]
+          "category","subject_type","subject_id","interpretation","logged_by"]
       }
     },
     {
@@ -227,44 +227,30 @@
       }
     },
     {
-  "source": "custom_section",
-  "is_table": true,
-  "enabled": true,
-  "options": {
-    "title": "Follow-up Schedule",
-    "columns": ["Visit Type", "Date", "Location"],
-    "rows": [
-      ["Initial", "01/05/2025", "OPD"],
-      ["Specialist", "15/05/2025", "Cardiology"]
-    ]
-  }
-},{
-  "source": "custom_section",
-  "is_table": false,
-  "enabled": true,
-  "options": {
-    "title": "Emergency Contacts",
-    "style": "list",
-    "fields": [
-      [
-        {"label": "Primary Contact", "value": "+91-9876543210"},
-        {"label": "Ambulance", "value": "102"}
-      ]
-    ]
-  }
-},
+      "source": "custom_section",
+      "is_table": false,
+      "enabled": true,
+      "options": {
+        "title": "Emergency Contacts",
+        "style": "list",
+        "fields": [
+          {"label": "Primary Contact", "value": "+91-9876543210"},
+          {"label": "Ambulance", "value": "102"}
+        ]
+      }
+    },
     {
-  "source": "custom_section",
-  "is_table": false,
-  "enabled": true,
-  "options": {
-    "title": "Disclaimer",
-    "style": "text",
-    "text": [
-      "This document is confidential and intended solely for the use of the individual or entity to whom they are addressed."
-    ]
-  }
-}
+      "source": "custom_section",
+      "is_table": false,
+      "enabled": true,
+      "options": {
+        "title": "Disclaimer",
+        "style": "text",
+        "text": [
+          "This document is confidential and intended solely for the use of the individual or entity to whom they are addressed."
+        ]
+      }
+    }
 
 
 

@@ -26,15 +26,10 @@ class CustomSection(BaseSection):
 
         if style == "list":
             fields = opts.get("fields", [])
-            formatted_rows = [
-                [
-                    [f["label"], f["value"]]
-                    for f in field_group
-                    if "label" in f and "value" in f
-                ]
-                for field_group in fields
-            ]
-            return self.renderer.render_list(title, formatted_rows)
+
+            formatted_rows = [[field["label"], field["value"]] for field in fields]
+
+            return self.renderer.render_list(title, [formatted_rows])
 
         if style == "text":
             text = opts.get("text", [])
