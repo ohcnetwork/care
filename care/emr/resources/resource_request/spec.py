@@ -73,7 +73,7 @@ class ResourceRequestCreateSpec(ResourceRequestBaseSpec):
             if not FacilityOrganizationUser.objects.filter(
                 organization__facility__external_id=self.assigned_facility,
                 user__external_id=self.assigned_to,
-            ):
+            ).exists():
                 raise ValueError(
                     "Assigned user is not a member of the assigned facility"
                 )

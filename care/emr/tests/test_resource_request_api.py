@@ -34,21 +34,6 @@ class TestResourceRequestViewSet(CareAPITestBase):
         data.update(kwargs)
         return ResourceRequest.objects.create(**data)
 
-    def get_resource_request_data_from_instance(self, instance, **kwargs):
-        return {
-            "title": instance.title,
-            "status": instance.status,
-            "category": instance.category,
-            "emergency": instance.emergency,
-            "reason": instance.reason,
-            "referring_facility_contact_name": instance.referring_facility_contact_name,
-            "referring_facility_contact_number": instance.referring_facility_contact_number,
-            "priority": instance.priority,
-            "origin_facility": instance.origin_facility.external_id,
-            "assigned_facility": instance.external_id,
-            "assigned_to": instance.external_id,
-        }
-
     def test_resource_request_assigned_to_user_outside_assigned_facility(self):
         assigned_to_user = self.create_user()
         assigned_facility = self.create_facility(user=assigned_to_user)
