@@ -1,10 +1,11 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Patient
+from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.resource_request import ResourceRequest, ResourceRequestComment
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityReadSpec
@@ -60,6 +61,23 @@ class ResourceRequestCreateSpec(ResourceRequestBaseSpec):
     assigned_facility: UUID4 | None = None
     related_patient: UUID4 | None = None
     assigned_to: UUID4 | None = None
+
+    @model_validator(mode="after")
+    def validate_assigned_to_user(self):
+        if self.assigned_to:
+            if not self.assigned_facility:
+                raise ValueError(
+                    "Assigned facility is required for assigning the request to a user"
+                )
+
+            if not FacilityOrganizationUser.objects.filter(
+                organization__facility__external_id=self.assigned_facility,
+                user__external_id=self.assigned_to,
+            ).exists():
+                raise ValueError(
+                    "Assigned user is not a member of the assigned facility"
+                )
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
