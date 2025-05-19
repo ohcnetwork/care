@@ -253,6 +253,7 @@ class EncounterViewSet(
 
     @extend_schema(
         description="Generate a discharge summary",
+        request=EncounterDischargeSummarySpec,
         responses={
             200: "Success",
         },

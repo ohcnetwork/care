@@ -11,12 +11,12 @@ class TemplateAccess(AuthorizationHandler):
             root_organization = FacilityOrganization.objects.get(
                 facility=facility, org_type="root"
             )
-            return self.check_permission_in_organization(
+            return self.check_permission_in_facility_organization(
                 permissions=[TemplatePermissions.can_manage_template.name],
                 user=user,
                 orgs=[root_organization],
             )
-        return self.check_permission_in_organization(
+        return self.check_permission_in_facility_organization(
             permissions=[TemplatePermissions.can_manage_template.name],
             user=user,
         )
@@ -28,12 +28,12 @@ class TemplateAccess(AuthorizationHandler):
             root_organization = FacilityOrganization.objects.get(
                 facility=facility, org_type="root"
             )
-            return self.check_permission_in_organization(
+            return self.check_permission_in_facility_organization(
                 permissions=[TemplatePermissions.can_list_template.name],
                 user=user,
                 orgs=[root_organization],
             )
-        return self.check_permission_in_organization(
+        return self.check_permission_in_facility_organization(
             permissions=[TemplatePermissions.can_list_template.name],
             user=user,
         )
