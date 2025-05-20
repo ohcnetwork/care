@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from care.emr.models import (
     Availability,
@@ -1071,8 +1072,10 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         )
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": timezone.make_naive(timezone.now()).strftime("%Y-%m-%d"),
+            "to_date": (
+                timezone.make_naive(timezone.now()) + timedelta(days=7)
+            ).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",
