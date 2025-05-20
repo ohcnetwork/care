@@ -1,9 +1,12 @@
 {# templates/reports/typst/header.typ #}
 
+{% if layout.page_numbering.enabled %}
 #set page(
   numbering: "{{ layout.page_numbering.format }}",
   number-align: {{ layout.page_numbering.align }}
 )
+{% endif %}
+
 #set page(
   "{{ layout.page_size }}",
 )

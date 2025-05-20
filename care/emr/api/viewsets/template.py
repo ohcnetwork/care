@@ -77,10 +77,12 @@ class ReportTemplateViewSet(EMRModelViewSet):
                 "can_write_template_in_instance", self.request.user
             ):
                 raise PermissionDenied(
-                    "You do not have permission to create template for facility"
+                    "You do not have permission to create template for instance"
                 )
         elif not AuthorizationController.call(
-            "can_write_template_in_facility", self.request.user, instance.facility
+            "can_write_template_in_facility",
+            self.request.user,
+            get_object_or_404(Facility, external_id=instance.facility),
         ):
             raise PermissionDenied(
                 "You do not have permission to create template for facility"
@@ -92,13 +94,13 @@ class ReportTemplateViewSet(EMRModelViewSet):
                 "can_write_template_in_instance", self.request.user
             ):
                 raise PermissionDenied(
-                    "You do not have permission to create template for facility"
+                    "You do not have permission to delete template for instance"
                 )
         elif not AuthorizationController.call(
             "can_write_template_in_facility", self.request.user, instance.facility
         ):
             raise PermissionDenied(
-                "You do not have permission to create template for facility"
+                "You do not have permission to delete template for facility"
             )
 
     def authorize_update(self, instance, model_obj=None):
@@ -108,13 +110,13 @@ class ReportTemplateViewSet(EMRModelViewSet):
                     "can_write_template_in_instance", self.request.user
                 ):
                     raise PermissionDenied(
-                        "You do not have permission to create template for facility"
+                        "You do not have permission to update template for instance"
                     )
             elif not AuthorizationController.call(
-                "can_write_template_in_facility", self.request.user, instance.facility
+                "can_write_template_in_facility", self.request.user, model_obj.facility
             ):
                 raise PermissionDenied(
-                    "You do not have permission to create template for facility"
+                    "You do not have permission to create update for facility"
                 )
 
     @action(detail=False, methods=["GET"])
