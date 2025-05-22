@@ -1,4 +1,5 @@
-from pydantic import UUID4, BaseModel, ValidationError, model_validator
+from pydantic import UUID4, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.resources.base import EMRResource
 from care.security.models import PermissionModel, RoleModel
@@ -18,17 +19,45 @@ class RoleBaseSpec(EMRResource):
     __exclude__ = ["permissions"]
 
     id: UUID4 | None = None
-    name: str
-    description: str
+    name: str | None = None
+    description: str | None = None
     is_system: bool | None = False
 
 
 class RoleCreateSpec(RoleBaseSpec):
+    permissions: list[PermissionController.get_enum()] | None = []
+
+    @model_validator(mode="after")
+    def validate_role(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if not is_update and (not self.name or not self.name.strip()):
+            raise ValueError("Role name cannot be empty")
+
+        qs = RoleModel.objects.filter(name__iexact=self.name)
+        if is_update and model_obj:
+            qs = qs.exclude(name=model_obj.name)
+
+        if qs.exists():
+            raise ValueError("Role with this name already exists")
+
+        if model_obj and model_obj.is_system:
+            raise ValueError("Cannot update system roles")
+        if self.is_system:
+            raise ValueError("Cannot create system roles")
+
+        if self.permissions:
+            self.permissions = list(set(self.permissions))
+
+        return self
+
     def perform_extra_deserialization(self, is_update, obj):
-        if is_update:
-            self.is_system = obj.is_system
+        if self.permissions:
+            obj.permissions = self.permissions
         else:
-            self.is_system = False
+            obj.permissions = None
 
 
 class RoleReadSpec(RoleBaseSpec):
@@ -39,32 +68,3 @@ class RoleReadSpec(RoleBaseSpec):
         mapping["id"] = obj.external_id
         mapping["permissions"] = obj.get_permissions_for_role()
         return mapping
-
-
-class PermissionManageSpec(BaseModel):
-    permissions: list[str]
-
-    @model_validator(mode="after")
-    def validate_permissions(self):
-        valid_permissions = PermissionController.get_permissions().keys()
-        self.permissions = list(set(self.permissions))  # Remove duplicates
-        for permission in self.permissions:
-            if permission not in valid_permissions:
-                error = f"Invalid permission slug: {permission}."
-                raise ValidationError(error)
-        return self
-
-
-class RoleConfig(PermissionManageSpec):
-    role: RoleCreateSpec
-
-    @model_validator(mode="after")
-    def validate_role_and_permissions(self):
-        system_roles = RoleModel.objects.filter(is_system=True).values_list(
-            "name", flat=True
-        )
-        role = self.role.name
-        if role in system_roles:
-            error = f"Role {role} already exists."
-            raise ValidationError(error)
-        return self

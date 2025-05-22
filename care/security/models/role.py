@@ -19,12 +19,21 @@ class RoleModel(BaseModel):
     with the permission to delete roles
     """
 
-    name = models.CharField(max_length=1024, unique=True)
+    name = models.CharField(max_length=1024)
     description = models.TextField(default="")
     is_system = models.BooleanField(
         default=False
     )  # Denotes if role was created by the system or a user
     temp_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name"],
+                condition=models.Q(deleted=False),
+                name="unique_name_if_not_deleted",
+            )
+        ]
 
     def get_permission_sk_for_role(self):
         """

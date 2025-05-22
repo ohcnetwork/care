@@ -1,3 +1,5 @@
+from enum import Enum
+
 from care.security.permissions.device import DevicePermissions
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.facility import FacilityPermissions
@@ -56,3 +58,10 @@ class PermissionController:
         if not cls.cache:
             cls.build_cache()
         return cls.cache
+
+    @classmethod
+    def get_enum(cls):
+        if not cls.cache:
+            cls.build_cache()
+
+        return Enum("PermissionEnum", {name: name for name in cls.cache}, type=str)
