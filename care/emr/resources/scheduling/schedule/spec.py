@@ -2,6 +2,7 @@ import datetime
 from datetime import UTC
 from enum import Enum
 
+from django.conf import settings
 from django.db.models import Sum
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
@@ -77,8 +78,15 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                 end_time = datetime.datetime.combine(
                     datetime.datetime.now(tz=UTC).date(), availability.end_time
                 )
+                availability_duration_in_seconds = (
+                    end_time - start_time
+                ).total_seconds()
                 slot_size_in_seconds = self.slot_size_in_minutes * 60
-                if (end_time - start_time).total_seconds() % slot_size_in_seconds != 0:
+                total_slots = availability_duration_in_seconds / slot_size_in_seconds
+                if total_slots > settings.MAX_SLOTS_PER_AVAILABILITY:
+                    error_message = f"Too many slots per availability. Maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per availability session."
+                    raise ValueError(error_message)
+                if availability_duration_in_seconds % slot_size_in_seconds != 0:
                     raise ValueError(
                         "Availability duration must be a multiple of slot size in minutes"
                     )
