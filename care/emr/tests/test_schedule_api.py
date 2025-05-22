@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
+from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
 from rest_framework import status
@@ -990,7 +991,6 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.assertContains(
             response, "Availability time ranges are overlapping", status_code=400
         )
-
         # Verify that non-overlapping ranges on same day are allowed
         data = self.generate_availability_data(
             availability=[
@@ -1076,6 +1076,68 @@ class TestAvailabilityViewSet(CareAPITestBase):
             "Start time must be earlier than end time",
             status_code=400,
         )
+
+    def test_create_availability_total_slots_greater_than_max_slots(self):
+        """Test validation rules for ensuring total_slots is not greater than maximum slots."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        data = self.generate_availability_data(
+            slot_size_in_minutes=10,
+            availability=[
+                {
+                    "day_of_week": 1,
+                    "start_time": "10:00:00",
+                    "end_time": "22:00:00",
+                },
+            ],
+        )
+        expected_error = f"Too many slots per availability. Maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per availability session."
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(
+            response,
+            expected_error,
+            status_code=400,
+        )
+
+    def test_create_availability_total_slots_equal_to_max_slots(self):
+        """Test validation rules for ensuring total_slots is equal to maximum slots."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        data = self.generate_availability_data(
+            slot_size_in_minutes=10,
+            availability=[
+                {
+                    "day_of_week": 2,
+                    "start_time": "09:00:00",
+                    "end_time": "14:00:00",
+                },
+            ],
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_availability_total_slots_less_than_to_max_slots(self):
+        """Test validation rules for ensuring total_slots is equal to maximum slots."""
+        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        data = self.generate_availability_data(
+            slot_size_in_minutes=10,
+            availability=[
+                {
+                    "day_of_week": 2,
+                    "start_time": "09:00:00",
+                    "end_time": "13:00:00",
+                },
+            ],
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_availability_validate_slot_type(self):
         """Test validation rules for different slot types when creating availability slots."""
