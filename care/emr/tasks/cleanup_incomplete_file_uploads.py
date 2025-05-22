@@ -27,22 +27,34 @@ def cleanup_incomplete_file_uploads():
 
     file_manager = FileUpload.files_manager
     while queryset.exists():
-        file_ids = queryset.values_list("id", flat=True)
+        ids_to_delete = []
+        error = None
+        for file in queryset:
+            if file.internal_name:
+                try:
+                    file_manager.delete_object(file, quiet=True)
+                except ClientError as e:
+                    logger.error(
+                        "Failed to delete file upload object %s: %s",
+                        file.id,
+                        e,
+                    )
+                    error = e
+                    break
+            ids_to_delete.append(file.id)
+        else:
+            if error:
+                raise error
 
-        try:
-            # delete the file from S3
-            file_manager.delete_objects(queryset, quiet=True)
-            FileUpload.objects.filter(id__in=file_ids).delete()
-        except ClientError as e:
-            logger.error(
-                "Failed to delete file upload objects %s: %s",
-                file_ids,
-                e,
-            )
-            raise
+        deleted_count = FileUpload.objects.filter(id__in=ids_to_delete).delete()
+
+        logger.info("Deleted %d incomplete file uploads", deleted_count)
 
         # re-fetch the queryset
         queryset = FileUpload.objects.filter(
             upload_completed=False,
             created_date__lte=threshold,
         )[:page_size]
+
+    logger.info("Completed cleanup of incomplete file uploads")
+    return True

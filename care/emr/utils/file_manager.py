@@ -1,6 +1,7 @@
 import logging
 
 import boto3
+from botocore.exceptions import ClientError
 
 from care.utils.csp.config import get_client_config
 
@@ -74,15 +75,19 @@ class S3FilesManager(FileManager):
         content = response["Body"].read()
         return content_type, content
 
-    def delete_object(self, file_obj, **kwargs):
+    def delete_object(self, file_obj, quiet=False, **kwargs):
         config, bucket_name = get_client_config(self.bucket_type)
         s3 = boto3.client("s3", **config)
 
-        return s3.delete_object(
-            Bucket=bucket_name, Key=f"{file_obj.file_type}/{file_obj.internal_name}"
-        )
+        try:
+            return s3.delete_object(
+                Bucket=bucket_name, Key=f"{file_obj.file_type}/{file_obj.internal_name}"
+            )
+        except s3.exceptions.NoSuchKey as e:
+            if not quiet:
+                raise e
 
-    def delete_objects(self, file_obj_list, quiet, **kwargs):
+    def delete_objects(self, file_obj_list, quiet=False, **kwargs):
         config, bucket_name = get_client_config(self.bucket_type)
         s3 = boto3.client("s3", **config)
 
@@ -92,8 +97,15 @@ class S3FilesManager(FileManager):
         ]
         objects = [{"Key": key} for key in keys]
 
-        return s3.delete_objects(
-            Bucket=bucket_name,
-            Delete={"Objects": objects, "Quiet": quiet},
-            **kwargs,
-        )
+        try:
+            return s3.delete_objects(
+                Bucket=bucket_name,
+                Delete={"Objects": objects, "Quiet": quiet},
+                **kwargs,
+            )
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "NotImplemented":
+                # bulk delete is not supported by some providers: GCP
+                msg = f"Batch delete objects not implemented for {self.bucket_type.value} bucket"
+                raise NotImplementedError(msg) from e
+            raise
