@@ -81,11 +81,15 @@ class S3FilesManager(FileManager):
 
         try:
             return s3.delete_object(
-                Bucket=bucket_name, Key=f"{file_obj.file_type}/{file_obj.internal_name}"
+                Bucket=bucket_name,
+                Key=f"{file_obj.file_type}/{file_obj.internal_name}",
+                **kwargs,
             )
         except s3.exceptions.NoSuchKey as e:
             if not quiet:
                 raise e
+            msg = f"Object not found: {file_obj.file_type}/{file_obj.internal_name}"
+            logger.debug(msg)
 
     def delete_objects(self, file_obj_list, quiet=False, **kwargs):
         config, bucket_name = get_client_config(self.bucket_type)
