@@ -1814,6 +1814,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             self.base_url, self._create_questionnaire(), format="json"
         )
         self.client.force_authenticate(self.user)
+        self.assertEqual(response.status_code, 200, response.json())
         return response.json()
 
     def test_questionnaire_list_access_denied(self):
@@ -1862,7 +1863,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
 
         questionnaire_data["title"] = self.fake.text(max_nb_chars=255)
         response = self.client.post(self.base_url, questionnaire_data, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.json())
 
     def test_questionnaire_retrieval_access_denied(self):
         """
@@ -2194,3 +2195,156 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         payload = {"organizations": [self.organization.external_id]}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
+
+
+class FacilityLevelQuestionnairePermissionTests(CareAPITestBase):
+    """
+    Test suite for verifying questionnaire access control and permissions at the facility level.
+
+    Tests various permission scenarios including read, write, and delete operations
+    to ensure proper access control enforcement for different user roles at the facility level.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.super_user = self.create_super_user()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.super_user)
+        self.client.force_authenticate(user=self.user)
+
+    def _create_questionnaire(self):
+        """
+        Creates a basic questionnaire for testing permission controls.
+
+        Returns:
+            dict: Basic questionnaire definition for permission testing
+        """
+        return {
+            "title": "Permission Test Assessment",
+            "slug": "permission-test",
+            "description": "Questionnaire for testing access controls",
+            "status": "active",
+            "subject_type": "patient",
+            "facility": str(self.facility.external_id),
+            "questions": [
+                {
+                    "link_id": "1",
+                    "type": "boolean",
+                    "text": "Test question",
+                    "required": True,
+                    "code": {
+                        "display": "Test Value",
+                        "system": "http://test_system.care/test",
+                        "code": "123",
+                    },
+                }
+            ],
+        }
+
+    def _list_url(self):
+        return f"{reverse('questionnaire-list')}?facility={self.facility.external_id}"
+
+    def test_questionnaire_create_access(self):
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [
+                    QuestionnairePermissions.can_read_questionnaire.name,
+                    QuestionnairePermissions.can_write_questionnaire.name,
+                ]
+            ),
+        )
+
+        questionnaire_data = self._create_questionnaire()
+
+        response = self.client.post(self._list_url(), questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+
+    def test_questionnaire_update_access(self):
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [
+                    QuestionnairePermissions.can_read_questionnaire.name,
+                    QuestionnairePermissions.can_write_questionnaire.name,
+                ]
+            ),
+        )
+
+        questionnaire_data = self._create_questionnaire()
+        response = self.client.post(self._list_url(), questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+
+        detail_url = (
+            reverse("questionnaire-detail", kwargs={"slug": response.json()["slug"]})
+            + f"?facility={self.facility.external_id}"
+        )
+
+        updated_data = {
+            **questionnaire_data,
+            "title": "Updated Questionnaire Title",
+        }
+
+        response = self.client.put(detail_url, updated_data, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+        self.assertEqual(response.json()["title"], updated_data["title"])
+
+    def test_questionnaire_delete_access(self):
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [
+                    QuestionnairePermissions.can_read_questionnaire.name,
+                    QuestionnairePermissions.can_write_questionnaire.name,
+                ]
+            ),
+        )
+
+        questionnaire_data = self._create_questionnaire()
+        response = self.client.post(self._list_url(), questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+
+        detail_url = (
+            reverse("questionnaire-detail", kwargs={"slug": response.json()["slug"]})
+            + f"?facility={self.facility.external_id}"
+        )
+
+        response = self.client.delete(detail_url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_questionnaire_list_access(self):
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [
+                    QuestionnairePermissions.can_read_questionnaire.name,
+                    QuestionnairePermissions.can_write_questionnaire.name,
+                ]
+            ),
+        )
+
+        questionnaire_data = self._create_questionnaire()
+        response = self.client.post(self._list_url(), questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200, response.json())
+
+        facility_user = self.create_user()
+        facility_org = self.create_facility_organization(
+            self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            facility_org,
+            facility_user,
+            self.create_role_with_permissions(
+                [
+                    QuestionnairePermissions.can_read_questionnaire.name,
+                ]
+            ),
+        )
+
+        response = self.client.get(self._list_url())
+        self.assertEqual(response.status_code, 200, response.json())
+        self.assertEqual(len(response.json()["results"]), 1)

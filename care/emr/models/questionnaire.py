@@ -54,6 +54,9 @@ class Questionnaire(EMRBaseModel):
     organization_cache = ArrayField(models.IntegerField(), default=list)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
     tags = ArrayField(models.IntegerField(), default=list)
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
 
 
 class QuestionnaireResponse(EMRBaseModel):

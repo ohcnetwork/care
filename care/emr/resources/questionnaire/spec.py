@@ -13,6 +13,7 @@ from care.emr.resources.observation.valueset import (
 )
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.facility.models.facility import Facility
 
 
 class EnableOperator(str, Enum):
@@ -242,8 +243,11 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
 
 
 class QuestionnaireSpec(QuestionnaireWriteSpec):
-    organizations: list[UUID4] = Field(min_length=1)
-    tags: list[UUID4] = []
+    __exclude__ = ["facility"]
+    organizations: list[UUID4] | None = Field(default_factory=list)
+    tags: list[UUID4] = Field(default_factory=list)
+    facility: UUID4 | None = None
+    facility_organizations: list[UUID4] | None = Field(default_factory=list)
 
     @field_validator("tags")
     @classmethod
@@ -254,8 +258,20 @@ class QuestionnaireSpec(QuestionnaireWriteSpec):
             tag_ids.append(tag.id)
         return tag_ids
 
+    @model_validator(mode="after")
+    def validate_organizations(self):
+        if all([self.organizations, self.facility_organizations]):
+            err = "Either organizations or facility organizations must be provided"
+            raise ValueError(err)
+        if not self.facility and not self.organizations:
+            err = "At-least one organization for instance level questionnaire must be provided"
+            raise ValueError(err)
+
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001
+        obj._facility_organizations = self.facility_organizations  # noqa SLF001
+        if self.facility:
+            obj.facility = get_object_or_404(Facility, external_id=self.facility)
 
 
 class QuestionnaireUpdateSpec(QuestionnaireWriteSpec):

@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -16,6 +16,12 @@ from care.emr.models import (
     QuestionnaireOrganization,
     QuestionnaireTag,
 )
+from care.emr.models.organization import FacilityOrganization
+from care.emr.models.questionnaire import (
+    QuestionnaireFacilityOrganization,
+    QuestionnaireResponse,
+)
+from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.questionnaire.spec import (
     QuestionnaireReadSpec,
@@ -28,6 +34,7 @@ from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseReadSpec,
     QuestionnaireSubmitRequest,
 )
+from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 
 
@@ -78,21 +85,46 @@ class QuestionnaireViewSet(EMRModelViewSet):
     filterset_class = QuestionnaireFilter
     filter_backends = [filters.DjangoFilterBackend]
 
+    def get_facility_object(self):
+        """
+        Get the facility object from the request query params
+        """
+        facility = self.request.query_params.get("facility")
+        if not facility:
+            return None
+        return get_object_or_404(Facility, external_id=facility)
+
     def permissions_controller(self, request):
+        facility = self.get_facility_object()
         if self.action in ["list", "retrieve", "get_organizations"]:
-            return AuthorizationController.call("can_read_questionnaire", request.user)
+            return AuthorizationController.call(
+                "can_read_questionnaire", request.user, facility=facility
+            )
         if self.action in ["create", "set_organizations", "set_tags"]:
-            return AuthorizationController.call("can_write_questionnaire", request.user)
+            return AuthorizationController.call(
+                "can_write_questionnaire", request.user, facility=facility
+            )
 
         return request.user.is_authenticated
 
     def authorize_update(self, request_obj, model_instance):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied("Only Superusers can edit a questionnaire")
+        if self.request.user.is_superuser:
+            return True
+        if model_instance.facility and AuthorizationController.call(
+            "can_write_questionnaire_obj",
+            self.request.user,
+            questionnaire=model_instance,
+        ):
+            return True
+        raise PermissionDenied(
+            "You do not have permission to update this questionnaire"
+        )
 
     def authorize_destroy(self, instance):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied("Only Superusers can delete a questionnaire")
+        self.authorize_update(self.request, instance)
+
+        if QuestionnaireResponse.objects.filter(questionnaire=instance).exists():
+            raise ValidationError("Cannot delete a questionnaire with responses")
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -101,35 +133,49 @@ class QuestionnaireViewSet(EMRModelViewSet):
                 organization_obj = get_object_or_404(
                     Organization, external_id=organization
                 )
+                if not AuthorizationController.call(
+                    "can_write_questionnaire",
+                    self.request.user,
+                    org=organization_obj.id,
+                ):
+                    raise PermissionDenied("Permission Denied for Organization")
                 QuestionnaireOrganization.objects.create(
                     questionnaire=instance, organization=organization_obj
                 )
+            for facility_organization in instance._facility_organizations:  # noqa SLF001
+                facility_organization_obj = get_object_or_404(
+                    FacilityOrganization,
+                    external_id=facility_organization,
+                    facility=instance.facility,
+                )
+                # no need to check for permission here as the facility_organization
+                # is already filtered by the facility
+                QuestionnaireFacilityOrganization.objects.create(
+                    questionnaire=instance,
+                    facility_organization=facility_organization_obj,
+                )
 
-    # def validate_data(self, instance, model_obj=None):
-    #     # If we're editing an existing questionnaire (model_obj is not None)
-    #     # and there are no responses linked to this questionnaire yet
-    #     if (
-    #         model_obj
-    #         and QuestionnaireResponse.objects.filter(questionnaire=model_obj).exists()
-    #     ):
-    #         # Prevent editing if the questionnaire has already been used (has responses)
-    #         # This ensures data integrity by not allowing changes to questionnaires
-    #         # that are actively being used
-    #         raise ValidationError("Cannot edit an active questionnaire")
-
-    def authorize_create(self, instance):
-        for org in instance.organizations:
-            # Validate if the user has write permission in the organization
-            organization = get_object_or_404(Organization, external_id=org)
-            if not AuthorizationController.call(
-                "can_write_questionnaire", self.request.user, organization.id
-            ):
-                raise PermissionDenied("Permission Denied for Organization")
+    def validate_data(self, instance, model_obj=None):
+        # If we're editing an existing questionnaire (model_obj is not None)
+        # and there are no responses linked to this questionnaire yet
+        if (
+            model_obj
+            and model_obj.facility
+            and QuestionnaireResponse.objects.filter(questionnaire=model_obj).exists()
+        ):
+            # Prevent editing if the questionnaire has already been used (has responses)
+            # This ensures data integrity by not allowing changes to questionnaires
+            # that are actively being used
+            raise ValidationError("Cannot edit an active questionnaire")
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        facility = self.get_facility_object()
         queryset = AuthorizationController.call(
-            "get_filtered_questionnaires", queryset, self.request.user
+            "get_filtered_questionnaires",
+            queryset,
+            self.request.user,
+            facility=facility,
         )
         return queryset.select_related("created_by", "updated_by")
 
@@ -166,13 +212,23 @@ class QuestionnaireViewSet(EMRModelViewSet):
         Get all External Organizations connected to this Questionnaire
         """
         questionnaire = self.get_object()
-        questionnaire_organizations = QuestionnaireOrganization.objects.filter(
-            questionnaire=questionnaire
-        ).select_related("organization")
-        organizations_serialized = [
-            OrganizationReadSpec.serialize(obj.organization).to_json()
-            for obj in questionnaire_organizations
-        ]
+        if questionnaire.facility:
+            organizations_serialized = [
+                FacilityOrganizationReadSpec.serialize(
+                    obj.facility_organization
+                ).to_json()
+                for obj in QuestionnaireFacilityOrganization.objects.filter(
+                    questionnaire=questionnaire,
+                    facility_organization__facility_id=questionnaire.facility.id,
+                ).select_related("facility_organization")
+            ]
+        else:
+            organizations_serialized = [
+                OrganizationReadSpec.serialize(obj.organization).to_json()
+                for obj in QuestionnaireOrganization.objects.filter(
+                    questionnaire=questionnaire
+                ).select_related("organization")
+            ]
         return Response(
             {
                 "count": len(organizations_serialized),
@@ -201,6 +257,7 @@ class QuestionnaireViewSet(EMRModelViewSet):
 
     class QuestionnaireOrganizationUpdateSchema(BaseModel):
         organizations: list[UUID4]
+        facility_organizations: list[UUID4] = []
 
     @extend_schema(request=QuestionnaireOrganizationUpdateSchema)
     @action(detail=True, methods=["POST"])
@@ -215,25 +272,52 @@ class QuestionnaireViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("Permission Denied for Questionnaire")
         with transaction.atomic():
-            QuestionnaireOrganization.objects.filter(
-                questionnaire=questionnaire
-            ).delete()
-            for org in request_params.organizations:
-                # Validate if the user has write permission in the organization
-                organization = get_object_or_404(Organization, external_id=org)
-                if not AuthorizationController.call(
-                    "can_write_questionnaire", request.user, organization.id
-                ):
-                    raise PermissionDenied("Permission Denied for Organization")
-                QuestionnaireOrganization.objects.create(
-                    questionnaire=questionnaire, organization=organization
-                )
-        organizations_serialized = [
-            OrganizationReadSpec.serialize(obj.organization).to_json()
-            for obj in QuestionnaireOrganization.objects.filter(
-                questionnaire=questionnaire
-            ).select_related("organization")
-        ]
+            if questionnaire.facility:
+                QuestionnaireFacilityOrganization.objects.filter(
+                    questionnaire=questionnaire,
+                    facility_organization__facility_id=questionnaire.facility.id,
+                ).delete()
+                for org in request_params.facility_organizations:
+                    facility_organization = get_object_or_404(
+                        FacilityOrganization,
+                        external_id=org,
+                        facility=questionnaire.facility,
+                    )
+                    # no need to check for permission here as the facility_organization
+                    # is already filtered by the facility
+                    QuestionnaireFacilityOrganization.objects.create(
+                        questionnaire=questionnaire,
+                        facility_organization=facility_organization,
+                    )
+                organizations_serialized = [
+                    FacilityOrganizationReadSpec.serialize(
+                        obj.facility_organization
+                    ).to_json()
+                    for obj in QuestionnaireFacilityOrganization.objects.filter(
+                        questionnaire=questionnaire,
+                        facility_organization__facility_id=questionnaire.facility.id,
+                    ).select_related("facility_organization")
+                ]
+            else:
+                QuestionnaireOrganization.objects.filter(
+                    questionnaire=questionnaire
+                ).delete()
+                for org in request_params.organizations:
+                    organization = get_object_or_404(Organization, external_id=org)
+                    if not AuthorizationController.call(
+                        "can_write_questionnaire", request.user, org=organization.id
+                    ):
+                        raise PermissionDenied("Permission Denied for Organization")
+                    QuestionnaireOrganization.objects.create(
+                        questionnaire=questionnaire, organization=organization
+                    )
+                organizations_serialized = [
+                    OrganizationReadSpec.serialize(obj.organization).to_json()
+                    for obj in QuestionnaireOrganization.objects.filter(
+                        questionnaire=questionnaire
+                    ).select_related("organization")
+                ]
+
         return Response(
             {
                 "count": len(organizations_serialized),
