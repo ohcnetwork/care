@@ -17,10 +17,20 @@ class UserScheduleAccess(AuthorizationHandler):
 
     def can_create_appointment(self, user, facility):
         """
-        Check if the user has permission to list schedules in a facility
+        Check if the user has permission to create schedules in a facility
         """
         return self.check_permission_in_facility_organization(
             [UserSchedulePermissions.can_create_appointment.name],
+            user,
+            facility=facility,
+        )
+
+    def can_reschedule_appointment(self, user, facility):
+        """
+        Check if the user has permission to re-schedule in a facility
+        """
+        return self.check_permission_in_facility_organization(
+            [UserSchedulePermissions.can_reschedule_appointment.name],
             user,
             facility=facility,
         )
