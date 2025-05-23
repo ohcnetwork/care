@@ -336,6 +336,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -358,6 +359,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -376,7 +378,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertContains(
             response,
             status_code=403,
-            text="You do not have permission to create appointments",
+            text="You do not have permission to reschedule appointments",
         )
 
     def test_reschedule_booking_with_slot_in_past(self):
@@ -385,6 +387,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
