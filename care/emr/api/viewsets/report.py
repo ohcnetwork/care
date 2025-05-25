@@ -87,7 +87,7 @@ class ReportViewSet(
                 "file_type" not in self.request.GET
                 and "associating_id" not in self.request.GET
             ):
-                raise PermissionError("Cannot filter reports")
+                raise PermissionDenied("Cannot filter reports")
             report_authorizer(
                 self.request.user,
                 self.request.GET.get("file_type"),

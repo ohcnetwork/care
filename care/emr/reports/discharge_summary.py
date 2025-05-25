@@ -114,9 +114,9 @@ def generate_and_upload_discharge_summary(
         config = query.first().config
 
         now_ts = int(timezone.now().timestamp() * 1000)
-        slug = encounter.patient.name.lower().replace(" ", "_")
+        patient_slug = encounter.patient.name.lower().replace(" ", "_")
         summary_file = Report(
-            name=f"discharge_summary-{slug}-{now_ts}",
+            name=f"discharge_summary-{patient_slug}-{now_ts}",
             internal_name=f"{uuid4()}{now_ts}.pdf",
             file_type=ReportTypeChoices.discharge_summary.value,
             associating_id=encounter_external_id,

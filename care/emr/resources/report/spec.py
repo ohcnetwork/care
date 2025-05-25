@@ -92,9 +92,9 @@ class ReportRetrieveSpec(ReportListSpec):
         super().perform_extra_serialization(mapping, obj)
         if getattr(obj, "_just_created", False):
             # Calculate Write URL and return it
-            mapping["signed_url"] = obj.files_manager.signed_url(obj)
+            mapping["signed_url"] = obj.reports_manager.signed_url(obj)
         else:
-            mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)
+            mapping["read_signed_url"] = obj.reports_manager.read_signed_url(obj)
 
         if obj.updated_by:
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
