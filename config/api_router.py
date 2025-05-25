@@ -55,6 +55,7 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.report import ReportViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
     ResourceRequestViewSet,
@@ -81,6 +82,7 @@ router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
 router.register("files", FileUploadViewSet, basename="files")
+router.register("reports", ReportViewSet, basename="reports")
 router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
