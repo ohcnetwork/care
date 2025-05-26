@@ -60,6 +60,7 @@ class EncounterPermissionsMixin(PermissionsMixin):
         roles = encounter_access.find_roles_on_encounter(user, encounter)
         mapping["permissions"] = list(
             RolePermission.objects.filter(
-                role_id__in=roles, permission__context__in=["ENCOUNTER", "PATIENT"]
+                role_id__in=roles,
+                permission__context__in=["ENCOUNTER", "PATIENT", "FACILITY"],
             ).values_list("permission__slug", flat=True)
         )
