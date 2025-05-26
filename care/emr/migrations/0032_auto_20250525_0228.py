@@ -14,17 +14,17 @@ def move_discharge_summary_to_report(apps, schema_editor):
             associating_id=discharge_summary.associating_id,
             name=discharge_summary.name,
             internal_name=discharge_summary.internal_name,
-            original_name=discharge_summary.original_name,
             upload_completed=discharge_summary.upload_completed,
             is_archived=discharge_summary.is_archived,
             archive_reason=discharge_summary.archive_reason,
             archived_datetime=discharge_summary.archived_datetime,
             archived_by=discharge_summary.archived_by,
             meta=discharge_summary.meta,
+            history=discharge_summary.history,
             created_by=discharge_summary.created_by,
             created_date=discharge_summary.created_date,
             updated_by=discharge_summary.updated_by,
-            updated_date=discharge_summary.updated_date,
+            modified_date=discharge_summary.modified_date,
         ))
 
     Report.objects.bulk_create(reports)
