@@ -59,6 +59,10 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "Cannot create organizations under root organization"
                 )
+            if parent.org_type == "role":
+                raise PermissionDenied(
+                    "Cannot create nested facility organizations under 'role' type facility organization"
+                )
             if (
                 model_obj is None
                 and parent.level_cache >= settings.FACILITY_ORGANIZATION_MAX_DEPTH
