@@ -38,7 +38,7 @@ class RoleCreateSpec(RoleBaseSpec):
 
         qs = RoleModel.objects.filter(name__iexact=self.name)
         if is_update and model_obj:
-            qs = qs.exclude(name=model_obj.name)
+            qs = qs.exclude(id=model_obj.id)
 
         if qs.exists():
             raise ValueError("Role with this name already exists")
