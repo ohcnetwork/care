@@ -26,6 +26,8 @@ class RendererRegistry:
     @classmethod
     def all(cls) -> dict[str, type[Renderer]]:
         """
-        Return a copy of the full registry.
+        Return a copy of the full registry without dummy renderer.
         """
-        return cls._renderers.copy()
+        renderers = cls._renderers.copy()
+        renderers.pop("dummy", None)
+        return renderers

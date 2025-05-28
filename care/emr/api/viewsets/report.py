@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -85,6 +85,8 @@ class ReportViewSet(EMRModelReadOnlyViewSet):
     @action(detail=True, methods=["POST"])
     def archive(self, request, *args, **kwargs):
         obj = self.get_object()
+        if obj.is_archived:
+            raise ValidationError("This report is already archived.")
         request_data = self.ArchiveRequestSpec(**request.data)
         report_authorizer(request.user, obj.file_type, obj.associating_id, "write")
         obj.is_archived = True

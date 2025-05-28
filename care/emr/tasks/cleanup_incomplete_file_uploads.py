@@ -5,8 +5,10 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 from care.emr.models import FileUpload
+from care.utils.csp.config import BucketType
 
 logger: Logger = get_task_logger(__name__)
 
@@ -24,7 +26,9 @@ def cleanup_incomplete_file_uploads():
         created_date__lte=threshold,
     )[:page_size]
 
-    file_manager = FileUpload.files_manager
+    manager_class = import_string(settings.FILES_MANAGER)
+    file_manager = manager_class(BucketType.PATIENT)
+
     while queryset.exists():
         ids_to_delete = []
         for file in queryset:

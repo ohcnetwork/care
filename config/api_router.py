@@ -83,7 +83,7 @@ router.register("users", UserViewSet, basename="users")
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
 router.register("files", FileUploadViewSet, basename="files")
-router.register("reports", ReportViewSet, basename="reports")
+router.register("report", ReportViewSet, basename="reports")
 router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
