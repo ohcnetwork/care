@@ -1,7 +1,6 @@
 from datetime import timedelta
 from logging import Logger
 
-from botocore.exceptions import ClientError
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.conf import settings
@@ -28,23 +27,18 @@ def cleanup_incomplete_file_uploads():
     file_manager = FileUpload.files_manager
     while queryset.exists():
         ids_to_delete = []
-        error = None
         for file in queryset:
             if file.internal_name:
                 try:
                     file_manager.delete_object(file, quiet=True)
-                except ClientError as e:
+                except Exception as e:
                     logger.error(
                         "Failed to delete file upload object %s: %s",
                         file.id,
                         e,
                     )
-                    error = e
-                    break
-            ids_to_delete.append(file.id)
-        else:
-            if error:
-                raise error
+                    raise e
+                ids_to_delete.append(file.id)
 
         deleted_count = FileUpload.objects.filter(id__in=ids_to_delete).delete()
 
