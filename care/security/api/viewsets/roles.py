@@ -17,15 +17,7 @@ class RoleViewSet(EMRModelViewSet):
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve"]:
             return True
-        if self.action in [
-            "create",
-            "update",
-            "destroy",
-            "update_permissions",
-            "bulk_create_roles",
-        ]:
-            return request.user.is_superuser
-        return False
+        return request.user.is_superuser
 
     def validate_destroy(self, instance):
         if instance.is_system:
