@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Q
+from django.db.models.expressions import Subquery
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
@@ -22,6 +23,8 @@ from care.emr.resources.facility_organization.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
+from care.security.roles.role import FACILITY_ADMIN_ROLE
+from care.users.models import User
 
 
 class FacilityOrganizationFilter(filters.FilterSet):
@@ -59,6 +62,10 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "Cannot create organizations under root organization"
                 )
+            if parent.org_type == "role":
+                raise PermissionDenied(
+                    "Cannot create nested facility organizations under 'role' type facility organization"
+                )
             if (
                 model_obj is None
                 and parent.level_cache >= settings.FACILITY_ORGANIZATION_MAX_DEPTH
@@ -89,11 +96,18 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             raise ValidationError("Organization already exists with same name")
 
     def authorize_destroy(self, instance):
-        if instance.type == "root":
-            raise PermissionDenied("Cannot delete root organization")
+        if instance.org_type == "root":
+            raise ValidationError("Cannot delete root organization")
 
         if FacilityOrganization.objects.filter(parent=instance).exists():
-            raise PermissionDenied("Cannot delete organization with children")
+            raise ValidationError("Cannot delete organization with children")
+
+        if (
+            FacilityOrganizationUser.objects.filter(organization=instance)
+            .exclude(user=self.request.user)
+            .exists()
+        ):
+            raise ValidationError("Cannot delete organization with users")
 
         if self.request.user.is_superuser:
             return
@@ -102,7 +116,7 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             "can_delete_facility_organization", self.request.user, instance
         ):
             raise PermissionDenied(
-                "User does not have the required permissions to update organization"
+                "User does not have the required permissions to delete this organization"
             )
 
     def authorize_update(self, request_obj, model_instance):
@@ -158,6 +172,11 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             facility,
         )
 
+    def perform_destroy(self, instance):
+        FacilityOrganizationUser.objects.filter(organization=instance).delete()
+        instance.deleted = True
+        instance.save(update_fields=["deleted"])
+
     @action(detail=False, methods=["GET"])
     def mine(self, request, *args, **kwargs):
         """
@@ -198,12 +217,31 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
-        if model_obj:
-            return
         organization = self.get_organization_obj()
-        # TODO : Optimise by fetching user first, avoiding the extra join to org
+        if model_obj:
+            # Deny update if user is the last facility admin
+            role_obj = model_obj.role
+            if (
+                organization.org_type == "root"
+                and role_obj.name == FACILITY_ADMIN_ROLE.name
+                and not FacilityOrganizationUser.objects.filter(
+                    organization=organization,
+                    role=role_obj,
+                )
+                .exclude(
+                    id=model_obj.id,
+                )
+                .exists()
+            ):
+                raise ValidationError(
+                    "Cannot change the role of the last admin user in the root organization"
+                )
+            return
+
         queryset = FacilityOrganizationUser.objects.filter(
-            user__external_id=instance.user
+            user__in=Subquery(
+                User.objects.filter(external_id=instance.user).values_list("id")
+            )
         )
         # Case 1 - Same organization
         if queryset.filter(Q(organization=organization)).exists():

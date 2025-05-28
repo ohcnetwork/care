@@ -152,6 +152,9 @@ class EMRUpdateMixin:
         ignored_fields = {"id", "external_id", "patient", "encounter"}
         if keep_fields:
             ignored_fields = ignored_fields - set(keep_fields)
+        if hasattr(request_data, "dict"):
+            # convert immutable querydict to dict
+            request_data = request_data.dict()
         for field in ignored_fields:
             request_data.pop(field, None)
         return request_data

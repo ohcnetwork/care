@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework import filters as rest_framework_filters
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -33,7 +34,11 @@ class MedicationStatementViewSet(
     questionnaire_description = "Medication Statement"
     questionnaire_subject_type = SubjectType.patient.value
     filterset_class = MedicationStatementFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_queryset(self):
         self.authorize_read_encounter()

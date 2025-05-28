@@ -206,6 +206,9 @@ class ValueSetViewSet(EMRModelViewSet):
         user_id = request.user.external_id
         cache_key = self.get_recent_view_cache_key(valueset_slug, user_id)
         code_obj = MinimalCodeConcept(**request.data)
+        valueset = self.get_object()
+        if not valueset.lookup(code_obj):
+            raise ValidationError("Invalid code value")
         RecentViewsManager.add_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} added to recent views"})
 

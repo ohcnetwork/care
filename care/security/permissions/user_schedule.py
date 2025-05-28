@@ -69,3 +69,16 @@ class UserSchedulePermissions(enum.Enum):
             ADMINISTRATOR,
         ],
     )
+    can_reschedule_appointment = Permission(
+        "Can reschedule appointment on facility",
+        "",
+        PermissionContext.FACILITY,
+        [
+            DOCTOR_ROLE,
+            STAFF_ROLE,
+            NURSE_ROLE,
+            ADMINISTRATOR,
+            FACILITY_ADMIN_ROLE,
+            ADMIN_ROLE,
+        ],
+    )
