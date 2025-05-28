@@ -751,3 +751,6 @@ REPORTS_MANAGER = env(
 FILES_MANAGER = env(
     "FILES_MANAGER", default="care.emr.utils.file_manager.S3FilesManager"
 )
+
+# Cleanup incomplete file uploads, set to 0 to disable
+FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
