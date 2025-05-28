@@ -60,7 +60,6 @@ from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
     ResourceRequestViewSet,
 )
-from care.emr.api.viewsets.roles import RoleViewSet
 from care.emr.api.viewsets.scheduling import (
     AvailabilityViewSet,
     ScheduleViewSet,
@@ -74,6 +73,8 @@ from care.emr.api.viewsets.template import ReportTemplateViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
+from care.security.api.viewsets.permissions import PermissionViewSet
+from care.security.api.viewsets.roles import RoleViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
@@ -110,6 +111,8 @@ router.register(
 )
 
 router.register("role", RoleViewSet, basename="role")
+
+router.register("permission", PermissionViewSet, basename="permission")
 
 
 router.register("encounter", EncounterViewSet, basename="encounter")

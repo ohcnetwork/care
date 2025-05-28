@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from care.emr.models import (
     Availability,
@@ -336,6 +337,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -358,6 +360,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -376,7 +379,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertContains(
             response,
             status_code=403,
-            text="You do not have permission to create appointments",
+            text="You do not have permission to reschedule appointments",
         )
 
     def test_reschedule_booking_with_slot_in_past(self):
@@ -385,6 +388,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -1071,8 +1075,10 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         )
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": timezone.make_naive(timezone.now()).strftime("%Y-%m-%d"),
+            "to_date": (
+                timezone.make_naive(timezone.now()) + timedelta(days=7)
+            ).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",

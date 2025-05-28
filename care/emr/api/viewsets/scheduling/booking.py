@@ -135,9 +135,11 @@ class TokenBookingViewSet(
         facility = self.get_facility_obj()
         self.authorize_update({}, existing_booking)
         if not AuthorizationController.call(
-            "can_create_appointment", self.request.user, facility
+            "can_reschedule_appointment", self.request.user, facility
         ):
-            raise PermissionDenied("You do not have permission to create appointments")
+            raise PermissionDenied(
+                "You do not have permission to reschedule appointments"
+            )
         new_slot = get_object_or_404(
             TokenSlot,
             external_id=request_data.new_slot,
