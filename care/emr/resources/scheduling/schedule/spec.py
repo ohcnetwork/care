@@ -2,6 +2,7 @@ import datetime
 from datetime import UTC
 from enum import Enum
 
+from django.conf import settings
 from django.db.models import Sum
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
@@ -17,6 +18,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.users.models import User
+from care.utils.time_util import care_now
 
 
 class SlotTypeOptions(str, Enum):
@@ -76,8 +78,15 @@ class AvailabilityForScheduleSpec(AvailabilityBaseSpec):
                 end_time = datetime.datetime.combine(
                     datetime.datetime.now(tz=UTC).date(), availability.end_time
                 )
+                availability_duration_in_seconds = (
+                    end_time - start_time
+                ).total_seconds()
                 slot_size_in_seconds = self.slot_size_in_minutes * 60
-                if (end_time - start_time).total_seconds() % slot_size_in_seconds != 0:
+                total_slots = availability_duration_in_seconds / slot_size_in_seconds
+                if total_slots > settings.MAX_SLOTS_PER_AVAILABILITY:
+                    error_message = f"Too many slots per availability. Maximum allowed is {settings.MAX_SLOTS_PER_AVAILABILITY} slots per availability session."
+                    raise ValueError(error_message)
+                if availability_duration_in_seconds % slot_size_in_seconds != 0:
                     raise ValueError(
                         "Availability duration must be a multiple of slot size in minutes"
                     )
@@ -127,10 +136,18 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     valid_to: datetime.datetime
     availabilities: list[AvailabilityForScheduleSpec]
 
+    @field_validator("valid_from", "valid_to")
+    @classmethod
+    def validate_dates(cls, value):
+        now = care_now().replace(tzinfo=None)
+        if value < now:
+            raise ValueError("Date cannot be before the current date")
+        return value
+
     @model_validator(mode="after")
     def validate_period(self):
         if self.valid_from > self.valid_to:
-            raise ValidationError("Valid from cannot be greater than valid to")
+            raise ValueError("Valid from cannot be greater than valid to")
         return self
 
     @field_validator("availabilities")

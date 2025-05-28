@@ -1,12 +1,10 @@
 from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 
-from care.emr.api.viewsets.base import (
-    EMRModelViewSet,
-    EMRQuestionnaireResponseMixin,
-)
+from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
@@ -70,7 +68,11 @@ class SymptomViewSet(
     pydantic_update_model = ConditionUpdateSpec
     # Filters
     filterset_class = ConditionFilters
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [
+        DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
     # Questionnaire Spec
     questionnaire_type = "symptom"
     questionnaire_title = "Symptom"
@@ -111,8 +113,11 @@ class DiagnosisViewSet(
 
     # Filters
     filterset_class = ConditionFilters
-    filter_backends = [DjangoFilterBackend]
-
+    filter_backends = [
+        DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
     # Questionnaire Spec
     questionnaire_type = "diagnosis"
     questionnaire_title = "Diagnosis"

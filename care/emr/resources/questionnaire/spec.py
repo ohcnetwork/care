@@ -2,7 +2,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
+from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
@@ -110,7 +110,7 @@ class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
 
     link_id: str = Field(description="Unique human readable ID for linking")
-    id: UUID4 = Field(
+    id: UUID4 | UUID5 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
@@ -168,13 +168,6 @@ class Question(QuestionnaireBaseSpec):
             self.answer_option or self.answer_value_set
         ):
             err = "Either answer options or a value set must be provided for choice type questions"
-            raise ValueError(err)
-        return self
-
-    @model_validator(mode="after")
-    def validate_group_does_not_repeat(self):
-        if self.type == QuestionType.group and self.repeats:
-            err = "Group type questions cannot be repeated"
             raise ValueError(err)
         return self
 

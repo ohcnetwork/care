@@ -82,6 +82,10 @@ LOGGING = {
             "handlers": ["console"],
             "level": "ERROR",
         },
+        "celery": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        },
     },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
@@ -102,3 +106,5 @@ JWKS = JsonWebKey.import_key_set(
 )
 
 DISABLE_RATELIMIT = True
+
+SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"

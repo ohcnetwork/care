@@ -22,9 +22,4 @@ python manage.py sync_valueset
 
 touch /tmp/healthy
 
-export NEW_RELIC_CONFIG_FILE=/etc/newrelic.ini
-if [[ -f "$NEW_RELIC_CONFIG_FILE" ]]; then
-    newrelic-admin run-program celery --app=config.celery_app beat --loglevel=info
-else
-    celery --app=config.celery_app beat --loglevel=info
-fi
+celery --app=config.celery_app beat --loglevel=info
