@@ -742,3 +742,12 @@ TOTP_ENABLED_EMAIL_TEMPLATE_PATH = env(
 TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
     "TOTP_DISABLED_EMAIL_TEMPLATE_PATH", default="email/totp_disabled.html"
 )
+
+REPORTS_MANAGER = env(
+    "REPORTS_MANAGER",
+    default="care.emr.utils.file_manager.S3FilesManager",
+)
+
+FILES_MANAGER = env(
+    "FILES_MANAGER", default="care.emr.utils.file_manager.S3FilesManager"
+)
