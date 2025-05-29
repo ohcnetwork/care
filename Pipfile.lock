@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4eb7f46092d866fda75cb12ca762d1d57e477e3290e2f54120878717ceac6444"
+            "sha256": "789ec0096733ad165a93652403b32fbf9cc69b2cf6720a110cdca61642f694c6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -2450,12 +2450,20 @@
         },
         "ipython": {
             "hashes": [
-                "sha256:46ec58f8d3d076a61d128fe517a51eb730e3aaf0c184ea8c17d16e366660c6a6",
-                "sha256:b6a2274606bec6166405ff05e54932ed6e5cfecaca1fc05f2cacde7bb074d70b"
+                "sha256:62a9373dbc12f28f9feaf4700d052195bf89806279fc8ca11f3f54017d04751b",
+                "sha256:fef5e33c4a1ae0759e0bba5917c9db4eb8c53fee917b6a526bd973e1ca5159f6"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.10'",
-            "version": "==8.31.0"
+            "markers": "python_version >= '3.11'",
+            "version": "==9.2.0"
+        },
+        "ipython-pygments-lexers": {
+            "hashes": [
+                "sha256:09c0138009e56b6854f9535736f4171d855c8c08a563a0dcd8022f78355c7e81",
+                "sha256:a9462224a505ade19a605f71f8fa63c2048833ce50abc86768a0d81d876dc81c"
+            ],
+            "markers": "python_version >= '3.8'",
+            "version": "==1.1.1"
         },
         "jedi": {
             "hashes": [
@@ -2670,11 +2678,11 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:544748f3860a2623ca5cd6d2795e7a14f3d0e1c3c9728359013f79877fc89bab",
-                "sha256:9b6427eb19e479d98acff65196a307c555eb567989e6d88ebbb1b509d9779198"
+                "sha256:52742911fde84e2d423e2f9a4cf1de7d7ac4e51958f648d9540e0fb8db077b07",
+                "sha256:931a162e3b27fc90c86f1b48bb1fb2c528c2761475e57c9c06de13311c7b54ed"
             ],
-            "markers": "python_full_version >= '3.8.0'",
-            "version": "==3.0.50"
+            "markers": "python_version >= '3.8'",
+            "version": "==3.0.51"
         },
         "ptyprocess": {
             "hashes": [
