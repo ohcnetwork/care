@@ -4,9 +4,23 @@ from django.conf import settings
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models.observation import Observation
 from care.emr.resources.questionnaire.spec import QuestionType
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
+
+
+def deterministic_uuid(string):
+    """
+    Generates a UUID based on the provided string.
+
+    Args:
+        string (str): The input string to generate a UUID from.
+
+    Returns:
+        str: A UUID generated from the input string.
+    """
+    return str(uuid.uuid5(uuid.NAMESPACE_DNS, string))
 
 
 class QuestionnaireTestBase(CareAPITestBase):
@@ -1671,6 +1685,239 @@ class RequiredFieldValidationTests(QuestionnaireTestBase):
         self.assertEqual(error["type"], "values_missing")
         self.assertEqual(error["question_id"], question["id"])
         self.assertIn("No value provided for question", error["msg"])
+
+
+class RepeatableGroupsValidationTests(QuestionnaireTestBase):
+    """
+    Test suite for validating question groups in questionnaires.
+
+    Ensures that questionnaires repeating groups are correctly validated.
+    Observation components are also validated to ensure they are correctly created.
+    """
+
+    def setUp(self):
+        self.user = self.create_super_user()
+        self.organization = self.create_organization(org_type="govt")
+        self.facility = self.create_facility(self.user)
+        self.facility_organization = self.create_facility_organization(self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        self.base_url = reverse("questionnaire-list")
+        self.default_code = {
+            "display": "Test Value",
+            "system": "http://test_system.care/test",
+            "code": "123",
+        }
+
+    def _create_questionnaire(self, questions=None):
+        """
+        Creates a questionnaire with the given list of questions.
+        A base code template is added to each question and a unique slug is generated.
+        """
+        questionnaire_definition = {
+            "title": "Test Questionnaire",
+            "slug": f"test-repeat-ques-{uuid.uuid4()!s}"[:20],
+            "description": "Questionnaire for testing repeatable groups",
+            "status": "active",
+            "subject_type": "encounter",
+            "organizations": [str(self.organization.external_id)],
+            "questions": questions,
+        }
+        response = self.client.post(
+            self.base_url, questionnaire_definition, format="json"
+        )
+        self.assertEqual(
+            response.status_code,
+            200,
+            f"Questionnaire creation failed: {response.json()}",
+        )
+        return response.json()
+
+    def _create_submission_payload(self, results):
+        """
+        Creates a standardized submission payload for questionnaire testing.
+
+        Args:
+            question_id (str): The ID of the question being answered
+            answer_value: The value to submit as the answer
+
+        Returns:
+            dict: A properly formatted submission payload
+        """
+        return {
+            "resource_id": str(self.encounter.external_id),
+            "patient": str(self.patient.external_id),
+            "encounter": str(self.encounter.external_id),
+            "results": results,
+        }
+
+    def test_repeatable_group_responses(self):
+        """
+        Tests the validation of repeatable question groups in a questionnaire.
+        """
+        questions = [
+            {
+                "link_id": "1",
+                "id": deterministic_uuid("1"),
+                "type": "group",
+                "text": "Repeatable Group",
+                "code": self.default_code,
+                "repeats": True,
+                "is_component": True,
+                "questions": [
+                    {
+                        "link_id": "1.1",
+                        "id": deterministic_uuid("1.1"),
+                        "type": "boolean",
+                        "text": "Within normal range",
+                        "code": {
+                            "display": "Test Value Child",
+                            "system": "http://test_system.care/test",
+                            "code": "123-child",
+                        },
+                    },
+                    {
+                        "link_id": "1.2",
+                        "id": deterministic_uuid("1.2"),
+                        "type": "decimal",
+                        "text": "Measurement",
+                        "code": {
+                            "display": "Test Value Child",
+                            "system": "http://test_system.care/test",
+                            "code": "124-child",
+                        },
+                    },
+                ],
+            }
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Test submission with valid data
+        payload = self._create_submission_payload(
+            [
+                {
+                    "question_id": deterministic_uuid("1"),
+                    "sub_results": [
+                        [
+                            {
+                                "question_id": deterministic_uuid("1.1"),
+                                "values": [{"value": "true"}],
+                            }
+                        ],
+                        [
+                            {
+                                "question_id": deterministic_uuid("1.1"),
+                                "values": [{"value": "false"}],
+                            },
+                            {
+                                "question_id": deterministic_uuid("1.2"),
+                                "values": [{"value": "34.5"}],
+                            },
+                        ],
+                    ],
+                }
+            ]
+        )
+        status_code, response = self._submit_questionnaire(payload)
+        self.assertEqual(
+            status_code, 200, f"Questionnaire submission failed: {response}"
+        )
+        observations = Observation.objects.filter(
+            questionnaire_response__external_id=response["id"],
+        )
+        self.assertEqual(observations.count(), 2, "Two observations should be created")
+        for observation in observations:
+            self.assertEqual(observation.main_code, self.default_code)
+            self.assertGreater(
+                len(observation.component),
+                0,
+                "Each observation should have at least one component",
+            )
+
+    def test_repeatable_group_responses_validation(self):
+        """
+        Tests the validation of repeatable question groups in a questionnaire.
+        """
+        questions = [
+            {
+                "link_id": "1",
+                "id": deterministic_uuid("1"),
+                "type": "group",
+                "text": "Repeatable Group",
+                "code": self.default_code,
+                "repeats": True,
+                "is_component": True,
+                "questions": [
+                    {
+                        "link_id": "1.1",
+                        "id": deterministic_uuid("1.1"),
+                        "type": "boolean",
+                        "text": "Within normal range",
+                        "required": True,
+                        "code": {
+                            "display": "Test Value Child",
+                            "system": "http://test_system.care/test",
+                            "code": "123-child",
+                        },
+                    },
+                    {
+                        "link_id": "1.2",
+                        "id": deterministic_uuid("1.2"),
+                        "type": "decimal",
+                        "text": "Measurement",
+                        "code": {
+                            "display": "Test Value Child",
+                            "system": "http://test_system.care/test",
+                            "code": "124-child",
+                        },
+                    },
+                ],
+            }
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Test submission with valid data
+        payload = self._create_submission_payload(
+            [
+                {
+                    "question_id": deterministic_uuid("1"),
+                    "sub_results": [
+                        [
+                            {
+                                "question_id": deterministic_uuid("1.1"),
+                                "values": [{"value": "true"}],
+                            }
+                        ],
+                        [
+                            {
+                                "question_id": deterministic_uuid("1.2"),
+                                "values": [{"value": "34.5"}],
+                            },
+                        ],
+                    ],
+                }
+            ]
+        )
+        submit_url = reverse(
+            "questionnaire-submit", kwargs={"slug": self.questionnaire_data["slug"]}
+        )
+        response = self.client.post(submit_url, payload, format="json")
+        self.assertEqual(
+            response.status_code,
+            400,
+            f"Questionnaire submission should fail: {response.json()}",
+        )
+        self.assertContains(response, "Question not answered", status_code=400)
 
 
 class RequiredGroupValidationTests(QuestionnaireTestBase):

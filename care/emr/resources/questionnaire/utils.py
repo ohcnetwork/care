@@ -16,6 +16,21 @@ from care.emr.resources.observation.spec import ObservationSpec, ObservationStat
 from care.emr.resources.questionnaire.spec import QuestionType
 
 
+def create_responses_mapping(results_list):
+    """
+    Creates a mapping of question IDs to their responses.
+
+    Args:
+        results_list: List of question results
+    Returns:
+        dict: Mapping of question IDs to their responses
+    """
+    responses = {}
+    for result in results_list:
+        responses[str(result.question_id)] = result
+    return responses
+
+
 def check_required(questionnaire, questionnaire_ref):
     """
     Recursively check if the question is marked as required anywhere in its parents
@@ -172,14 +187,30 @@ def validate_question_result(  # noqa : PLR0912
         # Iterate and call all child questions
         questionnaire_mapping[questionnaire["id"]] = questionnaire
         if questionnaire["questions"]:
-            for question in questionnaire["questions"]:
-                validate_question_result(
-                    question,
-                    responses,
-                    errors,
-                    questionnaire["id"],
-                    questionnaire_mapping,
-                )
+            if questionnaire.get("repeats", False):
+                # Handle repeating groups
+                response = responses.get(questionnaire["id"])
+                if not response or not response.sub_results:
+                    return
+                for sub_responses in response.sub_results:
+                    question = questionnaire.copy()
+                    question["repeats"] = False  # Set to false to avoid infinite loop
+                    validate_question_result(
+                        question,
+                        create_responses_mapping(sub_responses),
+                        errors,
+                        questionnaire["id"],
+                        questionnaire_mapping,
+                    )
+            else:
+                for question in questionnaire["questions"]:
+                    validate_question_result(
+                        question,
+                        responses,
+                        errors,
+                        questionnaire["id"],
+                        questionnaire_mapping,
+                    )
     else:
         # Case when question is not answered ( Not in response )
         if questionnaire["id"] not in responses and questionnaire.get(
@@ -281,7 +312,7 @@ def validate_question_result(  # noqa : PLR0912
         # ( check if the code belongs to the valueset or options list)
 
 
-def create_observation_spec(questionnaire, responses, parent_id=None):
+def create_observation_spec(questionnaire, response, parent_id=None):
     spec = {
         "status": ObservationStatus.final.value,
         "value_type": questionnaire["type"],
@@ -296,14 +327,9 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
         spec["value"] = {}
         return [spec]
     observations = []
-    if (
-        responses
-        and questionnaire["id"] in responses
-        and responses[questionnaire["id"]].values
-        and responses[questionnaire["id"]].values[0]
-    ):
+    if getattr(response, "values", []):
         observation = {}
-        for value in responses[questionnaire["id"]].values:
+        for value in response.values:
             observation = spec.copy()
             observation["id"] = str(uuid.uuid4())
             if questionnaire["type"] == QuestionType.choice.value and value.coding:
@@ -321,8 +347,8 @@ def create_observation_spec(questionnaire, responses, parent_id=None):
                 observation["value"] = {"value": value.value}
                 if "unit" in questionnaire:
                     observation["value"]["unit"] = questionnaire["unit"]
-            if responses[questionnaire["id"]].note:
-                observation["note"] = responses[questionnaire["id"]].note
+            if response.note:
+                observation["note"] = response.note
         if parent_id:
             observation["parent"] = parent_id
         observation["effective_datetime"] = timezone.now()
@@ -353,13 +379,26 @@ def convert_to_observation_spec(
 ):
     constructed_observation_mapping = []
     for question in questionnaire.get("questions", []):
+        response = responses.get(question["id"])
         if question["type"] == QuestionType.group.value:
-            observation = create_observation_spec(question, responses, parent_id)
             if not is_component and question.get("is_component", False):
-                components = create_components(question, responses)
-                observation[0]["component"] = components
-                constructed_observation_mapping.extend(observation)
+                if question.get("repeats", False) and getattr(
+                    response, "sub_results", None
+                ):
+                    # create components for repeating groups
+                    for sub_responses in response.sub_results:
+                        observation = create_observation_spec(question, None, parent_id)
+                        observation[0]["component"] = create_components(
+                            question, create_responses_mapping(sub_responses)
+                        )
+                        constructed_observation_mapping.extend(observation)
+                else:
+                    # create components for non-repeating groups
+                    observation = create_observation_spec(question, None, parent_id)
+                    observation[0]["component"] = create_components(question, responses)
+                    constructed_observation_mapping.extend(observation)
             else:
+                observation = create_observation_spec(question, None, parent_id)
                 sub_mapping = convert_to_observation_spec(
                     question, responses, observation[0]["id"]
                 )
@@ -368,7 +407,7 @@ def convert_to_observation_spec(
                     constructed_observation_mapping.extend(sub_mapping)
         elif question.get("code"):
             constructed_observation_mapping.extend(
-                create_observation_spec(question, responses, parent_id)
+                create_observation_spec(question, response, parent_id)
             )
 
     return constructed_observation_mapping
@@ -422,7 +461,7 @@ def get_link_id_map(questions):
     return mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PLR0912
+def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa: PLR0912
     """
     Generate observations and questionnaire responses after validation
     """
@@ -447,10 +486,9 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa PL
         raise ValidationError({"type": "object_not_found", "msg": "Patient not found"})
 
     questionnaire_mapping = {}
-    responses = {}
     errors = []
-    for result in results.results:
-        responses[str(result.question_id)] = result
+
+    responses = create_responses_mapping(results.results)
     if not responses:
         raise ValidationError(
             {

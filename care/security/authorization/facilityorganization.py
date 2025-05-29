@@ -114,7 +114,7 @@ class FacilityOrganizationAccess(AuthorizationHandler):
         self, user, organization, requested_role
     ):
         """
-        Check if the user has permission to create organizations under the given organization
+        Check if the user has permission manage users in the given organization
         """
         if user.is_superuser:
             return True

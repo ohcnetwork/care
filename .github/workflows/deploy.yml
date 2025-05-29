@@ -28,6 +28,7 @@ concurrency:
 
 jobs:
   test:
+    if: github.repository == 'ohcnetwork/care'
     name: Test
     uses: ./.github/workflows/reusable-test.yml
     secrets:
@@ -265,4 +266,3 @@ jobs:
 #           service: ${{ env.ECS_SERVICE_BACKEND }}
 #           cluster: ${{ env.ECS_CLUSTER }}
 #           wait-for-service-stability: true
-#

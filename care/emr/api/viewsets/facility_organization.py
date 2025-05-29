@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Q
+from django.db.models.expressions import Subquery
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
@@ -8,6 +9,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.models.device import Device
+from care.emr.models.encounter import EncounterOrganization
+from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.emr.resources.facility_organization.facility_orgnization_user_spec import (
     FacilityOrganizationUserReadSpec,
@@ -22,6 +26,8 @@ from care.emr.resources.facility_organization.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
+from care.security.roles.role import FACILITY_ADMIN_ROLE
+from care.users.models import User
 
 
 class FacilityOrganizationFilter(filters.FilterSet):
@@ -58,6 +64,10 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             if parent.org_type == "root":
                 raise PermissionDenied(
                     "Cannot create organizations under root organization"
+                )
+            if parent.org_type == "role":
+                raise PermissionDenied(
+                    "Cannot create nested facility organizations under 'role' type facility organization"
                 )
             if (
                 model_obj is None
@@ -101,6 +111,15 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             .exists()
         ):
             raise ValidationError("Cannot delete organization with users")
+
+        if EncounterOrganization.objects.filter(organization=instance).exists():
+            raise ValidationError("Cannot delete organization with encounters")
+
+        if FacilityLocationOrganization.objects.filter(organization=instance).exists():
+            raise ValidationError("Cannot delete organization with locations")
+
+        if Device.objects.filter(managing_organization=instance).exists():
+            raise ValidationError("Cannot delete organization with devices")
 
         if self.request.user.is_superuser:
             return
@@ -210,12 +229,31 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
         super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
-        if model_obj:
-            return
         organization = self.get_organization_obj()
-        # TODO : Optimise by fetching user first, avoiding the extra join to org
+        if model_obj:
+            # Deny update if user is the last facility admin
+            role_obj = model_obj.role
+            if (
+                organization.org_type == "root"
+                and role_obj.name == FACILITY_ADMIN_ROLE.name
+                and not FacilityOrganizationUser.objects.filter(
+                    organization=organization,
+                    role=role_obj,
+                )
+                .exclude(
+                    id=model_obj.id,
+                )
+                .exists()
+            ):
+                raise ValidationError(
+                    "Cannot change the role of the last admin user in the root organization"
+                )
+            return
+
         queryset = FacilityOrganizationUser.objects.filter(
-            user__external_id=instance.user
+            user__in=Subquery(
+                User.objects.filter(external_id=instance.user).values_list("id")
+            )
         )
         # Case 1 - Same organization
         if queryset.filter(Q(organization=organization)).exists():
