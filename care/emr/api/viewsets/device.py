@@ -117,14 +117,17 @@ class DeviceViewSet(EMRModelViewSet):
         """
         queryset = Device.objects.all()
 
-        if self.request.user.is_superuser:
-            return queryset
-
         facility = self.get_facility_obj()
+        facility_organizations = FacilityOrganization.objects.filter(
+            facility=facility
+        ).values_list("id", flat=True)
 
-        users_facility_organizations = FacilityOrganizationUser.objects.filter(
-            organization__facility=facility, user=self.request.user
-        ).values_list("organization_id", flat=True)
+        if self.request.user.is_superuser:
+            users_facility_organizations = facility_organizations
+        else:
+            users_facility_organizations = FacilityOrganizationUser.objects.filter(
+                organization_id__in=facility_organizations, user=self.request.user
+            ).values_list("organization_id", flat=True)
 
         if "location" in self.request.GET:
             location = get_object_or_404(
