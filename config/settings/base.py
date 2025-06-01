@@ -131,6 +131,7 @@ THIRD_PARTY_APPS = [
     "django.contrib.postgres",
     "django_rest_passwordreset",
     "healthy_django",
+    "django_prometheus",
 ]
 LOCAL_APPS = [
     "care.security",
@@ -192,6 +193,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -206,6 +208,8 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
+    "config.middlewares.PrometheusMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 # add RequestTimeLoggingMiddleware based on the environment variable

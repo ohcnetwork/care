@@ -45,6 +45,40 @@ services:
       start_period: 10s
       timeout: 10s
 
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+    ports:
+      - "9090:9090"
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_LOG_LEVEL=warn
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - default
+
 volumes:
   postgres-data:
   care-redis-data:
+  prometheus-data:
+  grafana-data:

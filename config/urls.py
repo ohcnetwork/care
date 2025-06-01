@@ -71,6 +71,8 @@ urlpatterns = [
     path("health/", include("healthy_django.urls", namespace="healthy_django")),
     # OpenID Connect
     # path(".well-known/jwks.json", PublicJWKsView.as_view(), name="jwks-json"),
+    # Metrics endpoint
+    path("", include("django_prometheus.urls")),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
 
