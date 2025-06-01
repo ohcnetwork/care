@@ -33,7 +33,26 @@
   },
   "refresh": "30s",
   "templating": {
-    "list": []
+    "list": [
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(care_requests_total, environment)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": false,
+        "allValue": ".*",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        }
+      }
+    ]
   },
   "annotations": {
     "list": [
@@ -70,7 +89,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(care_requests_total[5m])) by (endpoint)",
+          "expr": "sum(rate(care_requests_total{environment=~\"$environment\"}[5m])) by (endpoint)",
           "legendFormat": "{{endpoint}}",
           "datasource": {
             "type": "prometheus",
@@ -166,7 +185,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum(rate(care_request_duration_seconds_bucket[5m])) by (le, endpoint))",
+          "expr": "histogram_quantile(0.95, sum(rate(care_request_duration_seconds_bucket{environment=~\"$environment\"}[5m])) by (le, endpoint))",
           "legendFormat": "{{endpoint}}",
           "datasource": {
             "type": "prometheus",
@@ -266,7 +285,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(care_requests_total{status=~\"[45].*\"}[5m])) / sum(rate(care_requests_total[5m]))",
+          "expr": "sum(rate(care_requests_total{status=~\"[45].*\",environment=~\"$environment\"}[5m])) / sum(rate(care_requests_total{environment=~\"$environment\"}[5m]))",
           "legendFormat": "Error Rate",
           "datasource": {
             "type": "prometheus",
@@ -396,7 +415,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(care_requests_total)",
+          "expr": "sum(care_requests_total{environment=~\"$environment\"})",
           "legendFormat": "Total Requests",
           "datasource": {
             "type": "prometheus",
@@ -463,7 +482,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(care_requests_in_progress)",
+          "expr": "sum(care_requests_in_progress{environment=~\"$environment\"})",
           "legendFormat": "In Progress",
           "datasource": {
             "type": "prometheus",
@@ -530,7 +549,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(care_requests_total[5m]))",
+          "expr": "sum(rate(care_requests_total{environment=~\"$environment\"}[5m]))",
           "legendFormat": "RPS",
           "datasource": {
             "type": "prometheus",
@@ -597,7 +616,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(care_request_duration_seconds_sum[5m])) / sum(rate(care_requests_total[5m]))",
+          "expr": "sum(rate(care_request_duration_seconds_sum{environment=~\"$environment\"}[5m])) / sum(rate(care_requests_total{environment=~\"$environment\"}[5m]))",
           "legendFormat": "Avg Response Time",
           "datasource": {
             "type": "prometheus",
@@ -664,7 +683,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(care_requests_total) by (status)",
+          "expr": "sum(care_requests_total{environment=~\"$environment\"}) by (status)",
           "legendFormat": "{{status}}",
           "datasource": {
             "type": "prometheus",
@@ -726,7 +745,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(care_requests_total) by (method)",
+          "expr": "sum(care_requests_total{environment=~\"$environment\"}) by (method)",
           "legendFormat": "{{method}}",
           "datasource": {
             "type": "prometheus",

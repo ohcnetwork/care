@@ -1,22 +1,30 @@
 import logging
+import os
 import time
 
+from django.conf import settings
 from prometheus_client import Counter, Gauge, Histogram
 
+ENVIRONMENT = getattr(settings, "CARE_ENVIRONMENT", None) or os.environ.get(
+    "CARE_ENVIRONMENT", "local"
+)
+
 REQUEST_COUNT = Counter(
-    "care_requests_total", "Total number of requests", ["method", "endpoint", "status"]
+    "care_requests_total",
+    "Total number of requests",
+    ["method", "endpoint", "status", "environment"],
 )
 
 REQUEST_LATENCY = Histogram(
     "care_request_duration_seconds",
     "Request latency in seconds",
-    ["method", "endpoint"],
+    ["method", "endpoint", "environment"],
 )
 
 REQUESTS_IN_PROGRESS = Gauge(
     "care_requests_in_progress",
     "Number of requests currently being processed",
-    ["method", "endpoint"],
+    ["method", "endpoint", "environment"],
 )
 
 
@@ -26,38 +34,33 @@ class RequestTimeLoggingMiddleware:
         self.logger = logging.getLogger("time_logging_middleware")
 
     def __call__(self, request):
-        # Start timing the request
         request.start_time = time.time()
 
-        # Increment in-progress requests
-        REQUESTS_IN_PROGRESS.labels(method=request.method, endpoint=request.path).inc()
+        REQUESTS_IN_PROGRESS.labels(
+            method=request.method, endpoint=request.path, environment=ENVIRONMENT
+        ).inc()
 
         try:
-            # Process the request
             response = self.get_response(request)
 
-            # Record request duration
             duration = time.time() - request.start_time
             REQUEST_LATENCY.labels(
-                method=request.method, endpoint=request.path
+                method=request.method, endpoint=request.path, environment=ENVIRONMENT
             ).observe(duration)
 
-            # Increment request count
             REQUEST_COUNT.labels(
                 method=request.method,
                 endpoint=request.path,
                 status=response.status_code,
+                environment=ENVIRONMENT,
             ).inc()
 
-            # Log the request duration
             self.logger.info("Request to %s took %.4f seconds", request.path, duration)
-
             return response
 
         finally:
-            # Decrement in-progress requests
             REQUESTS_IN_PROGRESS.labels(
-                method=request.method, endpoint=request.path
+                method=request.method, endpoint=request.path, environment=ENVIRONMENT
             ).dec()
 
 
@@ -70,32 +73,29 @@ class PrometheusMiddleware:
         if request.path == "/metrics":
             return self.get_response(request)
 
-        # Get endpoint name (remove query parameters and trailing slashes)
-        endpoint = request.path.rstrip("/")
-        if not endpoint:
-            endpoint = "/"
+        endpoint = request.path.rstrip("/") or "/"
 
-        # Increment in-progress requests
-        REQUESTS_IN_PROGRESS.labels(method=request.method, endpoint=endpoint).inc()
+        REQUESTS_IN_PROGRESS.labels(
+            method=request.method, endpoint=endpoint, environment=ENVIRONMENT
+        ).inc()
 
-        # Start timer
         start_time = time.time()
 
-        # Process request
         response = self.get_response(request)
 
-        # Record metrics
         duration = time.time() - start_time
-        REQUEST_LATENCY.labels(method=request.method, endpoint=endpoint).observe(
-            duration
-        )
+        REQUEST_LATENCY.labels(
+            method=request.method, endpoint=endpoint, environment=ENVIRONMENT
+        ).observe(duration)
         REQUEST_COUNT.labels(
             method=request.method,
             endpoint=endpoint,
             status=response.status_code,
+            environment=ENVIRONMENT,
         ).inc()
 
-        # Decrement in-progress requests
-        REQUESTS_IN_PROGRESS.labels(method=request.method, endpoint=endpoint).dec()
+        REQUESTS_IN_PROGRESS.labels(
+            method=request.method, endpoint=endpoint, environment=ENVIRONMENT
+        ).dec()
 
         return response
