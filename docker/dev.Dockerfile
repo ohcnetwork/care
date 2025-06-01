@@ -22,7 +22,8 @@ RUN python -m venv /.venv
 RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
 
 COPY Pipfile Pipfile.lock $APP_HOME/
-RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"
+RUN --mount=type=cache,target=/root/.cache/pip pipenv install --system --categories "packages dev-packages docs"
+RUN --mount=type=cache,target=/root/.cache/pip pip install django-prometheus==2.3.1
 
 COPY . $APP_HOME/
 
