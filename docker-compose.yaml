@@ -53,10 +53,11 @@ services:
       - prometheus-data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--log.level=warn"
     ports:
       - "9090:9090"
-    networks:
-      - default
+    depends_on:
+      - alertmanager
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -68,16 +69,18 @@ services:
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
       - "--storage.path=/alertmanager"
+      - "--log.level=warn"
     ports:
       - "9093:9093"
-    networks:
-      - default
+    environment:
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
 
   grafana:
     image: grafana/grafana:latest
     restart: unless-stopped
     volumes:
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/datasources
       - grafana-data:/var/lib/grafana
     environment:
       - GF_USERS_ALLOW_SIGN_UP=false
@@ -86,8 +89,7 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
-    networks:
-      - default
+      - alertmanager
 
 volumes:
   postgres-data:

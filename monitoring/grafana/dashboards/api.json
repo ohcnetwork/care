@@ -4,7 +4,7 @@
   "title": "Care API Dashboard",
   "tags": ["django", "api"],
   "style": "dark",
-  "timezone": "",
+  "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 38,
   "editable": false,

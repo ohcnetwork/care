@@ -8,6 +8,7 @@
   "editable": true,
   "refresh": "30s",
   "time": { "from": "now-15m", "to": "now" },
+  "timezone": "Asia/Kolkata",
   "templating": {
     "list": [
       {
