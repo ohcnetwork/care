@@ -1,0 +1,56 @@
+groups:
+  - name: care_alerts
+    rules:
+      - alert: EndpointDown
+        expr: absent(up{job="django"} == 1)
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API endpoint down"
+          description: "API endpoint unreachable for more than 1 minute."
+
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, sum(rate(care_request_duration_seconds_bucket[5m])) by (le, endpoint)) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API request latency"
+          description: "95th percentile latency for '{{ $labels.endpoint }}' exceeds 1 second over the last 5 minutes."
+
+      - alert: HighErrorRate
+        expr: sum(rate(care_requests_total{status=~"5.."}[5m])) / sum(rate(care_requests_total[5m])) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Server errors (HTTP 5xx) exceed 1% of total requests in the last 5 minutes."
+
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, sum(rate(django_db_execute_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow database queries detected"
+          description: "95th percentile database query latency exceeds 500 ms over the last 5 minutes."
+
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total{job="django"}[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage above 80% for the last 5 minutes."
+
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes{job="django"} > 524288000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage above 500MB for the last 5 minutes."
