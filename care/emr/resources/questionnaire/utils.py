@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, time
 from urllib.parse import urlparse
 
 from dateutil.parser import isoparse
@@ -106,6 +106,32 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     return errors
 
 
+def normalize_value(value):  # noqa PLR0911
+    if isinstance(value, str):
+        val = value.strip()
+        if val.lower() in ["true", "1"]:
+            return True
+        if val.lower() in ["false", "0"]:
+            return False
+        try:
+            if "." not in val:
+                return int(val)
+        except ValueError:
+            pass
+        try:
+            return float(val)
+        except ValueError:
+            pass
+        try:
+            parsed = isoparse(val)
+            if parsed.time() == time.min:
+                return parsed.date()
+            return parsed
+        except Exception:
+            return val.strip()
+    return value
+
+
 def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
     """
     Check if a question should be enabled based on its enable_when conditions.
@@ -136,8 +162,9 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
         else:
             condition_value = responses[condition_question_id].values[0].value
 
+        condition_value = normalize_value(condition_value)
         operator = condition["operator"]
-        expected_answer = condition["answer"]
+        expected_answer = normalize_value(condition["answer"])
 
         # Evaluate the condition based on the operator.
         if operator == "exists":
