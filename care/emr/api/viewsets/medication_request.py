@@ -102,6 +102,7 @@ class MedicationRequestSummaryFilters(filters.FilterSet):
     exclude_dispense_status = MultiSelectFilter(
         field_name="dispense_status", exclude=True
     )
+    dispense_status_isnull = NullFilter(field_name="dispense_status")
     encounter_class = filters.CharFilter(
         field_name="encounter__encounter_class", lookup_expr="iexact"
     )
