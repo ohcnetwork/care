@@ -208,7 +208,6 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "maintenance_mode.middleware.MaintenanceModeMiddleware",
     "care.audit_log.middleware.AuditLogMiddleware",
-    "config.middlewares.PrometheusMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 

@@ -1,3 +1,4 @@
+
 networks:
   default:
     name: care
@@ -28,14 +29,14 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
-      AWS_DEFAULT_REGION: ap-south-1 # To maintain compatibility with existing apps
+      AWS_DEFAULT_REGION: ap-south-1  # To maintain compatibility with existing apps
     volumes:
       - "./care/media/minio:/data"
-      - "./docker/minio/init-script.sh:/init-script.sh:ro" # Mount the init script
-      - "./docker/minio/entrypoint.sh:/entrypoint.sh:ro" # Mount the entrypoint script
+      - "./docker/minio/init-script.sh:/init-script.sh:ro"  # Mount the init script
+      - "./docker/minio/entrypoint.sh:/entrypoint.sh:ro"  # Mount the entrypoint script
     ports:
-      - "9100:9000" # S3 API
-      - "9001:9001" # Web Console
+      - "9100:9000"  # S3 API
+      - "9001:9001"  # Web Console
     entrypoint: ["/entrypoint.sh"]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
