@@ -29,6 +29,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.filters.null_filter import NullFilter
 
 
 class MedicationRequestFilter(filters.FilterSet):
@@ -39,6 +40,11 @@ class MedicationRequestFilter(filters.FilterSet):
         field_name="encounter__class", lookup_expr="iexact"
     )
     priority = filters.CharFilter(lookup_expr="iexact")
+    dispense_status = MultiSelectFilter(field_name="dispense_status")
+    exclude_dispense_status = MultiSelectFilter(
+        field_name="dispense_status", exclude=True
+    )
+    dispense_status_isnull = NullFilter(field_name="dispense_status")
 
 
 class MedicationRequestViewSet(
