@@ -1,12 +1,16 @@
 {
   "id": null,
   "uid": "api-dashboard",
-  "title": "API Dashboard",
+  "title": "API",
   "tags": ["django", "api"],
   "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 40,
   "refresh": "10s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
   "templating": {
     "list": [
       {

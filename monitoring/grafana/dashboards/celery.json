@@ -1,12 +1,16 @@
 {
   "id": null,
   "uid": "celery-dashboard",
-  "title": "Celery Dashboard",
+  "title": "Celery",
   "tags": ["celery", "tasks"],
   "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 40,
   "refresh": "10s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
   "templating": {
     "list": [
       {
