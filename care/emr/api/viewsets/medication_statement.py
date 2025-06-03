@@ -1,7 +1,15 @@
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
 
-from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRQuestionnaireResponseMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRUpsertMixin,
+)
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.medication_statement import MedicationStatement
 from care.emr.registries.system_questionnaire.system_questionnaire import (
@@ -23,7 +31,14 @@ class MedicationStatementFilter(filters.FilterSet):
 
 
 class MedicationStatementViewSet(
-    EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
+    EncounterBasedAuthorizationBase,
+    EMRQuestionnaireResponseMixin,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = MedicationStatement
     pydantic_model = MedicationStatementSpec

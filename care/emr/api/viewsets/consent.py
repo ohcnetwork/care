@@ -4,7 +4,14 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRUpsertMixin,
+)
 from care.emr.api.viewsets.condition import ValidateEncounterMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.consent import Consent
@@ -21,7 +28,12 @@ from care.utils.time_util import care_now
 class ConsentViewSet(
     ValidateEncounterMixin,
     EncounterBasedAuthorizationBase,
-    EMRModelViewSet,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = Consent
     pydantic_model = ConsentCreateSpec

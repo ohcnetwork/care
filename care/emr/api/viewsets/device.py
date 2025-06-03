@@ -13,9 +13,9 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRModelReadOnlyViewSet,
-    EMRModelViewSet,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models import (
     Device,
@@ -51,7 +51,14 @@ class DeviceFilters(filters.FilterSet):
     care_type = filters.CharFilter(field_name="care_type")
 
 
-class DeviceViewSet(EMRModelViewSet):
+class DeviceViewSet(
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
+):
     database_model = Device
     pydantic_model = DeviceCreateSpec
     pydantic_update_model = DeviceUpdateSpec
@@ -79,9 +86,6 @@ class DeviceViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to update device")
 
-    def authorize_destroy(self, instance):
-        self.authorize_update(None, instance)
-
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         with transaction.atomic():
@@ -100,15 +104,6 @@ class DeviceViewSet(EMRModelViewSet):
                     instance.care_type
                 )
                 care_device_class().handle_update(self.request.data, instance)
-
-    def perform_destroy(self, instance):
-        with transaction.atomic():
-            if instance.care_type:
-                care_device_class = DeviceTypeRegistry.get_care_device_class(
-                    instance.care_type
-                )
-                care_device_class().handle_delete(instance)
-            super().perform_destroy(instance)
 
     def get_queryset(self):
         """

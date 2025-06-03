@@ -194,19 +194,6 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["registered_name"], data["registered_name"])
 
-    def test_delete_device_without_permissions(self):
-        device = self.create_device()
-        url = self.get_device_detail_url(device)
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, 403)
-
-    def test_delete_device_with_permissions(self):
-        device = self.create_device(care_type="camera")
-        self.add_permissions([DevicePermissions.can_manage_devices.name])
-        url = self.get_device_detail_url(device)
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, 204)
-
     # ------------- Device Encounter Association Tests -------------
     def test_associate_device_encounter_without_device_permission(self):
         device = self.create_device()

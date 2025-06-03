@@ -4,7 +4,15 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 
-from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRQuestionnaireResponseMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRUpsertMixin,
+)
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
@@ -60,7 +68,12 @@ class SymptomViewSet(
     ValidateEncounterMixin,
     EncounterBasedAuthorizationBase,
     EMRQuestionnaireResponseMixin,
-    EMRModelViewSet,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = Condition
     pydantic_model = ConditionSpec
@@ -104,7 +117,12 @@ class DiagnosisViewSet(
     ValidateEncounterMixin,
     EncounterBasedAuthorizationBase,
     EMRQuestionnaireResponseMixin,
-    EMRModelViewSet,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = Condition
     pydantic_model = ConditionSpec
